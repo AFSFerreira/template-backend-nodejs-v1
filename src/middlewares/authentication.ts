@@ -1,5 +1,5 @@
 import { verify } from "jsonwebtoken";
-import { FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { env } from "../env";
 import { PrismaUsersRepository } from "../repositories/prisma/prisma-users-repository";
 
