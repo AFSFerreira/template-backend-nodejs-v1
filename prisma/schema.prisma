@@ -1,0 +1,101 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/@types/lib/prisma/generated"
+  compilerBuild   = "fast"
+  previewFeatures = ["partialIndexes"]
+  moduleFormat    = "esm"
+  runtime         = "nodejs"
+}
+
+datasource db {
+  provider     = "postgresql"
+  relationMode = "foreignKeys"
+}
+
+model UserActionAudit {
+  id         Int              @id @default(autoincrement())
+  actionType SystemActionType @map("action_type")
+  ipAddress  String?          @map("ip_address") @db.Inet
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  actorId String?  @map("actor_id")
+  Actor   User? @relation("audit_actor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  targetId String?  @map("target_id")
+  Target   User? @relation("audit_target", fields: [targetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([actionType])
+  @@index([actorId])
+  @@index([targetId])
+  @@map("user_action_audits")
+}
+
+model AuthenticationAudit {
+  id         Int                      @id @default(autoincrement())
+  ipAddress  String?                  @map("ip_address") @db.Inet
+  remotePort String?                  @map("remote_port")
+  browser    String?
+  status     AuthenticationStatusType
+  createdAt  DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  userId String?  @map("user_id")
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([userId, status, createdAt])
+  @@map("authentication_audits")
+}
+
+model User {
+  id           String       @unique @default(uuid(7)) @map("public_id")
+  fullName     String       @map("full_name")
+  birthdate    DateTime     @db.Date
+  username     String       @unique
+  email        String       @unique
+  passwordHash String       @map("password_hash")
+  role         UserRoleType @default(DEFAULT)
+
+  loginAttempts Int       @default(0) @map("login_attempts")
+  lastLogin     DateTime? @map("last_login") @db.Timestamptz(3)
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  recoveryPasswordTokenHash      String?   @map("recovery_password_token")
+  recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at") @db.Timestamptz(3)
+
+  emailVerificationTokenHash      String?   @map("email_verification_token")
+  emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at") @db.Timestamptz(3)
+  emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
+
+  AuthenticationAudit   AuthenticationAudit[] @relation()
+  UserActionAuditActor  UserActionAudit[]     @relation("audit_actor")
+  UserActionAuditTarget UserActionAudit[]     @relation("audit_target")
+
+  @@unique([recoveryPasswordTokenHash], where: raw("recovery_password_token IS NOT NULL"))
+  @@index([role])
+  @@map("users")
+}
+
+enum UserRoleType {
+  ADMIN
+  DEFAULT
+}
+
+enum AuthenticationStatusType {
+  SUCCESS
+  USER_NOT_EXISTS
+  INCORRECT_PASSWORD
+  BLOCKED
+}
+
+enum SystemActionType {
+  MEMBERSHIP_APPROVED
+  MEMBERSHIP_REJECTED
+  ACCOUNT_ACTIVATED
+  ACCOUNT_INACTIVATED
+  ACCOUNT_DELETED
+  ROLE_CHANGED
+  DIRECTOR_BOARD_CREATED
+  DIRECTOR_BOARD_DELETED
+  ADMIN_ROLE_TRANSFERRED
+}

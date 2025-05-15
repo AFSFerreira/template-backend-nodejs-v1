@@ -1,0 +1,9 @@
+[tools]
+atuin = "latest"
+bat = "latest"
+direnv = "latest"
+eza = "latest"
+lazydocker = "latest"
+lazygit = "latest"
+starship = "latest"
+zoxide = "latest"

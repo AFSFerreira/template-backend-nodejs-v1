@@ -1,0 +1,45 @@
+[tools]
+node = "22.14.0"
+pnpm = "10.26.2"
+
+[env]
+POSTGRES_CONTAINER_NAME = "template-pg"
+
+_.file = [".env", ".env.local"]
+
+[tasks."dev:down"]
+description = "Derruba os containers e limpa os volumes"
+run = "docker compose down -v"
+
+[tasks."dev:up"]
+description = "Sobe os containers em background"
+run = "docker compose up -d"
+
+[tasks."dev:install"]
+description = "Instala as dependências exatas do projeto"
+run = "pnpm install"
+
+[tasks."dev:type-generate"]
+description = "Gera a tipagem do banco de dados (ex: Prisma Client)"
+run = "pnpm db:generate"
+
+# [tasks."dev:wait-db"]
+# description = "Aguarda o healthcheck do PostgreSQL responder como saudável"
+# run = """
+# !/bin/bash
+# echo "Aguardando o banco de dados iniciar..."
+# while [ "$(docker inspect -f '{{.State.Health.Status}}' $POSTGRES_CONTAINER_NAME 2>/dev/null)" != "healthy" ]; do
+#     sleep 2
+# done
+# echo "Banco de dados pronto!"
+# """
+
+[tasks."dev:reset-full"]
+description = "Reseta o ambiente: derruba, sobe o banco, instala pacotes e recria o schema"
+depends = ["dev:down", "dev:up", "dev:install"]
+run = "pnpm db:reset"
+
+[tasks."dev:start"]
+description = "Inicia o servidor backend em modo de desenvolvimento"
+depends = ["dev:install"]
+run = "pnpm start:dev"

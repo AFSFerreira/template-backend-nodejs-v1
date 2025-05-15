@@ -1,0 +1,57 @@
+{
+  // "$schema": "https://www.schemastore.org/tsconfig",
+  // "_version": "22.0.0",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "esnext",
+    "target": "esnext",
+    "noEmit": true,
+    "moduleResolution": "bundler",
+    "lib": ["ESNext"],
+    "types": ["node"],
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "allowJs": true,
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "inlineSourceMap": false,
+    "inlineSources": true,
+    "moduleDetection": "force",
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "paths": {
+      "@prisma/generated/*": ["./src/@types/lib/prisma/generated/*"],
+      "@custom-types/*": ["./src/@types/*"],
+
+      "@http/*": ["./src/entrypoints/http/*"],
+      "@ws/*": ["./src/entrypoints/ws/*"],
+
+      "@use-cases/*": ["./src/use-cases/*"],
+      "@repositories/*": ["./src/repositories/*"],
+
+      "@services/*": ["./src/services/*"],
+      "@jobs/*": ["./src/jobs/*"],
+      "@lib/*": ["./src/lib/*"],
+
+
+      "@utils/*": ["./src/utils/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@env/*": ["./src/env/*"],
+      "@errors/*": ["./src/errors/*"],
+      "@messages/*": ["./src/messages/*"],
+      "@templates/*": ["./src/templates/*"],
+      "@uploads/*": ["./src/uploads/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["./**/*.ts", "tsup.config.ts"],
+  "exclude": ["node_modules", "dist", "uploads", "./**/*.cjs", "./**/*.js", "./**/*.json", "./**/*.mjs"]
+}

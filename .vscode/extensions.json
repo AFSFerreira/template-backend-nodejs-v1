@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "prisma.prisma",
+    "mikestead.dotenv",
+    "usernamehw.errorlens",
+    "dbaeumer.vscode-eslint",
+    "streetsidesoftware.code-spell-checker",
+    "streetsidesoftware.code-spell-checker-portuguese-brazilian",
+    "jeff-hykin.better-dockerfile-syntax",
+    "pkief.material-icon-theme",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "rvest.vs-code-prettier-eslint",
+    "mylesmurphy.prettify-ts",
+    "yoavbls.pretty-ts-errors",
+    "inferrinizzard.prettier-sql-vscode",
+    "biomejs.biome",
+    "hverlin.mise-vscode",
+  ]
+}

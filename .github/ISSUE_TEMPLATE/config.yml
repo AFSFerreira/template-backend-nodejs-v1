@@ -1,0 +1,2 @@
+blank_issues_enabled: false
+contact_links: [{ name: Documentacao, url: https://example.com/docs, about: Guia geral do template backend }, { name: Suporte, url: https://example.com/support, about: Canal de suporte do template backend }]
