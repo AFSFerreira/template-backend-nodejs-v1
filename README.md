@@ -1,4 +1,4 @@
-#Este é o servidor da Sociedade Brasileira de Astrobiologia
+# Este é o servidor da Sociedade Brasileira de Astrobiologia
 
 1. Clone este repositório: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend.git`.
 2. Instale as dependências: `npm install`.
