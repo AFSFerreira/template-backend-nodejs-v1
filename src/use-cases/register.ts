@@ -1,6 +1,6 @@
 import type { UsersRepository } from '../repositories/users-repository'
 import { hash } from 'bcryptjs'
-import type { User, USER_ROLE } from '@prisma/client'
+import type { User } from '@prisma/client'
 import { UserWithSameEmailError } from './errors/user-with-same-email-error'
 
 interface RegisterUseCaseRequest {
