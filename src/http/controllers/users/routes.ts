@@ -1,4 +1,4 @@
-import { FastifyInstance } from "fastify";
+import type { FastifyInstance } from "fastify";
 import { authenticate } from "./authenticate";
 import { refreshToken } from "./refresh-token";
 import { logout } from "./logout";
