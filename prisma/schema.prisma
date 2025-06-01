@@ -13,39 +13,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id              String    @id @default(uuid())
-  name            String
-  email           String    @unique
-  login_attempts  Int       @default(0)
-  last_login      DateTime?
-  password_digest String
-  role            USER_ROLE @default(NORMAL_USER)
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-
-  AuthenticationAudit AuthenticationAudit[]
-
-  @@index([id])
-  @@map("users")
-}
-
 enum USER_ROLE {
   ADMIN
   NORMAL_USER
-}
-
-model AuthenticationAudit {
-  id          Int                   @id @default(autoincrement())
-  ip_address  String?
-  remote_port String?
-  browser     String?
-  status      AUTHENTICATION_STATUS
-  user_id     String?
-  user        User?                 @relation(fields: [user_id], references: [id], onDelete: NoAction)
-  created_at  DateTime              @default(now())
-
-  @@map("authentication_audit")
 }
 
 enum AUTHENTICATION_STATUS {
@@ -53,4 +23,59 @@ enum AUTHENTICATION_STATUS {
   USER_NOT_EXISTS
   INCORRECT_PASSWORD
   BLOCKED
+}
+
+model User {
+  id               String    @id @default(uuid())
+  cpf              String    @unique
+  name             String
+  birthDate        DateTime
+  profileImagePath String
+  curriculumPath   String?
+  email            String    @unique
+  passwordDigest   String
+  loginAttempts    Int       @default(0)
+  lastLogin        DateTime?
+  role             USER_ROLE @default(NORMAL_USER)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  departmentRoleId String?
+  departmentRole   DepartmentRole? @relation(fields: [departmentRoleId], references: [id], onDelete: Restrict)
+
+  AuthenticationAudit AuthenticationAudit[]
+  Posts Post[]
+
+  @@index([id])
+  @@map("users")
+}
+
+model DepartmentRole {
+  id   String @id @default(uuid())
+  role String
+
+  user User[]
+
+  @@index([id])
+  @@map("department_role")
+}
+
+model Post {
+  id String @id @default(uuid())
+  
+  authorId String
+  author User @relation(fields: [authorId], references: [id], onDelete: NoAction)
+}
+
+model AuthenticationAudit {
+  id         Int                   @id @default(autoincrement())
+  ipAddress  String?
+  remotePort String?
+  browser    String?
+  status     AUTHENTICATION_STATUS
+  userId     String?
+  user       User?                 @relation(fields: [userId], references: [id], onDelete: NoAction)
+  createdAt  DateTime              @default(now())
+
+  @@map("authentication_audit")
 }

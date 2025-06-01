@@ -19,9 +19,9 @@ interface AuthenticateUseCaseResponse {
 export class AuthenticateUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly authenticationAuditRepository: AuthenticationAuditRepository
+    private readonly authenticationAuditRepository: AuthenticationAuditRepository,
   ) {}
-  
+
   async execute({
     email,
     password,
