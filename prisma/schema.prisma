@@ -125,6 +125,7 @@ model User {
   @@map("users")
 }
 
+// CHECK: Necessário introduzir o código postal?
 model Address {
   id          String @id @default(uuid())
   houseNumber String
@@ -174,7 +175,6 @@ model EnrolledCourse {
 // CHECK: Como lidar com o caso "Other"? Área de atividade pendente de aprovação caso seja "Other"?
 model AreaOfActivity {
   id           String  @id @default(uuid())
-  role         String
   mainActivity String
   description  String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
 
