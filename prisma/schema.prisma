@@ -56,6 +56,11 @@ enum MEMBERSHIP_STATUS {
   REJECTED
 }
 
+enum CATEGORY_TYPE {
+  MAIN_CATEGORY
+  SUBCATEGORY
+}
+
 model AuthenticationAudit {
   id         Int                   @id @default(autoincrement())
   ipAddress  String?
@@ -103,7 +108,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   activityAreaId String
-  activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   address          Address?          @relation()
   identityDocument IdentityDocument? @relation()
@@ -113,6 +118,7 @@ model User {
   posts                Post[]                 @relation()
   keywords             Keyword[]              @relation()
   academicPublications AcademicPublications[] @relation()
+  Blog                 Blog[]
 
   @@index([id])
   @@map("users")
@@ -139,9 +145,11 @@ model IdentityDocument {
   passport String? @unique
 
   userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   // NOTE: Exclusão mútua entre cpf, rne e passport
+
+  @@map("identity_document")
 }
 
 // TODO: Constraint entre bolsista e orgao responsavel
@@ -181,6 +189,8 @@ model AcademicPublications {
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("academic_publications")
 }
 
 model Keyword {
@@ -190,6 +200,48 @@ model Keyword {
   // CHECK: As keywords são únicas para cada usuário ou são uma lista de opções predefinidas? (relação de user pra keyword ou vice versa)
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("keyword")
+}
+
+// CHECK: Adicionar campo enum de "category_type"? (main_category, subcategory e etc)
+model Category {
+  id           String        @id @default(uuid())
+  categoryName String
+  categoryType CATEGORY_TYPE
+
+  blogCategory BlogCategory[]
+  Blog         Blog[]
+}
+
+// CHECK: A tabela intermediária seria suficiente pra indicar as subcategorias?
+model BlogCategory {
+  blogId     String
+  categoryId String
+
+  blog     Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([blogId, categoryId])
+}
+
+// CHECK: Se um usuário autor de posts tiver a conta removida, o que acontece com o campo de autor?
+model Blog {
+  id          String @id @default(uuid())
+  pageContent String // Estrutura HTML da página
+  creationDate DateTime @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mainCategoryId String
+  mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  authorId String
+  author User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  subcategories BlogCategory[]
+  userId        String
 }
 
 model Post {
@@ -201,3 +253,4 @@ model Post {
 
 // TODO: Campo de outras informações públicas (projetos de pesquisa em andamento, outros interesses) 
 // CHECK: É necessário manter a justificativa para participar da sociedade de astrobio no banco de dados após a aprovação?
+// CHECK: Existe algum campo de gênero?
