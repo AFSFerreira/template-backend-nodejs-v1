@@ -3,4 +3,6 @@
 1. Clone este repositório: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend.git`.
 2. Instale as dependências ao executar o comando no console: `npm install`.
 3. Crie um arquivo `.env`, copie e cole o conteúdo de `.env.example` e configure as variáveis de ambiente.
-4. Execute o projeto com o comando: `npm run dev`.
+4. Inicialize os contêiners do Docker executando o comando `docker-compose up -d`.
+5. Execute o comando `npx prisma migrate dev` para transferir as migrações do banco de dados.
+6. Execute o projeto com o comando: `npm run start:dev`.
