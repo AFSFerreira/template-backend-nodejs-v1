@@ -115,10 +115,9 @@ model User {
   enrolledCourse   EnrolledCourse?   @relation()
 
   authenticationAudit  AuthenticationAudit[]  @relation()
-  posts                Post[]                 @relation()
   keywords             Keyword[]              @relation()
   academicPublications AcademicPublications[] @relation()
-  Blog                 Blog[]
+  Blog                 Blog[]                 @relation()
 
   @@index([id])
   @@map("users")
@@ -237,7 +236,7 @@ model Blog {
   mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   authorId String
-  author User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  author   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   subcategories BlogCategory[]
   userId        String
