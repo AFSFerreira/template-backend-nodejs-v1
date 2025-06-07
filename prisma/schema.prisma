@@ -244,13 +244,6 @@ model Blog {
   userId        String
 }
 
-model Post {
-  id String @id @default(uuid())
-
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id], onDelete: NoAction)
-}
-
 // TODO: Campo de outras informações públicas (projetos de pesquisa em andamento, outros interesses) 
 // CHECK: É necessário manter a justificativa para participar da sociedade de astrobio no banco de dados após a aprovação?
 // CHECK: Existe algum campo de gênero?
