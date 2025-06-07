@@ -1,10 +1,10 @@
-import { PrismaClient } from '@prisma/client';
-import { hash } from 'bcryptjs';
-import { env } from '../src/env';
-import { addYears, format } from 'date-fns';
-import { DATE_FORMATS } from '../src/constants/dateFormats';
+import { PrismaClient } from '@prisma/client'
+import { hash } from 'bcryptjs'
+import { env } from '../src/env'
+import { addYears, format } from 'date-fns'
+import { DATE_FORMATS } from '../src/constants/dateFormats'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 async function main() {
   await prisma.user.create({
@@ -62,13 +62,13 @@ async function main() {
         },
       },
     },
-  });
+  })
 }
 
 main()
-  .then(async () => { await prisma.$disconnect(); })
+  .then(async () => { await prisma.$disconnect() })
   .catch(async (e) => {
-    console.error('Erro ao executar seed:', e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+    console.error('Erro ao executar seed:', e)
+    await prisma.$disconnect()
+    process.exit(1)
+  })
