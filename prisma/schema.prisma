@@ -25,46 +25,40 @@ enum AUTHENTICATION_STATUS {
   BLOCKED
 }
 
-model User {
-  id               String    @id @default(uuid())
-  cpf              String    @unique
-  name             String
-  birthDate        DateTime
-  profileImagePath String
-  curriculumPath   String?
-  email            String    @unique
-  passwordDigest   String
-  loginAttempts    Int       @default(0)
-  lastLogin        DateTime?
-  role             USER_ROLE @default(NORMAL_USER)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  departmentRoleId String?
-  departmentRole   DepartmentRole? @relation(fields: [departmentRoleId], references: [id], onDelete: Restrict)
-
-  AuthenticationAudit AuthenticationAudit[]
-  Posts Post[]
-
-  @@index([id])
-  @@map("users")
+// CHECK: Revisar as nomenclaturas
+enum OCCUPATION {
+  RESEARCHER
+  PROFESSOR
+  STUDENT
+  POSTGRADUATE
+  MASTER_STUDENT
+  DOCTOR_STUDENT
 }
 
-model DepartmentRole {
-  id   String @id @default(uuid())
-  role String
-
-  user User[]
-
-  @@index([id])
-  @@map("department_role")
+// CHECK: Revisar as nomenclaturas
+enum EDUCATION_LEVEL {
+  ELEMENTARY_SCHOOL
+  HIGH_SCHOOL
+  UNDERGRADUATE_STUDENT
+  BACHELOR
+  MASTER_STUDENT
+  MASTER
+  DOCTORATE_STUDENT
+  DOCTORATE
+  POSTDOCTORAL_STUDENT
+  POSTDOCTORATE
+  OTHER
 }
 
-model Post {
-  id String @id @default(uuid())
-  
-  authorId String
-  author User @relation(fields: [authorId], references: [id], onDelete: NoAction)
+enum MEMBERSHIP_STATUS {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CATEGORY_TYPE {
+  MAIN_CATEGORY
+  SUBCATEGORY
 }
 
 model AuthenticationAudit {
@@ -73,9 +67,181 @@ model AuthenticationAudit {
   remotePort String?
   browser    String?
   status     AUTHENTICATION_STATUS
-  userId     String?
-  user       User?                 @relation(fields: [userId], references: [id], onDelete: NoAction)
   createdAt  DateTime              @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction)
 
   @@map("authentication_audit")
 }
+
+// CHECK: revisar campos opcionais
+// TODO: implementar KEYWORDS (palavras chave de até 4)
+model User {
+  id                             String            @id @default(uuid())
+  name                           String // Nome completo do usuário
+  username                       String // Nome como quer ser exibido no site
+  birthDate                      DateTime
+  profileImagePath               String
+  lattesCVLink                   String? // Link externo para o currículo lattes do usuário
+  profileGSLink                  String? // Link externo para o perfil do usuário no Google Scholar
+  profileRIDLink                 String? // Link externo para o perfil do usuário no ResearcherID
+  orcidNumber                    String? // Número do ORCID do pesquisador
+  membershipStatus               MEMBERSHIP_STATUS @default(PENDING)
+  userRole                       USER_ROLE         @default(NORMAL_USER)
+  institutionName                String
+  institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
+  departmentName                 String?
+  educationLevel                 EDUCATION_LEVEL
+  occupation                     OCCUPATION
+  publicEmail                    Boolean
+  astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
+  interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
+  receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
+
+  email          String    @unique
+  passwordDigest String
+  loginAttempts  Int       @default(0)
+  lastLogin      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activityAreaId String
+  activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  address          Address?          @relation()
+  identityDocument IdentityDocument? @relation()
+  enrolledCourse   EnrolledCourse?   @relation()
+
+  authenticationAudit  AuthenticationAudit[]  @relation()
+  keywords             Keyword[]              @relation()
+  academicPublications AcademicPublications[] @relation()
+  Blog                 Blog[]                 @relation()
+
+  @@index([id])
+  @@map("users")
+}
+
+model Address {
+  id          String @id @default(uuid())
+  houseNumber String
+  street      String
+  cityName    String
+  stateName   String
+  countryName String
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("address")
+}
+
+model IdentityDocument {
+  id       String  @id @default(uuid())
+  cpf      String? @unique
+  rne      String? @unique
+  passport String? @unique
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  // NOTE: Exclusão mútua entre cpf, rne e passport
+
+  @@map("identity_document")
+}
+
+// TODO: Constraint entre bolsista e orgao responsavel
+// CHECK: Usuário pode estar matriculado em mais de um curso simultaneamente (1xN)? (implementação atual: 1x1)
+model EnrolledCourse {
+  id                     String    @id @default(uuid())
+  courseName             String?
+  startGraduationDate    DateTime? // Formato: MM/AAAA
+  expectedGraduationDate DateTime? // Formato: MM/AAAA
+  supervisorName         String?
+  scholarshipHolder      Boolean // O usuário é bolsista?
+  sponsoringOrganization String? // Agência / órgão responsável pela bolsa 
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("enrolled_course")
+}
+
+// CHECK: Como lidar com o caso "Other"? Área de atividade pendente de aprovação caso seja "Other"?
+model AreaOfActivity {
+  id           String  @id @default(uuid())
+  role         String
+  mainActivity String
+  description  String?
+
+  user User[]
+
+  @@map("area_of_activity")
+}
+
+model AcademicPublications {
+  id              String   @id @default(uuid())
+  title           String
+  author          String
+  publicationDate DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("academic_publications")
+}
+
+model Keyword {
+  id    String @id @default(uuid())
+  value String
+
+  // CHECK: As keywords são únicas para cada usuário ou são uma lista de opções predefinidas? (relação de user pra keyword ou vice versa)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("keyword")
+}
+
+// CHECK: Adicionar campo enum de "category_type"? (main_category, subcategory e etc)
+model Category {
+  id           String        @id @default(uuid())
+  categoryName String
+  categoryType CATEGORY_TYPE
+
+  blogCategory BlogCategory[]
+  Blog         Blog[]
+}
+
+// CHECK: A tabela intermediária seria suficiente pra indicar as subcategorias?
+model BlogCategory {
+  blogId     String
+  categoryId String
+
+  blog     Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([blogId, categoryId])
+}
+
+// CHECK: Se um usuário autor de posts tiver a conta removida, o que acontece com o campo de autor?
+model Blog {
+  id          String @id @default(uuid())
+  pageContent String // Estrutura HTML da página
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mainCategoryId String
+  mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  subcategories BlogCategory[]
+  userId        String
+}
+
+// TODO: Campo de outras informações públicas (projetos de pesquisa em andamento, outros interesses) 
+// CHECK: É necessário manter a justificativa para participar da sociedade de astrobio no banco de dados após a aprovação?
+// CHECK: Existe algum campo de gênero?
