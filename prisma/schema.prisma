@@ -31,8 +31,8 @@ enum OCCUPATION {
   PROFESSOR
   STUDENT
   POSTGRADUATE
-  MASTER_STUDENT
-  DOCTOR_STUDENT
+  MASTER
+  DOCTORATE
 }
 
 // CHECK: Revisar as nomenclaturas
@@ -75,8 +75,10 @@ model AuthenticationAudit {
   @@map("authentication_audit")
 }
 
-// CHECK: revisar campos opcionais
-// TODO: implementar KEYWORDS (palavras chave de até 4)
+// CHECK: Revisar campos opcionais
+// CHECK: As informações sobre instituição podem ser reutilizadas por mais de uma pessoa? (tabela adicional)
+// CHECK: Como modelar o campo "outras informações públicas"? (projetos de pesquisa em andamento, outros interesses)
+// TODO: Implementar KEYWORDS (até 4 palavras-chave)
 model User {
   id                             String            @id @default(uuid())
   name                           String // Nome completo do usuário
@@ -90,11 +92,11 @@ model User {
   membershipStatus               MEMBERSHIP_STATUS @default(PENDING)
   userRole                       USER_ROLE         @default(NORMAL_USER)
   institutionName                String
-  institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
   departmentName                 String?
-  educationLevel                 EDUCATION_LEVEL
+  institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
   occupation                     OCCUPATION
-  publicEmail                    Boolean
+  educationLevel                 EDUCATION_LEVEL
+  publicEmail                    Boolean // Autorização da divulgação do email publicamente no perfil do site
   astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
   interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
   receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
@@ -152,6 +154,7 @@ model IdentityDocument {
 }
 
 // TODO: Constraint entre bolsista e orgao responsavel
+// CHECK: Relação de EnrolledCourse com User apenas pertinente no contexto acadêmico?
 // CHECK: Usuário pode estar matriculado em mais de um curso simultaneamente (1xN)? (implementação atual: 1x1)
 model EnrolledCourse {
   id                     String    @id @default(uuid())
@@ -173,7 +176,7 @@ model AreaOfActivity {
   id           String  @id @default(uuid())
   role         String
   mainActivity String
-  description  String?
+  description  String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
 
   user User[]
 
@@ -213,7 +216,7 @@ model Category {
   Blog         Blog[]
 }
 
-// CHECK: A tabela intermediária seria suficiente pra indicar as subcategorias?
+// NOTE: Tabela intermediária para relacionar blogs e suas respectivas subcategorias
 model BlogCategory {
   blogId     String
   categoryId String
