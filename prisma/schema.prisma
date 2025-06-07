@@ -229,7 +229,6 @@ model BlogCategory {
 model Blog {
   id          String @id @default(uuid())
   pageContent String // Estrutura HTML da página
-  creationDate DateTime @default(now())
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
