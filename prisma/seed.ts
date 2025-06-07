@@ -1,8 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { env } from '../src/env'
-import { addYears, format } from 'date-fns'
-import { DATE_FORMATS } from '../src/constants/dateFormats'
 
 const prisma = new PrismaClient()
 
@@ -54,8 +52,8 @@ async function main() {
       enrolledCourse: {
         create: {
           courseName: 'Introdução à Astrobiologia',
-          startGraduationDate: format(new Date(), DATE_FORMATS.MONTH_YEAR),
-          expectedGraduationDate: format(addYears(new Date(), 4), DATE_FORMATS.MONTH_YEAR),
+          startGraduationDate: new Date(),
+          expectedGraduationDate: new Date(),
           scholarshipHolder: true,
           sponsoringOrganization: 'Universidade Lunar',
           supervisorName: 'Neew Armstrong'
