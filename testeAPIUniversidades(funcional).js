@@ -1,5 +1,5 @@
 async function universidadesAPI() {
-    let resp = await fetch("http://universities.hipolabs.com/search?name=fluminense");
+    let resp = await fetch("http://universities.hipolabs.com/search?name=rio");
     let respJson = await resp.json();
 
     let sugestoes = respJson.map(elem => {
@@ -9,5 +9,4 @@ async function universidadesAPI() {
     console.log(sugestoes);
 }
 
-test()
-
+universidadesAPI()
