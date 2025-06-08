@@ -3,6 +3,7 @@ import { authenticate } from './authenticate'
 import { refreshToken } from './refresh-token'
 import { logout } from './logout'
 import { register } from './register'
+import { authentication } from '@/middlewares/authentication'
 
 export async function userRoutes(app: FastifyInstance) {
   app.post('/users', register)
@@ -11,5 +12,5 @@ export async function userRoutes(app: FastifyInstance) {
 
   app.post('/sessions/refresh-token', refreshToken)
 
-  app.delete('/sessions', logout)
+  app.delete('/sessions', { preHandler: [authentication] }, logout)
 }
