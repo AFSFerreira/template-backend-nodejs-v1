@@ -1,4 +1,4 @@
-import { CATEGORY_TYPE, PrismaClient } from '@prisma/client'
+import { CATEGORY_TYPE, IDENTITY_TYPE, PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { env } from '../src/env'
 
@@ -7,10 +7,11 @@ const prisma = new PrismaClient()
 async function main() {
   // Criação do usuário:
   const activityArea = await prisma.areaOfActivity.upsert({
-    where: { mainActivity: "Professor" },
+    where: { mainAreaActivity: "Professor" },
     update: {},
     create: {
-      mainActivity: "Professor",
+      mainAreaActivity: "Professor",
+      activity: "Professor",
     }
   })
 
@@ -18,7 +19,7 @@ async function main() {
     where: { email: "email@example.com" },
     update: {},
     create: {
-      name: 'Admin',
+      fullName: 'Admin',
       username: 'admin.admin',
       birthDate: new Date(),
       profileImagePath: '/src/uploads/profile-images/default-profile-pic.png',
@@ -42,6 +43,9 @@ async function main() {
       loginAttempts: 0,
       lastLogin: null,
       activityAreaId: activityArea.id,
+      identityType: IDENTITY_TYPE.CPF,
+      identityDocument: "12345678900",
+      publicInformation: "Astrobiólogo"
     },
   })
 
@@ -54,15 +58,6 @@ async function main() {
       cityName: 'Cosmópolis',
       stateName: 'Universo',
       countryName: 'BR',
-      userId: user.id
-    }
-  })
-
-  await prisma.identityDocument.upsert({
-    where: { userId: user.id },
-    update: {},
-    create: {
-      cpf: '12345678900',
       userId: user.id
     }
   })
@@ -83,7 +78,7 @@ async function main() {
   
   await prisma.academicPublications.create({
     data: {
-      author: "Admin",
+      authors: "Admin",
       publicationDate: new Date(),
       title: "A Ascensão da Astrobiologia",
       userId: user.id
