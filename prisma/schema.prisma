@@ -13,39 +13,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id              String    @id @default(uuid())
-  name            String
-  email           String    @unique
-  login_attempts  Int       @default(0)
-  last_login      DateTime?
-  password_digest String
-  role            USER_ROLE @default(NORMAL_USER)
-  created_at      DateTime  @default(now())
-  updated_at      DateTime  @updatedAt
-
-  AuthenticationAudit AuthenticationAudit[]
-
-  @@index([id])
-  @@map("users")
-}
-
 enum USER_ROLE {
   ADMIN
   NORMAL_USER
-}
-
-model AuthenticationAudit {
-  id          Int                   @id @default(autoincrement())
-  ip_address  String?
-  remote_port String?
-  browser     String?
-  status      AUTHENTICATION_STATUS
-  user_id     String?
-  user        User?                 @relation(fields: [user_id], references: [id], onDelete: NoAction)
-  created_at  DateTime              @default(now())
-
-  @@map("authentication_audit")
 }
 
 enum AUTHENTICATION_STATUS {
@@ -54,3 +24,220 @@ enum AUTHENTICATION_STATUS {
   INCORRECT_PASSWORD
   BLOCKED
 }
+
+// CHECK: Revisar as nomenclaturas
+enum OCCUPATION {
+  RESEARCHER
+  PROFESSOR
+  STUDENT
+  POSTGRADUATE
+  MASTER
+  DOCTORATE
+}
+
+// CHECK: Revisar as nomenclaturas
+enum EDUCATION_LEVEL {
+  ELEMENTARY_SCHOOL
+  HIGH_SCHOOL
+  UNDERGRADUATE_STUDENT
+  BACHELOR
+  MASTER_STUDENT
+  MASTER
+  DOCTORATE_STUDENT
+  DOCTORATE
+  POSTDOCTORAL_STUDENT
+  POSTDOCTORATE
+  OTHER
+}
+
+enum MEMBERSHIP_STATUS {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CATEGORY_TYPE {
+  MAIN_CATEGORY
+  SUBCATEGORY
+}
+
+// CHECK: Confirmar este modelo
+enum IDENTITY_TYPE {
+  CPF
+  RNE
+}
+
+model AuthenticationAudit {
+  id         Int                   @id @default(autoincrement())
+  ipAddress  String?
+  remotePort String?
+  browser    String?
+  status     AUTHENTICATION_STATUS
+  createdAt  DateTime              @default(now())
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction)
+
+  @@map("authentication_audit")
+}
+
+// CHECK: Como modelar o campo "outras informações públicas"? (projetos de pesquisa em andamento, outros interesses)
+model User {
+  id                             String            @id @default(uuid())
+  fullName                       String
+  username                       String            @unique
+  birthDate                      DateTime
+  profileImagePath               String
+  lattesCVLink                   String? // Link externo para o currículo lattes do usuário
+  profileGSLink                  String? // Link externo para o perfil do usuário no Google Scholar
+  profileRIDLink                 String? // Link externo para o perfil do usuário no ResearcherID
+  orcidNumber                    String? // Número do ORCID do pesquisador
+  membershipStatus               MEMBERSHIP_STATUS @default(PENDING)
+  userRole                       USER_ROLE         @default(NORMAL_USER)
+  institutionName                String
+  departmentName                 String?
+  institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
+  occupation                     OCCUPATION
+  educationLevel                 EDUCATION_LEVEL
+  identityDocument               String
+  identityType                   IDENTITY_TYPE
+  publicEmail                    Boolean // Autorização da divulgação do email publicamente no perfil do site
+  astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
+  interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
+  receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
+  publicInformation              String // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
+
+  email          String    @unique
+  passwordDigest String
+  loginAttempts  Int       @default(0)
+  lastLogin      DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  activityAreaId String
+  activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  address          Address?          @relation()
+  enrolledCourse   EnrolledCourse?   @relation()
+
+  authenticationAudit  AuthenticationAudit[]  @relation()
+  keywords             Keyword[]              @relation()
+  academicPublications AcademicPublications[] @relation()
+  Blog                 Blog[]                 @relation()
+
+  @@index([id])
+  @@map("users")
+}
+
+// CHECK: Necessário introduzir o código postal?
+model Address {
+  id          String @id @default(uuid())
+  houseNumber String
+  street      String
+  cityName    String
+  stateName   String
+  countryName String
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("address")
+}
+
+// TODO: Constraint entre bolsista e orgao responsavel
+// CHECK: Relação de EnrolledCourse com User apenas pertinente no contexto acadêmico?
+// CHECK: Usuário pode estar matriculado em mais de um curso simultaneamente (1xN)? (implementação atual: 1x1)
+model EnrolledCourse {
+  id                     String    @id @default(uuid())
+  courseName             String?
+  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA
+  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA
+  supervisorName         String?
+  scholarshipHolder      Boolean // O usuário é bolsista?
+  sponsoringOrganization String? // Agência / órgão responsável pela bolsa
+
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("enrolled_course")
+}
+
+// CHECK: Como lidar com o caso "Other"? Área de atividade pendente de aprovação caso seja "Other"?
+model AreaOfActivity {
+  id               String  @id @default(uuid())
+  mainAreaActivity String  @unique // Grande área de atuação será uma lista exibida ainda a determinar
+  activity         String  @unique // Área específica de atuação
+  description      String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
+
+  user User[]
+
+  @@map("area_of_activity")
+}
+
+// CHECK: Publicações acadêmicas sempre terão apenas um ou mais de um autor? O autor é sempre o referenciado pelo userId
+model AcademicPublications {
+  id              String   @id @default(uuid())
+  title           String
+  authors         String // CHECK: Como modelar os autores
+  publicationDate DateTime
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("academic_publications")
+}
+
+model Keyword {
+  id    String @id @default(uuid())
+  value String
+
+  // CHECK: As keywords são únicas para cada usuário ou são uma lista de opções predefinidas? (relação de user pra keyword ou vice versa)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("keyword")
+}
+
+// CHECK: Adicionar campo enum de "category_type"? (main_category, subcategory e etc)
+// CHECK: Podem existir categorias e subcategorias homônimas?
+model Category {
+  id           String        @id @default(uuid())
+  categoryName String        @unique
+  categoryType CATEGORY_TYPE
+
+  blogCategory BlogCategory[]
+  Blog         Blog[]
+}
+
+// NOTE: Tabela intermediária para relacionar blogs e suas respectivas subcategorias
+model BlogCategory {
+  blogId     String
+  categoryId String
+
+  blog     Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@id([blogId, categoryId])
+}
+
+// CHECK: Se um usuário autor de posts tiver a conta removida, o que acontece com o campo de autor?
+model Blog {
+  id          String @id @default(uuid())
+  pageContent String // Estrutura HTML da página
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  mainCategoryId String
+  mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  subcategories BlogCategory[]
+}
+
+// TODO: Campo de outras informações públicas (projetos de pesquisa em andamento, outros interesses) 
+// CHECK: É necessário manter a justificativa para participar da sociedade de astrobio no banco de dados após a aprovação?
+// CHECK: Existe algum campo de gênero?
