@@ -175,7 +175,7 @@ model EnrolledCourse {
 // CHECK: Como lidar com o caso "Other"? Área de atividade pendente de aprovação caso seja "Other"?
 model AreaOfActivity {
   id           String  @id @default(uuid())
-  mainActivity String
+  mainActivity String  @unique // Área de atuação será uma lista exibida ainda a determinar
   description  String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
 
   user User[]
@@ -183,6 +183,7 @@ model AreaOfActivity {
   @@map("area_of_activity")
 }
 
+// CHECK: Publicações acadêmicas sempre terão apenas um ou mais de um autor? O autor é sempre o referenciado pelo userId
 model AcademicPublications {
   id              String   @id @default(uuid())
   title           String
@@ -207,9 +208,10 @@ model Keyword {
 }
 
 // CHECK: Adicionar campo enum de "category_type"? (main_category, subcategory e etc)
+// CHECK: Podem existir categorias e subcategorias homônimas?
 model Category {
   id           String        @id @default(uuid())
-  categoryName String
+  categoryName String        @unique
   categoryType CATEGORY_TYPE
 
   blogCategory BlogCategory[]
@@ -239,10 +241,9 @@ model Blog {
   mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   authorId String
-  author   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  author   User   @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   subcategories BlogCategory[]
-  userId        String
 }
 
 // TODO: Campo de outras informações públicas (projetos de pesquisa em andamento, outros interesses) 
