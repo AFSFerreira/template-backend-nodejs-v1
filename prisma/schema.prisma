@@ -61,6 +61,12 @@ enum CATEGORY_TYPE {
   SUBCATEGORY
 }
 
+// CHECK: Confirmar este modelo
+enum IDENTITY_TYPE {
+  CPF
+  RNE
+}
+
 model AuthenticationAudit {
   id         Int                   @id @default(autoincrement())
   ipAddress  String?
@@ -75,14 +81,11 @@ model AuthenticationAudit {
   @@map("authentication_audit")
 }
 
-// CHECK: Revisar campos opcionais
-// CHECK: As informações sobre instituição podem ser reutilizadas por mais de uma pessoa? (tabela adicional)
 // CHECK: Como modelar o campo "outras informações públicas"? (projetos de pesquisa em andamento, outros interesses)
-// TODO: Implementar KEYWORDS (até 4 palavras-chave)
 model User {
   id                             String            @id @default(uuid())
-  name                           String // Nome completo do usuário
-  username                       String // Nome como quer ser exibido no site
+  fullName                       String
+  username                       String            @unique
   birthDate                      DateTime
   profileImagePath               String
   lattesCVLink                   String? // Link externo para o currículo lattes do usuário
@@ -96,10 +99,13 @@ model User {
   institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
   occupation                     OCCUPATION
   educationLevel                 EDUCATION_LEVEL
+  identityDocument               String
+  identityType                   IDENTITY_TYPE
   publicEmail                    Boolean // Autorização da divulgação do email publicamente no perfil do site
   astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
   interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
   receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
+  publicInformation              String // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
 
   email          String    @unique
   passwordDigest String
@@ -113,7 +119,6 @@ model User {
   activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   address          Address?          @relation()
-  identityDocument IdentityDocument? @relation()
   enrolledCourse   EnrolledCourse?   @relation()
 
   authenticationAudit  AuthenticationAudit[]  @relation()
@@ -140,31 +145,17 @@ model Address {
   @@map("address")
 }
 
-model IdentityDocument {
-  id       String  @id @default(uuid())
-  cpf      String? @unique
-  rne      String? @unique
-  passport String? @unique
-
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  // NOTE: Exclusão mútua entre cpf, rne e passport
-
-  @@map("identity_document")
-}
-
 // TODO: Constraint entre bolsista e orgao responsavel
 // CHECK: Relação de EnrolledCourse com User apenas pertinente no contexto acadêmico?
 // CHECK: Usuário pode estar matriculado em mais de um curso simultaneamente (1xN)? (implementação atual: 1x1)
 model EnrolledCourse {
   id                     String    @id @default(uuid())
   courseName             String?
-  startGraduationDate    DateTime? // Formato: MM/AAAA
-  expectedGraduationDate DateTime? // Formato: MM/AAAA
+  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA
+  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA
   supervisorName         String?
   scholarshipHolder      Boolean // O usuário é bolsista?
-  sponsoringOrganization String? // Agência / órgão responsável pela bolsa 
+  sponsoringOrganization String? // Agência / órgão responsável pela bolsa
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -174,9 +165,10 @@ model EnrolledCourse {
 
 // CHECK: Como lidar com o caso "Other"? Área de atividade pendente de aprovação caso seja "Other"?
 model AreaOfActivity {
-  id           String  @id @default(uuid())
-  mainActivity String  @unique // Área de atuação será uma lista exibida ainda a determinar
-  description  String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
+  id               String  @id @default(uuid())
+  mainAreaActivity String  @unique // Grande área de atuação será uma lista exibida ainda a determinar
+  activity         String  @unique // Área específica de atuação
+  description      String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
 
   user User[]
 
@@ -187,7 +179,7 @@ model AreaOfActivity {
 model AcademicPublications {
   id              String   @id @default(uuid())
   title           String
-  author          String
+  authors         String // CHECK: Como modelar os autores
   publicationDate DateTime
 
   userId String
