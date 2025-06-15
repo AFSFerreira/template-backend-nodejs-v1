@@ -33,7 +33,7 @@ export class PrismaAddressRepository implements AddressRepository {
 
   async findByUserId(id: string) {
     const address = await prisma.address.findUnique({
-        where: { userId: id }
+      where: { userId: id },
     })
     return address
   }
