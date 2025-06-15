@@ -2,6 +2,7 @@
 // import { hash } from 'bcryptjs'
 // import type { User } from '@prisma/client'
 // import { UserWithSameEmailError } from './errors/user-with-same-email-error'
+// import type { AddressRepository } from '@/repositories/address-repository'
 
 // interface RegisterUseCaseRequest {
 //   name: string
@@ -14,7 +15,10 @@
 // }
 
 // export class RegisterUseCase {
-//   constructor(private readonly usersRepository: UsersRepository) {}
+//   constructor(
+//     private readonly usersRepository: UsersRepository,
+//     private readonly addressRepository: AddressRepository
+//   ) {}
 
 //   async execute({
 //     name,
