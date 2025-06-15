@@ -25,7 +25,6 @@ enum AUTHENTICATION_STATUS {
   BLOCKED
 }
 
-// CHECK: Revisar as nomenclaturas
 enum OCCUPATION {
   RESEARCHER
   PROFESSOR
@@ -35,7 +34,6 @@ enum OCCUPATION {
   DOCTORATE
 }
 
-// CHECK: Revisar as nomenclaturas
 enum EDUCATION_LEVEL {
   ELEMENTARY_SCHOOL
   HIGH_SCHOOL
@@ -61,10 +59,10 @@ enum CATEGORY_TYPE {
   SUBCATEGORY
 }
 
-// CHECK: Confirmar este modelo
 enum IDENTITY_TYPE {
   CPF
   RNE
+  PASSPORT
 }
 
 model AuthenticationAudit {
@@ -81,7 +79,6 @@ model AuthenticationAudit {
   @@map("authentication_audit")
 }
 
-// CHECK: Como modelar o campo "outras informações públicas"? (projetos de pesquisa em andamento, outros interesses)
 model User {
   id                             String            @id @default(uuid())
   fullName                       String
@@ -99,13 +96,15 @@ model User {
   institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
   occupation                     OCCUPATION
   educationLevel                 EDUCATION_LEVEL
-  identityDocument               String
   identityType                   IDENTITY_TYPE
+  identityDocument               String
   publicEmail                    Boolean // Autorização da divulgação do email publicamente no perfil do site
   astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
   interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
   receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
   publicInformation              String // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
+  specificActivity               String // Área específica de atuação
+  specificActivityDescription    String? // Descrição opcional da área caso o usuário marque a alternativa "Other"
 
   email          String    @unique
   passwordDigest String
@@ -118,8 +117,8 @@ model User {
   activityAreaId String
   activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  address          Address?          @relation()
-  enrolledCourse   EnrolledCourse?   @relation()
+  address        Address?        @relation()
+  enrolledCourse EnrolledCourse? @relation()
 
   authenticationAudit  AuthenticationAudit[]  @relation()
   keywords             Keyword[]              @relation()
@@ -130,12 +129,12 @@ model User {
   @@map("users")
 }
 
-// CHECK: Necessário introduzir o código postal?
 model Address {
   id          String @id @default(uuid())
   houseNumber String
   street      String
   cityName    String
+  postalCode  String
   stateName   String
   countryName String
 
@@ -146,8 +145,6 @@ model Address {
 }
 
 // TODO: Constraint entre bolsista e orgao responsavel
-// CHECK: Relação de EnrolledCourse com User apenas pertinente no contexto acadêmico?
-// CHECK: Usuário pode estar matriculado em mais de um curso simultaneamente (1xN)? (implementação atual: 1x1)
 model EnrolledCourse {
   id                     String    @id @default(uuid())
   courseName             String?
@@ -163,23 +160,19 @@ model EnrolledCourse {
   @@map("enrolled_course")
 }
 
-// CHECK: Como lidar com o caso "Other"? Área de atividade pendente de aprovação caso seja "Other"?
 model AreaOfActivity {
-  id               String  @id @default(uuid())
-  mainAreaActivity String  @unique // Grande área de atuação será uma lista exibida ainda a determinar
-  activity         String  @unique // Área específica de atuação
-  description      String? // Descrição opcional da área caso o usuário marque a alternativa "Other"?
+  id               String @id @default(uuid())
+  mainAreaActivity String @unique // Grande área de atuação será uma lista exibida ainda a determinar
 
   user User[]
 
   @@map("area_of_activity")
 }
 
-// CHECK: Publicações acadêmicas sempre terão apenas um ou mais de um autor? O autor é sempre o referenciado pelo userId
 model AcademicPublications {
   id              String   @id @default(uuid())
   title           String
-  authors         String // CHECK: Como modelar os autores
+  authors         String
   publicationDate DateTime
 
   userId String
@@ -192,25 +185,21 @@ model Keyword {
   id    String @id @default(uuid())
   value String
 
-  // CHECK: As keywords são únicas para cada usuário ou são uma lista de opções predefinidas? (relação de user pra keyword ou vice versa)
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("keyword")
 }
 
-// CHECK: Adicionar campo enum de "category_type"? (main_category, subcategory e etc)
-// CHECK: Podem existir categorias e subcategorias homônimas?
 model Category {
   id           String        @id @default(uuid())
   categoryName String        @unique
-  categoryType CATEGORY_TYPE
+  categoryType CATEGORY_TYPE @unique
 
   blogCategory BlogCategory[]
   Blog         Blog[]
 }
 
-// NOTE: Tabela intermediária para relacionar blogs e suas respectivas subcategorias
 model BlogCategory {
   blogId     String
   categoryId String
@@ -221,9 +210,9 @@ model BlogCategory {
   @@id([blogId, categoryId])
 }
 
-// CHECK: Se um usuário autor de posts tiver a conta removida, o que acontece com o campo de autor?
 model Blog {
   id          String @id @default(uuid())
+  authorName  String // Para persistir o nome mesmo após a deleção do usuário
   pageContent String // Estrutura HTML da página
 
   createdAt DateTime @default(now())
@@ -237,7 +226,3 @@ model Blog {
 
   subcategories BlogCategory[]
 }
-
-// TODO: Campo de outras informações públicas (projetos de pesquisa em andamento, outros interesses) 
-// CHECK: É necessário manter a justificativa para participar da sociedade de astrobio no banco de dados após a aprovação?
-// CHECK: Existe algum campo de gênero?
