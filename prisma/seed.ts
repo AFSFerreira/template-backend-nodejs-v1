@@ -10,8 +10,7 @@ async function main() {
     where: { mainAreaActivity: "Professor" },
     update: {},
     create: {
-      mainAreaActivity: "Professor",
-      activity: "Professor",
+      mainAreaActivity: "Professor"
     }
   })
 
@@ -45,7 +44,8 @@ async function main() {
       activityAreaId: activityArea.id,
       identityType: IDENTITY_TYPE.CPF,
       identityDocument: "12345678900",
-      publicInformation: "Astrobiólogo"
+      publicInformation: "Astrobiólogo",
+      specificActivity: "Professor Interino"
     },
   })
 
@@ -54,6 +54,7 @@ async function main() {
     update: {},
     create: {
       houseNumber: "111",
+      postalCode: "12345678",
       street: 'Rua das Galáxias',
       cityName: 'Cosmópolis',
       stateName: 'Universo',
@@ -116,6 +117,7 @@ async function main() {
   const blog = await prisma.blog.create({
     data: {
       pageContent: "<h1>Hello World</h1>",
+      authorName: user.fullName,
       authorId: user.id,
       mainCategoryId: mainCategory.id
     }
