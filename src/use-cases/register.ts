@@ -3,13 +3,19 @@ import type { AddressRepository } from '@/repositories/address-repository'
 import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 import type { KeywordRepository } from '@/repositories/keyword-repository'
-import { MEMBERSHIP_STATUS, USER_ROLE, type EDUCATION_LEVEL, type IDENTITY_TYPE, type OCCUPATION, type User } from '@prisma/client'
+import {
+  MEMBERSHIP_STATUS,
+  USER_ROLE,
+  type EDUCATION_LEVEL,
+  type IDENTITY_TYPE,
+  type OCCUPATION,
+  type User,
+} from '@prisma/client'
 import { hash } from 'bcryptjs'
 import type { UsersRepository } from '../repositories/users-repository'
 import { UserWithSameEmailError } from './errors/user-with-same-email-error'
 import { InvalidAreaOfActivity } from './errors/invalid-area-of-activity-error'
 import { env } from '@/env'
-
 
 interface AcademicPublications {
   title: string
@@ -41,7 +47,7 @@ interface RegisterUseCaseRequest {
   publicInformation: string
   specificActivity: string
   specificActivityDescription?: string
-  
+
   keywords: string[]
 
   mainAreaActivity: string
@@ -74,7 +80,7 @@ export class RegisterUseCase {
     private readonly academicPublicationsRepository: AcademicPublicationsRepository,
     private readonly areaOfActivitiesRepository: AreaOfActivityRepository,
     private readonly enrolledCoursesRepository: EnrolledCourseRepository,
-    private readonly keywordsRepository: KeywordRepository
+    private readonly keywordsRepository: KeywordRepository,
   ) {}
 
   async execute({
@@ -115,20 +121,20 @@ export class RegisterUseCase {
     supervisorName,
     scholarshipHolder,
     sponsoringOrganization,
-    academicPublications
+    academicPublications,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const existingUser = await this.usersRepository.findBy({
-      OR: [
-        { email },
-        { username },
-      ],
+      OR: [{ email }, { username }],
     })
 
     if (existingUser !== null) {
       throw new UserWithSameEmailError()
     }
 
-    const areaOfActivity = await this.areaOfActivitiesRepository.findByMainAreaActivity(mainAreaActivity)
+    const areaOfActivity =
+      await this.areaOfActivitiesRepository.findByMainAreaActivity(
+        mainAreaActivity,
+      )
     if (areaOfActivity === null) {
       throw new InvalidAreaOfActivity()
     }
@@ -141,7 +147,7 @@ export class RegisterUseCase {
       fullName,
       username,
       birthDate,
-      profileImagePath: "./src/uploads/profile-images/default-profile-pic.png",
+      profileImagePath: './src/uploads/profile-images/default-profile-pic.png',
       lattesCVLink,
       profileGSLink,
       profileRIDLink,

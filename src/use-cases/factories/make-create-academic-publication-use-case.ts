@@ -2,6 +2,7 @@ import { PrismaAcademicPublicationsRepository } from '@/repositories/prisma/pris
 import { CreateAcademicPublicationUseCase } from '../create-academic-publication'
 
 export function makeCreateAcademicPublicationUseCase() {
-  const academicPublicationsRepository = new PrismaAcademicPublicationsRepository()
+  const academicPublicationsRepository =
+    new PrismaAcademicPublicationsRepository()
   return new CreateAcademicPublicationUseCase(academicPublicationsRepository)
 }

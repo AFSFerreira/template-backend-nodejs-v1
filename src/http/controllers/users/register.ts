@@ -18,7 +18,9 @@ export const registerBodySchema = z.object({
   departmentName: z.string().optional(),
   institutionComplement: z.string().optional(),
   occupation: z.enum(Object.values(OCCUPATION) as [string, ...string[]]),
-  educationLevel: z.enum(Object.values(EDUCATION_LEVEL) as [string, ...string[]]),
+  educationLevel: z.enum(
+    Object.values(EDUCATION_LEVEL) as [string, ...string[]],
+  ),
   identityType: z.enum(Object.values(IDENTITY_TYPE) as [string, ...string[]]),
   identityDocument: z.string(),
   emailIsPublic: z.boolean(),
@@ -61,7 +63,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       ...parsedBody,
       occupation: parsedBody.occupation as OCCUPATION,
       educationLevel: parsedBody.educationLevel as EDUCATION_LEVEL,
-      identityType: parsedBody.identityType as IDENTITY_TYPE
+      identityType: parsedBody.identityType as IDENTITY_TYPE,
     })
 
     return await reply.status(201).send(user)

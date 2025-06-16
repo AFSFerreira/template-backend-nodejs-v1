@@ -16,7 +16,9 @@ interface CreateEnrolledCourseUseCaseResponse {
 }
 
 export class CreateEnrolledCourseUseCase {
-  constructor(private readonly enrolledCourseRepository: EnrolledCourseRepository) {}
+  constructor(
+    private readonly enrolledCourseRepository: EnrolledCourseRepository,
+  ) {}
 
   async execute({
     courseName,

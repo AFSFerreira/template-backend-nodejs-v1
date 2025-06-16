@@ -13,7 +13,9 @@ interface CreateAcademicPublicationUseCaseResponse {
 }
 
 export class CreateAcademicPublicationUseCase {
-  constructor(private readonly academicPublicationsRepository: AcademicPublicationsRepository) {}
+  constructor(
+    private readonly academicPublicationsRepository: AcademicPublicationsRepository,
+  ) {}
 
   async execute({
     title,
@@ -21,12 +23,13 @@ export class CreateAcademicPublicationUseCase {
     publicationDate,
     userId,
   }: CreateAcademicPublicationUseCaseRequest): Promise<CreateAcademicPublicationUseCaseResponse> {
-    const academicPublication = await this.academicPublicationsRepository.create({
-      title,
-      authors,
-      publicationDate,
-      userId,
-    })
+    const academicPublication =
+      await this.academicPublicationsRepository.create({
+        title,
+        authors,
+        publicationDate,
+        userId,
+      })
     return { academicPublication }
   }
 }

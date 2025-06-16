@@ -10,7 +10,9 @@ interface CreateAreaOfActivityUseCaseResponse {
 }
 
 export class CreateAreaOfActivityUseCase {
-  constructor(private readonly areaOfActivityRepository: AreaOfActivityRepository) {}
+  constructor(
+    private readonly areaOfActivityRepository: AreaOfActivityRepository,
+  ) {}
 
   async execute({
     mainAreaActivity,

@@ -17,9 +17,7 @@ interface CreateAddressUseCaseResponse {
 }
 
 export class CreateAddressUseCase {
-  constructor(
-    private readonly addressRepository: AddressRepository
-  ) {}
+  constructor(private readonly addressRepository: AddressRepository) {}
 
   async execute({
     houseNumber,
@@ -30,24 +28,25 @@ export class CreateAddressUseCase {
     countryName,
     userId,
   }: CreateAddressUseCaseRequest): Promise<CreateAddressUseCaseResponse> {
-    const userAlreadyHasAddress = await this.addressRepository.findByUserId(userId)
+    const userAlreadyHasAddress =
+      await this.addressRepository.findByUserId(userId)
 
     if (userAlreadyHasAddress !== null) {
       throw new UserAlreadyHasAddressError()
     }
 
     const address = await this.addressRepository.create({
-        houseNumber,
-        street,
-        cityName,
-        postalCode,
-        stateName,
-        countryName,
-        userId,
+      houseNumber,
+      street,
+      cityName,
+      postalCode,
+      stateName,
+      countryName,
+      userId,
     })
 
     return {
-      address
+      address,
     }
   }
 }
