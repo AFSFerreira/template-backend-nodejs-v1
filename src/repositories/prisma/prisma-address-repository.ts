@@ -17,7 +17,7 @@ export class PrismaAddressRepository implements AddressRepository {
     return address
   }
 
-  async create(data: Prisma.AddressCreateInput) {
+  async create(data: Prisma.AddressUncheckedCreateInput) {
     const address = await prisma.address.create({
       data,
     })

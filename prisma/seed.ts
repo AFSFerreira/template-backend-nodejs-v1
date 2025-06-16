@@ -33,7 +33,7 @@ async function main() {
       institutionComplement: 'Laboratório de Vida Extraterrestre',
       occupation: 'RESEARCHER',
       educationLevel: 'DOCTORATE',
-      publicEmail: true,
+      emailIsPublic: true,
       astrobiologyOrRelatedStartYear: 2010,
       interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
       receiveReports: true,

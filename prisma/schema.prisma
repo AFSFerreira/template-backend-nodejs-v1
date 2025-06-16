@@ -98,7 +98,7 @@ model User {
   educationLevel                 EDUCATION_LEVEL
   identityType                   IDENTITY_TYPE
   identityDocument               String
-  publicEmail                    Boolean // Autorização da divulgação do email publicamente no perfil do site
+  emailIsPublic                  Boolean // Autorização da divulgação do email publicamente no perfil do site
   astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
   interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
   receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.

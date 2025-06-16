@@ -5,7 +5,7 @@ import type { AcademicPublicationsRepository } from '../academic-publications-re
 export class PrismaAcademicPublicationsRepository
   implements AcademicPublicationsRepository
 {
-  async create(data: Prisma.AcademicPublicationsCreateInput) {
+  async create(data: Prisma.AcademicPublicationsUncheckedCreateInput) {
     const academicPublication = await prisma.academicPublications.create({
       data,
     })

@@ -3,7 +3,7 @@ import { prisma } from '../../lib/prisma'
 import type { KeywordRepository } from '../keyword-repository'
 
 export class PrismaKeywordRepository implements KeywordRepository {
-  async create(data: Prisma.KeywordCreateInput) {
+  async create(data: Prisma.KeywordUncheckedCreateInput) {
     const keyword = await prisma.keyword.create({ data })
     return keyword
   }
