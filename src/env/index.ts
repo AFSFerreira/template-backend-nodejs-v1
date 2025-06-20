@@ -2,11 +2,10 @@ import 'dotenv/config'
 import { z } from 'zod'
 
 const envSchema = z.object({
-  NODE_ENV: z
-    .enum(['dev', 'production', 'test'])
-    .default('dev'),
+  NODE_ENV: z.enum(['dev', 'production', 'test']).default('dev'),
   PORT: z.coerce.number().default(3333),
   JWT_SECRET: z.string(),
+  HASH_NUMBER_TIMES: z.coerce.number().min(6).max(12),
   FRONTEND_URL: z.string().default('http://localhost:5173'),
 })
 

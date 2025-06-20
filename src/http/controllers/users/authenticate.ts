@@ -4,18 +4,21 @@ import { env } from '../../../env'
 import { InvalidCredentialsError } from '../../../use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '../../../use-cases/factories/make-authenticate-use-case'
 
+
+
 export async function authenticate(
   request: FastifyRequest,
-  reply: FastifyReply
+  reply: FastifyReply,
 ) {
-  const authenticateBodySchema = z
-    .object({
-      email: z.string().email(),
-      password: z.string().min(6),
-    })
-    .parse(request.body)
+  const authenticateBodySchema = z.object({
+  emailOrUsername: z.union([
+    z.string().email(),
+    z.string().min(4)
+  ]),
+  password: z.string().min(6)
+  })
 
-  const { email, password } = authenticateBodySchema
+  const { emailOrUsername, password } = authenticateBodySchema.parse(request.body)
   const { ip: ipAddress } = request
   const { 'user-agent': browser } = request.headers
   const { remotePort } = request.socket
@@ -26,7 +29,7 @@ export async function authenticate(
     const browserName = Array.isArray(browser) ? browser[0] : browser
 
     const { user } = await authenticateUseCase.execute({
-      email,
+      emailOrUsername,
       password,
       ipAddress,
       browser: browserName,
@@ -39,7 +42,7 @@ export async function authenticate(
         sign: {
           sub: user?.id,
         },
-      }
+      },
     )
 
     const refreshToken = await reply.jwtSign(
@@ -49,7 +52,7 @@ export async function authenticate(
           sub: user?.id,
           expiresIn: '7d',
         },
-      }
+      },
     )
 
     return await reply

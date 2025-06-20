@@ -17,7 +17,8 @@
     "@typescript-eslint/explicit-function-return-type": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/naming-convention": "off",
-    "@typescript-eslint/restrict-plus-operands": "off"
+    "@typescript-eslint/restrict-plus-operands": "off",
+    "semi": ["error", "never"]
   }
 }
 

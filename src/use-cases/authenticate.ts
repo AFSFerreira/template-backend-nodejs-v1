@@ -1,72 +1,70 @@
-import type { User } from '@prisma/client'
-import type { UsersRepository } from '../repositories/users-repository'
-import type { AuthenticationAuditRepository } from '../repositories/authentication-audit-repository'
-import { InvalidCredentialsError } from './errors/invalid-credentials-error'
-import { compare } from 'bcryptjs'
+// import type { User } from '@prisma/client'
+// import type { UsersRepository } from '../repositories/users-repository'
+// import type { AuthenticationAuditRepository } from '../repositories/authentication-audit-repository'
+// // import { InvalidCredentialsError } from './errors/invalid-credentials-error'
+// // import { compare } from 'bcryptjs'
 
-interface AuthenticateUseCaseRequest {
-  email: string
-  password: string
-  ipAddress?: string
-  remotePort?: string
-  browser?: string
-}
+// // interface AuthenticateUseCaseRequest {
+// //   email: string
+// //   password: string
+// //   ipAddress?: string
+// //   remotePort?: string
+// //   browser?: string
+// // }
 
-interface AuthenticateUseCaseResponse {
-  user: User
-}
+// // interface AuthenticateUseCaseResponse {
+// //   user: User
+// // }
 
-export class AuthenticateUseCase {
-  constructor(
-    private readonly usersRepository: UsersRepository,
-    private readonly authenticationAuditRepository: AuthenticationAuditRepository
-  ) {}
-  
-  async execute({
-    email,
-    password,
-    ipAddress,
-    remotePort,
-    browser,
-  }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user = await this.usersRepository.findByEmail(email)
+// export class AuthenticateUseCase {
+//   constructor(
+//     private readonly usersRepository: UsersRepository,
+//     private readonly authenticationAuditRepository: AuthenticationAuditRepository,
+//   ) {}
 
-    const auditAuthenticateObject = {
-      browser: browser ?? null,
-      ip_address: ipAddress ?? null,
-      remote_port: remotePort ?? null,
-      user_id: user?.id ?? null,
-    }
+//   // async execute({
+//   //   email,
+//   //   password,
+//   //   ipAddress,
+//   //   remotePort,
+//   //   browser,
+//   // }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
+//   //   // const user = await this.usersRepository.findByEmail(email)
 
-    if (user == null) {
-      await this.authenticationAuditRepository.create({
-        ...auditAuthenticateObject,
-        status: 'USER_NOT_EXISTS',
-      })
+//   //   // const auditAuthenticateObject = {
+//   //   //   browser: browser ?? null,
+//   //   //   ip_address: ipAddress ?? null,
+//   //   //   remote_port: remotePort ?? null,
+//   //   //   user_id: user?.id ?? null,
+//   //   // }
 
-      throw new InvalidCredentialsError()
-    }
+//   //   // if (user == null) {
+//   //   //   await this.authenticationAuditRepository.create({
+//   //   //     ...auditAuthenticateObject,
+//   //   //     status: 'USER_NOT_EXISTS',
+//   //   //   })
 
-    const doesPasswordMatch = await compare(password, user.password_digest)
+//   //   //   throw new InvalidCredentialsError()
+//   //   // }
 
-    if (!doesPasswordMatch) {
-      await this.authenticationAuditRepository.create({
-        ...auditAuthenticateObject,
-        status: 'INCORRECT_PASSWORD',
-      })
+//   //   // const doesPasswordMatch = await compare(password, user.password_digest)
 
-      throw new InvalidCredentialsError()
-    }
+//   //   // if (!doesPasswordMatch) {
+//   //   //   await this.authenticationAuditRepository.create({
+//   //   //     ...auditAuthenticateObject,
+//   //   //     status: 'INCORRECT_PASSWORD',
+//   //   //   })
 
-    await this.usersRepository.setLastLogin(user.id)
+//   //   //   throw new InvalidCredentialsError()
+//   //   // }
 
-    await this.authenticationAuditRepository.create({
-      ...auditAuthenticateObject,
-      status: 'SUCCESS',
-      user_id: user.id,
-    })
-    return {
-      user,
-    }
-  }
-}
+//   //   // await this.usersRepository.setLastLogin(user.id)
+
+//   //   // await this.authenticationAuditRepository.create({
+//   //   //   ...auditAuthenticateObject,
+//   //   //   status: 'SUCCESS',
+//   //   //   user_id: user.id,
+//   //   // })
+
+//   // }
+// }
