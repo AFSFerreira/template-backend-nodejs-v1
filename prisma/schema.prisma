@@ -144,12 +144,13 @@ model Address {
   @@map("address")
 }
 
+// TODO: Pesquisar sobre formatação de data específica com mês e ano
 // TODO: Constraint entre bolsista e orgao responsavel
 model EnrolledCourse {
   id                     String    @id @default(uuid())
   courseName             String?
-  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA
-  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA
+  startGraduationDate    String? // Formato de retorno: MM/AAAA
+  expectedGraduationDate String? // Formato de retorno: MM/AAAA
   supervisorName         String?
   scholarshipHolder      Boolean // O usuário é bolsista?
   sponsoringOrganization String? // Agência / órgão responsável pela bolsa
@@ -174,6 +175,11 @@ model AcademicPublications {
   title           String
   authors         String
   publicationDate DateTime
+  journalName     String
+  volume          String
+  editionNumber   String
+  pageInterval    String
+  doiLink         String
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -194,7 +200,7 @@ model Keyword {
 model Category {
   id           String        @id @default(uuid())
   categoryName String        @unique
-  categoryType CATEGORY_TYPE @unique
+  categoryType CATEGORY_TYPE
 
   blogCategory BlogCategory[]
   Blog         Blog[]
@@ -210,6 +216,7 @@ model BlogCategory {
   @@id([blogId, categoryId])
 }
 
+// NOTE: Somente administradores podem realizar postagens
 model Blog {
   id          String @id @default(uuid())
   authorName  String // Para persistir o nome mesmo após a deleção do usuário
