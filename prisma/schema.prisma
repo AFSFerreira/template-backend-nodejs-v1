@@ -149,8 +149,8 @@ model Address {
 model EnrolledCourse {
   id                     String    @id @default(uuid())
   courseName             String?
-  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA
-  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA
+  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries futuramente)
+  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries futuramente)
   supervisorName         String?
   scholarshipHolder      Boolean // O usuário é bolsista?
   sponsoringOrganization String? // Agência / órgão responsável pela bolsa

@@ -68,8 +68,8 @@ async function main() {
     update: {},
     create: {
       courseName: 'Introdução à Astrobiologia',
-      startGraduationDate: new Date(),
-      expectedGraduationDate: new Date(),
+      startGraduationDate: new Date(`${"2025-06"}-01T00:00:00Z`),
+      expectedGraduationDate: new Date(`${"2029-06"}-01T00:00:00Z`),
       scholarshipHolder: true,
       sponsoringOrganization: 'Universidade Lunar',
       supervisorName: 'Neew Armstrong',
@@ -82,6 +82,11 @@ async function main() {
       authors: "Admin",
       publicationDate: new Date(),
       title: "A Ascensão da Astrobiologia",
+      doiLink: "https://example.com",
+      editionNumber: "12",
+      journalName: "astrobio",
+      pageInterval: "1-5",
+      volume: "6",
       userId: user.id
     }
   })
