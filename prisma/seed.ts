@@ -56,9 +56,10 @@ async function main() {
       houseNumber: "111",
       postalCode: "12345678",
       street: 'Rua das Galáxias',
-      cityName: 'Cosmópolis',
-      stateName: 'Universo',
-      countryName: 'BR',
+      neighborhood: 'Bairro das Estrelas',
+      city: 'Cosmópolis',
+      state: 'Universo',
+      country: 'BR',
       userId: user.id
     }
   })

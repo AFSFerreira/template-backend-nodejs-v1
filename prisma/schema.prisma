@@ -130,13 +130,14 @@ model User {
 }
 
 model Address {
-  id          String @id @default(uuid())
-  houseNumber String
-  street      String
-  cityName    String
-  postalCode  String
-  stateName   String
-  countryName String
+  id           String @id @default(uuid())
+  houseNumber  String
+  street       String
+  neighborhood String
+  city         String
+  postalCode   String
+  state        String
+  country      String
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -144,13 +145,11 @@ model Address {
   @@map("address")
 }
 
-// TODO: Pesquisar sobre formatação de data específica com mês e ano
-// TODO: Constraint entre bolsista e orgao responsavel
 model EnrolledCourse {
   id                     String    @id @default(uuid())
   courseName             String?
-  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries futuramente)
-  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries futuramente)
+  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
+  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
   supervisorName         String?
   scholarshipHolder      Boolean // O usuário é bolsista?
   sponsoringOrganization String? // Agência / órgão responsável pela bolsa
