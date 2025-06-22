@@ -9,7 +9,11 @@ import { USER_ROLE } from '@prisma/client'
 import { verifyPermissions } from '@/middlewares/verifyPermissions'
 
 export async function userRoutes(app: FastifyInstance) {
-  app.get('/users/export', { preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])] }, exportUserData)
+  app.get(
+    '/users/export',
+    { preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])] },
+    exportUserData,
+  )
 
   app.post('/users', register)
 
