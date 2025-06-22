@@ -140,8 +140,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       .resize({ width: 400, height: 400 }) // 400 x 400px
       .webp({ quality: 70 })
       .toBuffer()
-    }
-    
+  }
+
   try {
     const registerUserCase = makeRegisterUseCase()
 
@@ -156,11 +156,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     })
 
     userId = user.id // Salva o id para eventual rollback
-    
+
     // Persiste a imagem após criar o usuário com sucesso
     if (finalPath !== undefined && compressedBuffer !== undefined)
       await fs.writeFile(finalPath, compressedBuffer)
-    
+
     return await reply.status(201).send(user)
   } catch (error: unknown) {
     // Se a imagem falhar depois do user ser criado, removemos o usuário (rollback manual)
@@ -177,7 +177,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     if (error instanceof UserAlreadyExistsError) {
       return await reply.status(400).send({ message: error.message })
     }
-    
+
     throw error
   }
 }
