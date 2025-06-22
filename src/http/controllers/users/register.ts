@@ -36,9 +36,10 @@ const registerBodySchema = z
     keywords: z.array(z.string()).max(4),
 
     postalCode: z.string(),
-    countryName: z.string(),
-    stateName: z.string(),
-    cityName: z.string(),
+    country: z.string(),
+    state: z.string(),
+    city: z.string(),
+    neighborhood: z.string(),
     street: z.string(),
     houseNumber: z.string(),
 
@@ -60,37 +61,57 @@ const registerBodySchema = z
           title: z.string(),
           authors: z.string(),
           publicationDate: z.coerce.date(),
+          journalName: z.string(),
+          volume: z.string(),
+          editionNumber: z.string(),
+          pageInterval: z.string(),
+          doiLink: z.string(),
         }),
       )
       .max(5),
   })
-  .refine((data) => {
-    // Caso o usuário opte pela área de atuação "outra",
-    // o campo de descrição da área deve ser preenchido e vice-versa
-    if (
-      data.mainAreaActivity === 'OTHER' &&
-      data.specificActivityDescription === null
-    )
-      return false
+  .refine(
+    (data) => {
+      // Caso o usuário opte pela área de atuação "OTHER",
+      // o campo de descrição da área deve ser preenchido e vice-versa
+      if (
+        data.mainAreaActivity === 'OTHER' &&
+        data.specificActivityDescription === undefined
+      )
+        return false
 
-    if (
-      data.mainAreaActivity !== 'OTHER' &&
-      data.specificActivityDescription !== null
-    )
-      return false
+      if (
+        data.mainAreaActivity !== 'OTHER' &&
+        data.specificActivityDescription !== undefined
+      ) {
+        return false
+      }
 
-    return true
-  })
-  .refine((data) => {
-    // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-    if (data.scholarshipHolder && data.sponsoringOrganization === null)
-      return false
+      return true
+    },
+    {
+      message:
+        'If "Other" is selected as the main area of activity, a description must be provided — and must not be provided otherwise.',
+      path: ['specificActivityDescription'],
+    },
+  )
+  .refine(
+    (data) => {
+      // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
+      if (data.scholarshipHolder && data.sponsoringOrganization === undefined)
+        return false
 
-    if (!data.scholarshipHolder && data.sponsoringOrganization !== null)
-      return false
+      if (!data.scholarshipHolder && data.sponsoringOrganization !== undefined)
+        return false
 
-    return true
-  })
+      return true
+    },
+    {
+      message:
+        'If you are a scholarship holder, you must provide a sponsoring organization — and must leave it blank if you are not.',
+      path: ['sponsoringOrganization'],
+    },
+  )
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const parsedBody = registerBodySchema.parse(request.body)
@@ -106,11 +127,11 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     })
 
     return await reply.status(201).send(user)
-  } catch (err: unknown) {
-    if (err instanceof UserAlreadyExistsError) {
-      return await reply.status(400).send({ message: err.message })
+  } catch (error: unknown) {
+    if (error instanceof UserAlreadyExistsError) {
+      return await reply.status(400).send({ message: error.message })
     }
 
-    throw err
+    throw error
   }
 }

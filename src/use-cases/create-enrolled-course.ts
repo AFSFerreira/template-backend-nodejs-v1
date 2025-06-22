@@ -38,6 +38,7 @@ export class CreateEnrolledCourseUseCase {
       sponsoringOrganization,
       userId,
     })
+
     return { enrolledCourse }
   }
 }

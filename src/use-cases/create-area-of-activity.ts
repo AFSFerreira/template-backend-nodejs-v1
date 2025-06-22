@@ -20,6 +20,7 @@ export class CreateAreaOfActivityUseCase {
     const areaOfActivity = await this.areaOfActivityRepository.create({
       mainAreaActivity,
     })
+
     return { areaOfActivity }
   }
 }

@@ -1,3 +1,4 @@
+import { env } from '@/env'
 import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 import type { AddressRepository } from '@/repositories/address-repository'
 import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
@@ -13,14 +14,18 @@ import {
 } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import type { UsersRepository } from '../repositories/users-repository'
-import { UserWithSameEmailError } from './errors/user-with-same-email-error'
-import { InvalidAreaOfActivity } from './errors/invalid-area-of-activity-error'
-import { env } from '@/env'
+import { InvalidMainAreaOfActivity } from './errors/invalid-main-area-of-activity-error'
+import { UserWithSameEmailOrUsernameError } from './errors/user-with-same-email-error'
 
 interface AcademicPublications {
   title: string
   authors: string
   publicationDate: Date
+  journalName: string
+  volume: string
+  editionNumber: string
+  pageInterval: string
+  doiLink: string
 }
 
 interface RegisterUseCaseRequest {
@@ -45,19 +50,19 @@ interface RegisterUseCaseRequest {
   interestDescription: string
   receiveReports: boolean
   publicInformation: string
+  mainAreaActivity: string
   specificActivity: string
   specificActivityDescription?: string
 
   keywords: string[]
 
-  mainAreaActivity: string
-
-  houseNumber: string
-  street: string
-  cityName: string
   postalCode: string
-  stateName: string
-  countryName: string
+  country: string
+  state: string
+  city: string
+  neighborhood: string
+  street: string
+  houseNumber: string
 
   courseName?: string
   startGraduationDate?: Date
@@ -105,16 +110,17 @@ export class RegisterUseCase {
     interestDescription,
     receiveReports,
     publicInformation,
+    mainAreaActivity,
     specificActivity,
     specificActivityDescription,
     keywords,
-    mainAreaActivity,
     houseNumber,
     street,
-    cityName,
+    neighborhood,
+    city,
     postalCode,
-    stateName,
-    countryName,
+    state,
+    country,
     courseName,
     startGraduationDate,
     expectedGraduationDate,
@@ -128,15 +134,16 @@ export class RegisterUseCase {
     })
 
     if (existingUser !== null) {
-      throw new UserWithSameEmailError()
+      throw new UserWithSameEmailOrUsernameError()
     }
 
-    const areaOfActivity =
+    const mainAreaOfActivity =
       await this.areaOfActivitiesRepository.findByMainAreaActivity(
         mainAreaActivity,
       )
-    if (areaOfActivity === null) {
-      throw new InvalidAreaOfActivity()
+
+    if (mainAreaOfActivity === null) {
+      throw new InvalidMainAreaOfActivity()
     }
 
     const passwordDigest = await hash(password, env.HASH_NUMBER_TIMES)
@@ -168,16 +175,17 @@ export class RegisterUseCase {
       publicInformation,
       specificActivity,
       specificActivityDescription,
-      activityAreaId: areaOfActivity.id,
+      activityAreaId: mainAreaOfActivity.id,
     })
 
     await this.addressRepository.create({
+      postalCode,
       houseNumber,
       street,
-      cityName,
-      postalCode,
-      stateName,
-      countryName,
+      neighborhood,
+      city,
+      state,
+      country,
       userId: user.id,
     })
 
@@ -193,16 +201,14 @@ export class RegisterUseCase {
 
     for (const pub of academicPublications) {
       await this.academicPublicationsRepository.create({
-        title: pub.title,
-        authors: pub.authors,
-        publicationDate: pub.publicationDate,
+        ...pub,
         userId: user.id,
       })
     }
 
-    for (const value of keywords) {
+    for (const keyword of keywords) {
       await this.keywordsRepository.create({
-        value,
+        value: keyword,
         userId: user.id,
       })
     }

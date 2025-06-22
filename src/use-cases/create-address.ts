@@ -3,12 +3,13 @@ import type { Address } from '@prisma/client'
 import { UserAlreadyHasAddressError } from './errors/user-already-has-address-error'
 
 interface CreateAddressUseCaseRequest {
-  houseNumber: string
-  street: string
-  cityName: string
   postalCode: string
-  stateName: string
-  countryName: string
+  country: string
+  state: string
+  city: string
+  neighborhood: string
+  street: string
+  houseNumber: string
   userId: string
 }
 
@@ -20,12 +21,13 @@ export class CreateAddressUseCase {
   constructor(private readonly addressRepository: AddressRepository) {}
 
   async execute({
-    houseNumber,
-    street,
-    cityName,
     postalCode,
-    stateName,
-    countryName,
+    country,
+    state,
+    city,
+    neighborhood,
+    street,
+    houseNumber,
     userId,
   }: CreateAddressUseCaseRequest): Promise<CreateAddressUseCaseResponse> {
     const userAlreadyHasAddress =
@@ -36,17 +38,16 @@ export class CreateAddressUseCase {
     }
 
     const address = await this.addressRepository.create({
-      houseNumber,
-      street,
-      cityName,
       postalCode,
-      stateName,
-      countryName,
+      country,
+      state,
+      city,
+      neighborhood,
+      street,
+      houseNumber,
       userId,
     })
 
-    return {
-      address,
-    }
+    return { address }
   }
 }

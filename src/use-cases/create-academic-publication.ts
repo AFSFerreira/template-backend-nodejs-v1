@@ -6,6 +6,11 @@ interface CreateAcademicPublicationUseCaseRequest {
   authors: string
   publicationDate: Date
   userId: string
+  journalName: string
+  volume: string
+  editionNumber: string
+  pageInterval: string
+  doiLink: string
 }
 
 interface CreateAcademicPublicationUseCaseResponse {
@@ -21,6 +26,11 @@ export class CreateAcademicPublicationUseCase {
     title,
     authors,
     publicationDate,
+    journalName,
+    volume,
+    editionNumber,
+    pageInterval,
+    doiLink,
     userId,
   }: CreateAcademicPublicationUseCaseRequest): Promise<CreateAcademicPublicationUseCaseResponse> {
     const academicPublication =
@@ -28,8 +38,14 @@ export class CreateAcademicPublicationUseCase {
         title,
         authors,
         publicationDate,
+        journalName,
+        volume,
+        editionNumber,
+        pageInterval,
+        doiLink,
         userId,
       })
+
     return { academicPublication }
   }
 }

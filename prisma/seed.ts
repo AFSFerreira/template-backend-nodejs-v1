@@ -7,10 +7,10 @@ const prisma = new PrismaClient()
 async function main() {
   // Criação do usuário:
   const activityArea = await prisma.areaOfActivity.upsert({
-    where: { mainAreaActivity: "Professor" },
+    where: { mainAreaActivity: "PROFESSOR" },
     update: {},
     create: {
-      mainAreaActivity: "Professor"
+      mainAreaActivity: "PROFESSOR"
     }
   })
 

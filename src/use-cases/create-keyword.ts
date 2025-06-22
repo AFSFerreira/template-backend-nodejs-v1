@@ -21,6 +21,7 @@ export class CreateKeywordUseCase {
       value,
       userId,
     })
+
     return { keyword }
   }
 }
