@@ -92,6 +92,19 @@ async function main() {
     }
   })
 
+  const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
+
+  const keywordsPromises = userKeywords.map(async keyword => {
+    return await prisma.keyword.create({
+      data: {
+        value: keyword,
+        userId: user.id
+      }
+    })
+  })
+
+  await Promise.all(keywordsPromises)
+
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({
     where: { categoryName: "Astrobiologia" },
