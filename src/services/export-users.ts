@@ -3,7 +3,6 @@ import { flattenUser } from '@/utils/flatten-user'
 import { toCsv } from '@/utils/csv'
 import type { CompleteUserInformation } from '@/types/complete-user-information'
 
-
 export async function exportUsersAsCsv(): Promise<string> {
   const users: CompleteUserInformation[] = await prisma.user.findMany({
     include: {
