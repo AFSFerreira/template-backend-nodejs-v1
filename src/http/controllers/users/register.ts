@@ -38,7 +38,7 @@ const registerBodySchema = z
     mainAreaActivity: z.string(),
     specificActivity: z.string(),
     specificActivityDescription: z.string().optional(),
-    // keywords: z.array(z.string()).max(4),
+    keywords: z.array(z.string()).max(4),
 
     postalCode: z.string(),
     country: z.string(),
@@ -60,20 +60,20 @@ const registerBodySchema = z
     supervisorName: z.string().optional(),
     scholarshipHolder: z.coerce.boolean(),
     sponsoringOrganization: z.string().optional(),
-    // academicPublications: z
-    //   .array(
-    //     z.object({
-    //       title: z.string(),
-    //       authors: z.string(),
-    //       publicationDate: z.coerce.date(),
-    //       journalName: z.string(),
-    //       volume: z.string(),
-    //       editionNumber: z.string(),
-    //       pageInterval: z.string(),
-    //       doiLink: z.string(),
-    //     }),
-    //   )
-    //   .max(5),
+    academicPublications: z
+      .array(
+        z.object({
+          title: z.string(),
+          authors: z.string(),
+          publicationDate: z.coerce.date(),
+          journalName: z.string(),
+          volume: z.string(),
+          editionNumber: z.string(),
+          pageInterval: z.string(),
+          doiLink: z.string(),
+        }),
+      )
+      .max(5),
   })
   .refine(
     (data) => {
@@ -147,8 +147,6 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     const { user } = await registerUserCase.execute({
       ...parsedBody,
-      academicPublications: [],
-      keywords: [],
       profileImagePath: finalPath,
       occupation: parsedBody.occupation as OCCUPATION,
       educationLevel: parsedBody.educationLevel as EDUCATION_LEVEL,
