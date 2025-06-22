@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/make-register-use-case'
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
-import { YEAR_MONTH_REGEX } from '@/utils/regex'
+import { YEAR_MONTH_REGEX } from '@/constants/regex'
 
 const registerBodySchema = z
   .object({
