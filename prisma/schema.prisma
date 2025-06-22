@@ -99,7 +99,7 @@ model User {
   identityType                   IDENTITY_TYPE
   identityDocument               String
   emailIsPublic                  Boolean // Autorização da divulgação do email publicamente no perfil do site
-  astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
+  astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata (mantido como Int para eventuais queries de comparação) 
   interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
   receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
   publicInformation              String // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
