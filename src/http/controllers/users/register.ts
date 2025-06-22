@@ -1,4 +1,5 @@
 import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import { prisma } from '@/lib/prisma'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/make-register-use-case'
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
@@ -122,7 +123,9 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   const imageBuffer = (request as any).file?.buffer
 
-  let finalPath
+  let finalPath: string | undefined
+  let compressedBuffer: Buffer | undefined
+  let userId: string | undefined
 
   if (imageBuffer !== undefined) {
     const fileNameHash = crypto.randomBytes(10).toString('hex')
@@ -133,14 +136,12 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     finalPath = path.join(uploadsDir, finalName)
 
-    const compressedBuffer = await sharp(imageBuffer as Buffer)
+    compressedBuffer = await sharp(imageBuffer as Buffer)
       .resize({ width: 400, height: 400 }) // 400 x 400px
       .webp({ quality: 70 })
       .toBuffer()
-
-    await fs.writeFile(finalPath, compressedBuffer)
-  }
-
+    }
+    
   try {
     const registerUserCase = makeRegisterUseCase()
 
@@ -154,12 +155,29 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       identityType: parsedBody.identityType as IDENTITY_TYPE,
     })
 
+    userId = user.id // Salva o id para eventual rollback
+    
+    // Persiste a imagem após criar o usuário com sucesso
+    if (finalPath !== undefined && compressedBuffer !== undefined)
+      await fs.writeFile(finalPath, compressedBuffer)
+    
     return await reply.status(201).send(user)
   } catch (error: unknown) {
+    // Se a imagem falhar depois do user ser criado, removemos o usuário (rollback manual)
+    if (userId !== undefined) {
+      try {
+        // HACK: Utilizando a instância do prisma diretamente para realizar a deleção,
+        // substituir para o caso de uso de deleção aqui posteriormente quando estiver concluido
+        await prisma.user.delete({ where: { id: userId } })
+      } catch (deleteError) {
+        throw new Error('Failed to save user profile picture.')
+      }
+    }
+
     if (error instanceof UserAlreadyExistsError) {
       return await reply.status(400).send({ message: error.message })
     }
-
+    
     throw error
   }
 }
