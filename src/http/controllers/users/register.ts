@@ -128,12 +128,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     const fileNameHash = crypto.randomBytes(10).toString('hex')
     const timestamp = Date.now()
     const finalName = `${fileNameHash}-${timestamp}.webp`
-    
-    const uploadsDir = path.resolve(
-      process.cwd(),
-      'uploads',
-      'profile-images'
-    )
+
+    const uploadsDir = path.resolve(process.cwd(), 'uploads', 'profile-images')
 
     finalPath = path.join(uploadsDir, finalName)
 
