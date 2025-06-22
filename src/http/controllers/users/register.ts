@@ -1,13 +1,13 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
-import path from 'path'
-import crypto from 'crypto'
-import fs from 'fs/promises'
+import { YEAR_MONTH_REGEX } from '@/constants/regex'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/make-register-use-case'
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
-import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import crypto from 'crypto'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import fs from 'fs/promises'
+import path from 'path'
 import sharp from 'sharp'
+import { z } from 'zod'
 
 const registerBodySchema = z
   .object({
@@ -37,7 +37,7 @@ const registerBodySchema = z
     mainAreaActivity: z.string(),
     specificActivity: z.string(),
     specificActivityDescription: z.string().optional(),
-    keywords: z.array(z.string()).max(4),
+    // keywords: z.array(z.string()).max(4),
 
     postalCode: z.string(),
     country: z.string(),
@@ -59,20 +59,20 @@ const registerBodySchema = z
     supervisorName: z.string().optional(),
     scholarshipHolder: z.coerce.boolean(),
     sponsoringOrganization: z.string().optional(),
-    academicPublications: z
-      .array(
-        z.object({
-          title: z.string(),
-          authors: z.string(),
-          publicationDate: z.coerce.date(),
-          journalName: z.string(),
-          volume: z.string(),
-          editionNumber: z.string(),
-          pageInterval: z.string(),
-          doiLink: z.string(),
-        }),
-      )
-      .max(5),
+    // academicPublications: z
+    //   .array(
+    //     z.object({
+    //       title: z.string(),
+    //       authors: z.string(),
+    //       publicationDate: z.coerce.date(),
+    //       journalName: z.string(),
+    //       volume: z.string(),
+    //       editionNumber: z.string(),
+    //       pageInterval: z.string(),
+    //       doiLink: z.string(),
+    //     }),
+    //   )
+    //   .max(5),
   })
   .refine(
     (data) => {
@@ -128,10 +128,17 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     const fileNameHash = crypto.randomBytes(10).toString('hex')
     const timestamp = Date.now()
     const finalName = `${fileNameHash}-${timestamp}.webp`
-    finalPath = path.resolve(__dirname, '..', '..', 'uploads', 'profile-images', finalName)
+    
+    const uploadsDir = path.resolve(
+      process.cwd(),
+      'uploads',
+      'profile-images'
+    )
+
+    finalPath = path.join(uploadsDir, finalName)
 
     const compressedBuffer = await sharp(imageBuffer as Buffer)
-      .resize({ width: 400, height: 400 }) // redimensiona a imagem para 400x400px
+      .resize({ width: 400, height: 400 }) // 400 x 400px
       .webp({ quality: 70 })
       .toBuffer()
 
@@ -143,6 +150,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     const { user } = await registerUserCase.execute({
       ...parsedBody,
+      academicPublications: [],
+      keywords: [],
       profileImagePath: finalPath,
       occupation: parsedBody.occupation as OCCUPATION,
       educationLevel: parsedBody.educationLevel as EDUCATION_LEVEL,
