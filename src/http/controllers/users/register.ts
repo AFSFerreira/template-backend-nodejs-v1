@@ -1,9 +1,13 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
+import path from 'path'
+import crypto from 'crypto'
+import fs from 'fs/promises'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/make-register-use-case'
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
 import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import sharp from 'sharp'
 
 const registerBodySchema = z
   .object({
@@ -116,12 +120,30 @@ const registerBodySchema = z
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const parsedBody = registerBodySchema.parse(request.body)
 
+  const imageBuffer = (request as any).file?.buffer
+
+  let finalPath
+
+  if (imageBuffer !== undefined) {
+    const fileNameHash = crypto.randomBytes(10).toString('hex')
+    const timestamp = Date.now()
+    const finalName = `${fileNameHash}-${timestamp}.webp`
+    finalPath = path.resolve(__dirname, '..', '..', 'uploads', 'profile-images', finalName)
+
+    const compressedBuffer = await sharp(imageBuffer as Buffer)
+      .resize({ width: 400, height: 400 }) // redimensiona a imagem para 400x400px
+      .webp({ quality: 70 })
+      .toBuffer()
+
+    await fs.writeFile(finalPath, compressedBuffer)
+  }
+
   try {
     const registerUserCase = makeRegisterUseCase()
 
     const { user } = await registerUserCase.execute({
       ...parsedBody,
-      profileImagePath: (request as any).file?.path,
+      profileImagePath: finalPath,
       occupation: parsedBody.occupation as OCCUPATION,
       educationLevel: parsedBody.educationLevel as EDUCATION_LEVEL,
       identityType: parsedBody.identityType as IDENTITY_TYPE,
