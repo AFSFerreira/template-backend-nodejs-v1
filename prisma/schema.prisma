@@ -98,7 +98,7 @@ model User {
   educationLevel                 EDUCATION_LEVEL
   identityType                   IDENTITY_TYPE
   identityDocument               String
-  publicEmail                    Boolean // Autorização da divulgação do email publicamente no perfil do site
+  emailIsPublic                  Boolean // Autorização da divulgação do email publicamente no perfil do site
   astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata 
   interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
   receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
@@ -130,13 +130,14 @@ model User {
 }
 
 model Address {
-  id          String @id @default(uuid())
-  houseNumber String
-  street      String
-  cityName    String
-  postalCode  String
-  stateName   String
-  countryName String
+  id           String @id @default(uuid())
+  houseNumber  String
+  street       String
+  neighborhood String
+  city         String
+  postalCode   String
+  state        String
+  country      String
 
   userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -144,12 +145,11 @@ model Address {
   @@map("address")
 }
 
-// TODO: Constraint entre bolsista e orgao responsavel
 model EnrolledCourse {
   id                     String    @id @default(uuid())
   courseName             String?
-  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA
-  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA
+  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
+  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
   supervisorName         String?
   scholarshipHolder      Boolean // O usuário é bolsista?
   sponsoringOrganization String? // Agência / órgão responsável pela bolsa
@@ -174,6 +174,11 @@ model AcademicPublications {
   title           String
   authors         String
   publicationDate DateTime
+  journalName     String
+  volume          String
+  editionNumber   String
+  pageInterval    String
+  doiLink         String
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -194,7 +199,7 @@ model Keyword {
 model Category {
   id           String        @id @default(uuid())
   categoryName String        @unique
-  categoryType CATEGORY_TYPE @unique
+  categoryType CATEGORY_TYPE
 
   blogCategory BlogCategory[]
   Blog         Blog[]
@@ -210,6 +215,7 @@ model BlogCategory {
   @@id([blogId, categoryId])
 }
 
+// NOTE: Somente administradores podem realizar postagens
 model Blog {
   id          String @id @default(uuid())
   authorName  String // Para persistir o nome mesmo após a deleção do usuário

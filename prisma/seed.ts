@@ -7,10 +7,10 @@ const prisma = new PrismaClient()
 async function main() {
   // Criação do usuário:
   const activityArea = await prisma.areaOfActivity.upsert({
-    where: { mainAreaActivity: "Professor" },
+    where: { mainAreaActivity: "PROFESSOR" },
     update: {},
     create: {
-      mainAreaActivity: "Professor"
+      mainAreaActivity: "PROFESSOR"
     }
   })
 
@@ -33,7 +33,7 @@ async function main() {
       institutionComplement: 'Laboratório de Vida Extraterrestre',
       occupation: 'RESEARCHER',
       educationLevel: 'DOCTORATE',
-      publicEmail: true,
+      emailIsPublic: true,
       astrobiologyOrRelatedStartYear: 2010,
       interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
       receiveReports: true,
@@ -56,9 +56,10 @@ async function main() {
       houseNumber: "111",
       postalCode: "12345678",
       street: 'Rua das Galáxias',
-      cityName: 'Cosmópolis',
-      stateName: 'Universo',
-      countryName: 'BR',
+      neighborhood: 'Bairro das Estrelas',
+      city: 'Cosmópolis',
+      state: 'Universo',
+      country: 'BR',
       userId: user.id
     }
   })
@@ -68,8 +69,8 @@ async function main() {
     update: {},
     create: {
       courseName: 'Introdução à Astrobiologia',
-      startGraduationDate: new Date(),
-      expectedGraduationDate: new Date(),
+      startGraduationDate: new Date(`${"2025-06"}-01T00:00:00Z`),
+      expectedGraduationDate: new Date(`${"2029-06"}-01T00:00:00Z`),
       scholarshipHolder: true,
       sponsoringOrganization: 'Universidade Lunar',
       supervisorName: 'Neew Armstrong',
@@ -82,9 +83,27 @@ async function main() {
       authors: "Admin",
       publicationDate: new Date(),
       title: "A Ascensão da Astrobiologia",
+      doiLink: "https://example.com",
+      editionNumber: "12",
+      journalName: "astrobio",
+      pageInterval: "1-5",
+      volume: "6",
       userId: user.id
     }
   })
+
+  const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
+
+  const keywordsPromises = userKeywords.map(async keyword => {
+    return await prisma.keyword.create({
+      data: {
+        value: keyword,
+        userId: user.id
+      }
+    })
+  })
+
+  await Promise.all(keywordsPromises)
 
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({

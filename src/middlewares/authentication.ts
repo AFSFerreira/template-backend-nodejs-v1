@@ -2,6 +2,7 @@ import { verify } from 'jsonwebtoken'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '../env'
 import { PrismaUsersRepository } from '../repositories/prisma/prisma-users-repository'
+import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'
 
 interface IPayload {
   sub: string
@@ -19,18 +20,18 @@ export async function authentication(
 
     const [, token] = headerAuthorization.split(' ')
 
-    const { sub: user_id } = verify(token, env.JWT_SECRET) as IPayload
+    const { sub: userId } = verify(token, env.JWT_SECRET) as IPayload
 
     const usersRepository = new PrismaUsersRepository()
 
-    const user = await usersRepository.findbyId(user_id)
+    const user = await usersRepository.findById(userId)
 
     if (user === null) {
-      throw new Error()
+      throw new UserNotFoundError()
     }
 
-    request.userId = user_id
-  } catch (err) {
+    request.userId = userId
+  } catch (error) {
     return await reply.status(401).send({ message: 'Usuário não autenticado.' })
   }
 }

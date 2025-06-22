@@ -1,7 +1,5 @@
-import { UserAlreadyExistsError } from './user-already-exists-error'
-
-export class UserWithSameEmailError extends UserAlreadyExistsError {
+export class UserWithSameEmailOrUsernameError extends Error {
   constructor() {
-    super('There is already an user with the same email.')
+    super('There is already an user with the same email or username.')
   }
 }
