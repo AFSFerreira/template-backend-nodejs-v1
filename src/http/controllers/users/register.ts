@@ -1,4 +1,4 @@
-import { type FastifyReply, type FastifyRequest } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/make-register-use-case'
@@ -25,10 +25,10 @@ const registerBodySchema = z
     ),
     identityType: z.enum(Object.values(IDENTITY_TYPE) as [string, ...string[]]),
     identityDocument: z.string(),
-    emailIsPublic: z.boolean(),
-    astrobiologyOrRelatedStartYear: z.number(),
+    emailIsPublic: z.coerce.boolean(),
+    astrobiologyOrRelatedStartYear: z.coerce.number(),
     interestDescription: z.string().max(2000),
-    receiveReports: z.boolean(),
+    receiveReports: z.coerce.boolean(),
     publicInformation: z.string(),
     mainAreaActivity: z.string(),
     specificActivity: z.string(),
@@ -53,7 +53,7 @@ const registerBodySchema = z
       .regex(YEAR_MONTH_REGEX, 'Date must be in format YYYY-MM')
       .transform((str) => new Date(`${str}-01T00:00:00Z`)),
     supervisorName: z.string().optional(),
-    scholarshipHolder: z.boolean(),
+    scholarshipHolder: z.coerce.boolean(),
     sponsoringOrganization: z.string().optional(),
     academicPublications: z
       .array(
@@ -121,6 +121,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     const { user } = await registerUserCase.execute({
       ...parsedBody,
+      profileImagePath: (request as any).file?.path,
       occupation: parsedBody.occupation as OCCUPATION,
       educationLevel: parsedBody.educationLevel as EDUCATION_LEVEL,
       identityType: parsedBody.identityType as IDENTITY_TYPE,
