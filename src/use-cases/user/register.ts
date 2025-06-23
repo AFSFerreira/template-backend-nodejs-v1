@@ -13,9 +13,9 @@ import {
   type User,
 } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import type { UsersRepository } from '../repositories/users-repository'
-import { InvalidMainAreaOfActivity } from './errors/invalid-main-area-of-activity-error'
-import { UserWithSameEmailOrUsernameError } from './errors/user-with-same-email-error'
+import type { UsersRepository } from '../../repositories/users-repository'
+import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
+import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 
 interface AcademicPublications {
   title: string
