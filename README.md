@@ -1,6 +1,11 @@
 # ![4797b663cfb501a9d4dddd726180bf7502b7bd95](https://github.com/user-attachments/assets/0d2c5e73-0d05-4b60-9cb8-37bc89f4b768)
 
-## Como executar o servidor em sua máquina?
+## Sobre o Projeto
+
+Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto consiste na reconstrução da plataforma já existente. A plataforma possui postagens de blogs, materiais de ensino/aprendizagem, informações internas, entre outros. A plataforma pretende ser uma fonte de aprendizado ao mesmo tempo que é uma porta de entrada para conhecer a sociedade.
+
+
+## Como Executar o Servidor em sua Máquina?
 
 1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
 2. Clone este repositório com o comando: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend`.
