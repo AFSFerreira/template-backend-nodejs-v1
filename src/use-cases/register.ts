@@ -33,6 +33,7 @@ interface RegisterUseCaseRequest {
   password: string
   fullName: string
   username: string
+  profileImagePath?: string
   birthDate: Date
   lattesCVLink?: string
   profileGSLink?: string
@@ -92,6 +93,7 @@ export class RegisterUseCase {
     email,
     password,
     fullName,
+    profileImagePath,
     username,
     birthDate,
     lattesCVLink,
@@ -146,7 +148,10 @@ export class RegisterUseCase {
       throw new InvalidMainAreaOfActivity()
     }
 
-    const passwordDigest = await hash(password, env.HASH_NUMBER_TIMES)
+    const passwordDigest = await hash(
+      password,
+      env.USER_PASSWORD_HASH_NUMBER_TIMES,
+    )
 
     const user = await this.usersRepository.create({
       email,
@@ -154,7 +159,9 @@ export class RegisterUseCase {
       fullName,
       username,
       birthDate,
-      profileImagePath: './src/uploads/profile-images/default-profile-pic.png',
+      profileImagePath:
+        profileImagePath ??
+        './src/uploads/profile-images/default-profile-pic.png',
       lattesCVLink,
       profileGSLink,
       profileRIDLink,

@@ -7,6 +7,7 @@ import { authentication } from '@/middlewares/authentication'
 import { exportUserData } from './export-user-data'
 import { USER_ROLE } from '@prisma/client'
 import { verifyPermissions } from '@/middlewares/verifyPermissions'
+import { upload } from '@/lib/multer'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
@@ -15,7 +16,7 @@ export async function userRoutes(app: FastifyInstance) {
     exportUserData,
   )
 
-  app.post('/users', register)
+  app.post('/users', { preHandler: [upload.single('profileImage')] }, register)
 
   app.post('/sessions', authenticate)
 

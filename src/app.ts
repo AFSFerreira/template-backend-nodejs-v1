@@ -4,16 +4,18 @@ import { env } from './env'
 import { ZodError } from 'zod'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
+import multipart from '@fastify/multipart'
 import { userRoutes } from './http/controllers/users/routes'
 
 export const app = fastify()
+
+app.register(fastifyCookie)
+app.register(multipart)
 
 app.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
 })
-
-app.register(fastifyCookie)
 
 app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
