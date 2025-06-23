@@ -55,5 +55,4 @@ sudo apt-get update
 7. Inicialize os contêiners do Docker executando o comando `sudo docker compose up -d` no terminal.
 8. (Opcional) Execute `npx prisma migrate dev` para aplicar as migrações se desejar preservar dados existentes.
 9. Execute `npx prisma migrate reset` para resetar o banco e popular com dados de teste definidos em `prisma/seed.ts`.
-9. Rode o projeto com o comando: `npm run start:dev`.
-10. Seja feliz :)
+10. Rode o projeto com o comando: `npm run start:dev`.
