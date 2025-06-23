@@ -1,6 +1,6 @@
 import type { AddressRepository } from '@/repositories/address-repository'
 import type { Address } from '@prisma/client'
-import { UserAlreadyHasAddressError } from './errors/user-already-has-address-error'
+import { UserAlreadyHasAddressError } from '../errors/user-already-has-address-error'
 
 interface CreateAddressUseCaseRequest {
   postalCode: string
