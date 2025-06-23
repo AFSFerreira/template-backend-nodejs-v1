@@ -137,7 +137,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     finalPath = path.join(uploadsDir, finalName)
 
     compressedBuffer = await sharp(imageBuffer as Buffer)
-      .resize({ width: 400, height: 400 }) // 400 x 400px
+      .resize({ width: 192, height: 192 }) // 192 x 192px
       .webp({ quality: 70 })
       .toBuffer()
   }
