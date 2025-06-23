@@ -10,7 +10,6 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 - [x] Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
 - [ ] Rota para Recuperação de Dados do Usuário
 
-
 ## Como Executar o Servidor
 1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
 2. Clone este repositório com o comando: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend`.
