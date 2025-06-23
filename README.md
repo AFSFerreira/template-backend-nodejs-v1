@@ -1,8 +1,14 @@
 # ![4797b663cfb501a9d4dddd726180bf7502b7bd95](https://github.com/user-attachments/assets/0d2c5e73-0d05-4b60-9cb8-37bc89f4b768)
 
 ## Sobre o Projeto
-
 Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto consiste na reconstrução da plataforma já existente. A plataforma possui postagens de blogs, materiais de ensino/aprendizagem, informações internas, entre outros. A plataforma pretende ser uma fonte de aprendizado ao mesmo tempo que é uma porta de entrada para conhecer a sociedade.
+
+## O que já foi Feito?
+[x] - Configuração do Backend com Typescript, Husky e Linter
+[x] - Documentação das Instruções de Setup
+[x] - Rota para Realizar Cadastro de Usuários
+[x] - Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
+[ ] - Rota para Recuperação de Dados do Usuário
 
 
 ## Como Executar o Servidor
