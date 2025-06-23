@@ -4,11 +4,11 @@
 Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto consiste na reconstrução da plataforma já existente. A plataforma possui postagens de blogs, materiais de ensino/aprendizagem, informações internas, entre outros. A plataforma pretende ser uma fonte de aprendizado ao mesmo tempo que é uma porta de entrada para conhecer a sociedade.
 
 ## O que já foi Feito?
-[x] - Configuração do Backend com Typescript, Husky e Linter
-[x] - Documentação das Instruções de Setup
-[x] - Rota para Realizar Cadastro de Usuários
-[x] - Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
-[ ] - Rota para Recuperação de Dados do Usuário
+- [x] Configuração do Backend com Typescript, Husky e Linter
+- [x] Documentação das Instruções de Setup
+- [x] Rota para Realizar Cadastro de Usuários
+- [x] Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
+- [ ] Rota para Recuperação de Dados do Usuário
 
 
 ## Como Executar o Servidor
