@@ -18,11 +18,11 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 5. Crie um arquivo `.env` na raiz do projeto copiando o conteúdo do `.env.example`. Preencha manualmente os valores que não estiverem definidos.
 
 > [!WARNING]
-> Se você já possui o Docker instalado e configurado em sua máquina, avance para a etapa 6 deste procedimento.
+> Se você já possui o [Docker](https://pt.wikipedia.org/wiki/Docker_(software)) instalado e configurado em sua máquina, avance para a etapa 6 deste procedimento.
 > Caso contrário, siga as etapas elencadas abaixo para instalá-lo corretamente em sua máquina:
 > 
 > ### Windows
-> Será necessário instalar previamente uma ferramenta de emulação do Linux no Windows chamada [WSL (Windows Subsystem for Linux)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) para suportar os contêineres de [Docker](https://pt.wikipedia.org/wiki/Docker_(software)). Para isto, abra um novo terminal com permissão de administrador e execute os comandos listados a seguir, respectivamente:
+> Será necessário instalar previamente uma ferramenta de emulação do Linux no Windows chamada [WSL (Windows Subsystem for Linux)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) para suportar os contêineres de Docker. Para isto, abra um novo terminal com permissão de administrador e execute os comandos listados a seguir, respectivamente:
 > - `wsl --install`: instala o WSL na sua máquina como uma distro do Ubuntu.
 > - `wsl`: Inicializa a primeira instância de usuário Unix no WSL. Aguarde o término do processo e siga as etapas que o terminal solicitar
 > 
