@@ -31,7 +31,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findBy(where: Prisma.UserWhereInput) {
+  async findBy(where: Prisma.UserWhereUniqueInput) {
     const user = await prisma.user.findFirst({
       where,
     })
