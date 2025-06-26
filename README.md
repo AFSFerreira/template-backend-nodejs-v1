@@ -26,29 +26,30 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 │    ├─── @types
 │    ├─── constants
 │    ├─── env
-│    ├─── http
-│    │    └─── controllers
-│    │        └───users
 │    ├─── lib
 │    ├─── middlewares
 │    ├─── services
+│    ├─── utils
 │    ├─── repositories
 │    │    └─── prisma
-│    ├─── use-cases
-│    │   ├─── errors
-│    │   ├─── academic-publication
-│    │   │    └─── factories
-│    │   ├─── address
-│    │   │    └───factories
-│    │   ├─── area-of-activity
-│    │   │    └─── factories
-│    │   ├─── enrolled-course
-│    │   │    └─── factories
-│    │   ├─── keyword
-│    │   │    └─── factories
-│    │   └─── user
-│    │        └─── factories
-│    └─── utils
+│    ├─── http
+│    │    └─── controllers
+│    │         └───users
+│    └─── use-cases
+│        ├─── errors
+│        ├─── academic-publication
+│        │    └─── factories
+│        ├─── address
+│        │    └───factories
+│        ├─── area-of-activity
+│        │    └─── factories
+│        ├─── enrolled-course
+│        │    └─── factories
+│        ├─── keyword
+│        │    └─── factories
+│        └─── user
+│             └─── factories
+│    
 └─── uploads
      └─── profile-images
 ```
