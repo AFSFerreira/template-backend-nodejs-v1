@@ -55,7 +55,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ## Sobre a Arquitetura
 
-A arquitetura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam TypeScript e Prisma. No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Essas alterações concentram-se especificamente na organização do diretório de *use-cases*.
+A arquitetura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Essas alterações concentram-se especificamente na organização do diretório de *use-cases*.
 
 Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
 
