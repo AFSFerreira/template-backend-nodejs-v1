@@ -74,11 +74,11 @@ Optamos por aumentar a granularidade da divisão dos diretórios, reorganizando-
 ├─── area-of-activity
 │    └─── factories
 ├─── enrolled-course
-|    └─── factories
+│    └─── factories
 ├─── keyword
-|    └─── factories
+│    └─── factories
 └─── user
-|     └─── factories
+│     └─── factories
 └─── ...
 ```
 
