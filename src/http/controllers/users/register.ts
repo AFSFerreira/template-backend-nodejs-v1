@@ -1,7 +1,7 @@
 import { YEAR_MONTH_REGEX } from '@/constants/regex'
 import { prisma } from '@/lib/prisma'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { makeRegisterUseCase } from '@/use-cases/factories/make-register-use-case'
+import { makeRegisterUseCase } from '@/use-cases/user/factories/make-register-use-case'
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
 import crypto from 'crypto'
 import type { FastifyReply, FastifyRequest } from 'fastify'

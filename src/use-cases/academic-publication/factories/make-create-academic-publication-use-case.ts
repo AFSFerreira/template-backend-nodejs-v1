@@ -1,5 +1,5 @@
 import { PrismaAcademicPublicationsRepository } from '@/repositories/prisma/prisma-academic-publications-repository'
-import { CreateAcademicPublicationUseCase } from '../academic-publication/create-academic-publication-use-case'
+import { CreateAcademicPublicationUseCase } from '../create-academic-publication-use-case'
 
 export function makeCreateAcademicPublicationUseCase() {
   const academicPublicationsRepository =

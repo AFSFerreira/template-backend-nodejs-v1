@@ -1,5 +1,6 @@
 import { PrismaKeywordRepository } from '@/repositories/prisma/prisma-keyword-repository'
-import { CreateKeywordUseCase } from '../keyword/create-keyword-use-case'
+import { CreateKeywordUseCase } from '../create-keyword-use-case'
+
 
 export function makeCreateKeywordUseCase() {
   const keywordRepository = new PrismaKeywordRepository()
