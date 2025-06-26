@@ -8,7 +8,8 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 - [x] Documentação das Instruções de Setup
 - [x] Rota para Realizar Cadastro de Usuários
 - [x] Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
-- [ ] Rota para Recuperação de Dados do Usuário
+- [x] Rota de Autenticação / Login
+- [ ] Rota CRUD para os Dados de Usuário
 
 ## Como Executar o Servidor
 1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
