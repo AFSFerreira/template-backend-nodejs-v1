@@ -1,4 +1,4 @@
-# ![4797b663cfb501a9d4dddd726180bf7502b7bd95](https://github.com/user-attachments/assets/0d2c5e73-0d05-4b60-9cb8-37bc89f4b768)
+# ![4797b663cfb501a9d4dddd726180bf7502b7bd95](https://github.com/user-attachments/assets/01ecf847-53b2-4db2-bda3-95923cee525b)
 
 ## Tabela de Conteúdos
 
