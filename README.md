@@ -1,7 +1,91 @@
 # ![4797b663cfb501a9d4dddd726180bf7502b7bd95](https://github.com/user-attachments/assets/0d2c5e73-0d05-4b60-9cb8-37bc89f4b768)
 
+## Tabela de Conteúdos
+
+1. [Sobre o Projeto](#sobre-o-projeto)
+2. [Estrutura Atual](#estrutura-atual)
+3. [Sobre a Arquitetura](#sobre-a-arquitetura)
+4. [O que já foi Feito?](#o-que-já-foi-feito)
+5. [Como Executar o Servidor](#como-executar-o-servidor)
+
+
 ## Sobre o Projeto
 Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto consiste na reconstrução da plataforma já existente. A plataforma possui postagens de blogs, materiais de ensino/aprendizagem, informações internas, entre outros. A plataforma pretende ser uma fonte de aprendizado ao mesmo tempo que é uma porta de entrada para conhecer a sociedade.
+
+## Estrutura Atual
+
+```code
+├─── .github
+│    └───workflows
+├─── .husky
+├─── prisma
+│    └─── migrations
+│         └─── ...
+├─── src
+│    ├─── @types
+│    ├─── constants
+│    ├─── env
+│    ├─── http
+│    │    └─── controllers
+│    │        └───users
+│    ├─── lib
+│    ├─── middlewares
+│    ├─── services
+│    ├─── repositories
+│    │    └─── prisma
+│    ├─── use-cases
+│    │   ├─── errors
+│    │   ├─── academic-publication
+│    │   │    └─── factories
+│    │   ├─── address
+│    │   │    └───factories
+│    │   ├─── area-of-activity
+│    │   │    └─── factories
+│    │   ├─── enrolled-course
+│    │   │    └─── factories
+│    │   ├─── keyword
+│    │   │    └─── factories
+│    │   └─── user
+│    │        └─── factories
+│    └─── utils
+└─── uploads
+     └─── profile-images
+```
+
+## Sobre a Arquitetura
+
+A arquitetura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam TypeScript e Prisma. No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Essas alterações concentram-se especificamente na organização do diretório de *use-cases*.
+
+Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
+
+```bash
+├─── errors
+└─── factories
+```
+
+Optamos por aumentar a granularidade da divisão dos diretórios, reorganizando-os por modelo de domínio, conforme ilustrado a seguir:
+
+```bash
+├─── errors
+├─── academic-publication
+│    └─── factories
+├─── address
+│    └───factories
+├─── area-of-activity
+│    └─── factories
+├─── enrolled-course
+|    └─── factories
+├─── keyword
+|    └─── factories
+└─── user
+|     └─── factories
+└─── ...
+```
+
+Essa decisão justifica-se pela necessidade de uma organização mais refinada dos arquivos, que, em outros projetos, estavam excessivamente dispersos, dificultando a localização de casos de uso específicos com base em seu contexto ou modelo associado.
+
+O principal revés dessa abordagem está no pequeno aumento da complexidade dos caminhos relativos utilizados para referenciar arquivos de *factories* e *use-cases* — ainda que atenuado pelos aliases definidos no arquivo `tsconfig.json`. Contudo, após discussões sobre as implicações positivas e negativas da mudança, optamos por adotar essa reorganização estrutural como uma medida de melhoria na futura manutenção e escalabilidade do projeto.
+
 
 ## O que já foi Feito?
 - [x] Configuração do Backend com Typescript, Husky e Linter
