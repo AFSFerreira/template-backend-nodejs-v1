@@ -34,7 +34,6 @@ export class AuthenticateUseCase {
       user = await this.usersRepository.findBy({ username: emailOrUsername })
     }
 
-    
     const auditAuthenticateObject = {
       browser: browser ?? null,
       ipAddress: ipAddress ?? null,
@@ -47,7 +46,7 @@ export class AuthenticateUseCase {
         ...auditAuthenticateObject,
         status: 'USER_NOT_EXISTS',
       })
-      
+
       throw new InvalidCredentialsError()
     }
 
