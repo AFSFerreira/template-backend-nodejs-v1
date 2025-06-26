@@ -7,6 +7,7 @@
 3. [Sobre a Arquitetura](#sobre-a-arquitetura)
 4. [O que já foi Feito?](#o-que-já-foi-feito)
 5. [Como Executar o Servidor](#como-executar-o-servidor)
+6. [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
 
 
 ## Sobre o Projeto
@@ -150,3 +151,8 @@ sudo apt-get update
 8. (Opcional) Execute `npx prisma migrate dev` para aplicar as migrações se desejar preservar dados existentes.
 9. Execute `npx prisma migrate reset` para resetar o banco e popular com dados de teste definidos em `prisma/seed.ts`.
 10. Rode o projeto com o comando: `npm run start:dev`.
+
+## Equipe de Desenvolvimento
+- **Product Owner** : [Douglas Cristiano](https://github.com/DougCristiano) 
+- **Dev Backend** : [Filype Abreu](https://github.com/zfrekey)
+- **Dev Backend** : [Allber Ferreira](https://github.com/AFSFerreira)
