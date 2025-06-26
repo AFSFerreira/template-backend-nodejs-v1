@@ -8,6 +8,7 @@ export async function authenticate(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
+  console.log("chegou no authenticate")
   const authenticateBodySchema = z.object({
     emailOrUsername: z.union([z.string().email(), z.string().min(4)]),
     password: z.string().min(6),
@@ -21,10 +22,10 @@ export async function authenticate(
   const { remotePort } = request.socket
 
   try {
-    const authenticateUseCase = makeAuthenticateUseCase()
-
+    const authenticateUseCase = makeAuthenticateUseCase() 
+    
     const browserName = Array.isArray(browser) ? browser[0] : browser
-
+    
     const { user } = await authenticateUseCase.execute({
       emailOrUsername,
       password,

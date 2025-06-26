@@ -1,4 +1,4 @@
-import type { User } from '@prisma/client'
+import { type User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
 import type { UsersRepository } from '@/repositories/users-repository'
@@ -29,15 +29,17 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user = await this.usersRepository.findBy({
-      OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
-    })
+    let user = await this.usersRepository.findBy({ email: emailOrUsername })
+    if (user == null) {
+      user = await this.usersRepository.findBy({ username: emailOrUsername })
+    }
 
+    
     const auditAuthenticateObject = {
       browser: browser ?? null,
-      ip_address: ipAddress ?? null,
-      remote_port: remotePort ?? null,
-      user_id: user?.id ?? null,
+      ipAddress: ipAddress ?? null,
+      remotePort: remotePort ?? null,
+      userId: user?.id ?? null,
     }
 
     if (user == null) {
@@ -45,7 +47,7 @@ export class AuthenticateUseCase {
         ...auditAuthenticateObject,
         status: 'USER_NOT_EXISTS',
       })
-
+      
       throw new InvalidCredentialsError()
     }
 

@@ -131,11 +131,10 @@ export class RegisterUseCase {
     sponsoringOrganization,
     academicPublications,
   }: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
-    const existingUser = await this.usersRepository.findBy({
-      OR: [{ email }, { username }],
-    })
+    const existingUserByEmail = await this.usersRepository.findBy({ email })
+    const existingUserByUsername = await this.usersRepository.findBy({ username })
 
-    if (existingUser !== null) {
+    if (existingUserByEmail !== null || existingUserByUsername !== null) {
       throw new UserWithSameEmailOrUsernameError()
     }
 
