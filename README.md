@@ -15,7 +15,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ## Estrutura Atual
 
-```code
+```bash
 ├─── .github
 │    └───workflows
 ├─── .husky
