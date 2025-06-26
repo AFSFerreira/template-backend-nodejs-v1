@@ -78,7 +78,7 @@ Optamos por aumentar a granularidade da divisão dos diretórios, reorganizando-
 ├─── keyword
 │    └─── factories
 ├─── user
-│     └─── factories
+│    └─── factories
 └─── ...
 ```
 
