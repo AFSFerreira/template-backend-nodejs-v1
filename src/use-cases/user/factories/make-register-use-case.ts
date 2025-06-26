@@ -4,7 +4,7 @@ import { PrismaAreaOfActivityRepository } from '@/repositories/prisma/prisma-are
 import { PrismaEnrolledCourseRepository } from '@/repositories/prisma/prisma-enrolled-course-repository'
 import { PrismaKeywordRepository } from '@/repositories/prisma/prisma-keyword-repository'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
-import { RegisterUseCase } from '../user/register'
+import { RegisterUseCase } from '../register'
 
 export function makeRegisterUseCase() {
   const usersRepository = new PrismaUsersRepository()
