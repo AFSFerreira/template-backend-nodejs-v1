@@ -36,7 +36,8 @@ app.register(fastifySwagger, {
   swagger: {
     info: {
       title: 'Astrobiologia Backend',
-      description: 'Documentação do Consumo da API Astrobio com Fastify-Swagger',
+      description:
+        'Documentação do Consumo da API Astrobio com Fastify-Swagger',
       version: '1.0.0',
     },
     tags: [{ name: 'users', description: 'Operações de usuário' }],

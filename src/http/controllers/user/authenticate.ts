@@ -1,8 +1,8 @@
 import { type FastifyReply, type FastifyRequest } from 'fastify'
 import { z } from 'zod'
-import { env } from '../../../env'
-import { InvalidCredentialsError } from '../../../use-cases/errors/invalid-credentials-error'
-import { makeAuthenticateUseCase } from '../../../use-cases/user/factories/make-authenticate-use-case'
+import { env } from '@/env'
+import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
+import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authenticate-use-case'
 
 export async function authenticate(
   request: FastifyRequest,
