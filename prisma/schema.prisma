@@ -74,7 +74,7 @@ model AuthenticationAudit {
   createdAt  DateTime              @default(now())
 
   userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@map("authentication_audit")
 }
@@ -164,7 +164,7 @@ model AreaOfActivity {
   id               String @id @default(uuid())
   mainAreaActivity String @unique // Grande área de atuação será uma lista exibida ainda a determinar
 
-  user User[]
+  user User[] @relation()
 
   @@map("area_of_activity")
 }
@@ -201,8 +201,8 @@ model Category {
   categoryName String        @unique
   categoryType CATEGORY_TYPE
 
-  blogCategory BlogCategory[]
-  Blog         Blog[]
+  blogCategory BlogCategory[] @relation()
+  Blog         Blog[]         @relation()
 }
 
 model BlogCategory {
@@ -227,8 +227,8 @@ model Blog {
   mainCategoryId String
   mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  authorId String
-  author   User   @relation(fields: [authorId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  authorId String?
+  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  subcategories BlogCategory[]
+  subcategories BlogCategory[] @relation()
 }
