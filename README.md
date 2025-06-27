@@ -179,6 +179,7 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 > Durante a execução dos comandos de instalação do Docker no WSL, é possível que seja solicitada múltiplas vezes a senha [sudo (SuperUser Do)](https://en.wikipedia.org/wiki/Sudo) do usuário. A senha digitada não irá aparecer no terminal enquanto você a preenche, mas basta escrevê-la corretamente e pressionar enter para enviá-la.
 
 <a name="etapa-6" display="none"></a>
+
 6. Se você ainda não estiver dentro do WSL, inicie-o com o comando `wsl`.
 7. Inicialize os contêiners do Docker executando o comando `sudo docker compose up -d` no terminal.
 8. (**Opcional**) Execute `npx prisma migrate dev` para aplicar as migrações se desejar preservar dados existentes.
