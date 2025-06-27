@@ -41,7 +41,6 @@ export class AuthenticateUseCase {
       userId: user?.id ?? null,
     }
 
-    
     if (user == null) {
       await this.authenticationAuditRepository.create({
         ...auditAuthenticateObject,
@@ -50,7 +49,7 @@ export class AuthenticateUseCase {
 
       throw new InvalidCredentialsError()
     }
-    
+
     await this.usersRepository.updateLoginAttempts(user.id)
 
     const doesPasswordMatch = await compare(password, user.passwordDigest)

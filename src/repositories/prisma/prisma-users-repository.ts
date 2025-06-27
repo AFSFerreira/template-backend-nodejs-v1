@@ -21,9 +21,9 @@ export class PrismaUsersRepository implements UsersRepository {
       },
       data: {
         loginAttempts: {
-          increment: 1
-        }
-      }
+          increment: 1,
+        },
+      },
     })
   }
 
