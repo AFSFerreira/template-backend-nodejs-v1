@@ -9,7 +9,6 @@
     "start:dev": "tsx watch src/server.ts",
     "start:prod": "node build/server.js",
     "build": "tsup src --out-dir build",
-    "init:db": "docker-compose up -d && npx prisma migrate dev",
     "husky:prepare": "husky install",
     "lint": "prettier ./src/ --write && eslint \"**/*.{ts,tsx}\" --fix",
     "test": "echo Test",

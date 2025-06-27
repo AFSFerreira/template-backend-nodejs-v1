@@ -1,26 +1,34 @@
+import { upload } from '@/lib/multer'
+import { authentication } from '@/middlewares/authentication'
+import { verifyPermissions } from '@/middlewares/verifyPermissions'
+import { authenticateSchema } from '@/schemas/user/authenticate-schema'
+import { createUserSchema } from '@/schemas/user/create-user-schema'
+import { exportUserDataSchema } from '@/schemas/user/export-user-data-schema'
+import { logoutSchema } from '@/schemas/user/logout-schema'
+import { refreshTokenSchema } from '@/schemas/user/refresh-token-schema'
+import { USER_ROLE } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
-import { refreshToken } from './refresh-token'
-import { logout } from './logout'
-import { register } from './register'
-import { authentication } from '@/middlewares/authentication'
 import { exportUserData } from './export-user-data'
-import { USER_ROLE } from '@prisma/client'
-import { verifyPermissions } from '@/middlewares/verifyPermissions'
-import { upload } from '@/lib/multer'
+import { logout } from './logout'
+import { refreshToken } from './refresh-token'
+import { register } from './register'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/users/export',
-    { preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])] },
+    { 
+      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+      schema: exportUserDataSchema 
+    },
     exportUserData,
   )
 
-  app.post('/users', { preHandler: [upload.single('profileImage')] }, register)
+  app.post('/users', { preHandler: [upload.single('profileImage')], schema: createUserSchema }, register)
 
-  app.post('/sessions', authenticate)
+  app.post('/sessions', { schema: authenticateSchema }, authenticate)
 
-  app.post('/sessions/refresh-token', refreshToken)
+  app.post('/sessions/refresh-token', { schema: refreshTokenSchema }, refreshToken)
 
-  app.delete('/sessions', { preHandler: [authentication] }, logout)
+  app.delete('/sessions', { preHandler: [authentication], schema: logoutSchema }, logout)
 }

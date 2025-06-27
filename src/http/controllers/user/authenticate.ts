@@ -4,21 +4,25 @@ import { env } from '@/env'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authenticate-use-case'
 
+// NOTE: Manter os schemas de rotas alinhados com a validação do Zod
+const authenticateBodySchema = z.object({
+  emailOrUsername: z.union([
+    z.string().nonempty().email(),
+    z.string().min(4),
+  ]),
+  password: z
+    .string()
+    .nonempty()
+    .min(8)
+    .regex(/[A-Z]/)
+    .regex(/\d/)
+    .regex(/[@$!%*?&]/),
+})
+
 export async function authenticate(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  console.log('chegou no authenticate')
-  const authenticateBodySchema = z.object({
-    emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
-    password:  z
-              .string()
-              .nonempty()
-              .min(8)
-              .regex(/[A-Z]/)
-              .regex(/\d/)
-              .regex(/[@$!%*?&]/),
-  })
 
   const { emailOrUsername, password } = authenticateBodySchema.parse(
     request.body,

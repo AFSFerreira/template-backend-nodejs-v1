@@ -1,12 +1,10 @@
 import { YEAR_MONTH_REGEX } from "@/constants/regex"
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from "@prisma/client"
-import { getUserSchemaItem } from "./get-user-schema"
 
-export const createUserBodySchema = {
+export const getUserSchemaItem = {
   type: 'object',
   properties: {
     email: { type: 'string', format: 'email', minLength: 6 },
-    password: { type: 'string', minLength: 6 },
     fullName: { type: 'string', minLength: 5 },
     username: { type: 'string', minLength: 5 },
     birthDate: { type: 'string', format: 'date' },
@@ -86,7 +84,6 @@ export const createUserBodySchema = {
   },
   required: [
     'email',
-    'password',
     'fullName',
     'username',
     'birthDate',
@@ -117,22 +114,71 @@ export const createUserBodySchema = {
   ],
 }
 
-export const createUserSchema = {
+export const getUserSchema = {
   tags: ['users'],
-  summary: 'Create a new user',
-  description: 'Create a new user account with all required information including profile image upload',
-  body: createUserBodySchema,
+  summary: 'Get a paginated list of users',
+  description: 'Retrieve a paginated list of all users with their complete information',
+  querystring: {
+    type: 'object',
+    properties: {
+      page: {
+        type: 'integer',
+        minimum: 1,
+        default: 1,
+        description: 'Page number for pagination',
+      },
+      limit: {
+        type: 'integer',
+        minimum: 1,
+        maximum: 100,
+        default: 20,
+        description: 'Number of users per page',
+      },
+    },
+  },
   response: {
-    201: {
-      description: 'User created successfully',
-      ...getUserSchemaItem,
+    200: {
+      type: 'object',
+      properties: {
+        users: {
+          type: 'array',
+          items: getUserSchemaItem,
+        },
+        pagination: {
+          type: 'object',
+          properties: {
+            currentPage: { type: 'integer' },
+            totalPages: { type: 'integer' },
+            totalUsers: { type: 'integer' },
+            hasNextPage: { type: 'boolean' },
+            hasPreviousPage: { type: 'boolean' },
+          },
+          required: ['currentPage', 'totalPages', 'totalUsers', 'hasNextPage', 'hasPreviousPage'],
+        },
+      },
+      required: ['users', 'pagination'],
+      description: 'Paginated list of users',
     },
     400: {
       type: 'object',
       properties: {
         message: { type: 'string' },
       },
-      description: 'Bad request - validation errors or user already exists',
+      description: 'Bad request - invalid query parameters',
+    },
+    401: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Unauthorized - authentication required',
+    },
+    403: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Forbidden - insufficient permissions',
     },
     500: {
       type: 'object',
