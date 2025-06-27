@@ -125,8 +125,19 @@ Caso contrário, siga as etapas abaixo descrevendo o procedimento de instalaçã
 ### Instalando Docker + WSL no Windows
 Será necessário instalar previamente uma ferramenta de emulação do Linux no Windows chamada [WSL (Windows Subsystem for Linux)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) para suportar os contêineres de Docker. Para isto, abra um novo terminal com permissão de administrador e execute os comandos listados a seguir, respectivamente:
 
-- `wsl --install`: instala o WSL na sua máquina como uma distro do Ubuntu.
-- `wsl`: Inicializa a primeira instância de usuário Unix no WSL. Aguarde o término do processo e siga as etapas que o terminal solicitar
+Instale o WSL na sua máquina com uma distro do Ubuntu utilizando o comando:
+
+```bash
+wsl --install
+```
+
+Inicie a primeira instância de usuário Linux no WSL com o comando a seguir:
+
+```bash
+wsl
+```
+
+Aguarde o término do processo e siga as etapas que o terminal solicitar, como a criação de um novo usuário e senha.
 
 > [!WARNING]
 > Se você obtiver algum erro durante a execução de algum dos comandos listados acima, significa que o serviço necessário para criar a máquina virtual (VM) do WSL2 não está disponível ou não pode ser iniciado. É um erro comum quando algum requisito do WSL2 está desativado, corrompido ou mal configurado. Para solucionar este problema, siga as seguintes etapas:
@@ -136,9 +147,9 @@ Será necessário instalar previamente uma ferramenta de emulação do Linux no 
 > 4. Abra um terminal com permissão de administrador novamente.
 > 5. Por fim, instale o WSL novamente com o comando `wsl --install`.
 > 
-> Após concluir com êxito as etapas descritas acima, abra novamente um terminal na raíz do projeto e execute o comando `wsl` para acessar o terminal do wsl. Após isto, avance para as próximas etapas descritas logo abaixo
+> Após concluir com êxito as etapas descritas acima, abra novamente um terminal na raíz do projeto e execute o comando `wsl` para acessar o terminal do wsl.
  
-Concluindo as etapas listadas acima, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
+Finalziando as etapas anteriores, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
  
 ### Instalando Docker no Linux
 Antes de proceder com a instalação, certifitique-se de remover quaisquer dependências conflitantes com o Docker de sua máquina. Para isto, execute o seguinte comando:
