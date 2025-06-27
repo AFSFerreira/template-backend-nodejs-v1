@@ -177,7 +177,11 @@ echo \
 sudo apt-get update
 ```
 
-Finalmente, basta agora instalar o próprio Docker em sua máquina com o comando: `sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+Finalmente, basta agora instalar o próprio Docker em sua máquina com o comando: 
+
+```bash
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+```
  
 Se desejar checar a instalação bem sucedida do Docker, execute o comando `sudo docker run hello-world` para obter um `Hello World` diretamente do Docker.
  
