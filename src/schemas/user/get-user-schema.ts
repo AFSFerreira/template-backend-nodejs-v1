@@ -1,5 +1,5 @@
-import { YEAR_MONTH_REGEX } from "@/constants/regex"
-import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from "@prisma/client"
+import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
 
 export const getUserSchemaItem = {
   type: 'object',
@@ -49,8 +49,14 @@ export const getUserSchemaItem = {
     street: { type: 'string' },
     houseNumber: { type: 'string' },
     courseName: { type: 'string' },
-    startGraduationDate: { type: 'string', pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1) },
-    expectedGraduationDate: { type: 'string', pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1) },
+    startGraduationDate: {
+      type: 'string',
+      pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1),
+    },
+    expectedGraduationDate: {
+      type: 'string',
+      pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1),
+    },
     supervisorName: { type: 'string' },
     scholarshipHolder: { type: 'boolean' },
     sponsoringOrganization: { type: 'string' },
@@ -117,7 +123,8 @@ export const getUserSchemaItem = {
 export const getUserSchema = {
   tags: ['users'],
   summary: 'Get a paginated list of users',
-  description: 'Retrieve a paginated list of all users with their complete information',
+  description:
+    'Retrieve a paginated list of all users with their complete information',
   querystring: {
     type: 'object',
     properties: {
@@ -153,7 +160,13 @@ export const getUserSchema = {
             hasNextPage: { type: 'boolean' },
             hasPreviousPage: { type: 'boolean' },
           },
-          required: ['currentPage', 'totalPages', 'totalUsers', 'hasNextPage', 'hasPreviousPage'],
+          required: [
+            'currentPage',
+            'totalPages',
+            'totalUsers',
+            'hasNextPage',
+            'hasPreviousPage',
+          ],
         },
       },
       required: ['users', 'pagination'],

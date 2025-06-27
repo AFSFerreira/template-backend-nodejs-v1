@@ -13,7 +13,7 @@ export const logoutSchema = {
     400: {
       type: 'object',
       properties: {
-        message: { 
+        message: {
           type: 'string',
           enum: ['Invalid token', 'Token expired', 'No token provided'],
         },

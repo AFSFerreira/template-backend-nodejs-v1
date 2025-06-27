@@ -6,10 +6,7 @@ import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authent
 
 // NOTE: Manter os schemas de rotas alinhados com a validação do Zod
 const authenticateBodySchema = z.object({
-  emailOrUsername: z.union([
-    z.string().nonempty().email(),
-    z.string().min(4),
-  ]),
+  emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
   password: z
     .string()
     .nonempty()
@@ -23,7 +20,6 @@ export async function authenticate(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-
   const { emailOrUsername, password } = authenticateBodySchema.parse(
     request.body,
   )

@@ -1,6 +1,6 @@
-import { YEAR_MONTH_REGEX } from "@/constants/regex"
-import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from "@prisma/client"
-import { getUserSchemaItem } from "./get-user-schema"
+import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
+import { getUserSchemaItem } from './get-user-schema'
 
 export const createUserBodySchema = {
   type: 'object',
@@ -51,8 +51,14 @@ export const createUserBodySchema = {
     street: { type: 'string' },
     houseNumber: { type: 'string' },
     courseName: { type: 'string' },
-    startGraduationDate: { type: 'string', pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1) },
-    expectedGraduationDate: { type: 'string', pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1) },
+    startGraduationDate: {
+      type: 'string',
+      pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1),
+    },
+    expectedGraduationDate: {
+      type: 'string',
+      pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1),
+    },
     supervisorName: { type: 'string' },
     scholarshipHolder: { type: 'boolean' },
     sponsoringOrganization: { type: 'string' },
@@ -120,7 +126,8 @@ export const createUserBodySchema = {
 export const createUserSchema = {
   tags: ['users'],
   summary: 'Create a new user',
-  description: 'Create a new user account with all required information including profile image upload',
+  description:
+    'Create a new user account with all required information including profile image upload',
   body: createUserBodySchema,
   response: {
     201: {

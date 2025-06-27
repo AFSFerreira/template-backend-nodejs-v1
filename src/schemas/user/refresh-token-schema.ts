@@ -1,7 +1,8 @@
 export const refreshTokenSchema = {
   tags: ['authentication'],
   summary: 'Refresh access token',
-  description: 'Refresh the access token using the refresh token stored in cookies',
+  description:
+    'Refresh the access token using the refresh token stored in cookies',
   response: {
     200: {
       type: 'object',
@@ -13,7 +14,7 @@ export const refreshTokenSchema = {
     401: {
       type: 'object',
       properties: {
-        message: { 
+        message: {
           type: 'string',
           enum: ['Invalid token', 'Token expired', 'No token provided'],
         },

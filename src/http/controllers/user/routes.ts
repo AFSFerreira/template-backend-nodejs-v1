@@ -17,18 +17,30 @@ import { register } from './register'
 export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/users/export',
-    { 
+    {
       preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
-      schema: exportUserDataSchema 
+      schema: exportUserDataSchema,
     },
     exportUserData,
   )
 
-  app.post('/users', { preHandler: [upload.single('profileImage')], schema: createUserSchema }, register)
+  app.post(
+    '/users',
+    { preHandler: [upload.single('profileImage')], schema: createUserSchema },
+    register,
+  )
 
   app.post('/sessions', { schema: authenticateSchema }, authenticate)
 
-  app.post('/sessions/refresh-token', { schema: refreshTokenSchema }, refreshToken)
+  app.post(
+    '/sessions/refresh-token',
+    { schema: refreshTokenSchema },
+    refreshToken,
+  )
 
-  app.delete('/sessions', { preHandler: [authentication], schema: logoutSchema }, logout)
+  app.delete(
+    '/sessions',
+    { preHandler: [authentication], schema: logoutSchema },
+    logout,
+  )
 }

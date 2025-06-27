@@ -1,19 +1,20 @@
 export const exportUserDataSchema = {
   tags: ['users'],
   summary: 'Export all users data as CSV',
-  description: 'Export all users data as a CSV file. Requires admin permissions.',
+  description:
+    'Export all users data as a CSV file. Requires admin permissions.',
   response: {
     200: {
-        description: 'CSV file content with all users data',
-        content: {
-          'text/csv': {
-            schema: {
-              type: 'string',
-              format: 'binary',
-            },
+      description: 'CSV file content with all users data',
+      content: {
+        'text/csv': {
+          schema: {
+            type: 'string',
+            format: 'binary',
           },
         },
       },
+    },
     401: {
       type: 'object',
       properties: {
