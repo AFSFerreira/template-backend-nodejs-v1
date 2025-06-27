@@ -5,7 +5,9 @@ import { ZodError } from 'zod'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import multipart from '@fastify/multipart'
-import { userRoutes } from './http/controllers/users/routes'
+import { userRoutes } from './http/controllers/user/routes'
+import fastifySwagger from '@fastify/swagger'
+import fastifySwaggerUi from '@fastify/swagger-ui'
 
 export const app = fastify()
 
@@ -27,6 +29,25 @@ app.register(fastifyJwt, {
   },
   sign: {
     expiresIn: '2h',
+  },
+})
+
+app.register(fastifySwagger, {
+  swagger: {
+    info: {
+      title: 'Astrobiologia Backend',
+      description: 'Documentação do Consumo da API Astrobio com Fastify-Swagger',
+      version: '1.0.0',
+    },
+    tags: [{ name: 'users', description: 'Operações de usuário' }],
+  },
+})
+
+app.register(fastifySwaggerUi, {
+  routePrefix: '/docs',
+  uiConfig: {
+    docExpansion: 'list',
+    deepLinking: false,
   },
 })
 

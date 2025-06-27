@@ -35,7 +35,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
      │    └─── prisma
      ├─── http
      │    └─── controllers
-     │         └───users
+     │         └─── user
      └─── use-cases
          ├─── errors
          ├─── academic-publication
