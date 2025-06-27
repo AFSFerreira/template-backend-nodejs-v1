@@ -10,8 +10,14 @@ export async function authenticate(
 ) {
   console.log('chegou no authenticate')
   const authenticateBodySchema = z.object({
-    emailOrUsername: z.union([z.string().email(), z.string().min(4)]),
-    password: z.string().min(6),
+    emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
+    password:  z
+              .string()
+              .nonempty()
+              .min(8)
+              .regex(/[A-Z]/)
+              .regex(/\d/)
+              .regex(/[@$!%*?&]/),
   })
 
   const { emailOrUsername, password } = authenticateBodySchema.parse(
