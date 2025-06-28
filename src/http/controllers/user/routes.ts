@@ -20,27 +20,42 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
       schema: exportUserDataSchema,
+      validatorCompiler: () => () => true
     },
     exportUserData,
   )
 
   app.post(
     '/users',
-    { preHandler: [upload.single('profileImage')], schema: createUserSchema },
+    { 
+      preHandler: [upload.single('profileImage')], 
+      schema: createUserSchema,
+      validatorCompiler: () => () => true
+    },
     register,
   )
 
-  app.post('/sessions', { schema: authenticateSchema }, authenticate)
+  app.post('/sessions', { 
+    schema: authenticateSchema,
+    validatorCompiler: () => () => true
+  }, authenticate)
 
   app.post(
     '/sessions/refresh-token',
-    { schema: refreshTokenSchema },
+    { 
+      schema: refreshTokenSchema,
+      validatorCompiler: () => () => true
+    },
     refreshToken,
   )
 
   app.delete(
     '/sessions',
-    { preHandler: [authentication], schema: logoutSchema },
+    { 
+      preHandler: [authentication], 
+      schema: logoutSchema,
+      validatorCompiler: () => () => true
+    },
     logout,
   )
 }
