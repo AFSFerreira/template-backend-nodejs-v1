@@ -5,6 +5,11 @@ import { getUserSchemaItem } from './get-user-schema'
 export const createUserBodySchema = {
   type: 'object',
   properties: {
+    profileImage: {
+      type: 'string',
+      format: 'binary',
+      description: 'User profile image file (JPEG, PNG, WebP)',
+    },
     email: { type: 'string', format: 'email', minLength: 6 },
     password: { type: 'string', minLength: 6 },
     fullName: { type: 'string', minLength: 5 },
@@ -128,6 +133,7 @@ export const createUserSchema = {
   summary: 'Create a new user',
   description:
     'Create a new user account with all required information including profile image upload',
+  consumes: ['multipart/form-data'],
   body: createUserBodySchema,
   response: {
     201: {

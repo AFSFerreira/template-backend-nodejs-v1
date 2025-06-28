@@ -20,12 +20,14 @@ export const exportUserDataSchema = {
       properties: {
         message: { type: 'string' },
       },
+      description: 'Unauthorized - authentication required',
     },
     403: {
       type: 'object',
       properties: {
         message: { type: 'string' },
       },
+      description: 'Forbidden - insufficient permissions (admin role required)',
     },
   },
 }

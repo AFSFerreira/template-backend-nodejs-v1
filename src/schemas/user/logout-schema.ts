@@ -18,6 +18,7 @@ export const logoutSchema = {
           enum: ['Invalid token', 'Token expired', 'No token provided'],
         },
       },
+      description: 'Bad request - token validation failed',
     },
   },
 }
