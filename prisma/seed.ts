@@ -38,7 +38,7 @@ async function main() {
       interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
       receiveReports: true,
       email: 'email@example.com',
-      passwordDigest: await hash('123456789', env.USER_PASSWORD_HASH_NUMBER_TIMES),
+      passwordDigest: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
       loginAttempts: 0,
       lastLogin: null,
       activityAreaId: activityArea.id,

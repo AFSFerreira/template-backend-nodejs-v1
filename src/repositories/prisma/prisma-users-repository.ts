@@ -14,6 +14,19 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
+  async updateLoginAttempts(id: string) {
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        loginAttempts: {
+          increment: 1,
+        },
+      },
+    })
+  }
+
   async delete(id: string) {
     await prisma.user.delete({
       where: {
