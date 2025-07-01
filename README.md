@@ -4,7 +4,7 @@
 
 1. [Sobre o Projeto](#sobre-o-projeto)
 2. [Estrutura Atual](#estrutura-atual)
-3. [Sobre a Arquitetura](#sobre-a-arquitetura)
+3. [Sobre a Estrutura](#sobre-a-estrutura)
 4. [O Que Fizemos](#o-que-fizemos)
 5. [Como Executar o Servidor](#como-executar-o-servidor)
 6. [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
@@ -55,8 +55,8 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
     
 ```
 
-## Sobre a Arquitetura
-A arquitetura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Essas alterações concentram-se especificamente na organização do diretório de *use-cases*.
+## Sobre a Estrutura
+A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Essas alterações concentram-se especificamente na organização do diretório de *use-cases*.
 
 Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
 
@@ -84,7 +84,11 @@ Optamos por aumentar a granularidade da divisão dos diretórios, reorganizando-
 └─── ...
 ```
 
-Essa decisão justifica-se pela necessidade de uma organização mais refinada dos arquivos, que, em outros projetos, estavam excessivamente dispersos, dificultando a localização de casos de uso específicos com base em seu contexto ou modelo associado.
+Conforme é possível observar no exemplo apresentado acima, optamos por separar os casos de uso e seus respectivos factories em diferentes diretórios, separados pelos modelos presentes no 
+banco de dados. Além disso, escolhemos manter a pasta de `errors` separada e livre de 
+contexto, pois existem múltiplos erros que são comuns a muitos casos de uso.
+
+Essa decisão justifica-se pela necessidade de uma organização mais sofisticada dos arquivos. Em comparação com outros projetos existentes na empresa, os arquivos de estavam excessivamente dispersos, e isto, por sua vez, dificultava a localização de casos de uso específicos com base em seu contexto ou modelo associado.
 
 O principal revés dessa abordagem está no pequeno aumento da complexidade dos caminhos relativos utilizados para referenciar arquivos de *factories* e *use-cases* — ainda que atenuado pelos aliases definidos no arquivo `tsconfig.json`. Contudo, após discussões sobre as implicações positivas e negativas da mudança, optamos por adotar essa reorganização estrutural como uma medida de melhoria na futura manutenção e escalabilidade do projeto.
 
@@ -195,6 +199,7 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 > [!NOTE]
 > Durante a execução dos comandos de instalação do Docker no WSL, é possível que seja solicitada múltiplas vezes a senha [sudo (SuperUser Do)](https://en.wikipedia.org/wiki/Sudo) do usuário. A senha digitada não irá aparecer no terminal enquanto você a preenche, mas basta escrevê-la corretamente e pressionar enter para enviá-la.
 
+<!-- atalho para a etapa 6 do procedimento de execução do backend -->
 <a name="etapa-6" display="none"></a>
 
 6. Se você ainda não estiver dentro do WSL, inicie-o com o comando `wsl`.
