@@ -43,7 +43,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
          ├─── academic-publication
          │    └─── factories
          ├─── address
-         │    └───factories
+         │    └─── factories
          ├─── area-of-activity
          │    └─── factories
          ├─── enrolled-course
