@@ -1,5 +1,5 @@
 import { type FastifyRequest, type FastifyReply } from 'fastify'
-import { env } from '../../../env'
+import { env } from '@/env'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
   try {

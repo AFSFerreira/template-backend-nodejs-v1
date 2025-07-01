@@ -10,6 +10,7 @@ import path from 'path'
 import sharp from 'sharp'
 import { z } from 'zod'
 
+// NOTE: Manter os schemas de rotas alinhados com a validação do Zod
 const registerBodySchema = z
   .object({
     email: z.string().email().min(6),

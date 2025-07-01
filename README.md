@@ -33,9 +33,11 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
      ├─── utils
      ├─── repositories
      │    └─── prisma
+     ├─── schemas
+     │    └─── user
      ├─── http
      │    └─── controllers
-     │         └───users
+     │         └─── user
      └─── use-cases
          ├─── errors
          ├─── academic-publication
@@ -115,7 +117,7 @@ Se você já possui o [Docker](https://pt.wikipedia.org/wiki/Docker_(software)) 
 > Abra o menu iniciar e pesquise se o programa `Docker Desktop` está instalado em sua máquina. Alternativamente, abra um terminal com o WSL e tente o comando `sudo docker --version`. Se você não sabe abrir ou configurar o WSL, avance para a [etapa de instalação do Docker + WSL](#instalando-docker--wsl-no-windows) descrita posteriormente.
 > 
 > ### Verificando a Existência do Docker no Linux
-> Abra um terminal e execute o comando `sudo docker run hello-world`. Se você obter uma mensagem de retorno com o comando bem-sucedido, o Docker estará instalado em sua máquina. , avance para a etapa de [instalação do Docker no Linux](#instalando-o-docker-no-linux).
+> Abra um terminal e execute o comando `sudo docker run hello-world`. Se você obter uma mensagem de retorno com o comando bem-sucedido, o Docker estará instalado em sua máquina. , avance para a etapa de [instalação do Docker no Linux](#instalando-docker-no-linux).
 
 Caso contrário, siga as etapas abaixo descrevendo o procedimento de instalação em sua máquina:
 

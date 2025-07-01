@@ -1,5 +1,5 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
-import { env } from '../../../env'
+import { env } from '@/env'
 
 export async function refreshToken(
   request: FastifyRequest,
