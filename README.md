@@ -60,9 +60,9 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Todas as principais mudanças foram discorridas em mais detalhes nos tópicos listados abaixo:
 
 <details>
-<summary>Reorganização da Estrutura de Diretórios de <i><strong>Use Cases</strong></i></summary>
+<summary>Reorganização da Estrutura de Diretórios de <strong>Use Cases</strong> (Clique para Expandir)</summary>
 
-## Reorganização da Estrutura de Diretórios de ***Use Cases***
+## Reorganização da Estrutura de Diretórios de **Use Cases**
 
 Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
 
@@ -100,9 +100,9 @@ O principal revés dessa abordagem está no pequeno aumento da complexidade dos 
 </details>
 
 <details>
-<summary>Implementação do <i><strong>Swagger</strong></i></summary>
+<summary>Implementação do <strong>Swagger</strong> (Clique para Expandir)</summary>
 
-## Implementação do ***Swagger***
+## Implementação do **Swagger**
 
 [Swagger](https://swagger.io) é um conjunto de ferramentas para documentação e teste de APIs RESTful. Seu principal objetivo é descrever de forma padronizada, usando o formato OpenAPI, como uma API funciona — incluindo endpoints disponíveis, parâmetros, retornos, autenticação e afins.
 
@@ -154,6 +154,8 @@ A seguir, mostramos o procedimento básico de documentação de uma rota, utiliz
 Primeiramente, criamos o objeto de validação do corpo da requisição com o `Zod` no arquivo `src/http/controllers/user/register.ts`:
 
 ```ts
+import { z } from 'zod'
+
 export const registerBodySchema = z.object({ ... })
 ```
 
@@ -162,6 +164,8 @@ export const registerBodySchema = z.object({ ... })
 Agora criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
 
 ```ts
+import zodToJsonSchema from 'zod-to-json-schema'
+
 const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
 ```
 
@@ -213,6 +217,8 @@ export const createUserSwaggerSchema = {
 Por fim, vamos cadastrar o SwaggerSchema recém-criado na respectiva rota, no arquivo `src/http/controllers/user/routes.ts`:
 
 ```ts
+import { createUserSwaggerSchema } from '@/swagger-schemas/user/create-user-schema'
+
 app.post(
   '/users',
   {
@@ -269,7 +275,7 @@ Se você já possui o [Docker](https://pt.wikipedia.org/wiki/Docker_(software)) 
 > Abra o menu iniciar e pesquise se o programa `Docker Desktop` está instalado em sua máquina. Alternativamente, abra um terminal com o WSL e tente o comando `sudo docker --version`. Se você não sabe abrir ou configurar o WSL, avance para a [etapa de instalação do Docker + WSL](#instalando-docker--wsl-no-windows) descrita posteriormente.
 > 
 > ### Verificando a Existência do Docker no Linux
-> Abra um terminal e execute o comando `sudo docker run hello-world`. Se você obter uma mensagem de retorno com o comando bem-sucedido, o Docker estará instalado em sua máquina. , avance para a etapa de [instalação do Docker no Linux](#instalando-docker-no-linux).
+> Abra um terminal e execute o comando `sudo docker --version`. Se você obter uma mensagem de retorno com o comando bem-sucedido, o Docker estará instalado em sua máquina. , avance para a etapa de [instalação do Docker no Linux](#instalando-docker-no-linux).
 
 Caso contrário, siga as etapas abaixo descrevendo o procedimento de instalação em sua máquina:
 
@@ -294,7 +300,7 @@ wsl
 Aguarde o término do processo e siga as etapas que o terminal solicitar, como a criação de um novo usuário e senha.
 
 > [!WARNING]
-> Se você obtiver algum erro durante a execução de algum dos comandos listados acima, significa que o serviço necessário para criar a máquina virtual (VM) do WSL2 não está disponível ou não pode ser iniciado. É um erro comum quando algum requisito do WSL2 está desativado, corrompido ou mal configurado. Para solucionar este problema, siga as seguintes etapas:
+> Se você obtiver algum erro durante a execução de algum dos comandos listados acima, significa que o serviço necessário para criar a [máquina virtual (VM)](https://pt.wikipedia.org/wiki/M%C3%A1quina_virtual) do WSL2 não está disponível ou não pode ser iniciado. É um erro comum quando algum requisito do WSL2 está desativado, corrompido ou mal configurado. Para solucionar este problema, siga as seguintes etapas:
 > 1. Abra um novo terminal com permissão de administrador.
 > 2. Execute o comando `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart` e, logo em seguida, execute `dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart`.
 > 3. Reinicie o seu computador.
