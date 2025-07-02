@@ -361,6 +361,6 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 - **Design Figma do Projeto**: [Clique Aqui](https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0)
 
 ## Equipe de Desenvolvimento
-- **Product Owner** : [Douglas Cristiano](https://github.com/DougCristiano) 
-- **Dev Backend** : [Filype Abreu](https://github.com/zfrekey)
-- **Dev Backend** : [Allber Ferreira](https://github.com/AFSFerreira)
+- **Product Owner**: [Douglas Cristiano](https://github.com/DougCristiano) 
+- **Dev Backend**: [Filype Abreu](https://github.com/zfrekey)
+- **Dev Backend**: [Allber Ferreira](https://github.com/AFSFerreira)
