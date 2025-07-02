@@ -56,7 +56,10 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 ```
 
 ## Sobre a Estrutura
-A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Essas alterações concentram-se especificamente na organização do diretório de *use-cases*.
+A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Todas as principais mudanças foram discorridas em mais detalhes nos tópicos listados abaixo:
+
+<details>
+<summary>Reorganização da Estrutura de Diretórios de <i><strong>Use Cases</strong></i></summary>
 
 Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
 
@@ -91,18 +94,158 @@ contexto, pois existem múltiplos erros que são comuns a muitos casos de uso.
 Essa decisão justifica-se pela necessidade de uma organização mais sofisticada dos arquivos. Em comparação com outros projetos existentes na empresa, os arquivos de estavam excessivamente dispersos, e isto, por sua vez, dificultava a localização de casos de uso específicos com base em seu contexto ou modelo associado.
 
 O principal revés dessa abordagem está no pequeno aumento da complexidade dos caminhos relativos utilizados para referenciar arquivos de *factories* e *use-cases* — ainda que atenuado pelos aliases definidos no arquivo `tsconfig.json`. Contudo, após discussões sobre as implicações positivas e negativas da mudança, optamos por adotar essa reorganização estrutural como uma medida de melhoria na futura manutenção e escalabilidade do projeto.
+</details>
+
+<details>
+<summary>Implementação do <i><strong>Swagger</strong></i></summary>
+
+[Swagger](https://swagger.io) é um conjunto de ferramentas para documentação e teste de APIs RESTful. Seu principal objetivo é descrever de forma padronizada, usando o formato OpenAPI, como uma API funciona — incluindo endpoints disponíveis, parâmetros, retornos, autenticação e afins.
+
+A tecnologia utilizada para a documentação das rotas do backend é uma variação do Swagger voltada especificamente para o Fastify, chamada [Fastify-Swagger](https://www.npmjs.com/package/@fastify/swagger). Com essa biblioteca, podemos documentar detalhadamente cada uma das rotas e exibi-las visualmente de forma organizada na rota `/docs`, com o auxílio da biblioteca [Fastify-Swagger-UI](https://www.npmjs.com/package/@fastify/swagger-ui), incluindo descrições, parâmetros, corpo da requisição e possíveis respostas.
+
+Usualmente, o Swagger é implementado em um único arquivo presente na raiz do projeto, chamado `swagger.json`. A documentação nesse arquivo é criada segundo uma estrutura específica em formato `JSON`, com aninhamento de objetos, arrays e propriedades. Segue abaixo um pequeno exemplo hipotético para fins de demonstração:
+
+```js
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Astrobiologia Backend",
+    "description": "Documentação para o consumo da API do sistema da comunidade brasileira de Astrobiologia",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Criação de um novo usuário no sistema",
+        "description": "Cria uma nova conta de usuário com todas as informações necessárias, incluindo o upload da imagem do perfil.",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "Usuário criado com sucesso"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Contudo, apesar de o projeto possuir documentação com o Swagger, o arquivo `swagger.json` é inexistente. Isso se deve ao fato de que existiam problemas inerentes à documentação centralizada em um único arquivo. Alguns desses problemas são:
+
+- **Desacoplamento do código-fonte real**: A documentação fica separada do código, o que pode gerar divergência entre o que está documentado e o que realmente é implementado.
+
+- **Redundância de especificação**: Violação do [princípio DRY](https://vinioolvrs.medium.com/conhe%C3%A7a-os-princ%C3%ADpios-dry-kiss-e-yagni-9fc4ab46b0b9) ao duplicar o schema de validação do Zod no código e na documentação.
+
+- **Dificuldade de composição modular**: Em APIs grandes, como é o nosso caso, um único `swagger.json` centralizado torna-se **massivo** com o decorrer do desenvolvimento, dificultando a navegabilidade e inviabilizando a divisão modular do contrato da API.
+
+Assim, optamos por contornar esse problema desenvolvendo uma abordagem alternativa baseada na divisão da documentação por rotas, em arquivos distintos. Em resumo, os principais aspectos dessa alternativa são:
+
+- Embutir os schemas de documentação diretamente na definição de cada rota.
+- Documentar cada rota em seus próprios arquivos, organizados por contexto de modelo, no diretório `src/schemas`.
+- Sincronizar automaticamente o schema em `Zod` utilizado para a validação das entradas com a documentação produzida.
+
+A seguir, mostramos o procedimento básico de documentação de uma rota, utilizando como exemplo o processo de criação de um usuário:
+
+1. Primeiramente, criamos o objeto de validação do corpo da requisição com o `Zod` no arquivo `src/http/controllers/user/register.ts`:
+
+```ts
+export const registerBodySchema = z.object({ ... })
+```
+
+É necessário exportar o schema para que sua definição possa ser convertida diretamente em um objeto utilizado na documentação.
+
+2. Criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
+
+```ts
+export const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
+```
+
+Esse `jsonSchema` será utilizado para definir as entradas da rota no Swagger, em conjunto com o parâmetro adicional que representa o campo da imagem de perfil:
+
+```ts
+export const createUserBodySchemaWithFile = {
+  ...createUserBodyJsonSchema,
+  properties: {
+    profileImage: {
+      type: 'string',
+      format: 'binary',
+      description: 'Imagem de perfil do usuário (JPEG, JPG, PNG, WebP)',
+    },
+    ...createUserBodyJsonSchema.properties,
+  },
+}
+
+export const createUserSwaggerSchema = {
+  tags: ['users'],
+  summary: 'Criar um novo usuário',
+  description:
+    'Cria uma nova conta de usuário com todas as informações obrigatórias, incluindo upload de imagem de perfil',
+  consumes: ['multipart/form-data'],
+  body: createUserBodySchemaWithFile,
+  response: {
+    201: {
+      ...getUserSchemaItem,
+      description: 'Usuário criado com sucesso',
+    },
+    400: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Requisição inválida – erros de validação ou usuário já existe',
+    },
+    500: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Erro interno do servidor',
+    },
+  },
+}
+```
+
+3. Por fim, vamos cadastrar o SwaggerSchema recém-criado na respectiva rota, no arquivo `src/http/controllers/user/routes.ts`:
+
+```ts
+app.post(
+  '/users',
+  {
+    ...,
+    schema: createUserSwaggerSchema,
+    validatorCompiler: () => () => true,
+  },
+  register
+)
+```
+
+Na definição acima, o parâmetro `schema` define o SwaggerSchema referente à rota, contendo seus parâmetros de payload e todas as possíveis respostas.
+
+Entretanto, há um comportamento padrão importante: o Fastify utiliza, por padrão, o schema definido em `schema` para validar as entradas da requisição. Esse comportamento é indesejado nesse caso, pois a validação já ocorre no controller responsável pelo caso de uso de criação de usuário. Para evitar uma validação duplicada, utilizamos o parâmetro `validatorCompiler: () => () => true` para desativar a validação automática com o schema do Swagger.
+
+Aplicando esse padrão às demais rotas, conseguimos criar uma documentação consistente, modular e escalável para o projeto, mantendo-a atualizada e, sobretudo, acessível a quem desejar consultá-la.
+</details>
 
 
 ## O Que Fizemos
 
-- [x] Configuração do Backend com Typescript, Husky e Linter
-- [ ] Modelo Completo do Banco de Dados
-- [x] Documentação das Instruções de Setup
-- [ ] Swagger do Servidor
-- [x] Rota para Cadastrar Usuários
-- [x] Rota para Autenticar Usuários
-- [ ] Endpoints para Tratar os Dados do Usuário
-- [x] Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
+- [x] 🟢 Configuração do Backend com Typescript, Husky e Linter
+- [ ] 🟡 Modelo Completo do Banco de Dados
+- [x] 🟢 Documentação das Instruções de Setup
+- [x] 🟡 Swagger do Servidor
+- [x] 🔵 Rota para Cadastrar Usuários
+- [x] 🔵 Rota para Autenticar Usuários
+- [ ] 🟡 Endpoints para Tratar os Dados do Usuário
+- [x] 🟡 Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
+
+> [!NOTE]
+> ### Legenda
+> - [ ] - Funcionalidade não Implementada  
+> - [x] - Funcionalidade Implementada
+> 
+> &nbsp;🟡 - Desenvolvimento da Funcionalidade em Andamento  
+> &nbsp;🔵 - Desenvolvimento da Funcionalidade em Revisão  
+> &nbsp;🟢 - Desenvolvimento da Funcionalidade Concluído
 
 ## Como Executar o Servidor
 
@@ -207,6 +350,9 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 8. (**Opcional**) Execute `npx prisma migrate dev` para aplicar as migrações se desejar preservar dados existentes.
 9. Execute `npx prisma migrate reset` para resetar o banco e popular com dados de teste definidos em `prisma/seed.ts`.
 10. Rode o projeto com o comando: `npm run start:dev`.
+
+## Links Externos
+<<<template do camara e figma>>>
 
 ## Equipe de Desenvolvimento
 - **Product Owner** : [Douglas Cristiano](https://github.com/DougCristiano) 
