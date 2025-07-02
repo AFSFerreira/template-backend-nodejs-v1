@@ -2,9 +2,7 @@ import { registerBodySchema } from '@/http/controllers/user/register'
 import zodToJsonSchema from 'zod-to-json-schema'
 import { getUserSchemaItem } from './get-user-schema'
 
-const createUserBodySchema = zodToJsonSchema(
-  registerBodySchema,
-) as any
+const createUserBodySchema = zodToJsonSchema(registerBodySchema) as any
 
 export const createUserBodySchemaWithFile = {
   ...createUserBodySchema,
