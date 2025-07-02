@@ -303,7 +303,7 @@ Aguarde o término do processo e siga as etapas que o terminal solicitar, como a
 > 
 > Após concluir com êxito as etapas descritas acima, abra novamente um terminal na raíz do projeto e execute o comando `wsl` para acessar o terminal do wsl.
  
-Finalziando as etapas anteriores, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
+Finalizando as etapas anteriores, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
  
 ### Instalando Docker no Linux
 Antes de proceder com a instalação, certifitique-se de remover quaisquer dependências conflitantes com o Docker de sua máquina. Para isto, execute o seguinte comando:
@@ -313,7 +313,7 @@ for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker c
 ```
 
 > [!TIP]
-> Cline no ícone de "*copy to clipboard*" localizado no canto superior direito dos blocos de código com o estilo similar ao que está presente logo acima desta dica para copiar rapidamente todo o código contido no trecho.
+> Clique no ícone de "*copy to clipboard*" localizado no canto superior direito dos blocos de código com o estilo similar ao que está presente logo acima desta dica para copiar rapidamente todo o código contido no trecho.
  
 Agora, antes de instalar o Docker, é preciso configurar o Docker apt Repository para preparar o ambiente de execução. Para tal, execute sequencialmente os comandos listados abaixo:
 
