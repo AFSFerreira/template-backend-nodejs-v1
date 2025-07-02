@@ -162,7 +162,7 @@ export const registerBodySchema = z.object({ ... })
 Agora criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
 
 ```ts
-export const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
+const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
 ```
 
 Esse `jsonSchema` será utilizado para definir as entradas da rota no Swagger, em conjunto com o parâmetro adicional que representa o campo da imagem de perfil:
@@ -235,7 +235,7 @@ Aplicando esse padrão às demais rotas, conseguimos criar uma documentação co
 ## O Que Fizemos
 
 - [x] 🟢 Configuração do Backend com Typescript, Husky e Linter
-- [ ] 🟡 Modelo Completo do Banco de Dados
+- [x] 🟡 Modelo do Banco de Dados
 - [x] 🟢 Documentação das Instruções de Setup
 - [x] 🟡 Swagger do Servidor
 - [x] 🔵 Rota para Cadastrar Usuários
@@ -303,7 +303,7 @@ Aguarde o término do processo e siga as etapas que o terminal solicitar, como a
 > 
 > Após concluir com êxito as etapas descritas acima, abra novamente um terminal na raíz do projeto e execute o comando `wsl` para acessar o terminal do wsl.
  
-Finalziando as etapas anteriores, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
+Finalizando as etapas anteriores, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
  
 ### Instalando Docker no Linux
 Antes de proceder com a instalação, certifitique-se de remover quaisquer dependências conflitantes com o Docker de sua máquina. Para isto, execute o seguinte comando:
@@ -313,7 +313,7 @@ for pkg in docker.io docker-doc docker-compose docker-compose-v2 podman-docker c
 ```
 
 > [!TIP]
-> Cline no ícone de "*copy to clipboard*" localizado no canto superior direito dos blocos de código com o estilo similar ao que está presente logo acima desta dica para copiar rapidamente todo o código contido no trecho.
+> Clique no ícone de "*copy to clipboard*" localizado no canto superior direito dos blocos de código com o estilo similar ao que está presente logo acima desta dica para copiar rapidamente todo o código contido no trecho.
  
 Agora, antes de instalar o Docker, é preciso configurar o Docker apt Repository para preparar o ambiente de execução. Para tal, execute sequencialmente os comandos listados abaixo:
 
