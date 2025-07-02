@@ -31,10 +31,10 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
      ├─── middlewares
      ├─── services
      ├─── utils
-     ├─── repositories
-     │    └─── prisma
      ├─── schemas
      │    └─── user
+     ├─── repositories
+     │    └─── prisma
      ├─── http
      │    └─── controllers
      │         └─── user
