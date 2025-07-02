@@ -32,7 +32,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
      ├─── middlewares
      ├─── services
      ├─── utils
-     ├─── schemas
+     ├─── swagger-schemas
      │    └─── user
      ├─── repositories
      │    └─── prisma
