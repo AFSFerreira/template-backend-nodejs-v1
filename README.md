@@ -108,7 +108,7 @@ O principal revés dessa abordagem está no pequeno aumento da complexidade dos 
 
 A tecnologia utilizada para a documentação das rotas do backend é uma variação do Swagger voltada especificamente para o Fastify, chamada [Fastify-Swagger](https://www.npmjs.com/package/@fastify/swagger). Com essa biblioteca, podemos documentar detalhadamente cada uma das rotas e exibi-las visualmente de forma organizada na rota `/docs`, com o auxílio da biblioteca [Fastify-Swagger-UI](https://www.npmjs.com/package/@fastify/swagger-ui), incluindo descrições, parâmetros, corpo da requisição e possíveis respostas.
 
-Usualmente, o Swagger é implementado em um único arquivo presente na raiz do projeto, chamado `swagger.json`. A documentação nesse arquivo é criada segundo uma estrutura específica em formato `JSON`, com aninhamento de objetos, arrays e propriedades. Segue abaixo um pequeno exemplo hipotético para fins de demonstração:
+Usualmente, o Swagger é implementado em um único arquivo presente na raiz do projeto, chamado `swagger.json`. A documentação nesse arquivo é criada segundo uma estrutura específica em formato JSON, com aninhamento de objetos, arrays e propriedades. Segue abaixo um pequeno exemplo hipotético para fins de demonstração:
 
 ```js
 {
@@ -151,7 +151,7 @@ Assim, optamos por contornar esse problema desenvolvendo uma abordagem alternati
 
 A seguir, mostramos o procedimento básico de documentação de uma rota, utilizando como exemplo o processo de criação de um usuário:
 
-1. Primeiramente, criamos o objeto de validação do corpo da requisição com o `Zod` no arquivo `src/http/controllers/user/register.ts`:
+Primeiramente, criamos o objeto de validação do corpo da requisição com o `Zod` no arquivo `src/http/controllers/user/register.ts`:
 
 ```ts
 export const registerBodySchema = z.object({ ... })
@@ -159,7 +159,7 @@ export const registerBodySchema = z.object({ ... })
 
 É necessário exportar o schema para que sua definição possa ser convertida diretamente em um objeto utilizado na documentação.
 
-2. Criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
+Agora criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
 
 ```ts
 export const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
@@ -210,7 +210,7 @@ export const createUserSwaggerSchema = {
 }
 ```
 
-3. Por fim, vamos cadastrar o SwaggerSchema recém-criado na respectiva rota, no arquivo `src/http/controllers/user/routes.ts`:
+Por fim, vamos cadastrar o SwaggerSchema recém-criado na respectiva rota, no arquivo `src/http/controllers/user/routes.ts`:
 
 ```ts
 app.post(
