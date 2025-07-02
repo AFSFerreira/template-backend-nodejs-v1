@@ -235,7 +235,7 @@ Aplicando esse padrão às demais rotas, conseguimos criar uma documentação co
 ## O Que Fizemos
 
 - [x] 🟢 Configuração do Backend com Typescript, Husky e Linter
-- [ ] 🟡 Modelo Completo do Banco de Dados
+- [x] 🟡 Modelo do Banco de Dados
 - [x] 🟢 Documentação das Instruções de Setup
 - [x] 🟡 Swagger do Servidor
 - [x] 🔵 Rota para Cadastrar Usuários
