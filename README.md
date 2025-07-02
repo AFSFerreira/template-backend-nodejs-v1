@@ -62,6 +62,8 @@ A estrutura básica do projeto segue um padrão em camadas, amplamente adotado n
 <details>
 <summary>Reorganização da Estrutura de Diretórios de <i><strong>Use Cases</strong></i></summary>
 
+## Reorganização da Estrutura de Diretórios de ***Use Cases***
+
 Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
 
 ```bash
@@ -99,6 +101,8 @@ O principal revés dessa abordagem está no pequeno aumento da complexidade dos 
 
 <details>
 <summary>Implementação do <i><strong>Swagger</strong></i></summary>
+
+## Implementação do ***Swagger***
 
 [Swagger](https://swagger.io) é um conjunto de ferramentas para documentação e teste de APIs RESTful. Seu principal objetivo é descrever de forma padronizada, usando o formato OpenAPI, como uma API funciona — incluindo endpoints disponíveis, parâmetros, retornos, autenticação e afins.
 
