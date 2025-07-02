@@ -1,8 +1,8 @@
-export const refreshTokenSchema = {
+export const refreshTokenSwaggerSchema = {
   tags: ['authentication'],
-  summary: 'Refresh access token',
+  summary: 'Renovar token de acesso',
   description:
-    'Refresh the access token using the refresh token stored in cookies',
+    'Renovar o token de acesso usando o refresh token armazenado nos cookies',
   response: {
     200: {
       type: 'object',
@@ -10,6 +10,7 @@ export const refreshTokenSchema = {
         accessToken: { type: 'string' },
       },
       required: ['accessToken'],
+      description: 'Token de acesso renovado com sucesso',
     },
     401: {
       type: 'object',
@@ -19,6 +20,7 @@ export const refreshTokenSchema = {
           enum: ['Invalid token', 'Token expired', 'No token provided'],
         },
       },
+      description: 'Não autorizado - falha na validação do token',
     },
   },
 }

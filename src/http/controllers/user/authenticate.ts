@@ -4,8 +4,7 @@ import { env } from '@/env'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authenticate-use-case'
 
-// NOTE: Manter os schemas de rotas alinhados com a validação do Zod
-const authenticateBodySchema = z.object({
+export const authenticateBodySchema = z.object({
   emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
   password: z
     .string()

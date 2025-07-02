@@ -10,8 +10,7 @@ import path from 'path'
 import sharp from 'sharp'
 import { z } from 'zod'
 
-// NOTE: Manter os schemas de rotas alinhados com a validação do Zod
-const registerBodySchema = z
+export const registerBodySchema = z
   .object({
     email: z.string().email().min(6),
     password: z.string().min(6),
@@ -166,7 +165,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     if (userId !== undefined) {
       try {
         // HACK: Utilizando a instância do prisma diretamente para realizar a deleção,
-        // substituir para o caso de uso de deleção aqui posteriormente quando estiver concluido
+        // substituir para o caso de uso de deleção aqui posteriormente quando este for criado
         await prisma.user.delete({ where: { id: userId } })
       } catch (deleteError) {
         throw new Error('Failed to save user profile picture.')

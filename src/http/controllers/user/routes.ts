@@ -1,11 +1,11 @@
 import { upload } from '@/lib/multer'
 import { authentication } from '@/middlewares/authentication'
 import { verifyPermissions } from '@/middlewares/verifyPermissions'
-import { authenticateSchema } from '@/schemas/user/authenticate-schema'
-import { createUserSchema } from '@/schemas/user/create-user-schema'
-import { exportUserDataSchema } from '@/schemas/user/export-user-data-schema'
-import { logoutSchema } from '@/schemas/user/logout-schema'
-import { refreshTokenSchema } from '@/schemas/user/refresh-token-schema'
+import { authenticateSwaggerSchema } from '@/schemas/user/authenticate-schema'
+import { createUserSwaggerSchema } from '@/schemas/user/create-user-schema'
+import { exportUserDataSwaggerSchema } from '@/schemas/user/export-user-data-schema'
+import { logoutSwaggerSchema } from '@/schemas/user/logout-schema'
+import { refreshTokenSwaggerSchema } from '@/schemas/user/refresh-token-schema'
 import { USER_ROLE } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
@@ -19,7 +19,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/users/export',
     {
       preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
-      schema: exportUserDataSchema,
+      schema: exportUserDataSwaggerSchema,
       validatorCompiler: () => () => true,
     },
     exportUserData,
@@ -29,7 +29,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/users',
     {
       preHandler: [upload.single('profileImage')],
-      schema: createUserSchema,
+      schema: createUserSwaggerSchema,
       validatorCompiler: () => () => true,
     },
     register,
@@ -38,7 +38,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/sessions',
     {
-      schema: authenticateSchema,
+      schema: authenticateSwaggerSchema,
       validatorCompiler: () => () => true,
     },
     authenticate,
@@ -47,7 +47,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/sessions/refresh-token',
     {
-      schema: refreshTokenSchema,
+      schema: refreshTokenSwaggerSchema,
       validatorCompiler: () => () => true,
     },
     refreshToken,
@@ -57,7 +57,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/sessions',
     {
       preHandler: [authentication],
-      schema: logoutSchema,
+      schema: logoutSwaggerSchema,
       validatorCompiler: () => () => true,
     },
     logout,

@@ -1,11 +1,11 @@
-export const exportUserDataSchema = {
+export const exportUserDataSwaggerSchema = {
   tags: ['users'],
-  summary: 'Export all users data as CSV',
+  summary: 'Exportar dados de todos os usuários CSV',
   description:
-    'Export all users data as a CSV file. Requires admin permissions.',
+    'Exporta todos os dados de todos os usuários como arquivo CSV. Requer permissões de administrador.',
   response: {
     200: {
-      description: 'CSV file content with all users data',
+      description: 'Conteúdo do arquivo CSV com dados de todos os usuários',
       content: {
         'text/csv': {
           schema: {
@@ -20,14 +20,15 @@ export const exportUserDataSchema = {
       properties: {
         message: { type: 'string' },
       },
-      description: 'Unauthorized - authentication required',
+      description: 'Não autorizado - autenticação obrigatória',
     },
     403: {
       type: 'object',
       properties: {
         message: { type: 'string' },
       },
-      description: 'Forbidden - insufficient permissions (admin role required)',
+      description:
+        'Proibido - permissões insuficientes (função de administrador obrigatória)',
     },
   },
 }

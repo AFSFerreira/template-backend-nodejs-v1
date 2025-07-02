@@ -1,29 +1,14 @@
+import { authenticateBodySchema } from '@/http/controllers/user/authenticate'
+import zodToJsonSchema from 'zod-to-json-schema'
 import { getUserSchemaItem } from './get-user-schema'
 
-export const authenticateBodySchema = {
-  type: 'object',
-  properties: {
-    emailOrUsername: {
-      oneOf: [
-        { type: 'string', format: 'email' },
-        { type: 'string', minLength: 4 },
-      ],
-    },
-    password: {
-      type: 'string',
-      minLength: 8,
-      pattern: '^(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&]).*$',
-    },
-  },
-  required: ['emailOrUsername', 'password'],
-  additionalProperties: false,
-}
+export const authenticateSchema = zodToJsonSchema(authenticateBodySchema)
 
-export const authenticateSchema = {
+export const authenticateSwaggerSchema = {
   tags: ['authentication'],
-  summary: 'Authenticate user',
-  description: 'Authenticate user with email/username and password',
-  body: authenticateBodySchema,
+  summary: 'Autenticar usuário',
+  description: 'Autenticar usuário com email/nome de usuário e senha',
+  body: authenticateSchema,
   response: {
     200: {
       type: 'object',

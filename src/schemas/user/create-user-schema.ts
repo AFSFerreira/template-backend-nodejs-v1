@@ -1,158 +1,49 @@
-import { YEAR_MONTH_REGEX } from '@/constants/regex'
-import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
+import { registerBodySchema } from '@/http/controllers/user/register'
+import zodToJsonSchema from 'zod-to-json-schema'
 import { getUserSchemaItem } from './get-user-schema'
 
-export const createUserBodySchema = {
-  type: 'object',
+export const createUserBodyJsonSchema = zodToJsonSchema(
+  registerBodySchema,
+) as any
+
+export const createUserBodySchemaWithFile = {
+  ...createUserBodyJsonSchema,
   properties: {
     profileImage: {
       type: 'string',
       format: 'binary',
-      description: 'User profile image file (JPEG, PNG, WebP)',
+      description: 'Imagem de perfil do usuário (JPEG, JPG, PNG, WebP)',
     },
-    email: { type: 'string', format: 'email', minLength: 6 },
-    password: { type: 'string', minLength: 6 },
-    fullName: { type: 'string', minLength: 5 },
-    username: { type: 'string', minLength: 5 },
-    birthDate: { type: 'string', format: 'date' },
-    lattesCVLink: { type: 'string', format: 'uri' },
-    profileGSLink: { type: 'string', format: 'uri' },
-    profileRIDLink: { type: 'string', format: 'uri' },
-    orcidNumber: { type: 'string' },
-    institutionName: { type: 'string' },
-    departmentName: { type: 'string' },
-    institutionComplement: { type: 'string' },
-    occupation: {
-      type: 'string',
-      enum: Object.values(OCCUPATION),
-    },
-    educationLevel: {
-      type: 'string',
-      enum: Object.values(EDUCATION_LEVEL),
-    },
-    identityType: {
-      type: 'string',
-      enum: Object.values(IDENTITY_TYPE),
-    },
-    identityDocument: { type: 'string' },
-    emailIsPublic: { type: 'boolean' },
-    astrobiologyOrRelatedStartYear: { type: 'number' },
-    interestDescription: { type: 'string', maxLength: 2000 },
-    receiveReports: { type: 'boolean' },
-    publicInformation: { type: 'string' },
-    mainAreaActivity: { type: 'string' },
-    specificActivity: { type: 'string' },
-    specificActivityDescription: { type: 'string' },
-    keywords: {
-      type: 'array',
-      items: { type: 'string' },
-      maxItems: 4,
-    },
-    postalCode: { type: 'string' },
-    country: { type: 'string' },
-    state: { type: 'string' },
-    city: { type: 'string' },
-    neighborhood: { type: 'string' },
-    street: { type: 'string' },
-    houseNumber: { type: 'string' },
-    courseName: { type: 'string' },
-    startGraduationDate: {
-      type: 'string',
-      pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1),
-    },
-    expectedGraduationDate: {
-      type: 'string',
-      pattern: `${YEAR_MONTH_REGEX}`.slice(1, -1),
-    },
-    supervisorName: { type: 'string' },
-    scholarshipHolder: { type: 'boolean' },
-    sponsoringOrganization: { type: 'string' },
-    academicPublications: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          title: { type: 'string' },
-          authors: { type: 'string' },
-          publicationDate: { type: 'string', format: 'date' },
-          journalName: { type: 'string' },
-          volume: { type: 'string' },
-          editionNumber: { type: 'string' },
-          pageInterval: { type: 'string' },
-          doiLink: { type: 'string' },
-        },
-        required: [
-          'title',
-          'authors',
-          'publicationDate',
-          'journalName',
-          'volume',
-          'editionNumber',
-          'pageInterval',
-          'doiLink',
-        ],
-      },
-      maxItems: 5,
-    },
+    ...createUserBodyJsonSchema.properties,
   },
-  required: [
-    'email',
-    'password',
-    'fullName',
-    'username',
-    'birthDate',
-    'institutionName',
-    'occupation',
-    'educationLevel',
-    'identityType',
-    'identityDocument',
-    'emailIsPublic',
-    'astrobiologyOrRelatedStartYear',
-    'interestDescription',
-    'receiveReports',
-    'publicInformation',
-    'mainAreaActivity',
-    'specificActivity',
-    'keywords',
-    'postalCode',
-    'country',
-    'state',
-    'city',
-    'neighborhood',
-    'street',
-    'houseNumber',
-    'startGraduationDate',
-    'expectedGraduationDate',
-    'scholarshipHolder',
-    'academicPublications',
-  ],
 }
 
-export const createUserSchema = {
+export const createUserSwaggerSchema = {
   tags: ['users'],
-  summary: 'Create a new user',
+  summary: 'Criar um novo usuário',
   description:
-    'Create a new user account with all required information including profile image upload',
+    'Cria uma nova conta de usuário com todas as informações obrigatórias incluindo upload de imagem de perfil',
   consumes: ['multipart/form-data'],
-  body: createUserBodySchema,
+  body: createUserBodySchemaWithFile,
   response: {
     201: {
-      description: 'User created successfully',
       ...getUserSchemaItem,
+      description: 'Usuário criado com sucesso',
     },
     400: {
       type: 'object',
       properties: {
         message: { type: 'string' },
       },
-      description: 'Bad request - validation errors or user already exists',
+      description:
+        'Requisição inválida - erros de validação ou usuário já existe',
     },
     500: {
       type: 'object',
       properties: {
         message: { type: 'string' },
       },
-      description: 'Internal server error',
+      description: 'Erro interno do servidor',
     },
   },
 }
