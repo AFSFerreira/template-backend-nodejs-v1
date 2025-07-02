@@ -127,21 +127,6 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   let compressedBuffer: Buffer | undefined
   let userId: string | undefined
 
-  if (imageBuffer !== undefined) {
-    const fileNameHash = crypto.randomBytes(10).toString('hex')
-    const timestamp = Date.now()
-    const finalName = `${fileNameHash}-${timestamp}.webp`
-
-    const uploadsDir = path.resolve(process.cwd(), 'uploads', 'profile-images')
-
-    finalPath = path.join(uploadsDir, finalName)
-
-    compressedBuffer = await sharp(imageBuffer as Buffer)
-      .resize({ width: 192, height: 192 }) // 192 x 192px
-      .webp({ quality: 70 })
-      .toBuffer()
-  }
-
   try {
     const registerUserCase = makeRegisterUseCase()
 
@@ -154,6 +139,21 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     })
 
     userId = user.id // Salva o id para eventual rollback
+
+    if (imageBuffer !== undefined) {
+      const fileNameHash = crypto.randomBytes(10).toString('hex')
+      const timestamp = Date.now()
+      const finalName = `${fileNameHash}-${timestamp}.webp`
+  
+      const uploadsDir = path.resolve(process.cwd(), 'uploads', 'profile-images')
+  
+      finalPath = path.join(uploadsDir, finalName)
+  
+      compressedBuffer = await sharp(imageBuffer as Buffer)
+        .resize({ width: 192, height: 192 }) // 192 x 192px
+        .webp({ quality: 70 })
+        .toBuffer()
+    }
 
     // Persiste a imagem após criar o usuário com sucesso
     if (finalPath !== undefined && compressedBuffer !== undefined)
