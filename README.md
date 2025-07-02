@@ -7,7 +7,8 @@
 3. [Sobre a Estrutura](#sobre-a-estrutura)
 4. [O Que Fizemos](#o-que-fizemos)
 5. [Como Executar o Servidor](#como-executar-o-servidor)
-6. [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
+6. [Links Externos](#links-externos)
+7. [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
 
 ## Sobre o Projeto
 Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto consiste na reconstrução da plataforma já existente. A plataforma possui postagens de blogs, materiais de ensino/aprendizagem, informações internas, entre outros. A plataforma pretende ser uma fonte de aprendizado ao mesmo tempo que é uma porta de entrada para conhecer a sociedade.
@@ -352,7 +353,8 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 10. Rode o projeto com o comando: `npm run start:dev`.
 
 ## Links Externos
-<<<template do camara e figma>>>
+- **Template Backend Utilizado**: [Clique Aqui](https://github.com/gabriel-camara-dev/Template-backend)
+- **Design Figma do Projeto**: [Clique Aqui](https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0)
 
 ## Equipe de Desenvolvimento
 - **Product Owner** : [Douglas Cristiano](https://github.com/DougCristiano) 
