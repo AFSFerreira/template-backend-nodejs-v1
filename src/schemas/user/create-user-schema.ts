@@ -2,19 +2,19 @@ import { registerBodySchema } from '@/http/controllers/user/register'
 import zodToJsonSchema from 'zod-to-json-schema'
 import { getUserSchemaItem } from './get-user-schema'
 
-export const createUserBodyJsonSchema = zodToJsonSchema(
+const createUserBodySchema = zodToJsonSchema(
   registerBodySchema,
 ) as any
 
 export const createUserBodySchemaWithFile = {
-  ...createUserBodyJsonSchema,
+  ...createUserBodySchema,
   properties: {
     profileImage: {
       type: 'string',
       format: 'binary',
       description: 'Imagem de perfil do usuário (JPEG, JPG, PNG, WebP)',
     },
-    ...createUserBodyJsonSchema.properties,
+    ...createUserBodySchema.properties,
   },
 }
 

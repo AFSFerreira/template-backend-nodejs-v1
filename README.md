@@ -162,7 +162,7 @@ export const registerBodySchema = z.object({ ... })
 Agora criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
 
 ```ts
-export const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
+const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
 ```
 
 Esse `jsonSchema` será utilizado para definir as entradas da rota no Swagger, em conjunto com o parâmetro adicional que representa o campo da imagem de perfil:

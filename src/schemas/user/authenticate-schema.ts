@@ -2,7 +2,7 @@ import { authenticateBodySchema } from '@/http/controllers/user/authenticate'
 import zodToJsonSchema from 'zod-to-json-schema'
 import { getUserSchemaItem } from './get-user-schema'
 
-export const authenticateSchema = zodToJsonSchema(authenticateBodySchema)
+const authenticateSchema = zodToJsonSchema(authenticateBodySchema)
 
 export const authenticateSwaggerSchema = {
   tags: ['authentication'],
