@@ -4,7 +4,7 @@ import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
 // WARNING: Mudar posteriormente de objeto literal para conversão de schema zod
 // com zod-to-json.
 // NOTE: Revisar e reoganizar os corpos de response posteriormente
-export const getUserSchemaItem = {
+export const getUserJsonSchema = {
   type: 'object',
   properties: {
     email: { type: 'string', format: 'email', minLength: 6 },
@@ -123,7 +123,7 @@ export const getUserSchemaItem = {
   ],
 }
 
-export const getUserSchema = {
+export const getUserSwaggerSchema = {
   tags: ['users'],
   summary: 'Get a paginated list of users',
   description:
@@ -152,7 +152,7 @@ export const getUserSchema = {
       properties: {
         users: {
           type: 'array',
-          items: getUserSchemaItem,
+          items: getUserJsonSchema,
         },
         pagination: {
           type: 'object',
@@ -240,7 +240,7 @@ export const getUserSwaggerSchemaTranslated = {
       properties: {
         users: {
           type: 'array',
-          items: getUserSchemaItem,
+          items: getUserJsonSchema,
         },
         pagination: {
           type: 'object',

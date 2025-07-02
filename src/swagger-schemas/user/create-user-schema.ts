@@ -1,18 +1,18 @@
 import { registerBodySchema } from '@/http/controllers/user/register'
 import zodToJsonSchema from 'zod-to-json-schema'
-import { getUserSchemaItem } from './get-user-schema'
+import { getUserJsonSchema } from './get-user-schema'
 
-const createUserBodySchema = zodToJsonSchema(registerBodySchema) as any
+const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema) as any
 
-export const createUserBodySchemaWithFile = {
-  ...createUserBodySchema,
+export const createUserBodyJsonSchemaWithFile = {
+  ...createUserBodyJsonSchema,
   properties: {
     profileImage: {
       type: 'string',
       format: 'binary',
       description: 'Imagem de perfil do usuário (JPEG, JPG, PNG, WebP)',
     },
-    ...createUserBodySchema.properties,
+    ...createUserBodyJsonSchema.properties,
   },
 }
 
@@ -22,10 +22,10 @@ export const createUserSwaggerSchema = {
   description:
     'Cria uma nova conta de usuário com todas as informações obrigatórias incluindo upload de imagem de perfil',
   consumes: ['multipart/form-data'],
-  body: createUserBodySchemaWithFile,
+  body: createUserBodyJsonSchemaWithFile,
   response: {
     201: {
-      ...getUserSchemaItem,
+      ...getUserJsonSchema,
       description: 'Usuário criado com sucesso',
     },
     400: {
