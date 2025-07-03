@@ -10,16 +10,9 @@ export class PrismaAreaOfActivityRepository
     return areaOfActivity
   }
 
-  async findById(id: string) {
-    const areaOfActivity = await prisma.areaOfActivity.findUnique({
-      where: { id },
-    })
-    return areaOfActivity
-  }
-
-  async findByMainAreaActivity(mainAreaActivity: string) {
-    const areaOfActivity = await prisma.areaOfActivity.findUnique({
-      where: { mainAreaActivity },
+  async findBy(where: Prisma.AreaOfActivityWhereInput) {
+    const areaOfActivity = await prisma.areaOfActivity.findFirst({
+      where,
     })
     return areaOfActivity
   }
