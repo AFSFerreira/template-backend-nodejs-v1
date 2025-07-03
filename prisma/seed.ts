@@ -14,6 +14,22 @@ async function main() {
     }
   })
 
+  const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
+
+  const createdKeywords = await Promise.all(userKeywords.map(async value => {
+    return await prisma.keyword.upsert({
+      where: { value },
+      update: {},
+      create: { value }
+    })
+  }))
+
+  const keywordIds = createdKeywords.map(keyword => {
+    return {
+      keywordId: keyword.id
+    }
+  })
+
   const user = await prisma.user.upsert({
     where: { email: "admin@email.com" },
     update: {},
@@ -37,7 +53,7 @@ async function main() {
       astrobiologyOrRelatedStartYear: 2010,
       interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
       receiveReports: true,
-      email: 'email@example.com',
+      email: 'admin@email.com',
       passwordDigest: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
       loginAttempts: 0,
       lastLogin: null,
@@ -45,7 +61,13 @@ async function main() {
       identityType: IDENTITY_TYPE.CPF,
       identityDocument: "12345678900",
       publicInformation: "Astrobiólogo",
-      specificActivity: "Professor Interino"
+      specificActivity: "Professor Interino",
+
+      UserKeyword: {
+        createMany: {
+          data: keywordIds
+        }
+      }
     },
   })
 
@@ -99,18 +121,6 @@ async function main() {
       data: academicPublicationData
     })
   }
-
-  // const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
-
-  // userKeywords.forEach(async keyword => {
-  //   const existingKeyword = await prisma.keyword.findFirst({
-  //     where: {
-  //       value: keyword
-  //     }
-  //   })
-
-  //   // if (existingKeyword !== )
-  // })
 
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({

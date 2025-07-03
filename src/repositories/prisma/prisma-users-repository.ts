@@ -58,6 +58,25 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  async createUserWithKeywords(data: Prisma.UserUncheckedCreateInput, keywordIds: string[]) {
+    const user = await prisma.user.create({
+      data: {
+        ...data,
+        UserKeyword: {
+          createMany: {
+            data: keywordIds.map(id => {
+              return {
+                keywordId: id,
+              }
+            })
+          }
+        }
+      }
+    })
+
+    return user
+  }
+
   async findById(id: string) {
     const user = await prisma.user.findUnique({
       where: {

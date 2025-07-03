@@ -6,6 +6,7 @@ import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-re
 import type { KeywordRepository } from '@/repositories/keyword-repository'
 import type { Prisma, User } from '@prisma/client'
 import { hash } from 'bcryptjs'
+import path from 'path'
 import type { UsersRepository } from '../../repositories/users-repository'
 import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
@@ -13,12 +14,16 @@ import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email
 interface RegisterUseCaseRequest {
   mainAreaActivity: string
   keywords: string[]
+
   user: Omit<
     Prisma.UserUncheckedCreateInput,
     'passwordDigest' | 'activityAreaId' | 'profileImagePath'
   > & { password: string; profileImagePath: string | undefined }
+
   address: Omit<Prisma.AddressUncheckedCreateInput, 'userId'>
+
   enrolledCourse: Omit<Prisma.EnrolledCourseUncheckedCreateInput, 'userId'>
+
   academicPublications: Array<
     Omit<Prisma.AcademicPublicationsUncheckedCreateInput, 'userId'>
   >
@@ -65,14 +70,25 @@ export class RegisterUseCase {
       env.USER_PASSWORD_HASH_NUMBER_TIMES,
     )
 
-    const user = await this.usersRepository.create({
+    const keywordsCreated = await Promise.all(registerUseCaseInput.keywords.map(async keyword => {
+      return await this.keywordsRepository.findOrCreate(keyword)
+    }))
+
+    const keywordIds = keywordsCreated.map(keyword => keyword.id)
+
+    const user = await this.usersRepository.createUserWithKeywords({
       ...registerUseCaseInput.user,
       passwordDigest,
       profileImagePath:
         registerUseCaseInput.user.profileImagePath ??
-        './src/uploads/profile-images/default-profile-pic.png',
+        path.resolve(
+          process.cwd(),
+          'uploads',
+          'profile-images',
+          'default-profile-pic.png'
+        ),
       activityAreaId: mainAreaOfActivity.id,
-    })
+    }, keywordIds)
 
     await this.addressRepository.create({
       ...registerUseCaseInput.address,
@@ -87,13 +103,6 @@ export class RegisterUseCase {
     for (const pub of registerUseCaseInput.academicPublications) {
       await this.academicPublicationsRepository.create({
         ...pub,
-        userId: user.id,
-      })
-    }
-
-    for (const keyword of registerUseCaseInput.keywords) {
-      await this.keywordsRepository.create({
-        value: keyword,
         userId: user.id,
       })
     }
