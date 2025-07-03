@@ -41,11 +41,14 @@ export const registerBodySchema = z
       specificActivityDescription: z.string().optional(),
     }),
 
-    mainAreaActivity: z.string().transform(data => data.toLocaleUpperCase()),
+    mainAreaActivity: z.string().transform((data) => data.toLocaleUpperCase()),
 
-    keywords: z.array(z.string()).max(4).transform(data => {
-      return data.map(keyword => keyword.toUpperCase())
-    }),
+    keywords: z
+      .array(z.string())
+      .max(4)
+      .transform((data) => {
+        return data.map((keyword) => keyword.toUpperCase())
+      }),
 
     address: z.object({
       postalCode: z.string(),

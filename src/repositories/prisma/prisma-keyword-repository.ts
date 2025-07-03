@@ -14,13 +14,15 @@ export class PrismaKeywordRepository implements KeywordRepository {
   }
 
   async findManyByUserId(userId: string) {
-    const keywords = await prisma.keyword.findMany({ where: { 
-      UserKeyword: {
-        some: {
-          userId
-        }
-      }
-     }})
+    const keywords = await prisma.keyword.findMany({
+      where: {
+        UserKeyword: {
+          some: {
+            userId,
+          },
+        },
+      },
+    })
     return keywords
   }
 
@@ -29,8 +31,8 @@ export class PrismaKeywordRepository implements KeywordRepository {
       where: { value },
       update: {},
       create: {
-        value
-      }
+        value,
+      },
     })
     return keyword
   }

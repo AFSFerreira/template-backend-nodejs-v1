@@ -70,25 +70,30 @@ export class RegisterUseCase {
       env.USER_PASSWORD_HASH_NUMBER_TIMES,
     )
 
-    const keywordsCreated = await Promise.all(registerUseCaseInput.keywords.map(async keyword => {
-      return await this.keywordsRepository.findOrCreate(keyword)
-    }))
+    const keywordsCreated = await Promise.all(
+      registerUseCaseInput.keywords.map(async (keyword) => {
+        return await this.keywordsRepository.findOrCreate(keyword)
+      }),
+    )
 
-    const keywordIds = keywordsCreated.map(keyword => keyword.id)
+    const keywordIds = keywordsCreated.map((keyword) => keyword.id)
 
-    const user = await this.usersRepository.createUserWithKeywords({
-      ...registerUseCaseInput.user,
-      passwordDigest,
-      profileImagePath:
-        registerUseCaseInput.user.profileImagePath ??
-        path.resolve(
-          process.cwd(),
-          'uploads',
-          'profile-images',
-          'default-profile-pic.png'
-        ),
-      activityAreaId: mainAreaOfActivity.id,
-    }, keywordIds)
+    const user = await this.usersRepository.createUserWithKeywords(
+      {
+        ...registerUseCaseInput.user,
+        passwordDigest,
+        profileImagePath:
+          registerUseCaseInput.user.profileImagePath ??
+          path.resolve(
+            process.cwd(),
+            'uploads',
+            'profile-images',
+            'default-profile-pic.png',
+          ),
+        activityAreaId: mainAreaOfActivity.id,
+      },
+      keywordIds,
+    )
 
     await this.addressRepository.create({
       ...registerUseCaseInput.address,
