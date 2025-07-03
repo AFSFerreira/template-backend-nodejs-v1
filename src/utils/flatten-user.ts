@@ -44,7 +44,7 @@ interface FlattenedUser {
 }
 
 export function flattenUser(user: any): FlattenedUser {
-  const flattenedUser = {
+  const flattenedUser: FlattenedUser = {
     id: user.id,
     fullName: user.fullName,
     username: user.username,
@@ -82,22 +82,24 @@ export function flattenUser(user: any): FlattenedUser {
     startGraduationDate:
       user.enrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
     expectedGraduationDate:
-      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ??
-      '',
+      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ?? '',
     supervisorName: user.enrolledCourse?.supervisorName ?? '',
     scholarshipHolder: user.enrolledCourse?.scholarshipHolder ?? false,
     sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
 
-    keywords: user.keywords.map((k: any) => k.value).join('; '),
+    keywords: user.UserKeyword
+      ?.map((uk: any) => uk.keyword?.value)
+      .filter(Boolean)
+      .join('; ') ?? '',
+
     publications: user.academicPublications
-      .map(
+      ?.map(
         (p: any) =>
           `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
       )
-      .join(' | '),
+      .join(' | ') ?? '',
   }
-
-  console.log(flattenedUser)
 
   return flattenedUser
 }
+
