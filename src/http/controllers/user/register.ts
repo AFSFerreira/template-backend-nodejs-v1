@@ -28,7 +28,9 @@ export const registerBodySchema = z
       educationLevel: z.enum(
         Object.values(EDUCATION_LEVEL) as [string, ...string[]],
       ),
-      identityType: z.enum(Object.values(IDENTITY_TYPE) as [string, ...string[]]),
+      identityType: z.enum(
+        Object.values(IDENTITY_TYPE) as [string, ...string[]],
+      ),
       identityDocument: z.string(),
       emailIsPublic: z.coerce.boolean(),
       astrobiologyOrRelatedStartYear: z.coerce.number(),
@@ -38,7 +40,7 @@ export const registerBodySchema = z
       specificActivity: z.string(),
       specificActivityDescription: z.string().optional(),
     }),
-    
+
     mainAreaActivity: z.string(),
 
     keywords: z.array(z.string()).max(4),
@@ -111,10 +113,16 @@ export const registerBodySchema = z
   .refine(
     (data) => {
       // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-      if (data.enrolledCourse.scholarshipHolder && data.enrolledCourse.sponsoringOrganization === undefined)
+      if (
+        data.enrolledCourse.scholarshipHolder &&
+        data.enrolledCourse.sponsoringOrganization === undefined
+      )
         return false
 
-      if (!data.enrolledCourse.scholarshipHolder && data.enrolledCourse.sponsoringOrganization !== undefined)
+      if (
+        !data.enrolledCourse.scholarshipHolder &&
+        data.enrolledCourse.sponsoringOrganization !== undefined
+      )
         return false
 
       return true
@@ -166,7 +174,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
         profileImagePath: finalPath,
         occupation: parsedBody.user.occupation as OCCUPATION,
         educationLevel: parsedBody.user.educationLevel as EDUCATION_LEVEL,
-        identityType: parsedBody.user.identityType as IDENTITY_TYPE
+        identityType: parsedBody.user.identityType as IDENTITY_TYPE,
       },
     })
 

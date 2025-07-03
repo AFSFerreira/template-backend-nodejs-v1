@@ -13,10 +13,15 @@ import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email
 interface RegisterUseCaseRequest {
   mainAreaActivity: string
   keywords: string[]
-  user: Omit<Prisma.UserUncheckedCreateInput, "passwordDigest" | "activityAreaId" | "profileImagePath"> & { password: string, profileImagePath: string | undefined }
-  address: Omit<Prisma.AddressUncheckedCreateInput, "userId">
-  enrolledCourse: Omit<Prisma.EnrolledCourseUncheckedCreateInput, "userId">
-  academicPublications: Array<Omit<Prisma.AcademicPublicationsUncheckedCreateInput, "userId">>
+  user: Omit<
+    Prisma.UserUncheckedCreateInput,
+    'passwordDigest' | 'activityAreaId' | 'profileImagePath'
+  > & { password: string; profileImagePath: string | undefined }
+  address: Omit<Prisma.AddressUncheckedCreateInput, 'userId'>
+  enrolledCourse: Omit<Prisma.EnrolledCourseUncheckedCreateInput, 'userId'>
+  academicPublications: Array<
+    Omit<Prisma.AcademicPublicationsUncheckedCreateInput, 'userId'>
+  >
 }
 
 interface RegisterUseCaseResponse {
@@ -33,20 +38,23 @@ export class RegisterUseCase {
     private readonly keywordsRepository: KeywordRepository,
   ) {}
 
-  async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
-    const existingUserByEmail = await this.usersRepository.findBy({ email: registerUseCaseInput.user.email })
+  async execute(
+    registerUseCaseInput: RegisterUseCaseRequest,
+  ): Promise<RegisterUseCaseResponse> {
+    const existingUserByEmail = await this.usersRepository.findBy({
+      email: registerUseCaseInput.user.email,
+    })
     const existingUserByUsername = await this.usersRepository.findBy({
-      username: registerUseCaseInput.user.username
+      username: registerUseCaseInput.user.username,
     })
 
     if (existingUserByEmail !== null || existingUserByUsername !== null) {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const mainAreaOfActivity =
-      await this.areaOfActivitiesRepository.findBy({
-        mainAreaActivity: registerUseCaseInput.mainAreaActivity
-      })
+    const mainAreaOfActivity = await this.areaOfActivitiesRepository.findBy({
+      mainAreaActivity: registerUseCaseInput.mainAreaActivity,
+    })
 
     if (mainAreaOfActivity === null) {
       throw new InvalidMainAreaOfActivity()
@@ -61,7 +69,7 @@ export class RegisterUseCase {
       ...registerUseCaseInput.user,
       passwordDigest,
       profileImagePath:
-      registerUseCaseInput.user.profileImagePath ??
+        registerUseCaseInput.user.profileImagePath ??
         './src/uploads/profile-images/default-profile-pic.png',
       activityAreaId: mainAreaOfActivity.id,
     })
