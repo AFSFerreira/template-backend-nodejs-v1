@@ -77,33 +77,40 @@ async function main() {
       userId: user.id
     }
   })
+
+  const academicPublicationData = {
+    authors: "Admin",
+    publicationDate: new Date(),
+    title: "A Ascensão da Astrobiologia",
+    doiLink: "https://example.com",
+    editionNumber: "12",
+    journalName: "astrobio",
+    pageInterval: "1-5",
+    volume: "6",
+    userId: user.id
+  }
+
+  const existingAcademicPublication = await prisma.academicPublications.findFirst({
+    where: academicPublicationData
+  })
   
-  await prisma.academicPublications.create({
-    data: {
-      authors: "Admin",
-      publicationDate: new Date(),
-      title: "A Ascensão da Astrobiologia",
-      doiLink: "https://example.com",
-      editionNumber: "12",
-      journalName: "astrobio",
-      pageInterval: "1-5",
-      volume: "6",
-      userId: user.id
-    }
-  })
-
-  const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
-
-  const keywordsPromises = userKeywords.map(async keyword => {
-    return await prisma.keyword.create({
-      data: {
-        value: keyword,
-        userId: user.id
-      }
+  if (existingAcademicPublication === null) {
+    await prisma.academicPublications.create({
+      data: academicPublicationData
     })
-  })
+  }
 
-  await Promise.all(keywordsPromises)
+  // const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
+
+  // userKeywords.forEach(async keyword => {
+  //   const existingKeyword = await prisma.keyword.findFirst({
+  //     where: {
+  //       value: keyword
+  //     }
+  //   })
+
+  //   // if (existingKeyword !== )
+  // })
 
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({

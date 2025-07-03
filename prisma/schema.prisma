@@ -121,9 +121,9 @@ model User {
   enrolledCourse EnrolledCourse? @relation()
 
   authenticationAudit  AuthenticationAudit[]  @relation()
-  keywords             Keyword[]              @relation()
   academicPublications AcademicPublications[] @relation()
   Blog                 Blog[]                 @relation()
+  UserKeyword          UserKeyword[]          @relation()
 
   @@index([id])
   @@map("users")
@@ -186,12 +186,22 @@ model AcademicPublications {
   @@map("academic_publications")
 }
 
+model UserKeyword {
+  userId    String
+  keywordId String
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  keyword Keyword @relation(fields: [keywordId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, keywordId])
+  @@map("user_keyword")
+}
+
 model Keyword {
   id    String @id @default(uuid())
-  value String
+  value String @unique
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  UserKeyword UserKeyword[]
 
   @@map("keyword")
 }
