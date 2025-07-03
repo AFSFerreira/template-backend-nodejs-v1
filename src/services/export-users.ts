@@ -12,9 +12,9 @@ export async function exportUsersAsCsv(): Promise<string> {
       academicPublications: true,
       UserKeyword: {
         include: {
-          keyword: true
-        }
-      }
+          keyword: true,
+        },
+      },
     },
   })
 
