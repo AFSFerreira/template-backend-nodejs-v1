@@ -17,7 +17,6 @@ export const refreshTokenSwaggerSchema = {
       properties: {
         message: {
           type: 'string',
-          enum: ['Invalid token', 'Token expired', 'No token provided'],
         },
       },
       description: 'Não autorizado - falha na validação do token',
