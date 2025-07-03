@@ -244,7 +244,7 @@ Aplicando esse padrão às demais rotas, conseguimos criar uma documentação co
 - [x] 🟡 Modelo do Banco de Dados
 - [x] 🟢 Documentação das Instruções de Setup
 - [x] 🟡 Swagger do Servidor
-- [x] 🔵 Rota para Cadastrar Usuários
+- [x] 🟢 Rota para Cadastrar Usuários
 - [x] 🔵 Rota para Autenticar Usuários
 - [ ] 🟡 Endpoints para Tratar os Dados do Usuário
 - [x] 🟡 Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
