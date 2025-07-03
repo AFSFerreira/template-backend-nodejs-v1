@@ -14,7 +14,7 @@ async function main() {
     }
   })
 
-  const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
+  const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
   const createdKeywords = await Promise.all(userKeywords.map(async value => {
     return await prisma.keyword.upsert({
