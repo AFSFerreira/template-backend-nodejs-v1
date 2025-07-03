@@ -150,21 +150,36 @@ async function main() {
     }
   })
 
-  const blog = await prisma.blog.create({
-    data: {
-      pageContent: "<h1>Hello World</h1>",
-      authorName: user.fullName,
-      authorId: user.id,
-      mainCategoryId: mainCategory.id
-    }
+  const blogData = {
+    pageContent: "<h1>Hello World</h1>",
+    authorName: user.fullName,
+    authorId: user.id,
+    mainCategoryId: mainCategory.id
+  }
+
+  let existingBlog = await prisma.blog.findFirst({
+    where: blogData
   })
+
+  if (existingBlog === null) {
+    existingBlog = await prisma.blog.create({
+      data: blogData
+    })
+  }
 
   const subcategories = [firstSubcategory, secondSubcategory]
 
   const subcategoriesPromises = subcategories.map(async subcategory => {
-    return await prisma.blogCategory.create({
-      data: {
-        blogId: blog.id,
+    return await prisma.blogCategory.upsert({
+      where: {
+        blogId_categoryId: {
+          blogId: existingBlog.id,
+          categoryId: subcategory.id
+        }
+      },
+      update: {},
+      create: {
+        blogId: existingBlog.id,
         categoryId: subcategory.id
       }
     })
