@@ -76,8 +76,8 @@ export class RegisterUseCase {
       }),
     )
 
-    const user = await this.usersRepository.create(
-      {
+    const user = await this.usersRepository.create({
+      user: {
         ...registerUseCaseInput.user,
         passwordDigest,
         profileImagePath:
@@ -90,8 +90,8 @@ export class RegisterUseCase {
           ),
         activityAreaId: mainAreaOfActivity.id,
       },
-      keywordsCreated,
-    )
+      keywords: keywordsCreated,
+  })
 
     await this.addressRepository.create({
       ...registerUseCaseInput.address,

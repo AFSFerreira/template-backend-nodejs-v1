@@ -1,5 +1,5 @@
-import type { Keyword, Prisma } from '@prisma/client'
-import type { UsersRepository } from '../users-repository'
+import type { Prisma } from '@prisma/client'
+import type { ICreateUser, UsersRepository } from '../users-repository'
 import { prisma } from '../../lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -51,12 +51,12 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async create(data: Prisma.UserUncheckedCreateInput, keywords: Keyword[]) {
+  async create(data: ICreateUser) {
     const user = await prisma.user.create({
       data: {
-        ...data,
+        ...data.user,
         Keywords: {
-          connect: keywords.map((keyword) => ({ id: keyword.id })),
+          connect: data.keywords.map((keyword) => ({ id: keyword.id })),
         },
       },
     })
