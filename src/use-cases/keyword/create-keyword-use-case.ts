@@ -15,13 +15,10 @@ export class CreateKeywordUseCase {
 
   async execute({
     value,
-    userId,
   }: CreateKeywordUseCaseRequest): Promise<CreateKeywordUseCaseResponse> {
     const keyword = await this.keywordRepository.create({
       value,
-      userId,
     })
-
     return { keyword }
   }
 }

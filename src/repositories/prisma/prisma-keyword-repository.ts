@@ -18,9 +18,9 @@ export class PrismaKeywordRepository implements KeywordRepository {
       where: {
         Users: {
           some: {
-            id: userId
-          }
-        }
+            id: userId,
+          },
+        },
       },
     })
     return keywords
