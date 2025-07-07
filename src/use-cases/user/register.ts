@@ -78,7 +78,7 @@ export class RegisterUseCase {
 
     const keywordIds = keywordsCreated.map((keyword) => keyword.id)
 
-    const user = await this.usersRepository.createUserWithKeywords(
+    const user = await this.usersRepository.create(
       {
         ...registerUseCaseInput.user,
         passwordDigest,
