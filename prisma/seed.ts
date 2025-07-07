@@ -24,12 +24,6 @@ async function main() {
     })
   }))
 
-  const keywordIds = createdKeywords.map(keyword => {
-    return {
-      keywordId: keyword.id
-    }
-  })
-
   const user = await prisma.user.upsert({
     where: { email: "admin@email.com" },
     update: {},
@@ -63,10 +57,8 @@ async function main() {
       publicInformation: "Astrobiólogo",
       specificActivity: "Professor Interino",
 
-      UserKeyword: {
-        createMany: {
-          data: keywordIds
-        }
+      Keywords: {
+        connect: createdKeywords.map(keyword => ({ id: keyword.id }))
       }
     },
   })
