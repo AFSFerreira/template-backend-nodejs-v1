@@ -76,8 +76,6 @@ export class RegisterUseCase {
       }),
     )
 
-    const keywordIds = keywordsCreated.map((keyword) => keyword.id)
-
     const user = await this.usersRepository.create(
       {
         ...registerUseCaseInput.user,
@@ -92,7 +90,7 @@ export class RegisterUseCase {
           ),
         activityAreaId: mainAreaOfActivity.id,
       },
-      keywordIds,
+      keywordsCreated,
     )
 
     await this.addressRepository.create({

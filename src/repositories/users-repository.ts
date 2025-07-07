@@ -1,9 +1,9 @@
-import type { Prisma, User } from '@prisma/client'
+import type { Keyword, Prisma, User } from '@prisma/client'
 
 export interface UsersRepository {
   create: (
     data: Prisma.UserUncheckedCreateInput,
-    keywordIds: string[],
+    keywords: Keyword[],
   ) => Promise<User>
   findById: (id: string) => Promise<User | null>
   findBy: (where: Prisma.UserWhereUniqueInput) => Promise<User | null>

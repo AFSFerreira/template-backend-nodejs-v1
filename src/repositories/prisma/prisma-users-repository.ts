@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Keyword, Prisma } from '@prisma/client'
 import type { UsersRepository } from '../users-repository'
 import { prisma } from '../../lib/prisma'
 
@@ -51,21 +51,12 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async create(
-    data: Prisma.UserUncheckedCreateInput,
-    keywordIds: string[],
-  ) {
+  async create(data: Prisma.UserUncheckedCreateInput, keywords: Keyword[]) {
     const user = await prisma.user.create({
       data: {
         ...data,
-        UserKeyword: {
-          createMany: {
-            data: keywordIds.map((id) => {
-              return {
-                keywordId: id,
-              }
-            }),
-          },
+        Keywords: {
+          connect: keywords.map(keyword => ({ id: keyword.id }))
         },
       },
     })
