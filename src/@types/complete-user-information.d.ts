@@ -5,11 +5,7 @@ type CompleteUserInformation = Prisma.UserGetPayload<{
     address: true
     enrolledCourse: true
     activityArea: true
-    academicPublications: true
-    UserKeyword: {
-      include: {
-        keyword: true
-      }
-    }
+    academicPublication: true
+    keyword: true
   }
 }>

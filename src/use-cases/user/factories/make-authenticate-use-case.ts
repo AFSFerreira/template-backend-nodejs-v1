@@ -6,6 +6,7 @@ export function makeAuthenticateUseCase() {
   const usersRepository = new PrismaUsersRepository()
   const authenticationAuditRepository =
     new PrismaAuthenticationAuditRepository()
+    
   const authenticateUseCase = new AuthenticateUseCase(
     usersRepository,
     authenticationAuditRepository,

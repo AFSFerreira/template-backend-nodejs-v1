@@ -1,8 +1,8 @@
 import { type FastifyReply, type FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { env } from '@/env'
-import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authenticate-use-case'
+import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 
 export const authenticateBodySchema = z.object({
   emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
@@ -67,11 +67,11 @@ export async function authenticate(
       })
       .status(200)
       .send({ user, accessToken })
-  } catch (err: unknown) {
-    if (err instanceof InvalidCredentialsError) {
-      return await reply.status(400).send({ message: err.message })
+  } catch (error: unknown) {
+    if (error instanceof InvalidCredentialsError) {
+      return await reply.status(400).send({ message: error.message })
     }
 
-    throw err
+    throw error
   }
 }

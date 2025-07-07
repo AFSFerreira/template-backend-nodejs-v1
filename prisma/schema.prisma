@@ -76,7 +76,7 @@ model AuthenticationAudit {
   userId String?
   user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  @@map("authentication_audit")
+  @@map("authentication_audits")
 }
 
 model User {
@@ -121,12 +121,11 @@ model User {
   enrolledCourse EnrolledCourse? @relation()
 
   authenticationAudit  AuthenticationAudit[]  @relation()
-  academicPublications AcademicPublications[] @relation()
-  Blog                 Blog[]                 @relation()
-  Keywords             Keyword[]              @relation()
+  academicPublication AcademicPublications[] @relation()
+  blog                 Blog[]                 @relation()
+  keyword             Keyword[]              @relation()
 
-  @@index([id])
-  @@map("users")
+  @@map("user")
 }
 
 model Address {
@@ -190,7 +189,7 @@ model Keyword {
   id    String @id @default(uuid())
   value String @unique
 
-  Users User[]
+  user User[]
 
   @@map("keyword")
 }
@@ -202,6 +201,8 @@ model Category {
 
   blogCategory BlogCategory[] @relation()
   Blog         Blog[]         @relation()
+
+  @@map("category")
 }
 
 // NOTE: Verificar se é possível omitir esta tabela também eventualmente
@@ -231,4 +232,6 @@ model Blog {
   author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   subcategories BlogCategory[] @relation()
+
+  @@map("blog")
 }

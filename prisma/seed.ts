@@ -57,7 +57,7 @@ async function main() {
       publicInformation: "Astrobiólogo",
       specificActivity: "Professor Interino",
 
-      Keywords: {
+      keyword: {
         connect: createdKeywords.map(keyword => ({ id: keyword.id }))
       }
     },

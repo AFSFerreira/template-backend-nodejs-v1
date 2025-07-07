@@ -16,7 +16,7 @@ export class PrismaKeywordRepository implements KeywordRepository {
   async findManyByUserId(userId: string) {
     const keywords = await prisma.keyword.findMany({
       where: {
-        Users: {
+        user: {
           some: {
             id: userId,
           },

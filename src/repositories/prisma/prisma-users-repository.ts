@@ -14,6 +14,19 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
+  async listAllUsersInfo() {
+    const users = await prisma.user.findMany({
+      include: {
+        address: true,
+        enrolledCourse: true,
+        activityArea: true,
+        academicPublication: true,
+        keyword: true,
+      },
+    })
+    return users
+  }
+
   async updateLoginAttempts(id: string) {
     await prisma.user.update({
       where: {
@@ -54,7 +67,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.create({
       data: {
         ...data.user,
-        Keywords: {
+        keyword: {
           connect: data.keywords.map((keyword) => ({ id: keyword.id })),
         },
       },

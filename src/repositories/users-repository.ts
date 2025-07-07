@@ -1,3 +1,4 @@
+import type { CompleteUserInformation } from '@/@types/complete-user-information'
 import type { Keyword, Prisma, User } from '@prisma/client'
 
 export interface ICreateUser {
@@ -8,6 +9,7 @@ export interface ICreateUser {
 export interface UsersRepository {
   create: (data: ICreateUser) => Promise<User>
   findById: (id: string) => Promise<User | null>
+  listAllUsersInfo: () => Promise<CompleteUserInformation[]>
   findBy: (where: Prisma.UserWhereUniqueInput) => Promise<User | null>
   setLastLogin: (id: string) => Promise<void>
   updateLoginAttempts: (id: string) => Promise<void>
