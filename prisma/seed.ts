@@ -50,7 +50,7 @@ async function main() {
       email: 'admin@email.com',
       passwordDigest: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
       loginAttempts: 0,
-      lastLogin: null,
+      lastLogin: new Date(),
       activityAreaId: activityArea.id,
       identityType: IDENTITY_TYPE.CPF,
       identityDocument: "12345678900",
