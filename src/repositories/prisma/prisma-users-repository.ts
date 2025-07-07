@@ -40,7 +40,6 @@ export class PrismaUsersRepository implements UsersRepository {
       where: { id },
       data,
     })
-
     return user
   }
 
@@ -60,7 +59,6 @@ export class PrismaUsersRepository implements UsersRepository {
         },
       },
     })
-
     return user
   }
 
