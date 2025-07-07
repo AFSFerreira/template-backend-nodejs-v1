@@ -1,5 +1,5 @@
-import type { CompleteUserInformation } from "@/@types/complete-user-information"
-import type { Keyword } from "@prisma/client"
+import type { CompleteUserInformation } from '@/@types/complete-user-information'
+import type { Keyword } from '@prisma/client'
 
 interface FlattenedUser {
   id: string
@@ -92,7 +92,8 @@ export function flattenUser(user: CompleteUserInformation): FlattenedUser {
     sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
 
     keywords:
-      user.keyword?.map((k: Keyword) => k.value)
+      user.keyword
+        ?.map((k: Keyword) => k.value)
         .filter(Boolean)
         .join('; ') ?? '',
 

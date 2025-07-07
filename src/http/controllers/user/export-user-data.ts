@@ -11,9 +11,9 @@ export async function exportUserData(
   try {
     const exportDataUseCase = makeExportDataUseCase()
     const userCSVInfoResponse = await exportDataUseCase.execute()
-    
+
     allUsersData = userCSVInfoResponse.userCSVInfo
-  } catch(error) {
+  } catch (error) {
     if (error instanceof EmptyUsersInfoException) {
       reply.status(204).send({ message: error.message })
     }
