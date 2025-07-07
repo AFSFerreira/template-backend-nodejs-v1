@@ -56,7 +56,7 @@ export class PrismaUsersRepository implements UsersRepository {
       data: {
         ...data,
         Keywords: {
-          connect: keywords.map(keyword => ({ id: keyword.id }))
+          connect: keywords.map((keyword) => ({ id: keyword.id })),
         },
       },
     })
