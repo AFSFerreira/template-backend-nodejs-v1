@@ -91,7 +91,7 @@ export class RegisterUseCase {
         activityAreaId: mainAreaOfActivity.id,
       },
       keywords: keywordsCreated,
-  })
+    })
 
     await this.addressRepository.create({
       ...registerUseCaseInput.address,

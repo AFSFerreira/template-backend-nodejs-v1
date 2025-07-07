@@ -1,8 +1,8 @@
 import type { Keyword, Prisma, User } from '@prisma/client'
 
 export interface ICreateUser {
-  user: Prisma.UserUncheckedCreateInput,
-  keywords: Keyword[],
+  user: Prisma.UserUncheckedCreateInput
+  keywords: Keyword[]
 }
 
 export interface UsersRepository {
