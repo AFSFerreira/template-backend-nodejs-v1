@@ -8,25 +8,9 @@ export async function refreshToken(
   try {
     await request.jwtVerify({ onlyCookie: true })
   } catch (error) {
-    // Esse tanto de if/else é só uma forma de tratar os erros possíveis após verificação do token
-    if (error instanceof Error) {
-      if (
-        error.message ===
-        'Authorization token is invalid: The token is malformed.'
-      ) {
-        return await reply.status(401).send({ message: 'Invalid token' })
-      } else if (error.message === 'Authorization token expired') {
-        return await reply.status(401).send({ message: 'Token expired' })
-      } else if (
-        error.message === 'No Authorization was found in request.cookies'
-      ) {
-        return await reply.status(401).send({ message: 'No token provided' })
-      } else {
-        throw error
-      }
-    } else {
-      throw error
-    }
+    return await reply
+      .status(401)
+      .send({ message: 'Refresh token was not valid or does not exist.' })
   }
 
   const accessToken = await reply.jwtSign(

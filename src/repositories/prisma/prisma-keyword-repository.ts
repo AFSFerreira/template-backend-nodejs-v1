@@ -8,14 +8,33 @@ export class PrismaKeywordRepository implements KeywordRepository {
     return keyword
   }
 
-  async findById(id: string) {
-    const keyword = await prisma.keyword.findUnique({ where: { id } })
+  async findBy(where: Prisma.KeywordWhereInput) {
+    const keyword = await prisma.keyword.findFirst({ where })
     return keyword
   }
 
   async findManyByUserId(userId: string) {
-    const keywords = await prisma.keyword.findMany({ where: { userId } })
+    const keywords = await prisma.keyword.findMany({
+      where: {
+        user: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    })
     return keywords
+  }
+
+  async findOrCreate(value: string) {
+    const keyword = await prisma.keyword.upsert({
+      where: { value },
+      update: {},
+      create: {
+        value,
+      },
+    })
+    return keyword
   }
 
   async delete(id: string) {

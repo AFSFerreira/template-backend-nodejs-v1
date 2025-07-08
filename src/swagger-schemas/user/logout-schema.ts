@@ -1,7 +1,7 @@
-export const logoutSchema = {
+export const logoutSwaggerSchema = {
   tags: ['authentication'],
-  summary: 'Logout user',
-  description: 'Logout user by clearing the refresh token cookie',
+  summary: 'Fazer logout do usuário',
+  description: 'Fazer logout do usuário limpando o cookie do refresh token',
   response: {
     200: {
       type: 'object',
@@ -9,6 +9,7 @@ export const logoutSchema = {
         message: { type: 'string' },
       },
       required: ['message'],
+      description: 'Usuário desconectado com sucesso',
     },
     400: {
       type: 'object',
@@ -18,7 +19,7 @@ export const logoutSchema = {
           enum: ['Invalid token', 'Token expired', 'No token provided'],
         },
       },
-      description: 'Bad request - token validation failed',
+      description: 'Requisição inválida - falha na validação do token',
     },
   },
 }

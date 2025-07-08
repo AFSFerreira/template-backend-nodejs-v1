@@ -1,7 +1,10 @@
 import { YEAR_MONTH_REGEX } from '@/constants/regex'
 import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
 
-export const getUserSchemaItem = {
+// WARNING: Mudar posteriormente de objeto literal para conversão de schema zod
+// com zod-to-json.
+// NOTE: Revisar e reoganizar os corpos de response posteriormente
+export const getUserJsonSchema = {
   type: 'object',
   properties: {
     email: { type: 'string', format: 'email', minLength: 6 },
@@ -120,7 +123,7 @@ export const getUserSchemaItem = {
   ],
 }
 
-export const getUserSchema = {
+export const getUserSwaggerSchema = {
   tags: ['users'],
   summary: 'Get a paginated list of users',
   description:
@@ -149,7 +152,7 @@ export const getUserSchema = {
       properties: {
         users: {
           type: 'array',
-          items: getUserSchemaItem,
+          items: getUserJsonSchema,
         },
         pagination: {
           type: 'object',
@@ -199,6 +202,94 @@ export const getUserSchema = {
         message: { type: 'string' },
       },
       description: 'Internal server error',
+    },
+  },
+}
+
+export const getUserSwaggerSchemaTranslated = {
+  tags: ['users'],
+  summary: 'Obter lista paginada de usuários',
+  description:
+    'Recuperar uma lista paginada de todos os usuários com suas informações completas',
+  querystring: {
+    type: 'object',
+    properties: {
+      page: {
+        type: 'integer',
+        minimum: 1,
+        default: 1,
+        description: 'Número da página para paginação',
+      },
+      limit: {
+        type: 'integer',
+        minimum: 1,
+        maximum: 100,
+        default: 20,
+        description: 'Número de usuários por página',
+      },
+      search: {
+        type: 'string',
+        description:
+          'Termo de busca para filtrar usuários por nome, email ou nome de usuário',
+      },
+    },
+  },
+  response: {
+    200: {
+      type: 'object',
+      properties: {
+        users: {
+          type: 'array',
+          items: getUserJsonSchema,
+        },
+        pagination: {
+          type: 'object',
+          properties: {
+            currentPage: { type: 'integer' },
+            totalPages: { type: 'integer' },
+            totalUsers: { type: 'integer' },
+            hasNextPage: { type: 'boolean' },
+            hasPreviousPage: { type: 'boolean' },
+          },
+          required: [
+            'currentPage',
+            'totalPages',
+            'totalUsers',
+            'hasNextPage',
+            'hasPreviousPage',
+          ],
+        },
+      },
+      required: ['users', 'pagination'],
+      description: 'Lista paginada de usuários',
+    },
+    400: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Requisição inválida - parâmetros de consulta inválidos',
+    },
+    401: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Não autorizado - autenticação obrigatória',
+    },
+    403: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Proibido - permissões insuficientes',
+    },
+    500: {
+      type: 'object',
+      properties: {
+        message: { type: 'string' },
+      },
+      description: 'Erro interno do servidor',
     },
   },
 }

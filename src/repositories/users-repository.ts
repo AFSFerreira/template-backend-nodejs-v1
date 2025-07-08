@@ -1,8 +1,15 @@
-import type { Prisma, User } from '@prisma/client'
+import type { CompleteUserInformation } from '@/@types/complete-user-information'
+import type { Keyword, Prisma, User } from '@prisma/client'
+
+export interface ICreateUser {
+  user: Prisma.UserUncheckedCreateInput
+  keywords: Keyword[]
+}
 
 export interface UsersRepository {
-  create: (data: Prisma.UserUncheckedCreateInput) => Promise<User>
+  create: (data: ICreateUser) => Promise<User>
   findById: (id: string) => Promise<User | null>
+  listAllUsersInfo: () => Promise<CompleteUserInformation[]>
   findBy: (where: Prisma.UserWhereUniqueInput) => Promise<User | null>
   setLastLogin: (id: string) => Promise<void>
   updateLoginAttempts: (id: string) => Promise<void>

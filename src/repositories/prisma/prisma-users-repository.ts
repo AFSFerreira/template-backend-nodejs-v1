@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client'
-import type { UsersRepository } from '../users-repository'
+import type { ICreateUser, UsersRepository } from '../users-repository'
 import { prisma } from '../../lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -12,6 +12,19 @@ export class PrismaUsersRepository implements UsersRepository {
         lastLogin: new Date(),
       },
     })
+  }
+
+  async listAllUsersInfo() {
+    const users = await prisma.user.findMany({
+      include: {
+        address: true,
+        enrolledCourse: true,
+        activityArea: true,
+        academicPublication: true,
+        keyword: true,
+      },
+    })
+    return users
   }
 
   async updateLoginAttempts(id: string) {
@@ -40,7 +53,6 @@ export class PrismaUsersRepository implements UsersRepository {
       where: { id },
       data,
     })
-
     return user
   }
 
@@ -51,9 +63,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async create(data: Prisma.UserUncheckedCreateInput) {
+  async create(data: ICreateUser) {
     const user = await prisma.user.create({
-      data,
+      data: {
+        ...data.user,
+        keyword: {
+          connect: data.keywords.map((keyword) => ({ id: keyword.id })),
+        },
+      },
     })
     return user
   }

@@ -1,3 +1,6 @@
+import type { CompleteUserInformation } from '@/@types/complete-user-information'
+import type { Keyword } from '@prisma/client'
+
 interface FlattenedUser {
   id: string
   fullName: string
@@ -43,8 +46,8 @@ interface FlattenedUser {
   publications: string
 }
 
-export function flattenUser(user: any): FlattenedUser {
-  const flattenedUser = {
+export function flattenUser(user: CompleteUserInformation): FlattenedUser {
+  const flattenedUser: FlattenedUser = {
     id: user.id,
     fullName: user.fullName,
     username: user.username,
@@ -88,16 +91,20 @@ export function flattenUser(user: any): FlattenedUser {
     scholarshipHolder: user.enrolledCourse?.scholarshipHolder ?? false,
     sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
 
-    keywords: user.keywords.map((k: any) => k.value).join('; '),
-    publications: user.academicPublications
-      .map(
-        (p: any) =>
-          `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
-      )
-      .join(' | '),
-  }
+    keywords:
+      user.keyword
+        ?.map((k: Keyword) => k.value)
+        .filter(Boolean)
+        .join('; ') ?? '',
 
-  console.log(flattenedUser)
+    publications:
+      user.academicPublication
+        ?.map(
+          (p: any) =>
+            `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
+        )
+        .join(' | ') ?? '',
+  }
 
   return flattenedUser
 }

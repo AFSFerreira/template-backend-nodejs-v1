@@ -14,8 +14,18 @@ async function main() {
     }
   })
 
+  const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
+
+  const createdKeywords = await Promise.all(userKeywords.map(async value => {
+    return await prisma.keyword.upsert({
+      where: { value },
+      update: {},
+      create: { value }
+    })
+  }))
+
   const user = await prisma.user.upsert({
-    where: { email: "email@example.com" },
+    where: { email: "admin@email.com" },
     update: {},
     create: {
       fullName: 'Admin',
@@ -37,15 +47,19 @@ async function main() {
       astrobiologyOrRelatedStartYear: 2010,
       interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
       receiveReports: true,
-      email: 'email@example.com',
+      email: 'admin@email.com',
       passwordDigest: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
       loginAttempts: 0,
-      lastLogin: null,
+      lastLogin: new Date(),
       activityAreaId: activityArea.id,
       identityType: IDENTITY_TYPE.CPF,
       identityDocument: "12345678900",
       publicInformation: "Astrobiólogo",
-      specificActivity: "Professor Interino"
+      specificActivity: "Professor Interino",
+
+      keyword: {
+        connect: createdKeywords.map(keyword => ({ id: keyword.id }))
+      }
     },
   })
 
@@ -77,33 +91,28 @@ async function main() {
       userId: user.id
     }
   })
+
+  const academicPublicationData = {
+    authors: "Admin",
+    publicationDate: new Date(),
+    title: "A Ascensão da Astrobiologia",
+    doiLink: "https://example.com",
+    editionNumber: "12",
+    journalName: "astrobio",
+    pageInterval: "1-5",
+    volume: "6",
+    userId: user.id
+  }
+
+  const existingAcademicPublication = await prisma.academicPublications.findFirst({
+    where: academicPublicationData
+  })
   
-  await prisma.academicPublications.create({
-    data: {
-      authors: "Admin",
-      publicationDate: new Date(),
-      title: "A Ascensão da Astrobiologia",
-      doiLink: "https://example.com",
-      editionNumber: "12",
-      journalName: "astrobio",
-      pageInterval: "1-5",
-      volume: "6",
-      userId: user.id
-    }
-  })
-
-  const userKeywords = ["palavra-chave 1", "palavra-chave 2", "palavra-chave 3", "palavra-chave 4"]
-
-  const keywordsPromises = userKeywords.map(async keyword => {
-    return await prisma.keyword.create({
-      data: {
-        value: keyword,
-        userId: user.id
-      }
+  if (existingAcademicPublication === null) {
+    await prisma.academicPublications.create({
+      data: academicPublicationData
     })
-  })
-
-  await Promise.all(keywordsPromises)
+  }
 
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({
@@ -133,21 +142,36 @@ async function main() {
     }
   })
 
-  const blog = await prisma.blog.create({
-    data: {
-      pageContent: "<h1>Hello World</h1>",
-      authorName: user.fullName,
-      authorId: user.id,
-      mainCategoryId: mainCategory.id
-    }
+  const blogData = {
+    pageContent: "<h1>Hello World</h1>",
+    authorName: user.fullName,
+    authorId: user.id,
+    mainCategoryId: mainCategory.id
+  }
+
+  let existingBlog = await prisma.blog.findFirst({
+    where: blogData
   })
+
+  if (existingBlog === null) {
+    existingBlog = await prisma.blog.create({
+      data: blogData
+    })
+  }
 
   const subcategories = [firstSubcategory, secondSubcategory]
 
   const subcategoriesPromises = subcategories.map(async subcategory => {
-    return await prisma.blogCategory.create({
-      data: {
-        blogId: blog.id,
+    return await prisma.blogCategory.upsert({
+      where: {
+        blogId_categoryId: {
+          blogId: existingBlog.id,
+          categoryId: subcategory.id
+        }
+      },
+      update: {},
+      create: {
+        blogId: existingBlog.id,
         categoryId: subcategory.id
       }
     })
