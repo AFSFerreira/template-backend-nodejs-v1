@@ -10,9 +10,9 @@ export const authenticateBodySchema = z.object({
     .string()
     .nonempty()
     .min(8)
-    .regex(/[A-Z]/)
-    .regex(/\d/)
-    .regex(/[@$!%*?&]/),
+    .regex(/[A-Z]/, 'Sua senha precisa de carácter maiúsculo')
+    .regex(/\d/, 'Sua senha precisa de um número')
+    .regex(/[@$!%*?&#]/, 'Sua senha precisa de carácter especial'),
 })
 
 export async function authenticate(

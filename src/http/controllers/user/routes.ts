@@ -1,7 +1,6 @@
 import { upload } from '@/lib/multer'
 import { authentication } from '@/middlewares/authentication'
 import { verifyPermissions } from '@/middlewares/verifyPermissions'
-import { authenticateSwaggerSchema } from '@/swagger-schemas/user/authenticate-schema'
 import { createUserSwaggerSchema } from '@/swagger-schemas/user/create-user-schema'
 import { exportUserDataSwaggerSchema } from '@/swagger-schemas/user/export-user-data-schema'
 import { logoutSwaggerSchema } from '@/swagger-schemas/user/logout-schema'
@@ -35,14 +34,7 @@ export async function userRoutes(app: FastifyInstance) {
     register,
   )
 
-  app.post(
-    '/sessions',
-    {
-      schema: authenticateSwaggerSchema,
-      validatorCompiler: () => () => true,
-    },
-    authenticate,
-  )
+  app.post('/sessions', authenticate)
 
   app.post(
     '/sessions/refresh-token',

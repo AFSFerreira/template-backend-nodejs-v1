@@ -32,7 +32,7 @@ export class AuthenticateUseCase {
     let user = await this.usersRepository.findBy({ email: emailOrUsername })
     if (user == null) {
       user = await this.usersRepository.findBy({ username: emailOrUsername })
-    }
+    } // duas consultas são ineficientes
 
     const auditAuthenticateObject = {
       browser: browser ?? null,
