@@ -1,4 +1,4 @@
 export const noValidation = {
   validatorCompiler: () => () => true,
-  serializerCompiler: () => (data: any) => data,
+  serializerCompiler: () => (data: JSON) => JSON.stringify(data),
 }

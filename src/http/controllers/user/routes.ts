@@ -36,12 +36,14 @@ export async function userRoutes(app: FastifyInstance) {
     register,
   )
 
-  app.post('/sessions',
+  app.post(
+    '/sessions',
     {
       schema: authenticateSwaggerSchema,
       ...noValidation,
     },
-    authenticate)
+    authenticate,
+  )
 
   app.post(
     '/sessions/refresh-token',
