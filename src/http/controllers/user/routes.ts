@@ -12,6 +12,8 @@ import { exportUserData } from './export-user-data'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
+import { noValidation } from '@/utils/bypass-validation'
+import { authenticateSwaggerSchema } from '@/swagger-schemas/user/authenticate-schema'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
@@ -19,7 +21,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
       schema: exportUserDataSwaggerSchema,
-      validatorCompiler: () => () => true,
+      ...noValidation,
     },
     exportUserData,
   )
@@ -29,18 +31,23 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [upload.single('profileImage')],
       schema: createUserSwaggerSchema,
-      validatorCompiler: () => () => true,
+      ...noValidation,
     },
     register,
   )
 
-  app.post('/sessions', authenticate)
+  app.post('/sessions',
+    {
+      schema: authenticateSwaggerSchema,
+      ...noValidation,
+    },
+    authenticate)
 
   app.post(
     '/sessions/refresh-token',
     {
       schema: refreshTokenSwaggerSchema,
-      validatorCompiler: () => () => true,
+      ...noValidation,
     },
     refreshToken,
   )
@@ -50,7 +57,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [authentication],
       schema: logoutSwaggerSchema,
-      validatorCompiler: () => () => true,
+      ...noValidation,
     },
     logout,
   )
