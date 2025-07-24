@@ -30,6 +30,8 @@ async function main() {
     create: {
       fullName: 'Admin',
       username: 'admin.admin',
+      email: 'admin@email.com',
+      passwordDigest: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
       birthDate: new Date(),
       profileImagePath: '/src/uploads/profile-images/default-profile-pic.png',
       lattesCVLink: 'http://lattes.cnpq.br/1234567890',
@@ -47,8 +49,6 @@ async function main() {
       astrobiologyOrRelatedStartYear: 2010,
       interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
       receiveReports: true,
-      email: 'admin@email.com',
-      passwordDigest: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
       loginAttempts: 0,
       lastLogin: new Date(),
       activityAreaId: activityArea.id,
