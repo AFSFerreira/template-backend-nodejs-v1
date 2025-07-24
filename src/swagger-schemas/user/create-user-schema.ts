@@ -4,25 +4,12 @@ import { getUserJsonSchema } from './get-user-schema'
 
 const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema) as any
 
-export const createUserBodyJsonSchemaWithFile = {
-  ...createUserBodyJsonSchema,
-  properties: {
-    profileImage: {
-      type: 'string',
-      format: 'binary',
-      description: 'Imagem de perfil do usuário (JPEG, JPG, PNG, WebP)',
-    },
-    ...createUserBodyJsonSchema.properties,
-  },
-}
-
 export const createUserSwaggerSchema = {
   tags: ['users'],
   summary: 'Criar um novo usuário',
   description:
-    'Cria uma nova conta de usuário com todas as informações obrigatórias incluindo upload de imagem de perfil',
-  consumes: ['multipart/form-data'],
-  body: createUserBodyJsonSchemaWithFile,
+    'Cria uma nova conta de usuário com todas as informações obrigatórias. A imagem de perfil pode ser incluída no formulário de envio em formatos JPEG, JPG, PNG e WebP.',
+  body: createUserBodyJsonSchema,
   response: {
     201: {
       ...getUserJsonSchema,

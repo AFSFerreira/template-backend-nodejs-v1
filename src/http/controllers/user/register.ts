@@ -80,7 +80,10 @@ export const registerBodySchema = z
         z.object({
           title: z.string(),
           authors: z.string(),
-          publicationDate: z.coerce.date(),
+          publicationDate: z
+            .string()
+            .regex(YEAR_MONTH_REGEX, 'Date must be in format YYYY-MM')
+            .transform((str) => new Date(`${str}-01T00:00:00Z`)),
           journalName: z.string(),
           volume: z.string(),
           editionNumber: z.string(),
