@@ -12,7 +12,10 @@ export const authenticateBodySchema = z.object({
     .min(8)
     .regex(/[A-Z]/, 'Sua senha precisa conter pelo menos um caráter maiúsculo')
     .regex(/\d/, 'Sua senha precisa conter pelo menos um dígito numérico')
-    .regex(/[@$!%*?&#]/, 'Sua senha precisa conter pelo menos um caráter especial'),
+    .regex(
+      /[@$!%*?&#]/,
+      'Sua senha precisa conter pelo menos um caráter especial',
+    ),
 })
 
 export async function authenticate(
