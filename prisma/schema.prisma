@@ -120,9 +120,9 @@ model User {
   address        Address?        @relation()
   enrolledCourse EnrolledCourse? @relation()
 
-  authenticationAudit  AuthenticationAudit[]  @relation()
+  authenticationAudit AuthenticationAudit[]  @relation()
   academicPublication AcademicPublications[] @relation()
-  blog                 Blog[]                 @relation()
+  blog                Blog[]                 @relation()
   keyword             Keyword[]              @relation()
 
   @@map("user")
