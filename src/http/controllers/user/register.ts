@@ -175,7 +175,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     const registerUserCase = makeRegisterUseCase()
 
-    const { user } = await registerUserCase.execute({
+    await registerUserCase.execute({
       ...parsedBody,
       user: {
         ...parsedBody.user,
@@ -186,8 +186,8 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       },
     })
 
-    return await reply.status(201).send(user)
-  } catch (error: unknown) {
+    return await reply.status(201).send()
+  } catch (error) {
     // Se a criação do usuário falhar depois da imagem ser persistida, removemos a imagem (rollback manual)
     if (finalPath !== undefined && compressedBuffer !== undefined) {
       try {

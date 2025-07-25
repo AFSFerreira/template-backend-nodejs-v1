@@ -1,4 +1,6 @@
-export class UserNotFoundError extends Error {
+import { ResourceNotFoundError } from './resource-not-found-error'
+
+export class UserNotFoundError extends ResourceNotFoundError {
   constructor() {
     super('User not found.')
   }

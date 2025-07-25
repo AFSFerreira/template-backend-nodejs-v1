@@ -1,6 +1,6 @@
-import type { User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
+import type { UserWithDetails } from '@/@types/user-with-details'
 import type { AuthenticationAuditRepository } from '@/repositories/authentication-audit-repository'
 import type { UsersRepository } from '@/repositories/users-repository'
 
@@ -13,7 +13,7 @@ interface AuthenticateUseCaseRequest {
 }
 
 interface AuthenticateUseCaseResponse {
-  user: User
+  user: UserWithDetails
 }
 
 export class AuthenticateUseCase {

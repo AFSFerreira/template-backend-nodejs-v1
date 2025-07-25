@@ -14,6 +14,7 @@ import { exportUserDataSwaggerSchema } from '@/swagger-schemas/user/export-user-
 import { logoutSwaggerSchema } from '@/swagger-schemas/user/logout-schema'
 import { refreshTokenSwaggerSchema } from '@/swagger-schemas/user/refresh-token-schema'
 import { noValidation } from '@/utils/bypass-validation'
+import { findById } from './find-by-id'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
@@ -24,6 +25,14 @@ export async function userRoutes(app: FastifyInstance) {
       ...noValidation,
     },
     exportUserData,
+  )
+
+  app.get(
+    '/users/:userId',
+    {
+      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+    },
+    findById
   )
 
   app.post(

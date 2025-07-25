@@ -8,10 +8,7 @@ export interface CreateUser {
 
 export interface UsersRepository {
   create: (data: CreateUser) => Promise<User>
-  findBy: (
-    where: Prisma.UserWhereUniqueInput,
-  ) => Promise<UserWithDetails | null>
-  findById: (id: string) => Promise<UserWithDetails | null>
+  findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
     emailOrUsername: string,
   ) => Promise<UserWithDetails | null>
