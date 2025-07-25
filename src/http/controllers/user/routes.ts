@@ -2,6 +2,7 @@ import { USER_ROLE } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
 import { exportUserData } from './export-user-data'
+import { findById } from './find-by-id'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
@@ -14,7 +15,6 @@ import { exportUserDataSwaggerSchema } from '@/swagger-schemas/user/export-user-
 import { logoutSwaggerSchema } from '@/swagger-schemas/user/logout-schema'
 import { refreshTokenSwaggerSchema } from '@/swagger-schemas/user/refresh-token-schema'
 import { noValidation } from '@/utils/bypass-validation'
-import { findById } from './find-by-id'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
@@ -32,7 +32,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
     },
-    findById
+    findById,
   )
 
   app.post(
