@@ -1,33 +1,47 @@
 import type { Prisma } from '@prisma/client'
-import type { ICreateUser, UsersRepository } from '../users-repository'
+import type { CreateUser, UsersRepository } from '../users-repository'
 import { prisma } from '../../lib/prisma'
+import { userWithDetails } from '@/@types/complete-user-information'
 
 export class PrismaUsersRepository implements UsersRepository {
-  async setLastLogin(id: string) {
-    await prisma.user.update({
+  async create(data: CreateUser) {
+    const user = await prisma.user.create({
+      data: {
+        ...data.user,
+        keyword: {
+          connect: data.keywords.map((keyword) => ({ id: keyword.id })),
+        },
+      },
+    })
+    return user
+  }
+
+  async findBy(where: Prisma.UserWhereUniqueInput) {
+    const user = await prisma.user.findFirst({
+      where,
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async findById(id: string) {
+    const user = await prisma.user.findUnique({
       where: {
         id,
       },
-      data: {
-        lastLogin: new Date(),
-      },
+      include: userWithDetails.include,
     })
+    return user
   }
 
-  async listAllUsersInfo() {
+  async listAllUsers() {
     const users = await prisma.user.findMany({
-      include: {
-        address: true,
-        enrolledCourse: true,
-        activityArea: true,
-        academicPublication: true,
-        keyword: true,
-      },
+      include: userWithDetails.include,
     })
     return users
   }
 
-  async updateLoginAttempts(id: string) {
+  async incrementLoginAttempts(id: string) {
     await prisma.user.update({
       where: {
         id,
@@ -36,6 +50,17 @@ export class PrismaUsersRepository implements UsersRepository {
         loginAttempts: {
           increment: 1,
         },
+      },
+    })
+  }
+
+  async setLastLogin(id: string) {
+    await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        lastLogin: new Date(),
       },
     })
   }
@@ -52,34 +77,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.update({
       where: { id },
       data,
-    })
-    return user
-  }
-
-  async findBy(where: Prisma.UserWhereUniqueInput) {
-    const user = await prisma.user.findFirst({
-      where,
-    })
-    return user
-  }
-
-  async create(data: ICreateUser) {
-    const user = await prisma.user.create({
-      data: {
-        ...data.user,
-        keyword: {
-          connect: data.keywords.map((keyword) => ({ id: keyword.id })),
-        },
-      },
-    })
-    return user
-  }
-
-  async findById(id: string) {
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
+      include: userWithDetails.include,
     })
     return user
   }
