@@ -1,10 +1,10 @@
-import { RegisterUseCase } from '../register'
 import { PrismaAcademicPublicationsRepository } from '@/repositories/prisma/prisma-academic-publications-repository'
 import { PrismaAddressRepository } from '@/repositories/prisma/prisma-address-repository'
 import { PrismaAreaOfActivityRepository } from '@/repositories/prisma/prisma-area-of-activity-repository'
 import { PrismaEnrolledCourseRepository } from '@/repositories/prisma/prisma-enrolled-course-repository'
 import { PrismaKeywordRepository } from '@/repositories/prisma/prisma-keyword-repository'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
+import { RegisterUseCase } from '@/use-cases/user/register'
 
 export function makeRegisterUseCase() {
   const usersRepository = new PrismaUsersRepository()

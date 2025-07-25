@@ -1,4 +1,4 @@
-import { CreateEnrolledCourseUseCase } from '../create-enrolled-course-use-case'
+import { CreateEnrolledCourseUseCase } from '../../enrolled-course/create-enrolled-course-use-case'
 import { PrismaEnrolledCourseRepository } from '@/repositories/prisma/prisma-enrolled-course-repository'
 
 export function makeCreateEnrolledCourseUseCase() {

@@ -1,4 +1,4 @@
-import type { UserWithDetails } from '@/@types/complete-user-information'
+import type { UserWithDetails } from '@/@types/user-with-details'
 import { toCsv } from '@/utils/csv'
 import { flattenUser } from '@/utils/flatten-user'
 
