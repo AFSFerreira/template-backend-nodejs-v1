@@ -14,7 +14,7 @@ export class ExportUsersUseCase {
   async execute(): Promise<ExportUsersUseCaseResponse> {
     const allUsersInfo = await this.usersRepository.listAllUsers()
 
-    if (allUsersInfo.length === 0) {
+    if (allUsersInfo.length <= 0) {
       throw new EmptyUsersInfoException()
     }
 

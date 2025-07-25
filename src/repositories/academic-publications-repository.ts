@@ -2,8 +2,9 @@ import type { AcademicPublications, Prisma } from '@prisma/client'
 
 export interface AcademicPublicationsRepository {
   create: (
-    data: Prisma.AcademicPublicationsUncheckedCreateInput,
+    data: Prisma.AcademicPublicationsUncheckedCreateInput
   ) => Promise<AcademicPublications>
+  createMany: (data: Prisma.AcademicPublicationsUncheckedCreateInput[]) => Promise<void>
   findById: (id: string) => Promise<AcademicPublications | null>
   findManyByUserId: (userId: string) => Promise<AcademicPublications[]>
   delete: (id: string) => Promise<void>

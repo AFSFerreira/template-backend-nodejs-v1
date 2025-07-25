@@ -12,6 +12,7 @@ export interface UsersRepository {
     where: Prisma.UserWhereUniqueInput,
   ) => Promise<UserWithDetails | null>
   findById: (id: string) => Promise<UserWithDetails | null>
+  findByEmailOrUsername: (emailOrUsername: string) => Promise<UserWithDetails | null>
   listAllUsers: () => Promise<UserWithDetails[]>
   incrementLoginAttempts: (id: string) => Promise<void>
   setLastLogin: (id: string) => Promise<void>

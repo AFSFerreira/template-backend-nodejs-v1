@@ -1,7 +1,7 @@
+import { userWithDetails } from '@/@types/complete-user-information'
+import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { CreateUser, UsersRepository } from '../users-repository'
-import { prisma } from '../../lib/prisma'
-import { userWithDetails } from '@/@types/complete-user-information'
 
 export class PrismaUsersRepository implements UsersRepository {
   async create(data: CreateUser) {
@@ -12,6 +12,16 @@ export class PrismaUsersRepository implements UsersRepository {
           connect: data.keywords.map((keyword) => ({ id: keyword.id })),
         },
       },
+    })
+    return user
+  }
+
+  async findByEmailOrUsername(emailOrUsername: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: emailOrUsername }, { username: emailOrUsername }]
+      },
+      include: userWithDetails.include,
     })
     return user
   }

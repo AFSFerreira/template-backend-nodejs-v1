@@ -1,8 +1,8 @@
-import { type User } from '@prisma/client'
+import type { AuthenticationAuditRepository } from '@/repositories/authentication-audit-repository'
+import type { UsersRepository } from '@/repositories/users-repository'
+import type { User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
-import type { UsersRepository } from '@/repositories/users-repository'
-import type { AuthenticationAuditRepository } from '@/repositories/authentication-audit-repository'
 
 interface AuthenticateUseCaseRequest {
   emailOrUsername: string
@@ -29,10 +29,7 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    let user = await this.usersRepository.findBy({ email: emailOrUsername })
-    if (user == null) {
-      user = await this.usersRepository.findBy({ username: emailOrUsername })
-    } // duas consultas são ineficientes
+    const user = await this.usersRepository.findByEmailOrUsername(emailOrUsername)
 
     const auditAuthenticateObject = {
       browser: browser ?? null,
@@ -50,7 +47,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.updateLoginAttempts(user.id)
+    await this.usersRepository.incrementLoginAttempts(user.id)
 
     const doesPasswordMatch = await compare(password, user.passwordDigest)
 

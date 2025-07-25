@@ -1,10 +1,8 @@
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
-import { ExportDataUseCase } from '../export-data'
+import { ExportUsersUseCase } from '../export-data'
 
 export function makeExportDataUseCase() {
   const usersRepository = new PrismaUsersRepository()
-
-  const exportDataUseCase = new ExportDataUseCase(usersRepository)
-
+  const exportDataUseCase = new ExportUsersUseCase(usersRepository)
   return exportDataUseCase
 }

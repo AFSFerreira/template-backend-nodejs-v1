@@ -1,4 +1,4 @@
-import type { CompleteUserInformation } from '@/@types/complete-user-information'
+import type { UserWithDetails } from '@/@types/complete-user-information'
 import type { Keyword } from '@prisma/client'
 
 interface FlattenedUser {
@@ -46,7 +46,7 @@ interface FlattenedUser {
   publications: string
 }
 
-export function flattenUser(user: CompleteUserInformation): FlattenedUser {
+export function flattenUser(user: UserWithDetails): FlattenedUser {
   const flattenedUser: FlattenedUser = {
     id: user.id,
     fullName: user.fullName,

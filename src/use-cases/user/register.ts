@@ -46,12 +46,10 @@ export class RegisterUseCase {
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const existingUserByEmail = await this.usersRepository.findBy({
-      email: registerUseCaseInput.user.email,
-    })
-    const existingUserByUsername = await this.usersRepository.findBy({
-      username: registerUseCaseInput.user.username,
-    })
+    const [existingUserByEmail, existingUserByUsername] = await Promise.all([
+      this.usersRepository.findBy({ email: registerUseCaseInput.user.email }),
+      this.usersRepository.findBy({ username: registerUseCaseInput.user.username }),
+    ])
 
     if (existingUserByEmail !== null || existingUserByUsername !== null) {
       throw new UserWithSameEmailOrUsernameError()
@@ -64,16 +62,16 @@ export class RegisterUseCase {
     if (mainAreaOfActivity === null) {
       throw new InvalidMainAreaOfActivity()
     }
-
-    const passwordDigest = await hash(
-      registerUseCaseInput.user.password,
-      env.USER_PASSWORD_HASH_NUMBER_TIMES,
-    )
-
+    
     const keywordsCreated = await Promise.all(
       registerUseCaseInput.keywords.map(async (keyword) => {
         return await this.keywordsRepository.findOrCreate(keyword)
       }),
+    )
+    
+    const passwordDigest = await hash(
+      registerUseCaseInput.user.password,
+      env.USER_PASSWORD_HASH_NUMBER_TIMES,
     )
 
     const user = await this.usersRepository.create({
@@ -93,22 +91,13 @@ export class RegisterUseCase {
       keywords: keywordsCreated,
     })
 
-    await this.addressRepository.create({
-      ...registerUseCaseInput.address,
-      userId: user.id,
-    })
+    const academicPublicationsData = registerUseCaseInput.academicPublications.map(pub => ({ ...pub, userId: user.id }))
 
-    await this.enrolledCoursesRepository.create({
-      ...registerUseCaseInput.enrolledCourse,
-      userId: user.id,
-    })
-
-    for (const pub of registerUseCaseInput.academicPublications) {
-      await this.academicPublicationsRepository.create({
-        ...pub,
-        userId: user.id,
-      })
-    }
+    await Promise.all([
+      this.addressRepository.create({ ...registerUseCaseInput.address, userId: user.id }),
+      this.enrolledCoursesRepository.create({ ...registerUseCaseInput.enrolledCourse, userId: user.id }),
+      this.academicPublicationsRepository.createMany(academicPublicationsData)
+    ])
 
     return { user }
   }
