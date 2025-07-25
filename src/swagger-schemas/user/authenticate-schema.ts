@@ -1,6 +1,6 @@
-import { authenticateBodySchema } from '@/http/controllers/user/authenticate'
 import zodToJsonSchema from 'zod-to-json-schema'
 import { getUserJsonSchema } from './get-user-schema'
+import { authenticateBodySchema } from '@/http/controllers/user/authenticate'
 
 const authenticateJsonSchema = zodToJsonSchema(authenticateBodySchema)
 

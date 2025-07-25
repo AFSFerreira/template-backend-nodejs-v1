@@ -1,5 +1,5 @@
-import { verify } from 'jsonwebtoken'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { verify } from 'jsonwebtoken'
 import { env } from '../env'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
 import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'

@@ -1,5 +1,5 @@
-import type { KeywordRepository } from '@/repositories/keyword-repository'
 import type { Keyword } from '@prisma/client'
+import type { KeywordRepository } from '@/repositories/keyword-repository'
 
 interface CreateKeywordUseCaseRequest {
   value: string

@@ -1,15 +1,15 @@
+import path from 'path'
+import type { Prisma, User } from '@prisma/client'
+import { hash } from 'bcryptjs'
+import type { UsersRepository } from '../../repositories/users-repository'
+import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
+import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 import { env } from '@/env'
 import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 import type { AddressRepository } from '@/repositories/address-repository'
 import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 import type { KeywordRepository } from '@/repositories/keyword-repository'
-import type { Prisma, User } from '@prisma/client'
-import { hash } from 'bcryptjs'
-import path from 'path'
-import type { UsersRepository } from '../../repositories/users-repository'
-import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
-import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 
 interface RegisterUseCaseRequest {
   mainAreaActivity: string

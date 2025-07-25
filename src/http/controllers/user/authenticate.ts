@@ -1,8 +1,8 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import { z } from 'zod'
 import { env } from '@/env'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authenticate-use-case'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
 
 export const authenticateBodySchema = z.object({
   emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),

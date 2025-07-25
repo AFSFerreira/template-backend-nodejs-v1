@@ -1,5 +1,5 @@
-import type { UserWithDetails } from '@/@types/complete-user-information'
 import type { Keyword } from '@prisma/client'
+import type { UserWithDetails } from '@/@types/complete-user-information'
 
 interface FlattenedUser {
   id: string

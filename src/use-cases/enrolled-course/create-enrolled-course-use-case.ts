@@ -1,5 +1,5 @@
-import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 import type { EnrolledCourse } from '@prisma/client'
+import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 
 interface CreateEnrolledCourseUseCaseRequest {
   courseName?: string

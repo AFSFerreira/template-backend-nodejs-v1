@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AuthenticationAuditRepository } from '../authentication-audit-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaAuthenticationAuditRepository
   implements AuthenticationAuditRepository

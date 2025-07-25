@@ -1,7 +1,7 @@
-import { userWithDetails } from '@/@types/complete-user-information'
-import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { CreateUser, UsersRepository } from '../users-repository'
+import { userWithDetails } from '@/@types/complete-user-information'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
   async create(data: CreateUser) {

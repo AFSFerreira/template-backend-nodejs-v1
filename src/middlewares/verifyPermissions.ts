@@ -1,7 +1,7 @@
-import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
-import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'
 import { type USER_ROLE } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
+import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'
 
 export function verifyPermissions(allowedRoles: USER_ROLE[]) {
   return async (request: FastifyRequest, reply: FastifyReply) => {

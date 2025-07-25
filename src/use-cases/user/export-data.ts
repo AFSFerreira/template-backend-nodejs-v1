@@ -1,6 +1,6 @@
+import { EmptyUsersInfoException } from '../errors/empty-users-info-exception'
 import type { UsersRepository } from '@/repositories/users-repository'
 import { exportUsersAsCsv } from '@/services/export-users'
-import { EmptyUsersInfoException } from '../errors/empty-users-info-exception'
 
 // interface ExportUsersUseCaseRequest {}
 

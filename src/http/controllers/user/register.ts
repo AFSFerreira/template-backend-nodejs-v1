@@ -1,13 +1,13 @@
+import crypto from 'crypto'
+import fs from 'fs/promises'
+import path from 'path'
+import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import sharp from 'sharp'
+import { z } from 'zod'
 import { YEAR_MONTH_REGEX } from '@/constants/regex'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { makeRegisterUseCase } from '@/use-cases/user/factories/make-register-use-case'
-import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
-import crypto from 'crypto'
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import fs from 'fs/promises'
-import path from 'path'
-import sharp from 'sharp'
-import { z } from 'zod'
 
 export const registerBodySchema = z
   .object({

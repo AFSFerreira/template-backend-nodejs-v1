@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '../academic-publications-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaAcademicPublicationsRepository
   implements AcademicPublicationsRepository

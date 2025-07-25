@@ -1,5 +1,5 @@
-import type { UserWithDetails } from '@/@types/complete-user-information'
 import type { Keyword, Prisma, User } from '@prisma/client'
+import type { UserWithDetails } from '@/@types/complete-user-information'
 
 export interface CreateUser {
   user: Prisma.UserUncheckedCreateInput
