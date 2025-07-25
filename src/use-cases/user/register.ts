@@ -48,7 +48,9 @@ export class RegisterUseCase {
   ): Promise<RegisterUseCaseResponse> {
     const [existingUserByEmail, existingUserByUsername] = await Promise.all([
       this.usersRepository.findBy({ email: registerUseCaseInput.user.email }),
-      this.usersRepository.findBy({ username: registerUseCaseInput.user.username }),
+      this.usersRepository.findBy({
+        username: registerUseCaseInput.user.username,
+      }),
     ])
 
     if (existingUserByEmail !== null || existingUserByUsername !== null) {
@@ -62,13 +64,13 @@ export class RegisterUseCase {
     if (mainAreaOfActivity === null) {
       throw new InvalidMainAreaOfActivity()
     }
-    
+
     const keywordsCreated = await Promise.all(
       registerUseCaseInput.keywords.map(async (keyword) => {
         return await this.keywordsRepository.findOrCreate(keyword)
       }),
     )
-    
+
     const passwordDigest = await hash(
       registerUseCaseInput.user.password,
       env.USER_PASSWORD_HASH_NUMBER_TIMES,
@@ -91,12 +93,22 @@ export class RegisterUseCase {
       keywords: keywordsCreated,
     })
 
-    const academicPublicationsData = registerUseCaseInput.academicPublications.map(pub => ({ ...pub, userId: user.id }))
+    const academicPublicationsData =
+      registerUseCaseInput.academicPublications.map((pub) => ({
+        ...pub,
+        userId: user.id,
+      }))
 
     await Promise.all([
-      this.addressRepository.create({ ...registerUseCaseInput.address, userId: user.id }),
-      this.enrolledCoursesRepository.create({ ...registerUseCaseInput.enrolledCourse, userId: user.id }),
-      this.academicPublicationsRepository.createMany(academicPublicationsData)
+      this.addressRepository.create({
+        ...registerUseCaseInput.address,
+        userId: user.id,
+      }),
+      this.enrolledCoursesRepository.create({
+        ...registerUseCaseInput.enrolledCourse,
+        userId: user.id,
+      }),
+      this.academicPublicationsRepository.createMany(academicPublicationsData),
     ])
 
     return { user }

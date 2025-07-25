@@ -30,8 +30,9 @@ export class CreateAddressUseCase {
     houseNumber,
     userId,
   }: CreateAddressUseCaseRequest): Promise<CreateAddressUseCaseResponse> {
-    const userAlreadyHasAddress =
-      await this.addressRepository.findBy({ userId })
+    const userAlreadyHasAddress = await this.addressRepository.findBy({
+      userId,
+    })
 
     if (userAlreadyHasAddress !== null) {
       throw new UserAlreadyHasAddressError()

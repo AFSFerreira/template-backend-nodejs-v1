@@ -9,7 +9,7 @@ export class PrismaAddressRepository implements AddressRepository {
     })
     return address
   }
-  
+
   async findBy(where: Prisma.AddressWhereInput) {
     const address = await prisma.address.findFirst({
       where,

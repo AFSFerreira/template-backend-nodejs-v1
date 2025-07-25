@@ -23,7 +23,7 @@ export class PrismaKeywordRepository implements KeywordRepository {
     })
     return keyword
   }
-  
+
   async findManyByUserId(userId: string) {
     const keywords = await prisma.keyword.findMany({
       where: {
@@ -36,7 +36,6 @@ export class PrismaKeywordRepository implements KeywordRepository {
     })
     return keywords
   }
-
 
   async delete(id: string) {
     await prisma.keyword.delete({ where: { id } })
