@@ -1,6 +1,6 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { EmptyUsersInfoException } from '@/use-cases/errors/empty-users-info-exception'
 import { makeExportDataUseCase } from '@/use-cases/factories/user/make-export-data-use-case'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function exportUserData(
   request: FastifyRequest,
