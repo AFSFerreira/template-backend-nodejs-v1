@@ -1,18 +1,18 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
-import { makeFindByIdUseCase } from '@/use-cases/factories/user/make-find-by-id-use-case'
+import { makeFindUserByIdUseCase } from '@/use-cases/factories/user/make-find-by-id-use-case'
 
 export const findUserByIdParamsSchema = z.object({
-  id: z.string().uuid(),
+  userId: z.string().uuid(),
 })
 
 export async function findById(request: FastifyRequest, reply: FastifyReply) {
-  const { id } = findUserByIdParamsSchema.parse(request.params)
+  const { userId: id } = findUserByIdParamsSchema.parse(request.params)
 
   try {
-    const findByIdUseCase = makeFindByIdUseCase()
-    const { user } = await findByIdUseCase.execute({ id })
+    const findUserByIdUseCase = makeFindUserByIdUseCase()
+    const { user } = await findUserByIdUseCase.execute({ id })
     return await reply.status(200).send({ user })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {

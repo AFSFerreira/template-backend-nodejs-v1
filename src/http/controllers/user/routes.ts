@@ -18,6 +18,14 @@ import { noValidation } from '@/utils/bypass-validation'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
+    '/users/:userId',
+    {
+      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+    },
+    findById,
+  )
+
+  app.get(
     '/users/export',
     {
       preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
@@ -25,14 +33,6 @@ export async function userRoutes(app: FastifyInstance) {
       ...noValidation,
     },
     exportUserData,
-  )
-
-  app.get(
-    '/users/:userId',
-    {
-      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
-    },
-    findById,
   )
 
   app.post(

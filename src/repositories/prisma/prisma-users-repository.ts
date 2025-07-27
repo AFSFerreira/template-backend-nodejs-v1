@@ -1,10 +1,14 @@
 import type { Prisma } from '@prisma/client'
-import type { CreateUser, UsersRepository } from '../users-repository'
+import type {
+  CreateUserQuery,
+  GetAllUsersQuery,
+  UsersRepository,
+} from '../users-repository'
 import { userWithDetails } from '@/@types/user-with-details'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
-  async create(data: CreateUser) {
+  async create(data: CreateUserQuery) {
     const user = await prisma.user.create({
       data: {
         ...data.user,
@@ -34,9 +38,60 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async listAllUsers() {
+  async listAllUsers(query: GetAllUsersQuery) {
+    const offset = query.limit !== undefined ? (query.page - 1) * query.limit : undefined    
+
     const users = await prisma.user.findMany({
       include: userWithDetails.include,
+      skip: offset,
+      take: query.limit,
+      orderBy: [
+        ...(query.birthDateComparison !== null
+          ? [{ birthDate: query.birthDateComparison }]
+          : []),
+        ...(query.astrobiologyOrRelatedStartYearComparison !== null
+          ? [
+              {
+                astrobiologyOrRelatedStartYear:
+                  query.astrobiologyOrRelatedStartYearComparison,
+              },
+            ]
+          : []),
+      ],
+      where: {
+        ...(query.fullName !== null
+          ? { fullName: { startsWith: query.fullName } }
+          : {}),
+        ...(query.username !== null
+          ? { username: { startsWith: query.username } }
+          : {}),
+        ...(query.institutionName !== null
+          ? { institutionName: { startsWith: query.institutionName } }
+          : {}),
+        ...(query.departmentName !== null
+          ? { departmentName: { startsWith: query.departmentName } }
+          : {}),
+        ...(query.specificActivity !== null
+          ? { specificActivity: { startsWith: query.specificActivity } }
+          : {}),
+
+        occupation: query.occupation,
+        educationLevel: query.educationLevel,
+        receiveReports: query.receiveReports,
+        userRole: query.userRole,
+        activityArea: {
+          is: {
+            mainAreaActivity: query.activityArea,
+          },
+        },
+        AND: query.keywords?.map((keywordValue) => ({
+          keyword: {
+            some: {
+              value: keywordValue,
+            },
+          },
+        })),
+      },
     })
     return users
   }

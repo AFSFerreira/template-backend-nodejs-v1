@@ -1,8 +1,8 @@
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
-import { FindByIdUseCase } from '@/use-cases/user/find-by-id'
+import { FindUserByIdUseCase } from '@/use-cases/user/find-by-id'
 
-export function makeFindByIdUseCase() {
+export function makeFindUserByIdUseCase() {
   const usersRepository = new PrismaUsersRepository()
-  const findByIdUseCase = new FindByIdUseCase(usersRepository)
+  const findByIdUseCase = new FindUserByIdUseCase(usersRepository)
   return findByIdUseCase
 }

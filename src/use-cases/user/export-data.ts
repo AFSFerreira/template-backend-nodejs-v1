@@ -12,7 +12,7 @@ export class ExportUsersUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(): Promise<ExportUsersUseCaseResponse> {
-    const allUsersInfo = await this.usersRepository.listAllUsers()
+    const allUsersInfo = await this.usersRepository.listAllUsers({})
 
     if (allUsersInfo.length <= 0) {
       throw new EmptyUsersInfoException()
