@@ -39,7 +39,8 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async listAllUsers(query: GetAllUsersQuery) {
-    const offset = query.limit !== undefined ? (query.page - 1) * query.limit : undefined    
+    const offset =
+      query.limit !== undefined ? (query.page - 1) * query.limit : undefined
 
     const users = await prisma.user.findMany({
       include: userWithDetails.include,

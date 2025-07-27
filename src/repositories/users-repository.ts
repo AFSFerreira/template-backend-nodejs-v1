@@ -6,8 +6,8 @@ import type {
   User,
   USER_ROLE,
 } from '@prisma/client'
-import type { UserWithDetails } from '@/@types/user-with-details'
 import type { PaginationType } from '@/@types/pagination'
+import type { UserWithDetails } from '@/@types/user-with-details'
 
 export interface CreateUserQuery {
   user: Prisma.UserUncheckedCreateInput

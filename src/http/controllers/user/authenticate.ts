@@ -72,7 +72,7 @@ export async function authenticate(
       .send({ user, accessToken })
   } catch (error: unknown) {
     if (error instanceof InvalidCredentialsError) {
-      return await reply.status(400).send({ message: error.message })
+      return await reply.status(401).send({ message: error.message })
     }
 
     throw error

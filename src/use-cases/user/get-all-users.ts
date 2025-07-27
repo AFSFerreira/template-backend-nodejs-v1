@@ -4,7 +4,7 @@ import type {
   UsersRepository,
 } from '@/repositories/users-repository'
 
-type GetAllUsersUseCaseRequest = GetAllUsersQuery;
+type GetAllUsersUseCaseRequest = GetAllUsersQuery
 
 interface GetAllUsersCaseResponse {
   users: UserWithDetails[]
