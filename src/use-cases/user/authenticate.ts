@@ -50,10 +50,7 @@ export class AuthenticateUseCase {
 
     await this.usersRepository.incrementLoginAttempts(user.publicId)
 
-    const doesPasswordMatch = await compare(
-      password,
-      user.passwordHash,
-    )
+    const doesPasswordMatch = await compare(password, user.passwordHash)
 
     if (!doesPasswordMatch) {
       await this.authenticationAuditRepository.create({
