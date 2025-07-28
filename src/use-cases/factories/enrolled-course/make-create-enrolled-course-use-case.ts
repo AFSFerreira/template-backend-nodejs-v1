@@ -1,4 +1,3 @@
-
 import { PrismaEnrolledCourseRepository } from '@/repositories/prisma/prisma-enrolled-course-repository'
 import { CreateEnrolledCourseUseCase } from '@/use-cases/enrolled-course/create-enrolled-course-use-case'
 
