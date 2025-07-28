@@ -25,12 +25,12 @@ interface FlattenedUser {
   createdAt: string
   updatedAt: string
 
-  houseNumber: string
+  number: string
   street: string
-  neighborhood: string
+  district: string
   city: string
   state: string
-  postalCode: string
+  zip: string
   country: string
 
   mainAreaActivity: string
@@ -48,11 +48,11 @@ interface FlattenedUser {
 
 export function flattenUser(user: UserWithDetails): FlattenedUser {
   const flattenedUser: FlattenedUser = {
-    id: user.id,
+    id: user.publicId,
     fullName: user.fullName,
     username: user.username,
     email: user.email,
-    birthDate: user.birthDate.toISOString().split('T')[0],
+    birthDate: user.birthdate.toISOString().split('T')[0],
     institutionName: user.institutionName,
     departmentName: user.departmentName ?? '',
     occupation: user.occupation,
@@ -71,37 +71,33 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
 
-    houseNumber: user.address?.houseNumber ?? '',
+    number: user.address?.number ?? '',
     street: user.address?.street ?? '',
-    neighborhood: user.address?.neighborhood ?? '',
+    district: user.address?.district ?? '',
     city: user.address?.city ?? '',
     state: user.address?.state ?? '',
-    postalCode: user.address?.postalCode ?? '',
+    zip: user.address?.zip ?? '',
     country: user.address?.country ?? '',
 
-    mainAreaActivity: user.activityArea?.mainAreaActivity ?? '',
+    mainAreaActivity: user.activityArea?.area ?? '',
 
     courseName: user.enrolledCourse?.courseName ?? '',
     startGraduationDate:
       user.enrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
     expectedGraduationDate:
-      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ??
-      '',
+      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ?? '',
     supervisorName: user.enrolledCourse?.supervisorName ?? '',
     scholarshipHolder: user.enrolledCourse?.scholarshipHolder ?? false,
     sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
 
     keywords:
-      user.keyword
-        ?.map((k: Keyword) => k.value)
-        .filter(Boolean)
-        .join('; ') ?? '',
+      user.keyword?.map((k: Keyword) => k.value).filter(Boolean).join('; ') ?? '',
 
     publications:
       user.academicPublication
         ?.map(
-          (p: any) =>
-            `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
+          (p) =>
+            `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`
         )
         .join(' | ') ?? '',
   }
