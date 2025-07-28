@@ -3,6 +3,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getAllUsersParamsSchema } from '@/http/schemas/user/get-all-users-schema'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
 import { makeGetAllUsersUseCase } from '@/use-cases/factories/user/make-get-all-users-use-case'
+import { UserPresenter } from '@/http/presenters/user-presenter'
 
 export async function getAllUsers(
   request: FastifyRequest,
@@ -19,7 +20,7 @@ export async function getAllUsers(
       educationLevel: parsedParams.educationLevel as EducationLevel,
     })
 
-    return await reply.status(200).send({ users })
+    return await reply.status(200).send({ users: UserPresenter.toHTTP(users) })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return await reply.status(404).send({ message: error.message })

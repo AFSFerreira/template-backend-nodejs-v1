@@ -3,6 +3,7 @@ import { env } from '@/env'
 import { authenticateBodySchema } from '@/http/schemas/user/authenticate-schema'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/factories/user/make-authenticate-use-case'
+import { UserPresenter } from '@/http/presenters/user-presenter'
 
 export async function authenticate(
   request: FastifyRequest,
@@ -54,7 +55,7 @@ export async function authenticate(
         httpOnly: true,
       })
       .status(200)
-      .send({ user, accessToken })
+      .send({ accessToken, user: UserPresenter.toHTTP(user) })
   } catch (error: unknown) {
     if (error instanceof InvalidCredentialsError) {
       return await reply.status(401).send({ message: error.message })

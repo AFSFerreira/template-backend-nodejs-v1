@@ -18,8 +18,7 @@ export class FindUserByPublicIdUseCase {
   }: FindUserByPublicIdUseCaseRequest): Promise<FindUserByPublicIdUseCaseResponse> {
     const user = await this.usersRepository.findBy({ publicId })
 
-    if (user === null)
-      throw new UserNotFoundError()
+    if (user === null) throw new UserNotFoundError()
 
     return { user }
   }

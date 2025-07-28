@@ -3,6 +3,6 @@ import { FindUserByPublicIdUseCase } from '@/use-cases/user/find-by-public-id'
 
 export function makeFindUserByPublicIdUseCase() {
   const usersRepository = new PrismaUsersRepository()
-  const findByIdUseCase = new FindUserByPublicIdUseCase(usersRepository)
-  return findByIdUseCase
+  const findByPublicIdUseCase = new FindUserByPublicIdUseCase(usersRepository)
+  return findByPublicIdUseCase
 }
