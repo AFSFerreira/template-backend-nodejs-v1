@@ -6,8 +6,9 @@ export async function exportUserData(
   _request: FastifyRequest,
   reply: FastifyReply,
 ) {
+  const exportDataUseCase = makeExportDataUseCase()
+
   try {
-    const exportDataUseCase = makeExportDataUseCase()
     const userCSVInfoResponse = await exportDataUseCase.execute()
 
     return await reply

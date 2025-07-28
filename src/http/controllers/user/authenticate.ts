@@ -1,22 +1,8 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { z } from 'zod'
 import { env } from '@/env'
+import { authenticateBodySchema } from '@/http/schemas/user/authenticate-schema'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/factories/user/make-authenticate-use-case'
-
-export const authenticateBodySchema = z.object({
-  emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
-  password: z
-    .string()
-    .nonempty()
-    .min(8)
-    .regex(/[A-Z]/, 'Sua senha precisa conter pelo menos um caráter maiúsculo')
-    .regex(/\d/, 'Sua senha precisa conter pelo menos um dígito numérico')
-    .regex(
-      /[@$!%*?&#]/,
-      'Sua senha precisa conter pelo menos um caráter especial',
-    ),
-})
 
 export async function authenticate(
   request: FastifyRequest,
@@ -28,12 +14,11 @@ export async function authenticate(
   const { ip: ipAddress } = request
   const { 'user-agent': browser } = request.headers
   const { remotePort } = request.socket
+  const browserName = Array.isArray(browser) ? browser[0] : browser
+
+  const authenticateUseCase = makeAuthenticateUseCase()
 
   try {
-    const authenticateUseCase = makeAuthenticateUseCase()
-
-    const browserName = Array.isArray(browser) ? browser[0] : browser
-
     const { user } = await authenticateUseCase.execute({
       emailOrUsername,
       password,

@@ -3,6 +3,7 @@ import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
 import { exportUserData } from './export-user-data'
 import { findById } from './find-by-id'
+import { getAllUsers } from './get-all-users'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
@@ -11,6 +12,14 @@ import { authentication } from '@/middlewares/authentication'
 import { verifyPermissions } from '@/middlewares/verifyPermissions'
 
 export async function userRoutes(app: FastifyInstance) {
+  app.get(
+    '/users',
+    {
+      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+    },
+    getAllUsers,
+  )
+
   app.get(
     '/users/:userId',
     {
@@ -42,7 +51,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.delete(
     '/sessions',
     {
-      preHandler: [authentication]
+      preHandler: [authentication],
     },
     logout,
   )

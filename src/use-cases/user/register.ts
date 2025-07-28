@@ -3,6 +3,7 @@ import type { Prisma, User } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import type { UsersRepository } from '../../repositories/users-repository'
 import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
+import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 import { env } from '@/env'
 import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
@@ -10,15 +11,17 @@ import type { AddressRepository } from '@/repositories/address-repository'
 import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 import type { KeywordRepository } from '@/repositories/keyword-repository'
+import { saveCompressedImage } from '@/services/image-storage'
 
 interface RegisterUseCaseRequest {
+  imageBuffer?: Buffer
   mainAreaActivity: string
   keywords: string[]
 
   user: Omit<
     Prisma.UserUncheckedCreateInput,
     'passwordDigest' | 'activityAreaId' | 'profileImagePath'
-  > & { password: string; profileImagePath: string | undefined }
+  > & { password: string }
 
   address: Omit<Prisma.AddressUncheckedCreateInput, 'userId'>
 
@@ -65,6 +68,19 @@ export class RegisterUseCase {
       throw new InvalidMainAreaOfActivity()
     }
 
+    // Persiste a imagem do usuário no backend:
+    let profileImageInfo
+    try {
+      if (registerUseCaseInput.imageBuffer !== undefined) {
+        profileImageInfo = await saveCompressedImage(
+          registerUseCaseInput.imageBuffer,
+          path.resolve(process.cwd(), 'uploads', 'profile-images'),
+        )
+      }
+    } catch (error) {
+      throw new UserImageStorageError()
+    }
+
     const keywordsCreated = await Promise.all(
       registerUseCaseInput.keywords.map(async (keyword) => {
         return await this.keywordsRepository.findOrCreate(keyword)
@@ -81,13 +97,14 @@ export class RegisterUseCase {
         ...registerUseCaseInput.user,
         passwordDigest,
         profileImagePath:
-          registerUseCaseInput.user.profileImagePath ??
-          path.resolve(
-            process.cwd(),
-            'uploads',
-            'profile-images',
-            'default-profile-pic.png',
-          ),
+          profileImageInfo !== undefined
+            ? profileImageInfo.finalImagePath
+            : path.resolve(
+                process.cwd(),
+                'uploads',
+                'profile-images',
+                'default-profile-pic.png',
+              ),
         activityAreaId: mainAreaOfActivity.id,
       },
       keywords: keywordsCreated,

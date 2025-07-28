@@ -46,19 +46,6 @@ export class PrismaUsersRepository implements UsersRepository {
       include: userWithDetails.include,
       skip: offset,
       take: query.limit,
-      orderBy: [
-        ...(query.birthDateComparison !== null
-          ? [{ birthDate: query.birthDateComparison }]
-          : []),
-        ...(query.astrobiologyOrRelatedStartYearComparison !== null
-          ? [
-              {
-                astrobiologyOrRelatedStartYear:
-                  query.astrobiologyOrRelatedStartYearComparison,
-              },
-            ]
-          : []),
-      ],
       where: {
         ...(query.fullName !== null
           ? { fullName: { startsWith: query.fullName } }
