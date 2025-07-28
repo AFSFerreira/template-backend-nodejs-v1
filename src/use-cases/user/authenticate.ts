@@ -39,7 +39,7 @@ export class AuthenticateUseCase {
       userId: user?.id ?? null,
     }
 
-    if (user == null) {
+    if (user === null) {
       await this.authenticationAuditRepository.create({
         ...auditAuthenticateObject,
         status: 'USER_NOT_EXISTS',
@@ -48,9 +48,12 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.incrementLoginAttempts(user.id)
+    await this.usersRepository.incrementLoginAttempts(user.publicId)
 
-    const doesPasswordMatch = await compare(password, user.passwordDigest)
+    const doesPasswordMatch = await compare(
+      password,
+      user.passwordHash,
+    )
 
     if (!doesPasswordMatch) {
       await this.authenticationAuditRepository.create({
@@ -61,7 +64,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.setLastLogin(user.id)
+    await this.usersRepository.setLastLogin(user.publicId)
 
     await this.authenticationAuditRepository.create({
       ...auditAuthenticateObject,

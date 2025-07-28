@@ -1,4 +1,4 @@
-import type { EDUCATION_LEVEL, OCCUPATION, USER_ROLE } from '@prisma/client'
+import type { EducationLevel, Occupation, UserRole } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getAllUsersParamsSchema } from '@/http/schemas/user/get-all-users-schema'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
@@ -14,9 +14,9 @@ export async function getAllUsers(
   try {
     const { users } = await getAllUsersUseCase.execute({
       ...parsedParams,
-      userRole: parsedParams.userRole as USER_ROLE,
-      occupation: parsedParams.occupation as OCCUPATION,
-      educationLevel: parsedParams.educationLevel as EDUCATION_LEVEL,
+      role: parsedParams.userRole as UserRole,
+      occupation: parsedParams.occupation as Occupation,
+      educationLevel: parsedParams.educationLevel as EducationLevel,
     })
 
     return await reply.status(200).send({ users })

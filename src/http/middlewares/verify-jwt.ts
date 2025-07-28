@@ -24,7 +24,7 @@ export async function authentication(
 
     const usersRepository = new PrismaUsersRepository()
 
-    const user = await usersRepository.findBy({ id: userId })
+    const user = await usersRepository.findBy({ publicId: userId })
 
     if (user === null) {
       throw new UserNotFoundError()

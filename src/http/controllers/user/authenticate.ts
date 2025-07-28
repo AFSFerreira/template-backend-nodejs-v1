@@ -31,7 +31,7 @@ export async function authenticate(
       {},
       {
         sign: {
-          sub: user?.id,
+          sub: user?.publicId,
         },
       },
     )
@@ -40,7 +40,7 @@ export async function authenticate(
       {},
       {
         sign: {
-          sub: user?.id,
+          sub: user?.publicId,
           expiresIn: '7d',
         },
       },

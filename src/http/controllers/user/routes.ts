@@ -1,8 +1,8 @@
-import { USER_ROLE } from '@prisma/client'
+import { UserRole } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
 import { exportUserData } from './export-user-data'
-import { findById } from './find-by-id'
+import { findById } from './find-by-public-id'
 import { getAllUsers } from './get-all-users'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
@@ -15,15 +15,15 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/users',
     {
-      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
     },
     getAllUsers,
   )
 
   app.get(
-    '/users/:userId',
+    '/users/:publicId',
     {
-      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
     },
     findById,
   )
@@ -31,7 +31,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/users/export',
     {
-      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
+      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
     },
     exportUserData,
   )

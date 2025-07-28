@@ -1,19 +1,14 @@
 import type {
-  EDUCATION_LEVEL,
+  EducationLevel,
   Keyword,
-  OCCUPATION,
+  Occupation,
   Prisma,
   User,
-  USER_ROLE,
+  UserRole,
 } from '@prisma/client'
 import type { ComparableType, OrderableType } from '@/@types/orderable-type'
 import type { PaginationType } from '@/@types/pagination'
 import type { UserWithDetails } from '@/@types/user-with-details'
-
-export interface CreateUserQuery {
-  user: Prisma.UserUncheckedCreateInput
-  keywords: Keyword[]
-}
 
 type BirthDateComparisonType =
   | { birthdate: Date; birthdateComparison: ComparableType }
@@ -38,23 +33,31 @@ export type GetAllUsersQuery = {
   receiveReports?: boolean
   activityArea?: string
   keywords?: string[]
-  userRole?: USER_ROLE
-  occupation?: OCCUPATION
-  educationLevel?: EDUCATION_LEVEL
+  role?: UserRole
+  occupation?: Occupation
+  educationLevel?: EducationLevel
   createdAtOrder?: OrderableType
 } & PaginationType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 
+export interface CreateUserQuery {
+  user: Prisma.UserUncheckedCreateInput
+  keywords: Keyword[]
+}
+
 export interface UsersRepository {
   create: (data: CreateUserQuery) => Promise<User>
   findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
-    emailOrUsername: string,
+    emailOrUsername: string | [string | undefined, string | undefined],
   ) => Promise<UserWithDetails | null>
   listAllUsers: (query: GetAllUsersQuery) => Promise<UserWithDetails[]>
-  incrementLoginAttempts: (id: string) => Promise<void>
-  setLastLogin: (id: string) => Promise<void>
-  delete: (id: string) => Promise<void>
-  update: (id: string, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>
+  incrementLoginAttempts: (publicId: string) => Promise<void>
+  setLastLogin: (publicId: string) => Promise<void>
+  delete: (publicId: string) => Promise<void>
+  update: (
+    publicId: string,
+    data: Prisma.UserUpdateInput,
+  ) => Promise<UserWithDetails>
 }

@@ -48,13 +48,36 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findByEmailOrUsername(emailOrUsername: string) {
+  async findByEmailOrUsername(
+    emailOrUsername: string | [string | undefined, string | undefined],
+  ) {
+    let orConditions: Array<{ email?: string; username?: string }> = []
+
+    if (Array.isArray(emailOrUsername)) {
+      const [val1, val2] = emailOrUsername
+
+      if (val1 === undefined && val2 === undefined) return null
+
+      if (val1 !== undefined) {
+        orConditions.push({ email: val1 })
+        orConditions.push({ username: val1 })
+      }
+
+      if (val2 !== undefined && val1 !== val2) {
+        orConditions.push({ email: val2 })
+        orConditions.push({ username: val2 })
+      }
+    } else {
+      orConditions = [{ email: emailOrUsername }, { username: emailOrUsername }]
+    }
+
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
+        OR: orConditions,
       },
       include: userWithDetails.include,
     })
+
     return user
   }
 
@@ -87,7 +110,7 @@ export class PrismaUsersRepository implements UsersRepository {
         specificActivity: PrismaUsersRepository.buildStartsWithFilter(
           query.specificActivity,
         ),
-        birthDate: PrismaUsersRepository.buildComparableFilter(
+        birthdate: PrismaUsersRepository.buildComparableFilter(
           query.birthdateComparison,
           query.birthdate,
         ),
@@ -100,7 +123,7 @@ export class PrismaUsersRepository implements UsersRepository {
         receiveReports: query.receiveReports,
         occupation: query.occupation,
         educationLevel: query.educationLevel,
-        userRole: query.userRole,
+        role: query.role,
         activityArea: PrismaUsersRepository.buildIsFilter(
           'activityArea',
           query.activityArea,
@@ -119,10 +142,10 @@ export class PrismaUsersRepository implements UsersRepository {
     return users
   }
 
-  async incrementLoginAttempts(id: string) {
+  async incrementLoginAttempts(publicId: string) {
     await prisma.user.update({
       where: {
-        id,
+        publicId,
       },
       data: {
         loginAttempts: {
@@ -132,10 +155,10 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async setLastLogin(id: string) {
+  async setLastLogin(publicId: string) {
     await prisma.user.update({
       where: {
-        id,
+        publicId,
       },
       data: {
         lastLogin: new Date(),
@@ -143,17 +166,17 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async delete(id: string) {
+  async delete(publicId: string) {
     await prisma.user.delete({
       where: {
-        id,
+        publicId,
       },
     })
   }
 
-  async update(id: string, data: Prisma.UserUpdateInput) {
+  async update(publicId: string, data: Prisma.UserUpdateInput) {
     const user = await prisma.user.update({
-      where: { id },
+      where: { publicId },
       data,
       include: userWithDetails.include,
     })

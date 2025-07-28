@@ -1,4 +1,4 @@
-import { EDUCATION_LEVEL, OCCUPATION, USER_ROLE } from '@prisma/client'
+import { EducationLevel, Occupation, UserRole } from '@prisma/client'
 import { z } from 'zod'
 import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
 
@@ -19,14 +19,25 @@ export const getAllUsersParamsSchema = z
         return typeof val === 'string' ? [val] : val
       }),
     userRole: z
-      .enum(Object.values(USER_ROLE) as [string, ...string[]])
+      .enum(
+        Object.values(UserRole as Record<string, string>) as [
+          string,
+          ...string[],
+        ],
+      )
       .optional(),
-    occupation: z
-      .enum(Object.values(OCCUPATION) as [string, ...string[]])
-      .optional(),
-    educationLevel: z
-      .enum(Object.values(EDUCATION_LEVEL) as [string, ...string[]])
-      .optional(),
+    occupation: z.enum(
+      Object.values(Occupation as Record<string, string>) as [
+        string,
+        ...string[],
+      ],
+    ),
+    educationLevel: z.enum(
+      Object.values(EducationLevel as Record<string, string>) as [
+        string,
+        ...string[],
+      ],
+    ),
     birthdate: z.date().optional(),
     birthdateComparison: z.enum(comparisonOperators).optional(),
     astrobiologyOrRelatedStartYear: z.coerce.number().positive().optional(),

@@ -1,8 +1,4 @@
-import {
-  type EDUCATION_LEVEL,
-  type IDENTITY_TYPE,
-  type OCCUPATION,
-} from '@prisma/client'
+import type { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { registerBodySchema } from '@/http/schemas/user/register-schema'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
@@ -20,9 +16,9 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       ...parsedBody,
       user: {
         ...parsedBody.user,
-        occupation: parsedBody.user.occupation as OCCUPATION,
-        educationLevel: parsedBody.user.educationLevel as EDUCATION_LEVEL,
-        identityType: parsedBody.user.identityType as IDENTITY_TYPE,
+        occupation: parsedBody.user.occupation as Occupation,
+        educationLevel: parsedBody.user.educationLevel as EducationLevel,
+        identityType: parsedBody.user.identityType as IdentityType,
       },
       imageBuffer,
     })

@@ -3,7 +3,7 @@ import type { UserWithDetails } from '@/@types/user-with-details'
 import type { UsersRepository } from '@/repositories/users-repository'
 
 interface FindUserByIdUseCaseRequest {
-  id: string
+  publicId: string
 }
 
 interface FindUserByIdUseCaseResponse {
@@ -14,9 +14,9 @@ export class FindUserByIdUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute({
-    id,
+    publicId,
   }: FindUserByIdUseCaseRequest): Promise<FindUserByIdUseCaseResponse> {
-    const user = await this.usersRepository.findBy({ id })
+    const user = await this.usersRepository.findBy({ publicId })
 
     if (user === null) throw new UserNotFoundError()
 

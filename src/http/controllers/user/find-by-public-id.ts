@@ -4,11 +4,11 @@ import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-err
 import { makeFindUserByIdUseCase } from '@/use-cases/factories/user/make-find-by-id-use-case'
 
 export async function findById(request: FastifyRequest, reply: FastifyReply) {
-  const { userId: id } = findUserByIdParamsSchema.parse(request.params)
+  const { publicId } = findUserByIdParamsSchema.parse(request.params)
   const findUserByIdUseCase = makeFindUserByIdUseCase()
 
   try {
-    const { user } = await findUserByIdUseCase.execute({ id })
+    const { user } = await findUserByIdUseCase.execute({ publicId })
     return await reply.status(200).send({ user })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {

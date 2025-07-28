@@ -1,4 +1,4 @@
-import { EDUCATION_LEVEL, IDENTITY_TYPE, OCCUPATION } from '@prisma/client'
+import { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import { z } from 'zod'
 import { YEAR_MONTH_REGEX } from '@/constants/regex'
 
@@ -23,20 +23,31 @@ export const registerBodySchema = z
         .min(5)
         .transform((data) => data.toUpperCase()),
       username: z.string().min(5),
-      birthDate: z.coerce.date(),
-      lattesCVLink: z.string().url().nonempty().optional(),
-      profileGSLink: z.string().url().nonempty().optional(),
-      profileRIDLink: z.string().url().nonempty().optional(),
+      birthdate: z.coerce.date(),
+      linkLattes: z.string().url().nonempty().optional(),
+      linkGoogleScholar: z.string().url().nonempty().optional(),
+      linkResearcherId: z.string().url().nonempty().optional(),
       orcidNumber: z.coerce.string().nonempty().optional(),
       institutionName: z.string().nonempty(),
       departmentName: z.string().nonempty().optional(),
       institutionComplement: z.string().nonempty().optional(),
-      occupation: z.enum(Object.values(OCCUPATION) as [string, ...string[]]),
+      occupation: z.enum(
+        Object.values(Occupation as Record<string, string>) as [
+          string,
+          ...string[],
+        ],
+      ),
       educationLevel: z.enum(
-        Object.values(EDUCATION_LEVEL) as [string, ...string[]],
+        Object.values(EducationLevel as Record<string, string>) as [
+          string,
+          ...string[],
+        ],
       ),
       identityType: z.enum(
-        Object.values(IDENTITY_TYPE) as [string, ...string[]],
+        Object.values(IdentityType as Record<string, string>) as [
+          string,
+          ...string[],
+        ],
       ),
       identityDocument: z.string().nonempty(),
       // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
@@ -61,15 +72,15 @@ export const registerBodySchema = z
         return data.map((keyword) => keyword.toUpperCase())
       }),
 
-    // REVIEW: Avaliar validação de endereço
+    // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
     address: z.object({
-      postalCode: z.string().nonempty(),
+      zip: z.string().nonempty(),
+      number: z.string().nonempty(),
+      district: z.string().nonempty(),
+      street: z.string().nonempty(),
+      city: z.string().nonempty(),
       country: z.string().nonempty(),
       state: z.string().nonempty(),
-      city: z.string().nonempty(),
-      neighborhood: z.string().nonempty(),
-      street: z.string().nonempty(),
-      houseNumber: z.string().nonempty(),
     }),
 
     enrolledCourse: z.object({
@@ -130,10 +141,7 @@ export const registerBodySchema = z
       if (data.enrolledCourse.scholarshipHolder)
         return data.enrolledCourse.sponsoringOrganization !== undefined
 
-      if (data.enrolledCourse.sponsoringOrganization !== undefined)
-        return !data.enrolledCourse.scholarshipHolder
-
-      return true
+      return data.enrolledCourse.sponsoringOrganization === undefined
     },
     {
       message:

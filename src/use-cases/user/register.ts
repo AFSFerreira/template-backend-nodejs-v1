@@ -20,7 +20,7 @@ interface RegisterUseCaseRequest {
 
   user: Omit<
     Prisma.UserUncheckedCreateInput,
-    'passwordDigest' | 'activityAreaId' | 'profileImagePath'
+    'passwordHash' | 'activityAreaId' | 'profileImagePath'
   > & { password: string }
 
   address: Omit<Prisma.AddressUncheckedCreateInput, 'userId'>
@@ -49,19 +49,17 @@ export class RegisterUseCase {
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const [existingUserByEmail, existingUserByUsername] = await Promise.all([
-      this.usersRepository.findBy({ email: registerUseCaseInput.user.email }),
-      this.usersRepository.findBy({
-        username: registerUseCaseInput.user.username,
-      }),
+    const existingUser = await this.usersRepository.findByEmailOrUsername([
+      registerUseCaseInput.user.email,
+      registerUseCaseInput.user.username,
     ])
 
-    if (existingUserByEmail !== null || existingUserByUsername !== null) {
+    if (existingUser !== null) {
       throw new UserWithSameEmailOrUsernameError()
     }
 
     const mainAreaOfActivity = await this.areaOfActivitiesRepository.findBy({
-      mainAreaActivity: registerUseCaseInput.mainAreaActivity,
+      area: registerUseCaseInput.mainAreaActivity,
     })
 
     if (mainAreaOfActivity === null) {
@@ -69,7 +67,13 @@ export class RegisterUseCase {
     }
 
     // Persiste a imagem do usuário no backend:
-    let profileImageInfo
+    let profileImageInfo:
+      | {
+          finalImagePath: string
+          compressedImageBuffer: Buffer<ArrayBufferLike>
+        }
+      | undefined
+
     try {
       if (registerUseCaseInput.imageBuffer !== undefined) {
         profileImageInfo = await saveCompressedImage(
@@ -87,7 +91,7 @@ export class RegisterUseCase {
       }),
     )
 
-    const passwordDigest = await hash(
+    const passwordHash = await hash(
       registerUseCaseInput.user.password,
       env.USER_PASSWORD_HASH_NUMBER_TIMES,
     )
@@ -95,7 +99,7 @@ export class RegisterUseCase {
     const user = await this.usersRepository.create({
       user: {
         ...registerUseCaseInput.user,
-        passwordDigest,
+        passwordHash,
         profileImagePath:
           profileImageInfo !== undefined
             ? profileImageInfo.finalImagePath
