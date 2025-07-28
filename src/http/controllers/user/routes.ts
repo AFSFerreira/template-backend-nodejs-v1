@@ -1,3 +1,6 @@
+import { authentication } from '@/http/middlewares/verify-jwt'
+import { verifyPermissions } from '@/http/middlewares/verify-user-role'
+import { upload } from '@/lib/multer'
 import { USER_ROLE } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
@@ -7,9 +10,6 @@ import { getAllUsers } from './get-all-users'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
-import { upload } from '@/lib/multer'
-import { authentication } from '@/middlewares/authentication'
-import { verifyPermissions } from '@/middlewares/verifyPermissions'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(

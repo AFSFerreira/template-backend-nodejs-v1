@@ -1,8 +1,8 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { verify } from 'jsonwebtoken'
-import { env } from '../env'
 import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
 import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import { verify } from 'jsonwebtoken'
+import { env } from '@/env'
 
 interface IPayload {
   sub: string
@@ -24,7 +24,7 @@ export async function authentication(
 
     const usersRepository = new PrismaUsersRepository()
 
-    const user = await usersRepository.findById(userId)
+    const user = await usersRepository.findBy({ id: userId })
 
     if (user === null) {
       throw new UserNotFoundError()
