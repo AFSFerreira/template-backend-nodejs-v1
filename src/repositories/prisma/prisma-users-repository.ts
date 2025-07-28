@@ -4,10 +4,38 @@ import type {
   GetAllUsersQuery,
   UsersRepository,
 } from '../users-repository'
+import type { ComparableType } from '@/@types/orderable-type'
 import { userWithDetails } from '@/@types/user-with-details'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
+  static buildStartsWithFilter(value: any) {
+    if (value === undefined) return undefined
+
+    return { startsWith: value }
+  }
+
+  static buildComparableFilter(
+    comparableType: ComparableType | undefined,
+    value: any | undefined,
+  ) {
+    if (value === undefined || comparableType === undefined) return undefined
+
+    return {
+      [comparableType]: value,
+    }
+  }
+
+  static buildIsFilter(fieldName: string, value: any) {
+    if (value === undefined) return undefined
+
+    return {
+      is: {
+        [fieldName]: value,
+      },
+    }
+  }
+
   async create(data: CreateUserQuery) {
     const user = await prisma.user.create({
       data: {
@@ -46,36 +74,43 @@ export class PrismaUsersRepository implements UsersRepository {
       include: userWithDetails.include,
       skip: offset,
       take: query.limit,
+      orderBy: { createdAt: query.createdAtOrder },
       where: {
-        ...(query.fullName !== null
-          ? { fullName: { startsWith: query.fullName } }
-          : {}),
-        ...(query.username !== null
-          ? { username: { startsWith: query.username } }
-          : {}),
-        ...(query.institutionName !== null
-          ? { institutionName: { startsWith: query.institutionName } }
-          : {}),
-        ...(query.departmentName !== null
-          ? { departmentName: { startsWith: query.departmentName } }
-          : {}),
-        ...(query.specificActivity !== null
-          ? { specificActivity: { startsWith: query.specificActivity } }
-          : {}),
+        fullName: PrismaUsersRepository.buildStartsWithFilter(query.fullName),
+        username: PrismaUsersRepository.buildStartsWithFilter(query.username),
+        institutionName: PrismaUsersRepository.buildStartsWithFilter(
+          query.institutionName,
+        ),
+        departmentName: PrismaUsersRepository.buildStartsWithFilter(
+          query.departmentName,
+        ),
+        specificActivity: PrismaUsersRepository.buildStartsWithFilter(
+          query.specificActivity,
+        ),
+        birthDate: PrismaUsersRepository.buildComparableFilter(
+          query.birthdateComparison,
+          query.birthdate,
+        ),
+        astrobiologyOrRelatedStartYear:
+          PrismaUsersRepository.buildComparableFilter(
+            query.astrobiologyOrRelatedStartYearComparison,
+            query.astrobiologyOrRelatedStartYear,
+          ),
 
+        receiveReports: query.receiveReports,
         occupation: query.occupation,
         educationLevel: query.educationLevel,
-        receiveReports: query.receiveReports,
         userRole: query.userRole,
-        activityArea: {
-          is: {
-            mainAreaActivity: query.activityArea,
-          },
-        },
+        activityArea: PrismaUsersRepository.buildIsFilter(
+          'activityArea',
+          query.activityArea,
+        ),
         AND: query.keywords?.map((keywordValue) => ({
           keyword: {
             some: {
-              value: keywordValue,
+              value: {
+                startsWith: keywordValue,
+              },
             },
           },
         })),

@@ -14,9 +14,9 @@ export class GetAllUsersUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(
-    request: GetAllUsersUseCaseRequest,
+    getAllUsersInput: GetAllUsersUseCaseRequest,
   ): Promise<GetAllUsersCaseResponse> {
-    const users = await this.usersRepository.listAllUsers(request)
+    const users = await this.usersRepository.listAllUsers(getAllUsersInput)
 
     return { users }
   }

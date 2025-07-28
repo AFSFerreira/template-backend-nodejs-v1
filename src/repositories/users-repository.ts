@@ -6,9 +6,8 @@ import type {
   User,
   USER_ROLE,
 } from '@prisma/client'
-import type { OrderableType } from '@/@types/orderable-type'
+import type { ComparableType, OrderableType } from '@/@types/orderable-type'
 import type { PaginationType } from '@/@types/pagination'
-import type { PrismaComparisonType } from '@/@types/prisma-comparison'
 import type { UserWithDetails } from '@/@types/user-with-details'
 
 export interface CreateUserQuery {
@@ -17,17 +16,17 @@ export interface CreateUserQuery {
 }
 
 type BirthDateComparisonType =
-  | { birthdate: Date; birthdateComparison: PrismaComparisonType }
-  | { birthdate?: Date; birthdateComparison?: PrismaComparisonType }
+  | { birthdate: Date; birthdateComparison: ComparableType }
+  | { birthdate?: Date; birthdateComparison?: ComparableType }
 
 type AstrobiologyOrRelatedStartYearType =
   | {
       astrobiologyOrRelatedStartYear: number
-      astrobiologyOrRelatedStartYearComparison: PrismaComparisonType
+      astrobiologyOrRelatedStartYearComparison: ComparableType
     }
   | {
       astrobiologyOrRelatedStartYear?: number
-      astrobiologyOrRelatedStartYearComparison?: PrismaComparisonType
+      astrobiologyOrRelatedStartYearComparison?: ComparableType
     }
 
 export type GetAllUsersQuery = {
@@ -42,7 +41,7 @@ export type GetAllUsersQuery = {
   userRole?: USER_ROLE
   occupation?: OCCUPATION
   educationLevel?: EDUCATION_LEVEL
-  createdAtOrder: OrderableType
+  createdAtOrder?: OrderableType
 } & PaginationType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType

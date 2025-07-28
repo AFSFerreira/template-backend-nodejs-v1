@@ -44,7 +44,7 @@ export const getAllUsersParamsSchema = z
         return data.birthdateComparison === undefined
 
       if (data.birthdateComparison === undefined)
-        data.birthdateComparison = 'eq'
+        data.birthdateComparison = 'equals'
 
       return true
     },
@@ -60,7 +60,7 @@ export const getAllUsersParamsSchema = z
         return data.astrobiologyOrRelatedStartYearComparison === undefined
 
       if (data.astrobiologyOrRelatedStartYearComparison === undefined)
-        data.astrobiologyOrRelatedStartYearComparison = 'eq'
+        data.astrobiologyOrRelatedStartYearComparison = 'equals'
 
       return true
     },

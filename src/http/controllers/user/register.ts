@@ -6,8 +6,8 @@ import {
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { registerBodySchema } from '@/http/schemas/user/register-schema'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { makeRegisterUseCase } from '@/use-cases/factories/user/make-register-use-case'
 import { UserImageStorageError } from '@/use-cases/errors/user-image-storage-error'
+import { makeRegisterUseCase } from '@/use-cases/factories/user/make-register-use-case'
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const parsedBody = registerBodySchema.parse(request.body)

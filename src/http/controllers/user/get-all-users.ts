@@ -1,3 +1,4 @@
+import type { EDUCATION_LEVEL, OCCUPATION, USER_ROLE } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { getAllUsersParamsSchema } from '@/http/schemas/user/get-all-users-schema'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
