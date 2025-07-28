@@ -1,6 +1,6 @@
 import { BlogCategoryType, IdentityType, PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import { env } from '../src/env'
+import { env } from '@/env'
 
 const prisma = new PrismaClient()
 
