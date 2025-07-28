@@ -1,11 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { findUserByIdParamsSchema } from '@/http/schemas/user/find-by-id-schema'
+import { findUserByPublicIdParamsSchema } from '@/http/schemas/user/find-by-public-id-schema'
 import { ResourceNotFoundError } from '@/use-cases/errors/resource-not-found-error'
-import { makeFindUserByIdUseCase } from '@/use-cases/factories/user/make-find-by-id-use-case'
+import { makeFindUserByPublicIdUseCase } from '@/use-cases/factories/user/make-find-by-id-use-case'
 
-export async function findById(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = findUserByIdParamsSchema.parse(request.params)
-  const findUserByIdUseCase = makeFindUserByIdUseCase()
+export async function findByPublicUserId(request: FastifyRequest, reply: FastifyReply) {
+  const { publicId } = findUserByPublicIdParamsSchema.parse(request.params)
+  const findUserByIdUseCase = makeFindUserByPublicIdUseCase()
 
   try {
     const { user } = await findUserByIdUseCase.execute({ publicId })

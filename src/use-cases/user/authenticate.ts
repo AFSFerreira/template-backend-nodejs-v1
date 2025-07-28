@@ -48,8 +48,10 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.usersRepository.incrementLoginAttempts(user.publicId)
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const doesPasswordMatch = await compare(password, user.passwordHash)
 
     if (!doesPasswordMatch) {
@@ -61,6 +63,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await this.usersRepository.setLastLogin(user.publicId)
 
     await this.authenticationAuditRepository.create({

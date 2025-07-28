@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-export const findUserByIdParamsSchema = z.object({
+export const findUserByPublicIdParamsSchema = z.object({
   publicId: z.string().uuid(),
 })
 

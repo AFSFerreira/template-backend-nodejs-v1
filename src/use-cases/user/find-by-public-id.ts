@@ -2,23 +2,24 @@ import { UserNotFoundError } from '../errors/user-not-found-error'
 import type { UserWithDetails } from '@/@types/user-with-details'
 import type { UsersRepository } from '@/repositories/users-repository'
 
-interface FindUserByIdUseCaseRequest {
+interface FindUserByPublicIdUseCaseRequest {
   publicId: string
 }
 
-interface FindUserByIdUseCaseResponse {
+interface FindUserByPublicIdUseCaseResponse {
   user: UserWithDetails
 }
 
-export class FindUserByIdUseCase {
+export class FindUserByPublicIdUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute({
     publicId,
-  }: FindUserByIdUseCaseRequest): Promise<FindUserByIdUseCaseResponse> {
+  }: FindUserByPublicIdUseCaseRequest): Promise<FindUserByPublicIdUseCaseResponse> {
     const user = await this.usersRepository.findBy({ publicId })
 
-    if (user === null) throw new UserNotFoundError()
+    if (user === null)
+      throw new UserNotFoundError()
 
     return { user }
   }
