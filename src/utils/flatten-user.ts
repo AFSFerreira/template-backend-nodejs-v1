@@ -85,19 +85,23 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     startGraduationDate:
       user.enrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
     expectedGraduationDate:
-      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ?? '',
+      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ??
+      '',
     supervisorName: user.enrolledCourse?.supervisorName ?? '',
     scholarshipHolder: user.enrolledCourse?.scholarshipHolder ?? false,
     sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
 
     keywords:
-      user.keyword?.map((k: Keyword) => k.value).filter(Boolean).join('; ') ?? '',
+      user.keyword
+        ?.map((k: Keyword) => k.value)
+        .filter(Boolean)
+        .join('; ') ?? '',
 
     publications:
       user.academicPublication
         ?.map(
           (p) =>
-            `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`
+            `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
         )
         .join(' | ') ?? '',
   }

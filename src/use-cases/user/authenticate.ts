@@ -48,9 +48,12 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.incrementLoginAttempts(user.publicId as string)
+    await this.usersRepository.incrementLoginAttempts(user.publicId)
 
-    const doesPasswordMatch = await compare(password, user.passwordHash as string)
+    const doesPasswordMatch = await compare(
+      password,
+      user.passwordHash,
+    )
 
     if (!doesPasswordMatch) {
       await this.authenticationAuditRepository.create({
@@ -61,7 +64,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.setLastLogin(user.publicId as string)
+    await this.usersRepository.setLastLogin(user.publicId)
 
     await this.authenticationAuditRepository.create({
       ...auditAuthenticateObject,
