@@ -1,5 +1,5 @@
-import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 import type { AreaOfActivity } from '@prisma/client'
+import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 
 interface CreateAreaOfActivityUseCaseRequest {
   mainAreaActivity: string

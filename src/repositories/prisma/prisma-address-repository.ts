@@ -1,8 +1,22 @@
-import type { AddressRepository } from '../address-repository'
 import type { Prisma } from '@prisma/client'
-import { prisma } from '../../lib/prisma'
+import type { AddressRepository } from '../address-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaAddressRepository implements AddressRepository {
+  async create(data: Prisma.AddressUncheckedCreateInput) {
+    const address = await prisma.address.create({
+      data,
+    })
+    return address
+  }
+
+  async findBy(where: Prisma.AddressWhereInput) {
+    const address = await prisma.address.findFirst({
+      where,
+    })
+    return address
+  }
+
   async delete(id: string) {
     await prisma.address.delete({
       where: { id },
@@ -13,27 +27,6 @@ export class PrismaAddressRepository implements AddressRepository {
     const address = await prisma.address.update({
       where: { id },
       data,
-    })
-    return address
-  }
-
-  async create(data: Prisma.AddressUncheckedCreateInput) {
-    const address = await prisma.address.create({
-      data,
-    })
-    return address
-  }
-
-  async findById(id: string) {
-    const address = await prisma.address.findUnique({
-      where: { id },
-    })
-    return address
-  }
-
-  async findByUserId(id: string) {
-    const address = await prisma.address.findUnique({
-      where: { userId: id },
     })
     return address
   }

@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import { prisma } from '../../lib/prisma'
 import type { KeywordRepository } from '../keyword-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaKeywordRepository implements KeywordRepository {
   async create(data: Prisma.KeywordUncheckedCreateInput) {
@@ -10,6 +10,17 @@ export class PrismaKeywordRepository implements KeywordRepository {
 
   async findBy(where: Prisma.KeywordWhereInput) {
     const keyword = await prisma.keyword.findFirst({ where })
+    return keyword
+  }
+
+  async findOrCreate(value: string) {
+    const keyword = await prisma.keyword.upsert({
+      where: { value },
+      update: {},
+      create: {
+        value,
+      },
+    })
     return keyword
   }
 
@@ -24,17 +35,6 @@ export class PrismaKeywordRepository implements KeywordRepository {
       },
     })
     return keywords
-  }
-
-  async findOrCreate(value: string) {
-    const keyword = await prisma.keyword.upsert({
-      where: { value },
-      update: {},
-      create: {
-        value,
-      },
-    })
-    return keyword
   }
 
   async delete(id: string) {

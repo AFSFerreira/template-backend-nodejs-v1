@@ -1,24 +1,27 @@
+import path from 'path'
+import type { Prisma, User } from '@prisma/client'
+import { hash } from 'bcryptjs'
+import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
+import { UserImageStorageError } from '../errors/user-image-storage-error'
+import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 import { env } from '@/env'
 import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 import type { AddressRepository } from '@/repositories/address-repository'
 import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 import type { KeywordRepository } from '@/repositories/keyword-repository'
-import type { Prisma, User } from '@prisma/client'
-import { hash } from 'bcryptjs'
-import path from 'path'
-import type { UsersRepository } from '../../repositories/users-repository'
-import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
-import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
+import type { UsersRepository } from '@/repositories/users-repository'
+import { saveCompressedImage } from '@/utils/image-storage'
 
 interface RegisterUseCaseRequest {
+  imageBuffer?: Buffer
   mainAreaActivity: string
   keywords: string[]
 
   user: Omit<
     Prisma.UserUncheckedCreateInput,
-    'passwordDigest' | 'activityAreaId' | 'profileImagePath'
-  > & { password: string; profileImagePath: string | undefined }
+    'passwordHash' | 'activityAreaId' | 'profileImagePath'
+  > & { password: string }
 
   address: Omit<Prisma.AddressUncheckedCreateInput, 'userId'>
 
@@ -46,29 +49,41 @@ export class RegisterUseCase {
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const existingUserByEmail = await this.usersRepository.findBy({
-      email: registerUseCaseInput.user.email,
-    })
-    const existingUserByUsername = await this.usersRepository.findBy({
-      username: registerUseCaseInput.user.username,
-    })
+    const existingUser = await this.usersRepository.findByEmailOrUsername([
+      registerUseCaseInput.user.email,
+      registerUseCaseInput.user.username,
+    ])
 
-    if (existingUserByEmail !== null || existingUserByUsername !== null) {
+    if (existingUser !== null) {
       throw new UserWithSameEmailOrUsernameError()
     }
 
     const mainAreaOfActivity = await this.areaOfActivitiesRepository.findBy({
-      mainAreaActivity: registerUseCaseInput.mainAreaActivity,
+      area: registerUseCaseInput.mainAreaActivity,
     })
 
     if (mainAreaOfActivity === null) {
       throw new InvalidMainAreaOfActivity()
     }
 
-    const passwordDigest = await hash(
-      registerUseCaseInput.user.password,
-      env.USER_PASSWORD_HASH_NUMBER_TIMES,
-    )
+    // Persiste a imagem do usuário no backend:
+    let profileImageInfo:
+      | {
+          finalImagePath: string
+          compressedImageBuffer: Buffer<ArrayBufferLike>
+        }
+      | undefined
+
+    try {
+      if (registerUseCaseInput.imageBuffer !== undefined) {
+        profileImageInfo = await saveCompressedImage(
+          registerUseCaseInput.imageBuffer,
+          path.resolve(process.cwd(), 'uploads', 'profile-images'),
+        )
+      }
+    } catch (error) {
+      throw new UserImageStorageError()
+    }
 
     const keywordsCreated = await Promise.all(
       registerUseCaseInput.keywords.map(async (keyword) => {
@@ -76,39 +91,46 @@ export class RegisterUseCase {
       }),
     )
 
+    const passwordHash = await hash(
+      registerUseCaseInput.user.password,
+      env.USER_PASSWORD_HASH_NUMBER_TIMES,
+    )
+
     const user = await this.usersRepository.create({
       user: {
         ...registerUseCaseInput.user,
-        passwordDigest,
+        passwordHash,
         profileImagePath:
-          registerUseCaseInput.user.profileImagePath ??
-          path.resolve(
-            process.cwd(),
-            'uploads',
-            'profile-images',
-            'default-profile-pic.png',
-          ),
+          profileImageInfo !== undefined
+            ? profileImageInfo.finalImagePath
+            : path.resolve(
+                process.cwd(),
+                'uploads',
+                'profile-images',
+                'default-profile-pic.png',
+              ),
         activityAreaId: mainAreaOfActivity.id,
       },
       keywords: keywordsCreated,
     })
 
-    await this.addressRepository.create({
-      ...registerUseCaseInput.address,
-      userId: user.id,
-    })
-
-    await this.enrolledCoursesRepository.create({
-      ...registerUseCaseInput.enrolledCourse,
-      userId: user.id,
-    })
-
-    for (const pub of registerUseCaseInput.academicPublications) {
-      await this.academicPublicationsRepository.create({
+    const academicPublicationsData =
+      registerUseCaseInput.academicPublications.map((pub) => ({
         ...pub,
         userId: user.id,
-      })
-    }
+      }))
+
+    await Promise.all([
+      this.addressRepository.create({
+        ...registerUseCaseInput.address,
+        userId: user.id,
+      }),
+      this.enrolledCoursesRepository.create({
+        ...registerUseCaseInput.enrolledCourse,
+        userId: user.id,
+      }),
+      this.academicPublicationsRepository.createMany(academicPublicationsData),
+    ])
 
     return { user }
   }

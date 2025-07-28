@@ -1,8 +1,8 @@
-import { type User } from '@prisma/client'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
-import type { UsersRepository } from '@/repositories/users-repository'
+import type { UserWithDetails } from '@/@types/user-with-details'
 import type { AuthenticationAuditRepository } from '@/repositories/authentication-audit-repository'
+import type { UsersRepository } from '@/repositories/users-repository'
 
 interface AuthenticateUseCaseRequest {
   emailOrUsername: string
@@ -13,7 +13,7 @@ interface AuthenticateUseCaseRequest {
 }
 
 interface AuthenticateUseCaseResponse {
-  user: User
+  user: UserWithDetails
 }
 
 export class AuthenticateUseCase {
@@ -29,10 +29,8 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    let user = await this.usersRepository.findBy({ email: emailOrUsername })
-    if (user == null) {
-      user = await this.usersRepository.findBy({ username: emailOrUsername })
-    } // duas consultas são ineficientes
+    const user =
+      await this.usersRepository.findByEmailOrUsername(emailOrUsername)
 
     const auditAuthenticateObject = {
       browser: browser ?? null,
@@ -41,7 +39,7 @@ export class AuthenticateUseCase {
       userId: user?.id ?? null,
     }
 
-    if (user == null) {
+    if (user === null) {
       await this.authenticationAuditRepository.create({
         ...auditAuthenticateObject,
         status: 'USER_NOT_EXISTS',
@@ -50,9 +48,9 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.updateLoginAttempts(user.id)
+    await this.usersRepository.incrementLoginAttempts(user.publicId)
 
-    const doesPasswordMatch = await compare(password, user.passwordDigest)
+    const doesPasswordMatch = await compare(password, user.passwordHash)
 
     if (!doesPasswordMatch) {
       await this.authenticationAuditRepository.create({
@@ -63,7 +61,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.setLastLogin(user.id)
+    await this.usersRepository.setLastLogin(user.publicId)
 
     await this.authenticationAuditRepository.create({
       ...auditAuthenticateObject,

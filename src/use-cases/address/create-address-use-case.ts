@@ -1,6 +1,6 @@
-import type { AddressRepository } from '@/repositories/address-repository'
 import type { Address } from '@prisma/client'
 import { UserAlreadyHasAddressError } from '../errors/user-already-has-address-error'
+import type { AddressRepository } from '@/repositories/address-repository'
 
 interface CreateAddressUseCaseRequest {
   postalCode: string
@@ -30,8 +30,9 @@ export class CreateAddressUseCase {
     houseNumber,
     userId,
   }: CreateAddressUseCaseRequest): Promise<CreateAddressUseCaseResponse> {
-    const userAlreadyHasAddress =
-      await this.addressRepository.findByUserId(userId)
+    const userAlreadyHasAddress = await this.addressRepository.findBy({
+      userId,
+    })
 
     if (userAlreadyHasAddress !== null) {
       throw new UserAlreadyHasAddressError()

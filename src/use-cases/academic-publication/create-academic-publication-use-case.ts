@@ -1,5 +1,5 @@
-import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 import type { AcademicPublications } from '@prisma/client'
+import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 
 interface CreateAcademicPublicationUseCaseRequest {
   title: string

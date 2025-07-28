@@ -1,18 +1,63 @@
-import type { CompleteUserInformation } from '@/@types/complete-user-information'
-import type { Keyword, Prisma, User } from '@prisma/client'
+import type {
+  EducationLevel,
+  Keyword,
+  Occupation,
+  Prisma,
+  User,
+  UserRole,
+} from '@prisma/client'
+import type { ComparableType, OrderableType } from '@/@types/orderable-type'
+import type { PaginationType } from '@/@types/pagination'
+import type { UserWithDetails } from '@/@types/user-with-details'
 
-export interface ICreateUser {
+type BirthDateComparisonType =
+  | { birthdate: Date; birthdateComparison: ComparableType }
+  | { birthdate?: Date; birthdateComparison?: ComparableType }
+
+type AstrobiologyOrRelatedStartYearType =
+  | {
+      astrobiologyOrRelatedStartYear: number
+      astrobiologyOrRelatedStartYearComparison: ComparableType
+    }
+  | {
+      astrobiologyOrRelatedStartYear?: number
+      astrobiologyOrRelatedStartYearComparison?: ComparableType
+    }
+
+export type GetAllUsersQuery = {
+  fullName?: string
+  username?: string
+  institutionName?: string
+  departmentName?: string
+  specificActivity?: string
+  receiveReports?: boolean
+  activityArea?: string
+  keywords?: string[]
+  role?: UserRole
+  occupation?: Occupation
+  educationLevel?: EducationLevel
+  createdAtOrder?: OrderableType
+} & PaginationType &
+  BirthDateComparisonType &
+  AstrobiologyOrRelatedStartYearType
+
+export interface CreateUserQuery {
   user: Prisma.UserUncheckedCreateInput
   keywords: Keyword[]
 }
 
 export interface UsersRepository {
-  create: (data: ICreateUser) => Promise<User>
-  findById: (id: string) => Promise<User | null>
-  listAllUsersInfo: () => Promise<CompleteUserInformation[]>
-  findBy: (where: Prisma.UserWhereUniqueInput) => Promise<User | null>
-  setLastLogin: (id: string) => Promise<void>
-  updateLoginAttempts: (id: string) => Promise<void>
-  delete: (id: string) => Promise<void>
-  update: (id: string, data: Prisma.UserUpdateInput) => Promise<User>
+  create: (data: CreateUserQuery) => Promise<User>
+  findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
+  findByEmailOrUsername: (
+    emailOrUsername: string | [string | undefined, string | undefined],
+  ) => Promise<UserWithDetails | null>
+  listAllUsers: (query: GetAllUsersQuery) => Promise<UserWithDetails[]>
+  incrementLoginAttempts: (publicId: string) => Promise<void>
+  setLastLogin: (publicId: string) => Promise<void>
+  delete: (publicId: string) => Promise<void>
+  update: (
+    publicId: string,
+    data: Prisma.UserUpdateInput,
+  ) => Promise<UserWithDetails>
 }

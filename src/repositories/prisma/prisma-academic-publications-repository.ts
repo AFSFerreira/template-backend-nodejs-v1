@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import { prisma } from '../../lib/prisma'
 import type { AcademicPublicationsRepository } from '../academic-publications-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaAcademicPublicationsRepository
   implements AcademicPublicationsRepository
@@ -10,6 +10,10 @@ export class PrismaAcademicPublicationsRepository
       data,
     })
     return academicPublication
+  }
+
+  async createMany(data: Prisma.AcademicPublicationsUncheckedCreateInput[]) {
+    await prisma.academicPublications.createMany({ data })
   }
 
   async findById(id: string) {

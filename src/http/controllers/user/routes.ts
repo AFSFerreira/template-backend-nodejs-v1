@@ -1,25 +1,37 @@
-import { upload } from '@/lib/multer'
-import { authentication } from '@/middlewares/authentication'
-import { verifyPermissions } from '@/middlewares/verifyPermissions'
-import { createUserSwaggerSchema } from '@/swagger-schemas/user/create-user-schema'
-import { exportUserDataSwaggerSchema } from '@/swagger-schemas/user/export-user-data-schema'
-import { logoutSwaggerSchema } from '@/swagger-schemas/user/logout-schema'
-import { refreshTokenSwaggerSchema } from '@/swagger-schemas/user/refresh-token-schema'
-import { USER_ROLE } from '@prisma/client'
+import { UserRole } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
 import { exportUserData } from './export-user-data'
+import { findById } from './find-by-public-id'
+import { getAllUsers } from './get-all-users'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
+import { authentication } from '@/http/middlewares/verify-jwt'
+import { verifyPermissions } from '@/http/middlewares/verify-user-role'
+import { upload } from '@/lib/multer'
 
 export async function userRoutes(app: FastifyInstance) {
   app.get(
+    '/users',
+    {
+      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+    },
+    getAllUsers,
+  )
+
+  app.get(
+    '/users/:publicId',
+    {
+      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+    },
+    findById,
+  )
+
+  app.get(
     '/users/export',
     {
-      preHandler: [authentication, verifyPermissions([USER_ROLE.ADMIN])],
-      schema: exportUserDataSwaggerSchema,
-      validatorCompiler: () => () => true,
+      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
     },
     exportUserData,
   )
@@ -28,29 +40,18 @@ export async function userRoutes(app: FastifyInstance) {
     '/users',
     {
       preHandler: [upload.single('profileImage')],
-      schema: createUserSwaggerSchema,
-      validatorCompiler: () => () => true,
     },
     register,
   )
 
   app.post('/sessions', authenticate)
 
-  app.post(
-    '/sessions/refresh-token',
-    {
-      schema: refreshTokenSwaggerSchema,
-      validatorCompiler: () => () => true,
-    },
-    refreshToken,
-  )
+  app.post('/sessions/refresh-token', refreshToken)
 
   app.delete(
     '/sessions',
     {
       preHandler: [authentication],
-      schema: logoutSwaggerSchema,
-      validatorCompiler: () => () => true,
     },
     logout,
   )

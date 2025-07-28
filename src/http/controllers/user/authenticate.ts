@@ -1,19 +1,8 @@
-import { type FastifyReply, type FastifyRequest } from 'fastify'
-import { z } from 'zod'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@/env'
-import { makeAuthenticateUseCase } from '@/use-cases/user/factories/make-authenticate-use-case'
+import { authenticateBodySchema } from '@/http/schemas/user/authenticate-schema'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
-
-export const authenticateBodySchema = z.object({
-  emailOrUsername: z.union([z.string().nonempty().email(), z.string().min(4)]),
-  password: z
-    .string()
-    .nonempty()
-    .min(8)
-    .regex(/[A-Z]/, 'Sua senha precisa de carácter maiúsculo')
-    .regex(/\d/, 'Sua senha precisa de um número')
-    .regex(/[@$!%*?&#]/, 'Sua senha precisa de carácter especial'),
-})
+import { makeAuthenticateUseCase } from '@/use-cases/factories/user/make-authenticate-use-case'
 
 export async function authenticate(
   request: FastifyRequest,
@@ -25,12 +14,11 @@ export async function authenticate(
   const { ip: ipAddress } = request
   const { 'user-agent': browser } = request.headers
   const { remotePort } = request.socket
+  const browserName = Array.isArray(browser) ? browser[0] : browser
+
+  const authenticateUseCase = makeAuthenticateUseCase()
 
   try {
-    const authenticateUseCase = makeAuthenticateUseCase()
-
-    const browserName = Array.isArray(browser) ? browser[0] : browser
-
     const { user } = await authenticateUseCase.execute({
       emailOrUsername,
       password,
@@ -43,7 +31,7 @@ export async function authenticate(
       {},
       {
         sign: {
-          sub: user?.id,
+          sub: user?.publicId,
         },
       },
     )
@@ -52,7 +40,7 @@ export async function authenticate(
       {},
       {
         sign: {
-          sub: user?.id,
+          sub: user?.publicId,
           expiresIn: '7d',
         },
       },
@@ -69,7 +57,7 @@ export async function authenticate(
       .send({ user, accessToken })
   } catch (error: unknown) {
     if (error instanceof InvalidCredentialsError) {
-      return await reply.status(400).send({ message: error.message })
+      return await reply.status(401).send({ message: error.message })
     }
 
     throw error

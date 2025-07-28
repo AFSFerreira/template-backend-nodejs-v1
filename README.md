@@ -57,7 +57,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 ```
 
 ## Sobre a Estrutura
-A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam [TypeScript](https://www.typescriptlang.org/) e [Prisma](https://www.prisma.io/). No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Todas as principais mudanças foram discorridas em mais detalhes nos tópicos listados abaixo:
+A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam <a href="https://www.typescriptlang.org/" target="_blank">TypeScript</a> e <a href="https://www.prisma.io/" target="_blank">Prisma</a>. No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Todas as principais mudanças foram discorridas em mais detalhes nos tópicos listados abaixo:
 
 <details>
 <summary>Reorganização da Estrutura de Diretórios de <strong>Use Cases</strong> (Clique para Expandir)</summary>
@@ -104,9 +104,9 @@ O principal revés dessa abordagem está no pequeno aumento da complexidade dos 
 
 ## Implementação do **Swagger**
 
-[Swagger](https://swagger.io) é um conjunto de ferramentas para documentação e teste de APIs RESTful. Seu principal objetivo é descrever de forma padronizada, usando o formato OpenAPI, como uma API funciona — incluindo endpoints disponíveis, parâmetros, retornos, autenticação e afins.
+O <a href="https://swagger.io" target="_blank">Swagger</a> é um conjunto de ferramentas para documentação e teste de APIs RESTful. Seu principal objetivo é descrever de forma padronizada, usando o formato OpenAPI, como uma API funciona — incluindo endpoints disponíveis, parâmetros, retornos, autenticação e afins.
 
-A tecnologia utilizada para a documentação das rotas do backend é uma variação do Swagger voltada especificamente para o Fastify, chamada [Fastify-Swagger](https://www.npmjs.com/package/@fastify/swagger). Com essa biblioteca, podemos documentar detalhadamente cada uma das rotas e exibi-las visualmente de forma organizada na rota `/docs`, com o auxílio da biblioteca [Fastify-Swagger-UI](https://www.npmjs.com/package/@fastify/swagger-ui), incluindo descrições, parâmetros, corpo da requisição e possíveis respostas.
+A tecnologia utilizada para a documentação das rotas do backend é uma variação do Swagger voltada especificamente para o Fastify, chamada <a href="https://www.npmjs.com/package/@fastify/swagger" target="_blank">Fastify-Swagger</a>. Com essa biblioteca, podemos documentar detalhadamente cada uma das rotas e exibi-las visualmente de forma organizada na rota `/docs`, com o auxílio da biblioteca <a href="https://www.npmjs.com/package/@fastify/swagger-ui" target="_blank">Fastify-Swagger-UI</a> incluindo descrições, parâmetros, corpo da requisição e possíveis respostas.
 
 Usualmente, o Swagger é implementado em um único arquivo presente na raiz do projeto, chamado `swagger.json`. A documentação nesse arquivo é criada segundo uma estrutura específica em formato JSON, com aninhamento de objetos, arrays e propriedades. Segue abaixo um pequeno exemplo hipotético para fins de demonstração:
 
@@ -139,7 +139,7 @@ Contudo, apesar de o projeto possuir documentação com o Swagger, o arquivo `sw
 
 - **Desacoplamento do código-fonte real**: A documentação fica separada do código, o que pode gerar divergência entre o que está documentado e o que realmente é implementado.
 
-- **Redundância de especificação**: Violação do [princípio DRY](https://vinioolvrs.medium.com/conhe%C3%A7a-os-princ%C3%ADpios-dry-kiss-e-yagni-9fc4ab46b0b9) ao duplicar o schema de validação do Zod no código e na documentação.
+- **Redundância de especificação**: Violação do <a href="https://vinioolvrs.medium.com/conhe%C3%A7a-os-princ%C3%ADpios-dry-kiss-e-yagni-9fc4ab46b0b9" target="_blank">princípio DRY</a> ao duplicar o schema de validação do Zod no código e na documentação.
 
 - **Dificuldade de composição modular**: Em APIs grandes, como é o nosso caso, um único `swagger.json` centralizado torna-se **massivo** com o decorrer do desenvolvimento, dificultando a navegabilidade e inviabilizando a divisão modular do contrato da API.
 
@@ -266,7 +266,7 @@ Aplicando esse padrão às demais rotas, conseguimos criar uma documentação co
 4. Instale as dependências do projeto ao executar no console o comando: `npm install`.
 5. Crie um arquivo `.env` na raiz do projeto copiando o conteúdo do `.env.example`. Preencha manualmente os valores que não estiverem definidos.
 
-Se você já possui o [Docker](https://pt.wikipedia.org/wiki/Docker_(software)) instalado e configurado em sua máquina, avance para a [etapa 6](#etapa-6) deste procedimento.
+Se você já possui o <a href="https://pt.wikipedia.org/wiki/Docker_(software)" target="_blank">Docker</a> instalado e configurado em sua máquina, avance para a [etapa 6](#etapa-6) deste procedimento.
 
 > [!TIP]
 > Para verificar se você possui o Docker instalado em sua máquina, você pode executar as seguintes etapas:
@@ -283,7 +283,7 @@ Caso contrário, siga as etapas abaixo descrevendo o procedimento de instalaçã
 > Todos os comandos descritos a seguir podem e devem ser executados no terminal aberto diretamente na raiz do projeto clonado.
  
 ### Instalando Docker + WSL no Windows
-Será necessário instalar previamente uma ferramenta de emulação do Linux no Windows chamada [WSL (Windows Subsystem for Linux)](https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux) para suportar os contêineres de Docker. Para isto, abra um novo terminal com permissão de administrador e execute os comandos listados a seguir, respectivamente:
+Será necessário instalar previamente uma ferramenta de emulação do Linux no Windows chamada <a href="https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux" target="_blank">WSL (Windows Subsystem for Linux)</a> para suportar os contêineres de Docker. Para isto, abra um novo terminal com permissão de administrador e execute os comandos listados a seguir, respectivamente:
 
 Instale o WSL na sua máquina com uma distro do Ubuntu utilizando o comando:
 
@@ -300,7 +300,7 @@ wsl
 Aguarde o término do processo e siga as etapas que o terminal solicitar, como a criação de um novo usuário e senha.
 
 > [!WARNING]
-> Se você obtiver algum erro durante a execução de algum dos comandos listados acima, significa que o serviço necessário para criar a [máquina virtual (VM)](https://pt.wikipedia.org/wiki/M%C3%A1quina_virtual) do WSL2 não está disponível ou não pode ser iniciado. É um erro comum quando algum requisito do WSL2 está desativado, corrompido ou mal configurado. Para solucionar este problema, siga as seguintes etapas:
+> Se você obtiver algum erro durante a execução de algum dos comandos listados acima, significa que o serviço necessário para criar a <a href="https://pt.wikipedia.org/wiki/M%C3%A1quina_virtual" target="_blank">máquina virtual (VM)</a> do WSL2. É um erro comum quando algum requisito do WSL2 está desativado, corrompido ou mal configurado. Para solucionar este problema, siga as seguintes etapas:
 > 1. Abra um novo terminal com permissão de administrador.
 > 2. Execute o comando `dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart` e, logo em seguida, execute `dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart`.
 > 3. Reinicie o seu computador.
@@ -345,13 +345,13 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin 
  
 Se desejar checar a instalação bem sucedida do Docker, execute o comando `sudo docker run hello-world` para obter um `Hello World` diretamente do Docker.
  
-Para mais informações detalhadas sobre a instalação do Docker em ambiente Linux, acesse [este site](https://docs.docker.com/engine/install/ubuntu/).
+Para mais informações detalhadas sobre a instalação do Docker em ambiente Linux, acesse <a href="https://docs.docker.com/engine/install/ubuntu/" target="_blank">este site</a>.
 
 > [!TIP]
-> Alternativamente, você pode instalar o [Docker Desktop para Windows](https://www.docker.com/products/docker-desktop/), que já instala o Docker Engine e integra automaticamente com o WSL. Esta é a abordagem mais simples, mas necessita de um hardware mais potente.
+> Alternativamente, você pode instalar o <a href="https://www.docker.com/products/docker-desktop/" target="_blank">Docker Desktop para Windows</a>, que já instala o Docker Engine e integra automaticamente com o WSL. Esta é a abordagem mais simples, mas necessita de um hardware mais potente.
 
 > [!NOTE]
-> Durante a execução dos comandos de instalação do Docker no WSL, é possível que seja solicitada múltiplas vezes a senha [sudo (SuperUser Do)](https://en.wikipedia.org/wiki/Sudo) do usuário. A senha digitada não irá aparecer no terminal enquanto você a preenche, mas basta escrevê-la corretamente e pressionar enter para enviá-la.
+> Durante a execução dos comandos de instalação do Docker no WSL, é possível que seja solicitada múltiplas vezes a senha <a href="https://en.wikipedia.org/wiki/Sudo" target="_blank">sudo (SuperUser Do)</a> do usuário. A senha digitada não irá aparecer no terminal enquanto você a preenche, mas basta escrevê-la corretamente e pressionar enter para enviá-la.
 
 <!-- atalho para a etapa 6 do procedimento de execução do backend -->
 <a name="etapa-6" display="none"></a>
@@ -363,10 +363,10 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 10. Rode o projeto com o comando: `npm run start:dev`.
 
 ## Links Externos
-- **Template Backend Utilizado**: [Clique Aqui](https://github.com/gabriel-camara-dev/Template-backend)
-- **Design Figma do Projeto**: [Clique Aqui](https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0)
+- **Template Backend Utilizado**: <a href="https://github.com/gabriel-camara-dev/Template-backend" target="_blank">Clique Aqui</a>
+- **Design Figma do Projeto**: <a href="https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0" target="_blank">Clique Aqui</a>
 
 ## Equipe de Desenvolvimento
-- **Product Owner**: [Douglas Cristiano](https://github.com/DougCristiano) 
-- **Dev Backend**: [Filype Abreu](https://github.com/zfrekey)
-- **Dev Backend**: [Allber Ferreira](https://github.com/AFSFerreira)
+- **Product Owner**: <a href="https://github.com/DougCristiano" target="_blank">Douglas Cristiano</a>
+- **Dev Backend**: <a href="https://github.com/zfrekey" target="_blank">Filype Abreu</a>
+- **Dev Backend**: <a href="https://github.com/AFSFerreira" target="_blank">Allber Ferreira</a>

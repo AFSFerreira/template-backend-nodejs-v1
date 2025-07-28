@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import { prisma } from '../../lib/prisma'
 import type { AreaOfActivityRepository } from '../area-of-activity-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaAreaOfActivityRepository
   implements AreaOfActivityRepository

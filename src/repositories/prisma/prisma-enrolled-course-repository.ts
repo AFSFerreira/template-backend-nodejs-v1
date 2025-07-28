@@ -1,6 +1,6 @@
 import type { Prisma } from '@prisma/client'
-import { prisma } from '../../lib/prisma'
 import type { EnrolledCourseRepository } from '../enrolled-course-repository'
+import { prisma } from '@/lib/prisma'
 
 export class PrismaEnrolledCourseRepository
   implements EnrolledCourseRepository
@@ -10,16 +10,9 @@ export class PrismaEnrolledCourseRepository
     return enrolledCourse
   }
 
-  async findById(id: string) {
-    const enrolledCourse = await prisma.enrolledCourse.findUnique({
-      where: { id },
-    })
-    return enrolledCourse
-  }
-
-  async findByUserId(userId: string) {
-    const enrolledCourse = await prisma.enrolledCourse.findUnique({
-      where: { userId },
+  async findBy(where: Prisma.EnrolledCourseWhereInput) {
+    const enrolledCourse = await prisma.enrolledCourse.findFirst({
+      where,
     })
     return enrolledCourse
   }

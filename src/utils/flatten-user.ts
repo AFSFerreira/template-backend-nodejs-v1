@@ -1,5 +1,5 @@
-import type { CompleteUserInformation } from '@/@types/complete-user-information'
 import type { Keyword } from '@prisma/client'
+import type { UserWithDetails } from '@/@types/user-with-details'
 
 interface FlattenedUser {
   id: string
@@ -25,12 +25,12 @@ interface FlattenedUser {
   createdAt: string
   updatedAt: string
 
-  houseNumber: string
+  number: string
   street: string
-  neighborhood: string
+  district: string
   city: string
   state: string
-  postalCode: string
+  zip: string
   country: string
 
   mainAreaActivity: string
@@ -46,13 +46,13 @@ interface FlattenedUser {
   publications: string
 }
 
-export function flattenUser(user: CompleteUserInformation): FlattenedUser {
+export function flattenUser(user: UserWithDetails): FlattenedUser {
   const flattenedUser: FlattenedUser = {
-    id: user.id,
+    id: user.publicId,
     fullName: user.fullName,
     username: user.username,
     email: user.email,
-    birthDate: user.birthDate.toISOString().split('T')[0],
+    birthDate: user.birthdate.toISOString().split('T')[0],
     institutionName: user.institutionName,
     departmentName: user.departmentName ?? '',
     occupation: user.occupation,
@@ -71,15 +71,15 @@ export function flattenUser(user: CompleteUserInformation): FlattenedUser {
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
 
-    houseNumber: user.address?.houseNumber ?? '',
+    number: user.address?.number ?? '',
     street: user.address?.street ?? '',
-    neighborhood: user.address?.neighborhood ?? '',
+    district: user.address?.district ?? '',
     city: user.address?.city ?? '',
     state: user.address?.state ?? '',
-    postalCode: user.address?.postalCode ?? '',
+    zip: user.address?.zip ?? '',
     country: user.address?.country ?? '',
 
-    mainAreaActivity: user.activityArea?.mainAreaActivity ?? '',
+    mainAreaActivity: user.activityArea?.area ?? '',
 
     courseName: user.enrolledCourse?.courseName ?? '',
     startGraduationDate:
@@ -100,7 +100,7 @@ export function flattenUser(user: CompleteUserInformation): FlattenedUser {
     publications:
       user.academicPublication
         ?.map(
-          (p: any) =>
+          (p) =>
             `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
         )
         .join(' | ') ?? '',

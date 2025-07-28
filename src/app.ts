@@ -1,13 +1,13 @@
-import fastifyJwt from '@fastify/jwt'
-import fastify from 'fastify'
-import { env } from './env'
-import { ZodError } from 'zod'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
+import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
-import { userRoutes } from './http/controllers/user/routes'
 import fastifySwagger from '@fastify/swagger'
 import fastifySwaggerUi from '@fastify/swagger-ui'
+import fastify from 'fastify'
+import { ZodError } from 'zod'
+import { env } from './env'
+import { userRoutes } from './http/controllers/user/routes'
 
 export const app = fastify()
 

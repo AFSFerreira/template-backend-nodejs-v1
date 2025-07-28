@@ -1,4 +1,5 @@
 import multer from 'fastify-multer'
+import { profileImageExtensions } from '@/constants/profile-image-extensions'
 // import path from 'path'
 // import crypto from 'crypto'
 
@@ -24,13 +25,18 @@ import multer from 'fastify-multer'
 //   },
 // })
 
+const MAX_FILE_SIZE_MB = 2
+const BYTES_IN_MB = 1024 * 1024
+
 export const upload = multer({
   storage: multer.memoryStorage(), // Armazena a imagem na memória RAM para comprimi-la
   limits: {
-    fileSize: 256 * 1024, // 256Kb
+    fileSize: MAX_FILE_SIZE_MB * BYTES_IN_MB, // 2Mb
   },
-  fileFilter: (req, file, cb) => {
-    const typesAllowed = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+  fileFilter: (_req, file, cb) => {
+    const typesAllowed = profileImageExtensions.map(
+      (extension) => `image/${extension}`,
+    )
     if (typesAllowed.includes(file.mimetype)) cb(null, true)
     else cb(new Error('Only image files are allowed.'))
   },

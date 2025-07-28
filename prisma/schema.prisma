@@ -13,19 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum USER_ROLE {
+enum UserRole {
   ADMIN
   NORMAL_USER
 }
 
-enum AUTHENTICATION_STATUS {
+enum AuthenticationStatus {
   SUCCESS
   USER_NOT_EXISTS
   INCORRECT_PASSWORD
   BLOCKED
 }
 
-enum OCCUPATION {
+enum Occupation {
   RESEARCHER
   PROFESSOR
   STUDENT
@@ -34,7 +34,7 @@ enum OCCUPATION {
   DOCTORATE
 }
 
-enum EDUCATION_LEVEL {
+enum EducationLevel {
   ELEMENTARY_SCHOOL
   HIGH_SCHOOL
   UNDERGRADUATE_STUDENT
@@ -48,167 +48,180 @@ enum EDUCATION_LEVEL {
   OTHER
 }
 
-enum MEMBERSHIP_STATUS {
+enum MembershipStatus {
   PENDING
   APPROVED
   REJECTED
 }
 
-enum CATEGORY_TYPE {
+enum BlogCategoryType {
   MAIN_CATEGORY
   SUBCATEGORY
 }
 
-enum IDENTITY_TYPE {
+enum IdentityType {
   CPF
   RNE
   PASSPORT
 }
 
 model AuthenticationAudit {
-  id         Int                   @id @default(autoincrement())
+  id         Int                  @id @default(autoincrement())
   ipAddress  String?
   remotePort String?
   browser    String?
-  status     AUTHENTICATION_STATUS
-  createdAt  DateTime              @default(now())
+  status     AuthenticationStatus
+  createdAt  DateTime             @default(now())
 
-  userId String?
-  user   User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@map("authentication_audits")
 }
 
 model User {
-  id                             String            @id @default(uuid())
-  fullName                       String
-  username                       String            @unique
-  birthDate                      DateTime
-  profileImagePath               String
-  lattesCVLink                   String? // Link externo para o currículo lattes do usuário
-  profileGSLink                  String? // Link externo para o perfil do usuário no Google Scholar
-  profileRIDLink                 String? // Link externo para o perfil do usuário no ResearcherID
-  orcidNumber                    String? // Número do ORCID do pesquisador
-  membershipStatus               MEMBERSHIP_STATUS @default(PENDING)
-  userRole                       USER_ROLE         @default(NORMAL_USER)
-  institutionName                String
-  departmentName                 String?
-  institutionComplement          String? // Complemento sobre a instituição (nome de laboratório, etc) 
-  occupation                     OCCUPATION
-  educationLevel                 EDUCATION_LEVEL
-  identityType                   IDENTITY_TYPE
-  identityDocument               String
-  emailIsPublic                  Boolean // Autorização da divulgação do email publicamente no perfil do site
-  astrobiologyOrRelatedStartYear Int // Ano em que começou a trabalhar com Astrobiologia ou área correlata (mantido como Int para eventuais queries de comparação) 
-  interestDescription            String // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
-  receiveReports                 Boolean // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
-  publicInformation              String // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
-  specificActivity               String // Área específica de atuação
-  specificActivityDescription    String? // Descrição opcional da área caso o usuário marque a alternativa "Other"
+  id                             Int              @id @default(autoincrement())
+  publicId                       String           @unique @default(uuid(7)) @map("public_id")
+  fullName                       String           @map("full_name")
+  username                       String           @unique
+  birthdate                      DateTime
+  profileImagePath               String           @map("profile_image_path")
+  linkLattes                     String?          @map("link_lattes") // Link externo para o currículo lattes do usuário
+  linkGoogleScholar              String?          @map("link_google_scholar") // Link externo para o perfil do usuário no Google Scholar
+  linkResearcherId               String?          @map("link_researcherID") // Link externo para o perfil do usuário no ResearcherID
+  orcidNumber                    String?          @map("orcid_number") // Número do ORCID do pesquisador
+  membershipStatus               MembershipStatus @default(PENDING) @map("membership_status")
+  role                           UserRole         @default(NORMAL_USER)
+  institutionName                String           @map("institution_name")
+  departmentName                 String?          @map("department_name")
+  institutionComplement          String?          @map("institution_complement") // Complemento sobre a instituição (nome de laboratório, etc) 
+  occupation                     Occupation
+  educationLevel                 EducationLevel   @map("education_level")
+  identityType                   IdentityType     @map("identity_type")
+  identityDocument               String           @map("identity_document")
+  emailIsPublic                  Boolean          @map("email_is_public") // Autorização da divulgação do email publicamente no perfil do site
+  astrobiologyOrRelatedStartYear Int              @map("astrobiology_or_related_start_year") // Ano em que começou a trabalhar com Astrobiologia ou área correlata (mantido como Int para eventuais queries de comparação) 
+  interestDescription            String           @map("interest_description") // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
+  receiveReports                 Boolean          @map("recieve_reports") // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
+  publicInformation              String           @map("public_information") // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
+  specificActivity               String           @map("specific_activity") // Área específica de atuação
+  specificActivityDescription    String?          @map("specific_activity_description") // Descrição opcional da área caso o usuário marque a alternativa "Other"
 
-  email          String    @unique
-  passwordDigest String
-  loginAttempts  Int       @default(0)
-  lastLogin      DateTime?
+  email         String    @unique
+  passwordHash  String    @map("password_hash")
+  loginAttempts Int       @default(0) @map("login_attempts")
+  lastLogin     DateTime? @map("last_login")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  activityAreaId String
+  activityAreaId Int            @map("activity_area_id")
   activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   address        Address?        @relation()
   enrolledCourse EnrolledCourse? @relation()
 
-  authenticationAudit  AuthenticationAudit[]  @relation()
+  authenticationAudit AuthenticationAudit[]  @relation()
   academicPublication AcademicPublications[] @relation()
-  blog                 Blog[]                 @relation()
+  blog                Blog[]                 @relation()
   keyword             Keyword[]              @relation()
 
-  @@map("user")
+  @@map("users")
 }
 
 model Address {
-  id           String @id @default(uuid())
-  houseNumber  String
-  street       String
-  neighborhood String
-  city         String
-  postalCode   String
-  state        String
-  country      String
+  id       Int    @id @default(autoincrement())
+  zip      String
+  number   String
+  street   String
+  district String
+  city     String
+  state    String
+  country  String
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@map("address")
+  userId Int  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("addresses")
 }
 
 model EnrolledCourse {
-  id                     String    @id @default(uuid())
-  courseName             String?
-  startGraduationDate    DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
-  expectedGraduationDate DateTime? // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
-  supervisorName         String?
-  scholarshipHolder      Boolean // O usuário é bolsista?
-  sponsoringOrganization String? // Agência / órgão responsável pela bolsa
+  id                     Int       @id @default(autoincrement())
+  courseName             String?   @map("course_name")
+  startGraduationDate    DateTime? @map("start_graduation_date") // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
+  expectedGraduationDate DateTime? @map("expected_graduation_date") // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
+  supervisorName         String?   @map("supervisor_name")
+  scholarshipHolder      Boolean   @map("scholarship_holder") // O usuário é bolsista?
+  sponsoringOrganization String?   @map("sponsoring_organization") // Agência / órgão responsável pela bolsa
 
-  userId String @unique
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
 
-  @@map("enrolled_course")
+  userId Int  @unique @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("enrolled_courses")
 }
 
 model AreaOfActivity {
-  id               String @id @default(uuid())
-  mainAreaActivity String @unique // Grande área de atuação será uma lista exibida ainda a determinar
+  id   Int    @id @default(autoincrement())
+  area String @unique // Grande área de atuação será uma lista exibida ainda a determinar
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   user User[] @relation()
 
-  @@map("area_of_activity")
+  @@map("areas_of_activity")
 }
 
 model AcademicPublications {
-  id              String   @id @default(uuid())
+  id              Int      @id @default(autoincrement())
   title           String
   authors         String
-  publicationDate DateTime
-  journalName     String
+  publicationDate DateTime @map("publication_date")
+  journalName     String   @map("journal_name")
   volume          String
-  editionNumber   String
-  pageInterval    String
-  doiLink         String
+  editionNumber   String   @map("edition_number")
+  pageInterval    String   @map("page_interval")
+  doiLink         String   @map("DOI_link")
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("academic_publications")
 }
 
 model Keyword {
-  id    String @id @default(uuid())
+  id    Int    @id @default(autoincrement())
   value String @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   user User[]
 
-  @@map("keyword")
+  @@map("keywords")
 }
 
 model Category {
-  id           String        @id @default(uuid())
-  categoryName String        @unique
-  categoryType CATEGORY_TYPE
+  id   Int              @id @default(autoincrement())
+  name String           @unique
+  type BlogCategoryType
+
+  createdAt DateTime @default(now()) @map("created_at")
 
   blogCategory BlogCategory[] @relation()
   Blog         Blog[]         @relation()
 
-  @@map("category")
+  @@map("categories")
 }
 
 // NOTE: Verificar se é possível omitir esta tabela também eventualmente
 model BlogCategory {
-  blogId     String
-  categoryId String
+  blogId     Int
+  categoryId Int
 
   blog     Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -218,20 +231,20 @@ model BlogCategory {
 
 // NOTE: Somente administradores podem realizar postagens
 model Blog {
-  id          String @id @default(uuid())
-  authorName  String // Para persistir o nome mesmo após a deleção do usuário
-  pageContent String // Estrutura HTML da página
+  id          Int    @id @default(autoincrement())
+  authorName  String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
+  htmlContent String @map("html_content") @db.Text
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
-  mainCategoryId String
+  mainCategoryId Int      @map("main_category_id")
   mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  authorId String?
-  author   User?   @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  authorId Int?  @map("author_id")
+  author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   subcategories BlogCategory[] @relation()
 
-  @@map("blog")
+  @@map("blogs")
 }
