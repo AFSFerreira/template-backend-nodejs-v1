@@ -4,5 +4,9 @@ import { CreateAcademicPublicationUseCase } from '@/use-cases/academic-publicati
 export function makeCreateAcademicPublicationUseCase() {
   const academicPublicationsRepository =
     new PrismaAcademicPublicationsRepository()
-  return new CreateAcademicPublicationUseCase(academicPublicationsRepository)
+  const createAcademicPublicationUseCase = new CreateAcademicPublicationUseCase(
+    academicPublicationsRepository,
+  )
+
+  return createAcademicPublicationUseCase
 }

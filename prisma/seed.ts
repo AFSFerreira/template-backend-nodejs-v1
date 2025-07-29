@@ -1,6 +1,6 @@
 import { BlogCategoryType, IdentityType, PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import { env } from '@/env'
+import { env } from '../src/env'
 
 const prisma = new PrismaClient()
 
@@ -31,7 +31,7 @@ async function main() {
       fullName: 'Admin',
       username: 'admin.admin',
       email: 'admin@email.com',
-      passwordHash: await hash('123456789Az#', env.USER_PASSWORD_HASH_NUMBER_TIMES),
+      passwordHash: await hash('123456789Az#', env.HASH_SALT_ROUNDS),
       birthdate: new Date(),
       profileImagePath: '/src/uploads/profile-images/default-profile-pic.png',
       linkLattes: 'http://lattes.cnpq.br/1234567890',

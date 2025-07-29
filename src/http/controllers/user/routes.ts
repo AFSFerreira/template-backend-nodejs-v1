@@ -7,51 +7,65 @@ import { getAllUsers } from './get-all-users'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
-import { authentication } from '@/http/middlewares/verify-jwt'
+import { resetUserPassword } from './reset-user-password'
+import { authenticationMiddleware } from '@/http/middlewares/authenticate'
 import { verifyPermissions } from '@/http/middlewares/verify-user-role'
 import { upload } from '@/lib/multer'
 
 export async function userRoutes(app: FastifyInstance) {
+  // User Admin Routes:
   app.get(
-    '/users',
+    '/',
     {
-      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+      preHandler: [
+        authenticationMiddleware,
+        verifyPermissions([UserRole.ADMIN]),
+      ],
     },
     getAllUsers,
   )
-
   app.get(
-    '/users/:publicId',
+    '/:publicId',
     {
-      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+      preHandler: [
+        authenticationMiddleware,
+        verifyPermissions([UserRole.ADMIN]),
+      ],
     },
     findByPublicUserId,
   )
-
   app.get(
-    '/users/export',
+    '/export',
     {
-      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+      preHandler: [
+        authenticationMiddleware,
+        verifyPermissions([UserRole.ADMIN]),
+      ],
     },
     exportUserData,
   )
 
+  // Register Routes:
   app.post(
-    '/users',
+    '/',
     {
       preHandler: [upload.single('profileImage')],
     },
     register,
   )
 
+  // Authentication Routes:
   app.post('/sessions', authenticate)
-
   app.post('/sessions/refresh-token', refreshToken)
-
+  app.patch(
+    '/reset-password',
+    { onRequest: [authenticationMiddleware] },
+    resetUserPassword,
+  )
   app.delete(
     '/sessions',
     {
-      preHandler: [authentication],
+      preHandler: [authenticationMiddleware],
     },
     logout,
   )

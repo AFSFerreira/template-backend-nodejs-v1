@@ -1,6 +1,6 @@
 import { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import { z } from 'zod'
-import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import { PASSWORD_REGEX, YEAR_MONTH_REGEX } from '@/constants/regex'
 
 export const registerBodySchema = z
   .object({
@@ -10,13 +10,8 @@ export const registerBodySchema = z
         .string()
         .min(8)
         .regex(
-          /[A-Z]/,
-          'Sua senha precisa conter pelo menos um caráter maiúsculo',
-        )
-        .regex(/\d/, 'Sua senha precisa conter pelo menos um dígito numérico')
-        .regex(
-          /[@$!%*?&#]/,
-          'Sua senha precisa conter pelo menos um caráter especial',
+          PASSWORD_REGEX,
+          'The password must contain at least 8 characters, one uppercase letter, one numeric digit and one special character.',
         ),
       fullName: z
         .string()

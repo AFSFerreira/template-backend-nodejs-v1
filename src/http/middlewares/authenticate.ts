@@ -8,7 +8,7 @@ interface IPayload {
   sub: string
 }
 
-export async function authentication(
+export async function authenticationMiddleware(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {

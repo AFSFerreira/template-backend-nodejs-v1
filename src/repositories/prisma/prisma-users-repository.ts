@@ -142,11 +142,9 @@ export class PrismaUsersRepository implements UsersRepository {
     return users
   }
 
-  async incrementLoginAttempts(publicId: string) {
+  async incrementLoginAttempts(id: number) {
     await prisma.user.update({
-      where: {
-        publicId,
-      },
+      where: { id },
       data: {
         loginAttempts: {
           increment: 1,
@@ -155,29 +153,42 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async setLastLogin(publicId: string) {
-    await prisma.user.update({
-      where: {
-        publicId,
-      },
-      data: {
-        lastLogin: new Date(),
-      },
-    })
-  }
-
-  async delete(publicId: string) {
+  async delete(id: number) {
     await prisma.user.delete({
-      where: {
-        publicId,
-      },
+      where: { id },
     })
   }
 
-  async update(publicId: string, data: Prisma.UserUpdateInput) {
+  async update(id: number, data: Prisma.UserUpdateInput) {
     const user = await prisma.user.update({
-      where: { publicId },
+      where: { id },
       data,
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async validateUserToken(recoveryPasswordToken: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        recoveryPasswordToken,
+        recoveryPasswordTokenExpiresAt: {
+          gte: new Date(),
+        },
+      },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async changePassword(id: number, passwordHash: string) {
+    const user = await prisma.user.update({
+      where: { id },
+      data: {
+        passwordHash,
+        recoveryPasswordToken: null,
+        recoveryPasswordTokenExpiresAt: null,
+      },
       include: userWithDetails.include,
     })
     return user

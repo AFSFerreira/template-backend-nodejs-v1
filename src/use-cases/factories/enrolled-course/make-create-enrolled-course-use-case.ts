@@ -3,5 +3,9 @@ import { CreateEnrolledCourseUseCase } from '@/use-cases/enrolled-course/create-
 
 export function makeCreateEnrolledCourseUseCase() {
   const enrolledCourseRepository = new PrismaEnrolledCourseRepository()
-  return new CreateEnrolledCourseUseCase(enrolledCourseRepository)
+  const createEnrolledCourseUseCase = new CreateEnrolledCourseUseCase(
+    enrolledCourseRepository,
+  )
+
+  return createEnrolledCourseUseCase
 }

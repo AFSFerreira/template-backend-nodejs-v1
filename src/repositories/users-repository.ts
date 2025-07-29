@@ -53,11 +53,11 @@ export interface UsersRepository {
     emailOrUsername: string | [string | undefined, string | undefined],
   ) => Promise<UserWithDetails | null>
   listAllUsers: (query: GetAllUsersQuery) => Promise<UserWithDetails[]>
-  incrementLoginAttempts: (publicId: string) => Promise<void>
-  setLastLogin: (publicId: string) => Promise<void>
-  delete: (publicId: string) => Promise<void>
-  update: (
-    publicId: string,
-    data: Prisma.UserUpdateInput,
-  ) => Promise<UserWithDetails>
+  incrementLoginAttempts: (id: number) => Promise<void>
+  delete: (id: number) => Promise<void>
+  update: (id: number, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>
+  validateUserToken: (
+    recoveryPasswordToken: string,
+  ) => Promise<UserWithDetails | null>
+  changePassword: (id: number, passwordHash: string) => Promise<UserWithDetails>
 }

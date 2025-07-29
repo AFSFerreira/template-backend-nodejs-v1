@@ -13,8 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// REVIEW: Verificar se existe nomenclatura melhor para o enum de Manager
 enum UserRole {
   ADMIN
+  MANAGER
   NORMAL_USER
 }
 
@@ -112,6 +114,9 @@ model User {
   loginAttempts Int       @default(0) @map("login_attempts")
   lastLogin     DateTime? @map("last_login")
 
+  recoveryPasswordToken          String?   @unique @map("recovery_password_token")
+  recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -125,6 +130,7 @@ model User {
   academicPublication AcademicPublications[] @relation()
   blog                Blog[]                 @relation()
   keyword             Keyword[]              @relation()
+  directorBoard       DirectorBoard[]        @relation()
 
   @@map("users")
 }
@@ -203,6 +209,19 @@ model Keyword {
   user User[]
 
   @@map("keywords")
+}
+
+model DirectorBoard {
+  id Int @id @default(autoincrement())
+  // NOTE: Por definição, a imagem de directorBoard corresponde à imagem de user
+  directorBoardProfileImage String @map("director_board_profile_image")
+  aboutMe String @map("about_me")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userId Int  @map("user_id")
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model Category {
