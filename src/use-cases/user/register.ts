@@ -50,10 +50,10 @@ export class RegisterUseCase {
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const existingUser = await this.usersRepository.findByEmailOrUsername([
+    const existingUser = await this.usersRepository.findByEmailOrUsername(
       registerUseCaseInput.user.email,
       registerUseCaseInput.user.username,
-    ])
+    )
 
     if (existingUser !== null) {
       throw new UserWithSameEmailOrUsernameError()

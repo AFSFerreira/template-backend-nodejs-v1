@@ -1,0 +1,11 @@
+import { REMOVE_ALL_NON_DIGITS_REGEX } from "@/constants/regex"
+import { z } from "zod"
+import { nonemptyTextSchema } from "./nonempty-text"
+import { cpf } from "cpf-cnpj-validator"
+
+export const cpfSchema = z.preprocess((data) => (typeof data === 'string' ? data.replace(REMOVE_ALL_NON_DIGITS_REGEX, '') : data),
+    nonemptyTextSchema
+    .length(11, { message: 'CPF must contain 11 digits' })
+    .refine(cpf.isValid, { message: 'Invalid CPF format' })
+    .transform(cpf.format)
+)

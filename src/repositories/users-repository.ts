@@ -50,7 +50,7 @@ export interface UsersRepository {
   create: (data: CreateUserQuery) => Promise<User>
   findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
-    emailOrUsername: string | [string | undefined, string | undefined],
+    val1: string, val2?: string
   ) => Promise<UserWithDetails | null>
   listAllUsers: (query: GetAllUsersQuery) => Promise<UserWithDetails[]>
   incrementLoginAttempts: (id: number) => Promise<void>

@@ -9,6 +9,7 @@ import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
 import { zipSchema } from '../utils/zip'
 import { createZodEnum } from '../utils/zod-enum'
+import { cpfSchema } from '../utils/cpf'
 
 export const registerBodySchema = z
   .object({
@@ -48,7 +49,7 @@ export const registerBodySchema = z
 
     mainAreaActivity: upperCaseTextSchema,
 
-    keywords: keywordSchema.optional().default([]),
+    keywords: keywordSchema,
 
     // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
     address: z.object({
@@ -98,7 +99,7 @@ export const registerBodySchema = z
     {
       message:
         'If "Other" is selected as the main area of activity, a description must be provided — and must not be provided otherwise.',
-      path: ['specificActivityDescription'],
+      path: ['user', 'specificActivityDescription'],
     },
   )
   .refine(
@@ -112,8 +113,19 @@ export const registerBodySchema = z
     {
       message:
         'If you are a scholarship holder, you must provide a sponsoring organization — and must leave it blank if you are not.',
-      path: ['sponsoringOrganization'],
+      path: ['enrolledCourse', 'sponsoringOrganization'],
     },
   )
+  .refine((data) => {
+    if (data.user.identityType !== IdentityType.CPF)
+      return true
+
+    const result = cpfSchema.safeParse(data.user.identityDocument)
+
+    return result.success
+  }, {
+    message: 'Invalid CPF',
+    path: ['user', 'identityDocument']
+  })
 
 export type RegisterUserSchemaType = z.infer<typeof registerBodySchema>

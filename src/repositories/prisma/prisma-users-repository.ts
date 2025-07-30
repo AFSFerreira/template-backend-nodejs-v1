@@ -49,26 +49,13 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findByEmailOrUsername(
-    emailOrUsername: string | [string | undefined, string | undefined],
+    val1: string, val2: string | undefined = undefined
   ) {
-    let orConditions: Array<{ email?: string; username?: string }> = []
+    const orConditions: Array<{ email?: string; username?: string }> = [{ email: val1 }, { username: val1 }]
 
-    if (Array.isArray(emailOrUsername)) {
-      const [val1, val2] = emailOrUsername
-
-      if (val1 === undefined && val2 === undefined) return null
-
-      if (val1 !== undefined) {
-        orConditions.push({ email: val1 })
-        orConditions.push({ username: val1 })
-      }
-
-      if (val2 !== undefined && val1 !== val2) {
-        orConditions.push({ email: val2 })
-        orConditions.push({ username: val2 })
-      }
-    } else {
-      orConditions = [{ email: emailOrUsername }, { username: emailOrUsername }]
+    if (val2 !== undefined && val1 !== val2) {
+      orConditions.push({ email: val2 })
+      orConditions.push({ username: val2 })
     }
 
     const user = await prisma.user.findFirst({
