@@ -1,5 +1,6 @@
 import { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import { z } from 'zod'
+import { cpfSchema } from '../utils/cpf'
 import { emailSchema } from '../utils/email'
 import { keywordSchema } from '../utils/keyword'
 import { monthYearSchema } from '../utils/month-year-schema'
@@ -9,7 +10,6 @@ import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
 import { zipSchema } from '../utils/zip'
 import { createZodEnum } from '../utils/zod-enum'
-import { cpfSchema } from '../utils/cpf'
 
 export const registerBodySchema = z
   .object({
@@ -116,16 +116,18 @@ export const registerBodySchema = z
       path: ['enrolledCourse', 'sponsoringOrganization'],
     },
   )
-  .refine((data) => {
-    if (data.user.identityType !== IdentityType.CPF)
-      return true
+  .refine(
+    (data) => {
+      if (data.user.identityType !== IdentityType.CPF) return true
 
-    const result = cpfSchema.safeParse(data.user.identityDocument)
+      const result = cpfSchema.safeParse(data.user.identityDocument)
 
-    return result.success
-  }, {
-    message: 'Invalid CPF',
-    path: ['user', 'identityDocument']
-  })
+      return result.success
+    },
+    {
+      message: 'Invalid CPF',
+      path: ['user', 'identityDocument'],
+    },
+  )
 
 export type RegisterUserSchemaType = z.infer<typeof registerBodySchema>

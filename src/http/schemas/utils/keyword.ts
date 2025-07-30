@@ -6,5 +6,6 @@ export const keywordSchema = z.preprocess(
   z
     .array(nonemptyTextSchema)
     .max(4)
-    .transform((arr) => arr.map((keyword) => keyword.toUpperCase())).default([]),
+    .transform((arr) => arr.map((keyword) => keyword.toUpperCase()))
+    .default([]),
 )
