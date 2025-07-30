@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { EmptyUsersInfoException } from '@/use-cases/errors/empty-users-info-exception'
 import { makeExportDataUseCase } from '@/use-cases/factories/user/make-export-data-use-case'
 
-export async function exportUserData(
+export async function exportData(
   _request: FastifyRequest,
   reply: FastifyReply,
 ) {

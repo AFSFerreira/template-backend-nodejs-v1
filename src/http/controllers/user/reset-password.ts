@@ -1,18 +1,18 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { resetUserPasswordSchema } from '@/http/schemas/user/reset-user-password'
+import { resetPasswordSchema } from '@/schemas/user/reset-password'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
-import { makeResetUserPasswordUseCase } from '@/use-cases/factories/user/make-reset-user-password-use-case'
+import { makeResetPasswordUseCase } from '@/use-cases/factories/user/make-reset-password-use-case'
 
-export async function resetUserPassword(
+export async function resetPassword(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { newPassword, token } = resetUserPasswordSchema.parse(request.body)
+  const { newPassword, token } = resetPasswordSchema.parse(request.body)
 
-  const resetUserPasswordUseCase = makeResetUserPasswordUseCase()
+  const resetPasswordUseCase = makeResetPasswordUseCase()
 
   try {
-    await resetUserPasswordUseCase.execute({
+    await resetPasswordUseCase.execute({
       newPassword,
       token,
     })

@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@/env'
-import { UserPresenter } from '@/http/presenters/user-presenter'
-import { authenticateBodySchema } from '@/http/schemas/user/authenticate-schema'
+import { UserPresenter } from '@/presenters/user-presenter'
+import { authenticateBodySchema } from '@/schemas/user/authenticate-schema'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@/use-cases/factories/user/make-authenticate-use-case'
 

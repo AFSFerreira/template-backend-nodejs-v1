@@ -18,5 +18,5 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
       httpOnly: true,
     })
     .status(200)
-    .send({ message: 'Logout realizado com sucesso' })
+    .send({ message: 'Logout successful' })
 }

@@ -8,9 +8,7 @@ export async function refreshToken(
   try {
     await request.jwtVerify({ onlyCookie: true })
   } catch (error) {
-    return await reply
-      .status(401)
-      .send({ message: 'Refresh token was not valid or does not exist.' })
+    return await reply.status(401).send({ message: 'Invalid Token' })
   }
 
   const accessToken = await reply.jwtSign(

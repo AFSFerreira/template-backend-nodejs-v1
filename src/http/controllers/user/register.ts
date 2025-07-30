@@ -1,6 +1,6 @@
 import type { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { registerBodySchema } from '@/http/schemas/user/register-schema'
+import { registerBodySchema } from '@/schemas/user/register-schema'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { UserImageStorageError } from '@/use-cases/errors/user-image-storage-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/user/make-register-use-case'

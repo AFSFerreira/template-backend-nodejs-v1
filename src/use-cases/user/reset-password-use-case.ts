@@ -4,22 +4,22 @@ import type { UserWithDetails } from '@/@types/user-with-details'
 import { env } from '@/env'
 import type { UsersRepository } from '@/repositories/users-repository'
 
-interface ResetUserPasswordUseCaseRequest {
+interface ResetPasswordUseCaseRequest {
   newPassword: string
   token: string
 }
 
-interface ResetUserPasswordUseCaseResponse {
+interface ResetPasswordUseCaseResponse {
   user: UserWithDetails
 }
 
-export class ResetUserPasswordUseCase {
+export class ResetPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute({
     newPassword,
     token,
-  }: ResetUserPasswordUseCaseRequest): Promise<ResetUserPasswordUseCaseResponse> {
+  }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
     const userAlreadyExists =
       await this.usersRepository.validateUserToken(token)
 

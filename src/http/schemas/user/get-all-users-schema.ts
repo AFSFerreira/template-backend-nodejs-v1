@@ -1,43 +1,24 @@
 import { EducationLevel, Occupation, UserRole } from '@prisma/client'
 import { z } from 'zod'
+import { keywordSchema } from '../utils/keyword'
+import { nonemptyTextSchema } from '../utils/nonempty-text'
+import { createZodEnum } from '../utils/zod-enum'
 import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
 
 export const getAllUsersParamsSchema = z
   .object({
-    fullName: z.string().nonempty().optional(),
-    username: z.string().nonempty().optional(),
-    institutionName: z.string().nonempty().optional(),
-    departmentName: z.string().nonempty().optional(),
-    specificActivity: z.string().nonempty().optional(),
+    fullName: nonemptyTextSchema.optional(),
+    username: nonemptyTextSchema.optional(),
+    institutionName: nonemptyTextSchema.optional(),
+    departmentName: nonemptyTextSchema.optional(),
+    specificActivity: nonemptyTextSchema.optional(),
     // REVIEW: verificar se o tipo booleano está passando pelo parse corretamente
     receiveReports: z.coerce.boolean().optional(),
-    activityArea: z.string().nonempty().optional(),
-    keywords: z
-      .union([z.string().nonempty(), z.array(z.string().nonempty())])
-      .optional()
-      .transform((val) => {
-        return typeof val === 'string' ? [val] : val
-      }),
-    userRole: z
-      .enum(
-        Object.values(UserRole as Record<string, string>) as [
-          string,
-          ...string[],
-        ],
-      )
-      .optional(),
-    occupation: z.enum(
-      Object.values(Occupation as Record<string, string>) as [
-        string,
-        ...string[],
-      ],
-    ),
-    educationLevel: z.enum(
-      Object.values(EducationLevel as Record<string, string>) as [
-        string,
-        ...string[],
-      ],
-    ),
+    activityArea: nonemptyTextSchema.optional(),
+    keywords: keywordSchema.optional(),
+    userRole: createZodEnum(UserRole).optional(),
+    occupation: createZodEnum(Occupation).optional(),
+    educationLevel: createZodEnum(EducationLevel).optional(),
     birthdate: z.date().optional(),
     birthdateComparison: z.enum(comparisonOperators).optional(),
     astrobiologyOrRelatedStartYear: z.coerce.number().positive().optional(),
@@ -82,4 +63,4 @@ export const getAllUsersParamsSchema = z
     },
   )
 
-export type getAllUsersSchemaType = z.infer<typeof getAllUsersParamsSchema>
+export type GetAllUsersSchemaType = z.infer<typeof getAllUsersParamsSchema>
