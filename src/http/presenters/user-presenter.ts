@@ -1,5 +1,6 @@
 import type { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import type { UserWithDetails } from '@/@types/user-with-details'
+import { formatDate } from '@/utils/format-date'
 
 interface HTTPAddress {
   zip: string | undefined
@@ -13,8 +14,8 @@ interface HTTPAddress {
 
 interface HTTPEnrolledCourse {
   courseName: string | undefined | null
-  startGraduationDate: Date | undefined | null
-  expectedGraduationDate: Date | undefined | null
+  startGraduationDate: string | undefined | null
+  expectedGraduationDate: string | undefined | null
   supervisorName: string | undefined | null
   scholarshipHolder: boolean | undefined
   sponsoringOrganization: string | undefined | null
@@ -23,7 +24,7 @@ interface HTTPEnrolledCourse {
 interface HTTPAcademicPublications {
   title: string
   authors: string
-  publicationDate: Date
+  publicationDate: string | undefined | null
   journalName: string
   volume: string
   editionNumber: string
@@ -36,7 +37,7 @@ interface HTTPUser {
   fullName: string
   email: string
   username: string
-  birthdate: Date
+  birthdate: string | null | undefined
   linkLattes: string | null
   linkGoogleScholar: string | null
   linkResearcherId: string | null
@@ -82,7 +83,7 @@ export class UserPresenter {
       fullName: input.fullName,
       email: input.email,
       username: input.username,
-      birthdate: input.birthdate,
+      birthdate: formatDate(input.birthdate),
       linkLattes: input.linkLattes,
       linkGoogleScholar: input.linkGoogleScholar,
       linkResearcherId: input.linkResearcherId,
@@ -117,8 +118,14 @@ export class UserPresenter {
 
       enrolledCourse: {
         courseName: input.enrolledCourse?.courseName,
-        startGraduationDate: input.enrolledCourse?.startGraduationDate,
-        expectedGraduationDate: input.enrolledCourse?.expectedGraduationDate,
+        startGraduationDate: formatDate(
+          input.enrolledCourse?.startGraduationDate,
+          'mm/yyyy',
+        ),
+        expectedGraduationDate: formatDate(
+          input.enrolledCourse?.expectedGraduationDate,
+          'mm/yyyy',
+        ),
         supervisorName: input.enrolledCourse?.supervisorName,
         scholarshipHolder: input.enrolledCourse?.scholarshipHolder,
         sponsoringOrganization: input.enrolledCourse?.sponsoringOrganization,
@@ -128,7 +135,10 @@ export class UserPresenter {
         (academicPublication) => ({
           title: academicPublication.title,
           authors: academicPublication.authors,
-          publicationDate: academicPublication.publicationDate,
+          publicationDate: formatDate(
+            academicPublication.publicationDate,
+            'mm/yyyy',
+          ),
           journalName: academicPublication.journalName,
           volume: academicPublication.volume,
           editionNumber: academicPublication.editionNumber,
