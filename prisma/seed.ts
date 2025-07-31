@@ -129,7 +129,7 @@ async function main() {
     update: {},
     create: {
       name: "Exobiologia",
-      type: BlogCategoryType.SUBCATEGORY
+      type: BlogCategoryType.SUBCATEGORY,
     }
   })
 
@@ -153,31 +153,18 @@ async function main() {
     where: blogData
   })
 
+  const subcategoriesId = [firstSubcategory, secondSubcategory].map(subcategory => ({ id: subcategory.id }))
+
   if (existingBlog === null) {
     existingBlog = await prisma.blog.create({
-      data: blogData
-    })
-  }
-
-  const subcategories = [firstSubcategory, secondSubcategory]
-
-  const subcategoriesPromises = subcategories.map(async subcategory => {
-    return await prisma.blogCategory.upsert({
-      where: {
-        blogId_categoryId: {
-          blogId: existingBlog.id,
-          categoryId: subcategory.id
+      data: {
+        ...blogData,
+        subcategories: {
+          connect: subcategoriesId
         }
-      },
-      update: {},
-      create: {
-        blogId: existingBlog.id,
-        categoryId: subcategory.id
       }
     })
-  })
-
-  await Promise.all(subcategoriesPromises)
+  }
 }
 
 main()

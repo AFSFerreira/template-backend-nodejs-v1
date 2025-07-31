@@ -233,26 +233,16 @@ model Category {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  blogCategory BlogCategory[] @relation()
-  Blog         Blog[]         @relation()
+  BlogSubCategory Blog[] @relation("subcategory_fk")
+  Blog            Blog[] @relation("main_category_fk")
 
   @@map("categories")
-}
-
-// NOTE: Verificar se é possível omitir esta tabela também eventualmente
-model BlogCategory {
-  blogId     Int
-  categoryId Int
-
-  blog     Blog     @relation(fields: [blogId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@id([blogId, categoryId])
 }
 
 // NOTE: Somente administradores podem realizar postagens
 model Blog {
   id          Int    @id @default(autoincrement())
+  publicId    String @unique @default(uuid(7)) @map("public_id")
   authorName  String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
   htmlContent String @map("html_content") @db.Text
 
@@ -260,12 +250,12 @@ model Blog {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   mainCategoryId Int      @map("main_category_id")
-  mainCategory   Category @relation(fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  mainCategory   Category @relation("main_category_fk", fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   authorId Int?  @map("author_id")
   author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  subcategories BlogCategory[] @relation()
+  subcategories Category[] @relation("subcategory_fk")
 
   @@map("blogs")
 }
