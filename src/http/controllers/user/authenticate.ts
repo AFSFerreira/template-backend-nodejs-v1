@@ -56,7 +56,7 @@ export async function authenticate(
       })
       .status(200)
       .send({ accessToken, user: UserPresenter.toHTTP(user) })
-  } catch (error: unknown) {
+  } catch (error) {
     if (error instanceof InvalidCredentialsError) {
       return await reply.status(401).send({ message: error.message })
     }

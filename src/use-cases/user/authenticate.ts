@@ -29,8 +29,10 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user =
-      await this.usersRepository.findByEmailOrUsername(emailOrUsername)
+    const user = await this.usersRepository.findByEmailOrUsername(
+      emailOrUsername,
+      emailOrUsername,
+    )
 
     const auditAuthenticateObject = {
       browser: browser ?? null,

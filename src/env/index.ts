@@ -3,10 +3,23 @@ import { z } from 'zod'
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'production', 'test']).default('dev'),
-  PORT: z.coerce.number().default(3333),
-  JWT_SECRET: z.string(),
-  HASH_SALT_ROUNDS: z.coerce.number().min(6).max(12),
+
+  // App:
+  APP_NAME: z.string().trim().nonempty().default('SBAstrobio'),
+  APP_PORT: z.coerce.number().default(3333),
+  JWT_SECRET: z
+    .string()
+    .trim()
+    .min(60, 'JWT secret must be at least 60 characters long'),
+  HASH_SALT_ROUNDS: z.coerce.number().min(6).max(16).default(12),
   FRONTEND_URL: z.string().default('http://localhost:5173'),
+
+  // SMTP:
+  SMTP_EMAIL: z.string().trim().email(),
+  SMTP_PASSWORD: z.string().trim().min(1),
+  SMTP_PORT: z.coerce.number(),
+  SMTP_HOST: z.string().trim().min(1),
+  SMTP_SECURE: z.coerce.boolean(),
 })
 
 const _env = envSchema.safeParse(process.env)

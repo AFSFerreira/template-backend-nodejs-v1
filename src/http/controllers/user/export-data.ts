@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { EmptyUsersInfoException } from '@/use-cases/errors/empty-users-info-exception'
+import { EmptyUsersInfoError } from '@/use-cases/errors/empty-users-info-error'
 import { makeExportDataUseCase } from '@/use-cases/factories/user/make-export-data-use-case'
 
 export async function exportData(
@@ -16,7 +16,7 @@ export async function exportData(
       .header('Content-Disposition', 'attachment; filename="usuarios.csv"')
       .send(userCSVInfoResponse.usersCSVInfo)
   } catch (error) {
-    if (error instanceof EmptyUsersInfoException) {
+    if (error instanceof EmptyUsersInfoError) {
       reply.status(204).send({ message: error.message })
     }
   }

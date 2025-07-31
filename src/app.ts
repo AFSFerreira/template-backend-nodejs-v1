@@ -45,5 +45,5 @@ app.setErrorHandler((error, _, reply) => {
     // TODO: Send error to monitoring service
   }
 
-  reply.status(500).send({ message: 'Internal server error' })
+  return reply.status(500).send({ message: 'Internal server error' })
 })
