@@ -5,6 +5,7 @@ import { emailSchema } from '../utils/email'
 import { keywordSchema } from '../utils/keyword'
 import { monthYearSchema } from '../utils/month-year-schema'
 import { nonemptyTextSchema } from '../utils/nonempty-text'
+import { orcidNumberSchema } from '../utils/orcid-number'
 import { passwordSchema } from '../utils/password'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
@@ -16,21 +17,15 @@ export const registerBodySchema = z
     user: z.object({
       email: emailSchema,
       password: passwordSchema,
-      fullName: nonemptyTextSchema
-        .min(5)
-        .transform((data) => data.toUpperCase()),
+      fullName: upperCaseTextSchema,
       username: usernameSchema,
       birthdate: z.coerce.date(),
-      linkLattes: nonemptyTextSchema.url().nonempty().optional(),
-      linkGoogleScholar: nonemptyTextSchema.url().nonempty().optional(),
-      linkResearcherId: nonemptyTextSchema.url().nonempty().optional(),
-      orcidNumber: z.coerce.string().trim().nonempty().optional(),
-      institutionName: nonemptyTextSchema.transform((data) =>
-        data.toUpperCase(),
-      ),
-      departmentName: nonemptyTextSchema
-        .transform((data) => data.toUpperCase())
-        .optional(),
+      linkLattes: nonemptyTextSchema.url().optional(),
+      linkGoogleScholar: nonemptyTextSchema.url().optional(),
+      linkResearcherId: nonemptyTextSchema.url().optional(),
+      orcidNumber: orcidNumberSchema.optional(),
+      institutionName: upperCaseTextSchema,
+      departmentName: upperCaseTextSchema.optional(),
       institutionComplement: nonemptyTextSchema.optional(),
       occupation: createZodEnum(Occupation),
       educationLevel: createZodEnum(EducationLevel),

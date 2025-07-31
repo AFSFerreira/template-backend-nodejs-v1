@@ -1,6 +1,6 @@
 import { nonemptyTextSchema } from './nonempty-text'
-import { ZIP_CODE_REGEX } from '@/constants/regex'
+import { REMOVE_INNER_SPACES_REGEX } from '@/constants/regex'
 
 export const zipSchema = nonemptyTextSchema.transform((s) =>
-  s.toUpperCase().replace(ZIP_CODE_REGEX, ''),
+  s.toUpperCase().replace(REMOVE_INNER_SPACES_REGEX, ''),
 )

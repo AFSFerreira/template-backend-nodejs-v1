@@ -212,16 +212,18 @@ model Keyword {
 }
 
 model DirectorBoard {
-  id Int @id @default(autoincrement())
-  // NOTE: Por definição, a imagem de directorBoard corresponde à imagem de user
-  directorBoardProfileImage String @map("director_board_profile_image")
-  aboutMe String @map("about_me")
+  id                        Int    @id @default(autoincrement())
+  publicId                  String @unique @default(uuid(7)) @map("public_id")
+  directorBoardProfileImage String @map("director_board_profile_image") // NOTE: Por definição, a imagem de directorBoard corresponde à imagem de user
+  aboutMe                   String @map("about_me")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   userId Int  @map("user_id")
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("directors_board")
 }
 
 model Category {

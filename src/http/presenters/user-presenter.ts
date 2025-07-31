@@ -2,6 +2,32 @@ import type { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import type { UserWithDetails } from '@/@types/user-with-details'
 import { formatDate } from '@/utils/format-date'
 
+interface HTTPUserDetails {
+  id: string
+  fullName: string
+  email: string
+  username: string
+  birthdate: string | null | undefined
+  linkLattes: string | null
+  linkGoogleScholar: string | null
+  linkResearcherId: string | null
+  orcidNumber: string | null
+  institutionName: string
+  departmentName: string | null
+  institutionComplement: string | null
+  occupation: Occupation
+  educationLevel: EducationLevel
+  identityType: IdentityType
+  identityDocument: string
+  emailIsPublic: boolean
+  astrobiologyOrRelatedStartYear: number
+  interestDescription: string
+  receiveReports: boolean
+  publicInformation: string
+  specificActivity: string
+  specificActivityDescription: string | null
+}
+
 interface HTTPAddress {
   zip: string | undefined
   number: string | undefined
@@ -33,29 +59,8 @@ interface HTTPAcademicPublications {
 }
 
 interface HTTPUser {
-  id: string
-  fullName: string
-  email: string
-  username: string
-  birthdate: string | null | undefined
-  linkLattes: string | null
-  linkGoogleScholar: string | null
-  linkResearcherId: string | null
-  orcidNumber: string | null
-  institutionName: string
-  departmentName: string | null
-  institutionComplement: string | null
-  occupation: Occupation
-  educationLevel: EducationLevel
-  identityType: IdentityType
-  identityDocument: string
-  emailIsPublic: boolean
-  astrobiologyOrRelatedStartYear: number
-  interestDescription: string
-  receiveReports: boolean
-  publicInformation: string
-  specificActivity: string
-  specificActivityDescription: string | null
+  user: HTTPUserDetails
+
   keywords: string[]
 
   mainActivityArea: string
@@ -79,29 +84,12 @@ export class UserPresenter {
     }
 
     return {
-      id: input.publicId,
-      fullName: input.fullName,
-      email: input.email,
-      username: input.username,
-      birthdate: formatDate(input.birthdate),
-      linkLattes: input.linkLattes,
-      linkGoogleScholar: input.linkGoogleScholar,
-      linkResearcherId: input.linkResearcherId,
-      orcidNumber: input.orcidNumber,
-      institutionName: input.institutionName,
-      departmentName: input.departmentName,
-      institutionComplement: input.institutionComplement,
-      occupation: input.occupation,
-      educationLevel: input.educationLevel,
-      identityType: input.identityType,
-      identityDocument: input.identityDocument,
-      emailIsPublic: input.emailIsPublic,
-      astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
-      interestDescription: input.interestDescription,
-      receiveReports: input.receiveReports,
-      publicInformation: input.publicInformation,
-      specificActivity: input.specificActivity,
-      specificActivityDescription: input.specificActivityDescription,
+      user: {
+        ...input,
+        id: input.publicId,
+        birthdate: formatDate(input.birthdate),
+      },
+
       keywords: input.keyword.map((keyword) => keyword.value),
 
       mainActivityArea: input.activityArea.area,
