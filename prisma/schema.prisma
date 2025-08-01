@@ -67,6 +67,11 @@ enum IdentityType {
   PASSPORT
 }
 
+enum PresentationType {
+  ORAL
+  POSTER
+}
+
 model AuthenticationAudit {
   id         Int                  @id @default(autoincrement())
   ipAddress  String?
@@ -258,4 +263,49 @@ model Blog {
   subcategories Category[] @relation("subcategory_fk")
 
   @@map("blogs")
+}
+
+model MeetingParticipation {
+  userId    Int
+  meetingId Int
+  attended  Boolean?
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  presentation MeetingPresentation? @relation()
+
+  @@id([userId, meetingId])
+  @@map("meeting_participations")
+}
+
+model MeetingPresentation {
+  id               Int              @id @default(autoincrement())
+  publicId         String           @unique @default(uuid(7)) @map("public_id")
+  presentationType PresentationType
+  authors          String
+  title            String
+  affiliations     String
+  description      String
+  createdAt        DateTime         @default(now()) @map("created_at")
+
+  userId               Int                  @map("user_id")
+  meetingId            Int                  @map("meeting_id")
+  meetingParticipation MeetingParticipation @relation(fields: [userId, meetingId], references: [userId, meetingId], onUpdate: Cascade, onDelete: Cascade)
+
+  @@unique([userId, meetingId])
+  @@map("meeting_presentations")
+}
+
+model Meeting {
+  id          Int    @id @default(autoincrement())
+  publicId    String @unique @default(uuid(7)) @map("public_id")
+  name        String
+  image       String
+  description String
+  location    String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("meetings")
 }
