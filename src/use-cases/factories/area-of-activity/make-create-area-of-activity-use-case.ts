@@ -3,9 +3,9 @@ import { CreateAreaOfActivityUseCase } from '@/use-cases/area-of-activity/create
 
 export function makeCreateAreaOfActivityUseCase() {
   const areaOfActivityRepository = new PrismaAreaOfActivityRepository()
-  const createareaOfActivityUseCase = new CreateAreaOfActivityUseCase(
+  const createAreaOfActivityUseCase = new CreateAreaOfActivityUseCase(
     areaOfActivityRepository,
   )
 
-  return createareaOfActivityUseCase
+  return createAreaOfActivityUseCase
 }

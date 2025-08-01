@@ -7,7 +7,7 @@ export function formatDate(
   if (date === null || date === undefined) return date
 
   const day = date.getDate().toString().padStart(2, '0')
-  const month = date.getMonth().toString().padStart(2, '0')
+  const month = (date.getMonth() + 1).toString().padStart(2, '0')
   const year = date.getFullYear().toString()
 
   switch (format) {
@@ -15,7 +15,5 @@ export function formatDate(
       return `${day}/${month}/${year}`
     case 'mm/yyyy':
       return `${month}/${year}`
-    default:
-      throw new Error(`Unsupported date format: ${format as DateFormat}`)
   }
 }
