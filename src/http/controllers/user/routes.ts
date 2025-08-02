@@ -9,8 +9,8 @@ import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
 import { resetPassword } from './reset-password'
+import { authenticationMiddleware } from '@/http/middlewares/authentication-middleware'
 import { upload } from '@/lib/multer'
-import { authenticationMiddleware } from '@/middlewares/authenticate'
 import { verifyPermissions } from '@/middlewares/verify-user-role'
 
 export async function userRoutes(app: FastifyInstance) {
