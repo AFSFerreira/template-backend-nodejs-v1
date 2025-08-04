@@ -13,10 +13,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// REVIEW: Verificar se existe nomenclatura melhor para o enum de Manager
 enum UserRole {
   ADMIN
   MANAGER
+  BLOGGER
   NORMAL_USER
 }
 
@@ -54,6 +54,7 @@ enum MembershipStatus {
   PENDING
   APPROVED
   REJECTED
+  INACTIVE
 }
 
 enum BlogCategoryType {
@@ -70,6 +71,12 @@ enum IdentityType {
 enum PresentationType {
   ORAL
   POSTER
+}
+
+enum KeywordType {
+  AREA_OF_ACTIVITY
+  SUB_AREA_OF_ACTIVITY
+  USER_INTEREST
 }
 
 model AuthenticationAudit {
@@ -125,8 +132,8 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  activityAreaId Int            @map("activity_area_id")
-  activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  activityAreaId Int     @map("activity_area_id")
+  activityArea   Keyword @relation("user_activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   address        Address?        @relation()
   enrolledCourse EnrolledCourse? @relation()
@@ -134,7 +141,7 @@ model User {
   authenticationAudit AuthenticationAudit[]  @relation()
   academicPublication AcademicPublications[] @relation()
   blog                Blog[]                 @relation()
-  keyword             Keyword[]              @relation()
+  UserKeywords        Keyword[]              @relation("user_keywords")
   directorBoard       DirectorBoard[]        @relation()
 
   @@map("users")
@@ -175,17 +182,6 @@ model EnrolledCourse {
   @@map("enrolled_courses")
 }
 
-model AreaOfActivity {
-  id   Int    @id @default(autoincrement())
-  area String @unique // Grande área de atuação será uma lista exibida ainda a determinar
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user User[] @relation()
-
-  @@map("areas_of_activity")
-}
-
 model AcademicPublications {
   id              Int      @id @default(autoincrement())
   title           String
@@ -206,13 +202,18 @@ model AcademicPublications {
 }
 
 model Keyword {
-  id    Int    @id @default(autoincrement())
-  value String @unique
+  id    Int         @id @default(autoincrement())
+  value String
+  type  KeywordType
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  user User[]
+  UserKeywords     User[] @relation("user_keywords")
+  UserActivityArea User[] @relation("user_activity_area")
 
+  @@unique([type, value])
+  @@index([value])
+  @@index([type])
   @@map("keywords")
 }
 

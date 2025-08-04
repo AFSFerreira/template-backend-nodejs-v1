@@ -1,4 +1,4 @@
-import { BlogCategoryType, IdentityType, PrismaClient } from '@prisma/client'
+import { BlogCategoryType, IdentityType, KeywordType, PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { env } from '../src/env'
 
@@ -6,21 +6,73 @@ const prisma = new PrismaClient()
 
 async function main() {
   // Criação do usuário:
-  const activityArea = await prisma.areaOfActivity.upsert({
-    where: { area: "PROFESSOR" },
-    update: {},
-    create: {
-      area: "PROFESSOR"
-    }
+  const activityAreas = [
+    "ASTRONOMIA",
+    "BIOLOGIA",
+    "QUÍMICA",
+    "FÍSICA",
+    "GEOCIÊNCIAS",
+    "ASTRONÁUTICA",
+    "ENGENHARIAS",
+    "MATEMÁTICA",
+    "HUMANIDADES",
+    "ENSINO",
+    "DIVULGAÇÃO DA CIÊNCIA",
+    "OUTRA"
+  ]
+
+  const subActivityAreas = [
+    "EXOPLANETAS",
+    "MICROBIOLOGIA AMBIENTAL",
+    "EXTREMÓFILOS",
+    "HABITABILIDADE",
+    "BIOASSINATURAS",
+    "GEOBIOLOGIA",
+    "MARTE",
+    "LUAS GELADAS",
+    "QUÍMICA PREBIÓTICA",
+    "PEQUENOS CORPOS DO SISTEMA SOLAR",
+    "CIÊNCIAS PLANETÁRIAS",
+    "ORIGEM DA VIDA",
+    "EVOLUÇÃO",
+    "SETI",
+    "EXPLORAÇÃO ESPACIAL",
+    "AGRICULTURA ESPACIAL",
+    "OUTRA"
+  ]
+
+  const activityAreasPromise = activityAreas.map(async activityArea => {
+    await prisma.keyword.upsert({
+      where: { type_value: { value: activityArea, type: KeywordType.AREA_OF_ACTIVITY } },
+      update: {},
+      create: {
+        value: activityArea,
+        type: KeywordType.AREA_OF_ACTIVITY
+      }
+    })
   })
+
+  const subActivityAreasPromise = subActivityAreas.map(async subActivityArea => {
+    await prisma.keyword.upsert({
+      where: { type_value: { value: subActivityArea, type: KeywordType.SUB_AREA_OF_ACTIVITY } },
+      update: {},
+      create: {
+        value: subActivityArea,
+        type: KeywordType.SUB_AREA_OF_ACTIVITY
+      }
+    })
+  })
+
+  // Criando as áreas e sub-áreas de atividade:
+  await Promise.all([...activityAreasPromise, ...subActivityAreasPromise])
 
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
   const createdKeywords = await Promise.all(userKeywords.map(async value => {
     return await prisma.keyword.upsert({
-      where: { value },
+      where: { type_value: { type: KeywordType.USER_INTEREST, value } },
       update: {},
-      create: { value }
+      create: { value, type: KeywordType.USER_INTEREST }
     })
   }))
 
@@ -51,13 +103,13 @@ async function main() {
       receiveReports: true,
       loginAttempts: 0,
       lastLogin: new Date(),
-      activityAreaId: activityArea.id,
+      activityAreaId: 1,
       identityType: IdentityType.CPF,
       identityDocument: "12345678900",
       publicInformation: "Astrobiólogo",
       specificActivity: "Professor Interino",
 
-      keyword: {
+      UserKeywords: {
         connect: createdKeywords.map(keyword => ({ id: keyword.id }))
       }
     },
