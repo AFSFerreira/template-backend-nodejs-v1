@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class EmptyUsersInfoError extends Error {
   constructor() {
-    super('No available users info to export.')
+    super(messages.errors.noUsersAvailable)
   }
 }

@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class UserWithSameEmailOrUsernameError extends Error {
   constructor() {
-    super('There is already an user with the same email or username.')
+    super(messages.errors.userWithSameEmailOrPassword)
   }
 }

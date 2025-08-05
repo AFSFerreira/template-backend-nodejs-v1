@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class InvalidMainAreaOfActivity extends Error {
   constructor() {
-    super('Invalid area of activity.')
+    super(messages.errors.invalidAreaOfActivity)
   }
 }

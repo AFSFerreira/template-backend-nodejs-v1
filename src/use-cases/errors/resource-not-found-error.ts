@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class ResourceNotFoundError extends Error {
   constructor(message?: string) {
-    super(message ?? 'Resource not found.')
+    super(message ?? messages.errors.resourceNotFound)
   }
 }

@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class UserImageStorageError extends Error {
   constructor() {
-    super('Error trying to process user profile picture.')
+    super(messages.errors.userImageStorage)
   }
 }

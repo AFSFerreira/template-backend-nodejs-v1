@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class InvalidCredentialsError extends Error {
   constructor() {
-    super('Invalid credentials.')
+    super(messages.errors.invalidCreddentials)
   }
 }
