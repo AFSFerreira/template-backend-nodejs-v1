@@ -138,11 +138,13 @@ model User {
   address        Address?        @relation()
   enrolledCourse EnrolledCourse? @relation()
 
-  authenticationAudit AuthenticationAudit[]  @relation()
-  academicPublication AcademicPublications[] @relation()
-  blog                Blog[]                 @relation()
+  AuthenticationAudit AuthenticationAudit[]  @relation()
+  AcademicPublication AcademicPublications[] @relation()
+  Blog                Blog[]                 @relation()
   UserKeywords        Keyword[]              @relation("user_keywords")
-  directorBoard       DirectorBoard[]        @relation()
+  DirectorBoard       DirectorBoard[]        @relation()
+  UserComments        NewsletterComment[]    @relation("comment_author")
+  CommentLike         CommentLike[]          @relation("user_likes")
 
   @@map("users")
 }
@@ -247,10 +249,10 @@ model Category {
 
 // NOTE: Somente administradores podem realizar postagens
 model Blog {
-  id          Int    @id @default(autoincrement())
-  publicId    String @unique @default(uuid(7)) @map("public_id")
-  authorName  String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
-  htmlContent String @map("html_content") @db.Text
+  id         Int    @id @default(autoincrement())
+  publicId   String @unique @default(uuid(7)) @map("public_id")
+  authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
+  content    String @map("html_content") @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -309,4 +311,69 @@ model Meeting {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("meetings")
+}
+
+model Newsletter {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @default(uuid(7)) @map("public_id")
+  title    String
+  edition  String
+  number   String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  NewsletterItems NewsletterItem[] @relation()
+
+  @@unique([edition, number]) // Só existe um número por edição
+  @@map("newsletters")
+}
+
+model NewsletterItem {
+  id         Int    @id @default(autoincrement())
+  title      String
+  content    String
+  image      String
+  linkReport String
+
+  newsletterId Int
+  Newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("newsletter_items")
+}
+
+model NewsletterComment {
+  id      Int    @id @default(autoincrement())
+  content String
+
+  // Likes em cache pra evitar muitas consultas aninhadas:
+  likesQuantity Int @default(0) @map("likes_quantity")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userId Int
+  User   User @relation("comment_author", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  parentCommentId Int?
+  ParentComment   NewsletterComment? @relation("parent_comment", fields: [parentCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  ChildComments NewsletterComment[] @relation("parent_comment")
+
+  CommentLike CommentLike[] @relation()
+
+  @@map("comments")
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId Int
+  User   User @relation("user_likes", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  newsletterCommentId Int
+  NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("comment_likes")
 }

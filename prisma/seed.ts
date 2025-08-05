@@ -195,7 +195,7 @@ async function main() {
   })
 
   const blogData = {
-    htmlContent: "<h1>Hello World</h1>",
+    content: "<h1>Hello World</h1>",
     authorName: user.fullName,
     authorId: user.id,
     mainCategoryId: mainCategory.id
