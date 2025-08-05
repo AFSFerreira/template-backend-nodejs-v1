@@ -1,4 +1,9 @@
-import type { EducationLevel, IdentityType, Occupation } from '@prisma/client'
+import type {
+  EducationLevel,
+  IdentityType,
+  Occupation,
+  UserRole,
+} from '@prisma/client'
 import type { UserWithDetails } from '@/@types/user-with-details'
 import { formatDate } from '@/utils/format-date'
 
@@ -7,6 +12,7 @@ interface HTTPUserDetails {
   fullName: string
   email: string
   username: string
+  role: UserRole
   birthdate: string | null | undefined
   linkLattes: string | null
   linkGoogleScholar: string | null
@@ -26,6 +32,11 @@ interface HTTPUserDetails {
   publicInformation: string
   specificActivity: string
   specificActivityDescription: string | null
+  keywords: string[]
+  mainActivityArea: string
+  address: HTTPAddress
+  enrolledCourse: HTTPEnrolledCourse
+  academicPublications: HTTPAcademicPublications[]
 }
 
 interface HTTPAddress {
@@ -55,21 +66,17 @@ interface HTTPAcademicPublications {
   volume: string
   editionNumber: string
   pageInterval: string
-  doiLink: string
+  linkDOI: string
+}
+
+interface HTTPDirectorBoardInfo {
+  directorBoardProfileImage: string
+  aboutMe: string
 }
 
 interface HTTPUser {
   user: HTTPUserDetails
-
-  keywords: string[]
-
-  mainActivityArea: string
-
-  address: HTTPAddress
-
-  enrolledCourse: HTTPEnrolledCourse
-
-  academicPublications: HTTPAcademicPublications[]
+  directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
@@ -88,52 +95,61 @@ export class UserPresenter {
         ...input,
         id: input.publicId,
         birthdate: formatDate(input.birthdate),
-      },
 
-      keywords: input.keyword.map((keyword) => keyword.value),
+        keywords: input.UserKeywords.map((keyword) => keyword.value),
 
-      mainActivityArea: input.activityArea.area,
+        mainActivityArea: input.activityArea.value,
 
-      address: {
-        zip: input.address?.zip,
-        number: input.address?.number,
-        street: input.address?.street,
-        district: input.address?.district,
-        city: input.address?.city,
-        state: input.address?.state,
-        country: input.address?.country,
-      },
+        address: {
+          zip: input.address?.zip,
+          number: input.address?.number,
+          street: input.address?.street,
+          district: input.address?.district,
+          city: input.address?.city,
+          state: input.address?.state,
+          country: input.address?.country,
+        },
 
-      enrolledCourse: {
-        courseName: input.enrolledCourse?.courseName,
-        startGraduationDate: formatDate(
-          input.enrolledCourse?.startGraduationDate,
-          'mm/yyyy',
-        ),
-        expectedGraduationDate: formatDate(
-          input.enrolledCourse?.expectedGraduationDate,
-          'mm/yyyy',
-        ),
-        supervisorName: input.enrolledCourse?.supervisorName,
-        scholarshipHolder: input.enrolledCourse?.scholarshipHolder,
-        sponsoringOrganization: input.enrolledCourse?.sponsoringOrganization,
-      },
-
-      academicPublications: input.academicPublication.map(
-        (academicPublication) => ({
-          title: academicPublication.title,
-          authors: academicPublication.authors,
-          publicationDate: formatDate(
-            academicPublication.publicationDate,
+        enrolledCourse: {
+          courseName: input.enrolledCourse?.courseName,
+          startGraduationDate: formatDate(
+            input.enrolledCourse?.startGraduationDate,
             'mm/yyyy',
           ),
-          journalName: academicPublication.journalName,
-          volume: academicPublication.volume,
-          editionNumber: academicPublication.editionNumber,
-          pageInterval: academicPublication.pageInterval,
-          doiLink: academicPublication.doiLink,
-        }),
-      ),
+          expectedGraduationDate: formatDate(
+            input.enrolledCourse?.expectedGraduationDate,
+            'mm/yyyy',
+          ),
+          supervisorName: input.enrolledCourse?.supervisorName,
+          scholarshipHolder: input.enrolledCourse?.scholarshipHolder,
+          sponsoringOrganization: input.enrolledCourse?.sponsoringOrganization,
+        },
+
+        academicPublications: input.AcademicPublication.map(
+          (academicPublication) => ({
+            title: academicPublication.title,
+            authors: academicPublication.authors,
+            publicationDate: formatDate(
+              academicPublication.publicationDate,
+              'mm/yyyy',
+            ),
+            journalName: academicPublication.journalName,
+            volume: academicPublication.volume,
+            editionNumber: academicPublication.editionNumber,
+            pageInterval: academicPublication.pageInterval,
+            linkDOI: academicPublication.linkDOI,
+          }),
+        ),
+      },
+
+      directorBoardInfo:
+        input.DirectorBoard !== null
+          ? {
+              directorBoardProfileImage:
+                input.DirectorBoard.directorBoardProfileImage,
+              aboutMe: input.DirectorBoard.aboutMe,
+            }
+          : null,
     }
   }
 }

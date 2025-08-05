@@ -17,11 +17,11 @@ export class PrismaEnrolledCourseRepository
     return enrolledCourse
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     await prisma.enrolledCourse.delete({ where: { id } })
   }
 
-  async update(id: string, data: Prisma.EnrolledCourseUpdateInput) {
+  async update(id: number, data: Prisma.EnrolledCourseUpdateInput) {
     const enrolledCourse = await prisma.enrolledCourse.update({
       where: { id },
       data,

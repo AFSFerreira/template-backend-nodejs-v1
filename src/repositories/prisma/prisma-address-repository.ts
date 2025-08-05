@@ -17,13 +17,13 @@ export class PrismaAddressRepository implements AddressRepository {
     return address
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     await prisma.address.delete({
       where: { id },
     })
   }
 
-  async update(id: string, data: Prisma.AddressUpdateInput) {
+  async update(id: number, data: Prisma.AddressUpdateInput) {
     const address = await prisma.address.update({
       where: { id },
       data,

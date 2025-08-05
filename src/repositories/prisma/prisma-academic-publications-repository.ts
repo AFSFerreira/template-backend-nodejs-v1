@@ -16,25 +16,25 @@ export class PrismaAcademicPublicationsRepository
     await prisma.academicPublications.createMany({ data })
   }
 
-  async findById(id: string) {
+  async findById(id: number) {
     const academicPublication = await prisma.academicPublications.findUnique({
       where: { id },
     })
     return academicPublication
   }
 
-  async findManyByUserId(userId: string) {
+  async findManyByUserId(userId: number) {
     const academicPublications = await prisma.academicPublications.findMany({
       where: { userId },
     })
     return academicPublications
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     await prisma.academicPublications.delete({ where: { id } })
   }
 
-  async update(id: string, data: Prisma.AcademicPublicationsUpdateInput) {
+  async update(id: number, data: Prisma.AcademicPublicationsUpdateInput) {
     const academicPublication = await prisma.academicPublications.update({
       where: { id },
       data,

@@ -7,11 +7,11 @@ export interface AcademicPublicationsRepository {
   createMany: (
     data: Prisma.AcademicPublicationsUncheckedCreateInput[],
   ) => Promise<void>
-  findById: (id: string) => Promise<AcademicPublications | null>
-  findManyByUserId: (userId: string) => Promise<AcademicPublications[]>
-  delete: (id: string) => Promise<void>
+  findById: (id: number) => Promise<AcademicPublications | null>
+  findManyByUserId: (userId: number) => Promise<AcademicPublications[]>
+  delete: (id: number) => Promise<void>
   update: (
-    id: string,
+    id: number,
     data: Prisma.AcademicPublicationsUpdateInput,
   ) => Promise<AcademicPublications>
 }

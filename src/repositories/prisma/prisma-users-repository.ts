@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import { KeywordType, type Prisma } from '@prisma/client'
 import type {
   CreateUserQuery,
   GetAllUsersQuery,
@@ -6,7 +6,10 @@ import type {
   UsersRepository,
 } from '../users-repository'
 import type { ComparableType } from '@/@types/orderable-type'
-import { userWithDetails } from '@/@types/user-with-details'
+import {
+  type UserWithDetails,
+  userWithDetails,
+} from '@/@types/user-with-details'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -41,7 +44,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.create({
       data: {
         ...data.user,
-        keyword: {
+        UserKeywords: {
           connect: data.keywords.map((keyword) => ({ id: keyword.id })),
         },
       },
@@ -113,7 +116,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const offset =
       query.limit !== undefined ? (query.page - 1) * query.limit : undefined
 
-    const users = await prisma.user.findMany({
+    const users: UserWithDetails[] = await prisma.user.findMany({
       include: userWithDetails.include,
       skip: offset,
       take: query.limit,
@@ -144,12 +147,14 @@ export class PrismaUsersRepository implements UsersRepository {
         occupation: query.occupation,
         educationLevel: query.educationLevel,
         role: query.role,
-        activityArea: PrismaUsersRepository.buildIsFilter(
-          'activityArea',
-          query.activityArea,
-        ),
+        activityArea: {
+          value: PrismaUsersRepository.buildStartsWithFilter(
+            query.activityArea,
+          ),
+          type: KeywordType.USER_INTEREST,
+        },
         AND: query.keywords?.map((keywordValue) => ({
-          keyword: {
+          UserKeywords: {
             some: {
               value: {
                 startsWith: keywordValue,

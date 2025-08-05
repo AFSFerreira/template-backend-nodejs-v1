@@ -137,12 +137,12 @@ model User {
 
   address        Address?        @relation()
   enrolledCourse EnrolledCourse? @relation()
+  DirectorBoard  DirectorBoard?  @relation()
 
   AuthenticationAudit AuthenticationAudit[]  @relation()
   AcademicPublication AcademicPublications[] @relation()
   Blog                Blog[]                 @relation()
   UserKeywords        Keyword[]              @relation("user_keywords")
-  DirectorBoard       DirectorBoard[]        @relation()
   UserComments        NewsletterComment[]    @relation("comment_author")
   CommentLike         CommentLike[]          @relation("user_likes")
 
@@ -193,7 +193,7 @@ model AcademicPublications {
   volume          String
   editionNumber   String   @map("edition_number")
   pageInterval    String   @map("page_interval")
-  doiLink         String   @map("DOI_link")
+  linkDOI         String   @map("link_DOI")
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -228,7 +228,7 @@ model DirectorBoard {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId Int  @map("user_id")
+  userId Int  @unique @map("user_id")
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("directors_board")

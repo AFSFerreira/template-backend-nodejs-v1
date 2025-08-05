@@ -7,9 +7,9 @@ export interface EnrolledCourseRepository {
   findBy: (
     where: Prisma.EnrolledCourseWhereInput,
   ) => Promise<EnrolledCourse | null>
-  delete: (id: string) => Promise<void>
+  delete: (id: number) => Promise<void>
   update: (
-    id: string,
+    id: number,
     data: Prisma.EnrolledCourseUpdateInput,
   ) => Promise<EnrolledCourse>
 }

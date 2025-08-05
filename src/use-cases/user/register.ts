@@ -1,9 +1,10 @@
 import path from 'path'
-import type {
-  EducationLevel,
-  IdentityType,
-  Occupation,
-  User,
+import {
+  KeywordType,
+  type EducationLevel,
+  type IdentityType,
+  type Occupation,
+  type User,
 } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
@@ -13,7 +14,6 @@ import { env } from '@/env'
 import type { RegisterUserSchemaType } from '@/http/schemas/user/register-schema'
 import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 import type { AddressRepository } from '@/repositories/address-repository'
-import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
 import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
 import type { KeywordRepository } from '@/repositories/keyword-repository'
 import type { UsersRepository } from '@/repositories/users-repository'
@@ -42,7 +42,6 @@ export class RegisterUseCase {
     private readonly usersRepository: UsersRepository,
     private readonly addressRepository: AddressRepository,
     private readonly academicPublicationsRepository: AcademicPublicationsRepository,
-    private readonly areaOfActivitiesRepository: AreaOfActivityRepository,
     private readonly enrolledCoursesRepository: EnrolledCourseRepository,
     private readonly keywordsRepository: KeywordRepository,
   ) {}
@@ -59,8 +58,9 @@ export class RegisterUseCase {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const mainAreaOfActivity = await this.areaOfActivitiesRepository.findBy({
-      area: registerUseCaseInput.mainAreaActivity,
+    const mainAreaOfActivity = await this.keywordsRepository.findBy({
+      value: registerUseCaseInput.mainAreaActivity,
+      type: KeywordType.AREA_OF_ACTIVITY,
     })
 
     if (mainAreaOfActivity === null) {
@@ -88,7 +88,10 @@ export class RegisterUseCase {
 
     const keywordsCreated = await Promise.all(
       registerUseCaseInput.keywords.map(async (keyword) => {
-        return await this.keywordsRepository.findOrCreate(keyword)
+        return await this.keywordsRepository.findOrCreate({
+          value: keyword,
+          type: KeywordType.USER_INTEREST,
+        })
       }),
     )
 

@@ -76,7 +76,7 @@ export const registerBodySchema = z
           volume: upperCaseTextSchema,
           editionNumber: upperCaseTextSchema,
           pageInterval: upperCaseTextSchema,
-          doiLink: nonemptyTextSchema.url(),
+          linkDOI: nonemptyTextSchema.url(),
         }),
       )
       .max(5),

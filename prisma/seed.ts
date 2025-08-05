@@ -148,7 +148,7 @@ async function main() {
     authors: "Admin",
     publicationDate: new Date(),
     title: "A Ascensão da Astrobiologia",
-    doiLink: "https://example.com",
+    linkDOI: "https://example.com",
     editionNumber: "12",
     journalName: "astrobio",
     pageInterval: "1-5",

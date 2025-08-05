@@ -44,6 +44,9 @@ interface FlattenedUser {
 
   keywords: string
   publications: string
+
+  directorBoardProfileImage: string
+  aboutMe: string
 }
 
 export function flattenUser(user: UserWithDetails): FlattenedUser {
@@ -79,7 +82,7 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     zip: user.address?.zip ?? '',
     country: user.address?.country ?? '',
 
-    mainAreaActivity: user.activityArea?.area ?? '',
+    mainAreaActivity: user.activityArea?.value ?? '',
 
     courseName: user.enrolledCourse?.courseName ?? '',
     startGraduationDate:
@@ -92,18 +95,18 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
 
     keywords:
-      user.keyword
-        ?.map((k: Keyword) => k.value)
+      user.UserKeywords?.map((k: Keyword) => k.value)
         .filter(Boolean)
         .join('; ') ?? '',
 
     publications:
-      user.academicPublication
-        ?.map(
-          (p) =>
-            `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
-        )
-        .join(' | ') ?? '',
+      user.AcademicPublication?.map(
+        (p) => `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
+      ).join(' | ') ?? '',
+
+    directorBoardProfileImage:
+      user.DirectorBoard?.directorBoardProfileImage ?? '',
+    aboutMe: user.DirectorBoard?.aboutMe ?? '',
   }
 
   return flattenedUser
