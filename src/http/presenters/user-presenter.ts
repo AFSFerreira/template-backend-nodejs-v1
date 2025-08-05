@@ -103,6 +103,7 @@ export class UserPresenter {
       activityAreaId,
       activityArea,
       AcademicPublication,
+      UserKeywords,
       ...userFiltered
     } = input
 
