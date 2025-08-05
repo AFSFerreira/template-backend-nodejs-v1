@@ -75,7 +75,7 @@ interface HTTPDirectorBoardInfo {
 }
 
 interface HTTPUser {
-  user: HTTPUserDetails
+  userDetails: HTTPUserDetails
   directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
@@ -90,9 +90,25 @@ export class UserPresenter {
       return input.map((user) => this.toHTTP(user))
     }
 
+    const {
+      passwordHash,
+      publicId,
+      membershipStatus,
+      loginAttempts,
+      lastLogin,
+      recoveryPasswordToken,
+      recoveryPasswordTokenExpiresAt,
+      createdAt,
+      updatedAt,
+      activityAreaId,
+      activityArea,
+      AcademicPublication,
+      ...userFiltered
+    } = input
+
     return {
-      user: {
-        ...input,
+      userDetails: {
+        ...userFiltered,
         id: input.publicId,
         birthdate: formatDate(input.birthdate),
 
