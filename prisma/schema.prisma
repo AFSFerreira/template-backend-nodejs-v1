@@ -252,7 +252,7 @@ model Blog {
   id         Int    @id @default(autoincrement())
   publicId   String @unique @default(uuid(7)) @map("public_id")
   authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
-  content    String @map("html_content") @db.Text
+  content    String @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
