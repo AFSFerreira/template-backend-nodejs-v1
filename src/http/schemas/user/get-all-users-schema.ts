@@ -4,6 +4,7 @@ import { keywordSchema } from '../utils/keyword'
 import { nonemptyTextSchema } from '../utils/nonempty-text'
 import { createZodEnum } from '../utils/zod-enum'
 import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
+import { messages } from '@/constants/messages'
 
 export const getAllUsersParamsSchema = z
   .object({
@@ -41,7 +42,7 @@ export const getAllUsersParamsSchema = z
       return true
     },
     {
-      message: 'birthdate must be defined when birthdateComparison is provided',
+      message: messages.validation.birthdateComparisonMutualExistence,
       path: ['birthdate'],
     },
   )
@@ -58,7 +59,8 @@ export const getAllUsersParamsSchema = z
     },
     {
       message:
-        'astrobiologyOrRelatedStartYear must be defined when astrobiologyOrRelatedStartYearComparison is provided',
+        messages.validation
+          .astrobiologyOrRelatedStartYearComparisonMutualExistence,
       path: ['astrobiologyOrRelatedStartYear'],
     },
   )

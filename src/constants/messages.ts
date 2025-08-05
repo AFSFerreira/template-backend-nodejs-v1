@@ -1,5 +1,24 @@
 export const messages = {
-  validation: {},
+  validation: {
+    birthdateComparisonMutualExistence:
+      'birthdate must be defined when birthdateComparison is provided.',
+    astrobiologyOrRelatedStartYearComparisonMutualExistence:
+      'astrobiologyOrRelatedStartYear must be defined when astrobiologyOrRelatedStartYearComparison is provided.',
+    mainActivityAreaAndSpecificActivityDescription:
+      'If "Other" is selected as the main area of activity, a description must be provided — and must not be provided otherwise.',
+    scholarshipHolderAndSponsoringOrganization:
+      'If you are a scholarship holder, you must provide a sponsoring organization — and must leave it blank if you are not.',
+    invalidCpf: 'Invalid CPF',
+    invalidCpfLength: 'CPF must contain 11 digits',
+    invalidCpfFormat: 'Invalid CPF format',
+    monthYearInvalidFormat: 'Date must be in format YYYY-MM',
+    invalidDateRange:
+      'Invalid date. Only a range of up to 100 years from the current year is allowed.',
+    invalidOrcidFormat:
+      'Invalid orcid number format. It must be provided in the format: 0000-0000-0000-0000',
+    invalidPasswordFormat:
+      'The password must contain at least 8 characters, one uppercase letter, one numeric digit and one special character.',
+  },
   errors: {
     noUsersAvailable: 'No available users info to export.',
     invalidCreddentials: 'Invalid credentials.',
