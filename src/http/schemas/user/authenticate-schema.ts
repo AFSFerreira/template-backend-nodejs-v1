@@ -4,7 +4,7 @@ import { messages } from '@/constants/messages'
 
 export const authenticateBodySchema = z.object(
   {
-    emailOrUsername: nonemptyTextSchema,
+    login: nonemptyTextSchema,
     password: nonemptyTextSchema,
   },
   messages.validation.invalidAuthenticationInput,

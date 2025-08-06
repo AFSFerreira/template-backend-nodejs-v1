@@ -9,9 +9,7 @@ export async function authenticate(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { emailOrUsername, password } = authenticateBodySchema.parse(
-    request.body,
-  )
+  const { login, password } = authenticateBodySchema.parse(request.body)
   const { ip: ipAddress } = request
   const { 'user-agent': browser } = request.headers
   const { remotePort } = request.socket
@@ -21,7 +19,7 @@ export async function authenticate(
 
   try {
     const { user } = await authenticateUseCase.execute({
-      emailOrUsername,
+      login,
       password,
       ipAddress,
       browser: browserName,

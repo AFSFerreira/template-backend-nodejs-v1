@@ -45,6 +45,11 @@ export interface TokenData {
   recoveryPasswordTokenExpiresAt: Date
 }
 
+export interface FindByEmailOrUsernameQuery {
+  email: string
+  username: string
+}
+
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
@@ -52,10 +57,10 @@ export interface UsersRepository {
   findById: (id: number) => Promise<UserWithDetails | null>
   findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
-    emailOrUsername: string,
-    usernameOrEmail?: string,
+    data: FindByEmailOrUsernameQuery,
   ) => Promise<UserWithDetails | null>
   listAllUsers: (query?: GetAllUsersQuery) => Promise<UserWithDetails[]>
+  setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
   update: (id: number, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>

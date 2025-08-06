@@ -1,11 +1,12 @@
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
 import type { UserWithDetails } from '@/@types/user-with-details'
+import { emailSchema } from '@/http/schemas/utils/email'
 import type { AuthenticationAuditRepository } from '@/repositories/authentication-audit-repository'
 import type { UsersRepository } from '@/repositories/users-repository'
 
 interface AuthenticateUseCaseRequest {
-  emailOrUsername: string
+  login: string
   password: string
   ipAddress?: string
   remotePort?: string
@@ -23,16 +24,19 @@ export class AuthenticateUseCase {
   ) {}
 
   async execute({
-    emailOrUsername,
+    login,
     password,
     ipAddress,
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user = await this.usersRepository.findByEmailOrUsername(
-      emailOrUsername,
-      emailOrUsername,
-    )
+    let user: UserWithDetails | null | undefined
+
+    if (emailSchema.safeParse(login).success) {
+      user = await this.usersRepository.findByEmail(login)
+    } else {
+      user = await this.usersRepository.findByUsername(login)
+    }
 
     const auditAuthenticateObject = {
       browser: browser ?? null,
@@ -63,7 +67,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.update(user.id, { lastLogin: new Date() })
+    await this.usersRepository.setLastLogin(user.id)
 
     await this.authenticationAuditRepository.create({
       ...auditAuthenticateObject,

@@ -68,12 +68,12 @@ async function main() {
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
   const user = await prisma.user.upsert({
-    where: { email: "ADMIN@EMAIL.COM" },
+    where: { email: "admin@email.com" },
     update: {},
     create: {
       fullName: 'ADMIN',
       username: 'ADMIN.ADMIN',
-      email: 'ADMIN@EMAIL.COM',
+      email: 'admin@email.com',
       passwordHash: await hash('123456789Az#', env.HASH_SALT_ROUNDS),
       birthdate: new Date(),
       profileImagePath: '/src/uploads/profile-images/default-profile-pic.png',

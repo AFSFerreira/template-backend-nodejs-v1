@@ -5,6 +5,7 @@ import {
   EXPIRES_IN_MINUTES,
   TOKEN_LENGTH,
 } from '@/constants/forgot-password-token'
+import { emailSchema } from '@/http/schemas/utils/email'
 import type { UsersRepository } from '@/repositories/users-repository'
 
 interface ForgotPasswordUseCaseRequest {
@@ -22,8 +23,13 @@ export class ForgotPasswordUseCase {
   async execute({
     login,
   }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
-    const userAlreadyExists =
-      await this.usersRepository.findByEmailOrUsername(login)
+    let userAlreadyExists: UserWithDetails | null | undefined
+
+    if (emailSchema.safeParse(login).success) {
+      userAlreadyExists = await this.usersRepository.findByEmail(login)
+    } else {
+      userAlreadyExists = await this.usersRepository.findByUsername(login)
+    }
 
     const recoveryPasswordToken = randomBytes(TOKEN_LENGTH).toString('hex')
 

@@ -7,6 +7,7 @@ import type {
 import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
+  FindByEmailOrUsernameQuery,
   GetAllUsersQuery,
   TokenData,
   UsersRepository,
@@ -115,23 +116,19 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findByEmailOrUsername(
-    emailOrUsername: string,
-    usernameOrEmail: string | undefined = undefined,
-  ) {
-    const orConditions: Array<{ email?: string; username?: string }> = [
-      { email: emailOrUsername },
-      { username: emailOrUsername },
-    ]
+  async setLastLogin(id: number) {
+    await prisma.user.update({
+      where: { id },
+      data: {
+        lastLogin: new Date(),
+      },
+    })
+  }
 
-    if (usernameOrEmail !== undefined && emailOrUsername !== usernameOrEmail) {
-      orConditions.push({ email: usernameOrEmail })
-      orConditions.push({ username: usernameOrEmail })
-    }
-
+  async findByEmailOrUsername({ email, username }: FindByEmailOrUsernameQuery) {
     const user = await prisma.user.findFirst({
       where: {
-        OR: orConditions,
+        OR: [{ email }, { username }],
       },
       include: userWithDetails.include,
     })

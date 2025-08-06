@@ -1,4 +1,5 @@
 import path from 'path'
+import { ActivityAreaType } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
@@ -6,10 +7,7 @@ import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email
 import type { UserWithDetails } from '@/@types/user-with-details'
 import { env } from '@/env'
 import type { RegisterUserSchemaType } from '@/http/schemas/user/register-schema'
-import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
-import type { AddressRepository } from '@/repositories/address-repository'
-import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
-import type { KeywordRepository } from '@/repositories/keyword-repository'
+import type { ActivityAreaRepository } from '@/repositories/activity-area-repository'
 import type { UsersRepository } from '@/repositories/users-repository'
 import {
   type CompressedImageInfo,
@@ -33,29 +31,27 @@ interface RegisterUseCaseResponse {
 export class RegisterUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly addressRepository: AddressRepository,
-    private readonly academicPublicationsRepository: AcademicPublicationsRepository,
-    private readonly enrolledCoursesRepository: EnrolledCourseRepository,
-    private readonly keywordsRepository: KeywordRepository,
+    private readonly activityAreasRepository: ActivityAreaRepository,
   ) {}
 
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const existingUser = await this.usersRepository.findByEmailOrUsername(
-      registerUseCaseInput.user.email,
-      registerUseCaseInput.user.username,
-    )
+    const existingUser = await this.usersRepository.findByEmailOrUsername({
+      email: registerUseCaseInput.user.email,
+      username: registerUseCaseInput.user.username,
+    })
 
     if (existingUser !== null) {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const mainAreaOfActivity = await this.keywordsRepository.findBy({
-      value: registerUseCaseInput.mainAreaActivity,
-    })
+    const mainAreaActivity = await this.activityAreasRepository.findByArea(
+      registerUseCaseInput.mainAreaActivity,
+      ActivityAreaType.AREA_OF_ACTIVITY,
+    )
 
-    if (mainAreaOfActivity === null) {
+    if (mainAreaActivity === null) {
       throw new InvalidMainAreaOfActivity()
     }
 
