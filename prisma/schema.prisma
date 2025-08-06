@@ -144,6 +144,7 @@ model User {
   Keyword             Keyword[]              @relation()
   NewsletterComment   NewsletterComment[]    @relation("comment_author")
   CommentLike         CommentLike[]          @relation("user_likes")
+  UserMeeting         UserMeeting[]
 
   @@map("users")
 }
@@ -275,14 +276,18 @@ model Blog {
 }
 
 model UserMeeting {
-  userId    Int
-  meetingId Int
-
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
 
   Presentation MeetingPresentation? @relation()
 
-  @@id([userId, meetingId])
+  userId Int?
+  User   User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  meetingId Int?
+  Meeting   Meeting? @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, meetingId])
   @@map("meeting_participations")
 }
 
@@ -314,6 +319,8 @@ model Meeting {
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  UserMeeting UserMeeting[] @relation()
 
   @@map("meetings")
 }
@@ -350,8 +357,9 @@ model NewsletterItem {
 }
 
 model NewsletterComment {
-  id      Int    @id @default(autoincrement())
-  content String
+  id         Int    @id @default(autoincrement())
+  content    String
+  authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
 
   // Likes em cache pra evitar muitas consultas aninhadas:
   likesQuantity Int @default(0) @map("likes_quantity")
@@ -359,10 +367,10 @@ model NewsletterComment {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId Int
-  User   User @relation("comment_author", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int?  @map("user_id")
+  User   User? @relation("comment_author", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  parentCommentId Int?
+  parentCommentId Int?               @map("parent_comment_id")
   ParentComment   NewsletterComment? @relation("parent_comment", fields: [parentCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   ChildComments NewsletterComment[] @relation("parent_comment")
@@ -376,8 +384,8 @@ model CommentLike {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
 
-  userId Int
-  User   User @relation("user_likes", fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int?  @map("user_id")
+  User   User? @relation("user_likes", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   newsletterCommentId Int
   NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
