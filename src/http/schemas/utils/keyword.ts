@@ -1,11 +1,7 @@
 import { z } from 'zod'
-import { nonemptyTextSchema } from './nonempty-text'
+import { upperCaseTextSchema } from './uppercase-text-schema'
 
 export const keywordSchema = z.preprocess(
   (keyword) => (typeof keyword === 'string' ? [keyword] : keyword),
-  z
-    .array(nonemptyTextSchema)
-    .max(4)
-    .transform((arr) => arr.map((keyword) => keyword.toUpperCase()))
-    .default([]),
+  z.array(upperCaseTextSchema).max(4).default([]),
 )

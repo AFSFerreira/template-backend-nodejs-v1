@@ -1,5 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { verify } from 'jsonwebtoken'
+import { messages } from '@/constants/messages'
 import { env } from '@/env'
 
 interface IPayload {
@@ -22,6 +23,8 @@ export async function authenticationMiddleware(
 
     request.userId = userId
   } catch (error) {
-    return await reply.status(401).send({ message: 'Usuário não autenticado.' })
+    return await reply
+      .status(401)
+      .send({ message: messages.errors.unauthorized })
   }
 }

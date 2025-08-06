@@ -1,17 +1,17 @@
 -- CreateEnum
-CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'MANAGER', 'BLOGGER', 'NORMAL_USER');
+CREATE TYPE "UserRoleType" AS ENUM ('ADMIN', 'MANAGER', 'BLOGGER', 'NORMAL_USER');
 
 -- CreateEnum
-CREATE TYPE "AuthenticationStatus" AS ENUM ('SUCCESS', 'USER_NOT_EXISTS', 'INCORRECT_PASSWORD', 'BLOCKED');
+CREATE TYPE "AuthenticationStatusType" AS ENUM ('SUCCESS', 'USER_NOT_EXISTS', 'INCORRECT_PASSWORD', 'BLOCKED');
 
 -- CreateEnum
-CREATE TYPE "Occupation" AS ENUM ('RESEARCHER', 'PROFESSOR', 'STUDENT', 'POSTGRADUATE', 'MASTER', 'DOCTORATE');
+CREATE TYPE "OccupationType" AS ENUM ('RESEARCHER', 'PROFESSOR', 'STUDENT', 'POSTGRADUATE', 'MASTER', 'DOCTORATE');
 
 -- CreateEnum
-CREATE TYPE "EducationLevel" AS ENUM ('ELEMENTARY_SCHOOL', 'HIGH_SCHOOL', 'UNDERGRADUATE_STUDENT', 'BACHELOR', 'MASTER_STUDENT', 'MASTER', 'DOCTORATE_STUDENT', 'DOCTORATE', 'POSTDOCTORAL_STUDENT', 'POSTDOCTORATE', 'OTHER');
+CREATE TYPE "EducationLevelType" AS ENUM ('ELEMENTARY_SCHOOL', 'HIGH_SCHOOL', 'UNDERGRADUATE_STUDENT', 'BACHELOR', 'MASTER_STUDENT', 'MASTER', 'DOCTORATE_STUDENT', 'DOCTORATE', 'POSTDOCTORAL_STUDENT', 'POSTDOCTORATE', 'OTHER');
 
 -- CreateEnum
-CREATE TYPE "MembershipStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'INACTIVE');
+CREATE TYPE "MembershipStatusType" AS ENUM ('PENDING', 'APPROVED', 'REJECTED', 'INACTIVE');
 
 -- CreateEnum
 CREATE TYPE "BlogCategoryType" AS ENUM ('MAIN_CATEGORY', 'SUBCATEGORY');
@@ -23,7 +23,7 @@ CREATE TYPE "IdentityType" AS ENUM ('CPF', 'RNE', 'PASSPORT');
 CREATE TYPE "PresentationType" AS ENUM ('ORAL', 'POSTER');
 
 -- CreateEnum
-CREATE TYPE "KeywordType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_OF_ACTIVITY', 'USER_INTEREST');
+CREATE TYPE "ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_OF_ACTIVITY');
 
 -- CreateTable
 CREATE TABLE "authentication_audits" (
@@ -31,7 +31,7 @@ CREATE TABLE "authentication_audits" (
     "ipAddress" TEXT,
     "remotePort" TEXT,
     "browser" TEXT,
-    "status" "AuthenticationStatus" NOT NULL,
+    "status" "AuthenticationStatusType" NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "userId" INTEGER,
 
@@ -50,13 +50,13 @@ CREATE TABLE "users" (
     "link_google_scholar" TEXT,
     "link_researcherID" TEXT,
     "orcid_number" TEXT,
-    "membership_status" "MembershipStatus" NOT NULL DEFAULT 'PENDING',
-    "role" "UserRole" NOT NULL DEFAULT 'NORMAL_USER',
+    "membership_status" "MembershipStatusType" NOT NULL DEFAULT 'PENDING',
+    "role" "UserRoleType" NOT NULL DEFAULT 'NORMAL_USER',
     "institution_name" TEXT NOT NULL,
     "department_name" TEXT,
     "institution_complement" TEXT,
-    "occupation" "Occupation" NOT NULL,
-    "education_level" "EducationLevel" NOT NULL,
+    "occupation" "OccupationType" NOT NULL,
+    "education_level" "EducationLevelType" NOT NULL,
     "identity_type" "IdentityType" NOT NULL,
     "identity_document" TEXT NOT NULL,
     "email_is_public" BOOLEAN NOT NULL,
@@ -128,10 +128,19 @@ CREATE TABLE "academic_publications" (
 );
 
 -- CreateTable
+CREATE TABLE "area_of_activity" (
+    "id" SERIAL NOT NULL,
+    "area" TEXT NOT NULL,
+    "type" "ActivityAreaType" NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "area_of_activity_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "keywords" (
     "id" SERIAL NOT NULL,
     "value" TEXT NOT NULL,
-    "type" "KeywordType" NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "keywords_pkey" PRIMARY KEY ("id")
@@ -165,7 +174,7 @@ CREATE TABLE "blogs" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
-    "html_content" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "main_category_id" INTEGER NOT NULL,
@@ -178,7 +187,6 @@ CREATE TABLE "blogs" (
 CREATE TABLE "meeting_participations" (
     "userId" INTEGER NOT NULL,
     "meetingId" INTEGER NOT NULL,
-    "attended" BOOLEAN,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "meeting_participations_pkey" PRIMARY KEY ("userId","meetingId")
@@ -234,6 +242,7 @@ CREATE TABLE "newsletter_items" (
     "content" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "linkReport" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "newsletterId" INTEGER NOT NULL,
 
     CONSTRAINT "newsletter_items_pkey" PRIMARY KEY ("id")
@@ -263,11 +272,11 @@ CREATE TABLE "comment_likes" (
 );
 
 -- CreateTable
-CREATE TABLE "_user_keywords" (
+CREATE TABLE "_KeywordToUser" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
 
-    CONSTRAINT "_user_keywords_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "_KeywordToUser_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateTable
@@ -297,13 +306,7 @@ CREATE UNIQUE INDEX "addresses_user_id_key" ON "addresses"("user_id");
 CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "enrolled_courses"("user_id");
 
 -- CreateIndex
-CREATE INDEX "keywords_value_idx" ON "keywords"("value");
-
--- CreateIndex
-CREATE INDEX "keywords_type_idx" ON "keywords"("type");
-
--- CreateIndex
-CREATE UNIQUE INDEX "keywords_type_value_key" ON "keywords"("type", "value");
+CREATE UNIQUE INDEX "area_of_activity_type_area_key" ON "area_of_activity"("type", "area");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "directors_board_public_id_key" ON "directors_board"("public_id");
@@ -333,7 +336,7 @@ CREATE UNIQUE INDEX "newsletters_public_id_key" ON "newsletters"("public_id");
 CREATE UNIQUE INDEX "newsletters_edition_number_key" ON "newsletters"("edition", "number");
 
 -- CreateIndex
-CREATE INDEX "_user_keywords_B_index" ON "_user_keywords"("B");
+CREATE INDEX "_KeywordToUser_B_index" ON "_KeywordToUser"("B");
 
 -- CreateIndex
 CREATE INDEX "_subcategory_fk_B_index" ON "_subcategory_fk"("B");
@@ -342,7 +345,7 @@ CREATE INDEX "_subcategory_fk_B_index" ON "_subcategory_fk"("B");
 ALTER TABLE "authentication_audits" ADD CONSTRAINT "authentication_audits_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "keywords"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -381,10 +384,10 @@ ALTER TABLE "comment_likes" ADD CONSTRAINT "comment_likes_userId_fkey" FOREIGN K
 ALTER TABLE "comment_likes" ADD CONSTRAINT "comment_likes_newsletterCommentId_fkey" FOREIGN KEY ("newsletterCommentId") REFERENCES "comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_user_keywords" ADD CONSTRAINT "_user_keywords_A_fkey" FOREIGN KEY ("A") REFERENCES "keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_user_keywords" ADD CONSTRAINT "_user_keywords_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_subcategory_fk" ADD CONSTRAINT "_subcategory_fk_A_fkey" FOREIGN KEY ("A") REFERENCES "blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;

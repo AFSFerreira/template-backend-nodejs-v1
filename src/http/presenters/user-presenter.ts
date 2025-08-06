@@ -1,8 +1,8 @@
 import type {
-  EducationLevel,
+  EducationLevelType,
   IdentityType,
-  Occupation,
-  UserRole,
+  OccupationType,
+  UserRoleType,
 } from '@prisma/client'
 import type { UserWithDetails } from '@/@types/user-with-details'
 import { formatDate } from '@/utils/format-date'
@@ -12,7 +12,7 @@ interface HTTPUserDetails {
   fullName: string
   email: string
   username: string
-  role: UserRole
+  role: UserRoleType
   birthdate: string | null | undefined
   linkLattes: string | null
   linkGoogleScholar: string | null
@@ -21,8 +21,8 @@ interface HTTPUserDetails {
   institutionName: string
   departmentName: string | null
   institutionComplement: string | null
-  occupation: Occupation
-  educationLevel: EducationLevel
+  occupation: OccupationType
+  educationLevel: EducationLevelType
   identityType: IdentityType
   identityDocument: string
   emailIsPublic: boolean
@@ -50,12 +50,12 @@ interface HTTPAddress {
 }
 
 interface HTTPEnrolledCourse {
-  courseName: string | undefined | null
-  startGraduationDate: string | undefined | null
-  expectedGraduationDate: string | undefined | null
-  supervisorName: string | undefined | null
-  scholarshipHolder: boolean | undefined
-  sponsoringOrganization: string | undefined | null
+  courseName?: string | null
+  startGraduationDate?: string | null
+  expectedGraduationDate?: string | null
+  supervisorName?: string | null
+  scholarshipHolder?: boolean
+  sponsoringOrganization?: string | null
 }
 
 interface HTTPAcademicPublications {
@@ -91,6 +91,7 @@ export class UserPresenter {
     }
 
     const {
+      id,
       passwordHash,
       publicId,
       membershipStatus,
@@ -101,9 +102,12 @@ export class UserPresenter {
       createdAt,
       updatedAt,
       activityAreaId,
-      activityArea,
+      ActivityArea,
       AcademicPublication,
-      UserKeywords,
+      Keyword,
+      Address,
+      EnrolledCourse,
+      DirectorBoard,
       ...userFiltered
     } = input
 
@@ -113,33 +117,35 @@ export class UserPresenter {
         id: input.publicId,
         birthdate: formatDate(input.birthdate),
 
-        keywords: input.UserKeywords.map((keyword) => keyword.value),
+        keywords: input.Keyword.map((keyword) => keyword.value),
 
-        mainActivityArea: input.activityArea.value,
+        mainActivityArea: input.ActivityArea.area,
 
         address: {
-          zip: input.address?.zip,
-          number: input.address?.number,
-          street: input.address?.street,
-          district: input.address?.district,
-          city: input.address?.city,
-          state: input.address?.state,
-          country: input.address?.country,
+          zip: input.Address?.zip,
+          number: input.Address?.number,
+          district: input.Address?.district,
+          street: input.Address?.street,
+          city: input.Address?.city,
+          country: input.Address?.country,
+          state: input.Address?.state,
         },
 
         enrolledCourse: {
-          courseName: input.enrolledCourse?.courseName,
+          courseName: input.EnrolledCourse?.courseName,
           startGraduationDate: formatDate(
-            input.enrolledCourse?.startGraduationDate,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            input.EnrolledCourse?.startGraduationDate,
             'mm/yyyy',
           ),
           expectedGraduationDate: formatDate(
-            input.enrolledCourse?.expectedGraduationDate,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            input.EnrolledCourse?.expectedGraduationDate,
             'mm/yyyy',
           ),
-          supervisorName: input.enrolledCourse?.supervisorName,
-          scholarshipHolder: input.enrolledCourse?.scholarshipHolder,
-          sponsoringOrganization: input.enrolledCourse?.sponsoringOrganization,
+          supervisorName: input.EnrolledCourse?.supervisorName,
+          scholarshipHolder: input.EnrolledCourse?.scholarshipHolder,
+          sponsoringOrganization: input.EnrolledCourse?.sponsoringOrganization,
         },
 
         academicPublications: input.AcademicPublication.map(

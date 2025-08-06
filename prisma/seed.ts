@@ -1,11 +1,10 @@
-import { BlogCategoryType, IdentityType, KeywordType, PrismaClient } from '@prisma/client'
+import { ActivityAreaType, BlogCategoryType, EducationLevelType, IdentityType, MembershipStatusType, OccupationType, PrismaClient, UserRoleType } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { env } from '../src/env'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  // Criação do usuário:
   const activityAreas = [
     "ASTRONOMIA",
     "BIOLOGIA",
@@ -42,23 +41,23 @@ async function main() {
   ]
 
   const activityAreasPromise = activityAreas.map(async activityArea => {
-    await prisma.keyword.upsert({
-      where: { type_value: { value: activityArea, type: KeywordType.AREA_OF_ACTIVITY } },
+    await prisma.activityArea.upsert({
+      where: { type_area: { area: activityArea, type: ActivityAreaType.AREA_OF_ACTIVITY } },
       update: {},
       create: {
-        value: activityArea,
-        type: KeywordType.AREA_OF_ACTIVITY
+        area: activityArea,
+        type: ActivityAreaType.AREA_OF_ACTIVITY
       }
     })
   })
 
   const subActivityAreasPromise = subActivityAreas.map(async subActivityArea => {
-    await prisma.keyword.upsert({
-      where: { type_value: { value: subActivityArea, type: KeywordType.SUB_AREA_OF_ACTIVITY } },
+    await prisma.activityArea.upsert({
+      where: { type_area: { area: subActivityArea, type: ActivityAreaType.SUB_AREA_OF_ACTIVITY } },
       update: {},
       create: {
-        value: subActivityArea,
-        type: KeywordType.SUB_AREA_OF_ACTIVITY
+        area: subActivityArea,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY
       }
     })
   })
@@ -68,21 +67,13 @@ async function main() {
 
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
-  const createdKeywords = await Promise.all(userKeywords.map(async value => {
-    return await prisma.keyword.upsert({
-      where: { type_value: { type: KeywordType.USER_INTEREST, value } },
-      update: {},
-      create: { value, type: KeywordType.USER_INTEREST }
-    })
-  }))
-
   const user = await prisma.user.upsert({
-    where: { email: "admin@email.com" },
+    where: { email: "ADMIN@EMAIL.COM" },
     update: {},
     create: {
-      fullName: 'Admin',
-      username: 'admin.admin',
-      email: 'admin@email.com',
+      fullName: 'ADMIN',
+      username: 'ADMIN.ADMIN',
+      email: 'ADMIN@EMAIL.COM',
       passwordHash: await hash('123456789Az#', env.HASH_SALT_ROUNDS),
       birthdate: new Date(),
       profileImagePath: '/src/uploads/profile-images/default-profile-pic.png',
@@ -90,27 +81,29 @@ async function main() {
       linkGoogleScholar: 'https://scholar.google.com/admin.admin',
       linkResearcherId: null,
       orcidNumber: '0000-0001-2345-6789',
-      membershipStatus: 'APPROVED',
-      role: 'ADMIN',
-      institutionName: 'Universidade Federal da Lua',
-      departmentName: 'Departamento de Astrobiologia',
-      institutionComplement: 'Laboratório de Vida Extraterrestre',
-      occupation: 'RESEARCHER',
-      educationLevel: 'DOCTORATE',
+      membershipStatus: MembershipStatusType.APPROVED,
+      role: UserRoleType.ADMIN,
+      institutionName: 'UNIVERSIDADE FEDERAL DA LUA',
+      departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
+      institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
+      occupation: OccupationType.RESEARCHER,
+      educationLevel: EducationLevelType.DOCTORATE,
       emailIsPublic: true,
       astrobiologyOrRelatedStartYear: 2010,
-      interestDescription: 'Participo da comunidade por interesse em origens da vida e exoplanetas.',
+      interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
       receiveReports: true,
       loginAttempts: 0,
       lastLogin: new Date(),
       activityAreaId: 1,
       identityType: IdentityType.CPF,
-      identityDocument: "12345678900",
-      publicInformation: "Astrobiólogo",
-      specificActivity: "Professor Interino",
+      identityDocument: "123.456.789-00",
+      publicInformation: "ASTROBIÓLOGO",
+      specificActivity: "PROFESSOR INTERINO",
 
-      UserKeywords: {
-        connect: createdKeywords.map(keyword => ({ id: keyword.id }))
+      Keyword: {
+        create: userKeywords.map((keyword) => ({
+          value: keyword
+        }))
       }
     },
   })
@@ -121,10 +114,10 @@ async function main() {
     create: {
       number: "111",
       zip: "12345678",
-      street: 'Rua das Galáxias',
-      district: 'Bairro das Estrelas',
-      city: 'Cosmópolis',
-      state: 'Universo',
+      street: 'RUA DAS GALÁXIAS',
+      district: 'BAIRRO DAS ESTRELAS',
+      city: 'COSMÓPOLIS',
+      state: 'UNIVERSO',
       country: 'BR',
       userId: user.id
     }
@@ -134,23 +127,23 @@ async function main() {
     where: { userId: user.id },
     update: {},
     create: {
-      courseName: 'Introdução à Astrobiologia',
+      courseName: 'INTRODUÇÃO À ASTROBIOLOGIA',
       startGraduationDate: new Date(`${"2025-06"}-01T00:00:00Z`),
       expectedGraduationDate: new Date(`${"2029-06"}-01T00:00:00Z`),
       scholarshipHolder: true,
-      sponsoringOrganization: 'Universidade Lunar',
-      supervisorName: 'Neew Armstrong',
+      sponsoringOrganization: 'UNIVERSIDADE LUNAR',
+      supervisorName: 'NEEW ARMSTRONG',
       userId: user.id
     }
   })
 
   const academicPublicationData = {
-    authors: "Admin",
+    authors: "ADMIN",
     publicationDate: new Date(),
-    title: "A Ascensão da Astrobiologia",
+    title: "A ASCENSÃO DA ASTROBIOLOGIA",
     linkDOI: "https://example.com",
     editionNumber: "12",
-    journalName: "astrobio",
+    journalName: "ASTROBIO",
     pageInterval: "1-5",
     volume: "6",
     userId: user.id
@@ -168,34 +161,36 @@ async function main() {
 
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({
-    where: { name: "Astrobiologia" },
+    where: { name: "ASTROBIOLOGIA" },
     update: {},
     create: {
-      name: "Astrobiologia",
+      name: "ASTROBIOLOGIA",
       type: BlogCategoryType.MAIN_CATEGORY
     }
   })
 
   const firstSubcategory = await prisma.category.upsert({
-    where: { name: "Exobiologia" },
+    where: { name: "EXOBIOLOGIA" },
     update: {},
     create: {
-      name: "Exobiologia",
+      name: "EXOBIOLOGIA",
       type: BlogCategoryType.SUBCATEGORY,
     }
   })
 
   const secondSubcategory = await prisma.category.upsert({
-    where: { name: "Geoquímica Prebiótica" },
+    where: { name: "GEOQUÍMICA PREBIÓTICA" },
     update: {},
     create: {
-      name: "Geoquímica Prebiótica",
+      name: "GEOQUÍMICA PREBIÓTICA",
       type: BlogCategoryType.SUBCATEGORY
     }
   })
+  
+  const subcategoriesId = [firstSubcategory, secondSubcategory].map(subcategory => ({ id: subcategory.id }))
 
   const blogData = {
-    content: "# Hello World",
+    content: "# HELLO WORLD",
     authorName: user.fullName,
     authorId: user.id,
     mainCategoryId: mainCategory.id
@@ -205,13 +200,11 @@ async function main() {
     where: blogData
   })
 
-  const subcategoriesId = [firstSubcategory, secondSubcategory].map(subcategory => ({ id: subcategory.id }))
-
   if (existingBlog === null) {
     existingBlog = await prisma.blog.create({
       data: {
         ...blogData,
-        subcategories: {
+        Subcategories: {
           connect: subcategoriesId
         }
       }

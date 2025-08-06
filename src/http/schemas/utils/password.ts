@@ -1,7 +1,3 @@
-import { nonemptyTextSchema } from './nonempty-text'
-import { messages } from '@/constants/messages'
-import { PASSWORD_REGEX } from '@/constants/regex'
+import { textWithoutInnerSpacesSchema } from './text-without-inner-spaces-schema'
 
-export const passwordSchema = nonemptyTextSchema
-  .min(8)
-  .regex(PASSWORD_REGEX, messages.validation.invalidPasswordFormat)
+export const passwordSchema = textWithoutInnerSpacesSchema.min(8).max(2000)

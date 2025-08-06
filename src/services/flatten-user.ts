@@ -74,28 +74,28 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
 
-    number: user.address?.number ?? '',
-    street: user.address?.street ?? '',
-    district: user.address?.district ?? '',
-    city: user.address?.city ?? '',
-    state: user.address?.state ?? '',
-    zip: user.address?.zip ?? '',
-    country: user.address?.country ?? '',
+    number: user.Address?.number ?? '',
+    street: user.Address?.street ?? '',
+    district: user.Address?.district ?? '',
+    city: user.Address?.city ?? '',
+    state: user.Address?.state ?? '',
+    zip: user.Address?.zip ?? '',
+    country: user.Address?.country ?? '',
 
-    mainAreaActivity: user.activityArea?.value ?? '',
+    mainAreaActivity: user.ActivityArea?.area ?? '',
 
-    courseName: user.enrolledCourse?.courseName ?? '',
+    courseName: user.EnrolledCourse?.courseName ?? '',
     startGraduationDate:
-      user.enrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
+      user.EnrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
     expectedGraduationDate:
-      user.enrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ??
+      user.EnrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ??
       '',
-    supervisorName: user.enrolledCourse?.supervisorName ?? '',
-    scholarshipHolder: user.enrolledCourse?.scholarshipHolder ?? false,
-    sponsoringOrganization: user.enrolledCourse?.sponsoringOrganization ?? '',
+    supervisorName: user.EnrolledCourse?.supervisorName ?? '',
+    scholarshipHolder: user.EnrolledCourse?.scholarshipHolder ?? false,
+    sponsoringOrganization: user.EnrolledCourse?.sponsoringOrganization ?? '',
 
     keywords:
-      user.UserKeywords?.map((k: Keyword) => k.value)
+      user.Keyword?.map((k: Keyword) => k.value)
         .filter(Boolean)
         .join('; ') ?? '',
 

@@ -1,4 +1,8 @@
-import { EducationLevel, IdentityType, Occupation } from '@prisma/client'
+import {
+  EducationLevelType,
+  IdentityType,
+  OccupationType,
+} from '@prisma/client'
 import { z } from 'zod'
 import { cpfSchema } from '../utils/cpf'
 import { emailSchema } from '../utils/email'
@@ -9,8 +13,6 @@ import { orcidNumberSchema } from '../utils/orcid-number'
 import { passwordSchema } from '../utils/password'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
-import { zipSchema } from '../utils/zip'
-import { createZodEnum } from '../utils/zod-enum'
 import { messages } from '@/constants/messages'
 
 export const registerBodySchema = z
@@ -22,16 +24,16 @@ export const registerBodySchema = z
         fullName: upperCaseTextSchema,
         username: usernameSchema,
         birthdate: z.coerce.date(),
-        linkLattes: nonemptyTextSchema.url().optional(),
-        linkGoogleScholar: nonemptyTextSchema.url().optional(),
-        linkResearcherId: nonemptyTextSchema.url().optional(),
+        linkLattes: z.url().optional(),
+        linkGoogleScholar: z.url().optional(),
+        linkResearcherId: z.url().optional(),
         orcidNumber: orcidNumberSchema.optional(),
         institutionName: upperCaseTextSchema,
         departmentName: upperCaseTextSchema.optional(),
         institutionComplement: nonemptyTextSchema.optional(),
-        occupation: createZodEnum(Occupation),
-        educationLevel: createZodEnum(EducationLevel),
-        identityType: createZodEnum(IdentityType),
+        occupation: z.enum(OccupationType),
+        educationLevel: z.enum(EducationLevelType),
+        identityType: z.enum(IdentityType),
         identityDocument: nonemptyTextSchema,
         // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
         emailIsPublic: z.coerce.boolean(),
@@ -52,7 +54,7 @@ export const registerBodySchema = z
           return result.success
         },
         {
-          message: messages.validation.invalidCpf,
+          error: messages.validation.invalidCpf,
         },
       ),
 
@@ -62,7 +64,7 @@ export const registerBodySchema = z
 
     // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
     address: z.object({
-      zip: zipSchema,
+      zip: upperCaseTextSchema,
       number: upperCaseTextSchema,
       district: upperCaseTextSchema,
       street: upperCaseTextSchema,
@@ -71,14 +73,36 @@ export const registerBodySchema = z
       state: upperCaseTextSchema,
     }),
 
-    enrolledCourse: z.object({
-      courseName: upperCaseTextSchema.optional(),
-      startGraduationDate: monthYearSchema,
-      expectedGraduationDate: monthYearSchema,
-      supervisorName: upperCaseTextSchema.optional(),
-      scholarshipHolder: z.coerce.boolean(),
-      sponsoringOrganization: upperCaseTextSchema.optional(),
-    }),
+    enrolledCourse: z
+      .object({
+        courseName: upperCaseTextSchema.optional(),
+        startGraduationDate: monthYearSchema,
+        expectedGraduationDate: monthYearSchema,
+        supervisorName: upperCaseTextSchema.optional(),
+        scholarshipHolder: z.coerce.boolean(),
+        sponsoringOrganization: upperCaseTextSchema.optional(),
+      })
+      .refine(
+        (data) => {
+          // A data prevista para a conclusão do curso não pode ser antes da data de ínicio do curso:
+          return data.expectedGraduationDate >= data.startGraduationDate
+        },
+        {
+          error: messages.validation.completionDateBeforeStartDate,
+        },
+      )
+      .refine(
+        (data) => {
+          // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
+          if (data.scholarshipHolder)
+            return data.sponsoringOrganization !== undefined
+
+          return data.sponsoringOrganization === undefined
+        },
+        {
+          error: messages.validation.scholarshipHolderAndSponsoringOrganization,
+        },
+      ),
 
     academicPublications: z
       .array(
@@ -90,7 +114,7 @@ export const registerBodySchema = z
           volume: upperCaseTextSchema,
           editionNumber: upperCaseTextSchema,
           pageInterval: upperCaseTextSchema,
-          linkDOI: nonemptyTextSchema.url(),
+          linkDOI: z.url(),
         }),
       )
       .max(5),
@@ -106,22 +130,8 @@ export const registerBodySchema = z
       return data.user.specificActivityDescription === undefined
     },
     {
-      message:
-        messages.validation.mainActivityAreaAndSpecificActivityDescription,
+      error: messages.validation.mainActivityAreaAndSpecificActivityDescription,
       path: ['user', 'specificActivityDescription'],
-    },
-  )
-  .refine(
-    (data) => {
-      // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-      if (data.enrolledCourse.scholarshipHolder)
-        return data.enrolledCourse.sponsoringOrganization !== undefined
-
-      return data.enrolledCourse.sponsoringOrganization === undefined
-    },
-    {
-      message: messages.validation.scholarshipHolderAndSponsoringOrganization,
-      path: ['enrolledCourse', 'sponsoringOrganization'],
     },
   )
 

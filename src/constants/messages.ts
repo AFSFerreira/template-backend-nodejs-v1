@@ -18,6 +18,11 @@ export const messages = {
       'Invalid orcid number format. It must be provided in the format: 0000-0000-0000-0000',
     invalidPasswordFormat:
       'The password must contain at least 8 characters, one uppercase letter, one numeric digit and one special character.',
+    invalidInnerSpaces: 'This field cannot have spaces.',
+    completionDateBeforeStartDate:
+      'The expected course completion date cannot be earlier than the start date.',
+    invalidAuthenticationInput:
+      'Authentication error: Invalid email, username or password format.',
   },
   errors: {
     noUsersAvailable: 'No available users info to export.',
@@ -33,5 +38,11 @@ export const messages = {
       'If the user exists, you will receive an email with instructions to reset the password.',
     userWithSameEmailOrPassword:
       'There is already an user with the same email or username.',
+    forbbiden: 'User does not have permission to use this resource.',
+    unauthorized: 'User not authenticated.',
+  },
+  info: {
+    changedPassword: 'Password changed successfully!',
+    logout: 'Logout successful!',
   },
 }
