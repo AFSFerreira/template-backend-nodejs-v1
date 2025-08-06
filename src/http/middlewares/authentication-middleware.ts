@@ -3,7 +3,7 @@ import { verify } from 'jsonwebtoken'
 import { messages } from '@/constants/messages'
 import { env } from '@/env'
 
-interface IPayload {
+interface Payload {
   sub: string
 }
 
@@ -19,7 +19,7 @@ export async function authenticationMiddleware(
 
     const [, token] = headerAuthorization.split(' ')
 
-    const { sub: userId } = verify(token, env.JWT_SECRET) as IPayload
+    const { sub: userId } = verify(token, env.JWT_SECRET) as Payload
 
     request.userId = userId
   } catch (error) {

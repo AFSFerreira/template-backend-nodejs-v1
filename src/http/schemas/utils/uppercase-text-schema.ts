@@ -1,3 +1,3 @@
-import { nonemptyTextSchema } from './nonempty-text'
+import { limitedNonemptyTextSchema } from './limited-nonempty-text'
 
-export const upperCaseTextSchema = nonemptyTextSchema.toUpperCase()
+export const upperCaseTextSchema = limitedNonemptyTextSchema.toUpperCase()

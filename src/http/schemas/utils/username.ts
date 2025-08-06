@@ -1,3 +1,3 @@
-import { nonemptyTextSchema } from './nonempty-text'
+import { limitedNonemptyTextSchema } from './limited-nonempty-text'
 
-export const usernameSchema = nonemptyTextSchema.min(5)
+export const usernameSchema = limitedNonemptyTextSchema.min(5)

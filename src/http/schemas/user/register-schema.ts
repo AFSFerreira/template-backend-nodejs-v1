@@ -30,28 +30,26 @@ export const registerBodySchema = z
         orcidNumber: orcidNumberSchema.optional(),
         institutionName: upperCaseTextSchema,
         departmentName: upperCaseTextSchema.optional(),
-        institutionComplement: nonemptyTextSchema.optional(),
+        institutionComplement: upperCaseTextSchema.optional(),
         occupation: z.enum(OccupationType),
         educationLevel: z.enum(EducationLevelType),
         identityType: z.enum(IdentityType),
-        identityDocument: nonemptyTextSchema,
+        identityDocument: upperCaseTextSchema,
         // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
         emailIsPublic: z.coerce.boolean(),
         astrobiologyOrRelatedStartYear: z.coerce.number(),
-        interestDescription: nonemptyTextSchema.max(2000),
+        interestDescription: nonemptyTextSchema,
         receiveReports: z.coerce.boolean(),
         // REVIEW: Confirmar se estes campos são obrigatórios:
         publicInformation: nonemptyTextSchema,
-        specificActivity: nonemptyTextSchema,
+        specificActivity: upperCaseTextSchema,
         specificActivityDescription: nonemptyTextSchema.optional(),
       })
       .refine(
         (data) => {
           if (data.identityType !== IdentityType.CPF) return true
 
-          const result = cpfSchema.safeParse(data.identityDocument)
-
-          return result.success
+          return cpfSchema.safeParse(data.identityDocument)
         },
         {
           error: messages.validation.invalidCpf,
