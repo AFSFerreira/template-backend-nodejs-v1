@@ -185,11 +185,12 @@ CREATE TABLE "blogs" (
 
 -- CreateTable
 CREATE TABLE "meeting_participations" (
-    "userId" INTEGER NOT NULL,
-    "meetingId" INTEGER NOT NULL,
+    "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" INTEGER,
+    "meetingId" INTEGER,
 
-    CONSTRAINT "meeting_participations_pkey" PRIMARY KEY ("userId","meetingId")
+    CONSTRAINT "meeting_participations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -252,11 +253,12 @@ CREATE TABLE "newsletter_items" (
 CREATE TABLE "comments" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
+    "author_name" TEXT NOT NULL,
     "likes_quantity" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "parentCommentId" INTEGER,
+    "user_id" INTEGER,
+    "parent_comment_id" INTEGER,
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
 );
@@ -265,7 +267,7 @@ CREATE TABLE "comments" (
 CREATE TABLE "comment_likes" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" INTEGER NOT NULL,
+    "user_id" INTEGER,
     "newsletterCommentId" INTEGER NOT NULL,
 
     CONSTRAINT "comment_likes_pkey" PRIMARY KEY ("id")
@@ -309,6 +311,9 @@ CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "enrolled_courses"("user_i
 CREATE UNIQUE INDEX "area_of_activity_type_area_key" ON "area_of_activity"("type", "area");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "keywords_value_key" ON "keywords"("value");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "directors_board_public_id_key" ON "directors_board"("public_id");
 
 -- CreateIndex
@@ -319,6 +324,9 @@ CREATE UNIQUE INDEX "categories_name_key" ON "categories"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "blogs"("public_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_participations_userId_meetingId_key" ON "meeting_participations"("userId", "meetingId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meeting_presentations_public_id_key" ON "meeting_presentations"("public_id");
@@ -366,19 +374,25 @@ ALTER TABLE "blogs" ADD CONSTRAINT "blogs_main_category_id_fkey" FOREIGN KEY ("m
 ALTER TABLE "blogs" ADD CONSTRAINT "blogs_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "meeting_participations" ADD CONSTRAINT "meeting_participations_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "meeting_participations" ADD CONSTRAINT "meeting_participations_meetingId_fkey" FOREIGN KEY ("meetingId") REFERENCES "meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "meeting_presentations" ADD CONSTRAINT "meeting_presentations_user_id_meeting_id_fkey" FOREIGN KEY ("user_id", "meeting_id") REFERENCES "meeting_participations"("userId", "meetingId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "newsletter_items" ADD CONSTRAINT "newsletter_items_newsletterId_fkey" FOREIGN KEY ("newsletterId") REFERENCES "newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comments" ADD CONSTRAINT "comments_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "comments" ADD CONSTRAINT "comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comments" ADD CONSTRAINT "comments_parentCommentId_fkey" FOREIGN KEY ("parentCommentId") REFERENCES "comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "comments" ADD CONSTRAINT "comments_parent_comment_id_fkey" FOREIGN KEY ("parent_comment_id") REFERENCES "comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "comment_likes" ADD CONSTRAINT "comment_likes_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "comment_likes" ADD CONSTRAINT "comment_likes_newsletterCommentId_fkey" FOREIGN KEY ("newsletterCommentId") REFERENCES "comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
