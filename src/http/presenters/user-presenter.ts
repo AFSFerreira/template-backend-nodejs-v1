@@ -30,8 +30,6 @@ interface HTTPUserDetails {
   interestDescription: string
   receiveReports: boolean
   publicInformation: string
-  specificActivity: string
-  specificActivityDescription: string | null
   keywords: string[]
   mainActivityArea: string
   address: HTTPAddress

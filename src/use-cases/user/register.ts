@@ -74,9 +74,11 @@ export class RegisterUseCase {
       env.HASH_SALT_ROUNDS,
     )
 
+    const { password, ...filteredUserInfo } = registerUseCaseInput.user
+
     const user = await this.usersRepository.create({
       user: {
-        ...registerUseCaseInput.user,
+        ...filteredUserInfo,
         passwordHash,
         profileImagePath:
           profileImageInfo !== undefined
