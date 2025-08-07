@@ -1,57 +1,73 @@
 import { UserRole } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
-import { exportUserData } from './export-user-data'
-import { findById } from './find-by-public-id'
+import { exportData } from './export-data'
+import { findByPublicUserId } from './find-by-public-id'
+import { forgotPassword } from './forgot-password'
 import { getAllUsers } from './get-all-users'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
-import { authentication } from '@/http/middlewares/verify-jwt'
-import { verifyPermissions } from '@/http/middlewares/verify-user-role'
+import { resetPassword } from './reset-password'
 import { upload } from '@/lib/multer'
+import { authenticationMiddleware } from '@/middlewares/authenticate'
+import { verifyPermissions } from '@/middlewares/verify-user-role'
 
 export async function userRoutes(app: FastifyInstance) {
+  // User Admin Routes:
   app.get(
-    '/users',
+    '/',
     {
-      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+      preHandler: [
+        authenticationMiddleware,
+        verifyPermissions([UserRole.ADMIN]),
+      ],
     },
     getAllUsers,
   )
-
   app.get(
-    '/users/:publicId',
+    '/:publicId',
     {
-      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
+      preHandler: [
+        authenticationMiddleware,
+        verifyPermissions([UserRole.ADMIN]),
+      ],
     },
-    findById,
+    findByPublicUserId,
+  )
+  app.get(
+    '/export',
+    {
+      preHandler: [
+        authenticationMiddleware,
+        verifyPermissions([UserRole.ADMIN]),
+      ],
+    },
+    exportData,
   )
 
-  app.get(
-    '/users/export',
-    {
-      preHandler: [authentication, verifyPermissions([UserRole.ADMIN])],
-    },
-    exportUserData,
-  )
-
+  // Register Routes:
   app.post(
-    '/users',
+    '/',
     {
       preHandler: [upload.single('profileImage')],
     },
     register,
   )
 
+  // Authentication Routes:
   app.post('/sessions', authenticate)
-
   app.post('/sessions/refresh-token', refreshToken)
-
+  app.post('/forgot-password', forgotPassword)
+  app.patch(
+    '/reset-password',
+    { onRequest: [authenticationMiddleware] },
+    resetPassword,
+  )
   app.delete(
     '/sessions',
     {
-      preHandler: [authentication],
+      preHandler: [authenticationMiddleware],
     },
     logout,
   )

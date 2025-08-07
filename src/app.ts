@@ -2,12 +2,10 @@ import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
-import fastifySwagger from '@fastify/swagger'
-import fastifySwaggerUi from '@fastify/swagger-ui'
 import fastify from 'fastify'
 import { ZodError } from 'zod'
 import { env } from './env'
-import { userRoutes } from './http/controllers/user/routes'
+import { appRoutes } from './http/routes'
 
 export const app = fastify()
 
@@ -32,27 +30,7 @@ app.register(fastifyJwt, {
   },
 })
 
-app.register(fastifySwagger, {
-  swagger: {
-    info: {
-      title: 'Astrobiologia Backend',
-      description:
-        'Documentação do Consumo da API Astrobio com Fastify-Swagger',
-      version: '1.0.0',
-    },
-    tags: [{ name: 'users', description: 'Operações de usuário' }],
-  },
-})
-
-app.register(fastifySwaggerUi, {
-  routePrefix: '/docs',
-  uiConfig: {
-    docExpansion: 'list',
-    deepLinking: false,
-  },
-})
-
-app.register(userRoutes)
+app.register(appRoutes)
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
@@ -67,5 +45,5 @@ app.setErrorHandler((error, _, reply) => {
     // TODO: Send error to monitoring service
   }
 
-  reply.status(500).send({ message: 'Internal server error' })
+  return reply.status(500).send({ message: 'Internal server error' })
 })

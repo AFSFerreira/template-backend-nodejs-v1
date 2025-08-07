@@ -1,10 +1,16 @@
 import path from 'path'
-import type { Prisma, User } from '@prisma/client'
+import type {
+  EducationLevel,
+  IdentityType,
+  Occupation,
+  User,
+} from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 import { env } from '@/env'
+import type { RegisterUserSchemaType } from '@/http/schemas/user/register-schema'
 import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
 import type { AddressRepository } from '@/repositories/address-repository'
 import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
@@ -18,18 +24,13 @@ interface RegisterUseCaseRequest {
   mainAreaActivity: string
   keywords: string[]
 
-  user: Omit<
-    Prisma.UserUncheckedCreateInput,
-    'passwordHash' | 'activityAreaId' | 'profileImagePath'
-  > & { password: string }
+  user: RegisterUserSchemaType['user']
 
-  address: Omit<Prisma.AddressUncheckedCreateInput, 'userId'>
+  address: RegisterUserSchemaType['address']
 
-  enrolledCourse: Omit<Prisma.EnrolledCourseUncheckedCreateInput, 'userId'>
+  enrolledCourse: RegisterUserSchemaType['enrolledCourse']
 
-  academicPublications: Array<
-    Omit<Prisma.AcademicPublicationsUncheckedCreateInput, 'userId'>
-  >
+  academicPublications: RegisterUserSchemaType['academicPublications']
 }
 
 interface RegisterUseCaseResponse {
@@ -49,10 +50,10 @@ export class RegisterUseCase {
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const existingUser = await this.usersRepository.findByEmailOrUsername([
+    const existingUser = await this.usersRepository.findByEmailOrUsername(
       registerUseCaseInput.user.email,
       registerUseCaseInput.user.username,
-    ])
+    )
 
     if (existingUser !== null) {
       throw new UserWithSameEmailOrUsernameError()
@@ -93,12 +94,16 @@ export class RegisterUseCase {
 
     const passwordHash = await hash(
       registerUseCaseInput.user.password,
-      env.USER_PASSWORD_HASH_NUMBER_TIMES,
+      env.HASH_SALT_ROUNDS,
     )
 
     const user = await this.usersRepository.create({
       user: {
         ...registerUseCaseInput.user,
+        occupation: registerUseCaseInput.user.occupation as Occupation,
+        educationLevel: registerUseCaseInput.user
+          .educationLevel as EducationLevel,
+        identityType: registerUseCaseInput.user.educationLevel as IdentityType,
         passwordHash,
         profileImagePath:
           profileImageInfo !== undefined

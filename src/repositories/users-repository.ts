@@ -46,18 +46,31 @@ export interface CreateUserQuery {
   keywords: Keyword[]
 }
 
+export interface TokenData {
+  recoveryPasswordToken: string
+  recoveryPasswordTokenExpiresAt: Date
+}
+
 export interface UsersRepository {
   create: (data: CreateUserQuery) => Promise<User>
-  findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
+  findByEmail: (email: string) => Promise<UserWithDetails | null>
+  findByUsername: (username: string) => Promise<UserWithDetails | null>
+  findById: (id: number) => Promise<UserWithDetails | null>
+  findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
-    emailOrUsername: string | [string | undefined, string | undefined],
+    emailOrUsername: string,
+    usernameOrEmail?: string,
   ) => Promise<UserWithDetails | null>
-  listAllUsers: (query: GetAllUsersQuery) => Promise<UserWithDetails[]>
-  incrementLoginAttempts: (publicId: string) => Promise<void>
-  setLastLogin: (publicId: string) => Promise<void>
-  delete: (publicId: string) => Promise<void>
-  update: (
-    publicId: string,
-    data: Prisma.UserUpdateInput,
+  listAllUsers: (query?: GetAllUsersQuery) => Promise<UserWithDetails[]>
+  incrementLoginAttempts: (id: number) => Promise<void>
+  delete: (id: number) => Promise<void>
+  update: (id: number, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>
+  validateUserToken: (
+    recoveryPasswordToken: string,
+  ) => Promise<UserWithDetails | null>
+  changePassword: (id: number, passwordHash: string) => Promise<UserWithDetails>
+  setPasswordToken: (
+    id: number,
+    tokenData: TokenData,
   ) => Promise<UserWithDetails>
 }

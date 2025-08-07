@@ -29,8 +29,10 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user =
-      await this.usersRepository.findByEmailOrUsername(emailOrUsername)
+    const user = await this.usersRepository.findByEmailOrUsername(
+      emailOrUsername,
+      emailOrUsername,
+    )
 
     const auditAuthenticateObject = {
       browser: browser ?? null,
@@ -48,7 +50,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.incrementLoginAttempts(user.publicId)
+    await this.usersRepository.incrementLoginAttempts(user.id)
 
     const doesPasswordMatch = await compare(password, user.passwordHash)
 
@@ -61,7 +63,7 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    await this.usersRepository.setLastLogin(user.publicId)
+    await this.usersRepository.update(user.id, { lastLogin: new Date() })
 
     await this.authenticationAuditRepository.create({
       ...auditAuthenticateObject,

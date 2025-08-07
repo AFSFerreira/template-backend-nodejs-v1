@@ -34,11 +34,15 @@
       "@/uploads/*": ["./src/uploads/*"],
       "@/use-cases/*": ["./src/use-cases/*"],
       "@/repositories/*": ["./src/repositories/*"],
+      "@/schemas/*": ["./src/http/schemas/*"],
+      "@/middlewares/*": ["./src/http/middlewares/*"],
       "@/types/*": ["./src/@types/*"],
       "@/utils/*": ["./src/utils/*"],
       "@/services/*": ["./src/services/*"],
       "@/swagger-schemas/*": ["./src/swagger-schemas/*"],
-      "@/factories/*": ["./src/use-cases/factories/*"]
+      "@/factories/*": ["./src/use-cases/factories/*"],
+      "@/env/*": ["./src/env/*"],
+      "@/presenters/*": ["./src/http/presenters/*"]
     },                                      /* Specify a set of entries that re-map imports to additional lookup locations. */
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

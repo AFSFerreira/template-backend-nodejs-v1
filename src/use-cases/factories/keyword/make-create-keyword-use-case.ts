@@ -3,5 +3,7 @@ import { CreateKeywordUseCase } from '@/use-cases/keyword/create-keyword-use-cas
 
 export function makeCreateKeywordUseCase() {
   const keywordRepository = new PrismaKeywordRepository()
-  return new CreateKeywordUseCase(keywordRepository)
+  const createKeywordUseCase = new CreateKeywordUseCase(keywordRepository)
+
+  return createKeywordUseCase
 }

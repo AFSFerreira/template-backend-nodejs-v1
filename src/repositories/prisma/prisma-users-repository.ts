@@ -2,6 +2,7 @@ import type { Prisma } from '@prisma/client'
 import type {
   CreateUserQuery,
   GetAllUsersQuery,
+  TokenData,
   UsersRepository,
 } from '../users-repository'
 import type { ComparableType } from '@/@types/orderable-type'
@@ -48,27 +49,50 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  async findByEmail(email: string) {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async findByUsername(username: string) {
+    const user = await prisma.user.findUnique({
+      where: { username },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async findById(id: number) {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async findByPublicId(publicId: string) {
+    const user = await prisma.user.findUnique({
+      where: { publicId },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
   async findByEmailOrUsername(
-    emailOrUsername: string | [string | undefined, string | undefined],
+    emailOrUsername: string,
+    usernameOrEmail: string | undefined = undefined,
   ) {
-    let orConditions: Array<{ email?: string; username?: string }> = []
+    const orConditions: Array<{ email?: string; username?: string }> = [
+      { email: emailOrUsername },
+      { username: emailOrUsername },
+    ]
 
-    if (Array.isArray(emailOrUsername)) {
-      const [val1, val2] = emailOrUsername
-
-      if (val1 === undefined && val2 === undefined) return null
-
-      if (val1 !== undefined) {
-        orConditions.push({ email: val1 })
-        orConditions.push({ username: val1 })
-      }
-
-      if (val2 !== undefined && val1 !== val2) {
-        orConditions.push({ email: val2 })
-        orConditions.push({ username: val2 })
-      }
-    } else {
-      orConditions = [{ email: emailOrUsername }, { username: emailOrUsername }]
+    if (usernameOrEmail !== undefined && emailOrUsername !== usernameOrEmail) {
+      orConditions.push({ email: usernameOrEmail })
+      orConditions.push({ username: usernameOrEmail })
     }
 
     const user = await prisma.user.findFirst({
@@ -81,15 +105,11 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findBy(where: Prisma.UserWhereInput) {
-    const user = await prisma.user.findFirst({
-      where,
-      include: userWithDetails.include,
-    })
-    return user
-  }
+  async listAllUsers(query?: GetAllUsersQuery) {
+    if (query === undefined) {
+      return await prisma.user.findMany({ include: userWithDetails.include })
+    }
 
-  async listAllUsers(query: GetAllUsersQuery) {
     const offset =
       query.limit !== undefined ? (query.page - 1) * query.limit : undefined
 
@@ -142,11 +162,9 @@ export class PrismaUsersRepository implements UsersRepository {
     return users
   }
 
-  async incrementLoginAttempts(publicId: string) {
+  async incrementLoginAttempts(id: number) {
     await prisma.user.update({
-      where: {
-        publicId,
-      },
+      where: { id },
       data: {
         loginAttempts: {
           increment: 1,
@@ -155,29 +173,51 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async setLastLogin(publicId: string) {
-    await prisma.user.update({
-      where: {
-        publicId,
-      },
-      data: {
-        lastLogin: new Date(),
-      },
-    })
-  }
-
-  async delete(publicId: string) {
+  async delete(id: number) {
     await prisma.user.delete({
-      where: {
-        publicId,
-      },
+      where: { id },
     })
   }
 
-  async update(publicId: string, data: Prisma.UserUpdateInput) {
+  async update(id: number, data: Prisma.UserUpdateInput) {
     const user = await prisma.user.update({
-      where: { publicId },
+      where: { id },
       data,
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async validateUserToken(recoveryPasswordToken: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        recoveryPasswordToken,
+        recoveryPasswordTokenExpiresAt: {
+          gte: new Date(),
+        },
+      },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async changePassword(id: number, passwordHash: string) {
+    const user = await prisma.user.update({
+      where: { id },
+      data: {
+        passwordHash,
+        recoveryPasswordToken: null,
+        recoveryPasswordTokenExpiresAt: null,
+      },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async setPasswordToken(id: number, tokenData: TokenData) {
+    const user = await prisma.user.update({
+      where: { id },
+      data: { ...tokenData },
       include: userWithDetails.include,
     })
     return user

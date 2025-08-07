@@ -1,120 +1,82 @@
 import { EducationLevel, IdentityType, Occupation } from '@prisma/client'
 import { z } from 'zod'
-import { YEAR_MONTH_REGEX } from '@/constants/regex'
+import { cpfSchema } from '../utils/cpf'
+import { emailSchema } from '../utils/email'
+import { keywordSchema } from '../utils/keyword'
+import { monthYearSchema } from '../utils/month-year-schema'
+import { nonemptyTextSchema } from '../utils/nonempty-text'
+import { orcidNumberSchema } from '../utils/orcid-number'
+import { passwordSchema } from '../utils/password'
+import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
+import { usernameSchema } from '../utils/username'
+import { zipSchema } from '../utils/zip'
+import { createZodEnum } from '../utils/zod-enum'
 
 export const registerBodySchema = z
   .object({
     user: z.object({
-      email: z.string().email().min(6),
-      password: z
-        .string()
-        .min(8)
-        .regex(
-          /[A-Z]/,
-          'Sua senha precisa conter pelo menos um caráter maiúsculo',
-        )
-        .regex(/\d/, 'Sua senha precisa conter pelo menos um dígito numérico')
-        .regex(
-          /[@$!%*?&#]/,
-          'Sua senha precisa conter pelo menos um caráter especial',
-        ),
-      fullName: z
-        .string()
-        .min(5)
-        .transform((data) => data.toUpperCase()),
-      username: z.string().min(5),
+      email: emailSchema,
+      password: passwordSchema,
+      fullName: upperCaseTextSchema,
+      username: usernameSchema,
       birthdate: z.coerce.date(),
-      linkLattes: z.string().url().nonempty().optional(),
-      linkGoogleScholar: z.string().url().nonempty().optional(),
-      linkResearcherId: z.string().url().nonempty().optional(),
-      orcidNumber: z.coerce.string().nonempty().optional(),
-      institutionName: z.string().nonempty(),
-      departmentName: z.string().nonempty().optional(),
-      institutionComplement: z.string().nonempty().optional(),
-      occupation: z.enum(
-        Object.values(Occupation as Record<string, string>) as [
-          string,
-          ...string[],
-        ],
-      ),
-      educationLevel: z.enum(
-        Object.values(EducationLevel as Record<string, string>) as [
-          string,
-          ...string[],
-        ],
-      ),
-      identityType: z.enum(
-        Object.values(IdentityType as Record<string, string>) as [
-          string,
-          ...string[],
-        ],
-      ),
-      identityDocument: z.string().nonempty(),
+      linkLattes: nonemptyTextSchema.url().optional(),
+      linkGoogleScholar: nonemptyTextSchema.url().optional(),
+      linkResearcherId: nonemptyTextSchema.url().optional(),
+      orcidNumber: orcidNumberSchema.optional(),
+      institutionName: upperCaseTextSchema,
+      departmentName: upperCaseTextSchema.optional(),
+      institutionComplement: nonemptyTextSchema.optional(),
+      occupation: createZodEnum(Occupation),
+      educationLevel: createZodEnum(EducationLevel),
+      identityType: createZodEnum(IdentityType),
+      identityDocument: nonemptyTextSchema,
       // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
       emailIsPublic: z.coerce.boolean(),
       astrobiologyOrRelatedStartYear: z.coerce.number(),
-      interestDescription: z.string().nonempty().max(2000),
+      interestDescription: nonemptyTextSchema.max(2000),
       receiveReports: z.coerce.boolean(),
-      publicInformation: z.string().nonempty(),
-      specificActivity: z.string().nonempty(),
-      specificActivityDescription: z.string().nonempty().optional(),
+      // REVIEW: Confirmar se estes campos são obrigatórios:
+      publicInformation: nonemptyTextSchema,
+      specificActivity: nonemptyTextSchema,
+      specificActivityDescription: nonemptyTextSchema.optional(),
     }),
 
-    mainAreaActivity: z
-      .string()
-      .nonempty()
-      .transform((data) => data.toLocaleUpperCase()),
+    mainAreaActivity: upperCaseTextSchema,
 
-    keywords: z
-      .array(z.string().nonempty())
-      .max(4)
-      .transform((data) => {
-        return data.map((keyword) => keyword.toUpperCase())
-      }),
+    keywords: keywordSchema,
 
     // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
     address: z.object({
-      zip: z.string().nonempty(),
-      number: z.string().nonempty(),
-      district: z.string().nonempty(),
-      street: z.string().nonempty(),
-      city: z.string().nonempty(),
-      country: z.string().nonempty(),
-      state: z.string().nonempty(),
+      zip: zipSchema,
+      number: upperCaseTextSchema,
+      district: upperCaseTextSchema,
+      street: upperCaseTextSchema,
+      city: upperCaseTextSchema,
+      country: upperCaseTextSchema,
+      state: upperCaseTextSchema,
     }),
 
     enrolledCourse: z.object({
-      courseName: z.string().nonempty().optional(),
-      startGraduationDate: z
-        .string()
-        .nonempty()
-        .regex(YEAR_MONTH_REGEX, 'Date must be in format YYYY-MM')
-        .transform((str) => new Date(`${str}-01T00:00:00Z`)),
-      expectedGraduationDate: z
-        .string()
-        .nonempty()
-        .regex(YEAR_MONTH_REGEX, 'Date must be in format YYYY-MM')
-        .transform((str) => new Date(`${str}-01T00:00:00Z`)),
-      supervisorName: z.string().nonempty().optional(),
+      courseName: upperCaseTextSchema.optional(),
+      startGraduationDate: monthYearSchema,
+      expectedGraduationDate: monthYearSchema,
+      supervisorName: upperCaseTextSchema.optional(),
       scholarshipHolder: z.coerce.boolean(),
-      sponsoringOrganization: z.string().nonempty().optional(),
+      sponsoringOrganization: upperCaseTextSchema.optional(),
     }),
 
     academicPublications: z
       .array(
         z.object({
-          title: z.string().nonempty(),
-          authors: z.string().nonempty(),
-          publicationDate: z
-            .string()
-            .nonempty()
-            .regex(YEAR_MONTH_REGEX, 'Date must be in format YYYY-MM')
-            .transform((str) => new Date(`${str}-01T00:00:00Z`)),
-          journalName: z.string().nonempty(),
-          volume: z.string().nonempty(),
-          editionNumber: z.string().nonempty(),
-          pageInterval: z.string().nonempty(),
-          doiLink: z.string().nonempty().url(),
+          title: upperCaseTextSchema,
+          authors: upperCaseTextSchema,
+          publicationDate: monthYearSchema,
+          journalName: upperCaseTextSchema,
+          volume: upperCaseTextSchema,
+          editionNumber: upperCaseTextSchema,
+          pageInterval: upperCaseTextSchema,
+          doiLink: nonemptyTextSchema.url(),
         }),
       )
       .max(5),
@@ -132,7 +94,7 @@ export const registerBodySchema = z
     {
       message:
         'If "Other" is selected as the main area of activity, a description must be provided — and must not be provided otherwise.',
-      path: ['specificActivityDescription'],
+      path: ['user', 'specificActivityDescription'],
     },
   )
   .refine(
@@ -146,7 +108,20 @@ export const registerBodySchema = z
     {
       message:
         'If you are a scholarship holder, you must provide a sponsoring organization — and must leave it blank if you are not.',
-      path: ['sponsoringOrganization'],
+      path: ['enrolledCourse', 'sponsoringOrganization'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (data.user.identityType !== IdentityType.CPF) return true
+
+      const result = cpfSchema.safeParse(data.user.identityDocument)
+
+      return result.success
+    },
+    {
+      message: 'Invalid CPF',
+      path: ['user', 'identityDocument'],
     },
   )
 
