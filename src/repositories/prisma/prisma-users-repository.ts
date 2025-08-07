@@ -53,7 +53,7 @@ export class PrismaUsersRepository implements UsersRepository {
         ...query.user,
         occupation: query.user.occupation as OccupationType,
         educationLevel: query.user.educationLevel as EducationLevelType,
-        identityType: query.user.identityDocument as IdentityType,
+        identityType: query.user.identityType as IdentityType,
         Address: {
           create: query.address,
         },
@@ -61,9 +61,17 @@ export class PrismaUsersRepository implements UsersRepository {
           create: query.enrolledCourse,
         },
         AcademicPublication: {
-          createMany: {
-            data: query.academicPublications,
-          },
+          create: query.academicPublications.map((academicPublication) => ({
+            ...academicPublication,
+            ActivityArea: {
+              connect: {
+                type_area: {
+                  area: academicPublication.tag,
+                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                },
+              },
+            },
+          })),
         },
         Keyword: {
           create: query.keywords?.map((value: string) => ({
@@ -157,9 +165,6 @@ export class PrismaUsersRepository implements UsersRepository {
         ),
         departmentName: PrismaUsersRepository.buildStartsWithFilter(
           query.departmentName,
-        ),
-        specificActivity: PrismaUsersRepository.buildStartsWithFilter(
-          query.specificActivity,
         ),
         birthdate: PrismaUsersRepository.buildComparableFilter(
           query.birthdateComparison,

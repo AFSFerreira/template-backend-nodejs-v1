@@ -14,8 +14,8 @@ interface FlattenedUser {
   membershipStatus: string
   identityType: string
   identityDocument: string
-  specificActivity: string
-  specificActivityDescription: string
+  activityAreaDescription: string
+  subActivityAreaDescription: string
   interestDescription: string
   publicInformation: string
   astrobiologyOrRelatedStartYear: number
@@ -32,6 +32,7 @@ interface FlattenedUser {
   state: string
   zip: string
   country: string
+  complement: string
 
   mainAreaActivity: string
 
@@ -45,6 +46,7 @@ interface FlattenedUser {
   keywords: string
   publications: string
 
+  directorBoardPublicId: string
   directorBoardProfileImage: string
   aboutMe: string
 }
@@ -63,8 +65,8 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     membershipStatus: user.membershipStatus,
     identityType: user.identityType,
     identityDocument: user.identityDocument,
-    specificActivity: user.specificActivity,
-    specificActivityDescription: user.specificActivityDescription ?? '',
+    activityAreaDescription: user.activityAreaDescription ?? '',
+    subActivityAreaDescription: user.subActivityAreaDescription ?? '',
     interestDescription: user.interestDescription,
     publicInformation: user.publicInformation,
     astrobiologyOrRelatedStartYear: user.astrobiologyOrRelatedStartYear,
@@ -81,6 +83,7 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     state: user.Address?.state ?? '',
     zip: user.Address?.zip ?? '',
     country: user.Address?.country ?? '',
+    complement: user.Address?.complement ?? '',
 
     mainAreaActivity: user.ActivityArea?.area ?? '',
 
@@ -104,6 +107,7 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
         (p) => `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
       ).join(' | ') ?? '',
 
+    directorBoardPublicId: user.DirectorBoard?.publicId ?? '',
     directorBoardProfileImage:
       user.DirectorBoard?.directorBoardProfileImage ?? '',
     aboutMe: user.DirectorBoard?.aboutMe ?? '',

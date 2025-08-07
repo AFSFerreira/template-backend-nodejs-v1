@@ -98,7 +98,8 @@ async function main() {
       identityType: IdentityType.CPF,
       identityDocument: "123.456.789-00",
       publicInformation: "ASTROBIÓLOGO",
-      specificActivity: "PROFESSOR INTERINO",
+      activityAreaDescription: "PROFESSOR INTERINO",
+      subActivityAreaDescription: "PESQUISA EM ASTROBIOLOGIA",
 
       Keyword: {
         create: userKeywords.map((keyword) => ({
@@ -133,7 +134,7 @@ async function main() {
       scholarshipHolder: true,
       sponsoringOrganization: 'UNIVERSIDADE LUNAR',
       supervisorName: 'NEEW ARMSTRONG',
-      userId: user.id
+      userId: user.id,
     }
   })
 
@@ -146,7 +147,8 @@ async function main() {
     journalName: "ASTROBIO",
     pageInterval: "1-5",
     volume: "6",
-    userId: user.id
+    userId: user.id,
+    activityAreaId: 1,
   }
 
   const existingAcademicPublication = await prisma.academicPublications.findFirst({
