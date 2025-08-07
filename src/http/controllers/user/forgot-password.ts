@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { forgotPasswordSchema } from '@/http/schemas/user/forgot-password-schema'
+import { forgotPasswordSchema } from '@/schemas/user/forgot-password-schema'
 import { forgotPasswordHtmlTemplate } from '@/templates/forgot-password-html'
 import { forgotPasswordTextTemplate } from '@/templates/forgot-password-text'
 import { UserNotFoundForPasswordResetError } from '@/use-cases/errors/user-not-found-for-password-reset-error'

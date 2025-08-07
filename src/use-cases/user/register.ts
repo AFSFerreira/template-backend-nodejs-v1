@@ -103,7 +103,7 @@ export class RegisterUseCase {
         occupation: registerUseCaseInput.user.occupation as Occupation,
         educationLevel: registerUseCaseInput.user
           .educationLevel as EducationLevel,
-        identityType: registerUseCaseInput.user.educationLevel as IdentityType,
+        identityType: registerUseCaseInput.user.identityType as IdentityType,
         passwordHash,
         profileImagePath:
           profileImageInfo !== undefined
