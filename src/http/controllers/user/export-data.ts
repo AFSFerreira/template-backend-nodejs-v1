@@ -17,7 +17,7 @@ export async function exportData(
       .send(userCSVInfoResponse.usersCSVInfo)
   } catch (error) {
     if (error instanceof EmptyUsersInfoError) {
-      reply.status(204).send({ message: error.message })
+      await reply.status(204).send({ message: error.message })
     }
   }
 }

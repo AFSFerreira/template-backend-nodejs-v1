@@ -1,12 +1,22 @@
-import type { Prisma } from '@prisma/client'
+import type {
+  EducationLevelType,
+  IdentityType,
+  OccupationType,
+  Prisma,
+} from '@prisma/client'
+import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
+  FindByEmailOrUsernameQuery,
   GetAllUsersQuery,
   TokenData,
   UsersRepository,
 } from '../users-repository'
 import type { ComparableType } from '@/@types/orderable-type'
-import { userWithDetails } from '@/@types/user-with-details'
+import {
+  type UserWithDetails,
+  userWithDetails,
+} from '@/@types/user-with-details'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -37,14 +47,39 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  async create(data: CreateUserQuery) {
+  async create(query: CreateUserQuery) {
     const user = await prisma.user.create({
       data: {
-        ...data.user,
-        keyword: {
-          connect: data.keywords.map((keyword) => ({ id: keyword.id })),
+        ...query.user,
+        occupation: query.user.occupation as OccupationType,
+        educationLevel: query.user.educationLevel as EducationLevelType,
+        identityType: query.user.identityDocument as IdentityType,
+        Address: {
+          create: query.address,
+        },
+        EnrolledCourse: {
+          create: query.enrolledCourse,
+        },
+        AcademicPublication: {
+          createMany: {
+            data: query.academicPublications,
+          },
+        },
+        Keyword: {
+          create: query.keywords?.map((value: string) => ({
+            value,
+          })),
+        },
+        ActivityArea: {
+          connect: {
+            type_area: {
+              area: query.mainAreaActivity,
+              type: ActivityAreaType.AREA_OF_ACTIVITY,
+            },
+          },
         },
       },
+      include: userWithDetails.include,
     })
     return user
   }
@@ -81,23 +116,19 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findByEmailOrUsername(
-    emailOrUsername: string,
-    usernameOrEmail: string | undefined = undefined,
-  ) {
-    const orConditions: Array<{ email?: string; username?: string }> = [
-      { email: emailOrUsername },
-      { username: emailOrUsername },
-    ]
+  async setLastLogin(id: number) {
+    await prisma.user.update({
+      where: { id },
+      data: {
+        lastLogin: new Date(),
+      },
+    })
+  }
 
-    if (usernameOrEmail !== undefined && emailOrUsername !== usernameOrEmail) {
-      orConditions.push({ email: usernameOrEmail })
-      orConditions.push({ username: usernameOrEmail })
-    }
-
+  async findByEmailOrUsername({ email, username }: FindByEmailOrUsernameQuery) {
     const user = await prisma.user.findFirst({
       where: {
-        OR: orConditions,
+        OR: [{ email }, { username }],
       },
       include: userWithDetails.include,
     })
@@ -113,7 +144,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const offset =
       query.limit !== undefined ? (query.page - 1) * query.limit : undefined
 
-    const users = await prisma.user.findMany({
+    const users: UserWithDetails[] = await prisma.user.findMany({
       include: userWithDetails.include,
       skip: offset,
       take: query.limit,
@@ -144,16 +175,14 @@ export class PrismaUsersRepository implements UsersRepository {
         occupation: query.occupation,
         educationLevel: query.educationLevel,
         role: query.role,
-        activityArea: PrismaUsersRepository.buildIsFilter(
-          'activityArea',
-          query.activityArea,
-        ),
-        AND: query.keywords?.map((keywordValue) => ({
-          keyword: {
+        ActivityArea: {
+          area: PrismaUsersRepository.buildStartsWithFilter(query.activityArea),
+          type: ActivityAreaType.AREA_OF_ACTIVITY,
+        },
+        AND: query.keywords?.map((keyword) => ({
+          Keyword: {
             some: {
-              value: {
-                startsWith: keywordValue,
-              },
+              value: PrismaUsersRepository.buildStartsWithFilter(keyword),
             },
           },
         })),

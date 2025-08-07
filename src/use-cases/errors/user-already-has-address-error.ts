@@ -1,5 +1,7 @@
+import { messages } from '@/constants/messages'
+
 export class UserAlreadyHasAddressError extends Error {
   constructor() {
-    super('The user already has an address.')
+    super(messages.errors.userAlreadyHasAddress)
   }
 }

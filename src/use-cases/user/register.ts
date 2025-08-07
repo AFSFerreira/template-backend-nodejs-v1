@@ -1,79 +1,62 @@
 import path from 'path'
-import type {
-  EducationLevel,
-  IdentityType,
-  Occupation,
-  User,
-} from '@prisma/client'
+import { ActivityAreaType } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
+import type { UserWithDetails } from '@/@types/user-with-details'
 import { env } from '@/env'
 import type { RegisterUserSchemaType } from '@/http/schemas/user/register-schema'
-import type { AcademicPublicationsRepository } from '@/repositories/academic-publications-repository'
-import type { AddressRepository } from '@/repositories/address-repository'
-import type { AreaOfActivityRepository } from '@/repositories/area-of-activity-repository'
-import type { EnrolledCourseRepository } from '@/repositories/enrolled-course-repository'
-import type { KeywordRepository } from '@/repositories/keyword-repository'
+import type { ActivityAreaRepository } from '@/repositories/activity-area-repository'
 import type { UsersRepository } from '@/repositories/users-repository'
-import { saveCompressedImage } from '@/utils/image-storage'
+import {
+  type CompressedImageInfo,
+  saveCompressedImage,
+} from '@/utils/image-storage'
 
 interface RegisterUseCaseRequest {
   imageBuffer?: Buffer
-  mainAreaActivity: string
-  keywords: string[]
-
+  mainAreaActivity: RegisterUserSchemaType['mainAreaActivity']
+  keywords: RegisterUserSchemaType['keywords']
   user: RegisterUserSchemaType['user']
-
   address: RegisterUserSchemaType['address']
-
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-
   academicPublications: RegisterUserSchemaType['academicPublications']
 }
 
 interface RegisterUseCaseResponse {
-  user: User
+  user: UserWithDetails
 }
 
 export class RegisterUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly addressRepository: AddressRepository,
-    private readonly academicPublicationsRepository: AcademicPublicationsRepository,
-    private readonly areaOfActivitiesRepository: AreaOfActivityRepository,
-    private readonly enrolledCoursesRepository: EnrolledCourseRepository,
-    private readonly keywordsRepository: KeywordRepository,
+    private readonly activityAreasRepository: ActivityAreaRepository,
   ) {}
 
   async execute(
     registerUseCaseInput: RegisterUseCaseRequest,
   ): Promise<RegisterUseCaseResponse> {
-    const existingUser = await this.usersRepository.findByEmailOrUsername(
-      registerUseCaseInput.user.email,
-      registerUseCaseInput.user.username,
-    )
+    const existingUser = await this.usersRepository.findByEmailOrUsername({
+      email: registerUseCaseInput.user.email,
+      username: registerUseCaseInput.user.username,
+    })
 
     if (existingUser !== null) {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const mainAreaOfActivity = await this.areaOfActivitiesRepository.findBy({
-      area: registerUseCaseInput.mainAreaActivity,
-    })
+    const mainAreaActivity = await this.activityAreasRepository.findByArea(
+      registerUseCaseInput.mainAreaActivity,
+      ActivityAreaType.AREA_OF_ACTIVITY,
+    )
 
-    if (mainAreaOfActivity === null) {
+    if (mainAreaActivity === null) {
       throw new InvalidMainAreaOfActivity()
     }
 
     // Persiste a imagem do usuário no backend:
-    let profileImageInfo:
-      | {
-          finalImagePath: string
-          compressedImageBuffer: Buffer<ArrayBufferLike>
-        }
-      | undefined
+    let profileImageInfo: CompressedImageInfo | undefined
 
     try {
       if (registerUseCaseInput.imageBuffer !== undefined) {
@@ -86,12 +69,6 @@ export class RegisterUseCase {
       throw new UserImageStorageError()
     }
 
-    const keywordsCreated = await Promise.all(
-      registerUseCaseInput.keywords.map(async (keyword) => {
-        return await this.keywordsRepository.findOrCreate(keyword)
-      }),
-    )
-
     const passwordHash = await hash(
       registerUseCaseInput.user.password,
       env.HASH_SALT_ROUNDS,
@@ -100,10 +77,6 @@ export class RegisterUseCase {
     const user = await this.usersRepository.create({
       user: {
         ...registerUseCaseInput.user,
-        occupation: registerUseCaseInput.user.occupation as Occupation,
-        educationLevel: registerUseCaseInput.user
-          .educationLevel as EducationLevel,
-        identityType: registerUseCaseInput.user.identityType as IdentityType,
         passwordHash,
         profileImagePath:
           profileImageInfo !== undefined
@@ -114,28 +87,13 @@ export class RegisterUseCase {
                 'profile-images',
                 'default-profile-pic.png',
               ),
-        activityAreaId: mainAreaOfActivity.id,
       },
-      keywords: keywordsCreated,
+      mainAreaActivity: registerUseCaseInput.mainAreaActivity,
+      address: registerUseCaseInput.address,
+      academicPublications: registerUseCaseInput.academicPublications,
+      enrolledCourse: registerUseCaseInput.enrolledCourse,
+      keywords: registerUseCaseInput.keywords,
     })
-
-    const academicPublicationsData =
-      registerUseCaseInput.academicPublications.map((pub) => ({
-        ...pub,
-        userId: user.id,
-      }))
-
-    await Promise.all([
-      this.addressRepository.create({
-        ...registerUseCaseInput.address,
-        userId: user.id,
-      }),
-      this.enrolledCoursesRepository.create({
-        ...registerUseCaseInput.enrolledCourse,
-        userId: user.id,
-      }),
-      this.academicPublicationsRepository.createMany(academicPublicationsData),
-    ])
 
     return { user }
   }

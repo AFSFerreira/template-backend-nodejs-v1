@@ -1,4 +1,3 @@
-import type { EducationLevel, Occupation, UserRole } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { UserPresenter } from '@/presenters/user-presenter'
 import { getAllUsersParamsSchema } from '@/schemas/user/get-all-users-schema'
@@ -15,9 +14,8 @@ export async function getAllUsers(
   try {
     const { users } = await getAllUsersUseCase.execute({
       ...parsedParams,
-      role: parsedParams.userRole as UserRole,
-      occupation: parsedParams.occupation as Occupation,
-      educationLevel: parsedParams.educationLevel as EducationLevel,
+      occupation: parsedParams.occupation,
+      educationLevel: parsedParams.educationLevel,
     })
 
     return await reply.status(200).send({ users: UserPresenter.toHTTP(users) })

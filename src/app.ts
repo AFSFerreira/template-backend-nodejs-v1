@@ -6,6 +6,7 @@ import fastify from 'fastify'
 import { ZodError } from 'zod'
 import { env } from './env'
 import { appRoutes } from './http/routes'
+import './lib/pg-trgm'
 
 export const app = fastify()
 

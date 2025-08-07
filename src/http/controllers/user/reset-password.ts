@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { messages } from '@/constants/messages'
 import { resetPasswordSchema } from '@/schemas/user/reset-password'
 import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
 import { makeResetPasswordUseCase } from '@/use-cases/factories/user/make-reset-password-use-case'
@@ -17,7 +18,7 @@ export async function resetPassword(
       token,
     })
 
-    await reply.status(200).send({ message: 'Password changed successfully!' })
+    await reply.status(200).send({ message: messages.info.changedPassword })
   } catch (error) {
     if (error instanceof InvalidCredentialsError) {
       return await reply.status(401).send({ message: error.message })

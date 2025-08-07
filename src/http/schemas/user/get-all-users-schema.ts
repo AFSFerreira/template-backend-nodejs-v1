@@ -1,9 +1,13 @@
-import { EducationLevel, Occupation, UserRole } from '@prisma/client'
+import {
+  EducationLevelType,
+  OccupationType,
+  UserRoleType,
+} from '@prisma/client'
 import { z } from 'zod'
 import { keywordSchema } from '../utils/keyword'
 import { nonemptyTextSchema } from '../utils/nonempty-text'
-import { createZodEnum } from '../utils/zod-enum'
 import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
+import { messages } from '@/constants/messages'
 
 export const getAllUsersParamsSchema = z
   .object({
@@ -16,9 +20,9 @@ export const getAllUsersParamsSchema = z
     receiveReports: z.coerce.boolean().optional(),
     activityArea: nonemptyTextSchema.optional(),
     keywords: keywordSchema.optional(),
-    userRole: createZodEnum(UserRole).optional(),
-    occupation: createZodEnum(Occupation).optional(),
-    educationLevel: createZodEnum(EducationLevel).optional(),
+    userRole: z.enum(UserRoleType).optional(),
+    occupation: z.enum(OccupationType).optional(),
+    educationLevel: z.enum(EducationLevelType).optional(),
     birthdate: z.date().optional(),
     birthdateComparison: z.enum(comparisonOperators).optional(),
     astrobiologyOrRelatedStartYear: z.coerce.number().positive().optional(),
@@ -41,7 +45,7 @@ export const getAllUsersParamsSchema = z
       return true
     },
     {
-      message: 'birthdate must be defined when birthdateComparison is provided',
+      message: messages.validation.birthdateComparisonMutualExistence,
       path: ['birthdate'],
     },
   )
@@ -58,7 +62,8 @@ export const getAllUsersParamsSchema = z
     },
     {
       message:
-        'astrobiologyOrRelatedStartYear must be defined when astrobiologyOrRelatedStartYearComparison is provided',
+        messages.validation
+          .astrobiologyOrRelatedStartYearComparisonMutualExistence,
       path: ['astrobiologyOrRelatedStartYear'],
     },
   )

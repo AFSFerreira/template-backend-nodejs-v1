@@ -1,3 +1,4 @@
-import { nonemptyTextSchema } from './nonempty-text'
+import z from 'zod'
+import { limitedCharactersSize } from '@/constants/zod-constants'
 
-export const emailSchema = nonemptyTextSchema.min(6).email()
+export const emailSchema = z.email().max(limitedCharactersSize)

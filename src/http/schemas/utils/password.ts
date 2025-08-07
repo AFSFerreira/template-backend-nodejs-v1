@@ -1,9 +1,6 @@
-import { nonemptyTextSchema } from './nonempty-text'
-import { PASSWORD_REGEX } from '@/constants/regex'
+import { textWithoutInnerSpacesSchema } from './text-without-inner-spaces-schema'
+import { limitedCharactersSize } from '@/constants/zod-constants'
 
-export const passwordSchema = nonemptyTextSchema
+export const passwordSchema = textWithoutInnerSpacesSchema
   .min(8)
-  .regex(
-    PASSWORD_REGEX,
-    'The password must contain at least 8 characters, one uppercase letter, one numeric digit and one special character.',
-  )
+  .max(limitedCharactersSize)

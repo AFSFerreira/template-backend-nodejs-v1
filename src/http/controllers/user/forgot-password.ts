@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { messages } from '@/constants/messages'
 import { forgotPasswordSchema } from '@/schemas/user/forgot-password-schema'
 import { forgotPasswordHtmlTemplate } from '@/templates/forgot-password-html'
 import { forgotPasswordTextTemplate } from '@/templates/forgot-password-text'
@@ -28,7 +29,7 @@ export async function forgotPassword(
 
     return await reply
       .status(200)
-      .send({ message: 'Password reset successful' })
+      .send({ message: messages.errors.userNotFoundForPasswordReset })
   } catch (error) {
     if (error instanceof UserNotFoundForPasswordResetError) {
       return await reply.status(200).send({ message: error.message })

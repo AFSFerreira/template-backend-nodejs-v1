@@ -1,4 +1,5 @@
 import type { FastifyRequest, FastifyReply } from 'fastify'
+import { messages } from '@/constants/messages'
 import { env } from '@/env'
 
 export async function refreshToken(
@@ -8,7 +9,9 @@ export async function refreshToken(
   try {
     await request.jwtVerify({ onlyCookie: true })
   } catch (error) {
-    return await reply.status(401).send({ message: 'Invalid Token' })
+    return await reply
+      .status(401)
+      .send({ message: messages.errors.invalidToken })
   }
 
   const accessToken = await reply.jwtSign(

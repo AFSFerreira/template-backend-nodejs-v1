@@ -1,4 +1,9 @@
-import type { EducationLevel, IdentityType, Occupation } from '@prisma/client'
+import type {
+  EducationLevelType,
+  IdentityType,
+  OccupationType,
+  UserRoleType,
+} from '@prisma/client'
 import type { UserWithDetails } from '@/@types/user-with-details'
 import { formatDate } from '@/utils/format-date'
 
@@ -7,6 +12,7 @@ interface HTTPUserDetails {
   fullName: string
   email: string
   username: string
+  role: UserRoleType
   birthdate: string | null | undefined
   linkLattes: string | null
   linkGoogleScholar: string | null
@@ -15,8 +21,8 @@ interface HTTPUserDetails {
   institutionName: string
   departmentName: string | null
   institutionComplement: string | null
-  occupation: Occupation
-  educationLevel: EducationLevel
+  occupation: OccupationType
+  educationLevel: EducationLevelType
   identityType: IdentityType
   identityDocument: string
   emailIsPublic: boolean
@@ -26,6 +32,11 @@ interface HTTPUserDetails {
   publicInformation: string
   specificActivity: string
   specificActivityDescription: string | null
+  keywords: string[]
+  mainActivityArea: string
+  address: HTTPAddress
+  enrolledCourse: HTTPEnrolledCourse
+  academicPublications: HTTPAcademicPublications[]
 }
 
 interface HTTPAddress {
@@ -39,12 +50,12 @@ interface HTTPAddress {
 }
 
 interface HTTPEnrolledCourse {
-  courseName: string | undefined | null
-  startGraduationDate: string | undefined | null
-  expectedGraduationDate: string | undefined | null
-  supervisorName: string | undefined | null
-  scholarshipHolder: boolean | undefined
-  sponsoringOrganization: string | undefined | null
+  courseName?: string | null
+  startGraduationDate?: string | null
+  expectedGraduationDate?: string | null
+  supervisorName?: string | null
+  scholarshipHolder?: boolean
+  sponsoringOrganization?: string | null
 }
 
 interface HTTPAcademicPublications {
@@ -55,21 +66,17 @@ interface HTTPAcademicPublications {
   volume: string
   editionNumber: string
   pageInterval: string
-  doiLink: string
+  linkDOI: string
+}
+
+interface HTTPDirectorBoardInfo {
+  directorBoardProfileImage: string
+  aboutMe: string
 }
 
 interface HTTPUser {
-  user: HTTPUserDetails
-
-  keywords: string[]
-
-  mainActivityArea: string
-
-  address: HTTPAddress
-
-  enrolledCourse: HTTPEnrolledCourse
-
-  academicPublications: HTTPAcademicPublications[]
+  userDetails: HTTPUserDetails
+  directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
@@ -83,57 +90,89 @@ export class UserPresenter {
       return input.map((user) => this.toHTTP(user))
     }
 
+    const {
+      id,
+      passwordHash,
+      publicId,
+      membershipStatus,
+      loginAttempts,
+      lastLogin,
+      recoveryPasswordToken,
+      recoveryPasswordTokenExpiresAt,
+      createdAt,
+      updatedAt,
+      activityAreaId,
+      ActivityArea,
+      AcademicPublication,
+      Keyword,
+      Address,
+      EnrolledCourse,
+      DirectorBoard,
+      ...userFiltered
+    } = input
+
     return {
-      user: {
-        ...input,
+      userDetails: {
+        ...userFiltered,
         id: input.publicId,
         birthdate: formatDate(input.birthdate),
-      },
 
-      keywords: input.keyword.map((keyword) => keyword.value),
+        keywords: input.Keyword.map((keyword) => keyword.value),
 
-      mainActivityArea: input.activityArea.area,
+        mainActivityArea: input.ActivityArea.area,
 
-      address: {
-        zip: input.address?.zip,
-        number: input.address?.number,
-        street: input.address?.street,
-        district: input.address?.district,
-        city: input.address?.city,
-        state: input.address?.state,
-        country: input.address?.country,
-      },
+        address: {
+          zip: input.Address?.zip,
+          number: input.Address?.number,
+          district: input.Address?.district,
+          street: input.Address?.street,
+          city: input.Address?.city,
+          country: input.Address?.country,
+          state: input.Address?.state,
+        },
 
-      enrolledCourse: {
-        courseName: input.enrolledCourse?.courseName,
-        startGraduationDate: formatDate(
-          input.enrolledCourse?.startGraduationDate,
-          'mm/yyyy',
-        ),
-        expectedGraduationDate: formatDate(
-          input.enrolledCourse?.expectedGraduationDate,
-          'mm/yyyy',
-        ),
-        supervisorName: input.enrolledCourse?.supervisorName,
-        scholarshipHolder: input.enrolledCourse?.scholarshipHolder,
-        sponsoringOrganization: input.enrolledCourse?.sponsoringOrganization,
-      },
-
-      academicPublications: input.academicPublication.map(
-        (academicPublication) => ({
-          title: academicPublication.title,
-          authors: academicPublication.authors,
-          publicationDate: formatDate(
-            academicPublication.publicationDate,
+        enrolledCourse: {
+          courseName: input.EnrolledCourse?.courseName,
+          startGraduationDate: formatDate(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            input.EnrolledCourse?.startGraduationDate,
             'mm/yyyy',
           ),
-          journalName: academicPublication.journalName,
-          volume: academicPublication.volume,
-          editionNumber: academicPublication.editionNumber,
-          pageInterval: academicPublication.pageInterval,
-          doiLink: academicPublication.doiLink,
-        }),
-      ),
+          expectedGraduationDate: formatDate(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            input.EnrolledCourse?.expectedGraduationDate,
+            'mm/yyyy',
+          ),
+          supervisorName: input.EnrolledCourse?.supervisorName,
+          scholarshipHolder: input.EnrolledCourse?.scholarshipHolder,
+          sponsoringOrganization: input.EnrolledCourse?.sponsoringOrganization,
+        },
+
+        academicPublications: input.AcademicPublication.map(
+          (academicPublication) => ({
+            title: academicPublication.title,
+            authors: academicPublication.authors,
+            publicationDate: formatDate(
+              academicPublication.publicationDate,
+              'mm/yyyy',
+            ),
+            journalName: academicPublication.journalName,
+            volume: academicPublication.volume,
+            editionNumber: academicPublication.editionNumber,
+            pageInterval: academicPublication.pageInterval,
+            linkDOI: academicPublication.linkDOI,
+          }),
+        ),
+      },
+
+      directorBoardInfo:
+        input.DirectorBoard !== null
+          ? {
+              directorBoardProfileImage:
+                input.DirectorBoard.directorBoardProfileImage,
+              aboutMe: input.DirectorBoard.aboutMe,
+            }
+          : null,
     }
   }
 }

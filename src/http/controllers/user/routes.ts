@@ -1,4 +1,4 @@
-import { UserRole } from '@prisma/client'
+import { UserRoleType } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
 import { exportData } from './export-data'
@@ -9,8 +9,8 @@ import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
 import { resetPassword } from './reset-password'
+import { authenticationMiddleware } from '@/http/middlewares/authentication-middleware'
 import { upload } from '@/lib/multer'
-import { authenticationMiddleware } from '@/middlewares/authenticate'
 import { verifyPermissions } from '@/middlewares/verify-user-role'
 
 export async function userRoutes(app: FastifyInstance) {
@@ -20,7 +20,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [
         authenticationMiddleware,
-        verifyPermissions([UserRole.ADMIN]),
+        verifyPermissions([UserRoleType.ADMIN]),
       ],
     },
     getAllUsers,
@@ -30,7 +30,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [
         authenticationMiddleware,
-        verifyPermissions([UserRole.ADMIN]),
+        verifyPermissions([UserRoleType.ADMIN]),
       ],
     },
     findByPublicUserId,
@@ -40,7 +40,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [
         authenticationMiddleware,
-        verifyPermissions([UserRole.ADMIN]),
+        verifyPermissions([UserRoleType.ADMIN]),
       ],
     },
     exportData,

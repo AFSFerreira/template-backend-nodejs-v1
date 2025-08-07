@@ -1,12 +1,14 @@
 import { z } from 'zod'
-import { emailSchema } from '../utils/email'
 import { nonemptyTextSchema } from '../utils/nonempty-text'
-import { usernameSchema } from '../utils/username'
+import { messages } from '@/constants/messages'
 
-export const authenticateBodySchema = z.object({
-  emailOrUsername: z.union([emailSchema, usernameSchema]),
-  password: nonemptyTextSchema,
-})
+export const authenticateBodySchema = z.object(
+  {
+    login: nonemptyTextSchema,
+    password: nonemptyTextSchema,
+  },
+  messages.validation.invalidAuthenticationInput,
+)
 
 export type AuthenticaticationSchemaType = z.infer<
   typeof authenticateBodySchema

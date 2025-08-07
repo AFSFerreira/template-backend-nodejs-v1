@@ -13,21 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// REVIEW: Verificar se existe nomenclatura melhor para o enum de Manager
-enum UserRole {
+enum UserRoleType {
   ADMIN
   MANAGER
+  BLOGGER
   NORMAL_USER
 }
 
-enum AuthenticationStatus {
+enum AuthenticationStatusType {
   SUCCESS
   USER_NOT_EXISTS
   INCORRECT_PASSWORD
   BLOCKED
 }
 
-enum Occupation {
+enum OccupationType {
   RESEARCHER
   PROFESSOR
   STUDENT
@@ -36,7 +36,7 @@ enum Occupation {
   DOCTORATE
 }
 
-enum EducationLevel {
+enum EducationLevelType {
   ELEMENTARY_SCHOOL
   HIGH_SCHOOL
   UNDERGRADUATE_STUDENT
@@ -50,10 +50,11 @@ enum EducationLevel {
   OTHER
 }
 
-enum MembershipStatus {
+enum MembershipStatusType {
   PENDING
   APPROVED
   REJECTED
+  INACTIVE
 }
 
 enum BlogCategoryType {
@@ -72,13 +73,18 @@ enum PresentationType {
   POSTER
 }
 
+enum ActivityAreaType {
+  AREA_OF_ACTIVITY
+  SUB_AREA_OF_ACTIVITY
+}
+
 model AuthenticationAudit {
-  id         Int                  @id @default(autoincrement())
+  id         Int                      @id @default(autoincrement())
   ipAddress  String?
   remotePort String?
   browser    String?
-  status     AuthenticationStatus
-  createdAt  DateTime             @default(now())
+  status     AuthenticationStatusType
+  createdAt  DateTime                 @default(now())
 
   userId Int?
   user   User? @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
@@ -87,32 +93,32 @@ model AuthenticationAudit {
 }
 
 model User {
-  id                             Int              @id @default(autoincrement())
-  publicId                       String           @unique @default(uuid(7)) @map("public_id")
-  fullName                       String           @map("full_name")
-  username                       String           @unique
+  id                             Int                  @id @default(autoincrement())
+  publicId                       String               @unique @default(uuid(7)) @map("public_id")
+  fullName                       String               @map("full_name")
+  username                       String               @unique
   birthdate                      DateTime
-  profileImagePath               String           @map("profile_image_path")
-  linkLattes                     String?          @map("link_lattes") // Link externo para o currículo lattes do usuário
-  linkGoogleScholar              String?          @map("link_google_scholar") // Link externo para o perfil do usuário no Google Scholar
-  linkResearcherId               String?          @map("link_researcherID") // Link externo para o perfil do usuário no ResearcherID
-  orcidNumber                    String?          @map("orcid_number") // Número do ORCID do pesquisador
-  membershipStatus               MembershipStatus @default(PENDING) @map("membership_status")
-  role                           UserRole         @default(NORMAL_USER)
-  institutionName                String           @map("institution_name")
-  departmentName                 String?          @map("department_name")
-  institutionComplement          String?          @map("institution_complement") // Complemento sobre a instituição (nome de laboratório, etc) 
-  occupation                     Occupation
-  educationLevel                 EducationLevel   @map("education_level")
-  identityType                   IdentityType     @map("identity_type")
-  identityDocument               String           @map("identity_document")
-  emailIsPublic                  Boolean          @map("email_is_public") // Autorização da divulgação do email publicamente no perfil do site
-  astrobiologyOrRelatedStartYear Int              @map("astrobiology_or_related_start_year") // Ano em que começou a trabalhar com Astrobiologia ou área correlata (mantido como Int para eventuais queries de comparação) 
-  interestDescription            String           @map("interest_description") // Descrição da moticação de participação da comunidade de astrobiologia (limite: 2000 caracteres)
-  receiveReports                 Boolean          @map("recieve_reports") // Concordar em receber as Newsletter e informes eventuais da SBA no endereço de e-mail de contato informado.
-  publicInformation              String           @map("public_information") // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
-  specificActivity               String           @map("specific_activity") // Área específica de atuação
-  specificActivityDescription    String?          @map("specific_activity_description") // Descrição opcional da área caso o usuário marque a alternativa "Other"
+  profileImagePath               String               @map("profile_image_path")
+  linkLattes                     String?              @map("link_lattes") // Link externo para o currículo lattes do usuário
+  linkGoogleScholar              String?              @map("link_google_scholar") // Link externo para o perfil do usuário no Google Scholar
+  linkResearcherId               String?              @map("link_researcherID") // Link externo para o perfil do usuário no ResearcherID
+  orcidNumber                    String?              @map("orcid_number") // Número do ORCID do pesquisador
+  membershipStatus               MembershipStatusType @default(PENDING) @map("membership_status")
+  role                           UserRoleType         @default(NORMAL_USER)
+  institutionName                String               @map("institution_name")
+  departmentName                 String?              @map("department_name")
+  institutionComplement          String?              @map("institution_complement") // Complemento sobre a instituição (nome de laboratório, etc) 
+  occupation                     OccupationType
+  educationLevel                 EducationLevelType   @map("education_level")
+  identityType                   IdentityType         @map("identity_type")
+  identityDocument               String               @map("identity_document")
+  emailIsPublic                  Boolean              @map("email_is_public")
+  astrobiologyOrRelatedStartYear Int                  @map("astrobiology_or_related_start_year") // Ano em que começou a trabalhar com Astrobiologia ou área correlata (mantido como Int para eventuais queries de comparação) 
+  interestDescription            String               @map("interest_description")
+  receiveReports                 Boolean              @map("recieve_reports")
+  publicInformation              String               @map("public_information") // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
+  specificActivity               String               @map("specific_activity")
+  specificActivityDescription    String?              @map("specific_activity_description") // Descrição opcional da área caso o usuário marque a alternativa "Other"
 
   email         String    @unique
   passwordHash  String    @map("password_hash")
@@ -125,17 +131,20 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  activityAreaId Int            @map("activity_area_id")
-  activityArea   AreaOfActivity @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  activityAreaId Int          @map("activity_area_id")
+  ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  address        Address?        @relation()
-  enrolledCourse EnrolledCourse? @relation()
+  Address        Address?        @relation()
+  EnrolledCourse EnrolledCourse? @relation()
+  DirectorBoard  DirectorBoard?  @relation()
 
-  authenticationAudit AuthenticationAudit[]  @relation()
-  academicPublication AcademicPublications[] @relation()
-  blog                Blog[]                 @relation()
-  keyword             Keyword[]              @relation()
-  directorBoard       DirectorBoard[]        @relation()
+  AuthenticationAudit AuthenticationAudit[]  @relation()
+  AcademicPublication AcademicPublications[] @relation()
+  Blog                Blog[]                 @relation()
+  Keyword             Keyword[]              @relation()
+  NewsletterComment   NewsletterComment[]    @relation("comment_author")
+  CommentLike         CommentLike[]          @relation("user_likes")
+  UserMeeting         UserMeeting[]
 
   @@map("users")
 }
@@ -153,7 +162,7 @@ model Address {
   createdAt DateTime @default(now()) @map("created_at")
 
   userId Int  @unique @map("user_id")
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("addresses")
 }
@@ -170,20 +179,9 @@ model EnrolledCourse {
   createdAt DateTime @default(now()) @map("created_at")
 
   userId Int  @unique @map("user_id")
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("enrolled_courses")
-}
-
-model AreaOfActivity {
-  id   Int    @id @default(autoincrement())
-  area String @unique // Grande área de atuação será uma lista exibida ainda a determinar
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  user User[] @relation()
-
-  @@map("areas_of_activity")
 }
 
 model AcademicPublications {
@@ -195,14 +193,27 @@ model AcademicPublications {
   volume          String
   editionNumber   String   @map("edition_number")
   pageInterval    String   @map("page_interval")
-  doiLink         String   @map("DOI_link")
+  linkDOI         String   @map("link_DOI")
 
   createdAt DateTime @default(now()) @map("created_at")
 
   userId Int  @map("user_id")
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("academic_publications")
+}
+
+model ActivityArea {
+  id   Int              @id @default(autoincrement())
+  area String
+  type ActivityAreaType
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  User User[] @relation()
+
+  @@unique([type, area])
+  @@map("area_of_activity")
 }
 
 model Keyword {
@@ -211,7 +222,7 @@ model Keyword {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  user User[]
+  User User[] @relation()
 
   @@map("keywords")
 }
@@ -225,8 +236,8 @@ model DirectorBoard {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  userId Int  @map("user_id")
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId Int  @unique @map("user_id")
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("directors_board")
 }
@@ -244,37 +255,39 @@ model Category {
   @@map("categories")
 }
 
-// NOTE: Somente administradores podem realizar postagens
 model Blog {
-  id          Int    @id @default(autoincrement())
-  publicId    String @unique @default(uuid(7)) @map("public_id")
-  authorName  String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
-  htmlContent String @map("html_content") @db.Text
+  id         Int    @id @default(autoincrement())
+  publicId   String @unique @default(uuid(7)) @map("public_id")
+  authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
+  content    String @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   mainCategoryId Int      @map("main_category_id")
-  mainCategory   Category @relation("main_category_fk", fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  MainCategory   Category @relation("main_category_fk", fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   authorId Int?  @map("author_id")
-  author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  subcategories Category[] @relation("subcategory_fk")
+  Subcategories Category[] @relation("subcategory_fk")
 
   @@map("blogs")
 }
 
-model MeetingParticipation {
-  userId    Int
-  meetingId Int
-  attended  Boolean?
-
+model UserMeeting {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
 
-  presentation MeetingPresentation? @relation()
+  Presentation MeetingPresentation? @relation()
 
-  @@id([userId, meetingId])
+  userId Int?
+  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  meetingId Int
+  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([userId, meetingId])
   @@map("meeting_participations")
 }
 
@@ -288,9 +301,9 @@ model MeetingPresentation {
   description      String
   createdAt        DateTime         @default(now()) @map("created_at")
 
-  userId               Int                  @map("user_id")
-  meetingId            Int                  @map("meeting_id")
-  meetingParticipation MeetingParticipation @relation(fields: [userId, meetingId], references: [userId, meetingId], onUpdate: Cascade, onDelete: Cascade)
+  userId               Int         @map("user_id")
+  meetingId            Int         @map("meeting_id")
+  MeetingParticipation UserMeeting @relation(fields: [userId, meetingId], references: [userId, meetingId], onUpdate: Cascade, onDelete: Cascade)
 
   @@unique([userId, meetingId])
   @@map("meeting_presentations")
@@ -307,5 +320,75 @@ model Meeting {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  UserMeeting UserMeeting[] @relation()
+
   @@map("meetings")
+}
+
+model Newsletter {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @default(uuid(7)) @map("public_id")
+  title    String
+  edition  String
+  number   String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  NewsletterItems NewsletterItem[] @relation()
+
+  @@unique([edition, number]) // Só existe um número por edição
+  @@map("newsletters")
+}
+
+model NewsletterItem {
+  id         Int    @id @default(autoincrement())
+  title      String
+  content    String
+  image      String
+  linkReport String
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  newsletterId Int
+  Newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("newsletter_items")
+}
+
+model NewsletterComment {
+  id         Int    @id @default(autoincrement())
+  content    String
+  authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
+
+  // Likes em cache pra evitar muitas consultas aninhadas:
+  likesQuantity Int @default(0) @map("likes_quantity")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  userId Int?  @map("user_id")
+  User   User? @relation("comment_author", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  parentCommentId Int?               @map("parent_comment_id")
+  ParentComment   NewsletterComment? @relation("parent_comment", fields: [parentCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  ChildComments NewsletterComment[] @relation("parent_comment")
+
+  CommentLike CommentLike[] @relation()
+
+  @@map("comments")
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId Int?  @map("user_id")
+  User   User? @relation("user_likes", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  newsletterCommentId Int
+  NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("comment_likes")
 }

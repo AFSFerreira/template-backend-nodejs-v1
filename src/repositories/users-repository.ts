@@ -1,28 +1,15 @@
 import type {
-  EducationLevel,
-  Keyword,
-  Occupation,
+  EducationLevelType,
+  OccupationType,
   Prisma,
-  User,
-  UserRole,
+  UserRoleType,
 } from '@prisma/client'
-import type { ComparableType, OrderableType } from '@/@types/orderable-type'
+import type { AstrobiologyOrRelatedStartYearType } from '@/@types/astrobiology-or-related-start-year-type'
+import type { BirthDateComparisonType } from '@/@types/birth-date-comparison-type'
+import type { OrderableType } from '@/@types/orderable-type'
 import type { PaginationType } from '@/@types/pagination'
 import type { UserWithDetails } from '@/@types/user-with-details'
-
-type BirthDateComparisonType =
-  | { birthdate: Date; birthdateComparison: ComparableType }
-  | { birthdate?: Date; birthdateComparison?: ComparableType }
-
-type AstrobiologyOrRelatedStartYearType =
-  | {
-      astrobiologyOrRelatedStartYear: number
-      astrobiologyOrRelatedStartYearComparison: ComparableType
-    }
-  | {
-      astrobiologyOrRelatedStartYear?: number
-      astrobiologyOrRelatedStartYearComparison?: ComparableType
-    }
+import type { RegisterUserSchemaType } from '@/schemas/user/register-schema'
 
 export type GetAllUsersQuery = {
   fullName?: string
@@ -33,17 +20,24 @@ export type GetAllUsersQuery = {
   receiveReports?: boolean
   activityArea?: string
   keywords?: string[]
-  role?: UserRole
-  occupation?: Occupation
-  educationLevel?: EducationLevel
+  role?: UserRoleType
+  occupation?: OccupationType
+  educationLevel?: EducationLevelType
   createdAtOrder?: OrderableType
 } & PaginationType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 
 export interface CreateUserQuery {
-  user: Prisma.UserUncheckedCreateInput
-  keywords: Keyword[]
+  user: Omit<RegisterUserSchemaType['user'], 'password'> & {
+    passwordHash: string
+    profileImagePath: string
+  }
+  mainAreaActivity: RegisterUserSchemaType['mainAreaActivity']
+  address: RegisterUserSchemaType['address']
+  enrolledCourse: RegisterUserSchemaType['enrolledCourse']
+  academicPublications: RegisterUserSchemaType['academicPublications']
+  keywords: RegisterUserSchemaType['keywords']
 }
 
 export interface TokenData {
@@ -51,17 +45,22 @@ export interface TokenData {
   recoveryPasswordTokenExpiresAt: Date
 }
 
+export interface FindByEmailOrUsernameQuery {
+  email: string
+  username: string
+}
+
 export interface UsersRepository {
-  create: (data: CreateUserQuery) => Promise<User>
+  create: (query: CreateUserQuery) => Promise<UserWithDetails>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
   findByUsername: (username: string) => Promise<UserWithDetails | null>
   findById: (id: number) => Promise<UserWithDetails | null>
   findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
-    emailOrUsername: string,
-    usernameOrEmail?: string,
+    data: FindByEmailOrUsernameQuery,
   ) => Promise<UserWithDetails | null>
   listAllUsers: (query?: GetAllUsersQuery) => Promise<UserWithDetails[]>
+  setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
   update: (id: number, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>

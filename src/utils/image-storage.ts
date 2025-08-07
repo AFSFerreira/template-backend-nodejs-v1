@@ -3,6 +3,11 @@ import fs from 'fs/promises'
 import path from 'path'
 import sharp from 'sharp'
 
+export interface CompressedImageInfo {
+  finalImagePath: string
+  compressedImageBuffer: Buffer<ArrayBufferLike>
+}
+
 export async function saveCompressedImage(
   imageBuffer: Buffer,
   folderPath: string,
@@ -13,7 +18,7 @@ export async function saveCompressedImage(
     },
     quality: 70,
   },
-) {
+): Promise<CompressedImageInfo> {
   const fileNameHash = crypto.randomBytes(10).toString('hex')
   const timestamp = Date.now()
   const finalName = `${fileNameHash}-${timestamp}.webp`

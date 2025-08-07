@@ -17,17 +17,15 @@ export class PrismaKeywordRepository implements KeywordRepository {
     const keyword = await prisma.keyword.upsert({
       where: { value },
       update: {},
-      create: {
-        value,
-      },
+      create: { value },
     })
     return keyword
   }
 
-  async findManyByUserId(userId: string) {
+  async findManyByUserId(userId: number) {
     const keywords = await prisma.keyword.findMany({
       where: {
-        user: {
+        User: {
           some: {
             id: userId,
           },
@@ -37,11 +35,11 @@ export class PrismaKeywordRepository implements KeywordRepository {
     return keywords
   }
 
-  async delete(id: string) {
+  async delete(id: number) {
     await prisma.keyword.delete({ where: { id } })
   }
 
-  async update(id: string, data: Prisma.KeywordUpdateInput) {
+  async update(id: number, data: Prisma.KeywordUpdateInput) {
     const keyword = await prisma.keyword.update({ where: { id }, data })
     return keyword
   }

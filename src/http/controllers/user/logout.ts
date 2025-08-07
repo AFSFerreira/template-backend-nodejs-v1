@@ -1,4 +1,5 @@
 import { type FastifyRequest, type FastifyReply } from 'fastify'
+import { messages } from '@/constants/messages'
 import { env } from '@/env'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
@@ -18,5 +19,5 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
       httpOnly: true,
     })
     .status(200)
-    .send({ message: 'Logout successful' })
+    .send({ message: messages.info.logout })
 }

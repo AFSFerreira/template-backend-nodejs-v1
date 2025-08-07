@@ -2,11 +2,12 @@ import { Prisma } from '@prisma/client'
 
 export const userWithDetails = Prisma.validator<Prisma.UserDefaultArgs>()({
   include: {
-    address: true,
-    enrolledCourse: true,
-    activityArea: true,
-    academicPublication: true,
-    keyword: true,
+    Address: true,
+    EnrolledCourse: true,
+    ActivityArea: true,
+    AcademicPublication: true,
+    Keyword: true,
+    DirectorBoard: true,
   },
 })
 
