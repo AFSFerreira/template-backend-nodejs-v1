@@ -94,10 +94,12 @@ async function main() {
       receiveReports: true,
       loginAttempts: 0,
       lastLogin: new Date(),
-      activityAreaId: 1,
       identityType: IdentityType.CPF,
       identityDocument: "123.456.789-00",
       publicInformation: "ASTROBIÓLOGO",
+
+      activityAreaId: 1,
+      subActivityAreaId: 11,
 
       Keyword: {
         create: userKeywords.map((keyword) => ({
