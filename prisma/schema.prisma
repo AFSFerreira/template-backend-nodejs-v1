@@ -342,6 +342,9 @@ model Newsletter {
   edition  String
   number   String
 
+  // Comentários em cache pra evitar muitas consultas aninhadas:
+  commentsQuantity Int @default(0) @map("comments_quantity")
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -356,11 +359,11 @@ model NewsletterItem {
   title      String
   content    String
   image      String
-  linkReport String
+  linkReport String @map("link_report")
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  newsletterId Int
+  newsletterId Int        @map("newsletter_id")
   Newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("newsletter_items")
@@ -397,7 +400,7 @@ model CommentLike {
   userId Int?  @map("user_id")
   User   User? @relation("user_likes", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  newsletterCommentId Int
+  newsletterCommentId Int               @map("newsletter_coomment_id")
   NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("comment_likes")

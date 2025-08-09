@@ -234,6 +234,7 @@ CREATE TABLE "public"."newsletters" (
     "title" TEXT NOT NULL,
     "edition" TEXT NOT NULL,
     "number" TEXT NOT NULL,
+    "comments_quantity" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -246,9 +247,9 @@ CREATE TABLE "public"."newsletter_items" (
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "linkReport" TEXT NOT NULL,
+    "link_report" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "newsletterId" INTEGER NOT NULL,
+    "newsletter_id" INTEGER NOT NULL,
 
     CONSTRAINT "newsletter_items_pkey" PRIMARY KEY ("id")
 );
@@ -272,7 +273,7 @@ CREATE TABLE "public"."comment_likes" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
-    "newsletterCommentId" INTEGER NOT NULL,
+    "newsletter_coomment_id" INTEGER NOT NULL,
 
     CONSTRAINT "comment_likes_pkey" PRIMARY KEY ("id")
 );
@@ -393,7 +394,7 @@ ALTER TABLE "public"."meeting_participations" ADD CONSTRAINT "meeting_participat
 ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_user_id_meeting_id_fkey" FOREIGN KEY ("user_id", "meeting_id") REFERENCES "public"."meeting_participations"("userId", "meetingId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."newsletter_items" ADD CONSTRAINT "newsletter_items_newsletterId_fkey" FOREIGN KEY ("newsletterId") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."newsletter_items" ADD CONSTRAINT "newsletter_items_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -405,7 +406,7 @@ ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_parent_comment_id_fkey"
 ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletterCommentId_fkey" FOREIGN KEY ("newsletterCommentId") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_coomment_id_fkey" FOREIGN KEY ("newsletter_coomment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
