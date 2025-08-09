@@ -400,7 +400,7 @@ model CommentLike {
   userId Int?  @map("user_id")
   User   User? @relation("user_likes", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  newsletterCommentId Int               @map("newsletter_coomment_id")
+  newsletterCommentId Int               @map("newsletter_comment_id")
   NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("comment_likes")
