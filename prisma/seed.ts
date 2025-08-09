@@ -62,7 +62,7 @@ async function main() {
     })
   })
 
-  // Criando as áreas e sub-áreas de atividade:
+  // Criando as áreas e subáreas de atividade:
   await Promise.all([...activityAreasPromise, ...subActivityAreasPromise])
 
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
@@ -98,8 +98,6 @@ async function main() {
       identityType: IdentityType.CPF,
       identityDocument: "123.456.789-00",
       publicInformation: "ASTROBIÓLOGO",
-      activityAreaDescription: "PROFESSOR INTERINO",
-      subActivityAreaDescription: "PESQUISA EM ASTROBIOLOGIA",
 
       Keyword: {
         create: userKeywords.map((keyword) => ({

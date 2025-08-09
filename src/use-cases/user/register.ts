@@ -1,7 +1,7 @@
 import path from 'path'
 import { ActivityAreaType } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
+import { InvalidAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 import type { UserWithDetails } from '@/@types/user-with-details'
@@ -16,12 +16,12 @@ import {
 
 interface RegisterUseCaseRequest {
   imageBuffer?: Buffer
-  mainAreaActivity: RegisterUserSchemaType['mainAreaActivity']
-  keywords: RegisterUserSchemaType['keywords']
   user: RegisterUserSchemaType['user']
   address: RegisterUserSchemaType['address']
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
   academicPublications: RegisterUserSchemaType['academicPublications']
+  activityAreas: RegisterUserSchemaType['activityAreas']
+  keywords: RegisterUserSchemaType['keywords']
 }
 
 interface RegisterUseCaseResponse {
@@ -46,13 +46,26 @@ export class RegisterUseCase {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const mainAreaActivity = await this.activityAreasRepository.findByArea(
-      registerUseCaseInput.mainAreaActivity,
+    const activityArea = await this.activityAreasRepository.findByArea(
+      registerUseCaseInput.activityAreas.activityArea,
       ActivityAreaType.AREA_OF_ACTIVITY,
     )
 
-    if (mainAreaActivity === null) {
-      throw new InvalidMainAreaOfActivity()
+    if (activityArea === null) {
+      throw new InvalidAreaOfActivity(
+        registerUseCaseInput.activityAreas.activityArea,
+      )
+    }
+
+    const subActivityArea = await this.activityAreasRepository.findByArea(
+      registerUseCaseInput.activityAreas.subActivityArea,
+      ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+    )
+
+    if (subActivityArea === null) {
+      throw new InvalidAreaOfActivity(
+        registerUseCaseInput.activityAreas.subActivityArea,
+      )
     }
 
     // Persiste a imagem do usuário no backend:
@@ -90,7 +103,7 @@ export class RegisterUseCase {
                 'default-profile-pic.png',
               ),
       },
-      mainAreaActivity: registerUseCaseInput.mainAreaActivity,
+      activityAreas: registerUseCaseInput.activityAreas,
       address: registerUseCaseInput.address,
       academicPublications: registerUseCaseInput.academicPublications,
       enrolledCourse: registerUseCaseInput.enrolledCourse,

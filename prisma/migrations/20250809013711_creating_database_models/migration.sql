@@ -75,6 +75,7 @@ CREATE TABLE "public"."users" (
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "activity_area_id" INTEGER NOT NULL,
+    "sub_activity_area_id" INTEGER NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -189,7 +190,7 @@ CREATE TABLE "public"."blogs" (
 CREATE TABLE "public"."meeting_participations" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" INTEGER,
+    "userId" INTEGER NOT NULL,
     "meetingId" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_participations_pkey" PRIMARY KEY ("id")
@@ -219,6 +220,7 @@ CREATE TABLE "public"."meetings" (
     "image" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "location" TEXT NOT NULL,
+    "participations_count" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -358,6 +360,9 @@ ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audi
 ALTER TABLE "public"."users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -379,7 +384,7 @@ ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_main_category_id_fkey" FOREIG
 ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_participations" ADD CONSTRAINT "meeting_participations_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participations" ADD CONSTRAINT "meeting_participations_userId_fkey" FOREIGN KEY ("userId") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_participations" ADD CONSTRAINT "meeting_participations_meetingId_fkey" FOREIGN KEY ("meetingId") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

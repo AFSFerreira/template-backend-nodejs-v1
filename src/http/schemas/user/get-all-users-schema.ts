@@ -1,24 +1,30 @@
 import {
   EducationLevelType,
+  MembershipStatusType,
   OccupationType,
   UserRoleType,
 } from '@prisma/client'
 import { z } from 'zod'
+import { emailSchema } from '../utils/email'
 import { keywordSchema } from '../utils/keyword'
-import { nonemptyTextSchema } from '../utils/nonempty-text'
+import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
+import { usernameSchema } from '../utils/username'
 import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
 import { messages } from '@/constants/messages'
 
 export const getAllUsersParamsSchema = z
   .object({
-    fullName: nonemptyTextSchema.optional(),
-    username: nonemptyTextSchema.optional(),
-    institutionName: nonemptyTextSchema.optional(),
-    departmentName: nonemptyTextSchema.optional(),
-    specificActivity: nonemptyTextSchema.optional(),
+    fullName: upperCaseTextSchema.optional(),
+    email: emailSchema.optional(),
+    username: usernameSchema.optional(),
+    institutionName: upperCaseTextSchema.optional(),
+    role: z.enum(UserRoleType).optional(),
+    membershipStatus: z.enum(MembershipStatusType).optional(),
+    departmentName: upperCaseTextSchema.optional(),
+    specificActivity: upperCaseTextSchema.optional(),
     // REVIEW: verificar se o tipo booleano está passando pelo parse corretamente
     receiveReports: z.coerce.boolean().optional(),
-    activityArea: nonemptyTextSchema.optional(),
+    activityArea: upperCaseTextSchema.optional(),
     keywords: keywordSchema.optional(),
     userRole: z.enum(UserRoleType).optional(),
     occupation: z.enum(OccupationType).optional(),

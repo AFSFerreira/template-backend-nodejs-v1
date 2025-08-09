@@ -20,7 +20,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [
         authenticationMiddleware,
-        verifyPermissions([UserRoleType.ADMIN]),
+        verifyPermissions([UserRoleType.ADMIN, UserRoleType.MANAGER]),
       ],
     },
     getAllUsers,
@@ -30,7 +30,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [
         authenticationMiddleware,
-        verifyPermissions([UserRoleType.ADMIN]),
+        verifyPermissions([UserRoleType.ADMIN, UserRoleType.MANAGER]),
       ],
     },
     findByPublicUserId,
@@ -40,7 +40,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [
         authenticationMiddleware,
-        verifyPermissions([UserRoleType.ADMIN]),
+        verifyPermissions([UserRoleType.ADMIN, UserRoleType.MANAGER]),
       ],
     },
     exportData,
@@ -59,11 +59,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post('/sessions', authenticate)
   app.post('/sessions/refresh-token', refreshToken)
   app.post('/forgot-password', forgotPassword)
-  app.patch(
-    '/reset-password',
-    { onRequest: [authenticationMiddleware] },
-    resetPassword,
-  )
+  app.patch('/reset-password', resetPassword)
   app.delete(
     '/sessions',
     {

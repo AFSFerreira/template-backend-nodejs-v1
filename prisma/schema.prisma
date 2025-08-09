@@ -132,7 +132,10 @@ model User {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   activityAreaId Int          @map("activity_area_id")
-  ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  ActivityArea   ActivityArea @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  subActivityAreaId Int          @map("sub_activity_area_id")
+  SubActivityArea   ActivityArea @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   Address        Address?        @relation()
   EnrolledCourse EnrolledCourse? @relation()
@@ -214,7 +217,8 @@ model ActivityArea {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  User                 User[]                 @relation()
+  UserActivityArea     User[]                 @relation("activity_area")
+  UserSubActivityArea  User[]                 @relation("sub_activity_area")
   AcademicPublications AcademicPublications[] @relation()
 
   @@unique([type, area])

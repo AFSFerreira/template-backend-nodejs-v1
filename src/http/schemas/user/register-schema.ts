@@ -15,107 +15,136 @@ import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
 import { messages } from '@/constants/messages'
 
-export const registerBodySchema = z.object({
-  user: z
-    .object({
-      email: emailSchema,
-      password: passwordSchema,
-      fullName: upperCaseTextSchema,
-      username: usernameSchema,
-      birthdate: z.coerce.date(),
-      linkLattes: z.url().optional(),
-      linkGoogleScholar: z.url().optional(),
-      linkResearcherId: z.url().optional(),
-      orcidNumber: orcidNumberSchema.optional(),
-      institutionName: upperCaseTextSchema,
-      departmentName: upperCaseTextSchema.optional(),
-      institutionComplement: upperCaseTextSchema.optional(),
-      occupation: z.enum(OccupationType),
-      educationLevel: z.enum(EducationLevelType),
-      identityType: z.enum(IdentityType),
-      identityDocument: upperCaseTextSchema,
-      // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
-      emailIsPublic: z.coerce.boolean(),
-      astrobiologyOrRelatedStartYear: z.coerce.number(),
-      interestDescription: nonemptyTextSchema,
-      receiveReports: z.coerce.boolean(),
-      // REVIEW: Confirmar se estes campos são obrigatórios:
-      publicInformation: nonemptyTextSchema,
-      activityAreaDescription: nonemptyTextSchema.optional(),
-      subActivityAreaDescription: nonemptyTextSchema.optional(),
-    })
-    .refine(
-      (data) => {
-        if (data.identityType !== IdentityType.CPF) return true
+export const registerBodySchema = z
+  .object({
+    user: z
+      .object({
+        email: emailSchema,
+        password: passwordSchema,
+        fullName: upperCaseTextSchema,
+        username: usernameSchema,
+        birthdate: z.coerce.date(),
+        linkLattes: z.url().optional(),
+        linkGoogleScholar: z.url().optional(),
+        linkResearcherId: z.url().optional(),
+        orcidNumber: orcidNumberSchema.optional(),
+        institutionName: upperCaseTextSchema,
+        departmentName: upperCaseTextSchema.optional(),
+        institutionComplement: upperCaseTextSchema.optional(),
+        occupation: z.enum(OccupationType),
+        educationLevel: z.enum(EducationLevelType),
+        identityType: z.enum(IdentityType),
+        identityDocument: upperCaseTextSchema,
+        // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
+        emailIsPublic: z.coerce.boolean(),
+        astrobiologyOrRelatedStartYear: z.coerce.number(),
+        interestDescription: nonemptyTextSchema,
+        receiveReports: z.coerce.boolean(),
+        // REVIEW: Confirmar se estes campos são obrigatórios:
+        publicInformation: nonemptyTextSchema,
+        activityAreaDescription: nonemptyTextSchema.optional(),
+        subActivityAreaDescription: nonemptyTextSchema.optional(),
+      })
+      .refine(
+        (data) => {
+          if (data.identityType !== IdentityType.CPF) return true
 
-        return cpfSchema.safeParse(data.identityDocument)
-      },
-      {
-        error: messages.validation.invalidCpf,
-      },
-    ),
+          return cpfSchema.safeParse(data.identityDocument)
+        },
+        {
+          error: messages.validation.invalidCpf,
+        },
+      ),
 
-  mainAreaActivity: upperCaseTextSchema,
+    activityAreas: z.object({
+      activityArea: upperCaseTextSchema,
+      subActivityArea: upperCaseTextSchema,
+    }),
 
-  keywords: keywordSchema,
+    keywords: keywordSchema,
 
-  // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
-  address: z.object({
-    zip: upperCaseTextSchema,
-    number: upperCaseTextSchema,
-    district: upperCaseTextSchema,
-    street: upperCaseTextSchema,
-    city: upperCaseTextSchema,
-    country: upperCaseTextSchema,
-    state: upperCaseTextSchema,
-  }),
+    // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
+    address: z.object({
+      zip: upperCaseTextSchema,
+      number: upperCaseTextSchema,
+      district: upperCaseTextSchema,
+      street: upperCaseTextSchema,
+      city: upperCaseTextSchema,
+      country: upperCaseTextSchema,
+      state: upperCaseTextSchema,
+    }),
 
-  enrolledCourse: z
-    .object({
-      courseName: upperCaseTextSchema.optional(),
-      startGraduationDate: monthYearSchema,
-      expectedGraduationDate: monthYearSchema,
-      supervisorName: upperCaseTextSchema.optional(),
-      scholarshipHolder: z.coerce.boolean(),
-      sponsoringOrganization: upperCaseTextSchema.optional(),
-    })
-    .refine(
-      (data) => {
-        // A data prevista para a conclusão do curso não pode ser antes da data de ínicio do curso:
-        return data.expectedGraduationDate >= data.startGraduationDate
-      },
-      {
-        error: messages.validation.completionDateBeforeStartDate,
-      },
-    )
-    .refine(
-      (data) => {
-        // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-        if (data.scholarshipHolder)
-          return data.sponsoringOrganization !== undefined
+    enrolledCourse: z
+      .object({
+        courseName: upperCaseTextSchema.optional(),
+        startGraduationDate: monthYearSchema,
+        expectedGraduationDate: monthYearSchema,
+        supervisorName: upperCaseTextSchema.optional(),
+        scholarshipHolder: z.coerce.boolean(),
+        sponsoringOrganization: upperCaseTextSchema.optional(),
+      })
+      .refine(
+        (data) => {
+          // A data prevista para a conclusão do curso não pode ser antes da data de ínicio do curso:
+          return data.expectedGraduationDate >= data.startGraduationDate
+        },
+        {
+          error: messages.validation.completionDateBeforeStartDate,
+        },
+      )
+      .refine(
+        (data) => {
+          // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
+          if (data.scholarshipHolder)
+            return data.sponsoringOrganization !== undefined
 
-        return data.sponsoringOrganization === undefined
-      },
-      {
-        error: messages.validation.scholarshipHolderAndSponsoringOrganization,
-      },
-    ),
+          return data.sponsoringOrganization === undefined
+        },
+        {
+          error: messages.validation.scholarshipHolderAndSponsoringOrganization,
+        },
+      ),
 
-  academicPublications: z
-    .array(
-      z.object({
-        title: upperCaseTextSchema,
-        authors: upperCaseTextSchema,
-        publicationDate: monthYearSchema,
-        tag: upperCaseTextSchema,
-        journalName: upperCaseTextSchema,
-        volume: upperCaseTextSchema,
-        editionNumber: upperCaseTextSchema,
-        pageInterval: upperCaseTextSchema,
-        linkDOI: z.url(),
-      }),
-    )
-    .max(5),
-})
+    academicPublications: z
+      .array(
+        z.object({
+          title: upperCaseTextSchema,
+          authors: upperCaseTextSchema,
+          publicationDate: monthYearSchema,
+          tag: upperCaseTextSchema,
+          journalName: upperCaseTextSchema,
+          volume: upperCaseTextSchema,
+          editionNumber: upperCaseTextSchema,
+          pageInterval: upperCaseTextSchema,
+          linkDOI: z.url(),
+        }),
+      )
+      .max(5),
+  })
+  .refine(
+    (data) => {
+      // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
+      if (data.activityAreas.activityArea === 'OUTRA')
+        return data.user.activityAreaDescription !== undefined
+
+      return data.user.activityAreaDescription === undefined
+    },
+    {
+      error: messages.validation.activityAreaMissingDescription,
+      path: ['activityAreas', 'activityArea'],
+    },
+  )
+  .refine(
+    (data) => {
+      // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
+      if (data.activityAreas.subActivityArea === 'OUTRA')
+        return data.user.subActivityAreaDescription !== undefined
+      return data.user.subActivityAreaDescription === undefined
+    },
+    {
+      error: messages.validation.activityAreaMissingDescription,
+      path: ['activityAreas', 'subActivityArea'],
+    },
+  )
 
 export type RegisterUserSchemaType = z.infer<typeof registerBodySchema>

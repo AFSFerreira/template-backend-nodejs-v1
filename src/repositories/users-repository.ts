@@ -1,30 +1,13 @@
-import type {
-  EducationLevelType,
-  OccupationType,
-  Prisma,
-  UserRoleType,
-} from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import type { AstrobiologyOrRelatedStartYearType } from '@/@types/astrobiology-or-related-start-year-type'
 import type { BirthDateComparisonType } from '@/@types/birth-date-comparison-type'
-import type { OrderableType } from '@/@types/orderable-type'
 import type { PaginationType } from '@/@types/pagination'
 import type { UserWithDetails } from '@/@types/user-with-details'
+import type { GetAllUsersSchemaType } from '@/http/schemas/user/get-all-users-schema'
 import type { RegisterUserSchemaType } from '@/schemas/user/register-schema'
 
-export type GetAllUsersQuery = {
-  fullName?: string
-  username?: string
-  institutionName?: string
-  departmentName?: string
-  specificActivity?: string
-  receiveReports?: boolean
-  activityArea?: string
-  keywords?: string[]
-  role?: UserRoleType
-  occupation?: OccupationType
-  educationLevel?: EducationLevelType
-  createdAtOrder?: OrderableType
-} & PaginationType &
+export type GetAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
+  PaginationType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 
@@ -33,7 +16,7 @@ export interface CreateUserQuery {
     passwordHash: string
     profileImagePath: string
   }
-  mainAreaActivity: RegisterUserSchemaType['mainAreaActivity']
+  activityAreas: RegisterUserSchemaType['activityAreas']
   address: RegisterUserSchemaType['address']
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
   academicPublications: RegisterUserSchemaType['academicPublications']

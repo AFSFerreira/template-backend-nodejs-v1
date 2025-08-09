@@ -13,6 +13,7 @@ import type {
   UsersRepository,
 } from '../users-repository'
 import type { ComparableType } from '@/@types/orderable-type'
+import type { QueryMode } from '@/@types/query-mode'
 import {
   type UserWithDetails,
   userWithDetails,
@@ -23,7 +24,7 @@ export class PrismaUsersRepository implements UsersRepository {
   static buildStartsWithFilter(value: any) {
     if (value === undefined) return undefined
 
-    return { startsWith: value }
+    return { startsWith: value, mode: 'insensitive' as QueryMode }
   }
 
   static buildComparableFilter(
@@ -81,8 +82,16 @@ export class PrismaUsersRepository implements UsersRepository {
         ActivityArea: {
           connect: {
             type_area: {
-              area: query.mainAreaActivity,
+              area: query.activityAreas.activityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
+            },
+          },
+        },
+        SubActivityArea: {
+          connect: {
+            type_area: {
+              area: query.activityAreas.subActivityArea,
+              type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
             },
           },
         },
@@ -159,6 +168,7 @@ export class PrismaUsersRepository implements UsersRepository {
       orderBy: { createdAt: query.createdAtOrder },
       where: {
         fullName: PrismaUsersRepository.buildStartsWithFilter(query.fullName),
+        email: PrismaUsersRepository.buildStartsWithFilter(query.email),
         username: PrismaUsersRepository.buildStartsWithFilter(query.username),
         institutionName: PrismaUsersRepository.buildStartsWithFilter(
           query.institutionName,
@@ -175,15 +185,15 @@ export class PrismaUsersRepository implements UsersRepository {
             query.astrobiologyOrRelatedStartYearComparison,
             query.astrobiologyOrRelatedStartYear,
           ),
-
-        receiveReports: query.receiveReports,
-        occupation: query.occupation,
-        educationLevel: query.educationLevel,
-        role: query.role,
         ActivityArea: {
           area: PrismaUsersRepository.buildStartsWithFilter(query.activityArea),
           type: ActivityAreaType.AREA_OF_ACTIVITY,
         },
+        receiveReports: query.receiveReports,
+        occupation: query.occupation,
+        educationLevel: query.educationLevel,
+        role: query.role,
+        membershipStatus: query.membershipStatus,
         AND: query.keywords?.map((keyword) => ({
           Keyword: {
             some: {
