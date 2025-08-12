@@ -1,6 +1,8 @@
 import { UserRoleType } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
+import { checkEmailAvailability } from './check-email-availability'
+import { checkUsernameAvailability } from './check-username-availability'
 import { exportData } from './export-data'
 import { findByPublicUserId } from './find-by-public-id'
 import { forgotPassword } from './forgot-password'
@@ -64,6 +66,10 @@ export async function userRoutes(app: FastifyInstance) {
     },
     register,
   )
+
+  // Availability check routes
+  app.get('/email/availability/:email', checkEmailAvailability)
+  app.get('/username/availability/:username', checkUsernameAvailability)
 
   // Authentication Routes:
   app.post('/sessions', authenticate)
