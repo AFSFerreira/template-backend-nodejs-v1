@@ -206,7 +206,7 @@ model AcademicPublications {
   userId Int  @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  activityAreaId Int // Referencia uma sub-area de atividade
+  activityAreaId Int
   ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@map("academic_publications")
@@ -282,7 +282,7 @@ model Category {
 model Blog {
   id         Int    @id @default(autoincrement())
   publicId   String @unique @default(uuid(7)) @map("public_id")
-  authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
+  authorName String @map("author_name")
   content    String @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -389,7 +389,6 @@ model Newsletter {
   edition  String
   number   String
 
-  // Comentários em cache pra evitar muitas consultas aninhadas:
   commentsQuantity Int @default(0) @map("comments_quantity")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -397,7 +396,7 @@ model Newsletter {
 
   NewsletterItems NewsletterItem[] @relation()
 
-  @@unique([edition, number]) // Só existe um número por edição
+  @@unique([edition, number])
   @@map("newsletters")
 }
 
@@ -419,7 +418,7 @@ model NewsletterItem {
 model NewsletterComment {
   id         Int    @id @default(autoincrement())
   content    String
-  authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
+  authorName String @map("author_name")
 
   likesQuantity Int @default(0) @map("likes_quantity")
 
