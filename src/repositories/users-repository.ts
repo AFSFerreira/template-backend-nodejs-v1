@@ -6,7 +6,7 @@ import type { UserWithDetails } from '@/@types/user-with-details'
 import type { GetAllUsersSchemaType } from '@/http/schemas/user/get-all-users-schema'
 import type { RegisterUserSchemaType } from '@/schemas/user/register-schema'
 
-export type GetAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
+export type ListAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
   PaginationType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
@@ -34,7 +34,7 @@ export interface FindByEmailOrUsernameQuery {
   username: string
 }
 
-export interface GetAllUsersResponse {
+export interface ListAllUsersResponse {
   users: UserWithDetails[]
   totalItems: number
 }
@@ -48,7 +48,7 @@ export interface UsersRepository {
   findByEmailOrUsername: (
     data: FindByEmailOrUsernameQuery,
   ) => Promise<UserWithDetails | null>
-  listAllUsers: (query?: GetAllUsersQuery) => Promise<GetAllUsersResponse>
+  listAllUsers: (query?: ListAllUsersQuery) => Promise<ListAllUsersResponse>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>

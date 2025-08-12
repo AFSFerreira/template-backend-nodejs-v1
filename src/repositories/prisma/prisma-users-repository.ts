@@ -8,7 +8,7 @@ import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
   FindByEmailOrUsernameQuery,
-  GetAllUsersQuery,
+  ListAllUsersQuery,
   TokenData,
   UsersRepository,
 } from '../users-repository'
@@ -45,7 +45,7 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  static buildGetAllUsersWhereInput(data: GetAllUsersQuery) {
+  static buildGetAllUsersWhereInput(data: ListAllUsersQuery) {
     return {
       fullName: PrismaUsersRepository.buildStartsWithFilter(data.fullName),
       email: PrismaUsersRepository.buildStartsWithFilter(data.email),
@@ -194,17 +194,15 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async listAllUsers(query?: GetAllUsersQuery) {
-    if (query === undefined) {
+  async listAllUsers(query?: ListAllUsersQuery) {
+    if (query?.page === undefined || query?.limit === undefined) {
       const users = await prisma.user.findMany({
         include: userWithDetails.include,
       })
-      const totalItems = users.length
-      return { users, totalItems }
+      return { users, totalItems: users.length }
     }
 
-    const offset =
-      query.limit !== undefined ? (query.page - 1) * query.limit : undefined
+    const offset = (query.page - 1) * query.limit
 
     const [totalItems, users] = await prisma.$transaction([
       prisma.user.count({

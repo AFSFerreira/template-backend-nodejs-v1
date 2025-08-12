@@ -14,6 +14,7 @@ import { passwordSchema } from '../utils/password'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
 import { messages } from '@/constants/messages'
+import { MAX_INTEREST_DESCRIPTION_SIZE } from '@/constants/zod-constants'
 
 export const registerBodySchema = z
   .object({
@@ -37,7 +38,9 @@ export const registerBodySchema = z
         // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
         emailIsPublic: z.coerce.boolean(),
         astrobiologyOrRelatedStartYear: z.coerce.number(),
-        interestDescription: nonemptyTextSchema,
+        interestDescription: nonemptyTextSchema.max(
+          MAX_INTEREST_DESCRIPTION_SIZE,
+        ),
         receiveReports: z.coerce.boolean(),
         // REVIEW: Confirmar se estes campos são obrigatórios:
         publicInformation: nonemptyTextSchema,

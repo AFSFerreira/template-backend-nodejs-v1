@@ -19,12 +19,8 @@ export class GetAllUsersUseCase {
   async execute(
     getAllUsersInput: GetAllUsersUseCaseRequest,
   ): Promise<GetAllUsersCaseResponse> {
-    const usersInfo = await this.usersRepository.listAllUsers({
-      ...getAllUsersInput,
-      occupation: getAllUsersInput.occupation,
-      educationLevel: getAllUsersInput.educationLevel,
-    })
+    const usersInfo = await this.usersRepository.listAllUsers(getAllUsersInput)
 
-    return { ...usersInfo }
+    return usersInfo
   }
 }
