@@ -121,7 +121,7 @@ export class RegisterUseCase {
       user: {
         ...filteredUserInfo,
         passwordHash,
-        profileImagePath:
+        profileImage:
           profileImageInfo !== undefined
             ? profileImageInfo.finalImagePath
             : path.resolve(

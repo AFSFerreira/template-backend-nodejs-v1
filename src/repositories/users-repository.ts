@@ -14,7 +14,7 @@ export type ListAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
 export interface CreateUserQuery {
   user: Omit<RegisterUserSchemaType['user'], 'password'> & {
     passwordHash: string
-    profileImagePath: string
+    profileImage: string
   }
   activityArea: RegisterUserSchemaType['activityArea']
   address: RegisterUserSchemaType['address']
