@@ -99,25 +99,25 @@ model User {
   username                       String               @unique
   birthdate                      DateTime
   profileImage                   String               @map("profile_image_path")
-  linkLattes                     String?              @map("link_lattes") // Link externo para o currículo lattes do usuário
-  linkGoogleScholar              String?              @map("link_google_scholar") // Link externo para o perfil do usuário no Google Scholar
-  linkResearcherId               String?              @map("link_researcherID") // Link externo para o perfil do usuário no ResearcherID
-  orcidNumber                    String?              @map("orcid_number") // Número do ORCID do pesquisador
+  linkLattes                     String?              @map("link_lattes")
+  linkGoogleScholar              String?              @map("link_google_scholar")
+  linkResearcherId               String?              @map("link_researcherID")
+  orcidNumber                    String?              @map("orcid_number")
   membershipStatus               MembershipStatusType @default(PENDING) @map("membership_status")
   role                           UserRoleType         @default(NORMAL_USER)
   departmentName                 String?              @map("department_name")
-  institutionComplement          String?              @map("institution_complement") // Complemento sobre a instituição (nome de laboratório, etc) 
+  institutionComplement          String?              @map("institution_complement")
   occupation                     OccupationType
   educationLevel                 EducationLevelType   @map("education_level")
   identityType                   IdentityType         @map("identity_type")
   identityDocument               String               @map("identity_document")
   emailIsPublic                  Boolean              @map("email_is_public")
-  astrobiologyOrRelatedStartYear Int                  @map("astrobiology_or_related_start_year") // Ano em que começou a trabalhar com Astrobiologia ou área correlata (mantido como Int para eventuais queries de comparação) 
+  astrobiologyOrRelatedStartYear Int                  @map("astrobiology_or_related_start_year")
   interestDescription            String               @map("interest_description")
   receiveReports                 Boolean              @map("recieve_reports")
-  publicInformation              String               @map("public_information") // Outras informações públicas (projetos de pesquisa em andamento, outros interesses)
+  publicInformation              String               @map("public_information")
   activityAreaDescription        String?              @map("activity_area_description")
-  subActivityAreaDescription     String?              @map("sub_activity_area_description") // Descrição opcional da área caso o usuário marque a alternativa "Other"
+  subActivityAreaDescription     String?              @map("sub_activity_area_description")
 
   email         String    @unique
   passwordHash  String    @map("password_hash")
@@ -176,11 +176,11 @@ model Address {
 model EnrolledCourse {
   id                     Int       @id @default(autoincrement())
   courseName             String?   @map("course_name")
-  startGraduationDate    DateTime? @map("start_graduation_date") // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
-  expectedGraduationDate DateTime? @map("expected_graduation_date") // Formato de retorno: MM/AAAA (mantido como DateTime para facilitar queries de comparação)
+  startGraduationDate    DateTime? @map("start_graduation_date")
+  expectedGraduationDate DateTime? @map("expected_graduation_date")
   supervisorName         String?   @map("supervisor_name")
-  scholarshipHolder      Boolean   @map("scholarship_holder") // O usuário é bolsista?
-  sponsoringOrganization String?   @map("sponsoring_organization") // Agência / órgão responsável pela bolsa
+  scholarshipHolder      Boolean   @map("scholarship_holder")
+  sponsoringOrganization String?   @map("sponsoring_organization")
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -253,7 +253,7 @@ model Keyword {
 model DirectorBoard {
   id                        Int    @id @default(autoincrement())
   publicId                  String @unique @default(uuid(7)) @map("public_id")
-  directorBoardProfileImage String @map("director_board_profile_image") // NOTE: Por definição, a imagem de directorBoard corresponde à imagem de user
+  directorBoardProfileImage String @map("director_board_profile_image")
   aboutMe                   String @map("about_me")
   position                  String
 
@@ -421,7 +421,6 @@ model NewsletterComment {
   content    String
   authorName String @map("author_name") // Para persistir o nome mesmo após a deleção do usuário
 
-  // Likes em cache pra evitar muitas consultas aninhadas:
   likesQuantity Int @default(0) @map("likes_quantity")
 
   createdAt DateTime @default(now()) @map("created_at")
