@@ -40,7 +40,7 @@ async function main() {
     "OUTRA"
   ]
 
-  const activityAreasPromise = activityAreas.map(async activityArea => {
+  const activityAreasPromise = activityAreas.map(async (activityArea) => {
     await prisma.activityArea.upsert({
       where: { type_area: { area: activityArea, type: ActivityAreaType.AREA_OF_ACTIVITY } },
       update: {},
