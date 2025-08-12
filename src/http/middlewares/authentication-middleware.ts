@@ -14,7 +14,9 @@ export async function authenticationMiddleware(
   try {
     const headerAuthorization = request.headers.authorization
     if (headerAuthorization === undefined) {
-      throw new Error()
+      return await reply
+        .status(401)
+        .send({ message: messages.errors.unauthorized })
     }
 
     const [, token] = headerAuthorization.split(' ')

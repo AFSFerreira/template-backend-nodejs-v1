@@ -5,6 +5,7 @@ import { exportData } from './export-data'
 import { findByPublicUserId } from './find-by-public-id'
 import { forgotPassword } from './forgot-password'
 import { getAllUsers } from './get-all-users'
+import { getUserProfile } from './get-user-profile'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
@@ -44,6 +45,15 @@ export async function userRoutes(app: FastifyInstance) {
       ],
     },
     exportData,
+  )
+
+  // User Routes:
+  app.get(
+    '/me',
+    {
+      preHandler: [authenticationMiddleware],
+    },
+    getUserProfile,
   )
 
   // Register Routes:
