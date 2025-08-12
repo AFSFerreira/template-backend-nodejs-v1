@@ -61,8 +61,13 @@ export class PrismaUsersRepository implements UsersRepository {
         EnrolledCourse: {
           create: query.enrolledCourse,
         },
+        Institution: {
+          connect: {
+            name: query.institution.name,
+          },
+        },
         AcademicPublication: {
-          create: query.academicPublications.map((academicPublication) => ({
+          create: query.academicPublication.map((academicPublication) => ({
             ...academicPublication,
             ActivityArea: {
               connect: {
@@ -75,14 +80,14 @@ export class PrismaUsersRepository implements UsersRepository {
           })),
         },
         Keyword: {
-          create: query.keywords?.map((value: string) => ({
+          create: query.keyword?.map((value: string) => ({
             value,
           })),
         },
         ActivityArea: {
           connect: {
             type_area: {
-              area: query.activityAreas.activityArea,
+              area: query.activityArea.activityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
             },
           },
@@ -90,7 +95,7 @@ export class PrismaUsersRepository implements UsersRepository {
         SubActivityArea: {
           connect: {
             type_area: {
-              area: query.activityAreas.subActivityArea,
+              area: query.activityArea.subActivityArea,
               type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
             },
           },
@@ -170,9 +175,6 @@ export class PrismaUsersRepository implements UsersRepository {
         fullName: PrismaUsersRepository.buildStartsWithFilter(query.fullName),
         email: PrismaUsersRepository.buildStartsWithFilter(query.email),
         username: PrismaUsersRepository.buildStartsWithFilter(query.username),
-        institutionName: PrismaUsersRepository.buildStartsWithFilter(
-          query.institutionName,
-        ),
         departmentName: PrismaUsersRepository.buildStartsWithFilter(
           query.departmentName,
         ),
@@ -188,6 +190,11 @@ export class PrismaUsersRepository implements UsersRepository {
         ActivityArea: {
           area: PrismaUsersRepository.buildStartsWithFilter(query.activityArea),
           type: ActivityAreaType.AREA_OF_ACTIVITY,
+        },
+        Institution: {
+          name: PrismaUsersRepository.buildStartsWithFilter(
+            query.institutionName,
+          ),
         },
         receiveReports: query.receiveReports,
         occupation: query.occupation,

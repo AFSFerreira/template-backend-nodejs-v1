@@ -1,5 +1,8 @@
-import type { ActivityAreaType, Prisma } from '@prisma/client'
-import type { ActivityAreaRepository } from '../activity-area-repository'
+import type { Prisma } from '@prisma/client'
+import type {
+  ActivityAreaQuery,
+  ActivityAreaRepository,
+} from '../activity-area-repository'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaActivityAreaRepository implements ActivityAreaRepository {
@@ -17,7 +20,7 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
     return area
   }
 
-  async findByArea(area: string, type: ActivityAreaType) {
+  async findByArea({ area, type }: ActivityAreaQuery) {
     const activityArea = await prisma.activityArea.findUnique({
       where: {
         type_area: {
@@ -27,6 +30,15 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
       },
     })
     return activityArea
+  }
+
+  async findManyByArea(areas: ActivityAreaQuery[]) {
+    const activityAreas = await prisma.activityArea.findMany({
+      where: {
+        OR: areas,
+      },
+    })
+    return activityAreas
   }
 
   async delete(id: number) {

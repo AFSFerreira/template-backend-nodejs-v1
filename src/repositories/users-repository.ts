@@ -16,11 +16,12 @@ export interface CreateUserQuery {
     passwordHash: string
     profileImagePath: string
   }
-  activityAreas: RegisterUserSchemaType['activityAreas']
+  activityArea: RegisterUserSchemaType['activityArea']
   address: RegisterUserSchemaType['address']
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-  academicPublications: RegisterUserSchemaType['academicPublications']
-  keywords: RegisterUserSchemaType['keywords']
+  academicPublication: RegisterUserSchemaType['academicPublications']
+  keyword: RegisterUserSchemaType['keyword']
+  institution: RegisterUserSchemaType['institution']
 }
 
 export interface TokenData {

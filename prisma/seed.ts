@@ -65,6 +65,15 @@ async function main() {
   // Criando as áreas e subáreas de atividade:
   await Promise.all([...activityAreasPromise, ...subActivityAreasPromise])
 
+  // Criando a instituição:
+  const institution = await prisma.institution.upsert({
+    where: { name: "UNIVERSIDADE FEDERAL FLUMINENTE" },
+    update: {},
+    create: {
+      name: "UNIVERSIDADE FEDERAL FLUMINENTE",
+    }
+  })
+
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
   const user = await prisma.user.upsert({
@@ -83,7 +92,6 @@ async function main() {
       orcidNumber: '0000-0001-2345-6789',
       membershipStatus: MembershipStatusType.APPROVED,
       role: UserRoleType.ADMIN,
-      institutionName: 'UNIVERSIDADE FEDERAL DA LUA',
       departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
       institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
       occupation: OccupationType.RESEARCHER,
@@ -100,6 +108,8 @@ async function main() {
 
       activityAreaId: 1,
       subActivityAreaId: 11,
+      
+      institutionId: institution.id,
 
       Keyword: {
         create: userKeywords.map((keyword) => ({

@@ -28,7 +28,6 @@ export const registerBodySchema = z
         linkGoogleScholar: z.url().optional(),
         linkResearcherId: z.url().optional(),
         orcidNumber: orcidNumberSchema.optional(),
-        institutionName: upperCaseTextSchema,
         departmentName: upperCaseTextSchema.optional(),
         institutionComplement: upperCaseTextSchema.optional(),
         occupation: z.enum(OccupationType),
@@ -56,14 +55,17 @@ export const registerBodySchema = z
         },
       ),
 
-    activityAreas: z.object({
+    activityArea: z.object({
       activityArea: upperCaseTextSchema,
       subActivityArea: upperCaseTextSchema,
     }),
 
-    keywords: keywordSchema,
+    institution: z.object({
+      name: upperCaseTextSchema,
+    }),
 
-    // REVIEW: Avaliar validação de endereço com validações mais sofisticadas
+    keyword: keywordSchema,
+
     address: z.object({
       zip: upperCaseTextSchema,
       number: upperCaseTextSchema,
@@ -72,6 +74,7 @@ export const registerBodySchema = z
       city: upperCaseTextSchema,
       country: upperCaseTextSchema,
       state: upperCaseTextSchema,
+      complement: upperCaseTextSchema,
     }),
 
     enrolledCourse: z
@@ -105,7 +108,7 @@ export const registerBodySchema = z
         },
       ),
 
-    academicPublications: z
+    academicPublication: z
       .array(
         z.object({
           title: upperCaseTextSchema,
@@ -124,7 +127,7 @@ export const registerBodySchema = z
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
-      if (data.activityAreas.activityArea === 'OUTRA')
+      if (data.activityArea.activityArea === 'OUTRA')
         return data.user.activityAreaDescription !== undefined
 
       return data.user.activityAreaDescription === undefined
@@ -137,7 +140,7 @@ export const registerBodySchema = z
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
-      if (data.activityAreas.subActivityArea === 'OUTRA')
+      if (data.activityArea.subActivityArea === 'OUTRA')
         return data.user.subActivityAreaDescription !== undefined
       return data.user.subActivityAreaDescription === undefined
     },

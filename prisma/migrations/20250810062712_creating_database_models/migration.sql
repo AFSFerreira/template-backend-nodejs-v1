@@ -52,7 +52,6 @@ CREATE TABLE "public"."users" (
     "orcid_number" TEXT,
     "membership_status" "public"."MembershipStatusType" NOT NULL DEFAULT 'PENDING',
     "role" "public"."UserRoleType" NOT NULL DEFAULT 'NORMAL_USER',
-    "institution_name" TEXT NOT NULL,
     "department_name" TEXT,
     "institution_complement" TEXT,
     "occupation" "public"."OccupationType" NOT NULL,
@@ -76,6 +75,7 @@ CREATE TABLE "public"."users" (
     "updated_at" TIMESTAMP(3) NOT NULL,
     "activity_area_id" INTEGER NOT NULL,
     "sub_activity_area_id" INTEGER NOT NULL,
+    "institution_id" INTEGER NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -128,6 +128,16 @@ CREATE TABLE "public"."academic_publications" (
     "activityAreaId" INTEGER NOT NULL,
 
     CONSTRAINT "academic_publications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."institutions" (
+    "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "institutions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -220,11 +230,21 @@ CREATE TABLE "public"."meetings" (
     "image" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "location" TEXT NOT NULL,
+    "last_date" TIMESTAMP(3) NOT NULL,
     "participations_count" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "meetings_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."meeting_date" (
+    "id" SERIAL NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "meeting_id" INTEGER NOT NULL,
+
+    CONSTRAINT "meeting_date_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -273,7 +293,7 @@ CREATE TABLE "public"."comment_likes" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
-    "newsletter_coomment_id" INTEGER NOT NULL,
+    "newsletter_comment_id" INTEGER NOT NULL,
 
     CONSTRAINT "comment_likes_pkey" PRIMARY KEY ("id")
 );
@@ -313,6 +333,12 @@ CREATE UNIQUE INDEX "addresses_user_id_key" ON "public"."addresses"("user_id");
 CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses"("user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "institutions_public_id_key" ON "public"."institutions"("public_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "institutions_name_key" ON "public"."institutions"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "area_of_activity_type_area_key" ON "public"."area_of_activity"("type", "area");
 
 -- CreateIndex
@@ -343,6 +369,9 @@ CREATE UNIQUE INDEX "meeting_presentations_user_id_meeting_id_key" ON "public"."
 CREATE UNIQUE INDEX "meetings_public_id_key" ON "public"."meetings"("public_id");
 
 -- CreateIndex
+CREATE INDEX "meetings_last_date_idx" ON "public"."meetings"("last_date");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("public_id");
 
 -- CreateIndex
@@ -362,6 +391,9 @@ ALTER TABLE "public"."users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -394,6 +426,9 @@ ALTER TABLE "public"."meeting_participations" ADD CONSTRAINT "meeting_participat
 ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_user_id_meeting_id_fkey" FOREIGN KEY ("user_id", "meeting_id") REFERENCES "public"."meeting_participations"("userId", "meetingId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "public"."newsletter_items" ADD CONSTRAINT "newsletter_items_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -406,7 +441,7 @@ ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_parent_comment_id_fkey"
 ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_coomment_id_fkey" FOREIGN KEY ("newsletter_coomment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_comment_id_fkey" FOREIGN KEY ("newsletter_comment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;

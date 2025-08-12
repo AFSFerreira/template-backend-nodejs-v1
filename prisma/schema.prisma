@@ -105,7 +105,6 @@ model User {
   orcidNumber                    String?              @map("orcid_number") // Número do ORCID do pesquisador
   membershipStatus               MembershipStatusType @default(PENDING) @map("membership_status")
   role                           UserRoleType         @default(NORMAL_USER)
-  institutionName                String               @map("institution_name")
   departmentName                 String?              @map("department_name")
   institutionComplement          String?              @map("institution_complement") // Complemento sobre a instituição (nome de laboratório, etc) 
   occupation                     OccupationType
@@ -137,6 +136,9 @@ model User {
   subActivityAreaId Int          @map("sub_activity_area_id")
   SubActivityArea   ActivityArea @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  institutionId Int         @map("institution_id")
+  Institution   Institution @relation(fields: [institutionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
   Address        Address?        @relation()
   EnrolledCourse EnrolledCourse? @relation()
   DirectorBoard  DirectorBoard?  @relation()
@@ -147,7 +149,7 @@ model User {
   Keyword             Keyword[]              @relation()
   NewsletterComment   NewsletterComment[]    @relation("comment_author")
   CommentLike         CommentLike[]          @relation("user_likes")
-  UserMeeting         UserMeeting[]
+  UserMeeting         UserMeeting[]          @relation()
 
   @@map("users")
 }
@@ -208,6 +210,18 @@ model AcademicPublications {
   ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@map("academic_publications")
+}
+
+model Institution {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @default(uuid(7)) @map("public_id")
+  name     String @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  User User[] @relation()
+
+  @@map("institutions")
 }
 
 model ActivityArea {
@@ -319,20 +333,33 @@ model MeetingPresentation {
 }
 
 model Meeting {
-  id                  Int    @id @default(autoincrement())
-  publicId            String @unique @default(uuid(7)) @map("public_id")
+  id                  Int      @id @default(autoincrement())
+  publicId            String   @unique @default(uuid(7)) @map("public_id")
   name                String
   image               String
   description         String
   location            String
-  participationsCount Int    @default(0) @map("participations_count")
+  lastDate            DateTime @map("last_date")
+  participationsCount Int      @default(0) @map("participations_count")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   UserMeeting UserMeeting[] @relation()
+  MeetingDate MeetingDate[] @relation()
 
+  @@index([lastDate])
   @@map("meetings")
+}
+
+model MeetingDate {
+  id   Int      @id @default(autoincrement())
+  date DateTime
+
+  meetingId Int     @map("meeting_id")
+  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("meeting_date")
 }
 
 model Newsletter {
