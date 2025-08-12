@@ -19,7 +19,7 @@ export interface CreateUserQuery {
   activityArea: RegisterUserSchemaType['activityArea']
   address: RegisterUserSchemaType['address']
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-  academicPublication: RegisterUserSchemaType['academicPublications']
+  academicPublication: RegisterUserSchemaType['academicPublication']
   keyword: RegisterUserSchemaType['keyword']
   institution: RegisterUserSchemaType['institution']
 }
@@ -34,6 +34,11 @@ export interface FindByEmailOrUsernameQuery {
   username: string
 }
 
+export interface GetAllUsersResponse {
+  users: UserWithDetails[]
+  totalItems: number
+}
+
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
@@ -43,7 +48,7 @@ export interface UsersRepository {
   findByEmailOrUsername: (
     data: FindByEmailOrUsernameQuery,
   ) => Promise<UserWithDetails | null>
-  listAllUsers: (query?: GetAllUsersQuery) => Promise<UserWithDetails[]>
+  listAllUsers: (query?: GetAllUsersQuery) => Promise<GetAllUsersResponse>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>

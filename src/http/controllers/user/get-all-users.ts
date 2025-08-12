@@ -12,13 +12,22 @@ export async function getAllUsers(
   const getAllUsersUseCase = makeGetAllUsersUseCase()
 
   try {
-    const { users } = await getAllUsersUseCase.execute({
+    const { users, totalItems } = await getAllUsersUseCase.execute({
       ...parsedParams,
       occupation: parsedParams.occupation,
       educationLevel: parsedParams.educationLevel,
     })
 
-    return await reply.status(200).send({ users: UserPresenter.toHTTP(users) })
+    const paginationMetaData = {
+      totalItems,
+      totalPages: Math.ceil(totalItems / parsedParams.page),
+      currentPage: parsedParams.page,
+      pageSize: parsedParams.limit,
+    }
+
+    return await reply
+      .status(200)
+      .send({ data: UserPresenter.toHTTP(users), ...paginationMetaData })
   } catch (error) {
     if (error instanceof ResourceNotFoundError) {
       return await reply.status(404).send({ message: error.message })

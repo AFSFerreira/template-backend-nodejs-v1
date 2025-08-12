@@ -14,10 +14,7 @@ import type {
 } from '../users-repository'
 import type { ComparableType } from '@/@types/orderable-type'
 import type { QueryMode } from '@/@types/query-mode'
-import {
-  type UserWithDetails,
-  userWithDetails,
-} from '@/@types/user-with-details'
+import { userWithDetails } from '@/@types/user-with-details'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
@@ -45,6 +42,45 @@ export class PrismaUsersRepository implements UsersRepository {
       is: {
         [fieldName]: value,
       },
+    }
+  }
+
+  static buildGetAllUsersWhereInput(data: GetAllUsersQuery) {
+    return {
+      fullName: PrismaUsersRepository.buildStartsWithFilter(data.fullName),
+      email: PrismaUsersRepository.buildStartsWithFilter(data.email),
+      username: PrismaUsersRepository.buildStartsWithFilter(data.username),
+      departmentName: PrismaUsersRepository.buildStartsWithFilter(
+        data.departmentName,
+      ),
+      birthdate: PrismaUsersRepository.buildComparableFilter(
+        data.birthdateComparison,
+        data.birthdate,
+      ),
+      astrobiologyOrRelatedStartYear:
+        PrismaUsersRepository.buildComparableFilter(
+          data.astrobiologyOrRelatedStartYearComparison,
+          data.astrobiologyOrRelatedStartYear,
+        ),
+      ActivityArea: {
+        area: PrismaUsersRepository.buildStartsWithFilter(data.activityArea),
+        type: ActivityAreaType.AREA_OF_ACTIVITY,
+      },
+      Institution: {
+        name: PrismaUsersRepository.buildStartsWithFilter(data.institutionName),
+      },
+      receiveReports: data.receiveReports,
+      occupation: data.occupation,
+      educationLevel: data.educationLevel,
+      role: data.role,
+      membershipStatus: data.membershipStatus,
+      AND: data.keywords?.map((keyword) => ({
+        Keyword: {
+          some: {
+            value: PrismaUsersRepository.buildStartsWithFilter(keyword),
+          },
+        },
+      })),
     }
   }
 
@@ -160,57 +196,30 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async listAllUsers(query?: GetAllUsersQuery) {
     if (query === undefined) {
-      return await prisma.user.findMany({ include: userWithDetails.include })
+      const users = await prisma.user.findMany({
+        include: userWithDetails.include,
+      })
+      const totalItems = users.length
+      return { users, totalItems }
     }
 
     const offset =
       query.limit !== undefined ? (query.page - 1) * query.limit : undefined
 
-    const users: UserWithDetails[] = await prisma.user.findMany({
-      include: userWithDetails.include,
-      skip: offset,
-      take: query.limit,
-      orderBy: { createdAt: query.createdAtOrder },
-      where: {
-        fullName: PrismaUsersRepository.buildStartsWithFilter(query.fullName),
-        email: PrismaUsersRepository.buildStartsWithFilter(query.email),
-        username: PrismaUsersRepository.buildStartsWithFilter(query.username),
-        departmentName: PrismaUsersRepository.buildStartsWithFilter(
-          query.departmentName,
-        ),
-        birthdate: PrismaUsersRepository.buildComparableFilter(
-          query.birthdateComparison,
-          query.birthdate,
-        ),
-        astrobiologyOrRelatedStartYear:
-          PrismaUsersRepository.buildComparableFilter(
-            query.astrobiologyOrRelatedStartYearComparison,
-            query.astrobiologyOrRelatedStartYear,
-          ),
-        ActivityArea: {
-          area: PrismaUsersRepository.buildStartsWithFilter(query.activityArea),
-          type: ActivityAreaType.AREA_OF_ACTIVITY,
-        },
-        Institution: {
-          name: PrismaUsersRepository.buildStartsWithFilter(
-            query.institutionName,
-          ),
-        },
-        receiveReports: query.receiveReports,
-        occupation: query.occupation,
-        educationLevel: query.educationLevel,
-        role: query.role,
-        membershipStatus: query.membershipStatus,
-        AND: query.keywords?.map((keyword) => ({
-          Keyword: {
-            some: {
-              value: PrismaUsersRepository.buildStartsWithFilter(keyword),
-            },
-          },
-        })),
-      },
-    })
-    return users
+    const [totalItems, users] = await prisma.$transaction([
+      prisma.user.count({
+        where: PrismaUsersRepository.buildGetAllUsersWhereInput(query),
+      }),
+      prisma.user.findMany({
+        include: userWithDetails.include,
+        skip: offset,
+        take: query.limit,
+        orderBy: { createdAt: query.createdAtOrder },
+        where: PrismaUsersRepository.buildGetAllUsersWhereInput(query),
+      }),
+    ])
+
+    return { users, totalItems }
   }
 
   async incrementLoginAttempts(id: number) {
