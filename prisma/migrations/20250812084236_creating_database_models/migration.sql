@@ -165,6 +165,7 @@ CREATE TABLE "public"."directors_board" (
     "public_id" TEXT NOT NULL,
     "director_board_profile_image" TEXT NOT NULL,
     "about_me" TEXT NOT NULL,
+    "position" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "user_id" INTEGER NOT NULL,

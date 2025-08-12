@@ -255,6 +255,7 @@ model DirectorBoard {
   publicId                  String @unique @default(uuid(7)) @map("public_id")
   directorBoardProfileImage String @map("director_board_profile_image") // NOTE: Por definição, a imagem de directorBoard corresponde à imagem de user
   aboutMe                   String @map("about_me")
+  position                  String
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

@@ -107,7 +107,7 @@ async function main() {
       publicInformation: "ASTROBIÓLOGO",
 
       activityAreaId: 1,
-      subActivityAreaId: 11,
+      subActivityAreaId: 2,
       
       institutionId: institution.id,
 
