@@ -1,13 +1,15 @@
 import path from 'path'
 import { ActivityAreaType } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import { InvalidMainAreaOfActivity } from '../errors/invalid-main-area-of-activity-error'
+import { InvalidActivityArea } from '../errors/invalid-activity-areas-error'
+import { InvalidInstitutionName } from '../errors/invalid-institution-name-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 import type { UserWithDetails } from '@/@types/user-with-details'
 import { env } from '@/env'
 import type { RegisterUserSchemaType } from '@/http/schemas/user/register-schema'
 import type { ActivityAreaRepository } from '@/repositories/activity-area-repository'
+import type { InstitutionRepository } from '@/repositories/institution-repository'
 import type { UsersRepository } from '@/repositories/users-repository'
 import {
   type CompressedImageInfo,
@@ -16,12 +18,13 @@ import {
 
 interface RegisterUseCaseRequest {
   imageBuffer?: Buffer
-  mainAreaActivity: RegisterUserSchemaType['mainAreaActivity']
-  keywords: RegisterUserSchemaType['keywords']
   user: RegisterUserSchemaType['user']
   address: RegisterUserSchemaType['address']
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-  academicPublications: RegisterUserSchemaType['academicPublications']
+  academicPublication: RegisterUserSchemaType['academicPublication']
+  activityArea: RegisterUserSchemaType['activityArea']
+  institution: RegisterUserSchemaType['institution']
+  keyword: RegisterUserSchemaType['keyword']
 }
 
 interface RegisterUseCaseResponse {
@@ -32,6 +35,7 @@ export class RegisterUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly activityAreasRepository: ActivityAreaRepository,
+    private readonly institutionRepository: InstitutionRepository,
   ) {}
 
   async execute(
@@ -46,13 +50,50 @@ export class RegisterUseCase {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const mainAreaActivity = await this.activityAreasRepository.findByArea(
-      registerUseCaseInput.mainAreaActivity,
-      ActivityAreaType.AREA_OF_ACTIVITY,
+    // Valida as áreas de atividade dos artigos e do usuário:
+    const academicPublicationsActivityAreas =
+      registerUseCaseInput.academicPublication.map((academPub) => ({
+        area: academPub.tag,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      }))
+
+    const allActivityAreas = [
+      {
+        area: registerUseCaseInput.activityArea.activityArea,
+        type: ActivityAreaType.AREA_OF_ACTIVITY,
+      },
+      {
+        area: registerUseCaseInput.activityArea.subActivityArea,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      },
+      ...academicPublicationsActivityAreas,
+    ]
+
+    const activityAreasFound =
+      await this.activityAreasRepository.findManyByArea(allActivityAreas)
+
+    // Verifica se alguma área de atividade é inválida:
+    if (activityAreasFound.length !== allActivityAreas.length) {
+      const activityAreasSet = new Set(
+        activityAreasFound.map((activityArea) => ({
+          area: activityArea.area,
+          type: activityArea.type,
+        })),
+      )
+      const wrongActivityAreas = allActivityAreas.filter(
+        (activityArea) => !activityAreasSet.has(activityArea),
+      )
+
+      throw new InvalidActivityArea(wrongActivityAreas.toString())
+    }
+
+    // Verifica se a instituição fornecida é válida:
+    const validInstitution = await this.institutionRepository.findByName(
+      registerUseCaseInput.institution.name,
     )
 
-    if (mainAreaActivity === null) {
-      throw new InvalidMainAreaOfActivity()
+    if (validInstitution === null) {
+      throw new InvalidInstitutionName()
     }
 
     // Persiste a imagem do usuário no backend:
@@ -80,7 +121,7 @@ export class RegisterUseCase {
       user: {
         ...filteredUserInfo,
         passwordHash,
-        profileImagePath:
+        profileImage:
           profileImageInfo !== undefined
             ? profileImageInfo.finalImagePath
             : path.resolve(
@@ -90,11 +131,12 @@ export class RegisterUseCase {
                 'default-profile-pic.png',
               ),
       },
-      mainAreaActivity: registerUseCaseInput.mainAreaActivity,
+      institution: registerUseCaseInput.institution,
+      activityArea: registerUseCaseInput.activityArea,
       address: registerUseCaseInput.address,
-      academicPublications: registerUseCaseInput.academicPublications,
+      academicPublication: registerUseCaseInput.academicPublication,
       enrolledCourse: registerUseCaseInput.enrolledCourse,
-      keywords: registerUseCaseInput.keywords,
+      keyword: registerUseCaseInput.keyword,
     })
 
     return { user }

@@ -5,6 +5,7 @@ import type {
 } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { registerBodySchema } from '@/schemas/user/register-schema'
+import { InvalidInstitutionName } from '@/use-cases/errors/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
 import { UserImageStorageError } from '@/use-cases/errors/user-image-storage-error'
 import { makeRegisterUseCase } from '@/use-cases/factories/user/make-register-use-case'
@@ -35,6 +36,10 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     if (error instanceof UserAlreadyExistsError) {
       return await reply.status(400).send({ message: error.message })
+    }
+
+    if (error instanceof InvalidInstitutionName) {
+      return await reply.status(422).send({ message: error.message })
     }
 
     throw error

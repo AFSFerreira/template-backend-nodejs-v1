@@ -10,6 +10,7 @@ type GetAllUsersUseCaseRequest = GetAllUsersSchemaType &
 
 interface GetAllUsersCaseResponse {
   users: UserWithDetails[]
+  totalItems: number
 }
 
 export class GetAllUsersUseCase {
@@ -18,12 +19,8 @@ export class GetAllUsersUseCase {
   async execute(
     getAllUsersInput: GetAllUsersUseCaseRequest,
   ): Promise<GetAllUsersCaseResponse> {
-    const users = await this.usersRepository.listAllUsers({
-      ...getAllUsersInput,
-      occupation: getAllUsersInput.occupation,
-      educationLevel: getAllUsersInput.educationLevel,
-    })
+    const usersInfo = await this.usersRepository.listAllUsers(getAllUsersInput)
 
-    return { users }
+    return usersInfo
   }
 }

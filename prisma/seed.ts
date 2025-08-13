@@ -40,7 +40,7 @@ async function main() {
     "OUTRA"
   ]
 
-  const activityAreasPromise = activityAreas.map(async activityArea => {
+  const activityAreasPromise = activityAreas.map(async (activityArea) => {
     await prisma.activityArea.upsert({
       where: { type_area: { area: activityArea, type: ActivityAreaType.AREA_OF_ACTIVITY } },
       update: {},
@@ -62,8 +62,17 @@ async function main() {
     })
   })
 
-  // Criando as áreas e sub-áreas de atividade:
+  // Criando as áreas e subáreas de atividade:
   await Promise.all([...activityAreasPromise, ...subActivityAreasPromise])
+
+  // Criando a instituição:
+  const institution = await prisma.institution.upsert({
+    where: { name: "UNIVERSIDADE FEDERAL FLUMINENTE" },
+    update: {},
+    create: {
+      name: "UNIVERSIDADE FEDERAL FLUMINENTE",
+    }
+  })
 
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
@@ -76,14 +85,13 @@ async function main() {
       email: 'admin@email.com',
       passwordHash: await hash('123456789Az#', env.HASH_SALT_ROUNDS),
       birthdate: new Date(),
-      profileImagePath: '/src/uploads/profile-images/default-profile-pic.png',
+      profileImage: '/src/uploads/profile-images/default-profile-pic.png',
       linkLattes: 'http://lattes.cnpq.br/1234567890',
       linkGoogleScholar: 'https://scholar.google.com/admin.admin',
       linkResearcherId: null,
       orcidNumber: '0000-0001-2345-6789',
       membershipStatus: MembershipStatusType.APPROVED,
       role: UserRoleType.ADMIN,
-      institutionName: 'UNIVERSIDADE FEDERAL DA LUA',
       departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
       institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
       occupation: OccupationType.RESEARCHER,
@@ -94,12 +102,14 @@ async function main() {
       receiveReports: true,
       loginAttempts: 0,
       lastLogin: new Date(),
-      activityAreaId: 1,
       identityType: IdentityType.CPF,
       identityDocument: "123.456.789-00",
       publicInformation: "ASTROBIÓLOGO",
-      activityAreaDescription: "PROFESSOR INTERINO",
-      subActivityAreaDescription: "PESQUISA EM ASTROBIOLOGIA",
+
+      activityAreaId: 1,
+      subActivityAreaId: 2,
+      
+      institutionId: institution.id,
 
       Keyword: {
         create: userKeywords.map((keyword) => ({

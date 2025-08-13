@@ -1,8 +1,19 @@
-import type { ActivityAreaType, Prisma } from '@prisma/client'
-import type { ActivityAreaRepository } from '../activity-area-repository'
+import type { Prisma } from '@prisma/client'
+import type {
+  ActivityAreaQuery,
+  ActivityAreaRepository,
+  ListAllActivityAreasQuery,
+} from '../activity-area-repository'
+import type { QueryMode } from '@/@types/query-mode'
 import { prisma } from '@/lib/prisma'
 
 export class PrismaActivityAreaRepository implements ActivityAreaRepository {
+  static buildStartsWithFilter(value: any) {
+    if (value === undefined) return undefined
+
+    return { startsWith: value, mode: 'insensitive' as QueryMode }
+  }
+
   async create(data: Prisma.ActivityAreaUncheckedCreateInput) {
     const activityArea = await prisma.activityArea.create({
       data,
@@ -17,7 +28,35 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
     return area
   }
 
-  async findByArea(area: string, type: ActivityAreaType) {
+  async listAllActivityAreas(query?: ListAllActivityAreasQuery) {
+    if (query?.page === undefined || query?.limit === undefined) {
+      const activityAreas = await prisma.activityArea.findMany({
+        where: {
+          area: PrismaActivityAreaRepository.buildStartsWithFilter(query?.name),
+          type: query?.type,
+        },
+      })
+      return { activityAreas, totalItems: activityAreas.length }
+    }
+
+    const offset = (query.page - 1) * query.limit
+
+    const [totalItems, activityAreas] = await prisma.$transaction([
+      prisma.activityArea.count({ where: { type: query.type } }),
+      prisma.activityArea.findMany({
+        skip: offset,
+        take: query.limit,
+        where: {
+          area: PrismaActivityAreaRepository.buildStartsWithFilter(query.name),
+          type: query.type,
+        },
+      }),
+    ])
+
+    return { activityAreas, totalItems }
+  }
+
+  async findByArea({ area, type }: ActivityAreaQuery) {
     const activityArea = await prisma.activityArea.findUnique({
       where: {
         type_area: {
@@ -27,6 +66,15 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
       },
     })
     return activityArea
+  }
+
+  async findManyByArea(areas: ActivityAreaQuery[]) {
+    const activityAreas = await prisma.activityArea.findMany({
+      where: {
+        OR: areas,
+      },
+    })
+    return activityAreas
   }
 
   async delete(id: number) {

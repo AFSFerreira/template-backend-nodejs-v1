@@ -8,6 +8,7 @@ export const userWithDetails = Prisma.validator<Prisma.UserDefaultArgs>()({
     AcademicPublication: true,
     Keyword: true,
     DirectorBoard: true,
+    Institution: true,
   },
 })
 

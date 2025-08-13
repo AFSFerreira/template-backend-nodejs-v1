@@ -1,4 +1,4 @@
 import z from 'zod'
-import { limitedCharactersSize } from '@/constants/zod-constants'
+import { LIMITED_CHARACTERS_SIZE } from '@/constants/zod-constants'
 
-export const emailSchema = z.email().max(limitedCharactersSize)
+export const emailSchema = z.email().max(LIMITED_CHARACTERS_SIZE)

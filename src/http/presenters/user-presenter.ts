@@ -85,7 +85,7 @@ export class UserPresenter {
     input: UserWithDetails | UserWithDetails[],
   ): HTTPUser | HTTPUser[] {
     if (Array.isArray(input)) {
-      return input.map((user) => this.toHTTP(user))
+      return input.map((user) => UserPresenter.toHTTP(user))
     }
 
     const {
@@ -114,6 +114,8 @@ export class UserPresenter {
         ...userFiltered,
         id: input.publicId,
         birthdate: formatDate(input.birthdate),
+
+        institutionName: input.Institution.name,
 
         keywords: input.Keyword.map((keyword) => keyword.value),
 

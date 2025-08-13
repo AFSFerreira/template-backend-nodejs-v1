@@ -1,43 +1,27 @@
-import type {
-  EducationLevelType,
-  OccupationType,
-  Prisma,
-  UserRoleType,
-} from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import type { AstrobiologyOrRelatedStartYearType } from '@/@types/astrobiology-or-related-start-year-type'
 import type { BirthDateComparisonType } from '@/@types/birth-date-comparison-type'
-import type { OrderableType } from '@/@types/orderable-type'
 import type { PaginationType } from '@/@types/pagination'
 import type { UserWithDetails } from '@/@types/user-with-details'
+import type { GetAllUsersSchemaType } from '@/http/schemas/user/get-all-users-schema'
 import type { RegisterUserSchemaType } from '@/schemas/user/register-schema'
 
-export type GetAllUsersQuery = {
-  fullName?: string
-  username?: string
-  institutionName?: string
-  departmentName?: string
-  specificActivity?: string
-  receiveReports?: boolean
-  activityArea?: string
-  keywords?: string[]
-  role?: UserRoleType
-  occupation?: OccupationType
-  educationLevel?: EducationLevelType
-  createdAtOrder?: OrderableType
-} & PaginationType &
+export type ListAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
+  PaginationType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 
 export interface CreateUserQuery {
   user: Omit<RegisterUserSchemaType['user'], 'password'> & {
     passwordHash: string
-    profileImagePath: string
+    profileImage: string
   }
-  mainAreaActivity: RegisterUserSchemaType['mainAreaActivity']
+  activityArea: RegisterUserSchemaType['activityArea']
   address: RegisterUserSchemaType['address']
   enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-  academicPublications: RegisterUserSchemaType['academicPublications']
-  keywords: RegisterUserSchemaType['keywords']
+  academicPublication: RegisterUserSchemaType['academicPublication']
+  keyword: RegisterUserSchemaType['keyword']
+  institution: RegisterUserSchemaType['institution']
 }
 
 export interface TokenData {
@@ -50,6 +34,11 @@ export interface FindByEmailOrUsernameQuery {
   username: string
 }
 
+export interface ListAllUsersResponse {
+  users: UserWithDetails[]
+  totalItems: number
+}
+
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
@@ -59,7 +48,7 @@ export interface UsersRepository {
   findByEmailOrUsername: (
     data: FindByEmailOrUsernameQuery,
   ) => Promise<UserWithDetails | null>
-  listAllUsers: (query?: GetAllUsersQuery) => Promise<UserWithDetails[]>
+  listAllUsers: (query?: ListAllUsersQuery) => Promise<ListAllUsersResponse>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
