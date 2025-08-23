@@ -17,7 +17,7 @@ enum UserRoleType {
   ADMIN
   MANAGER
   BLOGGER
-  NORMAL_USER
+  DEFAULT
 }
 
 enum AuthenticationStatusType {
@@ -104,7 +104,7 @@ model User {
   linkResearcherId               String?              @map("link_researcherID")
   orcidNumber                    String?              @map("orcid_number")
   membershipStatus               MembershipStatusType @default(PENDING) @map("membership_status")
-  role                           UserRoleType         @default(NORMAL_USER)
+  role                           UserRoleType         @default(DEFAULT)
   departmentName                 String?              @map("department_name")
   institutionComplement          String?              @map("institution_complement")
   occupation                     OccupationType
@@ -280,10 +280,10 @@ model Category {
 }
 
 model Blog {
-  id         Int    @id @default(autoincrement())
-  publicId   String @unique @default(uuid(7)) @map("public_id")
-  authorName String @map("author_name")
-  content    String @db.Text
+  id          Int    @id @default(autoincrement())
+  publicId    String @unique @default(uuid(7)) @map("public_id")
+  authorName  String @map("author_name")
+  htmlContent String @db.Text @map("html_content")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -296,6 +296,7 @@ model Blog {
 
   Subcategories Category[] @relation("subcategory_fk")
 
+  @@index([mainCategoryId], name: "idx_main_category")
   @@map("blogs")
 }
 

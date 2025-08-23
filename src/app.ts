@@ -3,10 +3,12 @@ import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import fastify from 'fastify'
-import { ZodError } from 'zod'
+import z, { ZodError } from 'zod'
 import { env } from './env'
 import { appRoutes } from './http/routes'
 import './lib/pg-trgm'
+
+z.config(z.locales.pt())
 
 export const app = fastify()
 
