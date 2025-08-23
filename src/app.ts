@@ -18,8 +18,10 @@ app.register(multipart)
 app.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
+  maxAge: 3600, // Cache de 1 hora
 })
 
 app.register(fastifyJwt, {
