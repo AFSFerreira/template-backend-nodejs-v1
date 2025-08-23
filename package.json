@@ -11,8 +11,8 @@
     "build": "tsup src --out-dir build",
     "husky:prepare": "husky install",
     "format": "prettier --config .prettierrc.json --ignore-path .prettierignore --write 'src/**/*.{js,ts,tsx,jsx}'",
-    "lint": "eslint",
-    "lint:fix": "eslint --fix",
+    "lint": "eslint src/**/*.{js,ts,tsx,jsx}",
+    "lint:fix": "eslint --fix src/**/*.{js,ts,tsx,jsx}",
     "prepare": "husky"
   },
   "keywords": [],
