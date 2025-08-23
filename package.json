@@ -10,9 +10,9 @@
     "start:prod": "node build/server.js",
     "build": "tsup src --out-dir build",
     "husky:prepare": "husky install",
-    "lint": "prettier ./src/ --write && eslint \"**/*.{ts,tsx}\" --fix",
-    "test": "echo Test",
-    "test:coverage": "echo Test Coverage",
+    "format": "prettier --config .prettierrc.json --ignore-path .prettierignore --write 'src/**/*.{js,ts,tsx,jsx}'",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "prepare": "husky"
   },
   "keywords": [],

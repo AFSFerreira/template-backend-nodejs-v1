@@ -81,14 +81,14 @@ enum ActivityAreaType {
 
 model AuthenticationAudit {
   id         Int                      @id @default(autoincrement())
-  ipAddress  String?
-  remotePort String?
+  ipAddress  String?                  @map("ip_address")
+  remotePort String?                  @map("remote_port")
   browser    String?
   status     AuthenticationStatusType
-  createdAt  DateTime                 @default(now())
+  createdAt  DateTime                 @default(now()) @map("created_at")
 
-  userId Int?
-  user   User? @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  userId Int?  @map("user_id")
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@map("authentication_audits")
 }
@@ -99,10 +99,10 @@ model User {
   fullName                       String               @map("full_name")
   username                       String               @unique
   birthdate                      DateTime
-  profileImage                   String               @map("profile_image_path")
+  profileImage                   String               @map("profile_image")
   linkLattes                     String?              @map("link_lattes")
   linkGoogleScholar              String?              @map("link_google_scholar")
-  linkResearcherId               String?              @map("link_researcherID")
+  linkResearcherId               String?              @map("link_researcher_id")
   orcidNumber                    String?              @map("orcid_number")
   membershipStatus               MembershipStatusType @default(PENDING) @map("membership_status")
   role                           UserRoleType         @default(DEFAULT)
@@ -115,7 +115,7 @@ model User {
   emailIsPublic                  Boolean              @map("email_is_public")
   astrobiologyOrRelatedStartYear Int                  @map("astrobiology_or_related_start_year")
   interestDescription            String               @map("interest_description")
-  receiveReports                 Boolean              @map("recieve_reports")
+  receiveReports                 Boolean              @map("receive_reports")
   publicInformation              String               @map("public_information")
   activityAreaDescription        String?              @map("activity_area_description")
   subActivityAreaDescription     String?              @map("sub_activity_area_description")
@@ -148,10 +148,11 @@ model User {
   AcademicPublication AcademicPublications[] @relation()
   Blog                Blog[]                 @relation()
   Keyword             Keyword[]              @relation()
-  NewsletterComment   NewsletterComment[]    @relation("comment_author")
-  CommentLike         CommentLike[]          @relation("user_likes")
+  NewsletterComment   NewsletterComment[]    @relation()
+  CommentLike         CommentLike[]          @relation()
   UserMeeting         UserMeeting[]          @relation()
 
+  @@index([membershipStatus])
   @@map("users")
 }
 
@@ -274,9 +275,10 @@ model Category {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  BlogSubCategory Blog[] @relation("subcategory_fk")
-  Blog            Blog[] @relation("main_category_fk")
+  BlogSubCategory Blog[] @relation("blog_subcategories")
+  Blog            Blog[] @relation("blog_main_category")
 
+  @@index([type, name])
   @@map("categories")
 }
 
@@ -284,20 +286,20 @@ model Blog {
   id          Int    @id @default(autoincrement())
   publicId    String @unique @default(uuid(7)) @map("public_id")
   authorName  String @map("author_name")
-  htmlContent String @db.Text @map("html_content")
+  htmlContent String @map("html_content") @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   mainCategoryId Int      @map("main_category_id")
-  MainCategory   Category @relation("main_category_fk", fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  MainCategory   Category @relation("blog_main_category", fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   authorId Int?  @map("author_id")
   Author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  Subcategories Category[] @relation("subcategory_fk")
+  Subcategories Category[] @relation("blog_subcategories")
 
-  @@index([mainCategoryId], name: "idx_main_category")
+  @@index([mainCategoryId])
   @@map("blogs")
 }
 
@@ -307,20 +309,20 @@ model UserMeeting {
 
   Presentation MeetingPresentation? @relation()
 
-  userId Int
+  userId Int  @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  meetingId Int
+  meetingId Int     @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([userId, meetingId])
-  @@map("meeting_participations")
+  @@map("meeting_participants")
 }
 
 model MeetingPresentation {
   id               Int              @id @default(autoincrement())
   publicId         String           @unique @default(uuid(7)) @map("public_id")
-  presentationType PresentationType
+  presentationType PresentationType @map("presentation_type")
   authors          String
   title            String
   affiliations     String
@@ -336,47 +338,29 @@ model MeetingPresentation {
 }
 
 model Meeting {
-  id                  Int      @id @default(autoincrement())
-  publicId            String   @unique @default(uuid(7)) @map("public_id")
-  name                String
-  image               String
-  description         String
-  location            String
-  lastDate            DateTime @map("last_date")
-  participationsCount Int      @default(0) @map("participations_count")
+  id                Int      @id @default(autoincrement())
+  publicId          String   @unique @default(uuid(7)) @map("public_id")
+  name              String
+  image             String
+  description       String
+  location          String
+  lastDate          DateTime @map("last_date") // Cache para evitar junções
+  participantsCount Int      @default(0) @map("participants_count")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  UserMeeting    UserMeeting[]   @relation()
-  MeetingDate    MeetingDate[]   @relation()
-  MeetingAddress MeetingAddress? @relation()
+  UserMeeting UserMeeting[] @relation()
+  MeetingDate MeetingDate[] @relation()
 
   @@index([lastDate])
   @@map("meetings")
 }
 
-model MeetingAddress {
-  id         Int     @id @default(autoincrement())
-  publicId   String  @unique @default(uuid(7)) @map("public_id")
-  zip        String?
-  number     String?
-  street     String?
-  district   String?
-  city       String?
-  state      String?
-  country    String?
-  complement String?
-
-  meetingId Int     @unique @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@map("meeting_address")
-}
-
 model MeetingDate {
-  id   Int      @id @default(autoincrement())
-  date DateTime
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  createdAt DateTime @default(now()) @map("created_at")
 
   meetingId Int     @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -396,7 +380,8 @@ model Newsletter {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  NewsletterItems NewsletterItem[] @relation()
+  NewsletterItem    NewsletterItem[]    @relation()
+  NewsletterComment NewsletterComment[] @relation()
 
   @@unique([edition, number])
   @@map("newsletters")
@@ -414,6 +399,7 @@ model NewsletterItem {
   newsletterId Int        @map("newsletter_id")
   Newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([newsletterId])
   @@map("newsletter_items")
 }
 
@@ -427,8 +413,11 @@ model NewsletterComment {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
+  newsletterId Int        @map("newsletter_id")
+  Newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
   userId Int?  @map("user_id")
-  User   User? @relation("comment_author", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   parentCommentId Int?               @map("parent_comment_id")
   ParentComment   NewsletterComment? @relation("parent_comment", fields: [parentCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
@@ -437,6 +426,7 @@ model NewsletterComment {
 
   CommentLike CommentLike[] @relation()
 
+  @@index([newsletterId])
   @@map("comments")
 }
 
@@ -445,10 +435,11 @@ model CommentLike {
   createdAt DateTime @default(now()) @map("created_at")
 
   userId Int?  @map("user_id")
-  User   User? @relation("user_likes", fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   newsletterCommentId Int               @map("newsletter_comment_id")
   NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([newsletterCommentId])
   @@map("comment_likes")
 }
