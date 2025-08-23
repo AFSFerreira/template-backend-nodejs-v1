@@ -18,7 +18,7 @@ export function verifyPermissions(allowedRoles: UserRoleType[]) {
 
     if (!allowedRoles.includes(user.role)) {
       return await reply.status(403).send({
-        message: messages.errors.forbbiden,
+        message: messages.errors.forbidden,
       })
     }
   }

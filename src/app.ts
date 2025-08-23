@@ -2,8 +2,10 @@ import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import fastify from 'fastify'
 import z, { ZodError } from 'zod'
+import { messages } from './constants/messages'
 import { env } from './env'
 import { appRoutes } from './http/routes'
 import './lib/pg-trgm'
@@ -36,6 +38,17 @@ app.register(fastifyJwt, {
 })
 
 app.register(appRoutes)
+
+app.addHook(
+  'preValidation',
+  async (request: FastifyRequest, reply: FastifyReply) => {
+    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
+      if (!request.body || Object.keys(request.body).length === 0) {
+        reply.status(400).send({ message: messages.errors.bodyRequired })
+      }
+    }
+  },
+)
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

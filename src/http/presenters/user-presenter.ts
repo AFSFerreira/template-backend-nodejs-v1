@@ -77,7 +77,6 @@ interface HTTPUser {
   directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class UserPresenter {
   static toHTTP(user: UserWithDetails): HTTPUser
   static toHTTP(users: UserWithDetails[]): HTTPUser[]

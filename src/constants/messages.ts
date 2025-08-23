@@ -28,7 +28,7 @@ export const messages = {
   },
   errors: {
     noUsersAvailable: 'No available users info to export',
-    invalidCreddentials: 'Invalid credentials',
+    invalidCredentials: 'Invalid credentials',
     invalidAreaOfActivity: 'Invalid area of activity',
     invalidToken: 'Invalid or expired token',
     resourceNotFound: 'Resource not found',
@@ -40,8 +40,9 @@ export const messages = {
       'If the user exists, you will receive an email with instructions to reset the password',
     userWithSameEmailOrPassword:
       'There is already an user with the same email or username',
-    forbbiden: 'User does not have permission to use this resource',
+    forbidden: 'User does not have permission to use this resource',
     unauthorized: 'User not authenticated',
+    bodyRequired: 'The request body is missing',
   },
   info: {
     changedPassword: 'Password changed successfully!',
