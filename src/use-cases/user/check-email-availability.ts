@@ -1,4 +1,4 @@
-import type { UsersRepository } from '@/repositories/users-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 
 interface CheckEmailAvailabilityUseCaseRequest {
   email: string

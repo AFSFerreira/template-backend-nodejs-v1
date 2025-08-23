@@ -1,3 +1,8 @@
+import { messages } from '@constants/messages'
+import {
+  comparisonOperators,
+  orderDirections,
+} from '@custom-types/orderable-type'
 import {
   EducationLevelType,
   MembershipStatusType,
@@ -9,8 +14,6 @@ import { emailSchema } from '../utils/email'
 import { keywordSchema } from '../utils/keyword'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
-import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
-import { messages } from '@/constants/messages'
 
 export const getAllUsersParamsSchema = z
   .object({

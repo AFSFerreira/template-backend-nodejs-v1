@@ -1,6 +1,6 @@
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AddressRepository } from '../address-repository'
-import { prisma } from '@/lib/prisma'
 
 export class PrismaAddressRepository implements AddressRepository {
   async create(data: Prisma.AddressUncheckedCreateInput) {

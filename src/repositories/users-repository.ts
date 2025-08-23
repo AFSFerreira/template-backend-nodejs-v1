@@ -1,15 +1,12 @@
+import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
+import type { PaginationType } from '@custom-types/pagination-type'
+import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { Prisma } from '@prisma/client'
-import type { AstrobiologyOrRelatedStartYearType } from '@/@types/astrobiology-or-related-start-year-type'
-import type { BirthDateComparisonType } from '@/@types/birth-date-comparison-type'
-import type { PaginationType } from '@/@types/pagination'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import type { GetAllUsersSchemaType } from '@/http/schemas/user/get-all-users-schema'
-import type { RegisterUserSchemaType } from '@/schemas/user/register-schema'
+import type { GetAllUsersSchemaType } from '@schemas/user/get-all-users-schema'
+import type { RegisterUserSchemaType } from '@schemas/user/register-schema'
 
 export type ListAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
-  PaginationType &
-  BirthDateComparisonType &
-  AstrobiologyOrRelatedStartYearType
+  PaginationType
 
 export interface CreateUserQuery {
   user: Omit<RegisterUserSchemaType['user'], 'password'> & {
@@ -35,8 +32,8 @@ export interface FindByEmailOrUsernameQuery {
 }
 
 export interface ListAllUsersResponse {
-  users: UserWithDetails[]
-  totalItems: number
+  data: UserWithDetails[]
+  meta: PaginationMetaType
 }
 
 export interface UsersRepository {

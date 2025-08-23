@@ -1,7 +1,7 @@
+import { messages } from '@constants/messages'
+import { YEAR_MONTH_REGEX } from '@constants/regex'
+import { VALID_DATE_RANGE_YEARS } from '@constants/zod-constants'
 import { uppercaseTextWithoutInnerSpacesSchema } from './uppercase-text-without-inner-spaces-schema'
-import { messages } from '@/constants/messages'
-import { YEAR_MONTH_REGEX } from '@/constants/regex'
-import { VALID_DATE_RANGE_YEARS } from '@/constants/zod-constants'
 
 export const monthYearSchema = uppercaseTextWithoutInnerSpacesSchema
   .regex(YEAR_MONTH_REGEX, messages.validation.monthYearInvalidFormat)

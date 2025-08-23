@@ -1,3 +1,5 @@
+import { messages } from '@constants/messages'
+import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/zod-constants'
 import {
   EducationLevelType,
   IdentityType,
@@ -13,8 +15,6 @@ import { orcidNumberSchema } from '../utils/orcid-number'
 import { passwordSchema } from '../utils/password'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
-import { messages } from '@/constants/messages'
-import { MAX_INTEREST_DESCRIPTION_SIZE } from '@/constants/zod-constants'
 
 export const registerBodySchema = z
   .object({
@@ -39,7 +39,7 @@ export const registerBodySchema = z
         emailIsPublic: z.coerce.boolean(),
         astrobiologyOrRelatedStartYear: z.coerce.number(),
         interestDescription: nonemptyTextSchema.max(
-          MAX_INTEREST_DESCRIPTION_SIZE,
+          MAX_INTEREST_DESCRIPTION_SIZE as number,
         ),
         receiveReports: z.coerce.boolean(),
         // REVIEW: Confirmar se estes campos são obrigatórios:

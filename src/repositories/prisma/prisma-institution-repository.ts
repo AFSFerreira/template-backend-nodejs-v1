@@ -1,8 +1,8 @@
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { InstitutionRepository } from '../institution-repository'
-import { prisma } from '@/lib/prisma'
 
-export class PrismaInsitutionRepository implements InstitutionRepository {
+export class PrismaInstitutionRepository implements InstitutionRepository {
   async create(data: Prisma.InstitutionUncheckedCreateInput) {
     const institution = await prisma.institution.create({
       data,

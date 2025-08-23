@@ -1,6 +1,6 @@
+import { checkEmailAvailabilitySchema } from '@schemas/user/check-email-availability-schema'
+import { makeCheckEmailAvailabilityUseCase } from '@use-cases/user/check-email-availability-factory'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { checkEmailAvailabilitySchema } from '@/http/schemas/user/check-email-availability-schema'
-import { makeCheckEmailAvailabilityUseCase } from '@/use-cases/user/check-email-availability-factory'
 
 export async function checkEmailAvailability(
   request: FastifyRequest,

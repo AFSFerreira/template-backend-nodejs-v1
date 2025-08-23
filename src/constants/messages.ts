@@ -43,6 +43,7 @@ export const messages = {
     forbidden: 'User does not have permission to use this resource',
     unauthorized: 'User not authenticated',
     bodyRequired: 'The request body is missing',
+    invalidInstitutionName: 'Invalid Institution Name',
   },
   info: {
     changedPassword: 'Password changed successfully!',

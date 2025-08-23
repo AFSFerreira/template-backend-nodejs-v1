@@ -3,12 +3,12 @@ import type {
   IdentityType,
   OccupationType,
 } from '@prisma/client'
+import { registerBodySchema } from '@schemas/user/register-schema'
+import { InvalidInstitutionName } from '@use-cases/errors/invalid-institution-name-error'
+import { UserAlreadyExistsError } from '@use-cases/errors/user-already-exists-error'
+import { UserImageStorageError } from '@use-cases/errors/user-image-storage-error'
+import { makeRegisterUseCase } from '@use-cases/factories/user/make-register-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { registerBodySchema } from '@/schemas/user/register-schema'
-import { InvalidInstitutionName } from '@/use-cases/errors/invalid-institution-name-error'
-import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { UserImageStorageError } from '@/use-cases/errors/user-image-storage-error'
-import { makeRegisterUseCase } from '@/use-cases/factories/user/make-register-use-case'
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const parsedBody = registerBodySchema.parse(request.body)

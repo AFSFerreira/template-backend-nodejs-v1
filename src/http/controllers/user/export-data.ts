@@ -1,6 +1,6 @@
+import { EmptyUsersInfoError } from '@use-cases/errors/empty-users-info-error'
+import { makeExportDataUseCase } from '@use-cases/factories/user/make-export-data-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { EmptyUsersInfoError } from '@/use-cases/errors/empty-users-info-error'
-import { makeExportDataUseCase } from '@/use-cases/factories/user/make-export-data-use-case'
 
 export async function exportData(
   _request: FastifyRequest,

@@ -1,7 +1,7 @@
+import { messages } from '@constants/messages'
 import { cpf } from 'cpf-cnpj-validator'
 import { z } from 'zod'
 import { nonemptyTextSchema } from './nonempty-text'
-import { messages } from '@/constants/messages'
 
 export const cpfSchema = z.preprocess(
   (data) => (typeof data === 'string' ? cpf.strip(data) : data),

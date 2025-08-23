@@ -1,6 +1,6 @@
+import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UsersRepository } from '@repositories/users-repository'
 import { UserNotFoundError } from '../errors/user-not-found-error'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import type { UsersRepository } from '@/repositories/users-repository'
 
 interface FindUserByPublicIdUseCaseRequest {
   publicId: string

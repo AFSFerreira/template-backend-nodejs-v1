@@ -1,5 +1,5 @@
+import { profileImageExtensions } from '@constants/profile-image-extensions'
 import multer from 'fastify-multer'
-import { profileImageExtensions } from '@/constants/profile-image-extensions'
 // import path from 'path'
 // import crypto from 'crypto'
 

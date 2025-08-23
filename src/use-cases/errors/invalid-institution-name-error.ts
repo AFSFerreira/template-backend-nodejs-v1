@@ -1,5 +1,7 @@
+import { messages } from '@constants/messages'
+
 export class InvalidInstitutionName extends Error {
   constructor() {
-    super('Invalid Institution Name')
+    super(messages.errors.invalidInstitutionName)
   }
 }

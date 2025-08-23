@@ -1,8 +1,8 @@
+import { messages } from '@constants/messages'
+import { UserPresenter } from '@presenters/user-presenter'
+import { UserNotFoundError } from '@use-cases/errors/user-not-found-error'
+import { makeGetUserProfileUseCase } from '@use-cases/factories/user/make-get-user-profile-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { messages } from '@/constants/messages'
-import { UserPresenter } from '@/http/presenters/user-presenter'
-import { UserNotFoundError } from '@/use-cases/errors/user-not-found-error'
-import { makeGetUserProfileUseCase } from '@/use-cases/factories/user/make-get-user-profile-use-case'
 
 export async function getUserProfile(
   request: FastifyRequest,

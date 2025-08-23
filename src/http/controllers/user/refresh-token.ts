@@ -1,6 +1,6 @@
+import { messages } from '@constants/messages'
+import { env } from '@env/index'
 import type { FastifyRequest, FastifyReply } from 'fastify'
-import { messages } from '@/constants/messages'
-import { env } from '@/env'
 
 export async function refreshToken(
   request: FastifyRequest,

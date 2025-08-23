@@ -1,3 +1,6 @@
+import { upload } from '@lib/multer'
+import { authenticationMiddleware } from '@middlewares/authentication-middleware'
+import { verifyPermissions } from '@middlewares/verify-user-role'
 import { UserRoleType } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
@@ -12,9 +15,6 @@ import { logout } from './logout'
 import { refreshToken } from './refresh-token'
 import { register } from './register'
 import { resetPassword } from './reset-password'
-import { authenticationMiddleware } from '@/http/middlewares/authentication-middleware'
-import { upload } from '@/lib/multer'
-import { verifyPermissions } from '@/middlewares/verify-user-role'
 
 export async function userRoutes(app: FastifyInstance) {
   // User Admin Routes:

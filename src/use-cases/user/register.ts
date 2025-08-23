@@ -1,20 +1,20 @@
 import path from 'path'
+import type { UserWithDetails } from '@custom-types/user-with-details'
+import { env } from '@env/index'
 import { ActivityAreaType } from '@prisma/client'
+import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
+import type { InstitutionRepository } from '@repositories/institution-repository'
+import type { UsersRepository } from '@repositories/users-repository'
+import type { RegisterUserSchemaType } from '@schemas/user/register-schema'
+import {
+  type CompressedImageInfo,
+  saveCompressedImage,
+} from '@utils/image-storage'
 import { hash } from 'bcryptjs'
 import { InvalidActivityArea } from '../errors/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '../errors/invalid-institution-name-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import { env } from '@/env'
-import type { RegisterUserSchemaType } from '@/http/schemas/user/register-schema'
-import type { ActivityAreaRepository } from '@/repositories/activity-area-repository'
-import type { InstitutionRepository } from '@/repositories/institution-repository'
-import type { UsersRepository } from '@/repositories/users-repository'
-import {
-  type CompressedImageInfo,
-  saveCompressedImage,
-} from '@/utils/image-storage'
 
 interface RegisterUseCaseRequest {
   imageBuffer?: Buffer

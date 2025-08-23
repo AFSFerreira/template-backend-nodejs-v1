@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
-import { isValidSqlIdentifier } from '@/utils/is-valid-SQL-identifier'
+import { isValidSqlIdentifier } from '@utils/is-valid-SQL-identifier'
 
 export let enabledPgTrigramEnabled = false
 

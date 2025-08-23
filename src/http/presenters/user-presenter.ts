@@ -1,11 +1,11 @@
+import type { UserWithDetails } from '@custom-types/user-with-details'
 import type {
   EducationLevelType,
   IdentityType,
   OccupationType,
   UserRoleType,
 } from '@prisma/client'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import { formatDate } from '@/utils/format-date'
+import { formatDate } from '@utils/format-date'
 
 interface HTTPUserDetails {
   id: string

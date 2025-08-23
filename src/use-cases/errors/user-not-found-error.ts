@@ -1,5 +1,5 @@
+import { messages } from '@constants/messages'
 import { ResourceNotFoundError } from './resource-not-found-error'
-import { messages } from '@/constants/messages'
 
 export class UserNotFoundError extends ResourceNotFoundError {
   constructor() {

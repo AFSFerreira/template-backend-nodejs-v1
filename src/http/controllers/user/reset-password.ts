@@ -1,8 +1,8 @@
+import { messages } from '@constants/messages'
+import { resetPasswordSchema } from '@schemas/user/reset-password'
+import { InvalidCredentialsError } from '@use-cases/errors/invalid-credentials-error'
+import { makeResetPasswordUseCase } from '@use-cases/factories/user/make-reset-password-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { messages } from '@/constants/messages'
-import { resetPasswordSchema } from '@/schemas/user/reset-password'
-import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
-import { makeResetPasswordUseCase } from '@/use-cases/factories/user/make-reset-password-use-case'
 
 export async function resetPassword(
   request: FastifyRequest,

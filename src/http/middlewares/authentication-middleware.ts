@@ -1,7 +1,7 @@
+import { messages } from '@constants/messages'
+import { env } from '@env/index'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { verify } from 'jsonwebtoken'
-import { messages } from '@/constants/messages'
-import { env } from '@/env'
 
 interface Payload {
   sub: string

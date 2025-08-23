@@ -1,6 +1,6 @@
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { EnrolledCourseRepository } from '../enrolled-course-repository'
-import { prisma } from '@/lib/prisma'
 
 export class PrismaEnrolledCourseRepository
   implements EnrolledCourseRepository

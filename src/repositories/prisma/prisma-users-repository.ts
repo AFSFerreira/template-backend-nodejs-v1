@@ -1,10 +1,14 @@
+import type { ComparableType } from '@custom-types/orderable-type'
+import type { QueryMode } from '@custom-types/query-mode'
+import { userWithDetails } from '@custom-types/user-with-details'
+import { prisma } from '@lib/prisma'
+import { ActivityAreaType } from '@prisma/client'
 import type {
   EducationLevelType,
   IdentityType,
   OccupationType,
   Prisma,
 } from '@prisma/client'
-import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
   FindByEmailOrUsernameQuery,
@@ -12,10 +16,6 @@ import type {
   TokenData,
   UsersRepository,
 } from '../users-repository'
-import type { ComparableType } from '@/@types/orderable-type'
-import type { QueryMode } from '@/@types/query-mode'
-import { userWithDetails } from '@/@types/user-with-details'
-import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
   static buildStartsWithFilter(value: any) {
@@ -199,25 +199,45 @@ export class PrismaUsersRepository implements UsersRepository {
       const users = await prisma.user.findMany({
         include: userWithDetails.include,
       })
-      return { users, totalItems: users.length }
+      return {
+        data: users,
+        meta: {
+          totalItems: users.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: users.length,
+        },
+      }
     }
 
     const offset = (query.page - 1) * query.limit
 
+    const where = PrismaUsersRepository.buildGetAllUsersWhereInput(query)
+
     const [totalItems, users] = await prisma.$transaction([
       prisma.user.count({
-        where: PrismaUsersRepository.buildGetAllUsersWhereInput(query),
+        where,
       }),
       prisma.user.findMany({
         include: userWithDetails.include,
         skip: offset,
         take: query.limit,
         orderBy: { createdAt: query.createdAtOrder },
-        where: PrismaUsersRepository.buildGetAllUsersWhereInput(query),
+        where,
       }),
     ])
 
-    return { users, totalItems }
+    const totalPages = Math.ceil(totalItems / query.limit)
+
+    return {
+      data: users,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize: query.limit,
+      },
+    }
   }
 
   async incrementLoginAttempts(id: number) {
