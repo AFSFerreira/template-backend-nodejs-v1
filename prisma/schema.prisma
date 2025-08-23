@@ -16,7 +16,8 @@ datasource db {
 enum UserRoleType {
   ADMIN
   MANAGER
-  BLOGGER
+  CONTENT_LEADER
+  CONTENT_PRODUCER
   DEFAULT
 }
 
