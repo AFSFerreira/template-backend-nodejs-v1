@@ -39,22 +39,15 @@ app.register(fastifyJwt, {
 
 app.register(appRoutes)
 
-app.addHook(
-  'preValidation',
-  async (request: FastifyRequest, reply: FastifyReply) => {
-    if (['POST', 'PUT', 'PATCH'].includes(request.method)) {
-      if (!request.body || Object.keys(request.body).length === 0) {
-        reply.status(400).send({ message: messages.errors.bodyRequired })
-      }
-    }
-  },
-)
-
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
     return reply
       .status(400)
-      .send({ message: 'Validation error!', issues: error.format() })
+      .send({ message: 'Validation error!', issues: z.treeifyError(error) })
+  }
+
+  if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {
+    return reply.status(400).send({ message: messages.errors.bodyRequired })
   }
 
   if (env.NODE_ENV !== 'production') {
