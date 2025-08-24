@@ -1,7 +1,13 @@
+import type {
+  LiteralEducationLevelEnType,
+  LiteralEducationLevelPtType,
+} from '@custom-types/literal-education-level-type'
 import type { TranslationLanguageType } from '@custom-types/translation-language-type'
 import { EducationLevelType } from '@prisma/client'
 
-function translateEducationalLevelPt(educationLevel: EducationLevelType) {
+function translateEducationLevelPt(
+  educationLevel: EducationLevelType,
+): LiteralEducationLevelPtType {
   switch (educationLevel) {
     case EducationLevelType.ELEMENTARY_SCHOOL:
       return 'ENSINO FUNDAMENTAL'
@@ -24,7 +30,9 @@ function translateEducationalLevelPt(educationLevel: EducationLevelType) {
   }
 }
 
-function translateEducationalLevelEn(educationLevel: EducationLevelType) {
+function translateEducationLevelEn(
+  educationLevel: EducationLevelType,
+): LiteralEducationLevelEnType {
   switch (educationLevel) {
     case EducationLevelType.ELEMENTARY_SCHOOL:
       return 'ELEMENTARY SCHOOL'
@@ -47,10 +55,60 @@ function translateEducationalLevelEn(educationLevel: EducationLevelType) {
   }
 }
 
+export function translateEducationLevelToEnumPt(
+  educationLevel: LiteralEducationLevelPtType,
+): EducationLevelType {
+  switch (educationLevel) {
+    case 'ENSINO FUNDAMENTAL':
+      return EducationLevelType.ELEMENTARY_SCHOOL
+    case 'ENSINO MÉDIO':
+      return EducationLevelType.HIGH_SCHOOL
+    case 'ALUNO DE GRADUAÇÃO':
+      return EducationLevelType.UNDERGRADUATE_STUDENT
+    case 'BACHAREL':
+      return EducationLevelType.BACHELOR
+    case 'ALUNO DE DOUTORADO':
+      return EducationLevelType.DOCTORATE_STUDENT
+    case 'DOUTORADO':
+      return EducationLevelType.DOCTORATE
+    case 'ALUNO DE MESTRADO':
+      return EducationLevelType.MASTER_STUDENT
+    case 'MESTRADO':
+      return EducationLevelType.MASTER
+    case 'OUTRO':
+      return EducationLevelType.OTHER
+  }
+}
+
+export function translateEducationLevelToEnumEn(
+  educationLevel: LiteralEducationLevelEnType,
+): EducationLevelType {
+  switch (educationLevel) {
+    case 'ELEMENTARY SCHOOL':
+      return EducationLevelType.ELEMENTARY_SCHOOL
+    case 'HIGH SCHOOL':
+      return EducationLevelType.HIGH_SCHOOL
+    case 'UNDERGRADUATE STUDENT':
+      return EducationLevelType.UNDERGRADUATE_STUDENT
+    case 'BACHELOR':
+      return EducationLevelType.BACHELOR
+    case 'DOCTORATE STUDENT':
+      return EducationLevelType.DOCTORATE_STUDENT
+    case 'DOCTORATE':
+      return EducationLevelType.DOCTORATE
+    case 'MASTER STUDENT':
+      return EducationLevelType.MASTER_STUDENT
+    case 'MASTER':
+      return EducationLevelType.MASTER
+    case 'OTHER':
+      return EducationLevelType.OTHER
+  }
+}
+
 export function getTranslatedEducationLevels(
   lang: TranslationLanguageType = 'pt',
 ) {
   return Object.values(EducationLevelType).map(
-    lang === 'en' ? translateEducationalLevelEn : translateEducationalLevelPt,
+    lang === 'en' ? translateEducationLevelEn : translateEducationLevelPt,
   )
 }

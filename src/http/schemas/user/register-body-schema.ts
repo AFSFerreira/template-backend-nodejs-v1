@@ -1,10 +1,16 @@
 import { messages } from '@constants/messages'
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/zod-constants'
+import type {
+  LiteralEducationLevelEnType,
+  LiteralEducationLevelPtType,
+} from '@custom-types/literal-education-level-type'
+import { ALL_LITERAL_EDUCATION_LEVEL_OPTIONS } from '@custom-types/literal-education-level-type'
+import { LANGUAGE_OPTIONS } from '@custom-types/translation-language-type'
+import { IdentityType, OccupationType } from '@prisma/client'
 import {
-  EducationLevelType,
-  IdentityType,
-  OccupationType,
-} from '@prisma/client'
+  translateEducationLevelToEnumEn,
+  translateEducationLevelToEnumPt,
+} from '@services/translate-education-level'
 import { z } from 'zod'
 import { cpfSchema } from '../utils/cpf'
 import { emailSchema } from '../utils/email'
@@ -32,7 +38,7 @@ export const registerBodySchema = z
         departmentName: upperCaseTextSchema.optional(),
         institutionComplement: upperCaseTextSchema.optional(),
         occupation: z.enum(OccupationType),
-        educationLevel: z.enum(EducationLevelType),
+        educationLevel: upperCaseTextSchema,
         identityType: z.enum(IdentityType),
         identityDocument: upperCaseTextSchema,
         // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
@@ -59,7 +65,7 @@ export const registerBodySchema = z
       ),
 
     activityArea: z.object({
-      activityArea: upperCaseTextSchema,
+      mainActivityArea: upperCaseTextSchema,
       subActivityArea: upperCaseTextSchema,
     }),
 
@@ -125,13 +131,15 @@ export const registerBodySchema = z
         }),
       )
       .max(5),
+
+    lang: z.enum(LANGUAGE_OPTIONS).default('pt'),
   })
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
       if (
-        data.activityArea.activityArea === 'OUTRA' ||
-        data.activityArea.activityArea === 'OTHER'
+        data.activityArea.mainActivityArea === 'OUTRA' ||
+        data.activityArea.mainActivityArea === 'OTHER'
       )
         return !!data.user.activityAreaDescription
 
@@ -155,6 +163,32 @@ export const registerBodySchema = z
     {
       error: messages.validation.activityAreaMissingDescription,
       path: ['activityAreas', 'subActivityArea'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!ALL_LITERAL_EDUCATION_LEVEL_OPTIONS.has(data.user.educationLevel)) {
+        return false
+      }
+
+      switch (data.lang) {
+        case 'pt':
+          data.user.educationLevel = translateEducationLevelToEnumPt(
+            data.user.educationLevel as LiteralEducationLevelPtType,
+          )
+          break
+        case 'en':
+          data.user.educationLevel = translateEducationLevelToEnumEn(
+            data.user.educationLevel as LiteralEducationLevelEnType,
+          )
+          break
+      }
+
+      return true
+    },
+    {
+      error: messages.validation.invalidEducationLevelType,
+      path: ['user', 'educationLevel'],
     },
   )
 

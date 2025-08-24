@@ -59,7 +59,7 @@ export class RegisterUseCase {
 
     const allActivityAreas = [
       {
-        area: registerUseCaseInput.activityArea.activityArea,
+        area: registerUseCaseInput.activityArea.mainActivityArea,
         type: ActivityAreaType.AREA_OF_ACTIVITY,
       },
       {

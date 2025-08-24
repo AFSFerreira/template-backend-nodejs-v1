@@ -123,7 +123,7 @@ export class PrismaUsersRepository implements UsersRepository {
         ActivityArea: {
           connect: {
             type_area: {
-              area: query.activityArea.activityArea,
+              area: query.activityArea.mainActivityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
             },
           },
