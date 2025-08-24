@@ -17,6 +17,9 @@ interface AuthenticateUseCaseResponse {
   user: UserWithDetails
 }
 
+const DUMMY_HASH =
+  'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
+
 export class AuthenticateUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
@@ -30,7 +33,7 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    let user: UserWithDetails | null | undefined
+    let user: UserWithDetails | null
 
     if (emailSchema.safeParse(login).success) {
       user = await this.usersRepository.findByEmail(login)
@@ -45,18 +48,9 @@ export class AuthenticateUseCase {
       userId: user?.id ?? null,
     }
 
-    if (user === null) {
-      await this.authenticationAuditRepository.create({
-        ...auditAuthenticateObject,
-        status: 'USER_NOT_EXISTS',
-      })
+    const hashToCompare = user?.passwordHash ?? DUMMY_HASH
 
-      throw new InvalidCredentialsError()
-    }
-
-    await this.usersRepository.incrementLoginAttempts(user.id)
-
-    const doesPasswordMatch = await compare(password, user.passwordHash)
+    const doesPasswordMatch = await compare(password, hashToCompare)
 
     if (!doesPasswordMatch) {
       await this.authenticationAuditRepository.create({
@@ -66,6 +60,17 @@ export class AuthenticateUseCase {
 
       throw new InvalidCredentialsError()
     }
+
+    if (!user) {
+      await this.authenticationAuditRepository.create({
+        ...auditAuthenticateObject,
+        status: 'USER_NOT_EXISTS',
+      })
+
+      throw new InvalidCredentialsError()
+    }
+
+    await this.usersRepository.incrementLoginAttempts(user.id)
 
     await this.usersRepository.setLastLogin(user.id)
 
