@@ -202,7 +202,7 @@ async function main() {
   const subcategoriesId = [firstSubcategory, secondSubcategory].map(subcategory => ({ id: subcategory.id }))
 
   const blogData = {
-    content: "# HELLO WORLD",
+    htmlContent: "# HELLO WORLD",
     authorName: user.fullName,
     authorId: user.id,
     mainCategoryId: mainCategory.id
