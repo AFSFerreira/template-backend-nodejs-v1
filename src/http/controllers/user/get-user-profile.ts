@@ -8,17 +8,19 @@ export async function getUserProfile(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { userId } = request
+  const { userPublicId } = request
   const findUserByIdUseCase = makeGetUserProfileUseCase()
 
-  if (userId === undefined) {
+  if (!userPublicId) {
     return await reply
       .status(401)
       .send({ message: messages.errors.unauthorized })
   }
 
   try {
-    const { user } = await findUserByIdUseCase.execute({ publicId: userId })
+    const { user } = await findUserByIdUseCase.execute({
+      publicId: userPublicId,
+    })
     return await reply.status(200).send({ user: UserPresenter.toHTTP(user) })
   } catch (error) {
     if (error instanceof UserNotFoundError) {

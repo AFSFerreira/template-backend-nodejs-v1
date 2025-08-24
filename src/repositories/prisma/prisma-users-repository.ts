@@ -19,7 +19,7 @@ import type {
 
 export class PrismaUsersRepository implements UsersRepository {
   static buildStartsWithFilter(value: any) {
-    if (value === undefined) return undefined
+    if (!value) return undefined
 
     return { startsWith: value, mode: 'insensitive' as QueryMode }
   }
@@ -28,7 +28,7 @@ export class PrismaUsersRepository implements UsersRepository {
     comparableType: ComparableType | undefined,
     value: any | undefined,
   ) {
-    if (value === undefined || comparableType === undefined) return undefined
+    if (!value || !comparableType) return undefined
 
     return {
       [comparableType]: value,
@@ -36,7 +36,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   static buildIsFilter(fieldName: string, value: any) {
-    if (value === undefined) return undefined
+    if (!value) return undefined
 
     return {
       is: {
@@ -195,7 +195,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async listAllUsers(query?: ListAllUsersQuery) {
-    if (query?.page === undefined || query?.limit === undefined) {
+    if (!query?.page || !query?.limit) {
       const users = await prisma.user.findMany({
         include: userWithDetails.include,
       })

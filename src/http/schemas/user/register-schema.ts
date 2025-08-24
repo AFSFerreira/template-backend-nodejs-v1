@@ -101,10 +101,9 @@ export const registerBodySchema = z
       .refine(
         (data) => {
           // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-          if (data.scholarshipHolder)
-            return data.sponsoringOrganization !== undefined
+          if (data.scholarshipHolder) return !!data.sponsoringOrganization
 
-          return data.sponsoringOrganization === undefined
+          return !data.sponsoringOrganization
         },
         {
           error: messages.validation.scholarshipHolderAndSponsoringOrganization,
@@ -131,9 +130,9 @@ export const registerBodySchema = z
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
       if (data.activityArea.activityArea === 'OUTRA')
-        return data.user.activityAreaDescription !== undefined
+        return !!data.user.activityAreaDescription
 
-      return data.user.activityAreaDescription === undefined
+      return !data.user.activityAreaDescription
     },
     {
       error: messages.validation.activityAreaMissingDescription,
@@ -144,8 +143,8 @@ export const registerBodySchema = z
     (data) => {
       // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
       if (data.activityArea.subActivityArea === 'OUTRA')
-        return data.user.subActivityAreaDescription !== undefined
-      return data.user.subActivityAreaDescription === undefined
+        return !!data.user.subActivityAreaDescription
+      return !data.user.subActivityAreaDescription
     },
     {
       error: messages.validation.activityAreaMissingDescription,

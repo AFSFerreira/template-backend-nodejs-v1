@@ -15,6 +15,6 @@ export class CheckUsernameAvailabilityUseCase {
     username,
   }: CheckUsernameAvailabilityUseCaseRequest): Promise<CheckUsernameAvailabilityUseCaseResponse> {
     const user = await this.usersRepository.findByUsername(username)
-    return { available: user === null }
+    return { available: !user }
   }
 }

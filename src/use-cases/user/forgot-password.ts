@@ -42,8 +42,7 @@ export class ForgotPasswordUseCase {
       recoveryPasswordTokenExpiresAt,
     }
 
-    if (userAlreadyExists === null)
-      throw new UserNotFoundForPasswordResetError()
+    if (!userAlreadyExists) throw new UserNotFoundForPasswordResetError()
 
     const user = await this.usersRepository.setPasswordToken(
       userAlreadyExists.id,

@@ -12,7 +12,7 @@ export function verifyPermissions(allowedRoles: UserRoleType[]) {
 
     const user = await usersRepository.findByPublicId(userId)
 
-    if (user === null) {
+    if (!user) {
       throw new UserNotFoundError()
     }
 

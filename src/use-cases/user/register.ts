@@ -92,7 +92,7 @@ export class RegisterUseCase {
       registerUseCaseInput.institution.name,
     )
 
-    if (validInstitution === null) {
+    if (!validInstitution) {
       throw new InvalidInstitutionName()
     }
 

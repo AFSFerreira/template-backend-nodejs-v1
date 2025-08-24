@@ -45,11 +45,9 @@ export const getAllUsersParamsSchema = z
   .refine(
     (data) => {
       // Se birthdateComparison estiver definido, birthdate também deve estar
-      if (data.birthdate === undefined)
-        return data.birthdateComparison === undefined
+      if (!data.birthdate) return !data.birthdateComparison
 
-      if (data.birthdateComparison === undefined)
-        data.birthdateComparison = 'equals'
+      if (!data.birthdateComparison) data.birthdateComparison = 'equals'
 
       return true
     },
@@ -61,10 +59,10 @@ export const getAllUsersParamsSchema = z
   .refine(
     (data) => {
       // Se astrobiologyOrRelatedStartYearComparison estiver definido, astrobiologyOrRelatedStartYear também deve estar
-      if (data.astrobiologyOrRelatedStartYear === undefined)
-        return data.astrobiologyOrRelatedStartYearComparison === undefined
+      if (!data.astrobiologyOrRelatedStartYear)
+        return !data.astrobiologyOrRelatedStartYearComparison
 
-      if (data.astrobiologyOrRelatedStartYearComparison === undefined)
+      if (!data.astrobiologyOrRelatedStartYearComparison)
         data.astrobiologyOrRelatedStartYearComparison = 'equals'
 
       return true

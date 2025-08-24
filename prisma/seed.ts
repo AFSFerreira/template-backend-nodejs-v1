@@ -165,7 +165,7 @@ async function main() {
     where: academicPublicationData
   })
   
-  if (existingAcademicPublication === null) {
+  if (!existingAcademicPublication) {
     await prisma.academicPublications.create({
       data: academicPublicationData
     })
@@ -212,7 +212,7 @@ async function main() {
     where: blogData
   })
 
-  if (existingBlog === null) {
+  if (!existingBlog) {
     existingBlog = await prisma.blog.create({
       data: {
         ...blogData,

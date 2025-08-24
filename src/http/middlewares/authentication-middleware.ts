@@ -13,7 +13,7 @@ export async function authenticationMiddleware(
 ) {
   try {
     const headerAuthorization = request.headers.authorization
-    if (headerAuthorization === undefined) {
+    if (!headerAuthorization) {
       return await reply
         .status(401)
         .send({ message: messages.errors.unauthorized })

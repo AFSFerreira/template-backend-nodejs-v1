@@ -23,7 +23,7 @@ export class ResetPasswordUseCase {
     const userAlreadyExists =
       await this.usersRepository.validateUserToken(token)
 
-    if (userAlreadyExists === null) {
+    if (!userAlreadyExists) {
       throw new InvalidTokenError()
     }
 
