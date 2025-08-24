@@ -47,7 +47,9 @@ function translateEducationalLevelEn(educationLevel: EducationLevelType) {
   }
 }
 
-export function getTranslatedEducationLevels(lang: TranslationLanguageType) {
+export function getTranslatedEducationLevels(
+  lang: TranslationLanguageType = 'pt',
+) {
   return Object.values(EducationLevelType).map(
     lang === 'en' ? translateEducationalLevelEn : translateEducationalLevelPt,
   )

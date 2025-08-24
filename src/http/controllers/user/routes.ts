@@ -10,6 +10,7 @@ import { exportData } from './export-data'
 import { findByPublicUserId } from './find-by-public-id'
 import { forgotPassword } from './forgot-password'
 import { getAllUsers } from './get-all-users'
+import { getEducationLevels } from './get-education-levels'
 import { getUserProfile } from './get-user-profile'
 import { logout } from './logout'
 import { refreshToken } from './refresh-token'
@@ -66,8 +67,9 @@ export async function userRoutes(app: FastifyInstance) {
     },
     register,
   )
+  app.get('/education-levels', getEducationLevels)
 
-  // Availability check routes
+  // Availability check routes:
   app.get('/availability/email/:email', checkEmailAvailability)
   app.get('/availability/username/:username', checkUsernameAvailability)
 
