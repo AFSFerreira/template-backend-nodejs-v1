@@ -363,6 +363,7 @@ model MeetingDate {
   meetingId Int     @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([meetingId])
   @@map("meeting_date")
 }
 
