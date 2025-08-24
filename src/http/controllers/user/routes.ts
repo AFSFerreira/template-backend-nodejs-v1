@@ -68,8 +68,8 @@ export async function userRoutes(app: FastifyInstance) {
   )
 
   // Availability check routes
-  app.get('/email/availability/:email', checkEmailAvailability)
-  app.get('/username/availability/:username', checkUsernameAvailability)
+  app.get('/availability/email/:email', checkEmailAvailability)
+  app.get('/availability/username/:username', checkUsernameAvailability)
 
   // Authentication Routes:
   app.post('/sessions', authenticate)
