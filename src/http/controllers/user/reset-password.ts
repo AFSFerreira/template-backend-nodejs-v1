@@ -1,5 +1,5 @@
 import { messages } from '@constants/messages'
-import { resetPasswordSchema } from '@schemas/user/reset-password'
+import { resetPasswordBodySchema } from '@schemas/user/reset-password-body-schema'
 import { InvalidCredentialsError } from '@use-cases/errors/invalid-credentials-error'
 import { makeResetPasswordUseCase } from '@use-cases/factories/user/make-reset-password-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
@@ -8,7 +8,7 @@ export async function resetPassword(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { newPassword, token } = resetPasswordSchema.parse(request.body)
+  const { newPassword, token } = resetPasswordBodySchema.parse(request.body)
 
   const resetPasswordUseCase = makeResetPasswordUseCase()
 

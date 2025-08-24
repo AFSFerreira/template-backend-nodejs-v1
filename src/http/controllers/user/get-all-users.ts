@@ -1,5 +1,5 @@
 import { UserPresenter } from '@presenters/user-presenter'
-import { getAllUsersParamsSchema } from '@schemas/user/get-all-users-schema'
+import { getAllUsersParamsSchema } from '@schemas/user/get-all-users-params-schema'
 import { ResourceNotFoundError } from '@use-cases/errors/resource-not-found-error'
 import { makeGetAllUsersUseCase } from '@use-cases/factories/user/make-get-all-users-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'

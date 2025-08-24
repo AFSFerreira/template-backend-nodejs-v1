@@ -1,6 +1,5 @@
+import type { TranslationLanguageType } from '@custom-types/translation-language-type'
 import { EducationLevelType } from '@prisma/client'
-
-type TranslationLanguageType = 'en' | 'pt'
 
 function translateEducationalLevelPt(educationLevel: EducationLevelType) {
   switch (educationLevel) {

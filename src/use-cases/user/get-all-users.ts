@@ -3,9 +3,9 @@ import type { BirthDateComparisonType } from '@custom-types/birth-date-compariso
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { GetAllUsersSchemaType } from '@schemas/user/get-all-users-schema'
+import type { GetAllUsersParamsSchemaType } from '@schemas/user/get-all-users-params-schema'
 
-type GetAllUsersUseCaseRequest = GetAllUsersSchemaType &
+type GetAllUsersUseCaseRequest = GetAllUsersParamsSchemaType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 

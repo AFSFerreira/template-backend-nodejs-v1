@@ -5,7 +5,7 @@ import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
 import type { InstitutionRepository } from '@repositories/institution-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { RegisterUserSchemaType } from '@schemas/user/register-schema'
+import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import {
   type CompressedImageInfo,
   saveCompressedImage,
@@ -18,13 +18,13 @@ import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email
 
 interface RegisterUseCaseRequest {
   imageBuffer?: Buffer
-  user: RegisterUserSchemaType['user']
-  address: RegisterUserSchemaType['address']
-  enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-  academicPublication: RegisterUserSchemaType['academicPublication']
-  activityArea: RegisterUserSchemaType['activityArea']
-  institution: RegisterUserSchemaType['institution']
-  keyword: RegisterUserSchemaType['keyword']
+  user: RegisterUserBodySchemaType['user']
+  address: RegisterUserBodySchemaType['address']
+  enrolledCourse: RegisterUserBodySchemaType['enrolledCourse']
+  academicPublication: RegisterUserBodySchemaType['academicPublication']
+  activityArea: RegisterUserBodySchemaType['activityArea']
+  institution: RegisterUserBodySchemaType['institution']
+  keyword: RegisterUserBodySchemaType['keyword']
 }
 
 interface RegisterUseCaseResponse {

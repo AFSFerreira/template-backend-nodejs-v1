@@ -1,4 +1,4 @@
-import { checkUsernameAvailabilitySchema } from '@schemas/user/check-username-availability-schema'
+import { checkUsernameAvailabilityBodySchema } from '@schemas/user/check-username-availability-schema'
 import { makeCheckUsernameAvailabilityUseCase } from '@use-cases/user/check-username-availability-factory'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
@@ -6,7 +6,7 @@ export async function checkUsernameAvailability(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { username } = checkUsernameAvailabilitySchema.parse(request.params)
+  const { username } = checkUsernameAvailabilityBodySchema.parse(request.params)
   const checkUsernameAvailabilityUseCase =
     makeCheckUsernameAvailabilityUseCase()
 

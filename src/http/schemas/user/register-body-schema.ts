@@ -152,4 +152,4 @@ export const registerBodySchema = z
     },
   )
 
-export type RegisterUserSchemaType = z.infer<typeof registerBodySchema>
+export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

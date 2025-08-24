@@ -1,5 +1,5 @@
 import { UserPresenter } from '@presenters/user-presenter'
-import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-schema'
+import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-params-schema'
 import { ResourceNotFoundError } from '@use-cases/errors/resource-not-found-error'
 import { makeFindUserByPublicIdUseCase } from '@use-cases/factories/user/make-find-by-public-id-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'

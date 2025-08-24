@@ -1,7 +1,7 @@
 import { messages } from '@constants/messages'
 import {
-  comparisonOperators,
-  orderDirections,
+  COMPARISON_OPERATORS,
+  ORDER_DIRECTIONS,
 } from '@custom-types/orderable-type'
 import {
   EducationLevelType,
@@ -33,12 +33,12 @@ export const getAllUsersParamsSchema = z
     occupation: z.enum(OccupationType).optional(),
     educationLevel: z.enum(EducationLevelType).optional(),
     birthdate: z.date().optional(),
-    birthdateComparison: z.enum(comparisonOperators).optional(),
+    birthdateComparison: z.enum(COMPARISON_OPERATORS).optional(),
     astrobiologyOrRelatedStartYear: z.coerce.number().positive().optional(),
     astrobiologyOrRelatedStartYearComparison: z
-      .enum(comparisonOperators)
+      .enum(COMPARISON_OPERATORS)
       .optional(),
-    createdAtOrder: z.enum(orderDirections).optional(),
+    createdAtOrder: z.enum(ORDER_DIRECTIONS).optional(),
     page: z.coerce.number().min(1).default(1),
     limit: z.coerce.number().min(1).max(100).default(10),
   })
@@ -75,4 +75,6 @@ export const getAllUsersParamsSchema = z
     },
   )
 
-export type GetAllUsersSchemaType = z.infer<typeof getAllUsersParamsSchema>
+export type GetAllUsersParamsSchemaType = z.infer<
+  typeof getAllUsersParamsSchema
+>

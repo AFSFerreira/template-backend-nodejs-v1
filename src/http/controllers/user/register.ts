@@ -3,7 +3,7 @@ import type {
   IdentityType,
   OccupationType,
 } from '@prisma/client'
-import { registerBodySchema } from '@schemas/user/register-schema'
+import { registerBodySchema } from '@schemas/user/register-body-schema'
 import { InvalidInstitutionName } from '@use-cases/errors/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user-already-exists-error'
 import { UserImageStorageError } from '@use-cases/errors/user-image-storage-error'

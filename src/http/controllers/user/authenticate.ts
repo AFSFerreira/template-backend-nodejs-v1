@@ -1,6 +1,6 @@
 import { env } from '@env/index'
 import { UserPresenter } from '@presenters/user-presenter'
-import { authenticateBodySchema } from '@schemas/user/authenticate-schema'
+import { authenticateBodySchema } from '@schemas/user/authenticate-body-schema'
 import { InvalidCredentialsError } from '@use-cases/errors/invalid-credentials-error'
 import { makeAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'

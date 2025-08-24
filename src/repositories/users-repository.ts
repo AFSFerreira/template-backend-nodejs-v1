@@ -2,23 +2,26 @@ import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { Prisma } from '@prisma/client'
-import type { GetAllUsersSchemaType } from '@schemas/user/get-all-users-schema'
-import type { RegisterUserSchemaType } from '@schemas/user/register-schema'
+import type { GetAllUsersParamsSchemaType } from '@schemas/user/get-all-users-params-schema'
+import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 
-export type ListAllUsersQuery = Omit<GetAllUsersSchemaType, 'page' | 'limit'> &
+export type ListAllUsersQuery = Omit<
+  GetAllUsersParamsSchemaType,
+  'page' | 'limit'
+> &
   PaginationType
 
 export interface CreateUserQuery {
-  user: Omit<RegisterUserSchemaType['user'], 'password'> & {
+  user: Omit<RegisterUserBodySchemaType['user'], 'password'> & {
     passwordHash: string
     profileImage: string
   }
-  activityArea: RegisterUserSchemaType['activityArea']
-  address: RegisterUserSchemaType['address']
-  enrolledCourse: RegisterUserSchemaType['enrolledCourse']
-  academicPublication: RegisterUserSchemaType['academicPublication']
-  keyword: RegisterUserSchemaType['keyword']
-  institution: RegisterUserSchemaType['institution']
+  activityArea: RegisterUserBodySchemaType['activityArea']
+  address: RegisterUserBodySchemaType['address']
+  enrolledCourse: RegisterUserBodySchemaType['enrolledCourse']
+  academicPublication: RegisterUserBodySchemaType['academicPublication']
+  keyword: RegisterUserBodySchemaType['keyword']
+  institution: RegisterUserBodySchemaType['institution']
 }
 
 export interface TokenData {

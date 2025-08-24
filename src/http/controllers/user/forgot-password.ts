@@ -1,5 +1,5 @@
 import { messages } from '@constants/messages'
-import { forgotPasswordSchema } from '@schemas/user/forgot-password-schema'
+import { forgotPasswordBodySchema } from '@schemas/user/forgot-password-body-schema'
 import { forgotPasswordHtmlTemplate } from '@templates/forgot-password-html'
 import { forgotPasswordTextTemplate } from '@templates/forgot-password-text'
 import { UserNotFoundForPasswordResetError } from '@use-cases/errors/user-not-found-for-password-reset-error'
@@ -11,7 +11,7 @@ export async function forgotPassword(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const { login } = forgotPasswordSchema.parse(request.body)
+  const { login } = forgotPasswordBodySchema.parse(request.body)
 
   const forgotPasswordUseCase = makeForgotPasswordUseCase()
 
