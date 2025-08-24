@@ -129,7 +129,10 @@ export const registerBodySchema = z
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
-      if (data.activityArea.activityArea === 'OUTRA')
+      if (
+        data.activityArea.activityArea === 'OUTRA' ||
+        data.activityArea.activityArea === 'OTHER'
+      )
         return !!data.user.activityAreaDescription
 
       return !data.user.activityAreaDescription
@@ -142,7 +145,10 @@ export const registerBodySchema = z
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
-      if (data.activityArea.subActivityArea === 'OUTRA')
+      if (
+        data.activityArea.subActivityArea === 'OUTRA' ||
+        data.activityArea.subActivityArea === 'OTHER'
+      )
         return !!data.user.subActivityAreaDescription
       return !data.user.subActivityAreaDescription
     },
