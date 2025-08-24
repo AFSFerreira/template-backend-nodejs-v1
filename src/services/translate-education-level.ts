@@ -17,14 +17,14 @@ function translateEducationLevelPt(
       return 'ALUNO DE GRADUAÇÃO'
     case EducationLevelType.BACHELOR:
       return 'BACHAREL'
-    case EducationLevelType.DOCTORATE_STUDENT:
-      return 'ALUNO DE DOUTORADO'
-    case EducationLevelType.DOCTORATE:
-      return 'DOUTORADO'
     case EducationLevelType.MASTER_STUDENT:
       return 'ALUNO DE MESTRADO'
     case EducationLevelType.MASTER:
       return 'MESTRADO'
+    case EducationLevelType.DOCTORATE_STUDENT:
+      return 'ALUNO DE DOUTORADO'
+    case EducationLevelType.DOCTORATE:
+      return 'DOUTORADO'
     case EducationLevelType.OTHER:
       return 'OUTRO'
   }
