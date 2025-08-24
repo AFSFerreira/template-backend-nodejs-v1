@@ -147,6 +147,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  async findBy(where: Prisma.UserWhereInput) {
+    const user = await prisma.user.findFirst({
+      where,
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
   async findByEmail(email: string) {
     const user = await prisma.user.findUnique({
       where: { email },

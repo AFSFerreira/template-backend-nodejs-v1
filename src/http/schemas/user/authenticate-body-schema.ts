@@ -10,4 +10,4 @@ export const authenticateBodySchema = z.object(
   messages.validation.invalidAuthenticationInput,
 )
 
-export type AuthenticaticateSchemaType = z.infer<typeof authenticateBodySchema>
+export type AuthenticateSchemaType = z.infer<typeof authenticateBodySchema>

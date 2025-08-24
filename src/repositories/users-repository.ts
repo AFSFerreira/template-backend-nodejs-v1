@@ -41,6 +41,7 @@ export interface ListAllUsersResponse {
 
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
+  findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
   findByUsername: (username: string) => Promise<UserWithDetails | null>
   findById: (id: number) => Promise<UserWithDetails | null>

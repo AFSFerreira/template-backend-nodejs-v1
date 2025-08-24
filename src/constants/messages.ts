@@ -48,6 +48,8 @@ export const messages = {
     unauthorized: 'User not authenticated',
     bodyRequired: 'The request body is missing',
     invalidInstitutionName: 'Invalid Institution Name',
+    missingEmailAndUsername:
+      'Missing "email" and "username" properties. Provide at least one of them',
   },
   info: {
     changedPassword: 'Password changed successfully!',

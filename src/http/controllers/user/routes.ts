@@ -4,8 +4,7 @@ import { verifyPermissions } from '@middlewares/verify-user-role'
 import { UserRoleType } from '@prisma/client'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate'
-import { checkEmailAvailability } from './check-email-availability'
-import { checkUsernameAvailability } from './check-username-availability'
+import { checkAvailability } from './check-availability'
 import { exportData } from './export-data'
 import { findByPublicUserId } from './find-by-public-id'
 import { forgotPassword } from './forgot-password'
@@ -70,8 +69,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get('/education-levels', getEducationLevels)
 
   // Availability check routes:
-  app.get('/availability/email/:email', checkEmailAvailability)
-  app.get('/availability/username/:username', checkUsernameAvailability)
+  app.get('/availability', checkAvailability)
 
   // Authentication Routes:
   app.post('/sessions', authenticate)
