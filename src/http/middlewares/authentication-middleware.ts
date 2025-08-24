@@ -21,9 +21,9 @@ export async function authenticationMiddleware(
 
     const [, token] = headerAuthorization.split(' ')
 
-    const { sub: userId } = verify(token, env.JWT_SECRET) as Payload
+    const { sub: userPublicId } = verify(token, env.JWT_SECRET) as Payload
 
-    request.userId = userId
+    request.userPublicId = userPublicId
   } catch (error) {
     return await reply
       .status(401)

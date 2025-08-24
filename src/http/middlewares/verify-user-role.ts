@@ -6,7 +6,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export function verifyPermissions(allowedRoles: UserRoleType[]) {
   return async (request: FastifyRequest, reply: FastifyReply) => {
-    const userId = request.userId ?? ''
+    const userId = request.userPublicId ?? ''
 
     const usersRepository = new PrismaUsersRepository()
 

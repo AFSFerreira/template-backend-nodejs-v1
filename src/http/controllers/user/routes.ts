@@ -73,7 +73,13 @@ export async function userRoutes(app: FastifyInstance) {
 
   // Authentication Routes:
   app.post('/sessions', authenticate)
-  app.post('/sessions/refresh-token', refreshToken)
+  app.post(
+    '/sessions/refresh-token',
+    {
+      preHandler: [authenticationMiddleware],
+    },
+    refreshToken,
+  )
   app.post('/forgot-password', forgotPassword)
   app.patch('/reset-password', resetPassword)
   app.delete(

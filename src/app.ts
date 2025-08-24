@@ -5,7 +5,7 @@ import multipart from '@fastify/multipart'
 import fastify from 'fastify'
 import z, { ZodError } from 'zod'
 import { messages } from './constants/messages'
-import { env } from './env'
+import { env } from './env/index'
 import { appRoutes } from './http/routes'
 import './lib/pg-trgm'
 
@@ -20,7 +20,7 @@ app.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
   exposedHeaders: ['Authorization'],
   maxAge: 3600, // Cache de 1 hora
 })
@@ -32,7 +32,7 @@ app.register(fastifyJwt, {
     signed: false,
   },
   sign: {
-    expiresIn: '2h',
+    expiresIn: env.JWT_EXPIRATION,
   },
 })
 

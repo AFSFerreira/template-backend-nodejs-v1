@@ -40,7 +40,7 @@ export async function authenticate(
       {
         sign: {
           sub: user?.publicId,
-          expiresIn: '7d',
+          expiresIn: env.JWT_REFRESH_EXPIRATION,
         },
       },
     )
