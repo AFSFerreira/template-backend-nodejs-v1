@@ -24,7 +24,7 @@ export const messages = {
     invalidAuthenticationInput:
       'Authentication error: Invalid email, username or password format',
     activityAreaMissingDescription:
-      'If the area is chosen as "OTHER", a description must be provided',
+      'If the area is chosen as "OTHER", a description must be provided — and must not be provided otherwise',
     invalidEducationLevelValue:
       'Invalid education level value. Please select a valid education level option',
     invalidOccupationValue:

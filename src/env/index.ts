@@ -1,4 +1,4 @@
-import { TOKEN_DURATION_REGEX } from '@constants/regex'
+import { TOKEN_DURATION_REGEX } from '../constants/regex'
 import 'dotenv/config'
 import { z } from 'zod'
 

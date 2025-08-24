@@ -3,7 +3,6 @@ import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
-import type { InstitutionRepository } from '@repositories/institution-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import {
@@ -12,7 +11,6 @@ import {
 } from '@utils/image-storage'
 import { hash } from 'bcryptjs'
 import { InvalidActivityArea } from '../errors/invalid-activity-areas-error'
-import { InvalidInstitutionName } from '../errors/invalid-institution-name-error'
 import { UserImageStorageError } from '../errors/user-image-storage-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
 
@@ -35,7 +33,6 @@ export class RegisterUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly activityAreasRepository: ActivityAreaRepository,
-    private readonly institutionRepository: InstitutionRepository,
   ) {}
 
   async execute(
@@ -57,7 +54,7 @@ export class RegisterUseCase {
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       }))
 
-    const allActivityAreas = [
+    const allUserActivityAreas = [
       {
         area: registerUseCaseInput.activityArea.mainActivityArea,
         type: ActivityAreaType.AREA_OF_ACTIVITY,
@@ -70,30 +67,29 @@ export class RegisterUseCase {
     ]
 
     const activityAreasFound =
-      await this.activityAreasRepository.findManyByArea(allActivityAreas)
+      await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
 
-    // Verifica se alguma área de atividade é inválida:
-    if (activityAreasFound.length !== allActivityAreas.length) {
-      const activityAreasSet = new Set(
-        activityAreasFound.map((activityArea) => ({
+    console.log(activityAreasFound, allUserActivityAreas)
+
+    const activityAreasFoundSet = new Set(
+      activityAreasFound.map((activityArea) =>
+        JSON.stringify({
           area: activityArea.area,
           type: activityArea.type,
-        })),
-      )
-      const wrongActivityAreas = allActivityAreas.filter(
-        (activityArea) => !activityAreasSet.has(activityArea),
-      )
-
-      throw new InvalidActivityArea(wrongActivityAreas.toString())
-    }
-
-    // Verifica se a instituição fornecida é válida:
-    const validInstitution = await this.institutionRepository.findByName(
-      registerUseCaseInput.institution.name,
+        }),
+      ),
     )
 
-    if (!validInstitution) {
-      throw new InvalidInstitutionName()
+    const wrongActivityAreas = allUserActivityAreas.filter((activityArea) => {
+      return !activityAreasFoundSet.has(JSON.stringify(activityArea))
+    })
+
+    if (wrongActivityAreas.length !== 0) {
+      throw new InvalidActivityArea(
+        wrongActivityAreas
+          .map((activityArea) => JSON.stringify(activityArea, null, 2))
+          .toString(),
+      )
     }
 
     // Persiste a imagem do usuário no backend:

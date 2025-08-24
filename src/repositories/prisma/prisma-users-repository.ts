@@ -98,22 +98,27 @@ export class PrismaUsersRepository implements UsersRepository {
           create: query.enrolledCourse,
         },
         Institution: {
-          connect: {
-            name: query.institution.name,
+          connectOrCreate: {
+            create: { name: query.institution.name },
+            where: { name: query.institution.name },
           },
         },
         AcademicPublication: {
-          create: query.academicPublication.map((academicPublication) => ({
-            ...academicPublication,
-            ActivityArea: {
-              connect: {
-                type_area: {
-                  area: academicPublication.tag,
-                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          create: query.academicPublication.map((academicPublication) => {
+            const { tag, ...filteredAcademicPublicationData } =
+              academicPublication
+            return {
+              ...filteredAcademicPublicationData,
+              ActivityArea: {
+                connect: {
+                  type_area: {
+                    area: academicPublication.tag,
+                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                  },
                 },
               },
-            },
-          })),
+            }
+          }),
         },
         Keyword: {
           create: query.keyword?.map((value: string) => ({

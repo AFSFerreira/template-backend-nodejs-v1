@@ -142,14 +142,15 @@ export const registerBodySchema = z
       if (
         data.activityArea.mainActivityArea === 'OUTRA' ||
         data.activityArea.mainActivityArea === 'OTHER'
-      )
+      ) {
         return !!data.user.activityAreaDescription
+      }
 
       return !data.user.activityAreaDescription
     },
     {
       error: messages.validation.activityAreaMissingDescription,
-      path: ['activityAreas', 'activityArea'],
+      path: ['activityAreas', 'mainActivityArea'],
     },
   )
   .refine(
