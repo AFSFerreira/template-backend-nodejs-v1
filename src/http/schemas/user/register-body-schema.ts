@@ -1,16 +1,18 @@
 import { messages } from '@constants/messages'
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/zod-constants'
-import type {
-  LiteralEducationLevelEnType,
-  LiteralEducationLevelPtType,
-} from '@custom-types/literal-education-level-type'
 import { ALL_LITERAL_EDUCATION_LEVEL_OPTIONS } from '@custom-types/literal-education-level-type'
+import { ALL_LITERAL_OCCUPATION_OPTIONS } from '@custom-types/literal-ocupation-type'
 import { LANGUAGE_OPTIONS } from '@custom-types/translation-language-type'
-import { IdentityType, OccupationType } from '@prisma/client'
+import { IdentityType } from '@prisma/client'
 import {
   translateEducationLevelToEnumEn,
   translateEducationLevelToEnumPt,
 } from '@services/translate-education-level'
+import {
+  translateOccupationToEnumEn,
+  translateOccupationToEnumPt,
+} from '@services/translate-occupation'
+import { translateInput } from '@utils/translate-input'
 import { z } from 'zod'
 import { cpfSchema } from '../utils/cpf'
 import { emailSchema } from '../utils/email'
@@ -37,7 +39,7 @@ export const registerBodySchema = z
         orcidNumber: orcidNumberSchema.optional(),
         departmentName: upperCaseTextSchema.optional(),
         institutionComplement: upperCaseTextSchema.optional(),
-        occupation: z.enum(OccupationType),
+        occupation: upperCaseTextSchema,
         educationLevel: upperCaseTextSchema,
         identityType: z.enum(IdentityType),
         identityDocument: upperCaseTextSchema,
@@ -171,24 +173,38 @@ export const registerBodySchema = z
         return false
       }
 
-      switch (data.lang) {
-        case 'pt':
-          data.user.educationLevel = translateEducationLevelToEnumPt(
-            data.user.educationLevel as LiteralEducationLevelPtType,
-          )
-          break
-        case 'en':
-          data.user.educationLevel = translateEducationLevelToEnumEn(
-            data.user.educationLevel as LiteralEducationLevelEnType,
-          )
-          break
-      }
+      data.user.educationLevel = translateInput(
+        data.user.educationLevel,
+        data.lang,
+        translateEducationLevelToEnumPt,
+        translateEducationLevelToEnumEn,
+      )
 
       return true
     },
     {
-      error: messages.validation.invalidEducationLevelType,
+      error: messages.validation.invalidEducationLevelValue,
       path: ['user', 'educationLevel'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!ALL_LITERAL_OCCUPATION_OPTIONS.has(data.user.occupation)) {
+        return false
+      }
+
+      data.user.occupation = translateInput(
+        data.user.occupation,
+        data.lang,
+        translateOccupationToEnumPt,
+        translateOccupationToEnumEn,
+      )
+
+      return true
+    },
+    {
+      error: messages.validation.invalidOccupationValue,
+      path: ['user', 'occupation'],
     },
   )
 

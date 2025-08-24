@@ -1,4 +1,4 @@
-import { checkUsernameAvailabilityBodySchema } from '@schemas/user/check-username-availability-schema'
+import { checkUsernameAvailabilityBodySchema } from '@schemas/user/check-username-availability-params-schema'
 import { makeCheckUsernameAvailabilityUseCase } from '@use-cases/user/check-username-availability-factory'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

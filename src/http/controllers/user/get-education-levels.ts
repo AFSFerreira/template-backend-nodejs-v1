@@ -1,4 +1,4 @@
-import { getEducationLevelsQuerySchema } from '@schemas/user/get-education-levels-params-schema'
+import { getEducationLevelsQuerySchema } from '@schemas/user/get-education-levels-query-schema'
 import { getTranslatedEducationLevels } from '@services/translate-education-level'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

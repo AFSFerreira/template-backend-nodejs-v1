@@ -25,8 +25,10 @@ export const messages = {
       'Authentication error: Invalid email, username or password format',
     activityAreaMissingDescription:
       'If the area is chosen as "OTHER", a description must be provided',
-    invalidEducationLevelType:
-      'Invalid education level type. Please select a valid education level option',
+    invalidEducationLevelValue:
+      'Invalid education level value. Please select a valid education level option',
+    invalidOccupationValue:
+      'Invalid occupation value. Please select a valid occupation option',
   },
   errors: {
     noUsersAvailable: 'No available users info to export',
