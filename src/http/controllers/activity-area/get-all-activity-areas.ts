@@ -1,7 +1,7 @@
+import { ActivityAreaPresenter } from '@presenters/activity-area-presenter'
+import { getAllActivityAreasSchema } from '@schemas/activity-area/get-all-activity-areas-schema'
+import { makeGetAllActivityAreasUseCase } from '@use-cases/factories/activity-area/make-get-all-activity-areas-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { ActivityAreaPresenter } from '@/http/presenters/activity-area-presenter'
-import { getAllActivityAreasSchema } from '@/http/schemas/activity-area/get-all-activity-areas-schema'
-import { makeGetAllActivityAreasUseCase } from '@/use-cases/factories/activity-area/make-get-all-activity-areas-use-case'
 
 export async function getAllActivityAreas(
   request: FastifyRequest,

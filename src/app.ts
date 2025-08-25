@@ -3,10 +3,13 @@ import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import fastify from 'fastify'
-import { ZodError } from 'zod'
-import { env } from './env'
+import z, { ZodError } from 'zod'
+import { messages } from './constants/messages'
+import { env } from './env/index'
 import { appRoutes } from './http/routes'
 import './lib/pg-trgm'
+
+z.config(z.locales.pt())
 
 export const app = fastify()
 
@@ -16,8 +19,10 @@ app.register(multipart)
 app.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  exposedHeaders: ['Authorization'],
+  maxAge: 3600, // Cache de 1 hora
 })
 
 app.register(fastifyJwt, {
@@ -27,7 +32,7 @@ app.register(fastifyJwt, {
     signed: false,
   },
   sign: {
-    expiresIn: '2h',
+    expiresIn: env.JWT_EXPIRATION,
   },
 })
 
@@ -37,7 +42,11 @@ app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
     return reply
       .status(400)
-      .send({ message: 'Validation error!', issues: error.format() })
+      .send({ message: 'Validation error!', issues: z.treeifyError(error) })
+  }
+
+  if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {
+    return reply.status(400).send({ message: messages.errors.bodyRequired })
   }
 
   if (env.NODE_ENV !== 'production') {

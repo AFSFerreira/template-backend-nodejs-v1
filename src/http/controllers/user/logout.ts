@@ -1,6 +1,6 @@
+import { messages } from '@constants/messages'
+import { env } from '@env/index'
 import { type FastifyRequest, type FastifyReply } from 'fastify'
-import { messages } from '@/constants/messages'
-import { env } from '@/env'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
   try {

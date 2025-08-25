@@ -1,12 +1,12 @@
 import { randomBytes } from 'crypto'
-import { UserNotFoundForPasswordResetError } from '../errors/user-not-found-for-password-reset-error'
-import type { UserWithDetails } from '@/@types/user-with-details'
 import {
   EXPIRES_IN_MINUTES,
   TOKEN_LENGTH,
-} from '@/constants/forgot-password-token'
-import { emailSchema } from '@/http/schemas/utils/email'
-import type { UsersRepository } from '@/repositories/users-repository'
+} from '@constants/forgot-password-token'
+import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UsersRepository } from '@repositories/users-repository'
+import { emailSchema } from '@schemas/utils/email'
+import { UserNotFoundForPasswordResetError } from '../errors/user-not-found-for-password-reset-error'
 
 interface ForgotPasswordUseCaseRequest {
   login: string
@@ -42,8 +42,7 @@ export class ForgotPasswordUseCase {
       recoveryPasswordTokenExpiresAt,
     }
 
-    if (userAlreadyExists === null)
-      throw new UserNotFoundForPasswordResetError()
+    if (!userAlreadyExists) throw new UserNotFoundForPasswordResetError()
 
     const user = await this.usersRepository.setPasswordToken(
       userAlreadyExists.id,

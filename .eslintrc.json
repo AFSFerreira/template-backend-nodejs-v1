@@ -18,9 +18,9 @@
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/restrict-plus-operands": "off",
+    "@typescript-eslint/no-extraneous-class": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
     "semi": ["error", "never"],
-
-    // Ordena e agrupa imports:
     "import/order": [
       "warn",
       {

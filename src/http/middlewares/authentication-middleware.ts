@@ -1,7 +1,7 @@
+import { messages } from '@constants/messages'
+import { env } from '@env/index'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { verify } from 'jsonwebtoken'
-import { messages } from '@/constants/messages'
-import { env } from '@/env'
 
 interface Payload {
   sub: string
@@ -13,7 +13,7 @@ export async function authenticationMiddleware(
 ) {
   try {
     const headerAuthorization = request.headers.authorization
-    if (headerAuthorization === undefined) {
+    if (!headerAuthorization) {
       return await reply
         .status(401)
         .send({ message: messages.errors.unauthorized })
@@ -21,9 +21,9 @@ export async function authenticationMiddleware(
 
     const [, token] = headerAuthorization.split(' ')
 
-    const { sub: userId } = verify(token, env.JWT_SECRET) as Payload
+    const { sub: userPublicId } = verify(token, env.JWT_SECRET) as Payload
 
-    request.userId = userId
+    request.userPublicId = userPublicId
   } catch (error) {
     return await reply
       .status(401)

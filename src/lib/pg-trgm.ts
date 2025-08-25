@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@prisma/client'
-import { isValidSqlIdentifier } from '@/utils/is-valid-SQL-identifier'
+import { isValidSqlIdentifier } from '@utils/is-valid-SQL-identifier'
 
 export let enabledPgTrigramEnabled = false
 
@@ -66,7 +66,7 @@ export async function initializePgTrgmLib(prisma: PrismaClient) {
   // Habilitando lib do trigram:
   await enablePgTrgm(prisma)
 
-  const targets = [{ table: 'blogs', field: 'content' }]
+  const targets: Array<Record<string, string>> = []
 
   for (const { table, field } of targets) {
     await insertGinIndexes(prisma, table, field)

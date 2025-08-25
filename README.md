@@ -1,264 +1,134 @@
 # ![4797b663cfb501a9d4dddd726180bf7502b7bd95](https://github.com/user-attachments/assets/01ecf847-53b2-4db2-bda3-95923cee525b)
 
-## Tabela de Conteúdos
+## 📋 Sumário
 
-1. [Sobre o Projeto](#sobre-o-projeto)
-2. [Estrutura Atual](#estrutura-atual)
-3. [Sobre a Estrutura](#sobre-a-estrutura)
-4. [O Que Fizemos](#o-que-fizemos)
-5. [Como Executar o Servidor](#como-executar-o-servidor)
-6. [Links Externos](#links-externos)
-7. [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
+1. [Visão Geral](#visao-geral)
+2. [Estrutura do Projeto](#estrutura-do-projeto)
+3. [Tipos de Usuários](#tipos-de-usuarios)
+4. [Funcionalidades por Requisito](#funcionalidades-por-requisito)
+5. [Requisitos Não Funcionais](#requisitos-nao-funcionais)
+6. [Como Executar o Servidor](#como-executar-o-servidor)
+7. [Links Externos](#links-externos)
+8. [Equipe de Desenvolvimento](#equipe-de-desenvolvimento)
 
-## Sobre o Projeto
+<a name="visao-geral"></a>
+
+---
+
+## 🗺️ Visão Geral:
 Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto consiste na reconstrução da plataforma já existente. A plataforma possui postagens de blogs, materiais de ensino/aprendizagem, informações internas, entre outros. A plataforma pretende ser uma fonte de aprendizado ao mesmo tempo que é uma porta de entrada para conhecer a sociedade.
 
-## Estrutura Atual
+---
+
+<a name="estrutura-do-projeto"></a>
+
+## 📂 Estrutura do Projeto:
 
 ```bash
-├─── .husky
 ├─── .github
-│    └─── workflows
-├─── uploads
-│    └─── profile-images
+│    └───workflows
+├─── .husky
 ├─── prisma
 │    └─── migrations
 │         └─── ...
+├─── uploads
+│    └─── profile-images
 └─── src
      ├─── @types
      ├─── constants
      ├─── env
      ├─── lib
-     ├─── middlewares
      ├─── services
+     ├─── templates
      ├─── utils
-     ├─── swagger-schemas
-     │    └─── user
      ├─── repositories
      │    └─── prisma
+     │        └─── queries
      ├─── http
-     │    └─── controllers
-     │         └─── user
+     │    ├─── controllers
+     │    │    ├─── activity-area
+     │    │    └─── user
+     │    ├─── middlewares
+     │    ├─── presenters
+     │    └─── schemas
+     │         ├─── activity-area
+     │         ├─── user
+     │         └─── utils
      └─── use-cases
-         ├─── errors
-         ├─── academic-publication
-         │    └─── factories
-         ├─── address
-         │    └─── factories
-         ├─── area-of-activity
-         │    └─── factories
-         ├─── enrolled-course
-         │    └─── factories
-         ├─── keyword
-         │    └─── factories
-         └─── user
-              └─── factories
+          ├─── activity-area
+          ├─── errors
+          ├─── factories
+          │    ├─── activity-area
+          │    ├─── messaging
+          │    └─── user
+          ├─── messaging
+          └─── user
     
 ```
 
-## Sobre a Estrutura
-A estrutura básica do projeto segue um padrão em camadas, amplamente adotado na empresa em projetos que utilizam <a href="https://www.typescriptlang.org/" target="_blank">TypeScript</a> e <a href="https://www.prisma.io/" target="_blank">Prisma</a>. No entanto, algumas mudanças estruturais foram introduzidas, divergindo sutilmente das práticas previamente estabelecidas. Todas as principais mudanças foram discorridas em mais detalhes nos tópicos listados abaixo:
 
-<details>
-<summary>Reorganização da Estrutura de Diretórios de <strong>Use Cases</strong> (Clique para Expandir)</summary>
+<a name="tipos-de-usuarios"></a>
 
-## Reorganização da Estrutura de Diretórios de **Use Cases**
+# 👤 Tipos de Usuários:
 
-Diferentemente da estrutura tipicamente empregada nos demais projetos — nos quais a pasta *use-cases* segue um padrão mais simplificado, conforme ilustrado abaixo:
+<div align="center">
 
-```bash
-├─── errors
-└─── factories
-```
+| Tipo de Usuário   |            Permissões Principais                   |
+| :---------------: | :------------------------------------------------: |
+| ADMIN             |       Gerenciamento global do sistema              |
+| MANAGER           |       Gerenciamento parcial do sistema             |
+| CONTENT_LEADER    |  Produtor e revisor irrestrito de conteúdo         |
+| CONTENT_PRODUCER  |  Produtor de conteúdo dependente do CONTENT_LEADER |
+| DEFAULT           | Usuário do sistema sem permissões especiais        |
 
-Optamos por aumentar a granularidade da divisão dos diretórios, reorganizando-os por modelo de domínio, conforme ilustrado a seguir:
+</div>
 
-```bash
-├─── errors
-├─── academic-publication
-│    └─── factories
-├─── address
-│    └─── factories
-├─── area-of-activity
-│    └─── factories
-├─── enrolled-course
-│    └─── factories
-├─── keyword
-│    └─── factories
-├─── user
-│    └─── factories
-└─── ...
-```
+---
 
-Conforme é possível observar no exemplo apresentado acima, optamos por separar os casos de uso e seus respectivos factories em diferentes diretórios, separados pelos modelos presentes no 
-banco de dados. Além disso, escolhemos manter a pasta de `errors` separada e livre de 
-contexto, pois existem múltiplos erros que são comuns a muitos casos de uso.
+<a name="funcionalidades-por-requisito"></a>
 
-Essa decisão justifica-se pela necessidade de uma organização mais sofisticada dos arquivos. Em comparação com outros projetos existentes na empresa, os arquivos de estavam excessivamente dispersos, e isto, por sua vez, dificultava a localização de casos de uso específicos com base em seu contexto ou modelo associado.
+## ✅ Funcionalidades por Requisito:
 
-O principal revés dessa abordagem está no pequeno aumento da complexidade dos caminhos relativos utilizados para referenciar arquivos de *factories* e *use-cases* — ainda que atenuado pelos aliases definidos no arquivo `tsconfig.json`. Contudo, após discussões sobre as implicações positivas e negativas da mudança, optamos por adotar essa reorganização estrutural como uma medida de melhoria na futura manutenção e escalabilidade do projeto.
-</details>
+### 📌 Requisito 1 – Cadastro e Edição de Usuários:
 
-<details>
-<summary>Implementação do <strong>Swagger</strong> (Clique para Expandir)</summary>
+* [x] 1.1 Cadastro de Manager: Outorgar ou remover o privilégio de MANAGER para um usuário do sistema pelo Administrador
+* [x] 1.2 Cadastro de Content Leader: Outorgar ou remover o privilégio de CONTENT_LEADER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
+* [x] 1.3 Cadastro de Content Producer: Outorgar ou remover o privilégio de CONTENT_PRODUCER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
+* [ ] 1.4 Cadastro de Usuário: Envio das informações básicas necessárias para cadastrar um novo usuário comum (desconsiderando a imagem de perfil)
+* [ ] 1.5 Cadastro com upload de imagem de perfil 
+* [ ] 1.6 Edição de Usuário: Os dados do usuário devem ser editáveis
 
-## Implementação do **Swagger**
+### 📌 Requisito 2 – Autenticação e Acesso:
+* [x] 2.1 Login com Email/Username e Senha
+* [x] 2.2 Redefinição de Senha com envio de Email (esqueci a senha)
+* [ ] 2.3 Inativação de Usuário: Um usuário deve ser inativado do sistema se não realizar o pagamento mensal da associação
+* [x] 2.4 Recuperação de Usuários: Um Administrador ou um Gestor do Sistema devem ser capazes de recuperar usuários filtrados com paginação
+* [ ] 2.5 Aprovação de Usuário: Um Administrador ou um Gestor do Sistema devem ser capazes de aprovar ou rejeitar o pedido de associação pendente do usuário
 
-O <a href="https://swagger.io" target="_blank">Swagger</a> é um conjunto de ferramentas para documentação e teste de APIs RESTful. Seu principal objetivo é descrever de forma padronizada, usando o formato OpenAPI, como uma API funciona — incluindo endpoints disponíveis, parâmetros, retornos, autenticação e afins.
+### 📌 Requisito 3 – Criação e Gestão de Reuniões:
+* [ ] 3.1 Criação de Reunião: Título, datas, resumo do local e edital
+* [ ] 3.2 Cancelamento de Reunião: A reunião deve ser removida do sistema
+* [ ] 3.3 Edição de Reunião: Os dados da reunião devem ser editáveis
 
-A tecnologia utilizada para a documentação das rotas do backend é uma variação do Swagger voltada especificamente para o Fastify, chamada <a href="https://www.npmjs.com/package/@fastify/swagger" target="_blank">Fastify-Swagger</a>. Com essa biblioteca, podemos documentar detalhadamente cada uma das rotas e exibi-las visualmente de forma organizada na rota `/docs`, com o auxílio da biblioteca <a href="https://www.npmjs.com/package/@fastify/swagger-ui" target="_blank">Fastify-Swagger-UI</a> incluindo descrições, parâmetros, corpo da requisição e possíveis respostas.
+### 📌 Requisito 4 – Exportação de Dados:
+* [ ] 4.1 Exportação dos Usuários: O sistema deve ser capaz de exportar os dados de todos os usuários pelo Administador ou por um Gestor do Sistema
+* [ ] 4.2 Exportação de Reuniões: O sistema deve ser capaz de exportar os dados de todas as reuniões pelo Administador ou por um Gestor do Sistema
 
-Usualmente, o Swagger é implementado em um único arquivo presente na raiz do projeto, chamado `swagger.json`. A documentação nesse arquivo é criada segundo uma estrutura específica em formato JSON, com aninhamento de objetos, arrays e propriedades. Segue abaixo um pequeno exemplo hipotético para fins de demonstração:
+---
 
-```js
-{
-  "openapi": "3.0.0",
-  "info": {
-    "title": "Astrobiologia Backend",
-    "description": "Documentação para o consumo da API do sistema da comunidade brasileira de Astrobiologia",
-    "version": "1.0.0"
-  },
-  "paths": {
-    "/users": {
-      "post": {
-        "summary": "Criação de um novo usuário no sistema",
-        "description": "Cria uma nova conta de usuário com todas as informações necessárias, incluindo o upload da imagem do perfil.",
-        "produces": ["application/json"],
-        "responses": {
-          "200": {
-            "description": "Usuário criado com sucesso"
-          }
-        }
-      }
-    }
-  }
-}
-```
+<a name="requisitos-nao-funcionais"></a>
 
-Contudo, apesar de o projeto possuir documentação com o Swagger, o arquivo `swagger.json` é inexistente. Isso se deve ao fato de que existiam problemas inerentes à documentação centralizada em um único arquivo. Alguns desses problemas são:
+## 🧪 Requisitos Não Funcionais:
 
-- **Desacoplamento do código-fonte real**: A documentação fica separada do código, o que pode gerar divergência entre o que está documentado e o que realmente é implementado.
+* [x] NF.1 - Segurança: Controle de acesso por tipo de usuário
+* [ ] NF.2 - Escalabilidade: Suporte a múltiplos acessos e pesquisas simultâneas
+* [ ] NF.3 - Desempenho: Buscas rápidas, com paginação e tradução para inglês ou português, conforme o recurso
 
-- **Redundância de especificação**: Violação do <a href="https://vinioolvrs.medium.com/conhe%C3%A7a-os-princ%C3%ADpios-dry-kiss-e-yagni-9fc4ab46b0b9" target="_blank">princípio DRY</a> ao duplicar o schema de validação do Zod no código e na documentação.
+---
 
-- **Dificuldade de composição modular**: Em APIs grandes, como é o nosso caso, um único `swagger.json` centralizado torna-se **massivo** com o decorrer do desenvolvimento, dificultando a navegabilidade e inviabilizando a divisão modular do contrato da API.
+<a name="como-executar-o-servidor"></a>
 
-Assim, optamos por contornar esse problema desenvolvendo uma abordagem alternativa baseada na divisão da documentação por rotas, em arquivos distintos. Em resumo, os principais aspectos dessa alternativa são:
-
-- Embutir os schemas de documentação diretamente na definição de cada rota.
-- Documentar cada rota em seus próprios arquivos, organizados por contexto de modelo, no diretório `src/schemas`.
-- Sincronizar automaticamente o schema em `Zod` utilizado para a validação das entradas com a documentação produzida.
-
-A seguir, mostramos o procedimento básico de documentação de uma rota, utilizando como exemplo o processo de criação de um usuário:
-
-Primeiramente, criamos o objeto de validação do corpo da requisição com o `Zod` no arquivo `src/http/controllers/user/register.ts`:
-
-```ts
-import { z } from 'zod'
-
-export const registerBodySchema = z.object({ ... })
-```
-
-É necessário exportar o schema para que sua definição possa ser convertida diretamente em um objeto utilizado na documentação.
-
-Agora criamos um arquivo para conter a documentação da rota na pasta `src/schemas`. Neste caso, será o arquivo `src/schemas/user/create-user-schema.ts`. Nele, convertemos o schema definido com `Zod` anteriormente para um `jsonSchema` com o auxílio da biblioteca `zod-to-json-schema`:
-
-```ts
-import zodToJsonSchema from 'zod-to-json-schema'
-
-const createUserBodyJsonSchema = zodToJsonSchema(registerBodySchema)
-```
-
-Esse `jsonSchema` será utilizado para definir as entradas da rota no Swagger, em conjunto com o parâmetro adicional que representa o campo da imagem de perfil:
-
-```ts
-export const createUserBodySchemaWithFile = {
-  ...createUserBodyJsonSchema,
-  properties: {
-    profileImage: {
-      type: 'string',
-      format: 'binary',
-      description: 'Imagem de perfil do usuário (JPEG, JPG, PNG, WebP)',
-    },
-    ...createUserBodyJsonSchema.properties,
-  },
-}
-
-export const createUserSwaggerSchema = {
-  tags: ['users'],
-  summary: 'Criar um novo usuário',
-  description:
-    'Cria uma nova conta de usuário com todas as informações obrigatórias, incluindo upload de imagem de perfil',
-  consumes: ['multipart/form-data'],
-  body: createUserBodySchemaWithFile,
-  response: {
-    201: {
-      ...getUserSchemaItem,
-      description: 'Usuário criado com sucesso',
-    },
-    400: {
-      type: 'object',
-      properties: {
-        message: { type: 'string' },
-      },
-      description: 'Requisição inválida – erros de validação ou usuário já existe',
-    },
-    500: {
-      type: 'object',
-      properties: {
-        message: { type: 'string' },
-      },
-      description: 'Erro interno do servidor',
-    },
-  },
-}
-```
-
-Por fim, vamos cadastrar o SwaggerSchema recém-criado na respectiva rota, no arquivo `src/http/controllers/user/routes.ts`:
-
-```ts
-import { createUserSwaggerSchema } from '@/swagger-schemas/user/create-user-schema'
-
-app.post(
-  '/users',
-  {
-    ...,
-    schema: createUserSwaggerSchema,
-    validatorCompiler: () => () => true,
-  },
-  register
-)
-```
-
-Na definição acima, o parâmetro `schema` define o SwaggerSchema referente à rota, contendo seus parâmetros de payload e todas as possíveis respostas.
-
-Entretanto, há um comportamento padrão importante: o Fastify utiliza, por padrão, o schema definido em `schema` para validar as entradas da requisição. Esse comportamento é indesejado nesse caso, pois a validação já ocorre no controller responsável pelo caso de uso de criação de usuário. Para evitar uma validação duplicada, utilizamos o parâmetro `validatorCompiler: () => () => true` para desativar a validação automática com o schema do Swagger.
-
-Aplicando esse padrão às demais rotas, conseguimos criar uma documentação consistente, modular e escalável para o projeto, mantendo-a atualizada e, sobretudo, acessível a quem desejar consultá-la.
-</details>
-
-
-## O Que Fizemos
-
-- [x] 🟢 Configuração do Backend com Typescript, Husky e Linter
-- [x] 🟡 Modelo do Banco de Dados
-- [x] 🟢 Documentação das Instruções de Setup
-- [x] 🟡 Swagger do Servidor
-- [x] 🟢 Rota para Cadastrar Usuários
-- [x] 🟢 Rota para Autenticar Usuários
-- [ ] 🟡 Endpoints para Tratar os Dados do Usuário
-- [x] 🟢 Rota para Download dos Dados dos Usuários do Sistema em Formato `.csv`
-
-> [!NOTE]
-> ### Legenda
-> - [ ] - Funcionalidade não Implementada  
-> - [x] - Funcionalidade Implementada
-> 
-> &nbsp;🟡 - Desenvolvimento da Funcionalidade em Andamento  
-> &nbsp;🔵 - Desenvolvimento da Funcionalidade em Revisão  
-> &nbsp;🟢 - Desenvolvimento da Funcionalidade Concluído
-
-## Como Executar o Servidor
+## 💻 Como Executar o Servidor:
 
 1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
 2. Clone este repositório com o comando: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend`.
@@ -362,11 +232,15 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 9. Execute `npx prisma migrate reset` para resetar o banco e popular com dados de teste definidos em `prisma/seed.ts`.
 10. Rode o projeto com o comando: `npm run start:dev`.
 
-## Links Externos
+<a name="links-externos"></a>
+
+## 🔗 Links Externos:
 - **Template Backend Utilizado**: <a href="https://github.com/gabriel-camara-dev/Template-backend" target="_blank">Clique Aqui</a>
 - **Design Figma do Projeto**: <a href="https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0" target="_blank">Clique Aqui</a>
 
-## Equipe de Desenvolvimento
+<a name="equipe-de-desenvolvimento"></a>
+
+## 👥 Equipe de Desenvolvimento:
 - **Product Owner**: <a href="https://github.com/DougCristiano" target="_blank">Douglas Cristiano</a>
 - **Dev Backend**: <a href="https://github.com/zfrekey" target="_blank">Filype Abreu</a>
 - **Dev Backend**: <a href="https://github.com/AFSFerreira" target="_blank">Allber Ferreira</a>

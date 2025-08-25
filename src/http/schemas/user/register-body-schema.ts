@@ -1,8 +1,18 @@
+import { messages } from '@constants/messages'
+import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/zod-constants'
+import { ALL_LITERAL_EDUCATION_LEVEL_OPTIONS } from '@custom-types/literal-education-level-type'
+import { ALL_LITERAL_OCCUPATION_OPTIONS } from '@custom-types/literal-ocupation-type'
+import { LANGUAGE_OPTIONS } from '@custom-types/translation-language-type'
+import { IdentityType } from '@prisma/client'
 import {
-  EducationLevelType,
-  IdentityType,
-  OccupationType,
-} from '@prisma/client'
+  translateEducationLevelToEnumEn,
+  translateEducationLevelToEnumPt,
+} from '@services/translate-education-level'
+import {
+  translateOccupationToEnumEn,
+  translateOccupationToEnumPt,
+} from '@services/translate-occupation'
+import { translateInput } from '@utils/translate-input'
 import { z } from 'zod'
 import { cpfSchema } from '../utils/cpf'
 import { emailSchema } from '../utils/email'
@@ -13,8 +23,6 @@ import { orcidNumberSchema } from '../utils/orcid-number'
 import { passwordSchema } from '../utils/password'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
-import { messages } from '@/constants/messages'
-import { MAX_INTEREST_DESCRIPTION_SIZE } from '@/constants/zod-constants'
 
 export const registerBodySchema = z
   .object({
@@ -31,15 +39,15 @@ export const registerBodySchema = z
         orcidNumber: orcidNumberSchema.optional(),
         departmentName: upperCaseTextSchema.optional(),
         institutionComplement: upperCaseTextSchema.optional(),
-        occupation: z.enum(OccupationType),
-        educationLevel: z.enum(EducationLevelType),
+        occupation: upperCaseTextSchema,
+        educationLevel: upperCaseTextSchema,
         identityType: z.enum(IdentityType),
         identityDocument: upperCaseTextSchema,
         // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
         emailIsPublic: z.coerce.boolean(),
         astrobiologyOrRelatedStartYear: z.coerce.number(),
         interestDescription: nonemptyTextSchema.max(
-          MAX_INTEREST_DESCRIPTION_SIZE,
+          MAX_INTEREST_DESCRIPTION_SIZE as number,
         ),
         receiveReports: z.coerce.boolean(),
         // REVIEW: Confirmar se estes campos são obrigatórios:
@@ -59,7 +67,7 @@ export const registerBodySchema = z
       ),
 
     activityArea: z.object({
-      activityArea: upperCaseTextSchema,
+      mainActivityArea: upperCaseTextSchema,
       subActivityArea: upperCaseTextSchema,
     }),
 
@@ -101,10 +109,9 @@ export const registerBodySchema = z
       .refine(
         (data) => {
           // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-          if (data.scholarshipHolder)
-            return data.sponsoringOrganization !== undefined
+          if (data.scholarshipHolder) return !!data.sponsoringOrganization
 
-          return data.sponsoringOrganization === undefined
+          return !data.sponsoringOrganization
         },
         {
           error: messages.validation.scholarshipHolderAndSponsoringOrganization,
@@ -126,31 +133,80 @@ export const registerBodySchema = z
         }),
       )
       .max(5),
+
+    lang: z.enum(LANGUAGE_OPTIONS).default('pt'),
   })
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
-      if (data.activityArea.activityArea === 'OUTRA')
-        return data.user.activityAreaDescription !== undefined
+      if (
+        data.activityArea.mainActivityArea === 'OUTRA' ||
+        data.activityArea.mainActivityArea === 'OTHER'
+      ) {
+        return !!data.user.activityAreaDescription
+      }
 
-      return data.user.activityAreaDescription === undefined
+      return !data.user.activityAreaDescription
     },
     {
       error: messages.validation.activityAreaMissingDescription,
-      path: ['activityAreas', 'activityArea'],
+      path: ['activityAreas', 'mainActivityArea'],
     },
   )
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
-      if (data.activityArea.subActivityArea === 'OUTRA')
-        return data.user.subActivityAreaDescription !== undefined
-      return data.user.subActivityAreaDescription === undefined
+      if (
+        data.activityArea.subActivityArea === 'OUTRA' ||
+        data.activityArea.subActivityArea === 'OTHER'
+      )
+        return !!data.user.subActivityAreaDescription
+      return !data.user.subActivityAreaDescription
     },
     {
       error: messages.validation.activityAreaMissingDescription,
       path: ['activityAreas', 'subActivityArea'],
     },
   )
+  .refine(
+    (data) => {
+      if (!ALL_LITERAL_EDUCATION_LEVEL_OPTIONS.has(data.user.educationLevel)) {
+        return false
+      }
 
-export type RegisterUserSchemaType = z.infer<typeof registerBodySchema>
+      data.user.educationLevel = translateInput(
+        data.user.educationLevel,
+        data.lang,
+        translateEducationLevelToEnumPt,
+        translateEducationLevelToEnumEn,
+      )
+
+      return true
+    },
+    {
+      error: messages.validation.invalidEducationLevelValue,
+      path: ['user', 'educationLevel'],
+    },
+  )
+  .refine(
+    (data) => {
+      if (!ALL_LITERAL_OCCUPATION_OPTIONS.has(data.user.occupation)) {
+        return false
+      }
+
+      data.user.occupation = translateInput(
+        data.user.occupation,
+        data.lang,
+        translateOccupationToEnumPt,
+        translateOccupationToEnumEn,
+      )
+
+      return true
+    },
+    {
+      error: messages.validation.invalidOccupationValue,
+      path: ['user', 'occupation'],
+    },
+  )
+
+export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

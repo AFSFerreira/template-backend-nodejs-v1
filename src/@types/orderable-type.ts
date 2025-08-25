@@ -1,5 +1,11 @@
-export const orderDirections = ['asc', 'desc'] as const
-export const comparisonOperators = ['equals', 'gt', 'gte', 'lt', 'lte'] as const
+export const ORDER_DIRECTIONS = ['asc', 'desc'] as const
+export const COMPARISON_OPERATORS = [
+  'equals',
+  'gt',
+  'gte',
+  'lt',
+  'lte',
+] as const
 
-export type OrderableType = (typeof orderDirections)[number]
-export type ComparableType = (typeof comparisonOperators)[number]
+export type OrderableType = (typeof ORDER_DIRECTIONS)[number]
+export type ComparableType = (typeof COMPARISON_OPERATORS)[number]

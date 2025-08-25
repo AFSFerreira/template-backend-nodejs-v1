@@ -24,11 +24,15 @@ export const messages = {
     invalidAuthenticationInput:
       'Authentication error: Invalid email, username or password format',
     activityAreaMissingDescription:
-      'If the area is chosen as "OTHER", a description must be provided',
+      'If the area is chosen as "OTHER", a description must be provided — and must not be provided otherwise',
+    invalidEducationLevelValue:
+      'Invalid education level value. Please select a valid education level option',
+    invalidOccupationValue:
+      'Invalid occupation value. Please select a valid occupation option',
   },
   errors: {
     noUsersAvailable: 'No available users info to export',
-    invalidCreddentials: 'Invalid credentials',
+    invalidCredentials: 'Invalid credentials',
     invalidAreaOfActivity: 'Invalid area of activity',
     invalidToken: 'Invalid or expired token',
     resourceNotFound: 'Resource not found',
@@ -40,8 +44,12 @@ export const messages = {
       'If the user exists, you will receive an email with instructions to reset the password',
     userWithSameEmailOrPassword:
       'There is already an user with the same email or username',
-    forbbiden: 'User does not have permission to use this resource',
+    forbidden: 'User does not have permission to use this resource',
     unauthorized: 'User not authenticated',
+    bodyRequired: 'The request body is missing',
+    invalidInstitutionName: 'Invalid Institution Name',
+    missingEmailAndUsername:
+      'Missing "email" and "username" properties. Provide at least one of them',
   },
   info: {
     changedPassword: 'Password changed successfully!',

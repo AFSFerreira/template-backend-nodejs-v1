@@ -1,6 +1,6 @@
 import type { ActivityArea } from '@prisma/client'
-import type { getAllActivityAreasSchemaType } from '@/http/schemas/activity-area/get-all-activity-areas-schema'
-import type { ActivityAreaRepository } from '@/repositories/activity-area-repository'
+import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
+import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
 
 export type GetAllActivityAreasUseCaseRequest = getAllActivityAreasSchemaType
 

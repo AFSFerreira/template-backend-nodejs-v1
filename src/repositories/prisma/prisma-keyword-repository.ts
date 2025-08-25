@@ -1,6 +1,6 @@
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { KeywordRepository } from '../keyword-repository'
-import { prisma } from '@/lib/prisma'
 
 export class PrismaKeywordRepository implements KeywordRepository {
   async create(data: Prisma.KeywordUncheckedCreateInput) {

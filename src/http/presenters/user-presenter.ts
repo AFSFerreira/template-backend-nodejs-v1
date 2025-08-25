@@ -1,11 +1,11 @@
+import type { UserWithDetails } from '@custom-types/user-with-details'
 import type {
   EducationLevelType,
   IdentityType,
   OccupationType,
   UserRoleType,
 } from '@prisma/client'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import { formatDate } from '@/utils/format-date'
+import { formatDate } from '@utils/format-date'
 
 interface HTTPUserDetails {
   id: string
@@ -77,7 +77,6 @@ interface HTTPUser {
   directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class UserPresenter {
   static toHTTP(user: UserWithDetails): HTTPUser
   static toHTTP(users: UserWithDetails[]): HTTPUser[]

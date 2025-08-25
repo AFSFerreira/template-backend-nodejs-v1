@@ -5,7 +5,6 @@ interface HTTPActivityArea {
   type: ActivityAreaType
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class ActivityAreaPresenter {
   static toHTTP(activityArea: ActivityArea): HTTPActivityArea
   static toHTTP(activityAreas: ActivityArea[]): HTTPActivityArea[]

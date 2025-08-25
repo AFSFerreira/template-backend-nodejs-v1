@@ -1,5 +1,6 @@
-import 'dotenv/config'
 import { z } from 'zod'
+import { TOKEN_DURATION_REGEX } from '../constants/regex'
+import 'dotenv/config'
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['dev', 'production', 'test']).default('dev'),
@@ -12,7 +13,21 @@ const envSchema = z.object({
     .trim()
     .min(60, 'JWT secret must be at least 60 characters long'),
   HASH_SALT_ROUNDS: z.coerce.number().min(6).max(16).default(12),
-  FRONTEND_URL: z.string().default('http://localhost:5173'),
+  JWT_EXPIRATION: z
+    .string()
+    .trim()
+    .nonempty()
+    .regex(TOKEN_DURATION_REGEX)
+    .default('2h'),
+  JWT_REFRESH_EXPIRATION: z
+    .string()
+    .trim()
+    .nonempty()
+    .regex(TOKEN_DURATION_REGEX)
+    .default('7d'),
+
+  // URLs de Conexão:
+  FRONTEND_URL: z.string().trim().nonempty().default('http://localhost:5173'),
 
   // SMTP:
   SMTP_EMAIL: z.email(),

@@ -1,5 +1,5 @@
+import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { Keyword } from '@prisma/client'
-import type { UserWithDetails } from '@/@types/user-with-details'
 
 interface FlattenedUser {
   id: string
@@ -58,7 +58,7 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     username: user.username,
     email: user.email,
     birthDate: user.birthdate.toISOString().split('T')[0],
-    institutionName: user.institutionName,
+    institutionName: user.Institution?.name ?? '',
     departmentName: user.departmentName ?? '',
     occupation: user.occupation,
     educationLevel: user.educationLevel,

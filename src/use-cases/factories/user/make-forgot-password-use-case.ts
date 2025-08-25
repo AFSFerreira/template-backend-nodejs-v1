@@ -1,5 +1,5 @@
-import { PrismaUsersRepository } from '@/repositories/prisma/prisma-users-repository'
-import { ForgotPasswordUseCase } from '@/use-cases/user/forgot-password'
+import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
+import { ForgotPasswordUseCase } from '@use-cases/user/forgot-password'
 
 export function makeForgotPasswordUseCase() {
   const usersRepository = new PrismaUsersRepository()

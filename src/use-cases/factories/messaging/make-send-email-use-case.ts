@@ -1,4 +1,4 @@
-import { SendEmailUseCase } from '@/use-cases/messaging/send-email'
+import { SendEmailUseCase } from '@use-cases/messaging/send-email'
 
 export function makeSendEmailUseCase() {
   const sendEmailUseCase = new SendEmailUseCase()

@@ -1,6 +1,6 @@
+import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UsersRepository } from '@repositories/users-repository'
 import { UserNotFoundError } from '../errors/user-not-found-error'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import type { UsersRepository } from '@/repositories/users-repository'
 
 interface GetUserProfileUseCaseRequest {
   publicId: string
@@ -18,7 +18,7 @@ export class GetUserProfileUseCase {
   }: GetUserProfileUseCaseRequest): Promise<GetUserProfileUseCaseResponse> {
     const user = await this.usersRepository.findByPublicId(publicId)
 
-    if (user === null) throw new UserNotFoundError()
+    if (!user) throw new UserNotFoundError()
 
     return { user }
   }

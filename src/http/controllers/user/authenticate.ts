@@ -1,9 +1,9 @@
+import { env } from '@env/index'
+import { UserPresenter } from '@presenters/user-presenter'
+import { authenticateBodySchema } from '@schemas/user/authenticate-body-schema'
+import { InvalidCredentialsError } from '@use-cases/errors/invalid-credentials-error'
+import { makeAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { env } from '@/env'
-import { UserPresenter } from '@/presenters/user-presenter'
-import { authenticateBodySchema } from '@/schemas/user/authenticate-schema'
-import { InvalidCredentialsError } from '@/use-cases/errors/invalid-credentials-error'
-import { makeAuthenticateUseCase } from '@/use-cases/factories/user/make-authenticate-use-case'
 
 export async function authenticate(
   request: FastifyRequest,
@@ -40,7 +40,7 @@ export async function authenticate(
       {
         sign: {
           sub: user?.publicId,
-          expiresIn: '7d',
+          expiresIn: env.JWT_REFRESH_EXPIRATION,
         },
       },
     )

@@ -1,6 +1,6 @@
+import { messages } from '@constants/messages'
+import { env } from '@env/index'
 import type { FastifyRequest, FastifyReply } from 'fastify'
-import { messages } from '@/constants/messages'
-import { env } from '@/env'
 
 export async function refreshToken(
   request: FastifyRequest,
@@ -18,7 +18,7 @@ export async function refreshToken(
     {},
     {
       sign: {
-        sub: (request.user as { sub: string }).sub,
+        sub: request.userPublicId,
       },
     },
   )
@@ -27,8 +27,8 @@ export async function refreshToken(
     {},
     {
       sign: {
-        sub: (request.user as { sub: string }).sub,
-        expiresIn: '7d',
+        sub: request.userPublicId,
+        expiresIn: env.JWT_REFRESH_EXPIRATION,
       },
     },
   )

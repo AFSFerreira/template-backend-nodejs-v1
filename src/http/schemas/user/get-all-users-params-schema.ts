@@ -1,3 +1,8 @@
+import { messages } from '@constants/messages'
+import {
+  COMPARISON_OPERATORS,
+  ORDER_DIRECTIONS,
+} from '@custom-types/orderable-type'
 import {
   EducationLevelType,
   MembershipStatusType,
@@ -9,8 +14,6 @@ import { emailSchema } from '../utils/email'
 import { keywordSchema } from '../utils/keyword'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
-import { comparisonOperators, orderDirections } from '@/@types/orderable-type'
-import { messages } from '@/constants/messages'
 
 export const getAllUsersParamsSchema = z
   .object({
@@ -30,23 +33,21 @@ export const getAllUsersParamsSchema = z
     occupation: z.enum(OccupationType).optional(),
     educationLevel: z.enum(EducationLevelType).optional(),
     birthdate: z.date().optional(),
-    birthdateComparison: z.enum(comparisonOperators).optional(),
+    birthdateComparison: z.enum(COMPARISON_OPERATORS).optional(),
     astrobiologyOrRelatedStartYear: z.coerce.number().positive().optional(),
     astrobiologyOrRelatedStartYearComparison: z
-      .enum(comparisonOperators)
+      .enum(COMPARISON_OPERATORS)
       .optional(),
-    createdAtOrder: z.enum(orderDirections).optional(),
+    createdAtOrder: z.enum(ORDER_DIRECTIONS).optional(),
     page: z.coerce.number().min(1).default(1),
     limit: z.coerce.number().min(1).max(100).default(10),
   })
   .refine(
     (data) => {
       // Se birthdateComparison estiver definido, birthdate também deve estar
-      if (data.birthdate === undefined)
-        return data.birthdateComparison === undefined
+      if (!data.birthdate) return !data.birthdateComparison
 
-      if (data.birthdateComparison === undefined)
-        data.birthdateComparison = 'equals'
+      if (!data.birthdateComparison) data.birthdateComparison = 'equals'
 
       return true
     },
@@ -58,10 +59,10 @@ export const getAllUsersParamsSchema = z
   .refine(
     (data) => {
       // Se astrobiologyOrRelatedStartYearComparison estiver definido, astrobiologyOrRelatedStartYear também deve estar
-      if (data.astrobiologyOrRelatedStartYear === undefined)
-        return data.astrobiologyOrRelatedStartYearComparison === undefined
+      if (!data.astrobiologyOrRelatedStartYear)
+        return !data.astrobiologyOrRelatedStartYearComparison
 
-      if (data.astrobiologyOrRelatedStartYearComparison === undefined)
+      if (!data.astrobiologyOrRelatedStartYearComparison)
         data.astrobiologyOrRelatedStartYearComparison = 'equals'
 
       return true
@@ -74,4 +75,6 @@ export const getAllUsersParamsSchema = z
     },
   )
 
-export type GetAllUsersSchemaType = z.infer<typeof getAllUsersParamsSchema>
+export type GetAllUsersParamsSchemaType = z.infer<
+  typeof getAllUsersParamsSchema
+>

@@ -1,16 +1,17 @@
-import type { AstrobiologyOrRelatedStartYearType } from '@/@types/astrobiology-or-related-start-year-type'
-import type { BirthDateComparisonType } from '@/@types/birth-date-comparison-type'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import type { GetAllUsersSchemaType } from '@/http/schemas/user/get-all-users-schema'
-import type { UsersRepository } from '@/repositories/users-repository'
+import type { AstrobiologyOrRelatedStartYearType } from '@custom-types/astrobiology-or-related-start-year-type'
+import type { BirthDateComparisonType } from '@custom-types/birth-date-comparison-type'
+import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
+import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UsersRepository } from '@repositories/users-repository'
+import type { GetAllUsersParamsSchemaType } from '@schemas/user/get-all-users-params-schema'
 
-type GetAllUsersUseCaseRequest = GetAllUsersSchemaType &
+type GetAllUsersUseCaseRequest = GetAllUsersParamsSchemaType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 
 interface GetAllUsersCaseResponse {
-  users: UserWithDetails[]
-  totalItems: number
+  data: UserWithDetails[]
+  meta: PaginationMetaType
 }
 
 export class GetAllUsersUseCase {

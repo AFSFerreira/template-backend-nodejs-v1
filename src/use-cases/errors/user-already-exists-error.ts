@@ -1,4 +1,4 @@
-import { messages } from '@/constants/messages'
+import { messages } from '@constants/messages'
 
 export class UserAlreadyExistsError extends Error {
   constructor() {

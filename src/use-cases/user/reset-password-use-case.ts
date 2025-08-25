@@ -1,8 +1,8 @@
+import type { UserWithDetails } from '@custom-types/user-with-details'
+import { env } from '@env/index'
+import type { UsersRepository } from '@repositories/users-repository'
 import { hash } from 'bcryptjs'
 import { InvalidTokenError } from '../errors/invalid-token-error'
-import type { UserWithDetails } from '@/@types/user-with-details'
-import { env } from '@/env'
-import type { UsersRepository } from '@/repositories/users-repository'
 
 interface ResetPasswordUseCaseRequest {
   newPassword: string
@@ -23,7 +23,7 @@ export class ResetPasswordUseCase {
     const userAlreadyExists =
       await this.usersRepository.validateUserToken(token)
 
-    if (userAlreadyExists === null) {
+    if (!userAlreadyExists) {
       throw new InvalidTokenError()
     }
 

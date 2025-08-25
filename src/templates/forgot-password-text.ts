@@ -1,4 +1,4 @@
-import { env } from '@/env'
+import { env } from '@env/index'
 
 export function forgotPasswordTextTemplate(userName: string, token: string) {
   const url = `${env.FRONTEND_URL}/reset-password/${token}`

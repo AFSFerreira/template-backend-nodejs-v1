@@ -1,4 +1,4 @@
-import type { UsersRepository } from '@/repositories/users-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 
 interface CheckUsernameAvailabilityUseCaseRequest {
   username: string
@@ -15,6 +15,6 @@ export class CheckUsernameAvailabilityUseCase {
     username,
   }: CheckUsernameAvailabilityUseCaseRequest): Promise<CheckUsernameAvailabilityUseCaseResponse> {
     const user = await this.usersRepository.findByUsername(username)
-    return { available: user === null }
+    return { available: !user }
   }
 }

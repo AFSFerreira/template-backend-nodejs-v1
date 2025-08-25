@@ -1,15 +1,15 @@
+import type { QueryMode } from '@custom-types/query-mode'
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type {
   ActivityAreaQuery,
   ActivityAreaRepository,
   ListAllActivityAreasQuery,
 } from '../activity-area-repository'
-import type { QueryMode } from '@/@types/query-mode'
-import { prisma } from '@/lib/prisma'
 
 export class PrismaActivityAreaRepository implements ActivityAreaRepository {
   static buildStartsWithFilter(value: any) {
-    if (value === undefined) return undefined
+    if (!value) return undefined
 
     return { startsWith: value, mode: 'insensitive' as QueryMode }
   }
@@ -29,7 +29,7 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
   }
 
   async listAllActivityAreas(query?: ListAllActivityAreasQuery) {
-    if (query?.page === undefined || query?.limit === undefined) {
+    if (!query?.page || !query?.limit) {
       const activityAreas = await prisma.activityArea.findMany({
         where: {
           area: PrismaActivityAreaRepository.buildStartsWithFilter(query?.name),

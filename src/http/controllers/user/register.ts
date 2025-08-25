@@ -3,12 +3,14 @@ import type {
   IdentityType,
   OccupationType,
 } from '@prisma/client'
+import { registerBodySchema } from '@schemas/user/register-body-schema'
+import { InvalidActivityArea } from '@use-cases/errors/invalid-activity-areas-error'
+import { InvalidInstitutionName } from '@use-cases/errors/invalid-institution-name-error'
+import { UserAlreadyExistsError } from '@use-cases/errors/user-already-exists-error'
+import { UserImageStorageError } from '@use-cases/errors/user-image-storage-error'
+import { UserWithSameEmailOrUsernameError } from '@use-cases/errors/user-with-same-email-error'
+import { makeRegisterUseCase } from '@use-cases/factories/user/make-register-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { registerBodySchema } from '@/schemas/user/register-schema'
-import { InvalidInstitutionName } from '@/use-cases/errors/invalid-institution-name-error'
-import { UserAlreadyExistsError } from '@/use-cases/errors/user-already-exists-error'
-import { UserImageStorageError } from '@/use-cases/errors/user-image-storage-error'
-import { makeRegisterUseCase } from '@/use-cases/factories/user/make-register-use-case'
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const parsedBody = registerBodySchema.parse(request.body)
@@ -30,6 +32,10 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
     return await reply.status(201).send()
   } catch (error) {
+    if (error instanceof UserWithSameEmailOrUsernameError) {
+      return await reply.status(400).send({ message: error.message })
+    }
+
     if (error instanceof UserImageStorageError) {
       return await reply.status(500).send({ message: error.message })
     }
@@ -39,6 +45,10 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     }
 
     if (error instanceof InvalidInstitutionName) {
+      return await reply.status(422).send({ message: error.message })
+    }
+
+    if (error instanceof InvalidActivityArea) {
       return await reply.status(422).send({ message: error.message })
     }
 

@@ -1,10 +1,14 @@
+import type { ComparableType } from '@custom-types/orderable-type'
+import type { QueryMode } from '@custom-types/query-mode'
+import { userWithDetails } from '@custom-types/user-with-details'
+import { prisma } from '@lib/prisma'
+import { ActivityAreaType } from '@prisma/client'
 import type {
   EducationLevelType,
   IdentityType,
   OccupationType,
   Prisma,
 } from '@prisma/client'
-import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
   FindByEmailOrUsernameQuery,
@@ -12,14 +16,10 @@ import type {
   TokenData,
   UsersRepository,
 } from '../users-repository'
-import type { ComparableType } from '@/@types/orderable-type'
-import type { QueryMode } from '@/@types/query-mode'
-import { userWithDetails } from '@/@types/user-with-details'
-import { prisma } from '@/lib/prisma'
 
 export class PrismaUsersRepository implements UsersRepository {
   static buildStartsWithFilter(value: any) {
-    if (value === undefined) return undefined
+    if (!value) return undefined
 
     return { startsWith: value, mode: 'insensitive' as QueryMode }
   }
@@ -28,7 +28,7 @@ export class PrismaUsersRepository implements UsersRepository {
     comparableType: ComparableType | undefined,
     value: any | undefined,
   ) {
-    if (value === undefined || comparableType === undefined) return undefined
+    if (!value || !comparableType) return undefined
 
     return {
       [comparableType]: value,
@@ -36,7 +36,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   static buildIsFilter(fieldName: string, value: any) {
-    if (value === undefined) return undefined
+    if (!value) return undefined
 
     return {
       is: {
@@ -98,22 +98,27 @@ export class PrismaUsersRepository implements UsersRepository {
           create: query.enrolledCourse,
         },
         Institution: {
-          connect: {
-            name: query.institution.name,
+          connectOrCreate: {
+            create: { name: query.institution.name },
+            where: { name: query.institution.name },
           },
         },
         AcademicPublication: {
-          create: query.academicPublication.map((academicPublication) => ({
-            ...academicPublication,
-            ActivityArea: {
-              connect: {
-                type_area: {
-                  area: academicPublication.tag,
-                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          create: query.academicPublication.map((academicPublication) => {
+            const { tag, ...filteredAcademicPublicationData } =
+              academicPublication
+            return {
+              ...filteredAcademicPublicationData,
+              ActivityArea: {
+                connect: {
+                  type_area: {
+                    area: academicPublication.tag,
+                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                  },
                 },
               },
-            },
-          })),
+            }
+          }),
         },
         Keyword: {
           create: query.keyword?.map((value: string) => ({
@@ -123,7 +128,7 @@ export class PrismaUsersRepository implements UsersRepository {
         ActivityArea: {
           connect: {
             type_area: {
-              area: query.activityArea.activityArea,
+              area: query.activityArea.mainActivityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
             },
           },
@@ -137,6 +142,14 @@ export class PrismaUsersRepository implements UsersRepository {
           },
         },
       },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
+  async findBy(where: Prisma.UserWhereInput) {
+    const user = await prisma.user.findFirst({
+      where,
       include: userWithDetails.include,
     })
     return user
@@ -195,29 +208,49 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async listAllUsers(query?: ListAllUsersQuery) {
-    if (query?.page === undefined || query?.limit === undefined) {
+    if (!query?.page || !query?.limit) {
       const users = await prisma.user.findMany({
         include: userWithDetails.include,
       })
-      return { users, totalItems: users.length }
+      return {
+        data: users,
+        meta: {
+          totalItems: users.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: users.length,
+        },
+      }
     }
 
     const offset = (query.page - 1) * query.limit
 
+    const where = PrismaUsersRepository.buildGetAllUsersWhereInput(query)
+
     const [totalItems, users] = await prisma.$transaction([
       prisma.user.count({
-        where: PrismaUsersRepository.buildGetAllUsersWhereInput(query),
+        where,
       }),
       prisma.user.findMany({
         include: userWithDetails.include,
         skip: offset,
         take: query.limit,
         orderBy: { createdAt: query.createdAtOrder },
-        where: PrismaUsersRepository.buildGetAllUsersWhereInput(query),
+        where,
       }),
     ])
 
-    return { users, totalItems }
+    const totalPages = Math.ceil(totalItems / query.limit)
+
+    return {
+      data: users,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize: query.limit,
+      },
+    }
   }
 
   async incrementLoginAttempts(id: number) {

@@ -1,6 +1,6 @@
+import type { PaginationType } from '@custom-types/pagination-type'
 import type { ActivityArea, ActivityAreaType, Prisma } from '@prisma/client'
-import type { PaginationType } from '@/@types/pagination'
-import type { getAllActivityAreasSchemaType } from '@/http/schemas/activity-area/get-all-activity-areas-schema'
+import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
 
 export interface ActivityAreaQuery {
   area: string
