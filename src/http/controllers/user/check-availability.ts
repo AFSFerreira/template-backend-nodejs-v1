@@ -1,5 +1,5 @@
 import { checkAvailabilityQuerySchema } from '@schemas/user/check-availability-query-schema'
-import { makeCheckAvailabilityUseCase } from '@use-cases/user/check-email-availability-factory'
+import { makeCheckAvailabilityUseCase } from '@use-cases/factories/user/make-check-availability-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function checkAvailability(

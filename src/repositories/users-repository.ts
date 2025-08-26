@@ -1,15 +1,16 @@
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UserWithRestrictedDetails } from '@custom-types/user-with-restricted-details'
 import type { Prisma } from '@prisma/client'
-import type { GetAllUsersParamsSchemaType } from '@schemas/user/get-all-users-params-schema'
+import type { GetAllUsersQuerySchemaType } from '@schemas/user/get-all-users-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 
 export type ListAllUsersQuery = Omit<
-  GetAllUsersParamsSchemaType,
+  GetAllUsersQuerySchemaType,
   'page' | 'limit'
 > &
-  PaginationType
+  PaginationType & { restricted?: boolean }
 
 export interface CreateUserQuery {
   user: Omit<RegisterUserBodySchemaType['user'], 'password'> & {
@@ -35,7 +36,7 @@ export interface FindByEmailOrUsernameQuery {
 }
 
 export interface ListAllUsersResponse {
-  data: UserWithDetails[]
+  data: Array<UserWithDetails | UserWithRestrictedDetails>
   meta: PaginationMetaType
 }
 

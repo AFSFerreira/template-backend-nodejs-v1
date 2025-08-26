@@ -9,6 +9,7 @@ import { exportData } from './export-data'
 import { findByPublicUserId } from './find-by-public-id'
 import { forgotPassword } from './forgot-password'
 import { getAllUsers } from './get-all-users'
+import { getAllUsersRestricted } from './get-all-users-restricted'
 import { getEducationLevels } from './get-education-levels'
 import { getUserProfile } from './get-user-profile'
 import { logout } from './logout'
@@ -17,9 +18,9 @@ import { register } from './register'
 import { resetPassword } from './reset-password'
 
 export async function userRoutes(app: FastifyInstance) {
-  // User Admin Routes:
+  // Admin Routes:
   app.get(
-    '/',
+    '/all-users',
     {
       preHandler: [
         authenticationMiddleware,
@@ -57,6 +58,7 @@ export async function userRoutes(app: FastifyInstance) {
     },
     getUserProfile,
   )
+  app.get('/all-users-restricted', getAllUsersRestricted)
 
   // Register Routes:
   app.post(

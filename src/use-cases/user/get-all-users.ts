@@ -3,9 +3,9 @@ import type { BirthDateComparisonType } from '@custom-types/birth-date-compariso
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { GetAllUsersParamsSchemaType } from '@schemas/user/get-all-users-params-schema'
+import type { GetAllUsersQuerySchemaType } from '@schemas/user/get-all-users-query-schema'
 
-type GetAllUsersUseCaseRequest = GetAllUsersParamsSchemaType &
+type GetAllUsersUseCaseRequest = GetAllUsersQuerySchemaType &
   BirthDateComparisonType &
   AstrobiologyOrRelatedStartYearType
 
@@ -22,6 +22,6 @@ export class GetAllUsersUseCase {
   ): Promise<GetAllUsersCaseResponse> {
     const usersInfo = await this.usersRepository.listAllUsers(getAllUsersInput)
 
-    return usersInfo
+    return usersInfo as GetAllUsersCaseResponse
   }
 }

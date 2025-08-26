@@ -1,6 +1,7 @@
 import type { ComparableType } from '@custom-types/orderable-type'
 import type { QueryMode } from '@custom-types/query-mode'
 import { userWithDetails } from '@custom-types/user-with-details'
+import { userWithRestrictedDetails } from '@custom-types/user-with-restricted-details'
 import { prisma } from '@lib/prisma'
 import { ActivityAreaType } from '@prisma/client'
 import type {
@@ -18,15 +19,27 @@ import type {
 } from '../users-repository'
 
 export class PrismaUsersRepository implements UsersRepository {
-  static buildStartsWithFilter(value: any) {
+  static buildInsensitiveMode(value: string | undefined) {
     if (!value) return undefined
 
-    return { startsWith: value, mode: 'insensitive' as QueryMode }
+    return {
+      equals: value,
+      mode: 'insensitive' as QueryMode,
+    }
+  }
+
+  static buildStartsWithFilter(value: string | undefined) {
+    if (!value) return undefined
+
+    return {
+      startsWith: value,
+      mode: 'insensitive' as QueryMode,
+    }
   }
 
   static buildComparableFilter(
     comparableType: ComparableType | undefined,
-    value: any | undefined,
+    value: any,
   ) {
     if (!value || !comparableType) return undefined
 
@@ -35,52 +48,76 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  static buildIsFilter(fieldName: string, value: any) {
+  static buildIsFilter(fieldName: string, value: string | undefined) {
     if (!value) return undefined
 
     return {
       is: {
         [fieldName]: value,
+        mode: 'insensitive' as QueryMode,
       },
     }
   }
 
-  static buildGetAllUsersWhereInput(data: ListAllUsersQuery) {
+  static buildGetAllUsersWhereInput(
+    data: Omit<ListAllUsersQuery, 'restricted'>,
+  ): Prisma.UserWhereInput {
     return {
       fullName: PrismaUsersRepository.buildStartsWithFilter(data.fullName),
       email: PrismaUsersRepository.buildStartsWithFilter(data.email),
       username: PrismaUsersRepository.buildStartsWithFilter(data.username),
+
       departmentName: PrismaUsersRepository.buildStartsWithFilter(
         data.departmentName,
       ),
+
       birthdate: PrismaUsersRepository.buildComparableFilter(
         data.birthdateComparison,
         data.birthdate,
       ),
+
       astrobiologyOrRelatedStartYear:
         PrismaUsersRepository.buildComparableFilter(
           data.astrobiologyOrRelatedStartYearComparison,
           data.astrobiologyOrRelatedStartYear,
         ),
-      ActivityArea: {
-        area: PrismaUsersRepository.buildStartsWithFilter(data.activityArea),
-        type: ActivityAreaType.AREA_OF_ACTIVITY,
-      },
-      Institution: {
-        name: PrismaUsersRepository.buildStartsWithFilter(data.institutionName),
-      },
+
       receiveReports: data.receiveReports,
       occupation: data.occupation,
       educationLevel: data.educationLevel,
       role: data.role,
       membershipStatus: data.membershipStatus,
+
       AND: data.keywords?.map((keyword) => ({
         Keyword: {
           some: {
-            value: PrismaUsersRepository.buildStartsWithFilter(keyword),
+            value: PrismaUsersRepository.buildInsensitiveMode(keyword),
           },
         },
       })),
+
+      Address: {
+        state: PrismaUsersRepository.buildInsensitiveMode(data.state),
+      },
+      Institution: {
+        name: PrismaUsersRepository.buildInsensitiveMode(data.institutionName),
+      },
+      ActivityArea: {
+        OR: [
+          {
+            area: PrismaUsersRepository.buildInsensitiveMode(
+              data.mainActivityArea,
+            ),
+            type: ActivityAreaType.AREA_OF_ACTIVITY,
+          },
+          {
+            area: PrismaUsersRepository.buildInsensitiveMode(
+              data.subActivityArea,
+            ),
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          },
+        ],
+      },
     }
   }
 
@@ -208,9 +245,13 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async listAllUsers(query?: ListAllUsersQuery) {
+    const restricted = query?.restricted ?? false
+
     if (!query?.page || !query?.limit) {
       const users = await prisma.user.findMany({
-        include: userWithDetails.include,
+        include: restricted
+          ? userWithRestrictedDetails.include
+          : userWithDetails.include,
       })
       return {
         data: users,
@@ -232,11 +273,13 @@ export class PrismaUsersRepository implements UsersRepository {
         where,
       }),
       prisma.user.findMany({
-        include: userWithDetails.include,
+        where,
         skip: offset,
         take: query.limit,
         orderBy: { createdAt: query.createdAtOrder },
-        where,
+        include: restricted
+          ? userWithRestrictedDetails.include
+          : userWithDetails.include,
       }),
     ])
 

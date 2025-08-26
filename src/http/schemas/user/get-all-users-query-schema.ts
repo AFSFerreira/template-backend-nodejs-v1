@@ -15,21 +15,22 @@ import { keywordSchema } from '../utils/keyword'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
 import { usernameSchema } from '../utils/username'
 
-export const getAllUsersParamsSchema = z
+export const getAllUsersQuerySchema = z
   .object({
     fullName: upperCaseTextSchema.optional(),
     email: emailSchema.optional(),
     username: usernameSchema.optional(),
     institutionName: upperCaseTextSchema.optional(),
+    state: upperCaseTextSchema.optional(),
     role: z.enum(UserRoleType).optional(),
     membershipStatus: z.enum(MembershipStatusType).optional(),
     departmentName: upperCaseTextSchema.optional(),
     specificActivity: upperCaseTextSchema.optional(),
     // REVIEW: verificar se o tipo booleano está passando pelo parse corretamente
     receiveReports: z.coerce.boolean().optional(),
-    activityArea: upperCaseTextSchema.optional(),
+    mainActivityArea: upperCaseTextSchema.optional(),
+    subActivityArea: upperCaseTextSchema.optional(),
     keywords: keywordSchema.optional(),
-    userRole: z.enum(UserRoleType).optional(),
     occupation: z.enum(OccupationType).optional(),
     educationLevel: z.enum(EducationLevelType).optional(),
     birthdate: z.date().optional(),
@@ -75,6 +76,4 @@ export const getAllUsersParamsSchema = z
     },
   )
 
-export type GetAllUsersParamsSchemaType = z.infer<
-  typeof getAllUsersParamsSchema
->
+export type GetAllUsersQuerySchemaType = z.infer<typeof getAllUsersQuerySchema>

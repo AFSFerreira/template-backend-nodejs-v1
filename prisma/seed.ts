@@ -65,18 +65,82 @@ async function main() {
   // Criando as áreas e subáreas de atividade:
   await Promise.all([...activityAreasPromise, ...subActivityAreasPromise])
 
-  // Criando a instituição:
-  const institution = await prisma.institution.upsert({
-    where: { name: "UNIVERSIDADE FEDERAL FLUMINENTE" },
-    update: {},
-    create: {
-      name: "UNIVERSIDADE FEDERAL FLUMINENTE",
-    }
-  })
+  // Criando Usuários:
+  const institutionData = {
+    name: "UNIVERSIDADE FEDERAL FLUMINENTE",
+  }
+  
+  const adminAddressData = {
+    number: "800",
+    zip: "06210-138",
+    street: 'RUA ARMÊNIA',
+    district: 'PRESIDENTE ALTINO',
+    city: 'OSASCO',
+    state: 'SÃO PAULO',
+    country: 'BRASIL',
+  }
 
+  const userAddressData = {
+    number: "50",
+    zip: "22290-240",
+    street: 'AVENIDA PASTEUR',
+    district: 'URCA',
+    city: 'RIO DE JANEIRO',
+    state: 'RIO DE JANEIRO',
+    country: 'BRASIL',
+  }
+
+  const enrolledCourseData = {
+    courseName: 'INTRODUÇÃO À ASTROBIOLOGIA',
+    startGraduationDate: new Date(`${"2025-06"}-01T00:00:00Z`),
+    expectedGraduationDate: new Date(`${"2029-06"}-01T00:00:00Z`),
+    scholarshipHolder: true,
+    sponsoringOrganization: 'UNIVERSIDADE LUNAR',
+    supervisorName: 'NEEW ARMSTRONG',
+  }
+
+  const academicPublicationsData = [
+    {
+      authors: "USER",
+      publicationDate: new Date(),
+      title: "A ASCENSÃO DA ASTROBIOLOGIA - PARTE 1",
+      linkDOI: "https://example.com",
+      editionNumber: "12",
+      journalName: "ASTROBIO",
+      pageInterval: "1-5",
+      volume: "6",
+      ActivityArea: {
+        connect: {
+          type_area: {
+            area: subActivityAreas[0],
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY
+          }
+        }
+      },
+    },
+    {
+      authors: "USER",
+      publicationDate: new Date(),
+      title: "A ASCENSÃO DA ASTROBIOLOGIA - PARTE 2",
+      linkDOI: "https://example.com",
+      editionNumber: "12",
+      journalName: "ASTROBIO",
+      pageInterval: "5-10",
+      volume: "6",
+      ActivityArea: {
+        connect: {
+          type_area: {
+            area: subActivityAreas[0],
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY
+          }
+        }
+      },
+    }
+  ]
+  
   const userKeywords = ["PALAVRA-CHAVE 1", "PALAVRA-CHAVE 2", "PALAVRA-CHAVE 3", "PALAVRA-CHAVE 4"]
 
-  const user = await prisma.user.upsert({
+  const userAdmin = await prisma.user.upsert({
     where: { email: "admin@email.com" },
     update: {},
     create: {
@@ -106,70 +170,119 @@ async function main() {
       identityDocument: "123.456.789-00",
       publicInformation: "ASTROBIÓLOGO",
 
-      activityAreaId: 1,
-      subActivityAreaId: 2,
+      ActivityArea: {
+        connect: {
+          type_area: {
+            area: activityAreas[0],
+            type: ActivityAreaType.AREA_OF_ACTIVITY
+          }
+        }
+      },
+
+      SubActivityArea: {
+        connect: {
+          type_area: {
+            area: subActivityAreas[0],
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY
+          }
+        }
+      },
+
+      Address: { create: adminAddressData },
+
+      EnrolledCourse: { create: enrolledCourseData },
       
-      institutionId: institution.id,
+      AcademicPublication: {
+        create: academicPublicationsData
+      },
+
+      Institution: {
+        connectOrCreate: {
+          where: institutionData,
+          create: institutionData
+        }
+      },
 
       Keyword: {
-        create: userKeywords.map((keyword) => ({
-          value: keyword
+        connectOrCreate: userKeywords.map((keyword) => ({
+          where: { value: keyword },
+          create: { value: keyword }
         }))
       }
     },
   })
 
-  await prisma.address.upsert({
-    where: { userId: user.id },
+  await prisma.user.upsert({
+    where: { email: "user@email.com" },
     update: {},
     create: {
-      number: "111",
-      zip: "12345678",
-      street: 'RUA DAS GALÁXIAS',
-      district: 'BAIRRO DAS ESTRELAS',
-      city: 'COSMÓPOLIS',
-      state: 'UNIVERSO',
-      country: 'BR',
-      userId: user.id
-    }
-  })
+      fullName: 'COMMON USER',
+      username: 'USER.USER',
+      email: 'user@email.com',
+      passwordHash: await hash('123456789Az#', env.HASH_SALT_ROUNDS),
+      birthdate: new Date(),
+      profileImage: '/src/uploads/profile-images/default-profile-pic.png',
+      linkLattes: 'http://lattes.cnpq.br/1234567890',
+      linkGoogleScholar: 'https://scholar.google.com/admin.admin',
+      linkResearcherId: null,
+      orcidNumber: '0000-0001-2345-6789',
+      membershipStatus: MembershipStatusType.PENDING,
+      role: UserRoleType.DEFAULT,
+      departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
+      institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
+      occupation: OccupationType.RESEARCHER,
+      educationLevel: EducationLevelType.DOCTORATE,
+      emailIsPublic: true,
+      astrobiologyOrRelatedStartYear: 2010,
+      interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
+      receiveReports: true,
+      loginAttempts: 0,
+      lastLogin: new Date(),
+      identityType: IdentityType.CPF,
+      identityDocument: "123.456.789-00",
+      publicInformation: "ASTROBIÓLOGO",
 
-  await prisma.enrolledCourse.upsert({
-    where: { userId: user.id },
-    update: {},
-    create: {
-      courseName: 'INTRODUÇÃO À ASTROBIOLOGIA',
-      startGraduationDate: new Date(`${"2025-06"}-01T00:00:00Z`),
-      expectedGraduationDate: new Date(`${"2029-06"}-01T00:00:00Z`),
-      scholarshipHolder: true,
-      sponsoringOrganization: 'UNIVERSIDADE LUNAR',
-      supervisorName: 'NEEW ARMSTRONG',
-      userId: user.id,
-    }
-  })
+      ActivityArea: {
+        connect: {
+          type_area: {
+            area: activityAreas[0],
+            type: ActivityAreaType.AREA_OF_ACTIVITY
+          }
+        }
+      },
 
-  const academicPublicationData = {
-    authors: "ADMIN",
-    publicationDate: new Date(),
-    title: "A ASCENSÃO DA ASTROBIOLOGIA",
-    linkDOI: "https://example.com",
-    editionNumber: "12",
-    journalName: "ASTROBIO",
-    pageInterval: "1-5",
-    volume: "6",
-    userId: user.id,
-    activityAreaId: 1,
-  }
+      SubActivityArea: {
+        connect: {
+          type_area: {
+            area: subActivityAreas[0],
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY
+          }
+        }
+      },
 
-  const existingAcademicPublication = await prisma.academicPublications.findFirst({
-    where: academicPublicationData
+      Address: { create: userAddressData },
+
+      EnrolledCourse: { create: enrolledCourseData },
+      
+      AcademicPublication: {
+        create: academicPublicationsData
+      },
+
+      Institution: {
+        connectOrCreate: {
+          where: institutionData,
+          create: institutionData
+        }
+      },
+
+      Keyword: {
+        connectOrCreate: userKeywords.map((keyword) => ({
+          where: { value: keyword },
+          create: { value: keyword }
+        }))
+      }
+    },
   })
-  
-  if (!existingAcademicPublication) {
-    await prisma.academicPublications.create({
-      data: academicPublicationData
-    })
-  }
 
   // Criação dos blogs:
   const mainCategory = await prisma.category.upsert({
@@ -199,12 +312,12 @@ async function main() {
     }
   })
   
-  const subcategoriesId = [firstSubcategory, secondSubcategory].map(subcategory => ({ id: subcategory.id }))
+  const subcategoriesIds = [firstSubcategory, secondSubcategory].map(subcategory => ({ id: subcategory.id }))
 
   const blogData = {
-    htmlContent: "# HELLO WORLD",
-    authorName: user.fullName,
-    authorId: user.id,
+    htmlContent: "<h1>HELLO WORLD</h1>",
+    authorName: userAdmin.fullName,
+    authorId: userAdmin.id,
     mainCategoryId: mainCategory.id
   }
 
@@ -217,7 +330,7 @@ async function main() {
       data: {
         ...blogData,
         Subcategories: {
-          connect: subcategoriesId
+          connect: subcategoriesIds
         }
       }
     })

@@ -1,4 +1,5 @@
 import type { UserWithDetails } from '@custom-types/user-with-details'
+import { type UserWithRestrictedDetails } from '@custom-types/user-with-restricted-details'
 import type {
   EducationLevelType,
   IdentityType,
@@ -6,6 +7,13 @@ import type {
   UserRoleType,
 } from '@prisma/client'
 import { formatDate } from '@utils/format-date'
+
+interface HTTPRestrictedUserDetails {
+  id: string
+  fullName: string
+  institutionName: string
+  state: string
+}
 
 interface HTTPUserDetails {
   id: string
@@ -78,6 +86,27 @@ interface HTTPUser {
 }
 
 export class UserPresenter {
+  static toHTTPRestricted(
+    user: UserWithRestrictedDetails,
+  ): HTTPRestrictedUserDetails
+  static toHTTPRestricted(
+    users: UserWithRestrictedDetails[],
+  ): HTTPRestrictedUserDetails[]
+  static toHTTPRestricted(
+    input: UserWithRestrictedDetails | UserWithRestrictedDetails[],
+  ): HTTPRestrictedUserDetails | HTTPRestrictedUserDetails[] {
+    if (Array.isArray(input)) {
+      return input.map((user) => UserPresenter.toHTTPRestricted(user))
+    }
+
+    return {
+      id: input.publicId,
+      fullName: input.fullName,
+      institutionName: input.Institution.name,
+      state: input.Address?.state ?? '',
+    }
+  }
+
   static toHTTP(user: UserWithDetails): HTTPUser
   static toHTTP(users: UserWithDetails[]): HTTPUser[]
   static toHTTP(
@@ -133,12 +162,10 @@ export class UserPresenter {
         enrolledCourse: {
           courseName: input.EnrolledCourse?.courseName,
           startGraduationDate: formatDate(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             input.EnrolledCourse?.startGraduationDate,
             'mm/yyyy',
           ),
           expectedGraduationDate: formatDate(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             input.EnrolledCourse?.expectedGraduationDate,
             'mm/yyyy',
           ),
