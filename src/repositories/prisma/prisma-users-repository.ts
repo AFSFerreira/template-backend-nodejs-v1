@@ -1,7 +1,7 @@
 import type { ComparableType } from '@custom-types/orderable-type'
 import type { QueryMode } from '@custom-types/query-mode'
 import { userWithDetails } from '@custom-types/user-with-details'
-import { userWithRestrictedDetails } from '@custom-types/user-with-restricted-details'
+import { userWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 import { prisma } from '@lib/prisma'
 import { ActivityAreaType } from '@prisma/client'
 import type {
@@ -60,7 +60,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   static buildGetAllUsersWhereInput(
-    data: Omit<ListAllUsersQuery, 'restricted'>,
+    data: Omit<ListAllUsersQuery, 'simplified'>,
   ): Prisma.UserWhereInput {
     return {
       fullName: PrismaUsersRepository.buildStartsWithFilter(data.fullName),
@@ -245,12 +245,12 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async listAllUsers(query?: ListAllUsersQuery) {
-    const restricted = query?.restricted ?? false
+    const simplified = query?.simplified ?? false
 
     if (!query?.page || !query?.limit) {
       const users = await prisma.user.findMany({
-        include: restricted
-          ? userWithRestrictedDetails.include
+        include: simplified
+          ? userWithSimplifiedDetails.include
           : userWithDetails.include,
       })
       return {
@@ -277,8 +277,8 @@ export class PrismaUsersRepository implements UsersRepository {
         skip: offset,
         take: query.limit,
         orderBy: { createdAt: query.createdAtOrder },
-        include: restricted
-          ? userWithRestrictedDetails.include
+        include: simplified
+          ? userWithSimplifiedDetails.include
           : userWithDetails.include,
       }),
     ])

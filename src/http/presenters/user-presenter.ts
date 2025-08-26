@@ -1,5 +1,6 @@
 import type { UserWithDetails } from '@custom-types/user-with-details'
-import { type UserWithRestrictedDetails } from '@custom-types/user-with-restricted-details'
+import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
+
 import type {
   EducationLevelType,
   IdentityType,
@@ -86,17 +87,17 @@ interface HTTPUser {
 }
 
 export class UserPresenter {
-  static toHTTPRestricted(
-    user: UserWithRestrictedDetails,
+  static toHTTPSimplified(
+    user: UserWithSimplifiedDetails,
   ): HTTPRestrictedUserDetails
-  static toHTTPRestricted(
-    users: UserWithRestrictedDetails[],
+  static toHTTPSimplified(
+    users: UserWithSimplifiedDetails[],
   ): HTTPRestrictedUserDetails[]
-  static toHTTPRestricted(
-    input: UserWithRestrictedDetails | UserWithRestrictedDetails[],
+  static toHTTPSimplified(
+    input: UserWithSimplifiedDetails | UserWithSimplifiedDetails[],
   ): HTTPRestrictedUserDetails | HTTPRestrictedUserDetails[] {
     if (Array.isArray(input)) {
-      return input.map((user) => UserPresenter.toHTTPRestricted(user))
+      return input.map((user) => UserPresenter.toHTTPSimplified(user))
     }
 
     return {

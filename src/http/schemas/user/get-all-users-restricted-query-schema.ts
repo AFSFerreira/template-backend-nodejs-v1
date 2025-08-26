@@ -1,7 +1,8 @@
 import { upperCaseTextSchema } from '@schemas/utils/uppercase-text-schema'
 import z from 'zod'
 
-export const getAllUsersRestrictedQuerySchema = z.object({
+export const getAllUsersSimplifiedQuerySchema = z.object({
+
   fullName: upperCaseTextSchema.optional(),
   institutionName: upperCaseTextSchema.optional(),
   state: upperCaseTextSchema.optional(),
@@ -9,6 +10,6 @@ export const getAllUsersRestrictedQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(10),
 })
 
-export type GetAllUsersRestrictedQuerySchemaType = z.infer<
-  typeof getAllUsersRestrictedQuerySchema
+export type GetAllUsersSimplifiedQuerySchemaType = z.infer<
+  typeof getAllUsersSimplifiedQuerySchema
 >

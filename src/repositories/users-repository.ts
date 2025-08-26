@@ -1,7 +1,7 @@
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
-import type { UserWithRestrictedDetails } from '@custom-types/user-with-restricted-details'
+import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 import type { Prisma } from '@prisma/client'
 import type { GetAllUsersQuerySchemaType } from '@schemas/user/get-all-users-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
@@ -10,7 +10,7 @@ export type ListAllUsersQuery = Omit<
   GetAllUsersQuerySchemaType,
   'page' | 'limit'
 > &
-  PaginationType & { restricted?: boolean }
+  PaginationType & { simplified?: boolean }
 
 export interface CreateUserQuery {
   user: Omit<RegisterUserBodySchemaType['user'], 'password'> & {
@@ -36,7 +36,7 @@ export interface FindByEmailOrUsernameQuery {
 }
 
 export interface ListAllUsersResponse {
-  data: Array<UserWithDetails | UserWithRestrictedDetails>
+  data: Array<UserWithDetails | UserWithSimplifiedDetails>
   meta: PaginationMetaType
 }
 

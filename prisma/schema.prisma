@@ -150,6 +150,7 @@ model User {
   CommentLike         CommentLike[]          @relation()
   UserMeeting         UserMeeting[]          @relation()
 
+  @@unique([identityType, identityDocument])
   @@index([membershipStatus])
   @@map("users")
 }
@@ -170,6 +171,8 @@ model Address {
   userId Int  @unique @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([state])
+  @@index([userId])
   @@map("addresses")
 }
 
@@ -187,6 +190,7 @@ model EnrolledCourse {
   userId Int  @unique @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([userId])
   @@map("enrolled_courses")
 }
 
@@ -209,6 +213,7 @@ model AcademicPublications {
   activityAreaId Int
   ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  @@index([userId])
   @@map("academic_publications")
 }
 
@@ -263,7 +268,26 @@ model DirectorBoard {
   userId Int  @unique @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([userId])
   @@map("directors_board")
+}
+
+model MeetingPayment {
+  id        Int      @id @default(autoincrement())
+  publicId  String   @unique @default(uuid(7)) @map("public_id")
+  value     Int
+  pixKey    String   @map("pix_key")
+  bank      String
+  code      String
+  agency    String
+  account   String
+  limitDate DateTime @map("limit_date")
+
+  meetingId Int     @unique @map("meeting_id")
+  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([meetingId])
+  @@map("payment_information")
 }
 
 model Category {
@@ -342,14 +366,15 @@ model Meeting {
   image             String
   description       String
   location          String
-  lastDate          DateTime @map("last_date") // Cache para evitar junções
+  lastDate          DateTime @map("last_date")
   participantsCount Int      @default(0) @map("participants_count")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  UserMeeting UserMeeting[] @relation()
-  MeetingDate MeetingDate[] @relation()
+  UserMeeting    UserMeeting[]   @relation()
+  MeetingDate    MeetingDate[]   @relation()
+  MeetingPayment MeetingPayment? @relation()
 
   @@index([lastDate])
   @@map("meetings")
