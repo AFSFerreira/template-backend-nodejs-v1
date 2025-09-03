@@ -8,13 +8,3 @@ export const identityDocumentSchema = z.discriminatedUnion('identityType', [
   rneSchema,
   passportSchema,
 ])
-
-export const optionalIdentityDocumentSchema = z.discriminatedUnion(
-  'identityType',
-  [
-    cpfSchema,
-    rneSchema,
-    passportSchema,
-    z.object({ identityType: z.undefined() }),
-  ],
-)

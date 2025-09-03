@@ -1,6 +1,6 @@
 import type { IdentityType } from '@prisma/client'
 import { emailSchema } from '@schemas/utils/email-schema'
-import { optionalIdentityDocumentSchema } from '@schemas/utils/identity-document-schema'
+import { identityDocumentSchema } from '@schemas/utils/identity-document-schema'
 import z from 'zod'
 import { usernameSchema } from '../utils/username-schema'
 
@@ -25,9 +25,12 @@ export const checkAvailabilityQuerySchema = z.preprocess(
         email: emailSchema,
       })
       .partial(),
-    optionalIdentityDocumentSchema,
-  ),
-)
+    z.discriminatedUnion('identityType',
+      [identityDocumentSchema,
+      z.object({ identityType: z.undefined() })]),
+    ),
+  )
+
 
 export type CheckAvailabilityQuerySchemaType = z.infer<
   typeof checkAvailabilityQuerySchema
