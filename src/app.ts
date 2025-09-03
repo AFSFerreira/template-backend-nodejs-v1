@@ -51,7 +51,7 @@ app.register(fastifyStatic, {
   maxAge: '1y',
 
   setHeaders: (response, _pathName) => {
-    response.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
   },
 })
 
