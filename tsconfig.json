@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "baseUrl": "./",
     "paths": {
       "@uploads/*": ["./src/uploads/*"],
       "@use-cases/*": ["./src/use-cases/*"],
@@ -19,11 +16,14 @@
       "@lib/*": ["./src/lib/*"],
       "@constants/*": ["./src/constants/*"],
       "@templates/*": ["./src/templates/*"],
+      "@messages/*": ["./src/messages/*"],
     },
-    "outDir": "./build",
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "es2016",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true
+    "allowSyntheticDefaultImports": true,
   }
 }

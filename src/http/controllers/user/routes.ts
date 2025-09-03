@@ -1,65 +1,56 @@
 import { upload } from '@lib/multer'
-import { authenticationMiddleware } from '@middlewares/authentication-middleware'
-import { verifyPermissions } from '@middlewares/verify-user-role'
+import { verifyJwt } from '@middlewares/verify-jwt.middleware'
+import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { UserRoleType } from '@prisma/client'
+import { rateLimit } from '@utils/rate-limit'
 import type { FastifyInstance } from 'fastify'
-import { authenticate } from './authenticate'
-import { checkAvailability } from './check-availability'
-import { exportData } from './export-data'
-import { findByPublicUserId } from './find-by-public-id'
-import { forgotPassword } from './forgot-password'
-import { getAllUsers } from './get-all-users'
-import { getAllUsersSimplified } from './get-all-users-simplified'
-import { getEducationLevels } from './get-education-levels'
-import { getUserProfile } from './get-user-profile'
-import { logout } from './logout'
-import { refreshToken } from './refresh-token'
-import { register } from './register'
-import { resetPassword } from './reset-password'
+import { authenticate } from './authenticate.controller'
+import { checkAvailability } from './check-availability.controller'
+import { exportUsersData } from './export-users-data.controller'
+import { forgotPassword } from './forgot-password.controller'
+import { getAllUsersDetailed } from './get-all-users-detailed.controller'
+import { getAllUsersSimplified } from './get-all-users-simplified.controller'
+import { getUserByPublicId } from './get-user-by-public-id.controller'
+import { getUserProfile } from './get-user-profile.controller'
+import { logout } from './logout.controller'
+import { refreshToken } from './refresh-token.controller'
+import { register } from './register.controller'
+import { resetPassword } from './reset-password.controller'
+import { uploadRegisterProfileImage } from './upload-register-profile-image.controller'
 
 export async function userRoutes(app: FastifyInstance) {
   // Admin Routes:
   app.get(
-    '/all-users',
+    '/all-users-detailed',
     {
       preHandler: [
-        authenticationMiddleware,
-        verifyPermissions([UserRoleType.ADMIN, UserRoleType.MANAGER]),
+        verifyJwt,
+        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
       ],
     },
-    getAllUsers,
-  )
-  app.get(
-    '/:publicId',
-    {
-      preHandler: [
-        authenticationMiddleware,
-        verifyPermissions([UserRoleType.ADMIN, UserRoleType.MANAGER]),
-      ],
-    },
-    findByPublicUserId,
+    getAllUsersDetailed,
   )
   app.get(
     '/export',
     {
       preHandler: [
-        authenticationMiddleware,
-        verifyPermissions([UserRoleType.ADMIN, UserRoleType.MANAGER]),
+        verifyJwt,
+        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
       ],
     },
-    exportData,
+    exportUsersData,
   )
 
   // User Routes:
   app.get(
     '/me',
     {
-      preHandler: [authenticationMiddleware],
+      preHandler: [verifyJwt],
     },
     getUserProfile,
   )
-  
-  app.get('/all-users-simplified', getAllUsersSimplified)
+  app.get('/all-users', getAllUsersSimplified)
+  app.get('/:publicId', getUserByPublicId)
 
   // Register Routes:
   app.post(
@@ -69,7 +60,14 @@ export async function userRoutes(app: FastifyInstance) {
     },
     register,
   )
-  app.get('/education-levels', getEducationLevels)
+  app.post(
+    '/uploads/profile-image',
+    {
+      preHandler: [upload.single('profileImage')],
+      ...rateLimit({ max: 5, timeWindow: '30s' }),
+    },
+    uploadRegisterProfileImage,
+  )
 
   // Availability check routes:
   app.get('/availability', checkAvailability)
@@ -79,16 +77,22 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/sessions/refresh-token',
     {
-      preHandler: [authenticationMiddleware],
+      preHandler: [verifyJwt],
     },
     refreshToken,
   )
-  app.post('/forgot-password', forgotPassword)
+  app.post(
+    '/forgot-password',
+    {
+      ...rateLimit({ max: 10, timeWindow: '60m' }),
+    },
+    forgotPassword,
+  )
   app.patch('/reset-password', resetPassword)
   app.delete(
     '/sessions',
     {
-      preHandler: [authenticationMiddleware],
+      preHandler: [verifyJwt],
     },
     logout,
   )

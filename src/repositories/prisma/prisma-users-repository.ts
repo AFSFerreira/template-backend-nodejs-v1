@@ -2,17 +2,18 @@ import type { ComparableType } from '@custom-types/orderable-type'
 import type { QueryMode } from '@custom-types/query-mode'
 import { userWithDetails } from '@custom-types/user-with-details'
 import { userWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
-import { prisma } from '@lib/prisma'
-import { ActivityAreaType } from '@prisma/client'
+import { prisma } from '@lib/prisma/prisma'
 import type {
   EducationLevelType,
   IdentityType,
   OccupationType,
   Prisma,
 } from '@prisma/client'
+import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
   FindByEmailOrUsernameQuery,
+  FindByIdentityDocumentQuery,
   ListAllUsersQuery,
   TokenData,
   UsersRepository,
@@ -99,9 +100,11 @@ export class PrismaUsersRepository implements UsersRepository {
       Address: {
         state: PrismaUsersRepository.buildInsensitiveMode(data.state),
       },
+
       Institution: {
         name: PrismaUsersRepository.buildInsensitiveMode(data.institutionName),
       },
+
       ActivityArea: {
         OR: [
           {
@@ -122,6 +125,29 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async create(query: CreateUserQuery) {
+    const keywordsConnectOrCreateData = query.keyword?.map((value: string) => ({
+      where: { value },
+      create: { value },
+    }))
+
+    const academicPublicationCreateData = query.academicPublication.map(
+      (academicPublication) => {
+        const { area, ...filteredAcademicPublicationData } = academicPublication
+        return {
+          ...filteredAcademicPublicationData,
+          publicationDate: filteredAcademicPublicationData.publicationDate,
+          ActivityArea: {
+            connect: {
+              type_area: {
+                area,
+                type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+              },
+            },
+          },
+        }
+      },
+    )
+
     const user = await prisma.user.create({
       data: {
         ...query.user,
@@ -140,28 +166,8 @@ export class PrismaUsersRepository implements UsersRepository {
             where: { name: query.institution.name },
           },
         },
-        AcademicPublication: {
-          create: query.academicPublication.map((academicPublication) => {
-            const { tag, ...filteredAcademicPublicationData } =
-              academicPublication
-            return {
-              ...filteredAcademicPublicationData,
-              ActivityArea: {
-                connect: {
-                  type_area: {
-                    area: academicPublication.tag,
-                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                  },
-                },
-              },
-            }
-          }),
-        },
-        Keyword: {
-          create: query.keyword?.map((value: string) => ({
-            value,
-          })),
-        },
+        AcademicPublication: { create: academicPublicationCreateData },
+        Keyword: { connectOrCreate: keywordsConnectOrCreateData },
         ActivityArea: {
           connect: {
             type_area: {
@@ -224,6 +230,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  async findByIdentityDocument(data: FindByIdentityDocumentQuery) {
+    const user = await prisma.user.findUnique({
+      where: { identityType_identityDocument: data },
+      include: userWithDetails.include,
+    })
+    return user
+  }
+
   async setLastLogin(id: number) {
     await prisma.user.update({
       where: { id },
@@ -268,11 +282,12 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const where = PrismaUsersRepository.buildGetAllUsersWhereInput(query)
 
-    const [totalItems, users] = await prisma.$transaction([
-      prisma.user.count({
+    const [totalItems, users] = await prisma.$transaction(async (prismaTx) => {
+      const totalItems = await prismaTx.user.count({
         where,
-      }),
-      prisma.user.findMany({
+      })
+
+      const users = await prismaTx.user.findMany({
         where,
         skip: offset,
         take: query.limit,
@@ -280,8 +295,10 @@ export class PrismaUsersRepository implements UsersRepository {
         include: simplified
           ? userWithSimplifiedDetails.include
           : userWithDetails.include,
-      }),
-    ])
+      })
+
+      return [totalItems, users]
+    })
 
     const totalPages = Math.ceil(totalItems / query.limit)
 
@@ -322,13 +339,10 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async validateUserToken(recoveryPasswordToken: string) {
+  async validateUserToken(recoveryPasswordTokenHash: string) {
     const user = await prisma.user.findFirst({
       where: {
-        recoveryPasswordToken,
-        recoveryPasswordTokenExpiresAt: {
-          gte: new Date(),
-        },
+        recoveryPasswordTokenHash,
       },
       include: userWithDetails.include,
     })
@@ -340,7 +354,7 @@ export class PrismaUsersRepository implements UsersRepository {
       where: { id },
       data: {
         passwordHash,
-        recoveryPasswordToken: null,
+        recoveryPasswordTokenHash: null,
         recoveryPasswordTokenExpiresAt: null,
       },
       include: userWithDetails.include,

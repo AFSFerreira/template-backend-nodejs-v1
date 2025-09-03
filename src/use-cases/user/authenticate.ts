@@ -1,9 +1,9 @@
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { AuthenticationAuditRepository } from '@repositories/authentication-audit-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/email'
+import { emailSchema } from '@schemas/utils/email-schema'
 import { compare } from 'bcryptjs'
-import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
+import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
 interface AuthenticateUseCaseRequest {
   login: string
@@ -41,16 +41,16 @@ export class AuthenticateUseCase {
       user = await this.usersRepository.findByUsername(login)
     }
 
+    const hashToCompare = user?.passwordHash ?? DUMMY_HASH
+
+    const doesPasswordMatch = await compare(password, hashToCompare)
+
     const auditAuthenticateObject = {
       browser: browser ?? null,
       ipAddress: ipAddress ?? null,
       remotePort: remotePort ?? null,
       userId: user?.id ?? null,
     }
-
-    const hashToCompare = user?.passwordHash ?? DUMMY_HASH
-
-    const doesPasswordMatch = await compare(password, hashToCompare)
 
     if (!doesPasswordMatch) {
       await this.authenticationAuditRepository.create({

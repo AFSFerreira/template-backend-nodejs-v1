@@ -1,7 +1,7 @@
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { CheckAvailabilityQuerySchemaType } from '@schemas/user/check-availability-query-schema'
-import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/missing-email-and-username-error'
+import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
 
 type CheckAvailabilityUseCaseRequest = CheckAvailabilityQuerySchemaType
 
@@ -23,15 +23,39 @@ export class CheckAvailabilityUseCase {
       throw new MissingCheckAvailabilitiesInput()
     }
 
-    const availabilitiesName: string[] = []
     const availabilitiesPromises: Array<Promise<UserWithDetails | null>> = []
+    const availabilitiesName: string[] = []
 
-    validCheckInputs.forEach((checkInput) => {
-      availabilitiesName.push(checkInput[0])
+    if (checkAvailabilityUseCaseInput.email) {
+      availabilitiesName.push('email')
       availabilitiesPromises.push(
-        this.usersRepository.findBy({ [checkInput[0]]: checkInput[1] }),
+        this.usersRepository.findBy({
+          email: checkAvailabilityUseCaseInput.email,
+        }),
       )
-    })
+    }
+
+    if (checkAvailabilityUseCaseInput.username) {
+      availabilitiesName.push('username')
+      availabilitiesPromises.push(
+        this.usersRepository.findBy({
+          username: checkAvailabilityUseCaseInput.username,
+        }),
+      )
+    }
+
+    if (
+      checkAvailabilityUseCaseInput.identityType ||
+      checkAvailabilityUseCaseInput.identityDocument
+    ) {
+      availabilitiesName.push('identity')
+      availabilitiesPromises.push(
+        this.usersRepository.findBy({
+          identityType: checkAvailabilityUseCaseInput.identityType,
+          identityDocument: checkAvailabilityUseCaseInput.identityDocument,
+        }),
+      )
+    }
 
     const availabilitiesValues = await Promise.all(availabilitiesPromises)
 

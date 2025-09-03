@@ -5,6 +5,6 @@ updates:
     schedule:
       interval: "weekly"
     commit-message:
-      prefix: "chore"
+      prefix: "chore(dependencies)"
     open-pull-requests-limit: 5
     rebase-strategy: "auto"

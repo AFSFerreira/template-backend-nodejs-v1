@@ -3,8 +3,8 @@ export type DateFormat = 'dd/mm/yyyy' | 'mm/yyyy'
 export function formatDate(
   date?: Date | null,
   format: DateFormat = 'dd/mm/yyyy',
-) {
-  if (!date) return date
+): string | null {
+  if (!date) return null
 
   const day = date.getDate().toString().padStart(2, '0')
   const month = (date.getMonth() + 1).toString().padStart(2, '0')

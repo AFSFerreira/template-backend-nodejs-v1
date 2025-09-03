@@ -1,21 +1,22 @@
 import path from 'path'
+import {
+  DEFAULT_PROFILE_IMAGE_PATH,
+  REGISTER_PROFILE_IMAGES_PATH,
+  REGISTER_TEMP_PROFILE_IMAGES_PATH,
+} from '@constants/file-paths'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
-import {
-  type CompressedImageInfo,
-  saveCompressedImage,
-} from '@utils/image-storage'
+import { IdentityDocumentAlreadyUsed } from '@use-cases/errors/user/identity-document-already-used-error'
 import { hash } from 'bcryptjs'
-import { InvalidActivityArea } from '../errors/invalid-activity-areas-error'
-import { UserImageStorageError } from '../errors/user-image-storage-error'
-import { UserWithSameEmailOrUsernameError } from '../errors/user-with-same-email-error'
+import fs from 'fs-extra'
+import { InvalidActivityArea } from '../errors/user/invalid-activity-areas-error'
+import { UserWithSameEmailOrUsernameError } from '../errors/user/user-with-same-email-error'
 
 interface RegisterUseCaseRequest {
-  imageBuffer?: Buffer
   user: RegisterUserBodySchemaType['user']
   address: RegisterUserBodySchemaType['address']
   enrolledCourse: RegisterUserBodySchemaType['enrolledCourse']
@@ -43,14 +44,24 @@ export class RegisterUseCase {
       username: registerUseCaseInput.user.username,
     })
 
-    if (existingUser !== null) {
+    if (existingUser) {
       throw new UserWithSameEmailOrUsernameError()
+    }
+
+    const documentAlreadyUsed =
+      await this.usersRepository.findByIdentityDocument({
+        identityDocument: registerUseCaseInput.user.identityDocument,
+        identityType: registerUseCaseInput.user.identityType,
+      })
+
+    if (documentAlreadyUsed) {
+      throw new IdentityDocumentAlreadyUsed()
     }
 
     // Valida as áreas de atividade dos artigos e do usuário:
     const academicPublicationsActivityAreas =
       registerUseCaseInput.academicPublication.map((academPub) => ({
-        area: academPub.tag,
+        area: academPub.area,
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       }))
 
@@ -68,8 +79,6 @@ export class RegisterUseCase {
 
     const activityAreasFound =
       await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
-
-    console.log(activityAreasFound, allUserActivityAreas)
 
     const activityAreasFoundSet = new Set(
       activityAreasFound.map((activityArea) =>
@@ -92,18 +101,24 @@ export class RegisterUseCase {
       )
     }
 
-    // Persiste a imagem do usuário no backend:
-    let profileImageInfo: CompressedImageInfo | undefined
+    let imageHandleError = false
+    let finalImagePath = ''
 
     try {
-      if (registerUseCaseInput.imageBuffer !== undefined) {
-        profileImageInfo = await saveCompressedImage(
-          registerUseCaseInput.imageBuffer,
-          path.resolve(process.cwd(), 'uploads', 'profile-images'),
-        )
-      }
+      const oldImagePath = path.resolve(
+        REGISTER_TEMP_PROFILE_IMAGES_PATH,
+        registerUseCaseInput.user.profileImage,
+      )
+      const newImagePath = path.resolve(
+        REGISTER_PROFILE_IMAGES_PATH,
+        registerUseCaseInput.user.profileImage,
+      )
+
+      await fs.move(oldImagePath, newImagePath, { overwrite: false })
+
+      finalImagePath = newImagePath
     } catch (error) {
-      throw new UserImageStorageError()
+      imageHandleError = true
     }
 
     const passwordHash = await hash(
@@ -116,16 +131,11 @@ export class RegisterUseCase {
     const user = await this.usersRepository.create({
       user: {
         ...filteredUserInfo,
+        identityDocument: filteredUserInfo.identityDocument,
+        profileImage: imageHandleError
+          ? path.resolve(DEFAULT_PROFILE_IMAGE_PATH)
+          : finalImagePath,
         passwordHash,
-        profileImage:
-          profileImageInfo !== undefined
-            ? profileImageInfo.finalImagePath
-            : path.resolve(
-                process.cwd(),
-                'uploads',
-                'profile-images',
-                'default-profile-pic.png',
-              ),
       },
       institution: registerUseCaseInput.institution,
       activityArea: registerUseCaseInput.activityArea,

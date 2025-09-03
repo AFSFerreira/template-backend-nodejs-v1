@@ -1,0 +1,36 @@
+# Arquivos Sensíveis:
+.env
+.env.example
+
+# Arquivos de Controle de Versão:
+.git
+.gitignore
+.github
+
+# Dependências Locais:
+node_modules
+
+# Configurações do Editor e Ferramentas Locais:
+.vscode
+.husky
+.npmrc
+.nvmrc
+.tool-versions
+
+# Arquivos de Build:
+build
+dist
+
+# Arquivos de Configuração e Desenvolvimento:
+.eslintrc.json
+.eslintignore
+.prettierrc.json
+commitlint.config.js
+tsconfig.json
+
+# Arquivos e Pastas de Deploy Local:
+deploy.sh
+docker-compose.yml
+
+# Documentação:
+README.md

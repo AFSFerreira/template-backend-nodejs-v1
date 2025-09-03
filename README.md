@@ -26,7 +26,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ```bash
 ├─── .github
-│    └───workflows
+│    └─── workflows
 ├─── .husky
 ├─── prisma
 │    └─── migrations
@@ -66,6 +66,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
     
 ```
 
+---
 
 <a name="tipos-de-usuarios"></a>
 
@@ -91,28 +92,28 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ### 📌 Requisito 1 – Cadastro e Edição de Usuários:
 
-* [x] 1.1 Cadastro de Manager: Outorgar ou remover o privilégio de MANAGER para um usuário do sistema pelo Administrador
-* [x] 1.2 Cadastro de Content Leader: Outorgar ou remover o privilégio de CONTENT_LEADER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
-* [x] 1.3 Cadastro de Content Producer: Outorgar ou remover o privilégio de CONTENT_PRODUCER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
-* [ ] 1.4 Cadastro de Usuário: Envio das informações básicas necessárias para cadastrar um novo usuário comum (desconsiderando a imagem de perfil)
-* [ ] 1.5 Cadastro com upload de imagem de perfil 
-* [ ] 1.6 Edição de Usuário: Os dados do usuário devem ser editáveis
+- [x] 1.1 Cadastro de Manager: Outorgar ou remover o privilégio de MANAGER para um usuário do sistema pelo Administrador
+- [x] 1.2 Cadastro de Content Leader: Outorgar ou remover o privilégio de CONTENT_LEADER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
+- [x] 1.3 Cadastro de Content Producer: Outorgar ou remover o privilégio de CONTENT_PRODUCER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
+- [ ] 1.4 Cadastro de Usuário: Envio das informações básicas necessárias para cadastrar um novo usuário comum (desconsiderando a imagem de perfil)
+- [ ] 1.5 Cadastro com upload de imagem de perfil 
+- [ ] 1.6 Edição de Usuário: Os dados do usuário devem ser editáveis
 
 ### 📌 Requisito 2 – Autenticação e Acesso:
-* [x] 2.1 Login com Email/Username e Senha
-* [x] 2.2 Redefinição de Senha com envio de Email (esqueci a senha)
-* [ ] 2.3 Inativação de Usuário: Um usuário deve ser inativado do sistema se não realizar o pagamento mensal da associação
-* [x] 2.4 Recuperação de Usuários: Um Administrador ou um Gestor do Sistema devem ser capazes de recuperar usuários filtrados com paginação
-* [ ] 2.5 Aprovação de Usuário: Um Administrador ou um Gestor do Sistema devem ser capazes de aprovar ou rejeitar o pedido de associação pendente do usuário
+- [x] 2.1 Login com Email/Username e Senha
+- [x] 2.2 Redefinição de Senha com envio de Email (esqueci a senha)
+- [ ] 2.3 Inativação de Usuário: Um usuário deve ser inativado do sistema se não realizar o pagamento mensal da associação
+- [x] 2.4 Recuperação de Usuários: Um Administrador ou um Gestor do Sistema devem ser capazes de recuperar usuários filtrados com paginação
+- [ ] 2.5 Aprovação de Usuário: Um Administrador ou um Gestor do Sistema devem ser capazes de aprovar ou rejeitar o pedido de associação pendente do usuário
 
 ### 📌 Requisito 3 – Criação e Gestão de Reuniões:
-* [ ] 3.1 Criação de Reunião: Título, datas, resumo do local e edital
-* [ ] 3.2 Cancelamento de Reunião: A reunião deve ser removida do sistema
-* [ ] 3.3 Edição de Reunião: Os dados da reunião devem ser editáveis
+- [ ] 3.1 Criação de Reunião: Título, datas, resumo do local e edital
+- [ ] 3.2 Cancelamento de Reunião: A reunião deve ser removida do sistema
+- [ ] 3.3 Edição de Reunião: Os dados da reunião devem ser editáveis
 
 ### 📌 Requisito 4 – Exportação de Dados:
-* [ ] 4.1 Exportação dos Usuários: O sistema deve ser capaz de exportar os dados de todos os usuários pelo Administador ou por um Gestor do Sistema
-* [ ] 4.2 Exportação de Reuniões: O sistema deve ser capaz de exportar os dados de todas as reuniões pelo Administador ou por um Gestor do Sistema
+- [x] 4.1 Exportação dos Usuários: O sistema deve ser capaz de exportar os dados de todos os usuários pelo Administador ou por um Gestor do Sistema
+- [ ] 4.2 Exportação de Reuniões: O sistema deve ser capaz de exportar os dados de todas as reuniões pelo Administador ou por um Gestor do Sistema
 
 ---
 
@@ -120,39 +121,36 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ## 🧪 Requisitos Não Funcionais:
 
-* [x] NF.1 - Segurança: Controle de acesso por tipo de usuário
-* [ ] NF.2 - Escalabilidade: Suporte a múltiplos acessos e pesquisas simultâneas
-* [ ] NF.3 - Desempenho: Buscas rápidas, com paginação e tradução para inglês ou português, conforme o recurso
+- [x] NF.1 - Segurança: Controle de acesso por tipo de usuário
+- [ ] NF.2 - Escalabilidade: Suporte a múltiplos acessos e pesquisas simultâneas
+- [ ] NF.3 - Desempenho: Buscas rápidas com paginação, cache e tolerância a erros de digitação
+- [ ] NF.4 - Testabilidade: O sistema deve ser capaz de conduzir testes automatizados para assegurar seu funcionamento íntegr
+- [ ] NF.5 - Confiabilidade: O sistema deve realizar verificações de healthcheck periodicamente para 
 
 ---
 
 <a name="como-executar-o-servidor"></a>
 
 ## 💻 Como Executar o Servidor:
-
-1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
-2. Clone este repositório com o comando: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend`.
-3. Navegue para dentro do projeto clonado com o comando: `cd astrobiologia-backend`.
-4. Instale as dependências do projeto ao executar no console o comando: `npm install`.
-5. Crie um arquivo `.env` na raiz do projeto copiando o conteúdo do `.env.example`. Preencha manualmente os valores que não estiverem definidos.
-
-Se você já possui o <a href="https://pt.wikipedia.org/wiki/Docker_(software)" target="_blank">Docker</a> instalado e configurado em sua máquina, avance para a [etapa 6](#etapa-6) deste procedimento.
+Se você já possui o <a href="https://pt.wikipedia.org/wiki/Docker_(software)" target="_blank">Docker</a> instalado e configurado em sua máquina, ignore esta etapa e avance para o [procedimento de execução do backend](#procedimento-de-execucao).
 
 > [!TIP]
 > Para verificar se você possui o Docker instalado em sua máquina, você pode executar as seguintes etapas:
 > 
-> ### Verificando a Existência do Docker no Windows
-> Abra o menu iniciar e pesquise se o programa `Docker Desktop` está instalado em sua máquina. Alternativamente, abra um terminal com o WSL e tente o comando `sudo docker --version`. Se você não sabe abrir ou configurar o WSL, avance para a [etapa de instalação do Docker + WSL](#instalando-docker--wsl-no-windows) descrita posteriormente.
+> ### 🪟 Verificando a Existência do Docker no Windows
+> Abra o menu iniciar e pesquise se o programa `Docker Desktop` está instalado em sua máquina. Alternativamente, abra um terminal com o WSL e tente o comando `sudo docker --version`. Se você não sabe abrir ou configurar o WSL, avance para a [etapa de instalação do Docker + WSL](#etapa-de-instalacao-do-docker-no-wsl) descrita posteriormente.
 > 
-> ### Verificando a Existência do Docker no Linux
-> Abra um terminal e execute o comando `sudo docker --version`. Se você obter uma mensagem de retorno com o comando bem-sucedido, o Docker estará instalado em sua máquina. , avance para a etapa de [instalação do Docker no Linux](#instalando-docker-no-linux).
+> ### 🐧 Verificando a Existência do Docker no Linux
+> Abra um terminal e execute o comando `sudo docker --version`. Se você obter uma mensagem de retorno com o comando bem-sucedido, o Docker estará instalado em sua máquina. Caso contrário, avance para a etapa de [instalação do Docker no Linux](#instalação-do-docker-no-linux).
 
 Caso contrário, siga as etapas abaixo descrevendo o procedimento de instalação em sua máquina:
 
 > [!NOTE]
 > Todos os comandos descritos a seguir podem e devem ser executados no terminal aberto diretamente na raiz do projeto clonado.
  
-### Instalando Docker + WSL no Windows
+<a name="etapa-de-instalacao-do-docker-no-wsl"></a>
+
+### 🪟 Instalando Docker + WSL no Windows
 Será necessário instalar previamente uma ferramenta de emulação do Linux no Windows chamada <a href="https://en.wikipedia.org/wiki/Windows_Subsystem_for_Linux" target="_blank">WSL (Windows Subsystem for Linux)</a> para suportar os contêineres de Docker. Para isto, abra um novo terminal com permissão de administrador e execute os comandos listados a seguir, respectivamente:
 
 Instale o WSL na sua máquina com uma distro do Ubuntu utilizando o comando:
@@ -164,7 +162,7 @@ wsl --install
 Inicie a primeira instância de usuário Linux no WSL com o comando a seguir:
 
 ```bash
-wsl
+wsl.exe -d Ubuntu
 ```
 
 Aguarde o término do processo e siga as etapas que o terminal solicitar, como a criação de um novo usuário e senha.
@@ -181,7 +179,9 @@ Aguarde o término do processo e siga as etapas que o terminal solicitar, como a
  
 Finalizando as etapas anteriores, avance para o processo de instalação do Docker no Linux conforme descrito logo abaixo.
  
-### Instalando Docker no Linux
+ <a name="instalação-do-docker-no-linux"></a>
+
+### 🐧 Instalando Docker no Linux
 Antes de proceder com a instalação, certifitique-se de remover quaisquer dependências conflitantes com o Docker de sua máquina. Para isto, execute o seguinte comando:
 
 ```bash
@@ -210,7 +210,7 @@ sudo apt-get update
 Finalmente, basta agora instalar o próprio Docker em sua máquina com o comando: 
 
 ```bash
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
  
 Se desejar checar a instalação bem sucedida do Docker, execute o comando `sudo docker run hello-world` para obter um `Hello World` diretamente do Docker.
@@ -223,20 +223,29 @@ Para mais informações detalhadas sobre a instalação do Docker em ambiente Li
 > [!NOTE]
 > Durante a execução dos comandos de instalação do Docker no WSL, é possível que seja solicitada múltiplas vezes a senha <a href="https://en.wikipedia.org/wiki/Sudo" target="_blank">sudo (SuperUser Do)</a> do usuário. A senha digitada não irá aparecer no terminal enquanto você a preenche, mas basta escrevê-la corretamente e pressionar enter para enviá-la.
 
-<!-- atalho para a etapa 6 do procedimento de execução do backend -->
-<a name="etapa-6" display="none"></a>
+<a name="procedimento-de-execucao" display="none"></a>
 
-6. Se você ainda não estiver dentro do WSL, inicie-o com o comando `wsl`.
+### 👨‍💻 Execução do Servidor:
+1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
+2. Clone este repositório com o comando: `git clone https://github.com/IN-Junior-UFF/astrobiologia-backend`.
+3. Navegue para dentro do projeto clonado com o comando: `cd astrobiologia-backend`.
+4. Instale as dependências do projeto ao executar no console o comando: `npm install`.
+5. Crie um arquivo `.env` na raiz do projeto copiando o conteúdo do `.env.example`. Preencha manualmente os valores que não estiverem definidos.
+6. Se o seu sistema for o Windows e você ainda não estiver dentro do WSL, inicie-o com o comando `wsl.exe -d Ubuntu` no terminal aberto anteriormente na raíz do projeto. Se estiver utilizando Linux ou outro sistema operacional, ignore esta etapa.
 7. Inicialize os contêiners do Docker executando o comando `sudo docker compose up -d` no terminal.
-8. (**Opcional**) Execute `npx prisma migrate dev` para aplicar as migrações se desejar preservar dados existentes.
-9. Execute `npx prisma migrate reset` para resetar o banco e popular com dados de teste definidos em `prisma/seed.ts`.
-10. Rode o projeto com o comando: `npm run start:dev`.
+8. Execute `npm run db:reset:all` para resetar o banco de dados, populá-lo com dados de teste definidos em `prisma/seed.ts` e habilitar as extensões necessárias.
+9. Rode o projeto com o comando: `npm run start:dev`.
+
+---
 
 <a name="links-externos"></a>
 
 ## 🔗 Links Externos:
 - **Template Backend Utilizado**: <a href="https://github.com/gabriel-camara-dev/Template-backend" target="_blank">Clique Aqui</a>
 - **Design Figma do Projeto**: <a href="https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0" target="_blank">Clique Aqui</a>
+- **Documentação da API**: <a href="https://documenter.getpostman.com/view/45717933/2sB3HgQigL">Clique Aqui</a>
+
+---
 
 <a name="equipe-de-desenvolvimento"></a>
 

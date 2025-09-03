@@ -4,3 +4,8 @@ export interface PaginationMetaType {
   currentPage: number
   pageSize: number
 }
+
+export interface PaginatedResult<T> {
+  data: T
+  meta: PaginationMetaType
+}

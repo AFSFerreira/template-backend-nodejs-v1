@@ -1,9 +1,11 @@
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
-import { GetAllUsersUseCase } from '@use-cases/user/get-all-users'
+import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
 
-export function makeGetAllUsersUseCase() {
+export function makeGetAllUsersDetailedUseCase() {
   const usersRepository = new PrismaUsersRepository()
-  const getAllUsersUseCase = new GetAllUsersUseCase(usersRepository)
+  const getAllUsersDetailedUseCase = new GetAllUsersDetailedUseCase(
+    usersRepository,
+  )
 
-  return getAllUsersUseCase
+  return getAllUsersDetailedUseCase
 }

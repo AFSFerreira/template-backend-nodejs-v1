@@ -1,3 +1,4 @@
+import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { ActivityArea } from '@prisma/client'
 import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
 import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
@@ -5,8 +6,8 @@ import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-a
 export type GetAllActivityAreasUseCaseRequest = getAllActivityAreasSchemaType
 
 export interface GetAllActivityAreasUseCaseResponse {
-  activityAreas: ActivityArea[]
-  totalItems: number
+  data: ActivityArea[]
+  meta: PaginationMetaType
 }
 
 export class GetAllActivityAreasUseCase {

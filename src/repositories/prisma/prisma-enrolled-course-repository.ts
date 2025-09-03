@@ -1,4 +1,4 @@
-import { prisma } from '@lib/prisma'
+import { prisma } from '@lib/prisma/prisma'
 import type { Prisma } from '@prisma/client'
 import type { EnrolledCourseRepository } from '../enrolled-course-repository'
 

@@ -9,7 +9,7 @@ import type {
 } from '@prisma/client'
 import { formatDate } from '@utils/format-date'
 
-interface HTTPRestrictedUserDetails {
+interface HTTPSimplifiedUserDetails {
   id: string
   fullName: string
   institutionName: string
@@ -73,29 +73,29 @@ interface HTTPAcademicPublications {
   volume: string
   editionNumber: string
   pageInterval: string
-  linkDOI: string
+  linkDoi: string
 }
 
 interface HTTPDirectorBoardInfo {
   directorBoardProfileImage: string
   aboutMe: string
+  position: string
 }
 
-interface HTTPUser {
-  userDetails: HTTPUserDetails
+interface HTTPUser extends HTTPUserDetails {
   directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
 export class UserPresenter {
   static toHTTPSimplified(
     user: UserWithSimplifiedDetails,
-  ): HTTPRestrictedUserDetails
+  ): HTTPSimplifiedUserDetails
   static toHTTPSimplified(
     users: UserWithSimplifiedDetails[],
-  ): HTTPRestrictedUserDetails[]
+  ): HTTPSimplifiedUserDetails[]
   static toHTTPSimplified(
     input: UserWithSimplifiedDetails | UserWithSimplifiedDetails[],
-  ): HTTPRestrictedUserDetails | HTTPRestrictedUserDetails[] {
+  ): HTTPSimplifiedUserDetails | HTTPSimplifiedUserDetails[] {
     if (Array.isArray(input)) {
       return input.map((user) => UserPresenter.toHTTPSimplified(user))
     }
@@ -124,7 +124,7 @@ export class UserPresenter {
       membershipStatus,
       loginAttempts,
       lastLogin,
-      recoveryPasswordToken,
+      recoveryPasswordTokenHash,
       recoveryPasswordTokenExpiresAt,
       createdAt,
       updatedAt,
@@ -139,58 +139,56 @@ export class UserPresenter {
     } = input
 
     return {
-      userDetails: {
-        ...userFiltered,
-        id: input.publicId,
-        birthdate: formatDate(input.birthdate),
+      id: input.publicId,
+      ...userFiltered,
+      birthdate: formatDate(input.birthdate),
 
-        institutionName: input.Institution.name,
+      institutionName: input.Institution.name,
 
-        keywords: input.Keyword.map((keyword) => keyword.value),
+      keywords: input.Keyword.map((keyword) => keyword.value),
 
-        mainActivityArea: input.ActivityArea.area,
+      mainActivityArea: input.ActivityArea.area,
 
-        address: {
-          zip: input.Address?.zip,
-          number: input.Address?.number,
-          district: input.Address?.district,
-          street: input.Address?.street,
-          city: input.Address?.city,
-          country: input.Address?.country,
-          state: input.Address?.state,
-        },
-
-        enrolledCourse: {
-          courseName: input.EnrolledCourse?.courseName,
-          startGraduationDate: formatDate(
-            input.EnrolledCourse?.startGraduationDate,
-            'mm/yyyy',
-          ),
-          expectedGraduationDate: formatDate(
-            input.EnrolledCourse?.expectedGraduationDate,
-            'mm/yyyy',
-          ),
-          supervisorName: input.EnrolledCourse?.supervisorName,
-          scholarshipHolder: input.EnrolledCourse?.scholarshipHolder,
-          sponsoringOrganization: input.EnrolledCourse?.sponsoringOrganization,
-        },
-
-        academicPublications: input.AcademicPublication.map(
-          (academicPublication) => ({
-            title: academicPublication.title,
-            authors: academicPublication.authors,
-            publicationDate: formatDate(
-              academicPublication.publicationDate,
-              'mm/yyyy',
-            ),
-            journalName: academicPublication.journalName,
-            volume: academicPublication.volume,
-            editionNumber: academicPublication.editionNumber,
-            pageInterval: academicPublication.pageInterval,
-            linkDOI: academicPublication.linkDOI,
-          }),
-        ),
+      address: {
+        zip: input.Address?.zip,
+        number: input.Address?.number,
+        district: input.Address?.district,
+        street: input.Address?.street,
+        city: input.Address?.city,
+        country: input.Address?.country,
+        state: input.Address?.state,
       },
+
+      enrolledCourse: {
+        courseName: input.EnrolledCourse?.courseName,
+        startGraduationDate: formatDate(
+          input.EnrolledCourse?.startGraduationDate,
+          'mm/yyyy',
+        ),
+        expectedGraduationDate: formatDate(
+          input.EnrolledCourse?.expectedGraduationDate,
+          'mm/yyyy',
+        ),
+        supervisorName: input.EnrolledCourse?.supervisorName,
+        scholarshipHolder: input.EnrolledCourse?.scholarshipHolder,
+        sponsoringOrganization: input.EnrolledCourse?.sponsoringOrganization,
+      },
+
+      academicPublications: input.AcademicPublication.map(
+        (academicPublication) => ({
+          title: academicPublication.title,
+          authors: academicPublication.authors,
+          publicationDate: formatDate(
+            academicPublication.publicationDate,
+            'mm/yyyy',
+          ),
+          journalName: academicPublication.journalName,
+          volume: academicPublication.volume,
+          editionNumber: academicPublication.editionNumber,
+          pageInterval: academicPublication.pageInterval,
+          linkDoi: academicPublication.linkDoi,
+        }),
+      ),
 
       directorBoardInfo:
         input.DirectorBoard !== null
@@ -198,6 +196,7 @@ export class UserPresenter {
               directorBoardProfileImage:
                 input.DirectorBoard.directorBoardProfileImage,
               aboutMe: input.DirectorBoard.aboutMe,
+              position: input.DirectorBoard.position,
             }
           : null,
     }

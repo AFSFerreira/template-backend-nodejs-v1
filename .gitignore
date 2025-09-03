@@ -1,4 +1,11 @@
 node_modules
 build
+dist
 .gitignore
 .env
+
+# Ignorando Arquivos de Imagem de Perfil:
+uploads/user/profile-images/*
+!uploads/user/profile-images/default-profile-pic.png
+uploads/temp/user/profile-images/*
+!uploads/temp/user/profile-images/.gitkeep

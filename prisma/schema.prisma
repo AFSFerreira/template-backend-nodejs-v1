@@ -9,72 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
-enum UserRoleType {
-  ADMIN
-  MANAGER
-  CONTENT_LEADER
-  CONTENT_PRODUCER
-  DEFAULT
-}
-
-enum AuthenticationStatusType {
-  SUCCESS
-  USER_NOT_EXISTS
-  INCORRECT_PASSWORD
-  BLOCKED
-}
-
-enum OccupationType {
-  RESEARCHER
-  PROFESSOR
-  STUDENT
-  POSTGRADUATE
-  MASTER
-  DOCTORATE
-}
-
-enum EducationLevelType {
-  ELEMENTARY_SCHOOL
-  HIGH_SCHOOL
-  UNDERGRADUATE_STUDENT
-  BACHELOR
-  MASTER_STUDENT
-  MASTER
-  DOCTORATE_STUDENT
-  DOCTORATE
-  OTHER
-}
-
-enum MembershipStatusType {
-  PENDING
-  APPROVED
-  REJECTED
-  INACTIVE
-}
-
-enum BlogCategoryType {
-  MAIN_CATEGORY
-  SUBCATEGORY
-}
-
-enum IdentityType {
-  CPF
-  RNE
-  PASSPORT
-}
-
-enum PresentationType {
-  ORAL
-  POSTER
-}
-
-enum ActivityAreaType {
-  AREA_OF_ACTIVITY
-  SUB_AREA_OF_ACTIVITY
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model AuthenticationAudit {
@@ -123,7 +60,7 @@ model User {
   loginAttempts Int       @default(0) @map("login_attempts")
   lastLogin     DateTime? @map("last_login")
 
-  recoveryPasswordToken          String?   @unique @map("recovery_password_token")
+  recoveryPasswordTokenHash      String?   @unique @map("recovery_password_token")
   recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -203,14 +140,14 @@ model AcademicPublications {
   volume          String
   editionNumber   String   @map("edition_number")
   pageInterval    String   @map("page_interval")
-  linkDOI         String   @map("link_DOI")
+  linkDoi         String   @map("link_doi")
 
   createdAt DateTime @default(now()) @map("created_at")
 
   userId Int  @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  activityAreaId Int
+  activityAreaId Int          @map("activity_area_id")
   ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@index([userId])
@@ -272,56 +209,73 @@ model DirectorBoard {
   @@map("directors_board")
 }
 
-model MeetingPayment {
+model PaymentInfo {
+  id      Int    @id @default(autoincrement())
+  pixKey  String @map("pix_key")
+  bank    String
+  code    String
+  agency  String
+  account String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  MeetingPaymentInfo MeetingPaymentInfo[] @relation()
+
+  @@map("payment_info")
+}
+
+model MeetingPaymentInfo {
   id        Int      @id @default(autoincrement())
   publicId  String   @unique @default(uuid(7)) @map("public_id")
   value     Int
-  pixKey    String   @map("pix_key")
-  bank      String
-  code      String
-  agency    String
-  account   String
   limitDate DateTime @map("limit_date")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  paymentInfoId Int         @map("payment_info_id")
+  PaymentInfo   PaymentInfo @relation(fields: [paymentInfoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   meetingId Int     @unique @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index([meetingId])
   @@map("payment_information")
 }
 
-model Category {
+model BlogCategory {
   id   Int              @id @default(autoincrement())
-  name String           @unique
+  name String
   type BlogCategoryType
 
   createdAt DateTime @default(now()) @map("created_at")
 
   BlogSubCategory Blog[] @relation("blog_subcategories")
-  Blog            Blog[] @relation("blog_main_category")
+  Blog            Blog[] @relation("main_blog_category")
 
-  @@index([type, name])
-  @@map("categories")
+  @@unique([type, name])
+  @@map("blog_category")
 }
 
 model Blog {
   id          Int    @id @default(autoincrement())
   publicId    String @unique @default(uuid(7)) @map("public_id")
+  title       String
   authorName  String @map("author_name")
   htmlContent String @map("html_content") @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  mainCategoryId Int      @map("main_category_id")
-  MainCategory   Category @relation("blog_main_category", fields: [mainCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  mainBlogCategoryId Int          @map("main_blog_category_id")
+  MainBlogCategory   BlogCategory @relation("main_blog_category", fields: [mainBlogCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  authorId Int?  @map("author_id")
-  Author   User? @relation(fields: [authorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  userId Int?  @map("user_id")
+  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  Subcategories Category[] @relation("blog_subcategories")
+  Subcategories BlogCategory[] @relation("blog_subcategories")
 
-  @@index([mainCategoryId])
+  @@index([mainBlogCategoryId])
   @@map("blogs")
 }
 
@@ -338,7 +292,7 @@ model UserMeeting {
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([userId, meetingId])
-  @@map("meeting_participants")
+  @@map("user_meeting")
 }
 
 model MeetingPresentation {
@@ -372,9 +326,9 @@ model Meeting {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  UserMeeting    UserMeeting[]   @relation()
-  MeetingDate    MeetingDate[]   @relation()
-  MeetingPayment MeetingPayment? @relation()
+  UserMeeting        UserMeeting[]       @relation()
+  MeetingDate        MeetingDate[]       @relation()
+  MeetingPaymentInfo MeetingPaymentInfo? @relation()
 
   @@index([lastDate])
   @@map("meetings")
@@ -466,4 +420,68 @@ model CommentLike {
 
   @@index([newsletterCommentId])
   @@map("comment_likes")
+}
+
+enum UserRoleType {
+  ADMIN
+  MANAGER
+  CONTENT_LEADER
+  CONTENT_PRODUCER
+  DEFAULT
+}
+
+enum AuthenticationStatusType {
+  SUCCESS
+  USER_NOT_EXISTS
+  INCORRECT_PASSWORD
+  BLOCKED
+}
+
+enum OccupationType {
+  RESEARCHER
+  PROFESSOR
+  STUDENT
+  POSTGRADUATE
+  MASTER
+  DOCTORATE
+}
+
+enum EducationLevelType {
+  ELEMENTARY_SCHOOL
+  HIGH_SCHOOL
+  UNDERGRADUATE_STUDENT
+  BACHELOR
+  MASTER_STUDENT
+  MASTER
+  DOCTORATE_STUDENT
+  DOCTORATE
+  OTHER
+}
+
+enum MembershipStatusType {
+  PENDING
+  APPROVED
+  REJECTED
+  INACTIVE
+}
+
+enum BlogCategoryType {
+  MAIN_CATEGORY
+  SUBCATEGORY
+}
+
+enum IdentityType {
+  CPF
+  RNE
+  PASSPORT
+}
+
+enum PresentationType {
+  ORAL
+  POSTER
+}
+
+enum ActivityAreaType {
+  AREA_OF_ACTIVITY
+  SUB_AREA_OF_ACTIVITY
 }

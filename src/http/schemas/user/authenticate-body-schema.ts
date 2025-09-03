@@ -1,13 +1,15 @@
-import { messages } from '@constants/messages'
+import { limitedNonemptyTextSchema } from '@schemas/utils/limited-nonempty-text-schema'
+import { INVALID_AUTHENTICATION_INPUT } from 'src/messages/validation'
 import { z } from 'zod'
-import { nonemptyTextSchema } from '../utils/nonempty-text'
 
 export const authenticateBodySchema = z.object(
   {
-    login: nonemptyTextSchema,
-    password: nonemptyTextSchema,
+    login: limitedNonemptyTextSchema,
+    password: limitedNonemptyTextSchema,
   },
-  messages.validation.invalidAuthenticationInput,
+  {
+    error: INVALID_AUTHENTICATION_INPUT,
+  },
 )
 
 export type AuthenticateSchemaType = z.infer<typeof authenticateBodySchema>

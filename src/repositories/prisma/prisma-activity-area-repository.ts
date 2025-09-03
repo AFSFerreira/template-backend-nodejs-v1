@@ -1,5 +1,5 @@
 import type { QueryMode } from '@custom-types/query-mode'
-import { prisma } from '@lib/prisma'
+import { prisma } from '@lib/prisma/prisma'
 import type { Prisma } from '@prisma/client'
 import type {
   ActivityAreaQuery,
@@ -36,24 +36,51 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
           type: query?.type,
         },
       })
-      return { activityAreas, totalItems: activityAreas.length }
+      return {
+        data: activityAreas,
+        meta: {
+          totalItems: activityAreas.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: activityAreas.length,
+        },
+      }
     }
 
     const offset = (query.page - 1) * query.limit
 
-    const [totalItems, activityAreas] = await prisma.$transaction([
-      prisma.activityArea.count({ where: { type: query.type } }),
-      prisma.activityArea.findMany({
-        skip: offset,
-        take: query.limit,
-        where: {
-          area: PrismaActivityAreaRepository.buildStartsWithFilter(query.name),
-          type: query.type,
-        },
-      }),
-    ])
+    const [totalItems, activityAreas] = await prisma.$transaction(
+      async (prismaTx) => {
+        const totalItems = await prismaTx.activityArea.count({
+          where: { type: query.type },
+        })
 
-    return { activityAreas, totalItems }
+        const activityAreas = await prismaTx.activityArea.findMany({
+          skip: offset,
+          take: query.limit,
+          where: {
+            area: PrismaActivityAreaRepository.buildStartsWithFilter(
+              query.name,
+            ),
+            type: query.type,
+          },
+        })
+
+        return [totalItems, activityAreas]
+      },
+    )
+
+    const totalPages = Math.ceil(totalItems / query.limit)
+
+    return {
+      data: activityAreas,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize: query.limit,
+      },
+    }
   }
 
   async findByArea({ area, type }: ActivityAreaQuery) {

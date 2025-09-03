@@ -1,16 +1,12 @@
-import type { AstrobiologyOrRelatedStartYearType } from '@custom-types/astrobiology-or-related-start-year-type'
-import type { BirthDateComparisonType } from '@custom-types/birth-date-comparison-type'
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { GetAllUsersQuerySchemaType } from '@schemas/user/get-all-users-query-schema'
+import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
 
-type GetAllUsersUseCaseRequest = GetAllUsersQuerySchemaType &
-  BirthDateComparisonType &
-  AstrobiologyOrRelatedStartYearType
+type GetAllUsersUseCaseRequest = GetAllUsersSimplifiedQuerySchemaType
 
-interface GetAllUsersCaseResponse {
-  data: UserWithDetails[]
+interface GetAllUsersSimplifiedCaseResponse {
+  data: UserWithSimplifiedDetails[]
   meta: PaginationMetaType
 }
 
@@ -18,10 +14,13 @@ export class GetAllUsersUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(
-    getAllUsersInput: GetAllUsersUseCaseRequest,
-  ): Promise<GetAllUsersCaseResponse> {
-    const usersInfo = await this.usersRepository.listAllUsers(getAllUsersInput)
+    getAllUsersSimplifiedInput: GetAllUsersUseCaseRequest,
+  ): Promise<GetAllUsersSimplifiedCaseResponse> {
+    const simplifiedUsersInfo = await this.usersRepository.listAllUsers({
+      simplified: true,
+      ...getAllUsersSimplifiedInput,
+    })
 
-    return usersInfo as GetAllUsersCaseResponse
+    return simplifiedUsersInfo as GetAllUsersSimplifiedCaseResponse
   }
 }

@@ -1,12 +1,10 @@
-import { randomBytes } from 'crypto'
-import {
-  EXPIRES_IN_MINUTES,
-  TOKEN_LENGTH,
-} from '@constants/forgot-password-token'
+import crypto from 'crypto'
+import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/email'
-import { UserNotFoundForPasswordResetError } from '../errors/user-not-found-for-password-reset-error'
+import { emailSchema } from '@schemas/utils/email-schema'
+import ms from 'ms'
+import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
 interface ForgotPasswordUseCaseRequest {
   login: string
@@ -31,18 +29,25 @@ export class ForgotPasswordUseCase {
       userAlreadyExists = await this.usersRepository.findByUsername(login)
     }
 
-    const recoveryPasswordToken = randomBytes(TOKEN_LENGTH).toString('hex')
+    const recoveryPasswordToken = crypto
+      .randomBytes(RANDOM_BYTES_NUMBER)
+      .toString('hex')
 
-    const recoveryPasswordTokenExpiresAt = new Date(
-      Date.now() + EXPIRES_IN_MINUTES * 60 * 1000,
-    )
+    const recoveryPasswordTokenHash = crypto
+      .createHash('sha256')
+      .update(recoveryPasswordToken, 'utf-8')
+      .digest('hex')
+
+    const recoveryPasswordTokenExpiresAt = new Date(Date.now() + ms('15m'))
 
     const tokenData = {
-      recoveryPasswordToken,
+      recoveryPasswordTokenHash,
       recoveryPasswordTokenExpiresAt,
     }
 
-    if (!userAlreadyExists) throw new UserNotFoundForPasswordResetError()
+    if (!userAlreadyExists) {
+      throw new UserNotFoundForPasswordResetError()
+    }
 
     const user = await this.usersRepository.setPasswordToken(
       userAlreadyExists.id,

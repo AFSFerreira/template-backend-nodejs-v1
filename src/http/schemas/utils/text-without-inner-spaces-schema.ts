@@ -1,8 +1,8 @@
-import { messages } from '@constants/messages'
 import { INNER_SPACES_REGEX } from '@constants/regex'
-import { limitedNonemptyTextSchema } from './limited-nonempty-text'
+import { INVALID_INNER_SPACES } from 'src/messages/validation'
+import { limitedNonemptyTextSchema } from './limited-nonempty-text-schema'
 
 export const textWithoutInnerSpacesSchema = limitedNonemptyTextSchema.regex(
   INNER_SPACES_REGEX,
-  messages.validation.invalidInnerSpaces,
+  INVALID_INNER_SPACES,
 )

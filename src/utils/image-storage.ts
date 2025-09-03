@@ -23,7 +23,7 @@ export async function saveCompressedImage(
   const timestamp = Date.now()
   const finalName = `${fileNameHash}-${timestamp}.webp`
 
-  const finalImagePath = path.join(folderPath, finalName)
+  const finalImagePath = path.resolve(folderPath, finalName)
 
   const compressedImageBuffer = await sharp(imageBuffer)
     .resize(options.dimensions)

@@ -1,0 +1,6 @@
+export const keywordsData = [
+  'PALAVRA-CHAVE 1',
+  'PALAVRA-CHAVE 2',
+  'PALAVRA-CHAVE 3',
+  'PALAVRA-CHAVE 4',
+]

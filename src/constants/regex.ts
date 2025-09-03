@@ -4,3 +4,5 @@ export const INNER_SPACES_REGEX = /^\S+$/
 export const ORCID_NUMBER_VALIDATION_REGEX = /^(\d{4}-){3}\d{3}[\dX]$/
 export const SQL_IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/
 export const TOKEN_DURATION_REGEX = /^(?:[1-9]\d*(?:[ywdhms]))+$/i
+export const RNE_VALIDATION_REGEX = /^[A-Za-z]\d{6}-\d$/
+export const PASSPORT_VALIDATION_REGEX = /^[A-Z0-9]{6,9}$/

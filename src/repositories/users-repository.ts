@@ -1,21 +1,33 @@
-import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
-import type { Prisma } from '@prisma/client'
-import type { GetAllUsersQuerySchemaType } from '@schemas/user/get-all-users-query-schema'
+import type {
+  EducationLevelType,
+  IdentityType,
+  OccupationType,
+  Prisma,
+} from '@prisma/client'
+import type { getAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-users-detailed-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 
 export type ListAllUsersQuery = Omit<
-  GetAllUsersQuerySchemaType,
+  getAllUsersDetailedQuerySchemaType,
   'page' | 'limit'
 > &
   PaginationType & { simplified?: boolean }
 
 export interface CreateUserQuery {
-  user: Omit<RegisterUserBodySchemaType['user'], 'password'> & {
+  user: Omit<
+    RegisterUserBodySchemaType['user'],
+    'password' | 'occupation' | 'educationLevel'
+  > & {
     passwordHash: string
     profileImage: string
+    occupation: OccupationType
+    educationLevel: EducationLevelType
+    identityType: IdentityType
+    identityDocument: string
   }
   activityArea: RegisterUserBodySchemaType['activityArea']
   address: RegisterUserBodySchemaType['address']
@@ -26,7 +38,7 @@ export interface CreateUserQuery {
 }
 
 export interface TokenData {
-  recoveryPasswordToken: string
+  recoveryPasswordTokenHash: string
   recoveryPasswordTokenExpiresAt: Date
 }
 
@@ -35,9 +47,9 @@ export interface FindByEmailOrUsernameQuery {
   username: string
 }
 
-export interface ListAllUsersResponse {
-  data: Array<UserWithDetails | UserWithSimplifiedDetails>
-  meta: PaginationMetaType
+export interface FindByIdentityDocumentQuery {
+  identityDocument: string
+  identityType: IdentityType
 }
 
 export interface UsersRepository {
@@ -47,16 +59,23 @@ export interface UsersRepository {
   findByUsername: (username: string) => Promise<UserWithDetails | null>
   findById: (id: number) => Promise<UserWithDetails | null>
   findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
+  findByIdentityDocument: (
+    data: FindByIdentityDocumentQuery,
+  ) => Promise<UserWithDetails | null>
   findByEmailOrUsername: (
     data: FindByEmailOrUsernameQuery,
   ) => Promise<UserWithDetails | null>
-  listAllUsers: (query?: ListAllUsersQuery) => Promise<ListAllUsersResponse>
+  listAllUsers: (
+    query?: ListAllUsersQuery,
+  ) => Promise<
+    PaginatedResult<Array<UserWithDetails | UserWithSimplifiedDetails>>
+  >
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
   update: (id: number, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>
   validateUserToken: (
-    recoveryPasswordToken: string,
+    recoveryPasswordTokenHash: string,
   ) => Promise<UserWithDetails | null>
   changePassword: (id: number, passwordHash: string) => Promise<UserWithDetails>
   setPasswordToken: (

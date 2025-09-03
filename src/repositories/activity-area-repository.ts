@@ -1,3 +1,4 @@
+import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { ActivityArea, ActivityAreaType, Prisma } from '@prisma/client'
 import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
@@ -13,11 +14,6 @@ export type ListAllActivityAreasQuery = Omit<
 > &
   PaginationType
 
-export interface ListAllActivityAreasResponse {
-  activityAreas: ActivityArea[]
-  totalItems: number
-}
-
 export interface ActivityAreaRepository {
   create: (
     data: Prisma.ActivityAreaUncheckedCreateInput,
@@ -29,7 +25,7 @@ export interface ActivityAreaRepository {
   }: ActivityAreaQuery) => Promise<ActivityArea | null>
   listAllActivityAreas: (
     query?: ListAllActivityAreasQuery,
-  ) => Promise<ListAllActivityAreasResponse>
+  ) => Promise<PaginatedResult<ActivityArea[]>>
   findManyByArea: (areas: ActivityAreaQuery[]) => Promise<ActivityArea[]>
   delete: (id: number) => Promise<void>
 }

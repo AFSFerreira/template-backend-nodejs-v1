@@ -1,70 +1,70 @@
-import { messages } from '@constants/messages'
-import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/zod-constants'
-import { ALL_LITERAL_EDUCATION_LEVEL_OPTIONS } from '@custom-types/literal-education-level-type'
-import { ALL_LITERAL_OCCUPATION_OPTIONS } from '@custom-types/literal-ocupation-type'
-import { LANGUAGE_OPTIONS } from '@custom-types/translation-language-type'
-import { IdentityType } from '@prisma/client'
 import {
-  translateEducationLevelToEnumEn,
-  translateEducationLevelToEnumPt,
-} from '@services/translate-education-level'
+  LONG_LIMITED_CHARACTERS_SIZE,
+  MAX_INTEREST_DESCRIPTION_SIZE,
+} from '@constants/validation-constants'
+import { EducationLevelType, OccupationType } from '@prisma/client'
+import { identityDocumentSchema } from '@schemas/utils/identity-document-schema'
+import { limitedNonemptyTextSchema } from '@schemas/utils/limited-nonempty-text-schema'
+import { longLimitedNonemptyTextSchema } from '@schemas/utils/long-limited-nonempty-text-schema'
+import { rangedYearSchema } from '@schemas/utils/ranged-year-schema'
 import {
-  translateOccupationToEnumEn,
-  translateOccupationToEnumPt,
-} from '@services/translate-occupation'
-import { translateInput } from '@utils/translate-input'
+  ACTIVITY_AREA_MISSING_DESCRIPTION,
+  COMPLETION_DATE_BEFORE_START_DATE,
+  INVALID_ASTROBIOLOGY_OR_RELATED_START_YEAR,
+  SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
+} from 'src/messages/validation'
 import { z } from 'zod'
-import { cpfSchema } from '../utils/cpf'
-import { emailSchema } from '../utils/email'
-import { keywordSchema } from '../utils/keyword'
+import { emailSchema } from '../utils/email-schema'
+import { keywordSchema } from '../utils/keyword-schema'
 import { monthYearSchema } from '../utils/month-year-schema'
-import { nonemptyTextSchema } from '../utils/nonempty-text'
-import { orcidNumberSchema } from '../utils/orcid-number'
-import { passwordSchema } from '../utils/password'
+import { nonemptyTextSchema } from '../utils/nonempty-text-schema'
+import { orcidNumberSchema } from '../utils/orcid-number-schema'
+import { passwordSchema } from '../utils/password-schema'
 import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
-import { usernameSchema } from '../utils/username'
+import { usernameSchema } from '../utils/username-schema'
 
 export const registerBodySchema = z
   .object({
-    user: z
-      .object({
-        email: emailSchema,
-        password: passwordSchema,
-        fullName: upperCaseTextSchema,
-        username: usernameSchema,
-        birthdate: z.coerce.date(),
-        linkLattes: z.url().optional(),
-        linkGoogleScholar: z.url().optional(),
-        linkResearcherId: z.url().optional(),
-        orcidNumber: orcidNumberSchema.optional(),
-        departmentName: upperCaseTextSchema.optional(),
-        institutionComplement: upperCaseTextSchema.optional(),
-        occupation: upperCaseTextSchema,
-        educationLevel: upperCaseTextSchema,
-        identityType: z.enum(IdentityType),
-        identityDocument: upperCaseTextSchema,
-        // REVIEW: Verificar se o tipo booleano está sendo recebido corretamente:
-        emailIsPublic: z.coerce.boolean(),
-        astrobiologyOrRelatedStartYear: z.coerce.number(),
-        interestDescription: nonemptyTextSchema.max(
-          MAX_INTEREST_DESCRIPTION_SIZE as number,
+    user: z.intersection(
+      z
+        .object({
+          email: emailSchema,
+          password: passwordSchema,
+          fullName: upperCaseTextSchema,
+          username: usernameSchema,
+          profileImage: limitedNonemptyTextSchema.optional(),
+          birthdate: z.coerce.date(),
+          linkLattes: z.url().optional(),
+          linkGoogleScholar: z.url().optional(),
+          linkResearcherId: z.url().optional(),
+          orcidNumber: orcidNumberSchema.optional(),
+          departmentName: upperCaseTextSchema.optional(),
+          institutionComplement: upperCaseTextSchema.optional(),
+          occupation: z.enum(OccupationType),
+          educationLevel: z.enum(EducationLevelType),
+          emailIsPublic: z.coerce.boolean(),
+          astrobiologyOrRelatedStartYear: rangedYearSchema,
+          interestDescription: nonemptyTextSchema.max(
+            MAX_INTEREST_DESCRIPTION_SIZE,
+          ),
+          receiveReports: z.coerce.boolean(),
+          publicInformation: longLimitedNonemptyTextSchema,
+          activityAreaDescription: longLimitedNonemptyTextSchema.optional(),
+          subActivityAreaDescription: longLimitedNonemptyTextSchema.optional(),
+        })
+        .refine(
+          (data) => {
+            return (
+              new Date().getFullYear() >= data.astrobiologyOrRelatedStartYear
+            )
+          },
+          {
+            error: INVALID_ASTROBIOLOGY_OR_RELATED_START_YEAR,
+            path: ['astrobiologyOrRelatedStartYear'],
+          },
         ),
-        receiveReports: z.coerce.boolean(),
-        // REVIEW: Confirmar se estes campos são obrigatórios:
-        publicInformation: nonemptyTextSchema,
-        activityAreaDescription: nonemptyTextSchema.optional(),
-        subActivityAreaDescription: nonemptyTextSchema.optional(),
-      })
-      .refine(
-        (data) => {
-          if (data.identityType !== IdentityType.CPF) return true
-
-          return cpfSchema.safeParse(data.identityDocument)
-        },
-        {
-          error: messages.validation.invalidCpf,
-        },
-      ),
+      identityDocumentSchema,
+    ),
 
     activityArea: z.object({
       mainActivityArea: upperCaseTextSchema,
@@ -103,18 +103,19 @@ export const registerBodySchema = z
           return data.expectedGraduationDate >= data.startGraduationDate
         },
         {
-          error: messages.validation.completionDateBeforeStartDate,
+          error: COMPLETION_DATE_BEFORE_START_DATE,
+          path: ['expectedGraduationDate'],
         },
       )
       .refine(
         (data) => {
           // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
           if (data.scholarshipHolder) return !!data.sponsoringOrganization
-
           return !data.sponsoringOrganization
         },
         {
-          error: messages.validation.scholarshipHolderAndSponsoringOrganization,
+          error: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
+          path: ['scholarshipHolder'],
         },
       ),
 
@@ -124,88 +125,38 @@ export const registerBodySchema = z
           title: upperCaseTextSchema,
           authors: upperCaseTextSchema,
           publicationDate: monthYearSchema,
-          tag: upperCaseTextSchema,
+          area: upperCaseTextSchema,
           journalName: upperCaseTextSchema,
           volume: upperCaseTextSchema,
           editionNumber: upperCaseTextSchema,
           pageInterval: upperCaseTextSchema,
-          linkDOI: z.url(),
+          linkDoi: z.url().max(LONG_LIMITED_CHARACTERS_SIZE),
         }),
       )
       .max(5),
-
-    lang: z.enum(LANGUAGE_OPTIONS).default('pt'),
   })
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
-      if (
-        data.activityArea.mainActivityArea === 'OUTRA' ||
-        data.activityArea.mainActivityArea === 'OTHER'
-      ) {
+      if (data.activityArea.mainActivityArea === 'OUTRA')
         return !!data.user.activityAreaDescription
-      }
-
       return !data.user.activityAreaDescription
     },
     {
-      error: messages.validation.activityAreaMissingDescription,
+      error: ACTIVITY_AREA_MISSING_DESCRIPTION,
       path: ['activityAreas', 'mainActivityArea'],
     },
   )
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
-      if (
-        data.activityArea.subActivityArea === 'OUTRA' ||
-        data.activityArea.subActivityArea === 'OTHER'
-      )
+      if (data.activityArea.subActivityArea === 'OUTRA')
         return !!data.user.subActivityAreaDescription
       return !data.user.subActivityAreaDescription
     },
     {
-      error: messages.validation.activityAreaMissingDescription,
+      error: ACTIVITY_AREA_MISSING_DESCRIPTION,
       path: ['activityAreas', 'subActivityArea'],
-    },
-  )
-  .refine(
-    (data) => {
-      if (!ALL_LITERAL_EDUCATION_LEVEL_OPTIONS.has(data.user.educationLevel)) {
-        return false
-      }
-
-      data.user.educationLevel = translateInput(
-        data.user.educationLevel,
-        data.lang,
-        translateEducationLevelToEnumPt,
-        translateEducationLevelToEnumEn,
-      )
-
-      return true
-    },
-    {
-      error: messages.validation.invalidEducationLevelValue,
-      path: ['user', 'educationLevel'],
-    },
-  )
-  .refine(
-    (data) => {
-      if (!ALL_LITERAL_OCCUPATION_OPTIONS.has(data.user.occupation)) {
-        return false
-      }
-
-      data.user.occupation = translateInput(
-        data.user.occupation,
-        data.lang,
-        translateOccupationToEnumPt,
-        translateOccupationToEnumEn,
-      )
-
-      return true
-    },
-    {
-      error: messages.validation.invalidOccupationValue,
-      path: ['user', 'occupation'],
     },
   )
 
