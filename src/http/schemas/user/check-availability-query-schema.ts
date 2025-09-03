@@ -25,12 +25,12 @@ export const checkAvailabilityQuerySchema = z.preprocess(
         email: emailSchema,
       })
       .partial(),
-    z.discriminatedUnion('identityType',
-      [identityDocumentSchema,
-      z.object({ identityType: z.undefined() })]),
-    ),
-  )
-
+    z.discriminatedUnion('identityType', [
+      identityDocumentSchema,
+      z.object({ identityType: z.undefined() }),
+    ]),
+  ),
+)
 
 export type CheckAvailabilityQuerySchemaType = z.infer<
   typeof checkAvailabilityQuerySchema
