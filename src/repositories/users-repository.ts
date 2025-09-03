@@ -54,6 +54,7 @@ export interface FindByIdentityDocumentQuery {
 
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
+  checkIfExists: (where: Prisma.UserWhereUniqueInput) => Promise<boolean>
   findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
   findByUsername: (username: string) => Promise<UserWithDetails | null>

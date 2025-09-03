@@ -4,19 +4,12 @@ import { identityDocumentSchema } from '@schemas/utils/identity-document-schema'
 import z from 'zod'
 import { usernameSchema } from '../utils/username-schema'
 
-interface CheckAvailabilityQuerySchema {
-  identityType?: IdentityType
-  identityDocument?: string
-  email?: string
-  username?: string
-}
+type CheckAvailabilityQuerySchema = any & { identityType?: IdentityType }
 
 export const checkAvailabilityQuerySchema = z.preprocess(
   (query: CheckAvailabilityQuerySchema) => ({
+    ...query,
     identityType: query.identityType,
-    identityDocument: query.identityDocument,
-    username: query.username,
-    email: query.email,
   }),
   z.intersection(
     z
@@ -27,7 +20,10 @@ export const checkAvailabilityQuerySchema = z.preprocess(
       .partial(),
     z.discriminatedUnion('identityType', [
       identityDocumentSchema,
-      z.object({ identityType: z.undefined() }),
+      z.object({
+        identityType: z.undefined(),
+        identityDocument: z.undefined(),
+       }),
     ]),
   ),
 )

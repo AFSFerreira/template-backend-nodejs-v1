@@ -39,8 +39,8 @@ export const getAllUsersDetailedQuerySchema = z
     astrobiologyOrRelatedStartYearComparison: z.enum(COMPARISON_OPERATORS),
     createdAtOrder: z.enum(ORDER_DIRECTIONS),
   })
-  .extend(getAllUsersSimplifiedQuerySchema.shape)
   .partial()
+  .extend(getAllUsersSimplifiedQuerySchema.shape)
   .refine(
     (data) => {
       // Se birthdateComparison estiver definido, birthdate também deve estar

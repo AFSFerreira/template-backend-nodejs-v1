@@ -8,8 +8,8 @@ export const getAllUsersSimplifiedQuerySchema = z
     institutionName: upperCaseTextSchema,
     state: upperCaseTextSchema,
   })
-  .extend(paginatedSchema.shape)
   .partial()
+  .extend(paginatedSchema.shape)
 
 export type GetAllUsersSimplifiedQuerySchemaType = z.infer<
   typeof getAllUsersSimplifiedQuerySchema

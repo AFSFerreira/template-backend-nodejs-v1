@@ -190,6 +190,11 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  async checkIfExists(where: Prisma.UserWhereUniqueInput) {
+    const user = await prisma.user.findFirst({ where })
+    return !!user
+  }
+
   async findBy(where: Prisma.UserWhereInput) {
     const user = await prisma.user.findFirst({
       where,

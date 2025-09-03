@@ -1,4 +1,4 @@
-import { CHANGED_PASSWORD } from '@messages/info'
+import { LOGOUT } from '@messages/info'
 import { resetPasswordBodySchema } from '@schemas/user/reset-password-body-schema'
 import { makeResetPasswordUseCase } from '@use-cases/factories/user/make-reset-password-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
@@ -16,9 +16,5 @@ export async function resetPassword(
     token,
   })
 
-  await reply.status(200).send({
-    data: {
-      message: CHANGED_PASSWORD,
-    },
-  })
+  await reply.status(200).send(LOGOUT)
 }

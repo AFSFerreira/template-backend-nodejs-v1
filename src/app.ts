@@ -5,7 +5,7 @@ import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import fastifyStatic from '@fastify/static'
-import { BODY_REQUIRED, VALIDATION_ERROR } from '@messages/errors'
+import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, VALIDATION_ERROR } from '@messages/errors'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
@@ -18,10 +18,6 @@ z.config(z.locales.pt())
 export const app = fastify({
   logger: false,
 })
-
-app.register(fastifyCookie)
-app.register(multipart)
-app.register(rateLimit)
 
 app.register(cors, {
   origin: env.FRONTEND_URL,
@@ -55,12 +51,15 @@ app.register(fastifyStatic, {
   },
 })
 
+app.register(fastifyCookie)
+app.register(multipart)
+app.register(rateLimit)
 app.register(appRoutes)
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
     return reply.status(VALIDATION_ERROR.status).send({
-      message: VALIDATION_ERROR.body.message,
+      ...VALIDATION_ERROR.body,
       issues: z.treeifyError(error),
     })
   }
@@ -79,5 +78,5 @@ app.setErrorHandler((error, _, reply) => {
     // TODO: Send error to monitoring service
   }
 
-  return reply.status(500).send({ message: 'Internal server error' })
+  return reply.status(INTERNAL_SERVER_ERROR.status).send(INTERNAL_SERVER_ERROR.body)
 })
