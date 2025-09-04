@@ -1,6 +1,6 @@
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { z } from 'zod'
-import { passwordSchema } from '../utils/password-schema'
+import { passwordSchema } from '../utils/components/password-schema'
 
 export const resetPasswordBodySchema = z.object({
   newPassword: passwordSchema,

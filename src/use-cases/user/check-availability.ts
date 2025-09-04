@@ -15,14 +15,28 @@ export class CheckAvailabilityUseCase {
     input: CheckAvailabilityUseCaseRequest,
   ): Promise<CheckAvailabilityUseCaseResponse> {
     const checks: Array<[string, () => Promise<boolean>]> = [
-      ['email', async () => (await this.usersRepository.checkIfExists({ email: input.email }))],
-      ['username', async () => (await this.usersRepository.checkIfExists({ username: input.username }))],
-      ['identity', async () => (await this.usersRepository.checkIfExists({
-        identityType_identityDocument: {
-          identityType: input.identityType,
-          identityDocument: input.identityDocument,
-        }
-      }))]
+      [
+        'email',
+        async () =>
+          await this.usersRepository.checkIfAvailable({ email: input.email }),
+      ],
+      [
+        'username',
+        async () =>
+          await this.usersRepository.checkIfAvailable({
+            username: input.username,
+          }),
+      ],
+      [
+        'identity',
+        async () =>
+          await this.usersRepository.checkIfAvailable({
+            identityType_identityDocument: {
+              identityType: input.identityType,
+              identityDocument: input.identityDocument,
+            },
+          }),
+      ],
     ]
 
     const activeChecks = checks.filter(([key]) => {
@@ -36,12 +50,14 @@ export class CheckAvailabilityUseCase {
       throw new MissingCheckAvailabilitiesInput()
     }
 
-    const results = await Promise.all(activeChecks.map(async ([, fn]) => (await fn())))
+    const results = await Promise.all(
+      activeChecks.map(async ([, fn]) => await fn()),
+    )
 
     const availabilities: Record<string, boolean> = {}
 
-    activeChecks.forEach(([key,], idx) => {
-      availabilities[key] = (results[idx] === null)
+    activeChecks.forEach(([key], idx) => {
+      availabilities[key] = !results[idx]
     })
 
     return { availabilities }

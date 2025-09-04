@@ -1,6 +1,6 @@
 import { UserPresenter } from '@presenters/user-presenter'
 import { getAllUsersDetailedQuerySchema } from '@schemas/user/get-all-users-detailed-query-schema'
-import { makeGetAllUsersDetailedUseCase } from '@use-cases/factories/user/make-get-all-users-use-case'
+import { makeGetAllUsersDetailedUseCase } from '@use-cases/factories/user/make-get-all-users-detailed-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getAllUsersDetailed(

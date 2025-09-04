@@ -1,7 +1,7 @@
 import { ActivityAreaType } from '@prisma/client'
-import { paginatedSchema } from '@schemas/utils/paginated-schema'
+import { paginatedSchema } from '@schemas/utils/components/paginated-schema'
 import z from 'zod'
-import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
+import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
 export const getAllActivityAreasSchema = z
   .object({

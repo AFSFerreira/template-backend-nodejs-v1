@@ -50,8 +50,8 @@ export class RegisterUseCase {
 
     const documentAlreadyUsed =
       await this.usersRepository.findByIdentityDocument({
-        identityDocument: registerUseCaseInput.user.identityDocument,
-        identityType: registerUseCaseInput.user.identityType,
+        identityDocument: registerUseCaseInput.user.identity.identityDocument,
+        identityType: registerUseCaseInput.user.identity.identityType,
       })
 
     if (documentAlreadyUsed) {
@@ -126,12 +126,14 @@ export class RegisterUseCase {
       env.HASH_SALT_ROUNDS,
     )
 
-    const { password, ...filteredUserInfo } = registerUseCaseInput.user
+    const { password, identity, ...filteredUserInfo } =
+      registerUseCaseInput.user
 
     const user = await this.usersRepository.create({
       user: {
         ...filteredUserInfo,
-        identityDocument: filteredUserInfo.identityDocument,
+        identityType: identity.identityType,
+        identityDocument: identity.identityDocument,
         profileImage: imageHandleError
           ? path.resolve(DEFAULT_PROFILE_IMAGE_PATH)
           : finalImagePath,

@@ -1,43 +1,42 @@
-import {
-  COMPARISON_OPERATORS,
-  ORDER_DIRECTIONS,
-} from '@custom-types/orderable-type'
-import {
-  EducationLevelType,
-  MembershipStatusType,
-  OccupationType,
-  UserRoleType,
-} from '@prisma/client'
+import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
+import { comparableSchema } from '@schemas/utils/enums/comparable-schema'
+import { educationLevelSchema } from '@schemas/utils/enums/education-level-schema'
+import { membershipStatusSchema } from '@schemas/utils/enums/membership-status-schema'
+import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
+import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
+import { userRoleSchema } from '@schemas/utils/enums/user-role-schema'
+import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
+import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
 import {
   ASTROBIOLOGY_OR_RELATED_START_YEAR_COMPARISON_MUTUAL_EXISTENCE,
   BIRTHDATE_COMPARISON_MUTUAL_EXISTENCE,
 } from 'src/messages/validation'
 import { z } from 'zod'
 import { getAllUsersSimplifiedQuerySchema } from './get-all-users-simplified-query-schema'
-import { emailSchema } from '../utils/email-schema'
-import { keywordSchema } from '../utils/keyword-schema'
-import { upperCaseTextSchema } from '../utils/uppercase-text-schema'
-import { usernameSchema } from '../utils/username-schema'
+import { keywordSchema } from '../utils/components/keyword-schema'
+import { usernameSchema } from '../utils/components/username-schema'
+import { emailSchema } from '../utils/primitives/email-schema'
+import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
 export const getAllUsersDetailedQuerySchema = z
   .object({
     email: emailSchema,
     username: usernameSchema,
-    role: z.enum(UserRoleType),
-    membershipStatus: z.enum(MembershipStatusType),
+    role: userRoleSchema,
+    membershipStatus: membershipStatusSchema,
     departmentName: upperCaseTextSchema,
     specificActivity: upperCaseTextSchema,
-    receiveReports: z.coerce.boolean(),
+    receiveReports: booleanSchema,
     mainActivityArea: upperCaseTextSchema,
     subActivityArea: upperCaseTextSchema,
     keywords: keywordSchema,
-    occupation: z.enum(OccupationType),
-    educationLevel: z.enum(EducationLevelType),
-    birthdate: z.date(),
-    birthdateComparison: z.enum(COMPARISON_OPERATORS),
-    astrobiologyOrRelatedStartYear: z.coerce.number().positive(),
-    astrobiologyOrRelatedStartYearComparison: z.enum(COMPARISON_OPERATORS),
-    createdAtOrder: z.enum(ORDER_DIRECTIONS),
+    occupation: occupationSchema,
+    educationLevel: educationLevelSchema,
+    birthdate: birthdateSchema,
+    birthdateComparison: comparableSchema,
+    astrobiologyOrRelatedStartYear: positiveIntegerSchema,
+    astrobiologyOrRelatedStartYearComparison: comparableSchema,
+    createdAtOrder: orderDirectionsSchema,
   })
   .partial()
   .extend(getAllUsersSimplifiedQuerySchema.shape)

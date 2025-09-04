@@ -191,6 +191,6 @@ export const INTERNAL_SERVER_ERROR = {
   status: 500,
   body: {
     code: 'INTERNAL_SERVER_ERROR',
-    message: 'Erro interno no servidor'
-  }
+    message: 'Erro interno no servidor',
+  },
 }

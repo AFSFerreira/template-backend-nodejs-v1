@@ -20,12 +20,12 @@ export type ListAllUsersQuery = Omit<
 export interface CreateUserQuery {
   user: Omit<
     RegisterUserBodySchemaType['user'],
-    'password' | 'occupation' | 'educationLevel'
+    'password' | 'occupation' | 'educationLevel' | 'identity'
   > & {
     passwordHash: string
-    profileImage: string
-    occupation: OccupationType
     educationLevel: EducationLevelType
+    profileImage: string
+    occupation?: OccupationType
     identityType: IdentityType
     identityDocument: string
   }
@@ -54,7 +54,7 @@ export interface FindByIdentityDocumentQuery {
 
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
-  checkIfExists: (where: Prisma.UserWhereUniqueInput) => Promise<boolean>
+  checkIfAvailable: (where: Prisma.UserWhereUniqueInput) => Promise<boolean>
   findBy: (where: Prisma.UserWhereInput) => Promise<UserWithDetails | null>
   findByEmail: (email: string) => Promise<UserWithDetails | null>
   findByUsername: (username: string) => Promise<UserWithDetails | null>

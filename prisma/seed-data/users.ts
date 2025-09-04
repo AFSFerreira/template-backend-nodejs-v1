@@ -24,7 +24,7 @@ export const userData1 = {
   linkGoogleScholar: 'https://scholar.google.com/admin.admin',
   linkResearcherId: null,
   orcidNumber: '0000-0001-2345-6789',
-  membershipStatus: MembershipStatusType.APPROVED,
+  membershipStatus: MembershipStatusType.ACTIVE,
   role: UserRoleType.ADMIN,
   departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
   institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',

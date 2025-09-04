@@ -5,7 +5,11 @@ import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import fastifyStatic from '@fastify/static'
-import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, VALIDATION_ERROR } from '@messages/errors'
+import {
+  BODY_REQUIRED,
+  INTERNAL_SERVER_ERROR,
+  VALIDATION_ERROR,
+} from '@messages/errors'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
@@ -47,7 +51,10 @@ app.register(fastifyStatic, {
   maxAge: '1y',
 
   setHeaders: (response, _pathName) => {
-    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
+    response.setHeader(
+      'Cache-Control',
+      `public, max-age=${ms('1y')}, immutable`,
+    )
   },
 })
 
@@ -78,5 +85,7 @@ app.setErrorHandler((error, _, reply) => {
     // TODO: Send error to monitoring service
   }
 
-  return reply.status(INTERNAL_SERVER_ERROR.status).send(INTERNAL_SERVER_ERROR.body)
+  return reply
+    .status(INTERNAL_SERVER_ERROR.status)
+    .send(INTERNAL_SERVER_ERROR.body)
 })

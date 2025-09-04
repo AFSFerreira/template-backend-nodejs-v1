@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/email-schema'
+import { emailSchema } from '@schemas/utils/primitives/email-schema'
 import ms from 'ms'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
