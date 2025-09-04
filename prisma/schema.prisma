@@ -48,10 +48,10 @@ model User {
   identityType                   IdentityType         @map("identity_type")
   identityDocument               String               @map("identity_document")
   emailIsPublic                  Boolean              @map("email_is_public")
-  astrobiologyOrRelatedStartYear Int?                  @map("astrobiology_or_related_start_year")
+  astrobiologyOrRelatedStartYear Int?                 @map("astrobiology_or_related_start_year")
   interestDescription            String               @map("interest_description")
   receiveReports                 Boolean              @map("receive_reports")
-  publicInformation              String?               @map("public_information")
+  publicInformation              String?              @map("public_information")
   activityAreaDescription        String?              @map("activity_area_description")
   subActivityAreaDescription     String?              @map("sub_activity_area_description")
 
@@ -173,8 +173,8 @@ model ActivityArea {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  UserActivityArea     User[]                 @relation("activity_area")
-  UserSubActivityArea  User[]                 @relation("sub_activity_area")
+  UserActivityArea    User[] @relation("activity_area")
+  UserSubActivityArea User[] @relation("sub_activity_area")
 
   Blog            Blog[] @relation("main_blog_category")
   BlogSubCategory Blog[] @relation("blog_subcategories")
@@ -272,6 +272,9 @@ model MeetingPresentation {
   affiliations     String
   description      String
   createdAt        DateTime         @default(now()) @map("created_at")
+
+  guestPresenterName  String? @map("guest_presenter_name")
+  guestPresenterEmail String? @map("guest_presenter_email")
 
   userId               Int         @map("user_id")
   meetingId            Int         @map("meeting_id")

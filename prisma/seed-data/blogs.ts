@@ -1,8 +1,8 @@
 import {
-  blogMainCategoryData,
-  blogSubcategoryData1,
-  blogSubcategoryData2,
-} from './blog-category'
+  activityAreaConnection,
+  subActivityAreasConnection1,
+  subActivityAreasConnection2,
+} from './activity-areas'
 import { userData1 } from './users'
 
 export const partialBlogData = {
@@ -19,17 +19,11 @@ export const blogData = {
     },
   },
   MainBlogCategory: {
-    connectOrCreate: {
-      where: { type_name: blogMainCategoryData },
-      create: blogMainCategoryData,
+    connect: {
+      ...activityAreaConnection,
     },
   },
   Subcategories: {
-    connectOrCreate: [blogSubcategoryData1, blogSubcategoryData2].map(
-      (categoryData) => ({
-        where: { type_name: categoryData },
-        create: categoryData,
-      }),
-    ),
+    connect: [subActivityAreasConnection1, subActivityAreasConnection2],
   },
 }

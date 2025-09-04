@@ -1,8 +1,6 @@
 import path from 'path'
 import {
   DEFAULT_PROFILE_IMAGE_PATH,
-  REGISTER_PROFILE_IMAGES_PATH,
-  REGISTER_TEMP_PROFILE_IMAGES_PATH,
 } from '@constants/file-paths'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
@@ -13,9 +11,9 @@ import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-sch
 import { highLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
 import { IdentityDocumentAlreadyUsed } from '@use-cases/errors/user/identity-document-already-used-error'
 import { hash } from 'bcryptjs'
-import fs from 'fs-extra'
 import { InvalidActivityArea } from '../errors/user/invalid-activity-areas-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user/user-with-same-email-error'
+import { persistUserProfileImage } from '@utils/persist-user-profile-image'
 
 interface RegisterUseCaseRequest {
   user: RegisterUserBodySchemaType['user']
@@ -108,24 +106,16 @@ export class RegisterUseCase {
       }
     }
 
+    // Caso ocorra um erro durante a
+    // persistência da imagem de perfil:
     let imageHandleError = false
-    let finalImagePath = ''
 
-    try {
-      const oldImagePath = path.resolve(
-        REGISTER_TEMP_PROFILE_IMAGES_PATH,
-        registerUseCaseInput.user.profileImage,
-      )
-      const newImagePath = path.resolve(
-        REGISTER_PROFILE_IMAGES_PATH,
-        registerUseCaseInput.user.profileImage,
-      )
-
-      await fs.move(oldImagePath, newImagePath, { overwrite: false })
-
-      finalImagePath = newImagePath
-    } catch (error) {
-      imageHandleError = true
+    if (registerUseCaseInput.user.profileImage) {
+      try {
+        await persistUserProfileImage(registerUseCaseInput.user.profileImage)
+      } catch (error) {
+        imageHandleError = true
+      }
     }
 
     const passwordHash = await hash(
@@ -143,7 +133,7 @@ export class RegisterUseCase {
         identityDocument: identity.identityDocument,
         profileImage: imageHandleError
           ? path.resolve(DEFAULT_PROFILE_IMAGE_PATH)
-          : finalImagePath,
+          : registerUseCaseInput.user.profileImage,
         passwordHash,
       },
       institution: registerUseCaseInput.institution,
