@@ -50,7 +50,14 @@ export async function userRoutes(app: FastifyInstance) {
     getUserProfile,
   )
   app.get('/all-users', getAllUsersSimplified)
-  app.get('/:publicId', getUserByPublicId)
+  app.get('/:publicId',
+    {
+      preHandler: [
+        verifyJwt,
+        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
+      ],
+    },
+    getUserByPublicId)
 
   // Register Routes:
   app.post(

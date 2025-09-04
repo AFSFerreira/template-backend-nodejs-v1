@@ -132,15 +132,15 @@ model EnrolledCourse {
 }
 
 model AcademicPublications {
-  id              Int      @id @default(autoincrement())
+  id              Int    @id @default(autoincrement())
   title           String
   authors         String
-  publicationYear DateTime @map("publication_date")
-  journalName     String   @map("journal_name")
+  publicationYear Int    @map("publication_year")
+  journalName     String @map("journal_name")
   volume          String
-  editionNumber   String   @map("edition_number")
-  startPage       String   @map("start_page")
-  linkDoi         String   @map("link_doi")
+  editionNumber   String @map("edition_number")
+  startPage       String @map("start_page")
+  linkDoi         String @map("link_doi")
 
   createdAt DateTime @default(now()) @map("created_at")
 

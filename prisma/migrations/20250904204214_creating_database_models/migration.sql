@@ -8,13 +8,10 @@ CREATE TYPE "public"."AuthenticationStatusType" AS ENUM ('SUCCESS', 'USER_NOT_EX
 CREATE TYPE "public"."OccupationType" AS ENUM ('RESEARCHER', 'PROFESSOR', 'STUDENT', 'POSTGRADUATE', 'MASTER', 'DOCTORATE');
 
 -- CreateEnum
-CREATE TYPE "public"."EducationLevelType" AS ENUM ('ELEMENTARY_SCHOOL', 'HIGH_SCHOOL', 'UNDERGRADUATE_STUDENT', 'BACHELOR', 'MASTER_STUDENT', 'MASTER', 'DOCTORATE_STUDENT', 'DOCTORATE', 'OTHER');
+CREATE TYPE "public"."EducationLevelType" AS ENUM ('ELEMENTARY_SCHOOL', 'HIGH_SCHOOL', 'UNDERGRADUATE_STUDENT', 'BACHELOR', 'MASTER_STUDENT', 'MASTER', 'DOCTORATE_STUDENT', 'DOCTORATE', 'POST_DOCTORATE_STUDENT', 'POST_DOCTORATE', 'OTHER');
 
 -- CreateEnum
 CREATE TYPE "public"."MembershipStatusType" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING', 'REJECTED');
-
--- CreateEnum
-CREATE TYPE "public"."BlogCategoryType" AS ENUM ('MAIN_CATEGORY', 'SUBCATEGORY');
 
 -- CreateEnum
 CREATE TYPE "public"."IdentityType" AS ENUM ('CPF', 'RNE', 'PASSPORT');
@@ -117,11 +114,11 @@ CREATE TABLE "public"."academic_publications" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
     "authors" TEXT NOT NULL,
-    "publication_date" TIMESTAMP(3) NOT NULL,
+    "publication_year" INTEGER NOT NULL,
     "journal_name" TEXT NOT NULL,
     "volume" TEXT NOT NULL,
     "edition_number" TEXT NOT NULL,
-    "page_interval" TEXT NOT NULL,
+    "start_page" TEXT NOT NULL,
     "link_doi" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
@@ -220,6 +217,8 @@ CREATE TABLE "public"."meeting_presentations" (
     "affiliations" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "guest_presenter_name" TEXT,
+    "guest_presenter_email" TEXT,
     "user_id" INTEGER NOT NULL,
     "meeting_id" INTEGER NOT NULL,
 
@@ -250,16 +249,6 @@ CREATE TABLE "public"."meeting_date" (
     "meeting_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_date_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."blog_category" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "type" "public"."BlogCategoryType" NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "blog_category_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -330,19 +319,19 @@ CREATE TABLE "public"."comment_likes" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."_KeywordToUser" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-
-    CONSTRAINT "_KeywordToUser_AB_pkey" PRIMARY KEY ("A","B")
-);
-
--- CreateTable
 CREATE TABLE "public"."_blog_subcategories" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
 
     CONSTRAINT "_blog_subcategories_AB_pkey" PRIMARY KEY ("A","B")
+);
+
+-- CreateTable
+CREATE TABLE "public"."_KeywordToUser" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+
+    CONSTRAINT "_KeywordToUser_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -427,9 +416,6 @@ CREATE INDEX "meetings_last_date_idx" ON "public"."meetings"("last_date");
 CREATE INDEX "meeting_date_meeting_id_idx" ON "public"."meeting_date"("meeting_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "blog_category_type_name_key" ON "public"."blog_category"("type", "name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "public"."blogs"("public_id");
 
 -- CreateIndex
@@ -451,10 +437,10 @@ CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id"
 CREATE INDEX "comment_likes_newsletter_comment_id_idx" ON "public"."comment_likes"("newsletter_comment_id");
 
 -- CreateIndex
-CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
+CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");
 
 -- CreateIndex
-CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");
+CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
 
 -- AddForeignKey
 ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -502,7 +488,7 @@ ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentatio
 ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_main_blog_category_id_fkey" FOREIGN KEY ("main_blog_category_id") REFERENCES "public"."blog_category"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_main_blog_category_id_fkey" FOREIGN KEY ("main_blog_category_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -526,13 +512,13 @@ ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey"
 ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_comment_id_fkey" FOREIGN KEY ("newsletter_comment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."blog_category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
