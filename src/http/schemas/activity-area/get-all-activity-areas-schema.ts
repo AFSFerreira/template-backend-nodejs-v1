@@ -1,7 +1,7 @@
 import { paginatedSchema } from '@schemas/utils/components/paginated-schema'
+import { activityAreaSchema } from '@schemas/utils/enums/activity-area-schema'
 import z from 'zod'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
-import { activityAreaSchema } from '@schemas/utils/enums/activity-area-schema'
 
 export const getAllActivityAreasSchema = z
   .object({

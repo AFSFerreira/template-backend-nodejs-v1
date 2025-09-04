@@ -1,5 +1,6 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
+import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 import { rangedYearSchema } from '@schemas/utils/components/ranged-year-schema'
 import {
   highLevelEducationSchema,
@@ -10,6 +11,7 @@ import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
 import { urlSchema } from '@schemas/utils/primitives/url-schema'
+import { stripZodKeys } from '@utils/strip-zod-keys'
 import {
   ACTIVITY_AREA_MISSING_DESCRIPTION,
   COMPLETION_DATE_BEFORE_START_DATE,
@@ -24,8 +26,6 @@ import { usernameSchema } from '../utils/components/username-schema'
 import { emailSchema } from '../utils/primitives/email-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
-import { stripZodKeys } from '@utils/strip-zod-keys'
-import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 
 const commonUserSchema = z
   .object({
@@ -46,8 +46,8 @@ const commonUserSchema = z
       identity: identityDocumentSchema,
     }).shape,
   )
-  
-  const professionalAndAcademicUserSchema = z.object({
+
+const professionalAndAcademicUserSchema = z.object({
   linkLattes: urlSchema.optional(),
   linkGoogleScholar: urlSchema.optional(),
   linkResearcherId: urlSchema.optional(),

@@ -156,12 +156,14 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const institutionConnectOrCreateData = query.institution ? {
-      connectOrCreate: {
-        create: { name: query.institution.name },
-        where: { name: query.institution.name },
-      },
-    } : undefined
+    const institutionConnectOrCreateData = query.institution
+      ? {
+          connectOrCreate: {
+            create: { name: query.institution.name },
+            where: { name: query.institution.name },
+          },
+        }
+      : undefined
 
     const activityAreaConnectData = query.activityArea
       ? {
