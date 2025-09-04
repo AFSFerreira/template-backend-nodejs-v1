@@ -136,7 +136,6 @@ export class PrismaUsersRepository implements UsersRepository {
               academicPublication
             return {
               ...filteredAcademicPublicationData,
-              publicationDate: filteredAcademicPublicationData.publicationYear,
               ActivityArea: {
                 connect: {
                   type_area: {
