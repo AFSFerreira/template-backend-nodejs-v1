@@ -48,15 +48,15 @@ async function main() {
     },
   })
 
-  let existingBlog = await prisma.blog.findFirst({
-    where: partialBlogData,
-  })
+  // let existingBlog = await prisma.blog.findFirst({
+  //   where: partialBlogData,
+  // })
 
-  if (!existingBlog) {
-    existingBlog = await prisma.blog.create({
-      data: blogData,
-    })
-  }
+  // if (!existingBlog) {
+  //   existingBlog = await prisma.blog.create({
+  //     data: blogData,
+  //   })
+  // }
 }
 
 main()

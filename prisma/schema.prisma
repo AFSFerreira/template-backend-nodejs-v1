@@ -175,6 +175,10 @@ model ActivityArea {
 
   UserActivityArea     User[]                 @relation("activity_area")
   UserSubActivityArea  User[]                 @relation("sub_activity_area")
+
+  Blog            Blog[] @relation("main_blog_category")
+  BlogSubCategory Blog[] @relation("blog_subcategories")
+
   AcademicPublications AcademicPublications[] @relation()
 
   @@unique([type, area])
@@ -310,20 +314,6 @@ model MeetingDate {
   @@map("meeting_date")
 }
 
-model BlogCategory {
-  id   Int              @id @default(autoincrement())
-  name String
-  type BlogCategoryType
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  BlogSubCategory Blog[] @relation("blog_subcategories")
-  Blog            Blog[] @relation("main_blog_category")
-
-  @@unique([type, name])
-  @@map("blog_category")
-}
-
 model Blog {
   id          Int    @id @default(autoincrement())
   publicId    String @unique @default(uuid(7)) @map("public_id")
@@ -335,12 +325,12 @@ model Blog {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   mainBlogCategoryId Int          @map("main_blog_category_id")
-  MainBlogCategory   BlogCategory @relation("main_blog_category", fields: [mainBlogCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  MainBlogCategory   ActivityArea @relation("main_blog_category", fields: [mainBlogCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   userId Int?  @map("user_id")
   User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  Subcategories BlogCategory[] @relation("blog_subcategories")
+  Subcategories ActivityArea[] @relation("blog_subcategories")
 
   @@index([mainBlogCategoryId])
   @@map("blogs")
