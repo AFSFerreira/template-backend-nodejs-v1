@@ -56,8 +56,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      preHandler: [upload.single('profileImage')],
-      ...rateLimit({ max: 2, timeWindow: '1d' }),
+      ...rateLimit({ max: 5, timeWindow: '1d' }),
     },
     register,
   )

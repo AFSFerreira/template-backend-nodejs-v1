@@ -15,15 +15,16 @@ import { hash } from 'bcryptjs'
 import fs from 'fs-extra'
 import { InvalidActivityArea } from '../errors/user/invalid-activity-areas-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user/user-with-same-email-error'
+import { highLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
 
 interface RegisterUseCaseRequest {
   user: RegisterUserBodySchemaType['user']
   address: RegisterUserBodySchemaType['address']
-  enrolledCourse: RegisterUserBodySchemaType['enrolledCourse']
-  academicPublication: RegisterUserBodySchemaType['academicPublication']
-  activityArea: RegisterUserBodySchemaType['activityArea']
-  institution: RegisterUserBodySchemaType['institution']
   keyword: RegisterUserBodySchemaType['keyword']
+  enrolledCourse?: RegisterUserBodySchemaType['enrolledCourse']
+  academicPublication?: RegisterUserBodySchemaType['academicPublication']
+  activityArea?: RegisterUserBodySchemaType['activityArea']
+  institution?: RegisterUserBodySchemaType['institution']
 }
 
 interface RegisterUseCaseResponse {
@@ -58,47 +59,53 @@ export class RegisterUseCase {
       throw new IdentityDocumentAlreadyUsed()
     }
 
-    // Valida as áreas de atividade dos artigos e do usuário:
-    const academicPublicationsActivityAreas =
-      registerUseCaseInput.academicPublication.map((academPub) => ({
-        area: academPub.area,
-        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      }))
+    if (
+      highLevelEducationSchema.safeParse(
+        registerUseCaseInput.user.educationLevel,
+      ).success
+    ) {
+      // Valida as áreas de atividade dos artigos e do usuário:
+      const academicPublicationsActivityAreas =
+        registerUseCaseInput.academicPublication.map((academPub) => ({
+          area: academPub.area,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        }))
 
-    const allUserActivityAreas = [
-      {
-        area: registerUseCaseInput.activityArea.mainActivityArea,
-        type: ActivityAreaType.AREA_OF_ACTIVITY,
-      },
-      {
-        area: registerUseCaseInput.activityArea.subActivityArea,
-        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      },
-      ...academicPublicationsActivityAreas,
-    ]
+      const allUserActivityAreas = [
+        {
+          area: registerUseCaseInput.activityArea.mainActivityArea,
+          type: ActivityAreaType.AREA_OF_ACTIVITY,
+        },
+        {
+          area: registerUseCaseInput.activityArea.subActivityArea,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        },
+        ...academicPublicationsActivityAreas,
+      ]
 
-    const activityAreasFound =
-      await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
+      const activityAreasFound =
+        await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
 
-    const activityAreasFoundSet = new Set(
-      activityAreasFound.map((activityArea) =>
-        JSON.stringify({
-          area: activityArea.area,
-          type: activityArea.type,
-        }),
-      ),
-    )
-
-    const wrongActivityAreas = allUserActivityAreas.filter((activityArea) => {
-      return !activityAreasFoundSet.has(JSON.stringify(activityArea))
-    })
-
-    if (wrongActivityAreas.length !== 0) {
-      throw new InvalidActivityArea(
-        wrongActivityAreas
-          .map((activityArea) => JSON.stringify(activityArea, null, 2))
-          .toString(),
+      const activityAreasFoundSet = new Set(
+        activityAreasFound.map((activityArea) =>
+          JSON.stringify({
+            area: activityArea.area,
+            type: activityArea.type,
+          }),
+        ),
       )
+
+      const wrongActivityAreas = allUserActivityAreas.filter((activityArea) => {
+        return !activityAreasFoundSet.has(JSON.stringify(activityArea))
+      })
+
+      if (wrongActivityAreas.length !== 0) {
+        throw new InvalidActivityArea(
+          wrongActivityAreas
+            .map((activityArea) => JSON.stringify(activityArea, null, 2))
+            .toString(),
+        )
+      }
     }
 
     let imageHandleError = false

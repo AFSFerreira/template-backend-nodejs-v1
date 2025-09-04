@@ -24,6 +24,8 @@ import { usernameSchema } from '../utils/components/username-schema'
 import { emailSchema } from '../utils/primitives/email-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
+import { stripZodKeys } from '@utils/strip-zod-keys'
+import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 
 const commonUserSchema = z
   .object({
@@ -32,11 +34,7 @@ const commonUserSchema = z
     fullName: upperCaseTextSchema,
     username: usernameSchema,
     profileImage: limitedNonemptyTextSchema.optional(),
-    birthdate: z.coerce.date(),
-    linkLattes: urlSchema.optional(),
-    linkGoogleScholar: urlSchema.optional(),
-    linkResearcherId: urlSchema.optional(),
-    orcidNumber: orcidNumberSchema.optional(),
+    birthdate: birthdateSchema,
     emailIsPublic: booleanSchema,
     receiveReports: booleanSchema,
     interestDescription: nonemptyTextSchema.max(MAX_INTEREST_DESCRIPTION_SIZE),
@@ -48,8 +46,12 @@ const commonUserSchema = z
       identity: identityDocumentSchema,
     }).shape,
   )
-
-const professionalAndAcademicUserSchema = z.object({
+  
+  const professionalAndAcademicUserSchema = z.object({
+  linkLattes: urlSchema.optional(),
+  linkGoogleScholar: urlSchema.optional(),
+  linkResearcherId: urlSchema.optional(),
+  orcidNumber: orcidNumberSchema.optional(),
   occupation: occupationSchema,
   departmentName: upperCaseTextSchema,
   astrobiologyOrRelatedStartYear: rangedYearSchema,
@@ -132,10 +134,10 @@ const lowLevelEducationRegisterBodySchema = z
         educationLevel: lowLevelEducationSchema,
       })
       .extend(commonUserSchema.shape)
-      .extend(professionalAndAcademicUserSchema.partial().shape),
+      .extend(stripZodKeys(professionalAndAcademicUserSchema).shape),
   })
   .extend(otherRootFieldsSchema.shape)
-  .extend(otherRootFieldsProfessionalAndAcademicSchema.partial().shape)
+  .extend(stripZodKeys(otherRootFieldsProfessionalAndAcademicSchema).shape)
 
 const highLevelEducationRegisterBodySchema = z
   .object({
@@ -174,8 +176,8 @@ const highLevelEducationRegisterBodySchema = z
   )
 
 export const registerBodySchema = z.union([
-  highLevelEducationRegisterBodySchema,
   lowLevelEducationRegisterBodySchema,
+  highLevelEducationRegisterBodySchema,
 ])
 
 export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

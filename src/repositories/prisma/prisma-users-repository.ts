@@ -120,12 +120,14 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async create(query: CreateUserQuery) {
-    const keywordsConnectOrCreateData = {
-      connectOrCreate: query.keyword?.map((value: string) => ({
-        where: { value },
-        create: { value },
-      })),
-    }
+    const keywordsConnectOrCreateData = query.keyword
+      ? {
+          connectOrCreate: query.keyword.map((value: string) => ({
+            where: { value },
+            create: { value },
+          })),
+        }
+      : undefined
 
     const academicPublicationCreateData = query.academicPublication
       ? {
@@ -148,42 +150,55 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const user = await prisma.user.create({
-      data: {
-        ...query.user,
-        Address: {
-          create: query.address,
-        },
-        EnrolledCourse: {
+    const enrolledCourseCreateData = query.enrolledCourse
+      ? {
           create: query.enrolledCourse,
-        },
-        Institution: {
-          connectOrCreate: {
-            create: { name: query.institution.name },
-            where: { name: query.institution.name },
-          },
-        },
-        AcademicPublication: academicPublicationCreateData,
-        Keyword: keywordsConnectOrCreateData,
-        ActivityArea: {
+        }
+      : undefined
+
+    const institutionConnectOrCreateData = query.institution ? {
+      connectOrCreate: {
+        create: { name: query.institution.name },
+        where: { name: query.institution.name },
+      },
+    } : undefined
+
+    const activityAreaConnectData = query.activityArea
+      ? {
           connect: {
             type_area: {
               area: query.activityArea.mainActivityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
             },
           },
-        },
-        SubActivityArea: {
+        }
+      : undefined
+
+    const subActivityAreaConnectData = query.activityArea
+      ? {
           connect: {
             type_area: {
               area: query.activityArea.subActivityArea,
               type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
             },
           },
-        },
+        }
+      : undefined
+
+    const user = await prisma.user.create({
+      data: {
+        ...query.user,
+        Address: { create: query.address },
+        EnrolledCourse: enrolledCourseCreateData,
+        Institution: institutionConnectOrCreateData,
+        AcademicPublication: academicPublicationCreateData,
+        Keyword: keywordsConnectOrCreateData,
+        ActivityArea: activityAreaConnectData,
+        SubActivityArea: subActivityAreaConnectData,
       },
       include: userWithDetails.include,
     })
+
     return user
   }
 
