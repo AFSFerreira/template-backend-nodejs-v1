@@ -101,12 +101,12 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
       z.object({
         title: upperCaseTextSchema,
         authors: upperCaseTextSchema,
-        publicationDate: monthYearSchema,
+        publicationYear: rangedYearSchema,
         area: upperCaseTextSchema,
         journalName: upperCaseTextSchema,
         volume: upperCaseTextSchema,
         editionNumber: upperCaseTextSchema,
-        pageInterval: upperCaseTextSchema,
+        startPage: upperCaseTextSchema,
         linkDoi: urlSchema,
       }),
     )
@@ -123,7 +123,7 @@ const otherRootFieldsSchema = z.object({
     city: upperCaseTextSchema,
     country: upperCaseTextSchema,
     state: upperCaseTextSchema,
-    complement: upperCaseTextSchema,
+    complement: upperCaseTextSchema.optional(),
   }),
 })
 

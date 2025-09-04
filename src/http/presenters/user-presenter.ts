@@ -105,6 +105,7 @@ export class UserPresenter {
       fullName: input.fullName,
       institutionName: input.Institution.name,
       state: input.Address?.state ?? '',
+      ...(input.emailIsPublic ? { email: input.email } : {}),
     }
   }
 

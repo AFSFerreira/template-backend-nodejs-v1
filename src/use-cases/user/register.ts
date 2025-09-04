@@ -1,7 +1,5 @@
 import path from 'path'
-import {
-  DEFAULT_PROFILE_IMAGE_PATH,
-} from '@constants/file-paths'
+import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-paths'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import { ActivityAreaType } from '@prisma/client'
@@ -10,10 +8,10 @@ import type { UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { highLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
 import { IdentityDocumentAlreadyUsed } from '@use-cases/errors/user/identity-document-already-used-error'
+import { persistUserProfileImage } from '@utils/persist-user-profile-image'
 import { hash } from 'bcryptjs'
 import { InvalidActivityArea } from '../errors/user/invalid-activity-areas-error'
 import { UserWithSameEmailOrUsernameError } from '../errors/user/user-with-same-email-error'
-import { persistUserProfileImage } from '@utils/persist-user-profile-image'
 
 interface RegisterUseCaseRequest {
   user: RegisterUserBodySchemaType['user']

@@ -1,5 +1,8 @@
-import { REGISTER_PROFILE_IMAGES_PATH, REGISTER_TEMP_PROFILE_IMAGES_PATH } from "@constants/file-paths"
-import path from "path"
+import path from 'path'
+import {
+  REGISTER_PROFILE_IMAGES_PATH,
+  REGISTER_TEMP_PROFILE_IMAGES_PATH,
+} from '@constants/file-paths'
 import fs from 'fs-extra'
 
 export async function persistUserProfileImage(tempImageName: string) {
@@ -8,10 +11,7 @@ export async function persistUserProfileImage(tempImageName: string) {
     tempImageName,
   )
 
-  const newImagePath = path.resolve(
-    REGISTER_PROFILE_IMAGES_PATH,
-    tempImageName,
-  )
+  const newImagePath = path.resolve(REGISTER_PROFILE_IMAGES_PATH, tempImageName)
 
   await fs.move(oldImagePath, newImagePath, { overwrite: false })
 }
