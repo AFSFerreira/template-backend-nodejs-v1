@@ -1,5 +1,4 @@
-import path from 'node:path'
-import { DEFAULT_PROFILE_IMAGE_PATH, REGISTER_PROFILE_IMAGES_PATH } from '@constants/file-paths'
+import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-paths'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import { ActivityAreaType } from '@prisma/client'
@@ -129,8 +128,8 @@ export class RegisterUseCase {
         identityType: identity.identityType,
         identityDocument: identity.identityDocument,
         profileImage: imageHandleError
-          ? path.resolve(DEFAULT_PROFILE_IMAGE_PATH)
-          : path.resolve(REGISTER_PROFILE_IMAGES_PATH, registerUseCaseInput.user.profileImage),
+          ? DEFAULT_PROFILE_IMAGE_PATH
+          : registerUseCaseInput.user.profileImage,
         passwordHash,
       },
       institution: registerUseCaseInput.institution,
