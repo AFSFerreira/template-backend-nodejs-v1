@@ -189,6 +189,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.create({
       data: {
         ...query.user,
+        profileImage: query.user.profileImage,
         Address: { create: query.address },
         EnrolledCourse: enrolledCourseCreateData,
         Institution: institutionConnectOrCreateData,
