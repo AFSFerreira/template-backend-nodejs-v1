@@ -1,4 +1,3 @@
-import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { CheckAvailabilityQuerySchemaType } from '@schemas/user/check-availability-query-schema'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
@@ -6,62 +5,60 @@ import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-
 type CheckAvailabilityUseCaseRequest = CheckAvailabilityQuerySchemaType
 
 interface CheckAvailabilityUseCaseResponse {
-  availabilities: Array<Record<string, boolean>>
+  availabilities: Record<string, boolean>
 }
 
 export class CheckAvailabilityUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(
-    checkAvailabilityUseCaseInput: CheckAvailabilityUseCaseRequest,
+    input: CheckAvailabilityUseCaseRequest,
   ): Promise<CheckAvailabilityUseCaseResponse> {
-    const validCheckInputs = Object.entries(
-      checkAvailabilityUseCaseInput,
-    ).filter((value) => !!value[1])
+    const checks: Array<[string, () => Promise<boolean>]> = [
+      [
+        'email',
+        async () =>
+          await this.usersRepository.checkIfAvailable({ email: input.email }),
+      ],
+      [
+        'username',
+        async () =>
+          await this.usersRepository.checkIfAvailable({
+            username: input.username,
+          }),
+      ],
+      [
+        'identity',
+        async () =>
+          await this.usersRepository.checkIfAvailable({
+            identityType_identityDocument: {
+              identityType: input.identityType,
+              identityDocument: input.identityDocument,
+            },
+          }),
+      ],
+    ]
 
-    if (validCheckInputs.length === 0) {
+    const activeChecks = checks.filter(([key]) => {
+      if (key === 'identity') {
+        return !!(input.identityType && input.identityDocument)
+      }
+      return !!input[key as keyof CheckAvailabilityUseCaseResponse]
+    })
+
+    if (activeChecks.length === 0) {
       throw new MissingCheckAvailabilitiesInput()
     }
 
-    const availabilitiesPromises: Array<Promise<UserWithDetails | null>> = []
-    const availabilitiesName: string[] = []
+    const results = await Promise.all(
+      activeChecks.map(async ([, fn]) => await fn()),
+    )
 
-    if (checkAvailabilityUseCaseInput.email) {
-      availabilitiesName.push('email')
-      availabilitiesPromises.push(
-        this.usersRepository.findBy({
-          email: checkAvailabilityUseCaseInput.email,
-        }),
-      )
-    }
+    const availabilities: Record<string, boolean> = {}
 
-    if (checkAvailabilityUseCaseInput.username) {
-      availabilitiesName.push('username')
-      availabilitiesPromises.push(
-        this.usersRepository.findBy({
-          username: checkAvailabilityUseCaseInput.username,
-        }),
-      )
-    }
-
-    if (
-      checkAvailabilityUseCaseInput.identityType ||
-      checkAvailabilityUseCaseInput.identityDocument
-    ) {
-      availabilitiesName.push('identity')
-      availabilitiesPromises.push(
-        this.usersRepository.findBy({
-          identityType: checkAvailabilityUseCaseInput.identityType,
-          identityDocument: checkAvailabilityUseCaseInput.identityDocument,
-        }),
-      )
-    }
-
-    const availabilitiesValues = await Promise.all(availabilitiesPromises)
-
-    const availabilities = availabilitiesName.map((key, idx) => ({
-      [key]: availabilitiesValues[idx] === null,
-    }))
+    activeChecks.forEach(([key], idx) => {
+      availabilities[key] = !results[idx]
+    })
 
     return { availabilities }
   }

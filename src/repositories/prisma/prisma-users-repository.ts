@@ -3,12 +3,7 @@ import type { QueryMode } from '@custom-types/query-mode'
 import { userWithDetails } from '@custom-types/user-with-details'
 import { userWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 import { prisma } from '@lib/prisma/prisma'
-import type {
-  EducationLevelType,
-  IdentityType,
-  OccupationType,
-  Prisma,
-} from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import type {
   CreateUserQuery,
@@ -125,69 +120,96 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async create(query: CreateUserQuery) {
-    const keywordsConnectOrCreateData = query.keyword?.map((value: string) => ({
-      where: { value },
-      create: { value },
-    }))
-
-    const academicPublicationCreateData = query.academicPublication.map(
-      (academicPublication) => {
-        const { area, ...filteredAcademicPublicationData } = academicPublication
-        return {
-          ...filteredAcademicPublicationData,
-          publicationDate: filteredAcademicPublicationData.publicationDate,
-          ActivityArea: {
-            connect: {
-              type_area: {
-                area,
-                type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-              },
-            },
-          },
+    const keywordsConnectOrCreateData = query.keyword
+      ? {
+          connectOrCreate: query.keyword.map((value: string) => ({
+            where: { value },
+            create: { value },
+          })),
         }
-      },
-    )
+      : undefined
 
-    const user = await prisma.user.create({
-      data: {
-        ...query.user,
-        occupation: query.user.occupation as OccupationType,
-        educationLevel: query.user.educationLevel as EducationLevelType,
-        identityType: query.user.identityType as IdentityType,
-        Address: {
-          create: query.address,
-        },
-        EnrolledCourse: {
+    const academicPublicationCreateData = query.academicPublication
+      ? {
+          create: query.academicPublication.map((academicPublication) => {
+            const { area, ...filteredAcademicPublicationData } =
+              academicPublication
+            return {
+              ...filteredAcademicPublicationData,
+              ActivityArea: {
+                connect: {
+                  type_area: {
+                    area,
+                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                  },
+                },
+              },
+            }
+          }),
+        }
+      : undefined
+
+    const enrolledCourseCreateData = query.enrolledCourse
+      ? {
           create: query.enrolledCourse,
-        },
-        Institution: {
+        }
+      : undefined
+
+    const institutionConnectOrCreateData = query.institution
+      ? {
           connectOrCreate: {
             create: { name: query.institution.name },
             where: { name: query.institution.name },
           },
-        },
-        AcademicPublication: { create: academicPublicationCreateData },
-        Keyword: { connectOrCreate: keywordsConnectOrCreateData },
-        ActivityArea: {
+        }
+      : undefined
+
+    const activityAreaConnectData = query.activityArea
+      ? {
           connect: {
             type_area: {
               area: query.activityArea.mainActivityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
             },
           },
-        },
-        SubActivityArea: {
+        }
+      : undefined
+
+    const subActivityAreaConnectData = query.activityArea
+      ? {
           connect: {
             type_area: {
               area: query.activityArea.subActivityArea,
               type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
             },
           },
-        },
+        }
+      : undefined
+    
+    const addressCreateData = {
+      create: query.address,
+    }
+
+    const user = await prisma.user.create({
+      data: {
+        ...query.user,
+        Address: addressCreateData,
+        EnrolledCourse: enrolledCourseCreateData,
+        Institution: institutionConnectOrCreateData,
+        AcademicPublication: academicPublicationCreateData,
+        Keyword: keywordsConnectOrCreateData,
+        ActivityArea: activityAreaConnectData,
+        SubActivityArea: subActivityAreaConnectData,
       },
       include: userWithDetails.include,
     })
+
     return user
+  }
+
+  async checkIfAvailable(where: Prisma.UserWhereUniqueInput) {
+    const user = await prisma.user.findUnique({ where })
+    return !!user
   }
 
   async findBy(where: Prisma.UserWhereInput) {
@@ -341,9 +363,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async validateUserToken(recoveryPasswordTokenHash: string) {
     const user = await prisma.user.findFirst({
-      where: {
-        recoveryPasswordTokenHash,
-      },
+      where: { recoveryPasswordTokenHash },
       include: userWithDetails.include,
     })
     return user

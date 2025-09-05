@@ -1,3 +1,5 @@
+import { ActivityAreaType } from '@prisma/client'
+
 export const activityAreasData = [
   'ASTRONOMIA',
   'BIOLOGIA',
@@ -32,3 +34,24 @@ export const subActivityAreasData = [
   'AGRICULTURA ESPACIAL',
   'OUTRA',
 ]
+
+export const activityAreaConnection = {
+  type_area: {
+    area: activityAreasData[0],
+    type: ActivityAreaType.AREA_OF_ACTIVITY,
+  },
+}
+
+export const subActivityAreasConnection1 = {
+  type_area: {
+    area: subActivityAreasData[0],
+    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+  },
+}
+
+export const subActivityAreasConnection2 = {
+  type_area: {
+    area: subActivityAreasData[1],
+    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+  },
+}

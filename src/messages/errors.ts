@@ -186,3 +186,11 @@ export const VALIDATION_ERROR = {
     message: 'Erro de validação!',
   },
 }
+
+export const INTERNAL_SERVER_ERROR = {
+  status: 500,
+  body: {
+    code: 'INTERNAL_SERVER_ERROR',
+    message: 'Erro interno no servidor',
+  },
+}

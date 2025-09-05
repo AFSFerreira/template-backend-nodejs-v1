@@ -1,8 +1,8 @@
 import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-sizes'
 import { allowedImageMimeTypes } from '@constants/profile-image-extensions'
 import multer from 'fastify-multer'
-// import path from 'path'
-// import crypto from 'crypto'
+// import path from 'node:path'
+// import crypto from 'node:crypto'
 
 // const storage = multer.diskStorage({
 //   destination: (req, file, cb) => {

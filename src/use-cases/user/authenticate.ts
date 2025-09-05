@@ -1,7 +1,7 @@
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { AuthenticationAuditRepository } from '@repositories/authentication-audit-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/email-schema'
+import { emailSchema } from '@schemas/utils/primitives/email-schema'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 

@@ -43,15 +43,15 @@ model User {
   role                           UserRoleType         @default(DEFAULT)
   departmentName                 String?              @map("department_name")
   institutionComplement          String?              @map("institution_complement")
-  occupation                     OccupationType
+  occupation                     OccupationType?
   educationLevel                 EducationLevelType   @map("education_level")
   identityType                   IdentityType         @map("identity_type")
   identityDocument               String               @map("identity_document")
   emailIsPublic                  Boolean              @map("email_is_public")
-  astrobiologyOrRelatedStartYear Int                  @map("astrobiology_or_related_start_year")
+  astrobiologyOrRelatedStartYear Int?                 @map("astrobiology_or_related_start_year")
   interestDescription            String               @map("interest_description")
   receiveReports                 Boolean              @map("receive_reports")
-  publicInformation              String               @map("public_information")
+  publicInformation              String?              @map("public_information")
   activityAreaDescription        String?              @map("activity_area_description")
   subActivityAreaDescription     String?              @map("sub_activity_area_description")
 
@@ -66,14 +66,14 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  activityAreaId Int          @map("activity_area_id")
-  ActivityArea   ActivityArea @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  activityAreaId Int?          @map("activity_area_id")
+  ActivityArea   ActivityArea? @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  subActivityAreaId Int          @map("sub_activity_area_id")
-  SubActivityArea   ActivityArea @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  subActivityAreaId Int?          @map("sub_activity_area_id")
+  SubActivityArea   ActivityArea? @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  institutionId Int         @map("institution_id")
-  Institution   Institution @relation(fields: [institutionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  institutionId Int?         @map("institution_id")
+  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   Address        Address?        @relation()
   EnrolledCourse EnrolledCourse? @relation()
@@ -132,15 +132,15 @@ model EnrolledCourse {
 }
 
 model AcademicPublications {
-  id              Int      @id @default(autoincrement())
+  id              Int    @id @default(autoincrement())
   title           String
   authors         String
-  publicationDate DateTime @map("publication_date")
-  journalName     String   @map("journal_name")
+  publicationYear Int    @map("publication_year")
+  journalName     String @map("journal_name")
   volume          String
-  editionNumber   String   @map("edition_number")
-  pageInterval    String   @map("page_interval")
-  linkDoi         String   @map("link_doi")
+  editionNumber   String @map("edition_number")
+  startPage       String @map("start_page")
+  linkDoi         String @map("link_doi")
 
   createdAt DateTime @default(now()) @map("created_at")
 
@@ -173,8 +173,12 @@ model ActivityArea {
 
   createdAt DateTime @default(now()) @map("created_at")
 
-  UserActivityArea     User[]                 @relation("activity_area")
-  UserSubActivityArea  User[]                 @relation("sub_activity_area")
+  UserActivityArea    User[] @relation("activity_area")
+  UserSubActivityArea User[] @relation("sub_activity_area")
+
+  Blog            Blog[] @relation("main_blog_category")
+  BlogSubCategory Blog[] @relation("blog_subcategories")
+
   AcademicPublications AcademicPublications[] @relation()
 
   @@unique([type, area])
@@ -210,7 +214,7 @@ model DirectorBoard {
 }
 
 model PaymentInfo {
-  id      Int    @id @default(autoincrement())
+  id      Int    @id @default(1) // Singleton Table
   pixKey  String @map("pix_key")
   bank    String
   code    String
@@ -227,7 +231,6 @@ model PaymentInfo {
 
 model MeetingPaymentInfo {
   id        Int      @id @default(autoincrement())
-  publicId  String   @unique @default(uuid(7)) @map("public_id")
   value     Int
   limitDate DateTime @map("limit_date")
 
@@ -240,43 +243,8 @@ model MeetingPaymentInfo {
   meetingId Int     @unique @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([meetingId])
   @@map("payment_information")
-}
-
-model BlogCategory {
-  id   Int              @id @default(autoincrement())
-  name String
-  type BlogCategoryType
-
-  createdAt DateTime @default(now()) @map("created_at")
-
-  BlogSubCategory Blog[] @relation("blog_subcategories")
-  Blog            Blog[] @relation("main_blog_category")
-
-  @@unique([type, name])
-  @@map("blog_category")
-}
-
-model Blog {
-  id          Int    @id @default(autoincrement())
-  publicId    String @unique @default(uuid(7)) @map("public_id")
-  title       String
-  authorName  String @map("author_name")
-  htmlContent String @map("html_content") @db.Text
-
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  mainBlogCategoryId Int          @map("main_blog_category_id")
-  MainBlogCategory   BlogCategory @relation("main_blog_category", fields: [mainBlogCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  userId Int?  @map("user_id")
-  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  Subcategories BlogCategory[] @relation("blog_subcategories")
-
-  @@index([mainBlogCategoryId])
-  @@map("blogs")
 }
 
 model UserMeeting {
@@ -304,6 +272,9 @@ model MeetingPresentation {
   affiliations     String
   description      String
   createdAt        DateTime         @default(now()) @map("created_at")
+
+  guestPresenterName  String? @map("guest_presenter_name")
+  guestPresenterEmail String? @map("guest_presenter_email")
 
   userId               Int         @map("user_id")
   meetingId            Int         @map("meeting_id")
@@ -344,6 +315,28 @@ model MeetingDate {
 
   @@index([meetingId])
   @@map("meeting_date")
+}
+
+model Blog {
+  id          Int    @id @default(autoincrement())
+  publicId    String @unique @default(uuid(7)) @map("public_id")
+  title       String
+  authorName  String @map("author_name")
+  htmlContent String @map("html_content") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  mainBlogCategoryId Int          @map("main_blog_category_id")
+  MainBlogCategory   ActivityArea @relation("main_blog_category", fields: [mainBlogCategoryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  userId Int?  @map("user_id")
+  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  Subcategories ActivityArea[] @relation("blog_subcategories")
+
+  @@index([mainBlogCategoryId])
+  @@map("blogs")
 }
 
 model Newsletter {
@@ -455,19 +448,16 @@ enum EducationLevelType {
   MASTER
   DOCTORATE_STUDENT
   DOCTORATE
+  POST_DOCTORATE_STUDENT
+  POST_DOCTORATE
   OTHER
 }
 
 enum MembershipStatusType {
-  PENDING
-  APPROVED
-  REJECTED
+  ACTIVE
   INACTIVE
-}
-
-enum BlogCategoryType {
-  MAIN_CATEGORY
-  SUBCATEGORY
+  PENDING
+  REJECTED
 }
 
 enum IdentityType {

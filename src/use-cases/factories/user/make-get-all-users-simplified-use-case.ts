@@ -1,5 +1,5 @@
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
-import { GetAllUsersUseCase } from '@use-cases/user/get-all-users'
+import { GetAllUsersUseCase } from '@use-cases/user/get-all-users-simplified'
 
 export function makeGetAllUsersUseCase() {
   const usersRepository = new PrismaUsersRepository()

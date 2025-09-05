@@ -1,22 +1,15 @@
 import type { IdentityType } from '@prisma/client'
-import { emailSchema } from '@schemas/utils/email-schema'
-import { optionalIdentityDocumentSchema } from '@schemas/utils/identity-document-schema'
+import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
+import { emailSchema } from '@schemas/utils/primitives/email-schema'
 import z from 'zod'
-import { usernameSchema } from '../utils/username-schema'
+import { usernameSchema } from '../utils/components/username-schema'
 
-interface CheckAvailabilityQuerySchema {
-  identityType?: IdentityType
-  identityDocument?: string
-  email?: string
-  username?: string
-}
+type CheckAvailabilityQuerySchema = any & { identityType?: IdentityType }
 
 export const checkAvailabilityQuerySchema = z.preprocess(
   (query: CheckAvailabilityQuerySchema) => ({
+    ...query,
     identityType: query.identityType,
-    identityDocument: query.identityDocument,
-    username: query.username,
-    email: query.email,
   }),
   z.intersection(
     z
@@ -25,7 +18,13 @@ export const checkAvailabilityQuerySchema = z.preprocess(
         email: emailSchema,
       })
       .partial(),
-    optionalIdentityDocumentSchema,
+    z.discriminatedUnion('identityType', [
+      identityDocumentSchema,
+      z.object({
+        identityType: z.undefined(),
+        identityDocument: z.undefined(),
+      }),
+    ]),
   ),
 )
 

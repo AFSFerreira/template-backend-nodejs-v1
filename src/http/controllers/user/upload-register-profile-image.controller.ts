@@ -1,5 +1,5 @@
 import type { FileRequest } from '@custom-types/file-request-type'
-import { fileSchema } from '@schemas/utils/file-schema'
+import { fileSchema } from '@schemas/utils/components/file-schema'
 import { makeUploadRegisterProfileImageUseCase } from '@use-cases/factories/user/make-upload-register-profile-image-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

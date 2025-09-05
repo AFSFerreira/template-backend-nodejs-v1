@@ -68,11 +68,11 @@ interface HTTPEnrolledCourse {
 interface HTTPAcademicPublications {
   title: string
   authors: string
-  publicationDate: string | undefined | null
+  publicationYear: number | undefined | null
   journalName: string
   volume: string
   editionNumber: string
-  pageInterval: string
+  startPage: string
   linkDoi: string
 }
 
@@ -105,6 +105,7 @@ export class UserPresenter {
       fullName: input.fullName,
       institutionName: input.Institution.name,
       state: input.Address?.state ?? '',
+      ...(input.emailIsPublic ? { email: input.email } : {}),
     }
   }
 
@@ -178,14 +179,11 @@ export class UserPresenter {
         (academicPublication) => ({
           title: academicPublication.title,
           authors: academicPublication.authors,
-          publicationDate: formatDate(
-            academicPublication.publicationDate,
-            'mm/yyyy',
-          ),
+          publicationYear: academicPublication.publicationYear,
           journalName: academicPublication.journalName,
           volume: academicPublication.volume,
           editionNumber: academicPublication.editionNumber,
-          pageInterval: academicPublication.pageInterval,
+          startPage: academicPublication.startPage,
           linkDoi: academicPublication.linkDoi,
         }),
       ),

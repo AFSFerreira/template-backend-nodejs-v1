@@ -50,13 +50,22 @@ export async function userRoutes(app: FastifyInstance) {
     getUserProfile,
   )
   app.get('/all-users', getAllUsersSimplified)
-  app.get('/:publicId', getUserByPublicId)
+  app.get(
+    '/:publicId',
+    {
+      preHandler: [
+        verifyJwt,
+        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
+      ],
+    },
+    getUserByPublicId,
+  )
 
   // Register Routes:
   app.post(
     '/',
     {
-      preHandler: [upload.single('profileImage')],
+      ...rateLimit({ max: 5, timeWindow: '1d' }),
     },
     register,
   )

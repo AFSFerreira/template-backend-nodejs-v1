@@ -1,5 +1,5 @@
-import { paginatedSchema } from '@schemas/utils/paginated-schema'
-import { upperCaseTextSchema } from '@schemas/utils/uppercase-text-schema'
+import { paginatedSchema } from '@schemas/utils/components/paginated-schema'
+import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
 import z from 'zod'
 
 export const getAllUsersSimplifiedQuerySchema = z
@@ -8,8 +8,8 @@ export const getAllUsersSimplifiedQuerySchema = z
     institutionName: upperCaseTextSchema,
     state: upperCaseTextSchema,
   })
-  .extend(paginatedSchema.shape)
   .partial()
+  .extend(paginatedSchema.shape)
 
 export type GetAllUsersSimplifiedQuerySchemaType = z.infer<
   typeof getAllUsersSimplifiedQuerySchema

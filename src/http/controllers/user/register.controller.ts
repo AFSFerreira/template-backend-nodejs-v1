@@ -10,6 +10,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   await registerUserCase.execute({
     ...parsedBody,
     user: parsedBody.user,
+    address: parsedBody.address,
     keyword: parsedBody.keyword,
   })
 
