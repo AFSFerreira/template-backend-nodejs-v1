@@ -89,7 +89,6 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
         // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
         if (data.scholarshipHolder)
           return !!data.sponsoringOrganization
-        console.log("passouy aqui:", data.scholarshipHolder, `caso: ${data.sponsoringOrganization}`)
         return !data.sponsoringOrganization
       },
       {

@@ -185,12 +185,15 @@ export class PrismaUsersRepository implements UsersRepository {
           },
         }
       : undefined
+    
+    const addressCreateData = {
+      create: query.address,
+    }
 
     const user = await prisma.user.create({
       data: {
         ...query.user,
-        profileImage: query.user.profileImage,
-        Address: { create: query.address },
+        Address: addressCreateData,
         EnrolledCourse: enrolledCourseCreateData,
         Institution: institutionConnectOrCreateData,
         AcademicPublication: academicPublicationCreateData,
@@ -360,9 +363,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async validateUserToken(recoveryPasswordTokenHash: string) {
     const user = await prisma.user.findFirst({
-      where: {
-        recoveryPasswordTokenHash,
-      },
+      where: { recoveryPasswordTokenHash },
       include: userWithDetails.include,
     })
     return user
