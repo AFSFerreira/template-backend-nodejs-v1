@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-paths'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'

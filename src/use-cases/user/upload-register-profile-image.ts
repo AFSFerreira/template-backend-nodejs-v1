@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/file-paths'
 import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-sizes'
 import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'

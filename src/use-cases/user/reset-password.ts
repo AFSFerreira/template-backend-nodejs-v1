@@ -1,4 +1,4 @@
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import type { UsersRepository } from '@repositories/users-repository'

@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import {
   REGISTER_PROFILE_IMAGES_PATH,
   REGISTER_TEMP_PROFILE_IMAGES_PATH,

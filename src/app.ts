@@ -1,4 +1,4 @@
-import path from 'path'
+import path from 'node:path'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
