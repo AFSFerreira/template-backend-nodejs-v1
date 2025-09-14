@@ -187,7 +187,7 @@ CREATE TABLE "public"."payment_info" (
 -- CreateTable
 CREATE TABLE "public"."payment_information" (
     "id" SERIAL NOT NULL,
-    "value" INTEGER NOT NULL,
+    "value" DECIMAL(10,2) NOT NULL,
     "limit_date" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
@@ -257,7 +257,8 @@ CREATE TABLE "public"."blogs" (
     "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
-    "html_content" TEXT NOT NULL,
+    "content" JSON NOT NULL,
+    "search_content" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "main_blog_category_id" INTEGER NOT NULL,

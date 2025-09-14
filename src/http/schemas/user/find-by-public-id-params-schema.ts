@@ -5,6 +5,4 @@ export const findUserByPublicIdParamsSchema = z.object({
   publicId: uuidv7Schema,
 })
 
-export type FindUserByIdParamsSchemaType = z.infer<
-  typeof findUserByPublicIdParamsSchema
->
+export type FindUserByIdParamsSchemaType = z.infer<typeof findUserByPublicIdParamsSchema>

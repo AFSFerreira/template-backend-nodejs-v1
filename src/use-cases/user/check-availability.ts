@@ -11,15 +11,9 @@ interface CheckAvailabilityUseCaseResponse {
 export class CheckAvailabilityUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(
-    input: CheckAvailabilityUseCaseRequest,
-  ): Promise<CheckAvailabilityUseCaseResponse> {
+  async execute(input: CheckAvailabilityUseCaseRequest): Promise<CheckAvailabilityUseCaseResponse> {
     const checks: Array<[string, () => Promise<boolean>]> = [
-      [
-        'email',
-        async () =>
-          await this.usersRepository.checkIfAvailable({ email: input.email }),
-      ],
+      ['email', async () => await this.usersRepository.checkIfAvailable({ email: input.email })],
       [
         'username',
         async () =>
@@ -39,7 +33,7 @@ export class CheckAvailabilityUseCase {
       ],
     ]
 
-    const activeChecks = checks.filter(([key]) => {
+    const activeChecks = checks.filter(([key, _]) => {
       if (key === 'identity') {
         return !!(input.identityType && input.identityDocument)
       }
@@ -50,9 +44,7 @@ export class CheckAvailabilityUseCase {
       throw new MissingCheckAvailabilitiesInput()
     }
 
-    const results = await Promise.all(
-      activeChecks.map(async ([, fn]) => await fn()),
-    )
+    const results = await Promise.all(activeChecks.map(async ([_, fn]) => await fn()))
 
     const availabilities: Record<string, boolean> = {}
 

@@ -17,9 +17,7 @@ interface GetAllUsersCaseResponse {
 export class GetAllUsersDetailedUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(
-    getAllUsersInput: GetAllUsersDetailedUseCaseRequest,
-  ): Promise<GetAllUsersCaseResponse> {
+  async execute(getAllUsersInput: GetAllUsersDetailedUseCaseRequest): Promise<GetAllUsersCaseResponse> {
     const usersInfo = await this.usersRepository.listAllUsers({
       ...getAllUsersInput,
       simplified: true,

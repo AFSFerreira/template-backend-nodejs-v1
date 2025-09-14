@@ -24,10 +24,7 @@ export class UploadRegisterProfileImageUseCase {
     }
 
     try {
-      const { finalImagePath } = await saveCompressedImage(
-        buffer,
-        REGISTER_TEMP_PROFILE_IMAGES_PATH,
-      )
+      const { finalImagePath } = await saveCompressedImage(buffer, REGISTER_TEMP_PROFILE_IMAGES_PATH)
 
       return { fileName: path.basename(finalImagePath) }
     } catch (error) {

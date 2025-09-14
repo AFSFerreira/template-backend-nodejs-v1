@@ -2,10 +2,7 @@ import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 import { rangedYearSchema } from '@schemas/utils/components/ranged-year-schema'
-import {
-  highLevelEducationSchema,
-  lowLevelEducationSchema,
-} from '@schemas/utils/enums/education-level-schema'
+import { highLevelEducationSchema, lowLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
 import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
@@ -87,8 +84,7 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
     .refine(
       (data) => {
         // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-        if (data.scholarshipHolder)
-          return !!data.sponsoringOrganization
+        if (data.scholarshipHolder) return !!data.sponsoringOrganization
         return !data.sponsoringOrganization
       },
       {
@@ -154,8 +150,7 @@ const highLevelEducationRegisterBodySchema = z
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
-      if (data.activityArea.mainActivityArea === 'OUTRA')
-        return !!data.user.activityAreaDescription
+      if (data.activityArea.mainActivityArea === 'OUTRA') return !!data.user.activityAreaDescription
       return !data.user.activityAreaDescription
     },
     {
@@ -166,8 +161,7 @@ const highLevelEducationRegisterBodySchema = z
   .refine(
     (data) => {
       // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
-      if (data.activityArea.subActivityArea === 'OUTRA')
-        return !!data.user.subActivityAreaDescription
+      if (data.activityArea.subActivityArea === 'OUTRA') return !!data.user.subActivityAreaDescription
       return !data.user.subActivityAreaDescription
     },
     {
@@ -176,9 +170,6 @@ const highLevelEducationRegisterBodySchema = z
     },
   )
 
-export const registerBodySchema = z.union([
-  lowLevelEducationRegisterBodySchema,
-  highLevelEducationRegisterBodySchema,
-])
+export const registerBodySchema = z.union([lowLevelEducationRegisterBodySchema, highLevelEducationRegisterBodySchema])
 
 export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

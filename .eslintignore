@@ -1,4 +1,6 @@
-/*.js
+**/*.js
 node_modules
 build
 dist
+uploads
+tmp

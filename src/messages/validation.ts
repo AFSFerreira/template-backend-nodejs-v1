@@ -30,11 +30,9 @@ export const INVALID_PASSWORD_FORMAT =
 
 export const INVALID_INNER_SPACES = 'Este campo não pode conter espaços'
 
-export const COMPLETION_DATE_BEFORE_START_DATE =
-  'A data de conclusão do curso não pode ser anterior à data de início'
+export const COMPLETION_DATE_BEFORE_START_DATE = 'A data de conclusão do curso não pode ser anterior à data de início'
 
-export const INVALID_AUTHENTICATION_INPUT =
-  'Erro de autenticação: formato de e-mail, nome de usuário ou senha inválido'
+export const INVALID_AUTHENTICATION_INPUT = 'Erro de autenticação: formato de e-mail, nome de usuário ou senha inválido'
 
 export const ACTIVITY_AREA_MISSING_DESCRIPTION =
   'Se a área for escolhida como "OUTRA", uma descrição deve ser fornecida — e não deve ser fornecida caso contrário'
@@ -42,8 +40,7 @@ export const ACTIVITY_AREA_MISSING_DESCRIPTION =
 export const INVALID_EDUCATION_LEVEL_VALUE =
   'Valor de nível de escolaridade inválido. Por favor, selecione uma opção válida'
 
-export const INVALID_OCCUPATION_VALUE =
-  'Valor de ocupação inválido. Por favor, selecione uma opção válida'
+export const INVALID_OCCUPATION_VALUE = 'Valor de ocupação inválido. Por favor, selecione uma opção válida'
 
 export const INVALID_RNE_FORMAT = 'Formato de RNE inválido'
 

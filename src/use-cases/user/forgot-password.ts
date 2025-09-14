@@ -18,9 +18,7 @@ interface ForgotPasswordUseCaseResponse {
 export class ForgotPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute({
-    login,
-  }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
+  async execute({ login }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
     let userAlreadyExists: UserWithDetails | null | undefined
 
     if (emailSchema.safeParse(login).success) {
@@ -29,14 +27,9 @@ export class ForgotPasswordUseCase {
       userAlreadyExists = await this.usersRepository.findByUsername(login)
     }
 
-    const recoveryPasswordToken = crypto
-      .randomBytes(RANDOM_BYTES_NUMBER)
-      .toString('hex')
+    const recoveryPasswordToken = crypto.randomBytes(RANDOM_BYTES_NUMBER).toString('hex')
 
-    const recoveryPasswordTokenHash = crypto
-      .createHash('sha256')
-      .update(recoveryPasswordToken, 'utf-8')
-      .digest('hex')
+    const recoveryPasswordTokenHash = crypto.createHash('sha256').update(recoveryPasswordToken, 'utf-8').digest('hex')
 
     const recoveryPasswordTokenExpiresAt = new Date(Date.now() + ms('15m'))
 
@@ -49,10 +42,7 @@ export class ForgotPasswordUseCase {
       throw new UserNotFoundForPasswordResetError()
     }
 
-    const user = await this.usersRepository.setPasswordToken(
-      userAlreadyExists.id,
-      tokenData,
-    )
+    const user = await this.usersRepository.setPasswordToken(userAlreadyExists.id, tokenData)
 
     return { user, token: recoveryPasswordToken }
   }

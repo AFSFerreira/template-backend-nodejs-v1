@@ -231,7 +231,7 @@ model PaymentInfo {
 
 model MeetingPaymentInfo {
   id        Int      @id @default(autoincrement())
-  value     Int
+  value     Decimal  @db.Decimal(10, 2)
   limitDate DateTime @map("limit_date")
 
   createdAt DateTime @default(now()) @map("created_at")
@@ -318,11 +318,13 @@ model MeetingDate {
 }
 
 model Blog {
-  id          Int    @id @default(autoincrement())
-  publicId    String @unique @default(uuid(7)) @map("public_id")
-  title       String
-  authorName  String @map("author_name")
-  htmlContent String @map("html_content") @db.Text
+  id         Int    @id @default(autoincrement())
+  publicId   String @unique @default(uuid(7)) @map("public_id")
+  title      String
+  authorName String @map("author_name")
+
+  content       Json   @db.Json // ProseMirror Json
+  searchContent String @map("search_content") @db.Text
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

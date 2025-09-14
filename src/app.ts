@@ -5,23 +5,29 @@ import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import fastifyStatic from '@fastify/static'
-import {
-  BODY_REQUIRED,
-  INTERNAL_SERVER_ERROR,
-  VALIDATION_ERROR,
-} from '@messages/errors'
+import { logger } from '@lib/logger'
+import { UNHANDLED_ERROR } from '@messages/logger'
+import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/response'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
 import z, { ZodError } from 'zod'
 import { env } from './env/index'
+import { logRequest } from './http/plugins/request-logger'
+import { logResponse } from './http/plugins/response-logger'
+import { preSerialization } from './http/plugins/serializer'
 import { appRoutes } from './http/routes'
+import 'dotenv/config'
 
 z.config(z.locales.pt())
 
 export const app = fastify({
   logger: false,
 })
+
+app.addHook('onRequest', logRequest)
+app.addHook('onResponse', logResponse)
+app.addHook('preSerialization', preSerialization)
 
 app.register(cors, {
   origin: env.FRONTEND_URL,
@@ -51,10 +57,7 @@ app.register(fastifyStatic, {
   maxAge: '1y',
 
   setHeaders: (response, _pathName) => {
-    response.setHeader(
-      'Cache-Control',
-      `public, max-age=${ms('1y')}, immutable`,
-    )
+    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
   },
 })
 
@@ -63,29 +66,33 @@ app.register(multipart)
 app.register(rateLimit)
 app.register(appRoutes)
 
-app.setErrorHandler((error, _, reply) => {
+app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
+    const errorTree = z.treeifyError(error)
+    logger.warn({ ...VALIDATION_ERROR.body, issues: errorTree })
     return reply.status(VALIDATION_ERROR.status).send({
       ...VALIDATION_ERROR.body,
-      issues: z.treeifyError(error),
+      issues: errorTree,
     })
   }
 
   if (error instanceof ApiError) {
+    logger.warn(error.body)
     return reply.status(error.status).send(error.body)
   }
 
+  if (error instanceof SyntaxError) {
+    logger.warn(SYNTAX_ERROR.body)
+    return reply.status(SYNTAX_ERROR.status).send(SYNTAX_ERROR.body)
+  }
+
   if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {
+    logger.warn(BODY_REQUIRED.body)
     return reply.status(BODY_REQUIRED.status).send(BODY_REQUIRED.body)
   }
 
-  if (env.NODE_ENV !== 'production') {
-    console.error(error)
-  } else {
-    // TODO: Send error to monitoring service
-  }
+  // TODO: Send error to monitoring service (SENTRY)
+  logger.error({ error }, UNHANDLED_ERROR)
 
-  return reply
-    .status(INTERNAL_SERVER_ERROR.status)
-    .send(INTERNAL_SERVER_ERROR.body)
+  return reply.status(INTERNAL_SERVER_ERROR.status).send(INTERNAL_SERVER_ERROR.body)
 })

@@ -1,16 +1,15 @@
 import { env } from '@env/index'
-import { INVALID_OR_EXPIRED_TOKEN } from '@messages/errors'
-import { LOGOUT } from '@messages/info'
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import { logger } from '@lib/logger'
+import { INVALID_OR_EXPIRED_TOKEN, LOGOUT } from '@messages/response'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
   try {
     await request.jwtVerify({ onlyCookie: true })
   } catch (error) {
     if (error instanceof Error) {
-      return await reply
-        .status(INVALID_OR_EXPIRED_TOKEN.status)
-        .send(INVALID_OR_EXPIRED_TOKEN.body)
+      logger.debug(INVALID_OR_EXPIRED_TOKEN.body)
+      return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send(INVALID_OR_EXPIRED_TOKEN.body)
     }
   }
 
@@ -21,6 +20,6 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
       sameSite: env.NODE_ENV === 'production' ? 'strict' : 'lax',
       httpOnly: true,
     })
-    .status(200)
-    .send(LOGOUT)
+    .status(LOGOUT.status)
+    .send(LOGOUT.body)
 }

@@ -11,6 +11,4 @@ export const getAllUsersSimplifiedQuerySchema = z
   .partial()
   .extend(paginatedSchema.shape)
 
-export type GetAllUsersSimplifiedQuerySchemaType = z.infer<
-  typeof getAllUsersSimplifiedQuerySchema
->
+export type GetAllUsersSimplifiedQuerySchemaType = z.infer<typeof getAllUsersSimplifiedQuerySchema>

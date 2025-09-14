@@ -3,9 +3,7 @@ import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detail
 
 export function makeGetAllUsersDetailedUseCase() {
   const usersRepository = new PrismaUsersRepository()
-  const getAllUsersDetailedUseCase = new GetAllUsersDetailedUseCase(
-    usersRepository,
-  )
+  const getAllUsersDetailedUseCase = new GetAllUsersDetailedUseCase(usersRepository)
 
   return getAllUsersDetailedUseCase
 }

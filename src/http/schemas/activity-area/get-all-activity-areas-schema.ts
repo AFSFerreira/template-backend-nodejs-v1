@@ -5,11 +5,10 @@ import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
 export const getAllActivityAreasSchema = z
   .object({
-    name: upperCaseTextSchema.optional(),
-    type: activityAreaSchema.optional(),
+    name: upperCaseTextSchema,
+    type: activityAreaSchema,
   })
+  .partial()
   .extend(paginatedSchema.shape)
 
-export type getAllActivityAreasSchemaType = z.infer<
-  typeof getAllActivityAreasSchema
->
+export type getAllActivityAreasSchemaType = z.infer<typeof getAllActivityAreasSchema>

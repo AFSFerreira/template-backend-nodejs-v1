@@ -8,24 +8,13 @@ export interface ActivityAreaQuery {
   type: ActivityAreaType
 }
 
-export type ListAllActivityAreasQuery = Omit<
-  getAllActivityAreasSchemaType,
-  'page' | 'limit'
-> &
-  PaginationType
+export type ListAllActivityAreasQuery = Omit<getAllActivityAreasSchemaType, 'page' | 'limit'> & PaginationType
 
 export interface ActivityAreaRepository {
-  create: (
-    data: Prisma.ActivityAreaUncheckedCreateInput,
-  ) => Promise<ActivityArea>
+  create: (data: Prisma.ActivityAreaUncheckedCreateInput) => Promise<ActivityArea>
   findById: (id: number) => Promise<ActivityArea | null>
-  findByArea: ({
-    area,
-    type,
-  }: ActivityAreaQuery) => Promise<ActivityArea | null>
-  listAllActivityAreas: (
-    query?: ListAllActivityAreasQuery,
-  ) => Promise<PaginatedResult<ActivityArea[]>>
+  findByArea: ({ area, type }: ActivityAreaQuery) => Promise<ActivityArea | null>
+  listAllActivityAreas: (query?: ListAllActivityAreasQuery) => Promise<PaginatedResult<ActivityArea[]>>
   findManyByArea: (areas: ActivityAreaQuery[]) => Promise<ActivityArea[]>
   delete: (id: number) => Promise<void>
 }

@@ -18,14 +18,8 @@ interface ResetPasswordUseCaseResponse {
 export class ResetPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute({
-    newPassword,
-    token,
-  }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
-    const tokenHash = crypto
-      .createHash('sha256')
-      .update(token, 'utf-8')
-      .digest('hex')
+  async execute({ newPassword, token }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
+    const tokenHash = crypto.createHash('sha256').update(token, 'utf-8').digest('hex')
 
     const userFound = await this.usersRepository.validateUserToken(tokenHash)
 
@@ -39,10 +33,7 @@ export class ResetPasswordUseCase {
       throw new InvalidTokenError()
     }
 
-    const user = await this.usersRepository.changePassword(
-      userFound.id,
-      passwordHash,
-    )
+    const user = await this.usersRepository.changePassword(userFound.id, passwordHash)
 
     return { user }
   }

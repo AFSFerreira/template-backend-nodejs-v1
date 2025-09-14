@@ -17,8 +17,7 @@ interface AuthenticateUseCaseResponse {
   user: UserWithDetails
 }
 
-const DUMMY_HASH =
-  'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
+const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
 
 export class AuthenticateUseCase {
   constructor(

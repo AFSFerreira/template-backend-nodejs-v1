@@ -88,11 +88,8 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     mainAreaActivity: user.ActivityArea?.area ?? '',
 
     courseName: user.EnrolledCourse?.courseName ?? '',
-    startGraduationDate:
-      user.EnrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
-    expectedGraduationDate:
-      user.EnrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ??
-      '',
+    startGraduationDate: user.EnrolledCourse?.startGraduationDate?.toISOString().slice(0, 7) ?? '',
+    expectedGraduationDate: user.EnrolledCourse?.expectedGraduationDate?.toISOString().slice(0, 7) ?? '',
     supervisorName: user.EnrolledCourse?.supervisorName ?? '',
     scholarshipHolder: user.EnrolledCourse?.scholarshipHolder ?? false,
     sponsoringOrganization: user.EnrolledCourse?.sponsoringOrganization ?? '',
@@ -103,13 +100,12 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
         .join('; ') ?? '',
 
     publications:
-      user.AcademicPublication?.map(
-        (p) => `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`,
-      ).join(' | ') ?? '',
+      user.AcademicPublication?.map((p) => `${p.title} (${p.publicationDate.toISOString().split('T')[0]})`).join(
+        ' | ',
+      ) ?? '',
 
     directorBoardPublicId: user.DirectorBoard?.publicId ?? '',
-    directorBoardProfileImage:
-      user.DirectorBoard?.directorBoardProfileImage ?? '',
+    directorBoardProfileImage: user.DirectorBoard?.directorBoardProfileImage ?? '',
     aboutMe: user.DirectorBoard?.aboutMe ?? '',
   }
 

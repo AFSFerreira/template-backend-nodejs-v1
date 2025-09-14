@@ -32,8 +32,7 @@ export const userData1 = {
   educationLevel: EducationLevelType.DOCTORATE,
   emailIsPublic: true,
   astrobiologyOrRelatedStartYear: 2010,
-  interestDescription:
-    'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
+  interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
   receiveReports: true,
   loginAttempts: 0,
   lastLogin: new Date(),
@@ -100,8 +99,7 @@ export const userData2 = {
   educationLevel: EducationLevelType.DOCTORATE,
   emailIsPublic: true,
   astrobiologyOrRelatedStartYear: 2010,
-  interestDescription:
-    'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
+  interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
   receiveReports: true,
   loginAttempts: 0,
   lastLogin: new Date(),

@@ -3,9 +3,7 @@ import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-act
 
 export function makeGetAllActivityAreasUseCase() {
   const activityAreaRepository = new PrismaActivityAreaRepository()
-  const getAllActivityAreasUseCase = new GetAllActivityAreasUseCase(
-    activityAreaRepository,
-  )
+  const getAllActivityAreasUseCase = new GetAllActivityAreasUseCase(activityAreaRepository)
 
   return getAllActivityAreasUseCase
 }

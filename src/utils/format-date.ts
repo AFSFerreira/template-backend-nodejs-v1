@@ -1,9 +1,6 @@
 export type DateFormat = 'dd/mm/yyyy' | 'mm/yyyy'
 
-export function formatDate(
-  date?: Date | null,
-  format: DateFormat = 'dd/mm/yyyy',
-): string | null {
+export function formatDate(date?: Date | null, format: DateFormat = 'dd/mm/yyyy'): string | null {
   if (!date) return null
 
   const day = date.getDate().toString().padStart(2, '0')

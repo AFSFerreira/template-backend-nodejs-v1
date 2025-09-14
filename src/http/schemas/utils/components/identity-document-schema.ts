@@ -1,7 +1,4 @@
-import {
-  PASSPORT_VALIDATION_REGEX,
-  RNE_VALIDATION_REGEX,
-} from '@constants/regex'
+import { PASSPORT_VALIDATION_REGEX, RNE_VALIDATION_REGEX } from '@constants/regex'
 import {
   INVALID_CPF_FORMAT,
   INVALID_CPF_LENGTH,
@@ -22,15 +19,9 @@ const cpfIdentityDocumentSchema = z.preprocess(
     .transform(cpf.format),
 )
 
-const rneIdentityDocumentSchema = upperCaseTextSchema.regex(
-  RNE_VALIDATION_REGEX,
-  INVALID_RNE_FORMAT,
-)
+const rneIdentityDocumentSchema = upperCaseTextSchema.regex(RNE_VALIDATION_REGEX, INVALID_RNE_FORMAT)
 
-const passportIdentityDocumentSchema = upperCaseTextSchema.regex(
-  PASSPORT_VALIDATION_REGEX,
-  INVALID_PASSPORT_FORMAT,
-)
+const passportIdentityDocumentSchema = upperCaseTextSchema.regex(PASSPORT_VALIDATION_REGEX, INVALID_PASSPORT_FORMAT)
 
 const cpfSchema = z.object({
   identityType: z.literal(IdentityType.CPF),
@@ -47,8 +38,4 @@ const passportSchema = z.object({
   identityDocument: passportIdentityDocumentSchema,
 })
 
-export const identityDocumentSchema = z.discriminatedUnion('identityType', [
-  cpfSchema,
-  rneSchema,
-  passportSchema,
-])
+export const identityDocumentSchema = z.discriminatedUnion('identityType', [cpfSchema, rneSchema, passportSchema])

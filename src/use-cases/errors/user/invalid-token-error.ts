@@ -1,4 +1,4 @@
-import { INVALID_OR_EXPIRED_TOKEN } from '@messages/errors'
+import { INVALID_OR_EXPIRED_TOKEN } from '@messages/response'
 import { ApiError } from '../api-error'
 
 export class InvalidTokenError extends ApiError {

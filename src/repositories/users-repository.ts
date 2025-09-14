@@ -2,26 +2,15 @@ import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
-import type {
-  EducationLevelType,
-  IdentityType,
-  OccupationType,
-  Prisma,
-} from '@prisma/client'
+import type { EducationLevelType, IdentityType, OccupationType, Prisma } from '@prisma/client'
 import type { getAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-users-detailed-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 
-export type ListAllUsersQuery = Omit<
-  getAllUsersDetailedQuerySchemaType,
-  'page' | 'limit'
-> &
+export type ListAllUsersQuery = Omit<getAllUsersDetailedQuerySchemaType, 'page' | 'limit'> &
   PaginationType & { simplified?: boolean }
 
 export interface CreateUserQuery {
-  user: Omit<
-    RegisterUserBodySchemaType['user'],
-    'password' | 'occupation' | 'educationLevel' | 'identity'
-  > & {
+  user: Omit<RegisterUserBodySchemaType['user'], 'password' | 'occupation' | 'educationLevel' | 'identity'> & {
     passwordHash: string
     educationLevel: EducationLevelType
     profileImage: string
@@ -60,27 +49,16 @@ export interface UsersRepository {
   findByUsername: (username: string) => Promise<UserWithDetails | null>
   findById: (id: number) => Promise<UserWithDetails | null>
   findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
-  findByIdentityDocument: (
-    data: FindByIdentityDocumentQuery,
-  ) => Promise<UserWithDetails | null>
-  findByEmailOrUsername: (
-    data: FindByEmailOrUsernameQuery,
-  ) => Promise<UserWithDetails | null>
+  findByIdentityDocument: (data: FindByIdentityDocumentQuery) => Promise<UserWithDetails | null>
+  findByEmailOrUsername: (data: FindByEmailOrUsernameQuery) => Promise<UserWithDetails | null>
   listAllUsers: (
     query?: ListAllUsersQuery,
-  ) => Promise<
-    PaginatedResult<Array<UserWithDetails | UserWithSimplifiedDetails>>
-  >
+  ) => Promise<PaginatedResult<Array<UserWithDetails | UserWithSimplifiedDetails>>>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
   update: (id: number, data: Prisma.UserUpdateInput) => Promise<UserWithDetails>
-  validateUserToken: (
-    recoveryPasswordTokenHash: string,
-  ) => Promise<UserWithDetails | null>
+  validateUserToken: (recoveryPasswordTokenHash: string) => Promise<UserWithDetails | null>
   changePassword: (id: number, passwordHash: string) => Promise<UserWithDetails>
-  setPasswordToken: (
-    id: number,
-    tokenData: TokenData,
-  ) => Promise<UserWithDetails>
+  setPasswordToken: (id: number, tokenData: TokenData) => Promise<UserWithDetails>
 }

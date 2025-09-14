@@ -1,10 +1,7 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import {
-  activityAreasData,
-  subActivityAreasData,
-} from './seed-data/activity-areas'
-import { blogData, partialBlogData } from './seed-data/blogs'
+import { activityAreasData, subActivityAreasData } from './seed-data/activity-areas'
+import { blogData } from './seed-data/blogs'
 import { userData1, userData2 } from './seed-data/users'
 import { env } from '../src/env'
 
@@ -49,7 +46,7 @@ async function main() {
   })
 
   let existingBlog = await prisma.blog.findFirst({
-    where: partialBlogData,
+    where: { title: blogData.title },
   })
 
   if (!existingBlog) {
@@ -64,6 +61,7 @@ main()
     await prisma.$disconnect()
   })
   .catch(async (error) => {
+    // eslint-disable-next-line no-console
     console.error('Erro ao executar seed:', error)
     await prisma.$disconnect()
     process.exit(1)

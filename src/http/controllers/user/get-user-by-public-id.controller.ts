@@ -3,10 +3,7 @@ import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-
 import { makeFindUserByPublicIdUseCase } from '@use-cases/factories/user/make-find-by-public-id-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function getUserByPublicId(
-  request: FastifyRequest,
-  reply: FastifyReply,
-) {
+export async function getUserByPublicId(request: FastifyRequest, reply: FastifyReply) {
   const { publicId } = findUserByPublicIdParamsSchema.parse(request.params)
   const findUserByIdUseCase = makeFindUserByPublicIdUseCase()
 

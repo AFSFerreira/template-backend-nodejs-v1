@@ -1,4 +1,4 @@
-import { USER_NOT_FOUND } from '@messages/errors'
+import { USER_NOT_FOUND } from '@messages/response'
 import { ResourceNotFoundError } from '../generic/resource-not-found-error'
 
 export class UserNotFoundError extends ResourceNotFoundError {

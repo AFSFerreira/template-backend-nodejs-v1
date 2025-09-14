@@ -4,6 +4,9 @@ dist
 .gitignore
 .env
 
+# Pasta de Arquivos Temporários de Build:
+tmp
+
 # Ignorando Arquivos de Imagem de Perfil:
 uploads/user/profile-images/*
 !uploads/user/profile-images/default-profile-pic.png

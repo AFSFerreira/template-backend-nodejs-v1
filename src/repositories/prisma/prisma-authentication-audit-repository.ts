@@ -1,10 +1,8 @@
-import { prisma } from '@lib/prisma/prisma'
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AuthenticationAuditRepository } from '../authentication-audit-repository'
 
-export class PrismaAuthenticationAuditRepository
-  implements AuthenticationAuditRepository
-{
+export class PrismaAuthenticationAuditRepository implements AuthenticationAuditRepository {
   async create(data: Prisma.AuthenticationAuditUncheckedCreateInput) {
     const authenticationAudit = await prisma.authenticationAudit.create({
       data,

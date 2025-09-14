@@ -1,9 +1,8 @@
 import { env } from '@env/index'
+import ms from 'ms'
 import nodemailer from 'nodemailer'
 import type { SentMessageInfo } from 'nodemailer'
 import type { Attachment } from 'nodemailer/lib/mailer'
-
-const SECOND = 1000
 
 const transporter = nodemailer.createTransport({
   host: env.SMTP_HOST,
@@ -13,9 +12,9 @@ const transporter = nodemailer.createTransport({
     user: env.SMTP_EMAIL,
     pass: env.SMTP_PASSWORD,
   },
-  connectionTimeout: 10 * SECOND,
-  greetingTimeout: 5 * SECOND,
-  socketTimeout: 20 * SECOND,
+  connectionTimeout: ms('10s'),
+  greetingTimeout: ms('5s'),
+  socketTimeout: ms('20s'),
 })
 
 interface SendEmailRequest {

@@ -1,17 +1,14 @@
 import { env } from '@env/index'
-import { INVALID_OR_EXPIRED_TOKEN } from '@messages/errors'
-import type { FastifyRequest, FastifyReply } from 'fastify'
+import { logger } from '@lib/logger'
+import { INVALID_OR_EXPIRED_TOKEN } from '@messages/response'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function refreshToken(
-  request: FastifyRequest,
-  reply: FastifyReply,
-) {
+export async function refreshToken(request: FastifyRequest, reply: FastifyReply) {
   try {
     await request.jwtVerify({ onlyCookie: true })
   } catch (error) {
-    return await reply
-      .status(INVALID_OR_EXPIRED_TOKEN.status)
-      .send(INVALID_OR_EXPIRED_TOKEN.body)
+    logger.debug(INVALID_OR_EXPIRED_TOKEN.body)
+    return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send(INVALID_OR_EXPIRED_TOKEN.body)
   }
 
   const tokenPayload = {

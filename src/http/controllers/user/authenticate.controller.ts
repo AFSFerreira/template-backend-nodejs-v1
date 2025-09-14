@@ -4,10 +4,7 @@ import { authenticateBodySchema } from '@schemas/user/authenticate-body-schema'
 import { makeAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function authenticate(
-  request: FastifyRequest,
-  reply: FastifyReply,
-) {
+export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
   const { login, password } = authenticateBodySchema.parse(request.body)
   const { ip: ipAddress } = request
   const { 'user-agent': browser } = request.headers

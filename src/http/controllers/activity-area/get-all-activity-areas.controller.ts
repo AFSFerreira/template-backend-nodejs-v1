@@ -3,13 +3,8 @@ import { getAllActivityAreasSchema } from '@schemas/activity-area/get-all-activi
 import { makeGetAllActivityAreasUseCase } from '@use-cases/factories/activity-area/make-get-all-activity-areas-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function getAllActivityAreas(
-  request: FastifyRequest,
-  reply: FastifyReply,
-) {
-  const { name, type, page, limit } = getAllActivityAreasSchema.parse(
-    request.query,
-  )
+export async function getAllActivityAreas(request: FastifyRequest, reply: FastifyReply) {
+  const { name, type, page, limit } = getAllActivityAreasSchema.parse(request.query)
 
   const getAllActivityAreasUseCase = makeGetAllActivityAreasUseCase()
 

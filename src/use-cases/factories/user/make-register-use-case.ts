@@ -6,10 +6,7 @@ export function makeRegisterUseCase() {
   const usersRepository = new PrismaUsersRepository()
   const activityAreasRepository = new PrismaActivityAreaRepository()
 
-  const registerUseCase = new RegisterUseCase(
-    usersRepository,
-    activityAreasRepository,
-  )
+  const registerUseCase = new RegisterUseCase(usersRepository, activityAreasRepository)
 
   return registerUseCase
 }

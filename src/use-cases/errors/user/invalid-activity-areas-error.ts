@@ -1,4 +1,4 @@
-import { INVALID_AREA_OF_ACTIVITY } from '@messages/errors'
+import { INVALID_AREA_OF_ACTIVITY } from '@messages/response'
 import { ApiError } from '../api-error'
 
 export class InvalidActivityArea extends ApiError {

@@ -1,6 +1,8 @@
 import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-paths'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
+import { logger } from '@lib/logger'
+import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/logger'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
 import type { UsersRepository } from '@repositories/users-repository'
@@ -32,9 +34,7 @@ export class RegisterUseCase {
     private readonly activityAreasRepository: ActivityAreaRepository,
   ) {}
 
-  async execute(
-    registerUseCaseInput: RegisterUseCaseRequest,
-  ): Promise<RegisterUseCaseResponse> {
+  async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const existingUser = await this.usersRepository.findByEmailOrUsername({
       email: registerUseCaseInput.user.email,
       username: registerUseCaseInput.user.username,
@@ -44,27 +44,21 @@ export class RegisterUseCase {
       throw new UserWithSameEmailOrUsernameError()
     }
 
-    const documentAlreadyUsed =
-      await this.usersRepository.findByIdentityDocument({
-        identityDocument: registerUseCaseInput.user.identity.identityDocument,
-        identityType: registerUseCaseInput.user.identity.identityType,
-      })
+    const documentAlreadyUsed = await this.usersRepository.findByIdentityDocument({
+      identityDocument: registerUseCaseInput.user.identity.identityDocument,
+      identityType: registerUseCaseInput.user.identity.identityType,
+    })
 
     if (documentAlreadyUsed) {
       throw new IdentityDocumentAlreadyUsed()
     }
 
-    if (
-      highLevelEducationSchema.safeParse(
-        registerUseCaseInput.user.educationLevel,
-      ).success
-    ) {
+    if (highLevelEducationSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
       // Valida as áreas de atividade dos artigos e do usuário:
-      const academicPublicationsActivityAreas =
-        registerUseCaseInput.academicPublication.map((academPub) => ({
-          area: academPub.area,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        }))
+      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academPub) => ({
+        area: academPub.area,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      }))
 
       const allUserActivityAreas = [
         {
@@ -78,8 +72,7 @@ export class RegisterUseCase {
         ...academicPublicationsActivityAreas,
       ]
 
-      const activityAreasFound =
-        await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
+      const activityAreasFound = await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
 
       const activityAreasFoundSet = new Set(
         activityAreasFound.map((activityArea) =>
@@ -96,9 +89,7 @@ export class RegisterUseCase {
 
       if (wrongActivityAreas.length !== 0) {
         throw new InvalidActivityArea(
-          wrongActivityAreas
-            .map((activityArea) => JSON.stringify(activityArea, null, 2))
-            .toString(),
+          wrongActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
         )
       }
     }
@@ -111,25 +102,21 @@ export class RegisterUseCase {
       try {
         await persistUserProfileImage(registerUseCaseInput.user.profileImage)
         imageHandleError = false
-      } catch (error) {}
+      } catch (error) {
+        logger.error({ profileImage: registerUseCaseInput.user.profileImage }, PROFILE_IMAGE_PERSIST_ERROR)
+      }
     }
 
-    const passwordHash = await hash(
-      registerUseCaseInput.user.password,
-      env.HASH_SALT_ROUNDS,
-    )
+    const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
-    const { password, identity, ...filteredUserInfo } =
-      registerUseCaseInput.user
+    const { password, identity, ...filteredUserInfo } = registerUseCaseInput.user
 
     const user = await this.usersRepository.create({
       user: {
         ...filteredUserInfo,
         identityType: identity.identityType,
         identityDocument: identity.identityDocument,
-        profileImage: imageHandleError
-          ? DEFAULT_PROFILE_IMAGE_PATH
-          : registerUseCaseInput.user.profileImage,
+        profileImage: imageHandleError ? DEFAULT_PROFILE_IMAGE_PATH : registerUseCaseInput.user.profileImage,
         passwordHash,
       },
       institution: registerUseCaseInput.institution,

@@ -23,20 +23,14 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/all-users-detailed',
     {
-      preHandler: [
-        verifyJwt,
-        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
-      ],
+      preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
     },
     getAllUsersDetailed,
   )
   app.get(
     '/export',
     {
-      preHandler: [
-        verifyJwt,
-        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
-      ],
+      preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
     },
     exportUsersData,
   )
@@ -53,10 +47,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/:publicId',
     {
-      preHandler: [
-        verifyJwt,
-        verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER]),
-      ],
+      preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
     },
     getUserByPublicId,
   )

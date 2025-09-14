@@ -13,9 +13,7 @@ interface FindUserByPublicIdUseCaseResponse {
 export class FindUserByPublicIdUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute({
-    publicId,
-  }: FindUserByPublicIdUseCaseRequest): Promise<FindUserByPublicIdUseCaseResponse> {
+  async execute({ publicId }: FindUserByPublicIdUseCaseRequest): Promise<FindUserByPublicIdUseCaseResponse> {
     const user = await this.usersRepository.findByPublicId(publicId)
 
     if (!user) {

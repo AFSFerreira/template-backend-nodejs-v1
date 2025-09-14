@@ -57,11 +57,9 @@ export const getAllUsersDetailedQuerySchema = z
   .refine(
     (data) => {
       // Se astrobiologyOrRelatedStartYearComparison estiver definido, astrobiologyOrRelatedStartYear também deve estar
-      if (!data.astrobiologyOrRelatedStartYear)
-        return !data.astrobiologyOrRelatedStartYearComparison
+      if (!data.astrobiologyOrRelatedStartYear) return !data.astrobiologyOrRelatedStartYearComparison
 
-      if (!data.astrobiologyOrRelatedStartYearComparison)
-        data.astrobiologyOrRelatedStartYearComparison = 'equals'
+      if (!data.astrobiologyOrRelatedStartYearComparison) data.astrobiologyOrRelatedStartYearComparison = 'equals'
 
       return true
     },
@@ -71,6 +69,4 @@ export const getAllUsersDetailedQuerySchema = z
     },
   )
 
-export type getAllUsersDetailedQuerySchemaType = z.infer<
-  typeof getAllUsersDetailedQuerySchema
->
+export type getAllUsersDetailedQuerySchemaType = z.infer<typeof getAllUsersDetailedQuerySchema>

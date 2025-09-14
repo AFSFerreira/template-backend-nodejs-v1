@@ -1,4 +1,4 @@
-import { USER_WITH_SAME_EMAIL_OR_USERNAME } from '@messages/errors'
+import { USER_WITH_SAME_EMAIL_OR_USERNAME } from '@messages/response'
 import { UserAlreadyExistsError } from './user-already-exists-error'
 
 export class UserWithSameEmailOrUsernameError extends UserAlreadyExistsError {

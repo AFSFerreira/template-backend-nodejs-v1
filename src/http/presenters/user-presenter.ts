@@ -1,12 +1,7 @@
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 
-import type {
-  EducationLevelType,
-  IdentityType,
-  OccupationType,
-  UserRoleType,
-} from '@prisma/client'
+import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
 import { formatDate } from '@utils/format-date'
 
 interface HTTPSimplifiedUserDetails {
@@ -14,6 +9,7 @@ interface HTTPSimplifiedUserDetails {
   fullName: string
   institutionName: string
   state: string
+  email?: string
 }
 
 interface HTTPUserDetails {
@@ -87,12 +83,8 @@ interface HTTPUser extends HTTPUserDetails {
 }
 
 export class UserPresenter {
-  static toHTTPSimplified(
-    user: UserWithSimplifiedDetails,
-  ): HTTPSimplifiedUserDetails
-  static toHTTPSimplified(
-    users: UserWithSimplifiedDetails[],
-  ): HTTPSimplifiedUserDetails[]
+  static toHTTPSimplified(user: UserWithSimplifiedDetails): HTTPSimplifiedUserDetails
+  static toHTTPSimplified(users: UserWithSimplifiedDetails[]): HTTPSimplifiedUserDetails[]
   static toHTTPSimplified(
     input: UserWithSimplifiedDetails | UserWithSimplifiedDetails[],
   ): HTTPSimplifiedUserDetails | HTTPSimplifiedUserDetails[] {
@@ -105,15 +97,13 @@ export class UserPresenter {
       fullName: input.fullName,
       institutionName: input.Institution.name,
       state: input.Address?.state ?? '',
-      ...(input.emailIsPublic ? { email: input.email } : {}),
+      email: input.emailIsPublic ? input.email : null,
     }
   }
 
   static toHTTP(user: UserWithDetails): HTTPUser
   static toHTTP(users: UserWithDetails[]): HTTPUser[]
-  static toHTTP(
-    input: UserWithDetails | UserWithDetails[],
-  ): HTTPUser | HTTPUser[] {
+  static toHTTP(input: UserWithDetails | UserWithDetails[]): HTTPUser | HTTPUser[] {
     if (Array.isArray(input)) {
       return input.map((user) => UserPresenter.toHTTP(user))
     }
@@ -140,8 +130,8 @@ export class UserPresenter {
     } = input
 
     return {
-      id: input.publicId,
       ...userFiltered,
+      id: input.publicId,
       birthdate: formatDate(input.birthdate),
 
       institutionName: input.Institution.name,
@@ -162,37 +152,28 @@ export class UserPresenter {
 
       enrolledCourse: {
         courseName: input.EnrolledCourse?.courseName,
-        startGraduationDate: formatDate(
-          input.EnrolledCourse?.startGraduationDate,
-          'mm/yyyy',
-        ),
-        expectedGraduationDate: formatDate(
-          input.EnrolledCourse?.expectedGraduationDate,
-          'mm/yyyy',
-        ),
+        startGraduationDate: formatDate(input.EnrolledCourse?.startGraduationDate, 'mm/yyyy'),
+        expectedGraduationDate: formatDate(input.EnrolledCourse?.expectedGraduationDate, 'mm/yyyy'),
         supervisorName: input.EnrolledCourse?.supervisorName,
         scholarshipHolder: input.EnrolledCourse?.scholarshipHolder,
         sponsoringOrganization: input.EnrolledCourse?.sponsoringOrganization,
       },
 
-      academicPublications: input.AcademicPublication.map(
-        (academicPublication) => ({
-          title: academicPublication.title,
-          authors: academicPublication.authors,
-          publicationYear: academicPublication.publicationYear,
-          journalName: academicPublication.journalName,
-          volume: academicPublication.volume,
-          editionNumber: academicPublication.editionNumber,
-          startPage: academicPublication.startPage,
-          linkDoi: academicPublication.linkDoi,
-        }),
-      ),
+      academicPublications: input.AcademicPublication.map((academicPublication) => ({
+        title: academicPublication.title,
+        authors: academicPublication.authors,
+        publicationYear: academicPublication.publicationYear,
+        journalName: academicPublication.journalName,
+        volume: academicPublication.volume,
+        editionNumber: academicPublication.editionNumber,
+        startPage: academicPublication.startPage,
+        linkDoi: academicPublication.linkDoi,
+      })),
 
       directorBoardInfo:
         input.DirectorBoard !== null
           ? {
-              directorBoardProfileImage:
-                input.DirectorBoard.directorBoardProfileImage,
+              directorBoardProfileImage: input.DirectorBoard.directorBoardProfileImage,
               aboutMe: input.DirectorBoard.aboutMe,
               position: input.DirectorBoard.position,
             }

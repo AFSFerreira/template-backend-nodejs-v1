@@ -6,6 +6,15 @@ import {
   TEMP_PROFILE_IMAGES_TTL_IN_MS,
 } from '@constants/jobs-configuration'
 
+import { logger } from '@lib/logger'
+import {
+  DAILY_TEMP_IMAGES_CLEANUP,
+  DELETE_FAILURE,
+  FILE_LIFETIME_CALCULATION_ERROR,
+  FILE_REMOVAL_ERROR,
+  LISTING_FILES_ERROR,
+} from '@messages/logger'
+
 async function listFiles(dir: string) {
   return await fs.readdir(dir, { withFileTypes: true })
 }
@@ -20,25 +29,21 @@ async function removeFile(filePath: string) {
   try {
     await fs.unlink(filePath)
   } catch (error) {
-    // TODO: Melhorar com logger posteriormente
-    console.error('failed to delete', filePath, error.message)
+    logger.error({ path: filePath, error }, DELETE_FAILURE)
   }
 }
 
 export async function cleanupTempImages() {
-  console.log(
-    '[Profile Images] Executando limpeza diária de imagens de perfil obsoletas',
-  )
+  logger.info(DAILY_TEMP_IMAGES_CLEANUP)
 
   let fileNames: string[] | undefined
 
   try {
     const entries = await listFiles(TEMP_FILES_DIRECTORY_ABSOLUTE_PATH)
-    fileNames = entries
-      .filter((entry) => entry.isFile())
-      .map((file) => file.name)
+    fileNames = entries.filter((entry) => entry.isFile()).map((file) => file.name)
   } catch (error) {
-    console.log('Erro ao listar aquivos:', TEMP_FILES_DIRECTORY_ABSOLUTE_PATH)
+    logger.error({ path: TEMP_FILES_DIRECTORY_ABSOLUTE_PATH, error }, LISTING_FILES_ERROR)
+    return false
   }
 
   for (let idx = 0; idx < fileNames.length; idx += ERASE_FILES_CONCURRENCY) {
@@ -46,19 +51,14 @@ export async function cleanupTempImages() {
 
     await Promise.all(
       deleteBatch.map(async (fileName) => {
-        const fullFilePath = path.join(
-          TEMP_FILES_DIRECTORY_ABSOLUTE_PATH,
-          fileName,
-        )
+        const fullFilePath = path.join(TEMP_FILES_DIRECTORY_ABSOLUTE_PATH, fileName)
 
         let fileAgeMs: number | undefined
         try {
           fileAgeMs = await getFileAgeInMs(fullFilePath)
         } catch (error) {
-          console.log(
-            'Arquivo não encontrado durante o cálculo do tempo de vida:',
-            fullFilePath,
-          )
+          logger.error({ path: fullFilePath, error }, FILE_LIFETIME_CALCULATION_ERROR)
+          return false
         }
 
         if (fileAgeMs <= TEMP_PROFILE_IMAGES_TTL_IN_MS) return false
@@ -66,7 +66,8 @@ export async function cleanupTempImages() {
         try {
           await removeFile(fullFilePath)
         } catch (error) {
-          console.log('Erro durante a remoção do arquivo:', fullFilePath)
+          logger.error({ path: fullFilePath, error }, FILE_REMOVAL_ERROR)
+          return false
         }
 
         return true

@@ -2,7 +2,7 @@ import type { ComparableType } from '@custom-types/orderable-type'
 import type { QueryMode } from '@custom-types/query-mode'
 import { userWithDetails } from '@custom-types/user-with-details'
 import { userWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
-import { prisma } from '@lib/prisma/prisma'
+import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import type {
@@ -33,10 +33,7 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  static buildComparableFilter(
-    comparableType: ComparableType | undefined,
-    value: any,
-  ) {
+  static buildComparableFilter(comparableType: ComparableType | undefined, value: any) {
     if (!value || !comparableType) return undefined
 
     return {
@@ -55,28 +52,20 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  static buildGetAllUsersWhereInput(
-    data: Omit<ListAllUsersQuery, 'simplified'>,
-  ): Prisma.UserWhereInput {
+  static buildGetAllUsersWhereInput(data: Omit<ListAllUsersQuery, 'simplified'>): Prisma.UserWhereInput {
     return {
       fullName: PrismaUsersRepository.buildStartsWithFilter(data.fullName),
       email: PrismaUsersRepository.buildStartsWithFilter(data.email),
       username: PrismaUsersRepository.buildStartsWithFilter(data.username),
 
-      departmentName: PrismaUsersRepository.buildStartsWithFilter(
-        data.departmentName,
-      ),
+      departmentName: PrismaUsersRepository.buildStartsWithFilter(data.departmentName),
 
-      birthdate: PrismaUsersRepository.buildComparableFilter(
-        data.birthdateComparison,
-        data.birthdate,
-      ),
+      birthdate: PrismaUsersRepository.buildComparableFilter(data.birthdateComparison, data.birthdate),
 
-      astrobiologyOrRelatedStartYear:
-        PrismaUsersRepository.buildComparableFilter(
-          data.astrobiologyOrRelatedStartYearComparison,
-          data.astrobiologyOrRelatedStartYear,
-        ),
+      astrobiologyOrRelatedStartYear: PrismaUsersRepository.buildComparableFilter(
+        data.astrobiologyOrRelatedStartYearComparison,
+        data.astrobiologyOrRelatedStartYear,
+      ),
 
       receiveReports: data.receiveReports,
       occupation: data.occupation,
@@ -103,15 +92,11 @@ export class PrismaUsersRepository implements UsersRepository {
       ActivityArea: {
         OR: [
           {
-            area: PrismaUsersRepository.buildInsensitiveMode(
-              data.mainActivityArea,
-            ),
+            area: PrismaUsersRepository.buildInsensitiveMode(data.mainActivityArea),
             type: ActivityAreaType.AREA_OF_ACTIVITY,
           },
           {
-            area: PrismaUsersRepository.buildInsensitiveMode(
-              data.subActivityArea,
-            ),
+            area: PrismaUsersRepository.buildInsensitiveMode(data.subActivityArea),
             type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
           },
         ],
@@ -132,8 +117,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const academicPublicationCreateData = query.academicPublication
       ? {
           create: query.academicPublication.map((academicPublication) => {
-            const { area, ...filteredAcademicPublicationData } =
-              academicPublication
+            const { area, ...filteredAcademicPublicationData } = academicPublication
             return {
               ...filteredAcademicPublicationData,
               ActivityArea: {
@@ -185,7 +169,7 @@ export class PrismaUsersRepository implements UsersRepository {
           },
         }
       : undefined
-    
+
     const addressCreateData = {
       create: query.address,
     }
@@ -285,9 +269,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
     if (!query?.page || !query?.limit) {
       const users = await prisma.user.findMany({
-        include: simplified
-          ? userWithSimplifiedDetails.include
-          : userWithDetails.include,
+        include: simplified ? userWithSimplifiedDetails.include : userWithDetails.include,
       })
       return {
         data: users,
@@ -314,9 +296,7 @@ export class PrismaUsersRepository implements UsersRepository {
         skip: offset,
         take: query.limit,
         orderBy: { createdAt: query.createdAtOrder },
-        include: simplified
-          ? userWithSimplifiedDetails.include
-          : userWithDetails.include,
+        include: simplified ? userWithSimplifiedDetails.include : userWithDetails.include,
       })
 
       return [totalItems, users]

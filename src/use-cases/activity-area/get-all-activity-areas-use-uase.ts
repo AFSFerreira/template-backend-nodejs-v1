@@ -11,9 +11,7 @@ export interface GetAllActivityAreasUseCaseResponse {
 }
 
 export class GetAllActivityAreasUseCase {
-  constructor(
-    private readonly activityAreaRepository: ActivityAreaRepository,
-  ) {}
+  constructor(private readonly activityAreaRepository: ActivityAreaRepository) {}
 
   async execute({
     name,
@@ -21,13 +19,12 @@ export class GetAllActivityAreasUseCase {
     page,
     limit,
   }: GetAllActivityAreasUseCaseRequest): Promise<GetAllActivityAreasUseCaseResponse> {
-    const activityAreasInfo =
-      await this.activityAreaRepository.listAllActivityAreas({
-        name,
-        type,
-        page,
-        limit,
-      })
+    const activityAreasInfo = await this.activityAreaRepository.listAllActivityAreas({
+      name,
+      type,
+      page,
+      limit,
+    })
 
     return activityAreasInfo
   }

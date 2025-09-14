@@ -7,10 +7,7 @@ export interface RateLimitInput {
   timeWindow?: DurationString
 }
 
-export function rateLimit({
-  max = 5,
-  timeWindow,
-}: RateLimitInput): Partial<RouteOptions> {
+export function rateLimit({ max = 5, timeWindow }: RateLimitInput): Partial<RouteOptions> {
   return {
     config: {
       rateLimit: {
