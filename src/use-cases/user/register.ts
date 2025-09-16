@@ -1,4 +1,4 @@
-import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-paths'
+import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-constants'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'

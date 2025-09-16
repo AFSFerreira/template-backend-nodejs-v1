@@ -1,4 +1,4 @@
-import { YEAR_MONTH_REGEX } from '@constants/regex'
+import { YEAR_MONTH_REGEX } from '@constants/regex-constants'
 import { VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
 import { INVALID_DATE_RANGE, MONTH_YEAR_INVALID_FORMAT } from 'src/messages/validation'
 import { uppercaseTextWithoutInnerSpacesSchema } from '../primitives/uppercase-text-without-inner-spaces-schema'

@@ -1,9 +1,8 @@
-import path from 'node:path'
-import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/file-paths'
-import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-sizes'
+import { MAX_IMAGE_FILE_SIZE_BYTES, REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/file-constants'
 import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
 import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { saveCompressedImage } from '@utils/save-compressed-image'
+import path from 'node:path'
 
 interface UploadRegisterProfileImageUseCaseRequest {
   buffer: Buffer

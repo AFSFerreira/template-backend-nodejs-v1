@@ -1,4 +1,4 @@
-import { INNER_SPACES_REGEX } from '@constants/regex'
+import { INNER_SPACES_REGEX } from '@constants/regex-constants'
 import { INVALID_INNER_SPACES } from 'src/messages/validation'
 import { limitedNonemptyTextSchema } from './limited-nonempty-text-schema'
 

@@ -14,7 +14,7 @@ import type {
   TokenData,
   UsersRepository,
 } from '../users-repository'
-import { buildListAllUsersSimplifiedQuery } from '@repositories/queries/build-list-all-users-simplified-query'
+import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/build-list-all-users-simplified-query'
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 
 export class PrismaUsersRepository implements UsersRepository {

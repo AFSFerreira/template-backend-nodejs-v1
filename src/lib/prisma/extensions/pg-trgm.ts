@@ -1,4 +1,4 @@
-import { IS_DEBUG } from '@constants/env'
+import { IS_DEBUG } from '@constants/env-constants'
 import { logger } from '@lib/logger'
 import { PG_TRGM_NOT_ENABLED } from '@messages/logger'
 import type { PrismaClient } from '@prisma/client'
@@ -26,7 +26,7 @@ export async function ensurePgTrgmAvailable(prisma: PrismaClient) {
     logger.info(`pg_trgm similarity check: ${similarity[0].similarity}`)
 
     const result = await prisma.$queryRaw<Array<{ similar: boolean; score: number }>>`
-      SELECT 
+      SELECT
         similarity(${`banana`}, ${`bananas`}) AS score,
         ${`banana`} % ${`bananas`} AS similar;
     `

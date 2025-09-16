@@ -1,4 +1,4 @@
-import { JOBS_TIMEZONE } from '@constants/jobs-configuration'
+import { JOBS_TIMEZONE } from '@constants/jobs-configuration-constants'
 import cron from 'node-cron'
 import { cleanupTempImages } from '../functions/cleanup-temp-images'
 

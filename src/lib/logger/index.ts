@@ -1,4 +1,4 @@
-import { IS_DEV } from '@constants/env'
+import { IS_DEV } from '@constants/env-constants'
 import { env } from '@env/index'
 import type { LoggerOptions, StreamEntry } from 'pino'
 import { multistream, pino, stdSerializers, stdTimeFunctions } from 'pino'

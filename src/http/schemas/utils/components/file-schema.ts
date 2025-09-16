@@ -1,5 +1,5 @@
-import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-sizes'
-import { allowedImageMimeTypes } from '@constants/profile-image-extensions'
+import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-constants'
+import { allowedImageMimeTypes } from '@constants/profile-image-constants'
 import z from 'zod'
 import { limitedNonemptyTextSchema } from '../primitives/limited-nonempty-text-schema'
 

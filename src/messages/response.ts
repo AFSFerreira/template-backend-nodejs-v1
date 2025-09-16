@@ -1,4 +1,4 @@
-import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-sizes'
+import { MAX_IMAGE_FILE_SIZE_BYTES } from "@constants/file-constants"
 
 export const NO_USERS_AVAILABLE = {
   status: 204,

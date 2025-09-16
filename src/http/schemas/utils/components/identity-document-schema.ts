@@ -1,4 +1,4 @@
-import { PASSPORT_VALIDATION_REGEX, RNE_VALIDATION_REGEX } from '@constants/regex'
+import { PASSPORT_VALIDATION_REGEX, RNE_VALIDATION_REGEX } from '@constants/regex-constants'
 import {
   INVALID_CPF_FORMAT,
   INVALID_CPF_LENGTH,

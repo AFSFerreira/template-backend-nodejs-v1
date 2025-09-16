@@ -1,9 +1,9 @@
-import { Prisma } from "@prisma/client"
+import { MembershipStatusType, Prisma } from "@prisma/client"
 import type { GetAllUsersSimplifiedQuerySchemaType } from "@schemas/user/get-all-users-simplified-query-schema"
 
 export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQuerySchemaType) {
   const conditions: Prisma.Sql[] = [
-    Prisma.sql`u.membership_status = 'ACTIVE'::"MembershipStatusType"`
+    Prisma.sql`u.membership_status = ${MembershipStatusType.ACTIVE}::"MembershipStatusType"`
   ]
 
   if (query.fullName) {

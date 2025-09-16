@@ -1,6 +1,6 @@
-import { z } from 'zod'
-import { TOKEN_DURATION_REGEX } from '../constants/regex'
 import 'dotenv/config'
+import { z } from 'zod'
+import { TOKEN_DURATION_REGEX } from '../constants/regex-constants'
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'staging', 'production', 'test']).default('development'),

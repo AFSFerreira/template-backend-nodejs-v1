@@ -1,4 +1,4 @@
-import { ORCID_NUMBER_VALIDATION_REGEX } from '@constants/regex'
+import { ORCID_NUMBER_VALIDATION_REGEX } from '@constants/regex-constants'
 import { INVALID_ORCID_FORMAT } from 'src/messages/validation'
 import { uppercaseTextWithoutInnerSpacesSchema } from '../primitives/uppercase-text-without-inner-spaces-schema'
 

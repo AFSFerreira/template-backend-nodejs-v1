@@ -1,6 +1,6 @@
-import path from 'node:path'
 import ms from 'ms'
-import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from './file-paths'
+import path from 'node:path'
+import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from './file-constants'
 
 export const JOBS_TIMEZONE = 'America/Sao_Paulo'
 export const TEMP_FILES_DIRECTORY_ABSOLUTE_PATH = path.resolve(REGISTER_TEMP_PROFILE_IMAGES_PATH)
