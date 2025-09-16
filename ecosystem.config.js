@@ -4,12 +4,10 @@ module.exports = {
       name: 'astrobiologia-backend',
       script: './dist/server.js',
       cwd: '/home/injunior-infra/dev/projects/astrobiologia-backend',
-      exec_mode: 'fork',
-      instances: 1,
-      max_memory_restart: '512M',
+      max_memory_restart: '256M',
 
       // Node flags + Environment:
-      node_args: '-r dotenv/config --max_old_space_size=512',
+      node_args: '--env-file=.env',
 
       // Logging:
       out_file: './logs/out.log',
