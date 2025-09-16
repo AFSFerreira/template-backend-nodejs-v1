@@ -24,25 +24,20 @@ import { emailSchema } from '../utils/primitives/email-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
-const commonUserSchema = z
-  .object({
-    email: emailSchema,
-    password: passwordSchema,
-    fullName: upperCaseTextSchema,
-    username: usernameSchema,
-    profileImage: limitedNonemptyTextSchema.optional(),
-    birthdate: birthdateSchema,
-    emailIsPublic: booleanSchema,
-    receiveReports: booleanSchema,
-    interestDescription: nonemptyTextSchema.max(MAX_INTEREST_DESCRIPTION_SIZE),
-    activityAreaDescription: longLimitedNonemptyTextSchema.optional(),
-    subActivityAreaDescription: longLimitedNonemptyTextSchema.optional(),
-  })
-  .extend(
-    z.object({
-      identity: identityDocumentSchema,
-    }).shape,
-  )
+const commonUserSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  fullName: upperCaseTextSchema,
+  username: usernameSchema,
+  identity: identityDocumentSchema,
+  profileImage: limitedNonemptyTextSchema.optional(),
+  birthdate: birthdateSchema,
+  emailIsPublic: booleanSchema,
+  receiveReports: booleanSchema,
+  interestDescription: nonemptyTextSchema.max(MAX_INTEREST_DESCRIPTION_SIZE),
+  activityAreaDescription: longLimitedNonemptyTextSchema.optional(),
+  subActivityAreaDescription: longLimitedNonemptyTextSchema.optional(),
+})
 
 const professionalAndAcademicUserSchema = z.object({
   linkLattes: urlSchema.optional(),
@@ -71,27 +66,31 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
       scholarshipHolder: booleanSchema,
       sponsoringOrganization: upperCaseTextSchema.optional(),
     })
-    .refine(
-      (data) => {
-        // A data prevista para a conclusão do curso não pode ser antes da data de ínicio do curso:
-        return data.expectedGraduationDate >= data.startGraduationDate
-      },
-      {
-        error: COMPLETION_DATE_BEFORE_START_DATE,
-        path: ['expectedGraduationDate'],
-      },
-    )
-    .refine(
-      (data) => {
-        // Se o usuário for bolsista, precisa possuir um órgão responsável e vice-versa:
-        if (data.scholarshipHolder) return !!data.sponsoringOrganization
-        return !data.sponsoringOrganization
-      },
-      {
-        error: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
-        path: ['scholarshipHolder'],
-      },
-    ),
+    .superRefine((data, ctx) => {
+      if (data.startGraduationDate > data.expectedGraduationDate) {
+        ctx.addIssue({
+          code: 'custom',
+          message: COMPLETION_DATE_BEFORE_START_DATE,
+          path: ['expectedGraduationDate'],
+        })
+      }
+
+      if (data.scholarshipHolder && !data.sponsoringOrganization) {
+        ctx.addIssue({
+          code: 'custom',
+          message: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
+          path: ['sponsoringOrganization'],
+        })
+      }
+
+      if (!data.scholarshipHolder && data.sponsoringOrganization) {
+        ctx.addIssue({
+          code: 'custom',
+          message: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
+          path: ['scholarshipHolder'],
+        })
+      }
+    }),
 
   academicPublication: z
     .array(
@@ -124,52 +123,60 @@ const otherRootFieldsSchema = z.object({
   }),
 })
 
-const lowLevelEducationRegisterBodySchema = z
-  .object({
-    user: z
-      .object({
-        educationLevel: lowLevelEducationSchema,
-      })
-      .extend(commonUserSchema.shape)
-      .extend(stripZodKeys(professionalAndAcademicUserSchema).shape),
-  })
-  .extend(otherRootFieldsSchema.shape)
-  .extend(stripZodKeys(otherRootFieldsProfessionalAndAcademicSchema).shape)
+const lowLevelEducationRegisterBodySchema = z.object({
+  ...otherRootFieldsSchema.shape,
+  ...stripZodKeys(otherRootFieldsProfessionalAndAcademicSchema).shape,
+  user: z.object({
+    ...commonUserSchema.shape,
+    ...stripZodKeys(professionalAndAcademicUserSchema).shape,
+    educationLevel: lowLevelEducationSchema,
+  }),
+})
 
 const highLevelEducationRegisterBodySchema = z
   .object({
-    user: z
-      .object({
-        educationLevel: highLevelEducationSchema,
-      })
-      .extend(commonUserSchema.shape)
-      .extend(professionalAndAcademicUserSchema.shape),
+    ...otherRootFieldsSchema.shape,
+    ...otherRootFieldsProfessionalAndAcademicSchema.shape,
+    user: z.object({
+      ...commonUserSchema.shape,
+      ...professionalAndAcademicUserSchema.shape,
+      educationLevel: highLevelEducationSchema,
+    }),
   })
-  .extend(otherRootFieldsSchema.shape)
-  .extend(otherRootFieldsProfessionalAndAcademicSchema.shape)
-  .refine(
-    (data) => {
-      // O usuário precisa fornecer uma descrição caso a área de atividade principal selecionada seja "OUTRA":
-      if (data.activityArea.mainActivityArea === 'OUTRA') return !!data.user.activityAreaDescription
-      return !data.user.activityAreaDescription
-    },
-    {
-      error: ACTIVITY_AREA_MISSING_DESCRIPTION,
-      path: ['activityAreas', 'mainActivityArea'],
-    },
-  )
-  .refine(
-    (data) => {
-      // O usuário precisa fornecer uma descrição caso a subárea de atividade selecionada seja "OUTRA":
-      if (data.activityArea.subActivityArea === 'OUTRA') return !!data.user.subActivityAreaDescription
-      return !data.user.subActivityAreaDescription
-    },
-    {
-      error: ACTIVITY_AREA_MISSING_DESCRIPTION,
-      path: ['activityAreas', 'subActivityArea'],
-    },
-  )
+  .superRefine((data, ctx) => {
+    if (data.activityArea.mainActivityArea === 'OUTRA' && !data.user.activityAreaDescription) {
+      ctx.addIssue({
+        code: 'custom',
+        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
+        path: ['activityAreas', 'mainActivityArea'],
+      })
+    }
 
-export const registerBodySchema = z.union([lowLevelEducationRegisterBodySchema, highLevelEducationRegisterBodySchema])
+    if (data.activityArea.mainActivityArea !== 'OUTRA' && data.user.activityAreaDescription) {
+      ctx.addIssue({
+        code: 'custom',
+        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
+        path: ['activityAreas', 'mainActivityArea'],
+      })
+    }
+
+    if (data.activityArea.subActivityArea === 'OUTRA' && !data.user.subActivityAreaDescription) {
+      ctx.addIssue({
+        code: 'custom',
+        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
+        path: ['activityAreas', 'subActivityArea'],
+      })
+    }
+
+    if (data.activityArea.subActivityArea !== 'OUTRA' && data.user.subActivityAreaDescription) {
+      ctx.addIssue({
+        code: 'custom',
+        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
+        path: ['activityAreas', 'subActivityArea'],
+      })
+    }
+  })
+
+export const registerBodySchema = z.union([highLevelEducationRegisterBodySchema, lowLevelEducationRegisterBodySchema])
 
 export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

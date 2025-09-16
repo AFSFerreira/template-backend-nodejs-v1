@@ -26,17 +26,14 @@ export class CheckAvailabilityUseCase {
         async () =>
           await this.usersRepository.checkIfAvailable({
             identityType_identityDocument: {
-              identityType: input.identityType,
-              identityDocument: input.identityDocument,
+              identityType: input.identity.identityType,
+              identityDocument: input.identity.identityDocument,
             },
           }),
       ],
     ]
 
     const activeChecks = checks.filter(([key, _]) => {
-      if (key === 'identity') {
-        return !!(input.identityType && input.identityDocument)
-      }
       return !!input[key as keyof CheckAvailabilityUseCaseResponse]
     })
 

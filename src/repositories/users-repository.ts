@@ -1,9 +1,11 @@
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { PaginationType } from '@custom-types/pagination-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 import type { EducationLevelType, IdentityType, OccupationType, Prisma } from '@prisma/client'
 import type { getAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-users-detailed-query-schema'
+import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 
 export type ListAllUsersQuery = Omit<getAllUsersDetailedQuerySchemaType, 'page' | 'limit'> &
@@ -41,6 +43,8 @@ export interface FindByIdentityDocumentQuery {
   identityType: IdentityType
 }
 
+export type ListAllUsersSimplified = GetAllUsersSimplifiedQuerySchemaType
+
 export interface UsersRepository {
   create: (query: CreateUserQuery) => Promise<UserWithDetails>
   checkIfAvailable: (where: Prisma.UserWhereUniqueInput) => Promise<boolean>
@@ -54,6 +58,7 @@ export interface UsersRepository {
   listAllUsers: (
     query?: ListAllUsersQuery,
   ) => Promise<PaginatedResult<Array<UserWithDetails | UserWithSimplifiedDetails>>>
+  listAllUsersSimplified: (query?: ListAllUsersSimplified) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>

@@ -2,7 +2,7 @@ import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { activityAreasData, subActivityAreasData } from './seed-data/activity-areas'
 import { blogData } from './seed-data/blogs'
-import { userData1, userData2 } from './seed-data/users'
+import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 import { env } from '../src/env'
 
 const prisma = new PrismaClient()
@@ -30,8 +30,8 @@ async function main() {
     where: { email: userData1.email },
     update: {},
     create: {
-      passwordHash,
       ...userData1,
+      passwordHash,
     },
   })
 
@@ -40,10 +40,20 @@ async function main() {
     where: { email: userData2.email },
     update: {},
     create: {
-      passwordHash,
       ...userData2,
+      passwordHash,
     },
   })
+
+  // Criação de Usuários Dummy:
+  for (const userInfo of dummyUserInfoArray) {
+    await prisma.user.create({
+      data: {
+        ...userInfo,
+        passwordHash,
+      }
+    })
+  }
 
   let existingBlog = await prisma.blog.findFirst({
     where: { title: blogData.title },

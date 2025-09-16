@@ -10,9 +10,12 @@ import type {
   FindByEmailOrUsernameQuery,
   FindByIdentityDocumentQuery,
   ListAllUsersQuery,
+  ListAllUsersSimplified,
   TokenData,
   UsersRepository,
 } from '../users-repository'
+import { buildListAllUsersSimplifiedQuery } from '@repositories/queries/build-list-all-users-simplified-query'
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 
 export class PrismaUsersRepository implements UsersRepository {
   static buildInsensitiveMode(value: string | undefined) {
@@ -271,6 +274,7 @@ export class PrismaUsersRepository implements UsersRepository {
       const users = await prisma.user.findMany({
         include: simplified ? userWithSimplifiedDetails.include : userWithDetails.include,
       })
+
       return {
         data: users,
         meta: {
@@ -301,6 +305,70 @@ export class PrismaUsersRepository implements UsersRepository {
 
       return [totalItems, users]
     })
+
+    const totalPages = Math.ceil(totalItems / query.limit)
+
+    return {
+      data: users,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize: query.limit,
+      },
+    }
+  }
+
+  async listAllUsersSimplified(query?: ListAllUsersSimplified) {
+    if (!query?.page || !query?.limit) {
+      const users = await prisma.user.findMany({
+        select: {
+          id: true,
+          publicId: true,
+          fullName: true,
+          username: true,
+          email: true,
+          emailIsPublic: true,
+          Institution: {
+            select: { name: true }
+          },
+          Address: {
+            select: { state: true }
+          }
+        }
+      })
+
+      const formattedUsers = users.map((userInfo) => {
+        const { Address, Institution, ...filteredUserInfo } = userInfo
+        return {
+          ...filteredUserInfo,
+          public_id: userInfo.publicId,
+          full_name: userInfo.fullName,
+          email_is_public: userInfo.emailIsPublic,
+          institution_name: Institution.name,
+          state: Address.state,
+        }
+      })
+
+      return {
+        data: formattedUsers,
+        meta: {
+          totalItems: formattedUsers.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: formattedUsers.length,
+        }
+      }
+    }
+
+    const { searchQuery, countQuery } = buildListAllUsersSimplifiedQuery(query)
+
+    const [countResult, users] = await Promise.all([
+      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
+      prisma.$queryRaw<CustomUserWithSimplifiedDetails[]>(searchQuery),
+    ])
+
+    const totalItems = countResult[0].total
 
     const totalPages = Math.ceil(totalItems / query.limit)
 

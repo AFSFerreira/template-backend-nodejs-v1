@@ -1,5 +1,5 @@
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
-import type { UserWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 
 import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
 import { formatDate } from '@utils/format-date'
@@ -83,21 +83,21 @@ interface HTTPUser extends HTTPUserDetails {
 }
 
 export class UserPresenter {
-  static toHTTPSimplified(user: UserWithSimplifiedDetails): HTTPSimplifiedUserDetails
-  static toHTTPSimplified(users: UserWithSimplifiedDetails[]): HTTPSimplifiedUserDetails[]
+  static toHTTPSimplified(user: CustomUserWithSimplifiedDetails): HTTPSimplifiedUserDetails
+  static toHTTPSimplified(users: CustomUserWithSimplifiedDetails[]): HTTPSimplifiedUserDetails[]
   static toHTTPSimplified(
-    input: UserWithSimplifiedDetails | UserWithSimplifiedDetails[],
+    input: CustomUserWithSimplifiedDetails | CustomUserWithSimplifiedDetails[],
   ): HTTPSimplifiedUserDetails | HTTPSimplifiedUserDetails[] {
     if (Array.isArray(input)) {
       return input.map((user) => UserPresenter.toHTTPSimplified(user))
     }
 
     return {
-      id: input.publicId,
-      fullName: input.fullName,
-      institutionName: input.Institution.name,
-      state: input.Address?.state ?? '',
-      email: input.emailIsPublic ? input.email : null,
+      id: input.public_id,
+      fullName: input.full_name,
+      institutionName: input.institution_name,
+      state: input.state,
+      email: input.email_is_public ? input.email : null,
     }
   }
 
