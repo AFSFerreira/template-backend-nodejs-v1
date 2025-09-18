@@ -58,7 +58,9 @@ export interface UsersRepository {
   listAllUsers: (
     query?: ListAllUsersQuery,
   ) => Promise<PaginatedResult<Array<UserWithDetails | UserWithSimplifiedDetails>>>
-  listAllUsersSimplified: (query?: ListAllUsersSimplified) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
+  listAllUsersSimplified: (
+    query?: ListAllUsersSimplified,
+  ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>

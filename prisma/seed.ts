@@ -1,9 +1,7 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
-import { hash } from 'bcryptjs'
 import { activityAreasData, subActivityAreasData } from './seed-data/activity-areas'
 import { blogData } from './seed-data/blogs'
 import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
-import { env } from '../src/env'
 
 const prisma = new PrismaClient()
 
@@ -23,35 +21,26 @@ async function main() {
     skipDuplicates: true,
   })
 
-  const passwordHash = await hash('123456789Az#', env.HASH_SALT_ROUNDS)
-
   // Criação de Usuário Admin:
   await prisma.user.upsert({
     where: { email: userData1.email },
     update: {},
-    create: {
-      ...userData1,
-      passwordHash,
-    },
+    create: userData1,
   })
 
   // Criação de Usuário Comum:
   await prisma.user.upsert({
     where: { email: userData2.email },
     update: {},
-    create: {
-      ...userData2,
-      passwordHash,
-    },
+    create: userData2,
   })
 
   // Criação de Usuários Dummy:
   for (const userInfo of dummyUserInfoArray) {
-    await prisma.user.create({
-      data: {
-        ...userInfo,
-        passwordHash,
-      }
+    await prisma.user.upsert({
+      where: { email: userInfo.email },
+      update: {},
+      create: userInfo,
     })
   }
 

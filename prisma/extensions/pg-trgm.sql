@@ -8,6 +8,6 @@ CREATE INDEX IF NOT EXISTS idx_blogs_title_trgm
 CREATE INDEX IF NOT EXISTS idx_users_fullname_trgm
   ON public.users USING GiST(full_name gist_trgm_ops);
 
-ALTER DATABASE sbastrobiodb SET pg_trgm.similarity_threshold = 0.3;
+-- ALTER DATABASE sbastrobiodb SET pg_trgm.similarity_threshold = 0.3;
 
 SELECT pg_advisory_unlock(40028922);

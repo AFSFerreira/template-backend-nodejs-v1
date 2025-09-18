@@ -5,7 +5,7 @@ import sharp from 'sharp'
 
 export interface CompressedImageInfo {
   finalImagePath: string
-  compressedImageBuffer: Buffer<ArrayBufferLike>
+  compressedImageBuffer: Buffer
 }
 
 export async function saveCompressedImage(

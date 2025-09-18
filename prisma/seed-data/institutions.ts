@@ -3,5 +3,5 @@ export const institutionData1 = {
 }
 
 export const institutionData2 = {
-  name: 'UNIVERSIDADE FEDERAL DO RIO DE JANEIRO'
+  name: 'UNIVERSIDADE FEDERAL DO RIO DE JANEIRO',
 }

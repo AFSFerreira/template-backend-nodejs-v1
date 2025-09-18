@@ -15,6 +15,7 @@
  */
 
 import { Readable } from 'node:stream'
+import { Prisma } from '@prisma/client'
 import { Decimal } from '@prisma/client/runtime/library'
 import type { DoneFuncWithErrOrRes, FastifyReply, FastifyRequest } from 'fastify'
 
@@ -30,12 +31,28 @@ function hasPipe(value: unknown) {
 }
 
 function toSerializable(value: unknown, alreadySeen: WeakSet<object>) {
-  if (value == null) return value
+  if (value === null || value === undefined) return value
   if (typeof value === 'bigint') return value.toString()
   if (value instanceof Decimal) return value.toString()
+
+  if (value === Prisma.DbNull || value === Prisma.JsonNull || value === Prisma.AnyNull) {
+    return null
+  }
+
   if (value instanceof Date || Buffer.isBuffer(value) || value instanceof Readable) {
-    // Mantém tipos especiais inalterados, pois já são serializáveis ou tratados pelo Fastify
     return value
+  }
+
+  if (value instanceof Map) {
+    const obj: Record<string, unknown> = {}
+    for (const [key, val] of value.entries()) {
+      obj[String(key)] = toSerializable(val, alreadySeen)
+    }
+    return obj
+  }
+
+  if (value instanceof Set) {
+    return Array.from(value).map((val) => toSerializable(val, alreadySeen))
   }
 
   if (Array.isArray(value)) {
@@ -46,9 +63,9 @@ function toSerializable(value: unknown, alreadySeen: WeakSet<object>) {
     const unknownObject = value as Record<string, unknown>
 
     if (alreadySeen.has(unknownObject)) {
-      // Retorna o objeto original para evitar loops infinitos em referências circulares
       return value
     }
+
     alreadySeen.add(unknownObject)
 
     const output = Object.fromEntries(

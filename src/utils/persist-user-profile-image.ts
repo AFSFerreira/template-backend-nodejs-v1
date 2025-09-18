@@ -1,6 +1,6 @@
+import path from 'node:path'
 import { REGISTER_PROFILE_IMAGES_PATH, REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/file-constants'
 import fs from 'fs-extra'
-import path from 'node:path'
 
 export async function persistUserProfileImage(tempImageName: string) {
   const oldImagePath = path.resolve(REGISTER_TEMP_PROFILE_IMAGES_PATH, tempImageName)

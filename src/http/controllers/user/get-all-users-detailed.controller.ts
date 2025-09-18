@@ -9,5 +9,5 @@ export async function getAllUsersDetailed(request: FastifyRequest, reply: Fastif
 
   const { data, meta } = await GetAllUsersDetailedUseCase.execute(parsedQuery)
 
-  return await reply.status(200).send({ data: UserPresenter.toHTTPSimplified(data), meta })
+  return await reply.status(200).send({ data: UserPresenter.toHTTP(data), meta })
 }

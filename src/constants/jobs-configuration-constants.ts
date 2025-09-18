@@ -1,5 +1,5 @@
-import ms from 'ms'
 import path from 'node:path'
+import ms from 'ms'
 import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from './file-constants'
 
 export const JOBS_TIMEZONE = 'America/Sao_Paulo'

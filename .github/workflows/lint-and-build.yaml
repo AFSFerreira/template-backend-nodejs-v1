@@ -2,7 +2,7 @@ name: Lint and Build
 
 on:
   push:
-    branches: ['dev', 'main']
+    branches: ['dev']
   pull_request:
     branches: '**'
 
@@ -18,11 +18,6 @@ jobs:
         with:
           node-version: 22.19.0
           cache: 'npm'
-      
-      # - name: Cache npm
-      #   id: npm-cache-dir
-      #   shell: bash
-      #   run: echo "dir=$(npm config get cache)" >> ${GITHUB_ENV}
 
       - name: Install Dependencies
         run: npm ci
@@ -35,4 +30,4 @@ jobs:
 
       - name: Build
         run:
-          npm run build
+          npm run ci:build

@@ -1,9 +1,9 @@
-import { MembershipStatusType, Prisma } from "@prisma/client"
-import type { GetAllUsersSimplifiedQuerySchemaType } from "@schemas/user/get-all-users-simplified-query-schema"
+import { MembershipStatusType, Prisma } from '@prisma/client'
+import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
 
 export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQuerySchemaType) {
   const conditions: Prisma.Sql[] = [
-    Prisma.sql`u.membership_status = ${MembershipStatusType.ACTIVE}::"MembershipStatusType"`
+    Prisma.sql`u.membership_status = ${MembershipStatusType.ACTIVE}::"MembershipStatusType"`,
   ]
 
   if (query.fullName) {
@@ -11,7 +11,7 @@ export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQue
       Prisma.sql`(
         u.full_name % ${query.fullName} OR
         u.full_name ILIKE ${`%${query.fullName}%`}
-      )`
+      )`,
     )
   }
 
@@ -23,9 +23,7 @@ export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQue
     conditions.push(Prisma.sql`a.state = ${query.state}`)
   }
 
-  const whereClause = conditions.length > 0
-    ? Prisma.sql`WHERE ${Prisma.join(conditions, " AND ")}`
-    : Prisma.empty
+  const whereClause = conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` : Prisma.empty
 
   const limit = query.limit ?? 20
   const page = query.page ?? 1

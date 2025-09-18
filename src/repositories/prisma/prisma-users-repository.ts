@@ -1,3 +1,4 @@
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 import type { ComparableType } from '@custom-types/orderable-type'
 import type { QueryMode } from '@custom-types/query-mode'
 import { userWithDetails } from '@custom-types/user-with-details'
@@ -5,6 +6,7 @@ import { userWithSimplifiedDetails } from '@custom-types/user-with-simplified-de
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
+import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import type {
   CreateUserQuery,
   FindByEmailOrUsernameQuery,
@@ -14,8 +16,6 @@ import type {
   TokenData,
   UsersRepository,
 } from '../users-repository'
-import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/build-list-all-users-simplified-query'
-import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 
 export class PrismaUsersRepository implements UsersRepository {
   static buildInsensitiveMode(value: string | undefined) {
@@ -330,12 +330,12 @@ export class PrismaUsersRepository implements UsersRepository {
           email: true,
           emailIsPublic: true,
           Institution: {
-            select: { name: true }
+            select: { name: true },
           },
           Address: {
-            select: { state: true }
-          }
-        }
+            select: { state: true },
+          },
+        },
       })
 
       const formattedUsers = users.map((userInfo) => {
@@ -357,7 +357,7 @@ export class PrismaUsersRepository implements UsersRepository {
           totalPages: 1,
           currentPage: 1,
           pageSize: formattedUsers.length,
-        }
+        },
       }
     }
 
