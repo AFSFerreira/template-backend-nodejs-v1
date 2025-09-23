@@ -1,12 +1,12 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
-import { rangedYearSchema } from '@schemas/utils/components/ranged-year-schema'
 import { highLevelEducationSchema, lowLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
 import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
+import { rangedYearSchema } from '@schemas/utils/primitives/ranged-year-schema'
 import { urlSchema } from '@schemas/utils/primitives/url-schema'
 import { stripZodKeys } from '@utils/strip-zod-keys'
 import {
@@ -15,12 +15,12 @@ import {
   SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
 } from 'src/messages/validation'
 import { z } from 'zod'
+import { emailSchema } from '../utils/components/email-schema'
 import { keywordSchema } from '../utils/components/keyword-schema'
 import { monthYearSchema } from '../utils/components/month-year-schema'
 import { orcidNumberSchema } from '../utils/components/orcid-number-schema'
 import { passwordSchema } from '../utils/components/password-schema'
 import { usernameSchema } from '../utils/components/username-schema'
-import { emailSchema } from '../utils/primitives/email-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 

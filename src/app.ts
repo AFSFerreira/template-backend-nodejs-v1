@@ -17,7 +17,6 @@ import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
 import { appRoutes } from './http/routes'
-import 'dotenv/config'
 
 z.config(z.locales.pt())
 

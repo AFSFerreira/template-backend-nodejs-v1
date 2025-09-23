@@ -5,9 +5,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getAllUsersSimplified(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllUsersSimplifiedQuerySchema.parse(request.query)
-  const GetAllUsersUseCase = makeGetAllUsersSimplifiedUseCase()
+  const getAllUsersUseCase = makeGetAllUsersSimplifiedUseCase()
 
-  const { data, meta } = await GetAllUsersUseCase.execute(parsedQuery)
+  const { data, meta } = await getAllUsersUseCase.execute(parsedQuery)
 
   return await reply.status(200).send({ data: UserPresenter.toHTTPSimplified(data), meta })
 }

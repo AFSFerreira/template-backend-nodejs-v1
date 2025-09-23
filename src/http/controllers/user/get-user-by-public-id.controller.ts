@@ -8,5 +8,5 @@ export async function getUserByPublicId(request: FastifyRequest, reply: FastifyR
   const findUserByIdUseCase = makeFindUserByPublicIdUseCase()
 
   const { user } = await findUserByIdUseCase.execute({ publicId })
-  return await reply.status(200).send({ user: UserPresenter.toHTTP(user) })
+  return await reply.status(200).send({ user: UserPresenter.toHTTPDetailed(user) })
 }

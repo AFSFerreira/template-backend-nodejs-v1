@@ -30,6 +30,9 @@ export async function saveCompressedImage(
     .webp({ quality: options.quality })
     .toBuffer()
 
+  // Garante que as pastas existem:
+  await fs.mkdir(folderPath, { recursive: true })
+
   await fs.writeFile(finalImagePath, compressedImageBuffer)
 
   return { finalImagePath, compressedImageBuffer }

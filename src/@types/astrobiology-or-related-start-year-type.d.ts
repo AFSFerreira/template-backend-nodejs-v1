@@ -1,4 +1,4 @@
-import type { ComparableType } from './orderable-type'
+import type { ComparableType } from './orderable'
 
 export type AstrobiologyOrRelatedStartYearType =
   | {

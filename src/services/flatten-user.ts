@@ -100,9 +100,7 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
         .join('; ') ?? '',
 
     publications:
-      user.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(
-        ' | ',
-      ) ?? '',
+      user.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(' | ') ?? '',
 
     directorBoardPublicId: user.DirectorBoard?.publicId ?? '',
     directorBoardProfileImage: user.DirectorBoard?.directorBoardProfileImage ?? '',

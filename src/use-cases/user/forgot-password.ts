@@ -1,8 +1,8 @@
 import crypto from 'node:crypto'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/primitives/email-schema'
+import { emailSchema } from '@schemas/utils/components/email-schema'
 import ms from 'ms'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
@@ -11,7 +11,7 @@ interface ForgotPasswordUseCaseRequest {
 }
 
 interface ForgotPasswordUseCaseResponse {
-  user: UserWithDetails
+  user: User
   token: string
 }
 
@@ -19,7 +19,7 @@ export class ForgotPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute({ login }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
-    let userAlreadyExists: UserWithDetails | null | undefined
+    let userAlreadyExists: User | null | undefined
 
     if (emailSchema.safeParse(login).success) {
       userAlreadyExists = await this.usersRepository.findByEmail(login)

@@ -12,6 +12,8 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
 
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmitOnError": true,
@@ -38,5 +40,7 @@
       "@templates/*": ["./src/templates/*"],
       "@messages/*": ["./src/messages/*"]
     }
-  }
+  },
+  "include": ["./**/*.ts", "./tsconfig.json"],
+  "exclude": ["node_modules", "dist", "uploads"]
 }

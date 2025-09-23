@@ -13,8 +13,10 @@ interface GetAllUsersSimplifiedCaseResponse {
 export class GetAllUsersSimplifiedUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(getAllUsersSimplifiedInput: GetAllUsersUseCaseRequest): Promise<GetAllUsersSimplifiedCaseResponse> {
-    const simplifiedUsersInfo = await this.usersRepository.listAllUsersSimplified(getAllUsersSimplifiedInput)
+  async execute(
+    getAllUsersSimplifiedUseCaseInput: GetAllUsersUseCaseRequest,
+  ): Promise<GetAllUsersSimplifiedCaseResponse> {
+    const simplifiedUsersInfo = await this.usersRepository.listAllUsersSimplified(getAllUsersSimplifiedUseCaseInput)
 
     return simplifiedUsersInfo as GetAllUsersSimplifiedCaseResponse
   }

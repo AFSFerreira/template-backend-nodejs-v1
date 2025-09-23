@@ -11,14 +11,19 @@ interface CheckAvailabilityUseCaseResponse {
 export class CheckAvailabilityUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async execute(input: CheckAvailabilityUseCaseRequest): Promise<CheckAvailabilityUseCaseResponse> {
+  async execute(
+    checkAvailabilityUseCaseInput: CheckAvailabilityUseCaseRequest,
+  ): Promise<CheckAvailabilityUseCaseResponse> {
     const checks: Array<[string, () => Promise<boolean>]> = [
-      ['email', async () => await this.usersRepository.checkIfAvailable({ email: input.email })],
+      [
+        'email',
+        async () => await this.usersRepository.checkIfAvailable({ email: checkAvailabilityUseCaseInput.email }),
+      ],
       [
         'username',
         async () =>
           await this.usersRepository.checkIfAvailable({
-            username: input.username,
+            username: checkAvailabilityUseCaseInput.username,
           }),
       ],
       [
@@ -26,15 +31,15 @@ export class CheckAvailabilityUseCase {
         async () =>
           await this.usersRepository.checkIfAvailable({
             identityType_identityDocument: {
-              identityType: input.identity.identityType,
-              identityDocument: input.identity.identityDocument,
+              identityType: checkAvailabilityUseCaseInput.identity.identityType,
+              identityDocument: checkAvailabilityUseCaseInput.identity.identityDocument,
             },
           }),
       ],
     ]
 
     const activeChecks = checks.filter(([key, _]) => {
-      return !!input[key as keyof CheckAvailabilityUseCaseResponse]
+      return !!checkAvailabilityUseCaseInput[key as keyof CheckAvailabilityUseCaseResponse]
     })
 
     if (activeChecks.length === 0) {

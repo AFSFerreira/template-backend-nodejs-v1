@@ -1,49 +1,70 @@
 import { MembershipStatusType, Prisma } from '@prisma/client'
 import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
+import { evalOffset } from '@utils/eval-offset'
 
 export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQuerySchemaType) {
   const conditions: Prisma.Sql[] = [
     Prisma.sql`u.membership_status = ${MembershipStatusType.ACTIVE}::"MembershipStatusType"`,
   ]
 
+  const scores: Prisma.Sql[] = []
+  const ordinations: Prisma.Sql[] = []
+
   if (query.fullName) {
+    const searchContent = query.fullName.toUpperCase()
+
+    const unaccentedSearchContent = Prisma.sql`unaccent(${searchContent})`
+
+    const tsQuery = Prisma.sql`plainto_tsquery('portuguese', ${unaccentedSearchContent})`
+
     conditions.push(
       Prisma.sql`(
-        u.full_name % ${query.fullName} OR
-        u.full_name ILIKE ${`%${query.fullName}%`}
+        u.full_name_unaccent % ${unaccentedSearchContent} OR
+        u.full_name_unaccent ILIKE unaccent(${`%${searchContent}%`}) OR
+        u.full_name_tsv_pt @@ ${tsQuery}
       )`,
     )
+
+    scores.push(Prisma.sql`similarity(u.full_name_unaccent, ${unaccentedSearchContent}) * 0.75`)
+    scores.push(Prisma.sql`ts_rank(u.full_name_tsv_pt, ${tsQuery}) * 0.25`)
   }
 
   if (query.institutionName) {
-    conditions.push(Prisma.sql`i.name = ${query.institutionName}`)
+    conditions.push(Prisma.sql`i.name ILIKE ${query.institutionName}`)
   }
 
   if (query.state) {
-    conditions.push(Prisma.sql`a.state = ${query.state}`)
+    conditions.push(Prisma.sql`a.state ILIKE ${query.state}`)
   }
 
   const whereClause = conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` : Prisma.empty
 
-  const limit = query.limit ?? 20
-  const page = query.page ?? 1
-  const offset = (page - 1) * limit
+  const { limit, offset } = evalOffset(query)
+
+  const scoreExpression = scores.length > 0 ? Prisma.sql`(${Prisma.join(scores, ' + ')})` : Prisma.sql`0`
+
+  if (scores.length > 0) {
+    ordinations.push(Prisma.sql`${scoreExpression} DESC`)
+  }
+
+  ordinations.push(Prisma.sql`u.created_at DESC`)
+
+  const orderByClause = Prisma.sql`ORDER BY ${Prisma.join(ordinations, ', ')}`
 
   const searchQuery = Prisma.sql`
     SELECT
       u.id,
       u.public_id,
       u.full_name,
-      u.username,
-      i.name AS institution_name,
-      a.state AS state,
+      u.email,
       u.email_is_public,
-      u.email
+      a.state,
+      i.name as institution_name
     FROM users u
     LEFT JOIN institutions i ON i.id = u.institution_id
     LEFT JOIN addresses a ON a.user_id = u.id
     ${whereClause}
-    ORDER BY u.created_at DESC
+    ${orderByClause}
     LIMIT ${Prisma.sql`${limit}`} OFFSET ${Prisma.sql`${offset}`}
   `
 

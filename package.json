@@ -8,8 +8,9 @@
   "scripts": {
     "build": "tsup",
     "start:dev": "tsx watch --env-file=.env --no-deprecation src/server.ts",
-    "start:prod": "node --env-file=.env dist/server.js",
-    "ci:build": "tsc",
+    "start:prod": "node --enable-source-maps --env-file=.env dist/server.js",
+    "start:prod:docker": "node --enable-source-maps dist/server.js",
+    "ci:build": "rimraf dist && tsc",
     "ci:lint": "npm run lint:fix:prisma && npm run lint:fix:src",
     "ci:format": "npm run format:prisma && npm run format:src",
     "lint:src": "eslint src/**/*.{js,ts,tsx,jsx}",
@@ -20,19 +21,12 @@
     "format:prisma": "prettier --config .prettierrc.json --ignore-path .prettierignore --write 'prisma/**/*.{js,ts,tsx,jsx}'",
     "husky": "husky",
     "husky:install": "husky install",
-    "db:extension:pg-trgm": "prisma db execute --file=prisma/extensions/pg-trgm.sql --schema=prisma/schema.prisma",
-    "db:extension:tsvector": "prisma db execute --file=prisma/extensions/tsvector.sql --schema=prisma/schema.prisma",
-    "db:extension:init": "npm run db:extension:pg-trgm && npm run db:extension:tsvector",
-    "db:shadow:create": "prisma db execute --file=prisma/shadow/create-shadow-db.sql --schema=prisma/schema.prisma",
-    "db:shadow:delete": "prisma db execute --file=prisma/shadow/delete-shadow-db.sql --schema=prisma/schema.prisma",
-    "db:shadow:init": "npm run db:shadow:delete && npm run db:shadow:create",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:dev:default": "prisma migrate dev --name creating_database_models",
     "db:migrate:reset": "prisma migrate reset --force --skip-seed",
     "db:seed": "prisma db seed",
-    "db:reset:all": "rimraf prisma/migrations && npm run db:shadow:init && npm run db:migrate:reset && npm run db:migrate:dev:default && npm run db:extension:init && prisma generate && npm run db:seed",
-    "db:reset:secure": "npm run db:shadow:init && prisma migrate deploy && npm run db:extension:init && prisma generate && npm run db:seed",
-    "db:deploy": "prisma migrate deploy && npm run db:seed"
+    "db:reset:all": "rimraf prisma/migrations && npm run db:migrate:reset && npm run db:migrate:dev:default && prisma generate && npm run db:seed",
+    "db:deploy": "prisma migrate deploy && prisma generate && npm run db:seed"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "19.8.1",

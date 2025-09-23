@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
-import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
+import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { hash } from 'bcryptjs'
@@ -12,7 +12,7 @@ interface ResetPasswordUseCaseRequest {
 }
 
 interface ResetPasswordUseCaseResponse {
-  user: UserWithDetails
+  user: User
 }
 
 export class ResetPasswordUseCase {

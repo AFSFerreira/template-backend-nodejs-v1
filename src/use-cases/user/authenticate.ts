@@ -1,7 +1,7 @@
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { User } from '@prisma/client'
 import type { AuthenticationAuditRepository } from '@repositories/authentication-audit-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/primitives/email-schema'
+import { emailSchema } from '@schemas/utils/components/email-schema'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
@@ -14,7 +14,7 @@ interface AuthenticateUseCaseRequest {
 }
 
 interface AuthenticateUseCaseResponse {
-  user: UserWithDetails
+  user: User
 }
 
 const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
@@ -32,7 +32,7 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    let user: UserWithDetails | null
+    let user: User | null
 
     if (emailSchema.safeParse(login).success) {
       user = await this.usersRepository.findByEmail(login)

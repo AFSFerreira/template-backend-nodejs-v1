@@ -35,9 +35,16 @@ export const subActivityAreasData = [
   'OUTRA',
 ]
 
-export const activityAreaConnection = {
+export const activityAreaConnection1 = {
   type_area: {
     area: activityAreasData[0],
+    type: ActivityAreaType.AREA_OF_ACTIVITY,
+  },
+}
+
+export const activityAreaConnection2 = {
+  type_area: {
+    area: activityAreasData[1],
     type: ActivityAreaType.AREA_OF_ACTIVITY,
   },
 }

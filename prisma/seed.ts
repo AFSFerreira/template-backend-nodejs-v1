@@ -1,6 +1,6 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { activityAreasData, subActivityAreasData } from './seed-data/activity-areas'
-import { blogData } from './seed-data/blogs'
+import { blogData, dummyBlogDataArray } from './seed-data/blogs'
 import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 
 const prisma = new PrismaClient()
@@ -52,6 +52,19 @@ async function main() {
     existingBlog = await prisma.blog.create({
       data: blogData,
     })
+  }
+
+  // Criação de Blogs Dummy:
+  for (const blogInfo of dummyBlogDataArray) {
+    const existingBlog = await prisma.blog.findFirst({
+      where: { title: blogInfo.title },
+    })
+
+    if (!existingBlog) {
+      await prisma.blog.create({
+        data: blogInfo,
+      })
+    }
   }
 }
 

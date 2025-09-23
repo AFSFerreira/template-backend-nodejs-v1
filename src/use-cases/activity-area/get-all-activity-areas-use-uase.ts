@@ -13,18 +13,10 @@ export interface GetAllActivityAreasUseCaseResponse {
 export class GetAllActivityAreasUseCase {
   constructor(private readonly activityAreaRepository: ActivityAreaRepository) {}
 
-  async execute({
-    name,
-    type,
-    page,
-    limit,
-  }: GetAllActivityAreasUseCaseRequest): Promise<GetAllActivityAreasUseCaseResponse> {
-    const activityAreasInfo = await this.activityAreaRepository.listAllActivityAreas({
-      name,
-      type,
-      page,
-      limit,
-    })
+  async execute(
+    getAllActivityAreasUseCaseInput: GetAllActivityAreasUseCaseRequest,
+  ): Promise<GetAllActivityAreasUseCaseResponse> {
+    const activityAreasInfo = await this.activityAreaRepository.listAllActivityAreas(getAllActivityAreasUseCaseInput)
 
     return activityAreasInfo
   }

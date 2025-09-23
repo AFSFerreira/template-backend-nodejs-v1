@@ -6,6 +6,7 @@ import {
   OccupationType,
   UserRoleType,
 } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { hashSync } from 'bcryptjs'
 import { academicPublicationsData } from './academic-publications'
 import { activityAreasData, subActivityAreasData } from './activity-areas'
@@ -23,7 +24,7 @@ export const userData1 = {
   username: 'ADMIN.ADMIN',
   email: 'admin@email.com',
   passwordHash,
-  birthdate: new Date(),
+  birthdate: new Date('2025-09-22'),
   profileImage: '/src/uploads/profile-images/default-profile-pic.png',
   linkLattes: 'http://lattes.cnpq.br/1234567890',
   linkGoogleScholar: 'https://scholar.google.com/admin.admin',
@@ -70,7 +71,7 @@ export const userData1 = {
   ActivityArea: {
     connect: {
       type_area: {
-        area: activityAreasData[0],
+        area: activityAreasData[1],
         type: ActivityAreaType.AREA_OF_ACTIVITY,
       },
     },
@@ -79,7 +80,7 @@ export const userData1 = {
   SubActivityArea: {
     connect: {
       type_area: {
-        area: subActivityAreasData[0],
+        area: subActivityAreasData[2],
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       },
     },
@@ -152,74 +153,93 @@ export const userData2 = {
   },
 }
 
-export const dummyUserInfoArray = []
-const DUMMY_USER_QUANTITY = 20
+const partialDummyUserData = {
+  passwordHash,
+  birthdate: new Date(),
+  profileImage: '/src/uploads/profile-images/default-profile-pic.png',
+  linkLattes: 'http://lattes.cnpq.br/1234567890',
+  linkGoogleScholar: 'https://scholar.google.com/admin.admin',
+  linkResearcherId: null,
+  orcidNumber: '0000-0001-2345-6789',
+  membershipStatus: MembershipStatusType.ACTIVE,
+  role: UserRoleType.DEFAULT,
+  departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
+  institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
+  occupation: OccupationType.RESEARCHER,
+  educationLevel: EducationLevelType.DOCTORATE,
+  emailIsPublic: true,
+  astrobiologyOrRelatedStartYear: 2010,
+  interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
+  receiveReports: true,
+  loginAttempts: 0,
+  lastLogin: new Date(),
+  identityType: IdentityType.CPF,
+  publicInformation: 'ASTROBIÓLOGO',
+
+  Address: { create: addressData2 },
+
+  EnrolledCourse: { create: enrolledCourseData },
+
+  AcademicPublication: { create: academicPublicationsData },
+
+  Institution: {
+    connectOrCreate: {
+      where: institutionData1,
+      create: institutionData1,
+    },
+  },
+
+  Keyword: {
+    connectOrCreate: keywordsData.map((keyword) => ({
+      where: { value: keyword },
+      create: { value: keyword },
+    })),
+  },
+
+  ActivityArea: {
+    connect: {
+      type_area: {
+        area: activityAreasData[0],
+        type: ActivityAreaType.AREA_OF_ACTIVITY,
+      },
+    },
+  },
+
+  SubActivityArea: {
+    connect: {
+      type_area: {
+        area: subActivityAreasData[0],
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      },
+    },
+  },
+}
+
+export const dummyUserInfoArray: Prisma.UserCreateInput[] = [
+  {
+    ...partialDummyUserData,
+    receiveReports: false,
+    identityDocument: `100.000.000-00`,
+    fullName: 'ALÍCIA DOS SANTOS DA CONCEIÇÃO',
+    username: 'alicia123',
+    email: 'alicia@gmail.com',
+  },
+]
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
-for (let i = 1; i <= DUMMY_USER_QUANTITY; i++) {
+for (let i = 1; i <= 20; i++) {
   dummyUserInfoArray.push({
+    ...partialDummyUserData,
+    identityDocument: `000.000.000-${i.toString().padStart(2, '0')}`,
     fullName: `DUMMY USER ${i}`,
     username: `DUMMY USER ${i}`,
     email: `dummy-user${i}@email.com`,
-    passwordHash,
-    birthdate: new Date(),
-    profileImage: '/src/uploads/profile-images/default-profile-pic.png',
-    linkLattes: 'http://lattes.cnpq.br/1234567890',
-    linkGoogleScholar: 'https://scholar.google.com/admin.admin',
-    linkResearcherId: null,
-    orcidNumber: '0000-0001-2345-6789',
-    membershipStatus: MembershipStatusType.ACTIVE,
-    role: UserRoleType.DEFAULT,
-    departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
-    institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
-    occupation: OccupationType.RESEARCHER,
-    educationLevel: EducationLevelType.DOCTORATE,
-    emailIsPublic: true,
-    astrobiologyOrRelatedStartYear: 2010,
-    interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
-    receiveReports: true,
-    loginAttempts: 0,
-    lastLogin: new Date(),
-    identityType: IdentityType.CPF,
-    identityDocument: `000.000.000-${i.toString().padStart(2, '0')}`,
-    publicInformation: 'ASTROBIÓLOGO',
-
-    Address: { create: addressData2 },
-
-    EnrolledCourse: { create: enrolledCourseData },
-
-    AcademicPublication: { create: academicPublicationsData },
-
-    Institution: {
-      connectOrCreate: {
-        where: institutionData1,
-        create: institutionData1,
-      },
-    },
 
     Keyword: {
-      connectOrCreate: keywordsData.map((keyword) => ({
+      connectOrCreate: keywordsData.slice(0, 2).map((keyword) => ({
         where: { value: keyword },
         create: { value: keyword },
       })),
-    },
-
-    ActivityArea: {
-      connect: {
-        type_area: {
-          area: activityAreasData[0],
-          type: ActivityAreaType.AREA_OF_ACTIVITY,
-        },
-      },
-    },
-
-    SubActivityArea: {
-      connect: {
-        type_area: {
-          area: subActivityAreasData[0],
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        },
-      },
     },
   })
 }

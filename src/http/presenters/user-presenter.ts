@@ -1,7 +1,6 @@
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
 import type { UserWithDetails } from '@custom-types/user-with-details'
-
-import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
+import type { EducationLevelType, IdentityType, OccupationType, User, UserRoleType } from '@prisma/client'
 import { formatDate } from '@utils/format-date'
 
 interface HTTPSimplifiedUserDetails {
@@ -10,6 +9,30 @@ interface HTTPSimplifiedUserDetails {
   institutionName: string
   state: string
   email?: string
+}
+
+interface HTTPUser {
+  id: string
+  fullName: string
+  email: string
+  username: string
+  role: UserRoleType
+  birthdate: string | null | undefined
+  linkLattes: string | null
+  linkGoogleScholar: string | null
+  linkResearcherId: string | null
+  orcidNumber: string | null
+  departmentName: string | null
+  institutionComplement: string | null
+  occupation: OccupationType
+  educationLevel: EducationLevelType
+  identityType: IdentityType
+  identityDocument: string
+  emailIsPublic: boolean
+  astrobiologyOrRelatedStartYear: number
+  interestDescription: string
+  receiveReports: boolean
+  publicInformation: string
 }
 
 interface HTTPUserDetails {
@@ -78,7 +101,7 @@ interface HTTPDirectorBoardInfo {
   position: string
 }
 
-interface HTTPUser extends HTTPUserDetails {
+interface HTTPUserWithDetails extends HTTPUserDetails {
   directorBoardInfo: HTTPDirectorBoardInfo | null
 }
 
@@ -93,19 +116,19 @@ export class UserPresenter {
     }
 
     return {
-      id: input.public_id,
-      fullName: input.full_name,
-      institutionName: input.institution_name,
+      id: input.publicId,
+      fullName: input.fullName,
+      institutionName: input.institutionName,
       state: input.state,
-      email: input.email_is_public ? input.email : null,
+      email: input.emailIsPublic ? input.email : null,
     }
   }
 
-  static toHTTP(user: UserWithDetails): HTTPUser
-  static toHTTP(users: UserWithDetails[]): HTTPUser[]
-  static toHTTP(input: UserWithDetails | UserWithDetails[]): HTTPUser | HTTPUser[] {
+  static toHTTPDetailed(user: UserWithDetails): HTTPUserWithDetails
+  static toHTTPDetailed(users: UserWithDetails[]): HTTPUserWithDetails[]
+  static toHTTPDetailed(input: UserWithDetails | UserWithDetails[]): HTTPUserWithDetails | HTTPUserWithDetails[] {
     if (Array.isArray(input)) {
-      return input.map((user) => UserPresenter.toHTTP(user))
+      return input.map((user) => UserPresenter.toHTTPDetailed(user))
     }
 
     const {
@@ -178,6 +201,33 @@ export class UserPresenter {
               position: input.DirectorBoard.position,
             }
           : null,
+    }
+  }
+
+  static toHTTP(user: User): HTTPUser
+  static toHTTP(users: User[]): HTTPUser[]
+  static toHTTP(input: User | User[]): HTTPUser | HTTPUser[] {
+    if (Array.isArray(input)) {
+      return input.map((user) => UserPresenter.toHTTP(user))
+    }
+
+    const {
+      id,
+      passwordHash,
+      publicId,
+      membershipStatus,
+      loginAttempts,
+      lastLogin,
+      recoveryPasswordTokenHash,
+      recoveryPasswordTokenExpiresAt,
+      activityAreaId,
+      ...userFiltered
+    } = input
+
+    return {
+      ...userFiltered,
+      id: input.publicId,
+      birthdate: formatDate(input.birthdate),
     }
   }
 }

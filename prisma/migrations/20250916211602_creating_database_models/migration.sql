@@ -25,7 +25,7 @@ CREATE TYPE "public"."ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_O
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
     "id" SERIAL NOT NULL,
-    "ip_address" TEXT,
+    "ip_address" INET,
     "remote_port" TEXT,
     "browser" TEXT,
     "status" "public"."AuthenticationStatusType" NOT NULL,
@@ -217,8 +217,6 @@ CREATE TABLE "public"."meeting_presentations" (
     "affiliations" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "guest_presenter_name" TEXT,
-    "guest_presenter_email" TEXT,
     "user_id" INTEGER NOT NULL,
     "meeting_id" INTEGER NOT NULL,
 
@@ -257,6 +255,7 @@ CREATE TABLE "public"."blogs" (
     "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
+    "access_count" INTEGER NOT NULL DEFAULT 0,
     "content" JSON NOT NULL,
     "search_content" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -307,6 +306,33 @@ CREATE TABLE "public"."comments" (
     "parent_comment_id" INTEGER,
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."user_meeting_guest" (
+    "id" SERIAL NOT NULL,
+    "full_name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "meeting_id" INTEGER NOT NULL,
+
+    CONSTRAINT "user_meeting_guest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."meeting_guest_presentations" (
+    "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "presentation_type" "public"."PresentationType" NOT NULL,
+    "authors" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "affiliations" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "meeting_id" INTEGER NOT NULL,
+    "user_email" TEXT NOT NULL,
+
+    CONSTRAINT "meeting_guest_presentations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -399,13 +425,7 @@ CREATE UNIQUE INDEX "payment_information_meeting_id_key" ON "public"."payment_in
 CREATE INDEX "payment_information_meeting_id_idx" ON "public"."payment_information"("meeting_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_meeting_user_id_meeting_id_key" ON "public"."user_meeting"("user_id", "meeting_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "meeting_presentations_public_id_key" ON "public"."meeting_presentations"("public_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "meeting_presentations_user_id_meeting_id_key" ON "public"."meeting_presentations"("user_id", "meeting_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meetings_public_id_key" ON "public"."meetings"("public_id");
@@ -436,6 +456,21 @@ CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id"
 
 -- CreateIndex
 CREATE INDEX "comment_likes_newsletter_comment_id_idx" ON "public"."comment_likes"("newsletter_comment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_meeting_guest_meeting_id_email_key" ON "public"."user_meeting_guest"("meeting_id", "email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_guest_presentations_public_id_key" ON "public"."meeting_guest_presentations"("public_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_guest_presentations_meeting_id_user_email_key" ON "public"."meeting_guest_presentations"("meeting_id", "user_email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_presentations_meeting_id_user_id_key" ON "public"."meeting_presentations"("meeting_id", "user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_meeting_meeting_id_user_id_key" ON "public"."user_meeting"("meeting_id", "user_id");
 
 -- CreateIndex
 CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");
@@ -483,7 +518,13 @@ ALTER TABLE "public"."user_meeting" ADD CONSTRAINT "user_meeting_user_id_fkey" F
 ALTER TABLE "public"."user_meeting" ADD CONSTRAINT "user_meeting_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_user_id_meeting_id_fkey" FOREIGN KEY ("user_id", "meeting_id") REFERENCES "public"."user_meeting"("user_id", "meeting_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_id_user_id_fkey" FOREIGN KEY ("meeting_id", "user_id") REFERENCES "public"."user_meeting"("meeting_id", "user_id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."user_meeting_guest" ADD CONSTRAINT "user_meeting_guest_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."meeting_guest_presentations" ADD CONSTRAINT "meeting_guest_presentations_meeting_id_user_email_fkey" FOREIGN KEY ("meeting_id", "user_email") REFERENCES "public"."user_meeting_guest"("meeting_id", "email") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

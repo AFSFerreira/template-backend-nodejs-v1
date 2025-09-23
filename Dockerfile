@@ -1,26 +1,25 @@
-FROM node:22.17.1-alpine AS dependencies
+FROM node:22.17.1-alpine AS build
 
 WORKDIR /usr/src/app
-
-COPY package*.json ./
-
-RUN npm ci
-
-FROM dependencies as BUILD
 
 COPY . .
 
+RUN npm ci
+
 RUN npm run build
 
-FROM node:22.17.1-alpine AS release
+FROM build AS release
 
 WORKDIR /usr/src/app
 
-COPY --from=build /usr/src/app/package*.json ./
-COPY --from=build /usr/src/app/build ./build
+COPY --from=build /usr/src/app/package*.json .
+COPY --from=build /usr/src/app/dist ./dist
+COPY --from=build /usr/src/app/prisma ./prisma
+COPY --from=build /usr/src/app/prisma.config.ts .
+
 
 RUN npm ci --only=production --ignore-scripts
 
 EXPOSE 3000
 
-CMD ["npm", "run", "start:prod"]
+# CMD ["sh", "-c", "$COMMAND"]

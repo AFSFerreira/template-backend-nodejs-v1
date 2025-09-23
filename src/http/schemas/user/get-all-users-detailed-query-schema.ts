@@ -1,72 +1,69 @@
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
+import { membershipStatusArraySchema } from '@schemas/utils/components/membership-status-array-schema'
 import { comparableSchema } from '@schemas/utils/enums/comparable-schema'
 import { educationLevelSchema } from '@schemas/utils/enums/education-level-schema'
-import { membershipStatusSchema } from '@schemas/utils/enums/membership-status-schema'
 import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
 import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
 import { userRoleSchema } from '@schemas/utils/enums/user-role-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
+import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
-import {
-  ASTROBIOLOGY_OR_RELATED_START_YEAR_COMPARISON_MUTUAL_EXISTENCE,
-  BIRTHDATE_COMPARISON_MUTUAL_EXISTENCE,
-} from 'src/messages/validation'
 import { z } from 'zod'
 import { getAllUsersSimplifiedQuerySchema } from './get-all-users-simplified-query-schema'
+import { emailSchema } from '../utils/components/email-schema'
 import { keywordSchema } from '../utils/components/keyword-schema'
 import { usernameSchema } from '../utils/components/username-schema'
-import { emailSchema } from '../utils/primitives/email-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
-export const getAllUsersDetailedQuerySchema = z
+const getAllUsersDetailedQueryRawSchema = z
   .object({
+    ...getAllUsersSimplifiedQuerySchema.shape,
     email: emailSchema,
     username: usernameSchema,
-    role: userRoleSchema,
-    membershipStatus: membershipStatusSchema,
+    membershipStatus: membershipStatusArraySchema,
     departmentName: upperCaseTextSchema,
-    specificActivity: upperCaseTextSchema,
+    role: userRoleSchema,
     receiveReports: booleanSchema,
     mainActivityArea: upperCaseTextSchema,
     subActivityArea: upperCaseTextSchema,
     keywords: keywordSchema,
     occupation: occupationSchema,
     educationLevel: educationLevelSchema,
-    birthdate: birthdateSchema,
-    birthdateComparison: comparableSchema,
-    astrobiologyOrRelatedStartYear: positiveIntegerSchema,
-    astrobiologyOrRelatedStartYearComparison: comparableSchema,
-    createdAtOrder: orderDirectionsSchema,
+    birthdate: z.object({
+      date: birthdateSchema,
+      birthdateComparison: comparableSchema.default('equals'),
+    }),
+    astrobiologyOrRelatedStartYear: z.object({
+      year: positiveIntegerSchema,
+      astrobiologyOrRelatedStartYearComparison: comparableSchema.default('equals'),
+    }),
+    orderBy: z.object({
+      createdAtOrder: orderDirectionsSchema.default('DESC'),
+    }).partial(),
   })
   .partial()
-  .extend(getAllUsersSimplifiedQuerySchema.shape)
-  .refine(
-    (data) => {
-      // Se birthdateComparison estiver definido, birthdate também deve estar
-      if (!data.birthdate) return !data.birthdateComparison
+  .extend(paginatedSchema.shape)
 
-      if (!data.birthdateComparison) data.birthdateComparison = 'equals'
-
-      return true
+export const getAllUsersDetailedQuerySchema = z.preprocess(
+  (query: any) => ({
+    ...query,
+    birthdate: query.birthdate
+      ? {
+          date: query.birthdate,
+          birthdateComparison: query.birthdateComparison,
+        }
+      : undefined,
+    astrobiologyOrRelatedStartYear: query.astrobiologyOrRelatedStartYear
+      ? {
+          year: query.astrobiologyOrRelatedStartYear,
+          astrobiologyOrRelatedStartYearComparison: query.astrobiologyOrRelatedStartYearComparison,
+        }
+      : undefined,
+    orderBy: {
+      ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),
     },
-    {
-      error: BIRTHDATE_COMPARISON_MUTUAL_EXISTENCE,
-      path: ['birthdate'],
-    },
-  )
-  .refine(
-    (data) => {
-      // Se astrobiologyOrRelatedStartYearComparison estiver definido, astrobiologyOrRelatedStartYear também deve estar
-      if (!data.astrobiologyOrRelatedStartYear) return !data.astrobiologyOrRelatedStartYearComparison
-
-      if (!data.astrobiologyOrRelatedStartYearComparison) data.astrobiologyOrRelatedStartYearComparison = 'equals'
-
-      return true
-    },
-    {
-      error: ASTROBIOLOGY_OR_RELATED_START_YEAR_COMPARISON_MUTUAL_EXISTENCE,
-      path: ['astrobiologyOrRelatedStartYear'],
-    },
-  )
+  }),
+  getAllUsersDetailedQueryRawSchema,
+)
 
 export type getAllUsersDetailedQuerySchemaType = z.infer<typeof getAllUsersDetailedQuerySchema>

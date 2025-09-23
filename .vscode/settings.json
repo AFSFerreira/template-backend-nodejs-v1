@@ -9,9 +9,13 @@
   },
   "cSpell.words": [
     "autoincrement",
+    "ILIKE",
     "loglevel",
     "orcid",
+    "plainto",
     "treeify",
+    "tsquery",
+    "unaccent",
     "uuidv"
   ]
 }

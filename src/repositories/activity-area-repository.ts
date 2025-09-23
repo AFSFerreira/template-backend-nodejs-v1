@@ -1,5 +1,4 @@
 import type { PaginatedResult } from '@custom-types/pagination-meta-type'
-import type { PaginationType } from '@custom-types/pagination-type'
 import type { ActivityArea, ActivityAreaType, Prisma } from '@prisma/client'
 import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
 
@@ -8,7 +7,7 @@ export interface ActivityAreaQuery {
   type: ActivityAreaType
 }
 
-export type ListAllActivityAreasQuery = Omit<getAllActivityAreasSchemaType, 'page' | 'limit'> & PaginationType
+export type ListAllActivityAreasQuery = getAllActivityAreasSchemaType
 
 export interface ActivityAreaRepository {
   create: (data: Prisma.ActivityAreaUncheckedCreateInput) => Promise<ActivityArea>

@@ -5,6 +5,7 @@
 # Arquivos de Controle de Versão:
 .git
 .gitignore
+.gitattributes
 .github
 
 # Dependências Locais:
@@ -13,20 +14,22 @@ node_modules
 # Configurações do Editor e Ferramentas Locais:
 .vscode
 .husky
-.npmrc
 .nvmrc
+.npmrc
 .tool-versions
 
-# Arquivos de Build:
+# Arquivos:
 build
 dist
 
 # Arquivos de Configuração e Desenvolvimento:
 .eslintrc.json
 .eslintignore
+.editorconfig
 .prettierrc.json
+.prettierignore
 commitlint.config.js
-tsconfig.json
+ecosystem.config.js
 
 # Arquivos e Pastas de Deploy Local:
 deploy.sh

@@ -1,6 +1,6 @@
 import { z } from 'zod'
+import { emailSchema } from '../utils/components/email-schema'
 import { usernameSchema } from '../utils/components/username-schema'
-import { emailSchema } from '../utils/primitives/email-schema'
 
 export const forgotPasswordBodySchema = z.object({
   login: z.union([emailSchema, usernameSchema]),

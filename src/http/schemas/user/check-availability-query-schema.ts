@@ -1,5 +1,5 @@
+import { emailSchema } from '@schemas/utils/components/email-schema'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
-import { emailSchema } from '@schemas/utils/primitives/email-schema'
 import z from 'zod'
 import { usernameSchema } from '../utils/components/username-schema'
 

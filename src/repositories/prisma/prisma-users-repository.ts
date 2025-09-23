@@ -1,11 +1,9 @@
-import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
-import type { ComparableType } from '@custom-types/orderable-type'
-import type { QueryMode } from '@custom-types/query-mode'
+import type { CustomUserWithSimplifiedDetailsRaw } from '@custom-types/custom-user-with-simplified-details-raw-type'
 import { userWithDetails } from '@custom-types/user-with-details'
-import { userWithSimplifiedDetails } from '@custom-types/user-with-simplified-details'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
+import { customUserSimplifiedAdapter } from '@repositories/prisma/adapters/custom-user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import type {
   CreateUserQuery,
@@ -16,110 +14,22 @@ import type {
   TokenData,
   UsersRepository,
 } from '../users-repository'
+import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 export class PrismaUsersRepository implements UsersRepository {
-  static buildInsensitiveMode(value: string | undefined) {
-    if (!value) return undefined
-
-    return {
-      equals: value,
-      mode: 'insensitive' as QueryMode,
-    }
-  }
-
-  static buildStartsWithFilter(value: string | undefined) {
-    if (!value) return undefined
-
-    return {
-      startsWith: value,
-      mode: 'insensitive' as QueryMode,
-    }
-  }
-
-  static buildComparableFilter(comparableType: ComparableType | undefined, value: any) {
-    if (!value || !comparableType) return undefined
-
-    return {
-      [comparableType]: value,
-    }
-  }
-
-  static buildIsFilter(fieldName: string, value: string | undefined) {
-    if (!value) return undefined
-
-    return {
-      is: {
-        [fieldName]: value,
-        mode: 'insensitive' as QueryMode,
-      },
-    }
-  }
-
-  static buildGetAllUsersWhereInput(data: Omit<ListAllUsersQuery, 'simplified'>): Prisma.UserWhereInput {
-    return {
-      fullName: PrismaUsersRepository.buildStartsWithFilter(data.fullName),
-      email: PrismaUsersRepository.buildStartsWithFilter(data.email),
-      username: PrismaUsersRepository.buildStartsWithFilter(data.username),
-
-      departmentName: PrismaUsersRepository.buildStartsWithFilter(data.departmentName),
-
-      birthdate: PrismaUsersRepository.buildComparableFilter(data.birthdateComparison, data.birthdate),
-
-      astrobiologyOrRelatedStartYear: PrismaUsersRepository.buildComparableFilter(
-        data.astrobiologyOrRelatedStartYearComparison,
-        data.astrobiologyOrRelatedStartYear,
-      ),
-
-      receiveReports: data.receiveReports,
-      occupation: data.occupation,
-      educationLevel: data.educationLevel,
-      role: data.role,
-      membershipStatus: data.membershipStatus,
-
-      AND: data.keywords?.map((keyword) => ({
-        Keyword: {
-          some: {
-            value: PrismaUsersRepository.buildInsensitiveMode(keyword),
-          },
-        },
-      })),
-
-      Address: {
-        state: PrismaUsersRepository.buildInsensitiveMode(data.state),
-      },
-
-      Institution: {
-        name: PrismaUsersRepository.buildInsensitiveMode(data.institutionName),
-      },
-
-      ActivityArea: {
-        OR: [
-          {
-            area: PrismaUsersRepository.buildInsensitiveMode(data.mainActivityArea),
-            type: ActivityAreaType.AREA_OF_ACTIVITY,
-          },
-          {
-            area: PrismaUsersRepository.buildInsensitiveMode(data.subActivityArea),
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          },
-        ],
-      },
-    }
-  }
-
-  async create(query: CreateUserQuery) {
-    const keywordsConnectOrCreateData = query.keyword
+  async create(data: CreateUserQuery) {
+    const keywordsConnectOrCreateData = data.keyword
       ? {
-          connectOrCreate: query.keyword.map((value: string) => ({
+          connectOrCreate: data.keyword.map((value: string) => ({
             where: { value },
             create: { value },
           })),
         }
       : undefined
 
-    const academicPublicationCreateData = query.academicPublication
+    const academicPublicationCreateData = data.academicPublication
       ? {
-          create: query.academicPublication.map((academicPublication) => {
+          create: data.academicPublication.map((academicPublication) => {
             const { area, ...filteredAcademicPublicationData } = academicPublication
             return {
               ...filteredAcademicPublicationData,
@@ -136,37 +46,40 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const enrolledCourseCreateData = query.enrolledCourse
+    const enrolledCourseCreateData = data.enrolledCourse
       ? {
-          create: query.enrolledCourse,
-        }
-      : undefined
-
-    const institutionConnectOrCreateData = query.institution
-      ? {
-          connectOrCreate: {
-            create: { name: query.institution.name },
-            where: { name: query.institution.name },
+          create: {
+            ...data.enrolledCourse,
+            scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
           },
         }
       : undefined
 
-    const activityAreaConnectData = query.activityArea
+    const institutionConnectOrCreateData = data.institution
+      ? {
+          connectOrCreate: {
+            create: { name: data.institution.name },
+            where: { name: data.institution.name },
+          },
+        }
+      : undefined
+
+    const activityAreaConnectData = data.activityArea
       ? {
           connect: {
             type_area: {
-              area: query.activityArea.mainActivityArea,
+              area: data.activityArea.mainActivityArea,
               type: ActivityAreaType.AREA_OF_ACTIVITY,
             },
           },
         }
       : undefined
 
-    const subActivityAreaConnectData = query.activityArea
+    const subActivityAreaConnectData = data.activityArea
       ? {
           connect: {
             type_area: {
-              area: query.activityArea.subActivityArea,
+              area: data.activityArea.subActivityArea,
               type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
             },
           },
@@ -174,12 +87,14 @@ export class PrismaUsersRepository implements UsersRepository {
       : undefined
 
     const addressCreateData = {
-      create: query.address,
+      create: data.address,
     }
 
     const user = await prisma.user.create({
       data: {
-        ...query.user,
+        ...data.user,
+        emailIsPublic: data.user.emailIsPublic ?? false,
+        receiveReports: data.user.receiveReports ?? false,
         Address: addressCreateData,
         EnrolledCourse: enrolledCourseCreateData,
         Institution: institutionConnectOrCreateData,
@@ -210,7 +125,6 @@ export class PrismaUsersRepository implements UsersRepository {
   async findByEmail(email: string) {
     const user = await prisma.user.findUnique({
       where: { email },
-      include: userWithDetails.include,
     })
     return user
   }
@@ -218,7 +132,6 @@ export class PrismaUsersRepository implements UsersRepository {
   async findByUsername(username: string) {
     const user = await prisma.user.findUnique({
       where: { username },
-      include: userWithDetails.include,
     })
     return user
   }
@@ -242,7 +155,6 @@ export class PrismaUsersRepository implements UsersRepository {
   async findByIdentityDocument(data: FindByIdentityDocumentQuery) {
     const user = await prisma.user.findUnique({
       where: { identityType_identityDocument: data },
-      include: userWithDetails.include,
     })
     return user
   }
@@ -261,22 +173,49 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         OR: [{ email }, { username }],
       },
-      include: userWithDetails.include,
     })
 
     return user
   }
 
-  async listAllUsers(query?: ListAllUsersQuery) {
-    const simplified = query?.simplified ?? false
+  async listAllUsers() {
+    const users = await prisma.user.findMany({
+      include: userWithDetails.include,
+    })
 
-    if (!query?.page || !query?.limit) {
+    return users
+  }
+
+  async listAllUsersDetailed(query?: ListAllUsersQuery) {
+    if (!query) {
       const users = await prisma.user.findMany({
-        include: simplified ? userWithSimplifiedDetails.include : userWithDetails.include,
+        select: {
+          id: true,
+          publicId: true,
+          fullName: true,
+          email: true,
+          emailIsPublic: true,
+          Address: {
+            select: { state: true },
+          },
+          Institution: {
+            select: { name: true },
+          },
+        },
       })
 
+      const formattedUsers = users.map((userInfo) => ({
+        id: userInfo.id,
+        publicId: userInfo.publicId,
+        fullName: userInfo.fullName,
+        email: userInfo.email,
+        emailIsPublic: userInfo.emailIsPublic,
+        institutionName: userInfo.Institution.name,
+        state: userInfo.Address.state,
+      }))
+
       return {
-        data: users,
+        data: formattedUsers,
         meta: {
           totalItems: users.length,
           totalPages: 1,
@@ -286,30 +225,19 @@ export class PrismaUsersRepository implements UsersRepository {
       }
     }
 
-    const offset = (query.page - 1) * query.limit
+    const { searchQuery, countQuery } = buildListAllUsersDetailedQuery(query)
 
-    const where = PrismaUsersRepository.buildGetAllUsersWhereInput(query)
+    const [countResult, users] = await Promise.all([
+      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
+      prisma.$queryRaw<CustomUserWithSimplifiedDetailsRaw[]>(searchQuery),
+    ])
 
-    const [totalItems, users] = await prisma.$transaction(async (prismaTx) => {
-      const totalItems = await prismaTx.user.count({
-        where,
-      })
-
-      const users = await prismaTx.user.findMany({
-        where,
-        skip: offset,
-        take: query.limit,
-        orderBy: { createdAt: query.createdAtOrder },
-        include: simplified ? userWithSimplifiedDetails.include : userWithDetails.include,
-      })
-
-      return [totalItems, users]
-    })
+    const totalItems = countResult[0].total
 
     const totalPages = Math.ceil(totalItems / query.limit)
 
     return {
-      data: users,
+      data: users.map(customUserSimplifiedAdapter),
       meta: {
         totalItems,
         totalPages,
@@ -326,37 +254,34 @@ export class PrismaUsersRepository implements UsersRepository {
           id: true,
           publicId: true,
           fullName: true,
-          username: true,
           email: true,
           emailIsPublic: true,
-          Institution: {
-            select: { name: true },
-          },
           Address: {
             select: { state: true },
+          },
+          Institution: {
+            select: { name: true },
           },
         },
       })
 
-      const formattedUsers = users.map((userInfo) => {
-        const { Address, Institution, ...filteredUserInfo } = userInfo
-        return {
-          ...filteredUserInfo,
-          public_id: userInfo.publicId,
-          full_name: userInfo.fullName,
-          email_is_public: userInfo.emailIsPublic,
-          institution_name: Institution.name,
-          state: Address.state,
-        }
-      })
+      const formattedUsers = users.map((userInfo) => ({
+        id: userInfo.id,
+        publicId: userInfo.publicId,
+        fullName: userInfo.fullName,
+        email: userInfo.email,
+        emailIsPublic: userInfo.emailIsPublic,
+        institutionName: userInfo.Institution.name,
+        state: userInfo.Address.state,
+      }))
 
       return {
         data: formattedUsers,
         meta: {
-          totalItems: formattedUsers.length,
+          totalItems: users.length,
           totalPages: 1,
           currentPage: 1,
-          pageSize: formattedUsers.length,
+          pageSize: users.length,
         },
       }
     }
@@ -365,7 +290,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const [countResult, users] = await Promise.all([
       prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<CustomUserWithSimplifiedDetails[]>(searchQuery),
+      prisma.$queryRaw<CustomUserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
     const totalItems = countResult[0].total
@@ -373,7 +298,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const totalPages = Math.ceil(totalItems / query.limit)
 
     return {
-      data: users,
+      data: users.map(customUserSimplifiedAdapter),
       meta: {
         totalItems,
         totalPages,
@@ -412,7 +337,6 @@ export class PrismaUsersRepository implements UsersRepository {
   async validateUserToken(recoveryPasswordTokenHash: string) {
     const user = await prisma.user.findFirst({
       where: { recoveryPasswordTokenHash },
-      include: userWithDetails.include,
     })
     return user
   }
@@ -425,7 +349,6 @@ export class PrismaUsersRepository implements UsersRepository {
         recoveryPasswordTokenHash: null,
         recoveryPasswordTokenExpiresAt: null,
       },
-      include: userWithDetails.include,
     })
     return user
   }
@@ -434,7 +357,6 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.update({
       where: { id },
       data: { ...tokenData },
-      include: userWithDetails.include,
     })
     return user
   }

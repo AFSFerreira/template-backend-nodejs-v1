@@ -1,10 +1,4 @@
-import { VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
-
-export const BIRTHDATE_COMPARISON_MUTUAL_EXISTENCE =
-  "A data de nascimento deve ser definida quando 'birthdateComparison' for fornecido"
-
-export const ASTROBIOLOGY_OR_RELATED_START_YEAR_COMPARISON_MUTUAL_EXISTENCE =
-  "O ano de início de Astrobiologia ou área relacionada deve ser definido quando 'astrobiologyOrRelatedStartYearComparison' for fornecido"
+import { MAX_PASSWORD_SIZE, MIN_PASSWORD_SIZE, VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
 
 export const MAIN_ACTIVITY_AREA_AND_SPECIFIC_ACTIVITY_DESCRIPTION =
   'Se "Outra" for selecionada como a área principal de atividade, uma descrição deve ser fornecida — e não deve ser fornecida caso contrário'
@@ -47,3 +41,15 @@ export const INVALID_RNE_FORMAT = 'Formato de RNE inválido'
 export const INVALID_PASSPORT_FORMAT = 'Formato de passaporte inválido'
 
 export const INVALID_ASTROBIOLOGY_OR_RELATED_START_YEAR = `Valor inválido. Escolha um ano menor ou igual a ${new Date().getFullYear()}`
+
+export const PASSWORD_TOO_SHORT = `A senha deve ter pelo menos ${MIN_PASSWORD_SIZE} caracteres`
+
+export const PASSWORD_TOO_LONG = `A senha deve ter no máximo ${MAX_PASSWORD_SIZE} caracteres`
+
+export const PASSWORD_UPPERCASE = 'A senha deve conter pelo menos uma letra maiúscula'
+
+export const PASSWORD_LOWERCASE = 'A senha deve conter pelo menos uma letra minúscula'
+
+export const PASSWORD_DIGIT = 'A senha deve conter pelo menos um número'
+
+export const PASSWORD_SPECIAL_CHARACTER = 'A senha deve conter pelo menos um caractere especial'

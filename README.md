@@ -65,7 +65,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
           │    └─── user
           ├─── messaging
           └─── user
-    
+
 ```
 
 ---
@@ -98,7 +98,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 - [x] 1.2 Cadastro de Content Leader: Outorgar ou remover o privilégio de CONTENT_LEADER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
 - [x] 1.3 Cadastro de Content Producer: Outorgar ou remover o privilégio de CONTENT_PRODUCER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
 - [ ] 1.4 Cadastro de Usuário: Envio das informações básicas necessárias para cadastrar um novo usuário comum (desconsiderando a imagem de perfil)
-- [ ] 1.5 Cadastro com upload de imagem de perfil 
+- [ ] 1.5 Cadastro com upload de imagem de perfil
 - [ ] 1.6 Edição de Usuário: Os dados do usuário devem ser editáveis
 
 ### 📌 Requisito 2 – Autenticação e Acesso:
@@ -127,7 +127,7 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 - [ ] NF.2 - Escalabilidade: Suporte a múltiplos acessos e pesquisas simultâneas
 - [ ] NF.3 - Desempenho: Buscas rápidas com paginação, cache e tolerância a erros de digitação
 - [ ] NF.4 - Testabilidade: O sistema deve ser capaz de conduzir testes automatizados para assegurar seu funcionamento íntegr
-- [ ] NF.5 - Confiabilidade: O sistema deve realizar verificações de healthcheck periodicamente para 
+- [ ] NF.5 - Confiabilidade: O sistema deve realizar verificações de healthcheck periodicamente para
 
 ---
 
@@ -154,13 +154,13 @@ Certifique-se de que você tenha os seguintes softwares instalados antes de cont
 
 ## 💻 Como Executar o Servidor:
 1. Abra o terminal - `CMD`, `PowerShell`, `Bash` ou similares - em algum diretório de preferência em sua máquina.
-2. Clone este repositório com o comando: 
+2. Clone este repositório com o comando:
 
 ```bash
 git clone https://github.com/IN-Junior-UFF/astrobiologia-backend
 ```
 
-3. Navegue para dentro do projeto clonado com o comando: 
+3. Navegue para dentro do projeto clonado com o comando:
 
 ```bash
 cd astrobiologia-backend
@@ -188,10 +188,10 @@ docker compose up -d
 7. Execute o comando para resetar o banco de dados, populá-lo com dados de teste definidos em `prisma/seed.ts` e habilitar as extensões necessárias:
 
 ```bash
-npm run db:reset:all
+npm run db:deploy
 ```
 
-8. Rode o projeto com o comando: 
+8. Rode o projeto com o comando:
 
 ```bash
 npm run start:dev
