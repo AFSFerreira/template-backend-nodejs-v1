@@ -86,7 +86,7 @@ interface HTTPEnrolledCourse {
 
 interface HTTPAcademicPublications {
   title: string
-  authors: string
+  authors: string[]
   publicationYear: number | undefined | null
   journalName: string
   volume: string
@@ -124,6 +124,33 @@ export class UserPresenter {
     }
   }
 
+  static toHTTP(user: User): HTTPUser
+  static toHTTP(users: User[]): HTTPUser[]
+  static toHTTP(input: User | User[]): HTTPUser | HTTPUser[] {
+    if (Array.isArray(input)) {
+      return input.map((user) => UserPresenter.toHTTP(user))
+    }
+
+    const {
+      id,
+      passwordHash,
+      publicId,
+      membershipStatus,
+      loginAttempts,
+      lastLogin,
+      recoveryPasswordTokenHash,
+      recoveryPasswordTokenExpiresAt,
+      activityAreaId,
+      ...filteredUser
+    } = input
+
+    return {
+      ...filteredUser,
+      id: input.publicId,
+      birthdate: formatDate(input.birthdate),
+    }
+  }
+
   static toHTTPDetailed(user: UserWithDetails): HTTPUserWithDetails
   static toHTTPDetailed(users: UserWithDetails[]): HTTPUserWithDetails[]
   static toHTTPDetailed(input: UserWithDetails | UserWithDetails[]): HTTPUserWithDetails | HTTPUserWithDetails[] {
@@ -149,11 +176,11 @@ export class UserPresenter {
       Address,
       EnrolledCourse,
       DirectorBoard,
-      ...userFiltered
+      ...filteredUser
     } = input
 
     return {
-      ...userFiltered,
+      ...filteredUser,
       id: input.publicId,
       birthdate: formatDate(input.birthdate),
 
@@ -184,7 +211,7 @@ export class UserPresenter {
 
       academicPublications: input.AcademicPublication.map((academicPublication) => ({
         title: academicPublication.title,
-        authors: academicPublication.authors,
+        authors: academicPublication.AcademicPublicationAuthors.map((author) => author.name),
         publicationYear: academicPublication.publicationYear,
         journalName: academicPublication.journalName,
         volume: academicPublication.volume,
@@ -201,33 +228,6 @@ export class UserPresenter {
               position: input.DirectorBoard.position,
             }
           : null,
-    }
-  }
-
-  static toHTTP(user: User): HTTPUser
-  static toHTTP(users: User[]): HTTPUser[]
-  static toHTTP(input: User | User[]): HTTPUser | HTTPUser[] {
-    if (Array.isArray(input)) {
-      return input.map((user) => UserPresenter.toHTTP(user))
-    }
-
-    const {
-      id,
-      passwordHash,
-      publicId,
-      membershipStatus,
-      loginAttempts,
-      lastLogin,
-      recoveryPasswordTokenHash,
-      recoveryPasswordTokenExpiresAt,
-      activityAreaId,
-      ...userFiltered
-    } = input
-
-    return {
-      ...userFiltered,
-      id: input.publicId,
-      birthdate: formatDate(input.birthdate),
     }
   }
 }

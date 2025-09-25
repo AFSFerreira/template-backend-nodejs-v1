@@ -37,9 +37,11 @@ const getAllUsersDetailedQueryRawSchema = z
       year: positiveIntegerSchema,
       astrobiologyOrRelatedStartYearComparison: comparableSchema.default('equals'),
     }),
-    orderBy: z.object({
-      createdAtOrder: orderDirectionsSchema.default('DESC'),
-    }).partial(),
+    orderBy: z
+      .object({
+        createdAtOrder: orderDirectionsSchema.default('desc'),
+      })
+      .partial(),
   })
   .partial()
   .extend(paginatedSchema.shape)

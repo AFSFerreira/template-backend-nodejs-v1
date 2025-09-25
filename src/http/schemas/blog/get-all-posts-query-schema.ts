@@ -15,7 +15,7 @@ const getAllPostsQueryRawSchema = z
     subCategories: subCategoriesSchema,
     orderBy: z
       .object({
-        createdAtOrder: orderDirectionsSchema.default('DESC'),
+        createdAtOrder: orderDirectionsSchema.default('desc'),
         accessCountOrder: orderDirectionsSchema,
       })
       .partial(),

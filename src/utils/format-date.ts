@@ -1,4 +1,4 @@
-export type DateFormat = 'dd/mm/yyyy' | 'mm/yyyy'
+import type { DateFormat } from '@custom-types/date-format-type'
 
 export function formatDate(date?: Date | null, format: DateFormat = 'dd/mm/yyyy'): string | null {
   if (!date) return null

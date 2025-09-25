@@ -1,12 +1,8 @@
 import fs from 'fs/promises'
 import crypto from 'node:crypto'
 import path from 'node:path'
+import type { CompressedImageInfo } from '@custom-types/compressed-image-info-type'
 import sharp from 'sharp'
-
-export interface CompressedImageInfo {
-  finalImagePath: string
-  compressedImageBuffer: Buffer
-}
 
 export async function saveCompressedImage(
   imageBuffer: Buffer,
@@ -30,7 +26,6 @@ export async function saveCompressedImage(
     .webp({ quality: options.quality })
     .toBuffer()
 
-  // Garante que as pastas existem:
   await fs.mkdir(folderPath, { recursive: true })
 
   await fs.writeFile(finalImagePath, compressedImageBuffer)

@@ -1,9 +1,13 @@
 DROP TRIGGER IF EXISTS tsvector_pt_update_users_full_name ON "public"."users";
 DROP FUNCTION IF EXISTS users_full_name_tsv_pt_trigger;
 
-CREATE OR REPLACE FUNCTION users_full_name_tsv_pt_trigger() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION users_full_name_tsv_pt_trigger()
+RETURNS trigger AS $$
 BEGIN
-  NEW.full_name_tsv_pt := to_tsvector('portuguese', unaccent(coalesce(NEW.full_name, '')));
+  NEW.full_name_tsv_pt := to_tsvector(
+    'portuguese',
+    unaccent(substring(coalesce(NEW.full_name, '') FROM 1 FOR 255))
+  );
   RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
@@ -15,13 +19,26 @@ FOR EACH ROW EXECUTE FUNCTION users_full_name_tsv_pt_trigger();
 --------------------------------------------------------
 
 DROP TRIGGER IF EXISTS tsvector_pt_update_search_blogs ON blogs;
-DROP FUNCTION IF EXISTS blogs_search_tsv_pt_trigger();
+DROP FUNCTION IF EXISTS blogs_search_tsv_pt_trigger;
 
-CREATE OR REPLACE FUNCTION blogs_search_tsv_pt_trigger() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION blogs_search_tsv_pt_trigger()
+RETURNS trigger AS $$
 BEGIN
   NEW.search_tsv_pt :=
-    setweight(to_tsvector('portuguese', unaccent(coalesce(NEW.title, ''))), 'A') ||
-    setweight(to_tsvector('portuguese', unaccent(coalesce(NEW.search_content, ''))), 'B');
+    setweight(
+      to_tsvector(
+        'portuguese',
+        unaccent(substring(coalesce(NEW.title, '') FROM 1 FOR 255))
+      ),
+      'A'
+    )
+    || setweight(
+      to_tsvector(
+        'portuguese',
+        unaccent(substring(coalesce(NEW.search_content, '') FROM 1 FOR 600))
+      ),
+      'B'
+    );
   RETURN NEW;
 END
 $$ LANGUAGE plpgsql;
@@ -33,13 +50,14 @@ FOR EACH ROW EXECUTE FUNCTION blogs_search_tsv_pt_trigger();
 --------------------------------------------------------
 
 DROP TRIGGER IF EXISTS blogs_title_unaccent_trigger ON blogs;
-DROP FUNCTION IF EXISTS fill_blogs_title_unaccented_columns();
+DROP FUNCTION IF EXISTS fill_blogs_title_unaccented_columns;
 
-CREATE OR REPLACE FUNCTION fill_blogs_title_unaccented_columns() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION fill_blogs_title_unaccented_columns()
+RETURNS trigger AS $$
 BEGIN
-  NEW.title_unaccent := unaccent(coalesce(NEW.title, ''));
+  NEW.title_unaccent := unaccent(substring(coalesce(NEW.title, '') FROM 1 FOR 255));
   RETURN NEW;
-END;
+END
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER blogs_title_unaccent_trigger
@@ -54,9 +72,9 @@ DROP FUNCTION IF EXISTS fill_users_full_name_unaccent_trigger;
 CREATE FUNCTION fill_users_full_name_unaccent_trigger()
 RETURNS trigger AS $$
 BEGIN
-  NEW.full_name_unaccent := unaccent(coalesce(NEW.full_name, ''));
+  NEW.full_name_unaccent := unaccent(substring(coalesce(NEW.full_name, '') FROM 1 FOR 255));
   RETURN NEW;
-END;
+END
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER users_full_name_unaccent_trigger

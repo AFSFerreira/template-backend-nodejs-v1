@@ -1,15 +1,9 @@
 import { logger } from '@lib/logger'
 import { runWithRequestId } from '@lib/logger/helpers/run-with-request-id'
 import { INCOMING_REQUEST } from '@messages/logger'
+import { getClientIp } from '@utils/get-client-ip'
 import type { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
 import { v7 as uuidv7 } from 'uuid'
-
-function getClientIp(request: FastifyRequest): string {
-  const xff = request.headers['x-forwarded-for']
-  if (Array.isArray(xff)) return xff[0]
-  if (typeof xff === 'string' && xff.length > 0) return xff.split(',')[0].trim()
-  return request.ip
-}
 
 function logRequestDetails(request: FastifyRequest) {
   const clientIp = getClientIp(request)

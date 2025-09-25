@@ -1,6 +1,8 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { activityAreasData, subActivityAreasData } from './seed-data/activity-areas'
 import { blogData, dummyBlogDataArray } from './seed-data/blogs'
+import { meetingData1 } from './seed-data/meeting'
+import { paymentInfo } from './seed-data/payment-info'
 import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 
 const prisma = new PrismaClient()
@@ -65,6 +67,26 @@ async function main() {
         data: blogInfo,
       })
     }
+  }
+
+  // Criando Informações Bancárias:
+  await prisma.paymentInfo.upsert({
+    where: { id: 1 },
+    update: {},
+    create: paymentInfo,
+  })
+
+  // Criação de Reuniões:
+  const meetingAlreadyExists = await prisma.meeting.findFirst({
+    where: {
+      title: meetingData1.title,
+    },
+  })
+
+  if (!meetingAlreadyExists) {
+    await prisma.meeting.create({
+      data: meetingData1,
+    })
   }
 }
 

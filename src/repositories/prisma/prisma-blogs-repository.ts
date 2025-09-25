@@ -37,6 +37,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
         select: {
           publicId: true,
           title: true,
+          bannerImage: true,
           accessCount: true,
           searchContent: true,
           createdAt: true,
@@ -75,5 +76,14 @@ export class PrismaBlogsRepository implements BlogsRepository {
         pageSize: query.limit,
       },
     }
+  }
+
+  async incrementAccessesNumber(id: number) {
+    await prisma.blog.update({
+      where: { id },
+      data: {
+        accessCount: { increment: 1 },
+      },
+    })
   }
 }

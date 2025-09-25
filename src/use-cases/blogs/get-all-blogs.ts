@@ -1,7 +1,7 @@
 import type { BlogWithSimplifiedDetails } from '@custom-types/blog-with-simplified-details-type'
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { GetAllPostsQuerySchemaType } from '@schemas/blogs/get-all-posts-query-schema'
+import type { GetAllPostsQuerySchemaType } from '@schemas/blog/get-all-posts-query-schema'
 
 interface GetAllBlogsUseCaseRequest extends GetAllPostsQuerySchemaType {}
 

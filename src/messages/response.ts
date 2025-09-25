@@ -223,3 +223,19 @@ export const PASSWORD_RESET_SUCCESSFUL = {
     message: 'Senha redefinida com sucesso!',
   },
 }
+
+export const BLOG_NOT_FOUND = {
+  status: 404,
+  body: {
+    code: 'BLOG_NOT_FOUND',
+    message: 'O blog solicitado não foi encontrado',
+  },
+}
+
+export const MEETING_NOT_FOUND = {
+  status: 404,
+  body: {
+    code: 'MEETING_NOT_FOUND',
+    message: 'Meeting not found',
+  },
+}

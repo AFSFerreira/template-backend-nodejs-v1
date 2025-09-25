@@ -1,0 +1,42 @@
+import type { BlogWithDetails } from '@custom-types/blog-with-details'
+import { redis } from '@lib/redis'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import { registerBlogViews } from '@services/register-blog-views'
+import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
+
+interface FindByPublicIdWithVisualizationUseCaseRequest {
+  publicId: string
+  ip: string
+}
+
+interface FindByPublicIdWithVisualizationUseCaseResponse {
+  blog: BlogWithDetails
+}
+
+export class FindByPublicIdWithVisualizationUseCase {
+  constructor(private readonly blogsRepository: BlogsRepository) {}
+
+  async execute({
+    publicId,
+    ip,
+  }: FindByPublicIdWithVisualizationUseCaseRequest): Promise<FindByPublicIdWithVisualizationUseCaseResponse> {
+    const blog = await this.blogsRepository.findByPublicId(publicId)
+
+    if (!blog) {
+      throw new BlogNotFoundError()
+    }
+
+    const blogWasNotRecentlyViewed = await registerBlogViews(blog.id, ip, redis)
+
+    if (blogWasNotRecentlyViewed) {
+      this.blogsRepository.incrementAccessesNumber(blog.id)
+    }
+
+    return {
+      blog: {
+        ...blog,
+        accessCount: blog.accessCount + (blogWasNotRecentlyViewed ? 1 : 0),
+      },
+    }
+  }
+}

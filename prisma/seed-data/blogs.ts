@@ -9,6 +9,7 @@ import { userData1 } from './users'
 
 const partialBlogData = {
   authorName: userData1.fullName,
+  bannerImage: 'null.png',
   content: {
     type: 'doc',
     content: 'Hello, World!',

@@ -1,6 +1,7 @@
 export interface BlogWithSimplifiedDetails {
   publicId: string
   title: string
+  bannerImage: string
   searchContent: string
   accessCount: number
   createdAt: Date

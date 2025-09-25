@@ -9,8 +9,8 @@ import type {
   CreateUserQuery,
   FindByEmailOrUsernameQuery,
   FindByIdentityDocumentQuery,
-  ListAllUsersQuery,
-  ListAllUsersSimplified,
+  ListAllUsersDetailedQuery,
+  ListAllUsersSimplifiedQuery,
   TokenData,
   UsersRepository,
 } from '../users-repository'
@@ -30,9 +30,14 @@ export class PrismaUsersRepository implements UsersRepository {
     const academicPublicationCreateData = data.academicPublication
       ? {
           create: data.academicPublication.map((academicPublication) => {
-            const { area, ...filteredAcademicPublicationData } = academicPublication
+            const { area, authors, ...filteredAcademicPublicationData } = academicPublication
             return {
               ...filteredAcademicPublicationData,
+              AcademicPublicationAuthors: {
+                create: authors.map((author) => ({
+                  name: author,
+                })),
+              },
               ActivityArea: {
                 connect: {
                   type_area: {
@@ -93,8 +98,8 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.create({
       data: {
         ...data.user,
-        emailIsPublic: data.user.emailIsPublic ?? false,
-        receiveReports: data.user.receiveReports ?? false,
+        emailIsPublic: data.user.emailIsPublic,
+        receiveReports: data.user.receiveReports,
         Address: addressCreateData,
         EnrolledCourse: enrolledCourseCreateData,
         Institution: institutionConnectOrCreateData,
@@ -186,7 +191,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return users
   }
 
-  async listAllUsersDetailed(query?: ListAllUsersQuery) {
+  async listAllUsersDetailed(query?: ListAllUsersDetailedQuery) {
     if (!query) {
       const users = await prisma.user.findMany({
         select: {
@@ -247,7 +252,7 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  async listAllUsersSimplified(query?: ListAllUsersSimplified) {
+  async listAllUsersSimplified(query?: ListAllUsersSimplifiedQuery) {
     if (!query?.page || !query?.limit) {
       const users = await prisma.user.findMany({
         select: {

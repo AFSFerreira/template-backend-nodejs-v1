@@ -1,6 +1,7 @@
 import type { QueryMode } from '@custom-types/query-mode'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
+import { evalOffset } from '@utils/eval-offset'
 import type { ActivityAreaQuery, ActivityAreaRepository, ListAllActivityAreasQuery } from '../activity-area-repository'
 
 export class PrismaActivityAreaRepository implements ActivityAreaRepository {
@@ -43,7 +44,7 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
       }
     }
 
-    const offset = (query.page - 1) * query.limit
+    const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 
     const [totalItems, activityAreas] = await prisma.$transaction(async (prismaTx) => {
       const totalItems = await prismaTx.activityArea.count({
@@ -51,12 +52,12 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
       })
 
       const activityAreas = await prismaTx.activityArea.findMany({
-        skip: offset,
-        take: query.limit,
         where: {
           area: PrismaActivityAreaRepository.buildStartsWithFilter(query.name),
           type: query.type,
         },
+        skip,
+        take,
       })
 
       return [totalItems, activityAreas]

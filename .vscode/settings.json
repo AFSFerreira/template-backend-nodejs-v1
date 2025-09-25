@@ -8,13 +8,23 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "cSpell.words": [
+    "astrobiologia",
     "autoincrement",
+    "cnpj",
+    "dbgenerated",
+    "fkey",
     "ILIKE",
     "loglevel",
     "orcid",
+    "OUTRA",
+    "pkey",
     "plainto",
+    "plpgsql",
+    "setweight",
     "treeify",
+    "trgm",
     "tsquery",
+    "tsvector",
     "unaccent",
     "uuidv"
   ]

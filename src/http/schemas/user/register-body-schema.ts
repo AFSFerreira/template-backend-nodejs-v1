@@ -7,6 +7,7 @@ import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
 import { rangedYearSchema } from '@schemas/utils/primitives/ranged-year-schema'
+import { uppercaseTextArraySchema } from '@schemas/utils/primitives/uppercase-text-array-schema'
 import { urlSchema } from '@schemas/utils/primitives/url-schema'
 import { stripZodKeys } from '@utils/strip-zod-keys'
 import {
@@ -96,7 +97,7 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
     .array(
       z.object({
         title: upperCaseTextSchema,
-        authors: upperCaseTextSchema,
+        authors: uppercaseTextArraySchema,
         publicationYear: rangedYearSchema,
         area: upperCaseTextSchema,
         journalName: upperCaseTextSchema,

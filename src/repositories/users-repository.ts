@@ -6,7 +6,7 @@ import type { getAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-u
 import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 
-export type ListAllUsersQuery = getAllUsersDetailedQuerySchemaType
+export type ListAllUsersDetailedQuery = getAllUsersDetailedQuerySchemaType
 
 export interface CreateUserQuery {
   user: Omit<RegisterUserBodySchemaType['user'], 'password' | 'occupation' | 'educationLevel' | 'identity'> & {
@@ -40,7 +40,7 @@ export interface FindByIdentityDocumentQuery {
   identityType: IdentityType
 }
 
-export type ListAllUsersSimplified = GetAllUsersSimplifiedQuerySchemaType
+export type ListAllUsersSimplifiedQuery = GetAllUsersSimplifiedQuerySchemaType
 
 export interface UsersRepository {
   create: (data: CreateUserQuery) => Promise<UserWithDetails>
@@ -53,9 +53,11 @@ export interface UsersRepository {
   findByIdentityDocument: (data: FindByIdentityDocumentQuery) => Promise<User | null>
   findByEmailOrUsername: (data: FindByEmailOrUsernameQuery) => Promise<User | null>
   listAllUsers: () => Promise<UserWithDetails[]>
-  listAllUsersDetailed: (query?: ListAllUsersQuery) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
+  listAllUsersDetailed: (
+    query?: ListAllUsersDetailedQuery,
+  ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
   listAllUsersSimplified: (
-    query?: ListAllUsersSimplified,
+    query?: ListAllUsersSimplifiedQuery,
   ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>

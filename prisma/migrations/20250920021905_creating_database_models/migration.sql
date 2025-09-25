@@ -112,8 +112,8 @@ CREATE TABLE "public"."enrolled_courses" (
 -- CreateTable
 CREATE TABLE "public"."academic_publications" (
     "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "authors" TEXT NOT NULL,
     "publication_year" INTEGER NOT NULL,
     "journal_name" TEXT NOT NULL,
     "volume" TEXT NOT NULL,
@@ -125,6 +125,16 @@ CREATE TABLE "public"."academic_publications" (
     "activity_area_id" INTEGER NOT NULL,
 
     CONSTRAINT "academic_publications_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."academic_publication_authors" (
+    "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "academic_publication_id" INTEGER NOT NULL,
+
+    CONSTRAINT "academic_publication_authors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -185,7 +195,7 @@ CREATE TABLE "public"."payment_info" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."payment_information" (
+CREATE TABLE "public"."meeting_payment_information" (
     "id" SERIAL NOT NULL,
     "value" DECIMAL(10,2) NOT NULL,
     "limit_date" TIMESTAMP(3) NOT NULL,
@@ -194,40 +204,65 @@ CREATE TABLE "public"."payment_information" (
     "payment_info_id" INTEGER NOT NULL,
     "meeting_id" INTEGER NOT NULL,
 
-    CONSTRAINT "payment_information_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "meeting_payment_information_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."user_meeting" (
+CREATE TABLE "public"."meeting_guest" (
+    "id" SERIAL NOT NULL,
+    "full_name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "meeting_guest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."meeting_participation" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER NOT NULL,
+    "user_id" INTEGER,
+    "guest_id" INTEGER,
     "meeting_id" INTEGER NOT NULL,
 
-    CONSTRAINT "user_meeting_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "meeting_participation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "public"."meeting_presentations" (
     "id" SERIAL NOT NULL,
-    "public_id" TEXT NOT NULL,
     "presentation_type" "public"."PresentationType" NOT NULL,
-    "authors" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "affiliations" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER NOT NULL,
-    "meeting_id" INTEGER NOT NULL,
+    "participation_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_presentations_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."meeting_presentation_author" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "presentation_id" INTEGER NOT NULL,
+
+    CONSTRAINT "meeting_presentation_author_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."meeting_presentation_affiliation" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "presentation_id" INTEGER NOT NULL,
+
+    CONSTRAINT "meeting_presentation_affiliation_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "public"."meetings" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "location" TEXT NOT NULL,
@@ -254,6 +289,7 @@ CREATE TABLE "public"."blogs" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
+    "banner_image" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
     "access_count" INTEGER NOT NULL DEFAULT 0,
     "content" JSON NOT NULL,
@@ -306,33 +342,6 @@ CREATE TABLE "public"."comments" (
     "parent_comment_id" INTEGER,
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."user_meeting_guest" (
-    "id" SERIAL NOT NULL,
-    "full_name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "meeting_id" INTEGER NOT NULL,
-
-    CONSTRAINT "user_meeting_guest_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."meeting_guest_presentations" (
-    "id" SERIAL NOT NULL,
-    "public_id" TEXT NOT NULL,
-    "presentation_type" "public"."PresentationType" NOT NULL,
-    "authors" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
-    "affiliations" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "meeting_id" INTEGER NOT NULL,
-    "user_email" TEXT NOT NULL,
-
-    CONSTRAINT "meeting_guest_presentations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -395,7 +404,16 @@ CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses
 CREATE INDEX "enrolled_courses_user_id_idx" ON "public"."enrolled_courses"("user_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "academic_publications_public_id_key" ON "public"."academic_publications"("public_id");
+
+-- CreateIndex
 CREATE INDEX "academic_publications_user_id_idx" ON "public"."academic_publications"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "academic_publication_authors_public_id_key" ON "public"."academic_publication_authors"("public_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "academic_publication_authors_academic_publication_id_name_key" ON "public"."academic_publication_authors"("academic_publication_id", "name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "institutions_public_id_key" ON "public"."institutions"("public_id");
@@ -419,13 +437,19 @@ CREATE UNIQUE INDEX "directors_board_user_id_key" ON "public"."directors_board"(
 CREATE INDEX "directors_board_user_id_idx" ON "public"."directors_board"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "payment_information_meeting_id_key" ON "public"."payment_information"("meeting_id");
+CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."meeting_payment_information"("meeting_id");
 
 -- CreateIndex
-CREATE INDEX "payment_information_meeting_id_idx" ON "public"."payment_information"("meeting_id");
+CREATE INDEX "meeting_payment_information_meeting_id_idx" ON "public"."meeting_payment_information"("meeting_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "meeting_presentations_public_id_key" ON "public"."meeting_presentations"("public_id");
+CREATE UNIQUE INDEX "meeting_participation_meeting_id_user_id_key" ON "public"."meeting_participation"("meeting_id", "user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_participation_meeting_id_guest_id_key" ON "public"."meeting_participation"("meeting_id", "guest_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_presentations_participation_id_key" ON "public"."meeting_presentations"("participation_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meetings_public_id_key" ON "public"."meetings"("public_id");
@@ -458,21 +482,6 @@ CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id"
 CREATE INDEX "comment_likes_newsletter_comment_id_idx" ON "public"."comment_likes"("newsletter_comment_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_meeting_guest_meeting_id_email_key" ON "public"."user_meeting_guest"("meeting_id", "email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "meeting_guest_presentations_public_id_key" ON "public"."meeting_guest_presentations"("public_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "meeting_guest_presentations_meeting_id_user_email_key" ON "public"."meeting_guest_presentations"("meeting_id", "user_email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "meeting_presentations_meeting_id_user_id_key" ON "public"."meeting_presentations"("meeting_id", "user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "user_meeting_meeting_id_user_id_key" ON "public"."user_meeting"("meeting_id", "user_id");
-
--- CreateIndex
 CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");
 
 -- CreateIndex
@@ -485,10 +494,10 @@ ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audi
 ALTER TABLE "public"."users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -497,34 +506,40 @@ ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN
 ALTER TABLE "public"."enrolled_courses" ADD CONSTRAINT "enrolled_courses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "public"."academic_publications" ADD CONSTRAINT "academic_publications_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "public"."academic_publications" ADD CONSTRAINT "academic_publications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."academic_publications" ADD CONSTRAINT "academic_publications_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."academic_publication_authors" ADD CONSTRAINT "academic_publication_authors_academic_publication_id_fkey" FOREIGN KEY ("academic_publication_id") REFERENCES "public"."academic_publications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."directors_board" ADD CONSTRAINT "directors_board_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."payment_information" ADD CONSTRAINT "payment_information_payment_info_id_fkey" FOREIGN KEY ("payment_info_id") REFERENCES "public"."payment_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."payment_information" ADD CONSTRAINT "payment_information_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_payment_info_id_fkey" FOREIGN KEY ("payment_info_id") REFERENCES "public"."payment_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."user_meeting" ADD CONSTRAINT "user_meeting_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participation" ADD CONSTRAINT "meeting_participation_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."user_meeting" ADD CONSTRAINT "user_meeting_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participation" ADD CONSTRAINT "meeting_participation_guest_id_fkey" FOREIGN KEY ("guest_id") REFERENCES "public"."meeting_guest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_id_user_id_fkey" FOREIGN KEY ("meeting_id", "user_id") REFERENCES "public"."user_meeting"("meeting_id", "user_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participation" ADD CONSTRAINT "meeting_participation_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."user_meeting_guest" ADD CONSTRAINT "user_meeting_guest_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_participation_id_fkey" FOREIGN KEY ("participation_id") REFERENCES "public"."meeting_participation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_guest_presentations" ADD CONSTRAINT "meeting_guest_presentations_meeting_id_user_email_fkey" FOREIGN KEY ("meeting_id", "user_email") REFERENCES "public"."user_meeting_guest"("meeting_id", "email") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentation_author" ADD CONSTRAINT "meeting_presentation_author_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."meeting_presentation_affiliation" ADD CONSTRAINT "meeting_presentation_affiliation_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -542,16 +557,16 @@ ALTER TABLE "public"."newsletter_items" ADD CONSTRAINT "newsletter_items_newslet
 ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_parent_comment_id_fkey" FOREIGN KEY ("parent_comment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_comment_id_fkey" FOREIGN KEY ("newsletter_comment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;

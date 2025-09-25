@@ -5,6 +5,7 @@ export function customBlogAdapter(customBlog: CustomBlogRaw): BlogWithSimplified
   return {
     publicId: customBlog.public_id,
     title: customBlog.title,
+    bannerImage: customBlog.banner_image,
     accessCount: customBlog.access_count,
     searchContent: customBlog.search_content,
     createdAt: customBlog.created_at,

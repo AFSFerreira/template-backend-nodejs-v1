@@ -1,5 +1,5 @@
 import { BlogPresenter } from '@presenters/blog-presenter'
-import { getAllPostsQuerySchema } from '@schemas/blogs/get-all-posts-query-schema'
+import { getAllPostsQuerySchema } from '@schemas/blog/get-all-posts-query-schema'
 import { makeGetAllBlogsUseCase } from '@use-cases/factories/blog/make-get-all-blogs-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

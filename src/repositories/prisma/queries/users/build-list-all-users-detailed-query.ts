@@ -115,9 +115,10 @@ export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySc
   const keywordsUnique = Array.from(new Set(keywords))
   const kwCount = keywordsUnique.length
 
-  const havingClause = kwCount > 0
-    ? Prisma.sql`HAVING COUNT(DISTINCT k.value) FILTER (WHERE k.value ILIKE ANY(${keywordsUnique}::text[])) = ${kwCount}`
-    : Prisma.empty
+  const havingClause =
+    kwCount > 0
+      ? Prisma.sql`HAVING COUNT(DISTINCT k.value) FILTER (WHERE k.value ILIKE ANY(${keywordsUnique}::text[])) = ${kwCount}`
+      : Prisma.empty
 
   const searchQuery = Prisma.sql`
     SELECT

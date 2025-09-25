@@ -1,5 +1,5 @@
 import { ActivityAreaType, Prisma } from '@prisma/client'
-import type { GetAllPostsQuerySchemaType } from '@schemas/blogs/get-all-posts-query-schema'
+import type { GetAllPostsQuerySchemaType } from '@schemas/blog/get-all-posts-query-schema'
 import { evalOffset } from '@utils/eval-offset'
 
 export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
@@ -68,6 +68,7 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
     SELECT
       b.id,
       b.public_id,
+      b.banner_image,
       b.title,
       b.access_count,
       b.search_content,
