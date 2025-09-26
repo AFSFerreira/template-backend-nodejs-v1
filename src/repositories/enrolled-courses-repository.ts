@@ -1,6 +1,6 @@
 import type { EnrolledCourse, Prisma } from '@prisma/client'
 
-export interface EnrolledCourseRepository {
+export interface EnrolledCoursesRepository {
   create: (data: Prisma.EnrolledCourseUncheckedCreateInput) => Promise<EnrolledCourse>
   findBy: (where: Prisma.EnrolledCourseWhereInput) => Promise<EnrolledCourse | null>
   delete: (id: number) => Promise<void>

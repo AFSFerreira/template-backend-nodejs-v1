@@ -10,5 +10,5 @@ export const presentationSchema = z.object({
   authors: uppercaseTextArraySchema,
   title: upperCaseTextSchema,
   affiliations: uppercaseTextArraySchema,
-  summary: nonemptyTextSchema.max(MAX_INTEREST_DESCRIPTION_SIZE),
+  description: nonemptyTextSchema.max(MAX_INTEREST_DESCRIPTION_SIZE),
 })

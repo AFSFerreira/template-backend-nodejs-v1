@@ -2,9 +2,13 @@ import type { QueryMode } from '@custom-types/query-mode'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
-import type { ActivityAreaQuery, ActivityAreaRepository, ListAllActivityAreasQuery } from '../activity-area-repository'
+import type {
+  ActivityAreaQuery,
+  ActivityAreasRepository,
+  ListAllActivityAreasQuery,
+} from '../activity-areas-repository'
 
-export class PrismaActivityAreaRepository implements ActivityAreaRepository {
+export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   static buildStartsWithFilter(value: any) {
     if (!value) return undefined
 
@@ -29,7 +33,7 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
     if (!query?.page || !query?.limit) {
       const activityAreas = await prisma.activityArea.findMany({
         where: {
-          area: PrismaActivityAreaRepository.buildStartsWithFilter(query?.name),
+          area: PrismaActivityAreasRepository.buildStartsWithFilter(query?.name),
           type: query?.type,
         },
       })
@@ -53,7 +57,7 @@ export class PrismaActivityAreaRepository implements ActivityAreaRepository {
 
       const activityAreas = await prismaTx.activityArea.findMany({
         where: {
-          area: PrismaActivityAreaRepository.buildStartsWithFilter(query.name),
+          area: PrismaActivityAreasRepository.buildStartsWithFilter(query.name),
           type: query.type,
         },
         skip,

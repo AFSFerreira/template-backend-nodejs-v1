@@ -1,9 +1,9 @@
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
-import type { AddressRepository, ListAllAddressStateQuery } from '../address-repository'
+import type { AddressesRepository, ListAllAddressStateQuery } from '../addresses-repository'
 
-export class PrismaAddressRepository implements AddressRepository {
+export class PrismaAddressesRepository implements AddressesRepository {
   async create(data: Prisma.AddressUncheckedCreateInput) {
     const address = await prisma.address.create({
       data,
@@ -18,7 +18,7 @@ export class PrismaAddressRepository implements AddressRepository {
     return address
   }
 
-  async listAllAddressesStates(query?: ListAllAddressStateQuery) {
+  async listAllAddressesStates(query: ListAllAddressStateQuery) {
     const orderByClause = {
       _count: { userId: query.orderBy.usersCount },
     }

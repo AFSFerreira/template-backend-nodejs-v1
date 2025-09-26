@@ -1,0 +1,24 @@
+import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
+import type { InstitutionsRepository, InstitutionsUsersCount } from '@repositories/institutions-repository'
+import type { GetAllInstitutionsWithUsersQuerySchemaType } from '@schemas/institution/get-all-institutions-with-users-query-schema'
+
+interface GetAllInstitutionsWithUsersUseCaseRequest extends GetAllInstitutionsWithUsersQuerySchemaType {}
+
+interface GetAllInstitutionsWithUsersUseCaseResponse {
+  data: InstitutionsUsersCount[]
+  meta: PaginationMetaType
+}
+
+export class GetAllInstitutionsWithUsersUseCase {
+  constructor(private readonly institutionsRepository: InstitutionsRepository) {}
+
+  async execute(
+    getAllInstitutionsWithUsersUseCaseInput: GetAllInstitutionsWithUsersUseCaseRequest,
+  ): Promise<GetAllInstitutionsWithUsersUseCaseResponse> {
+    const institutionsInfo = await this.institutionsRepository.listInstitutionsWithUsersCount(
+      getAllInstitutionsWithUsersUseCaseInput,
+    )
+
+    return institutionsInfo
+  }
+}

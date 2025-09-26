@@ -3,6 +3,6 @@ import { ApiError } from '../api-error'
 
 export class InvalidTokenError extends ApiError {
   constructor() {
-    super(INVALID_OR_EXPIRED_TOKEN.status, INVALID_OR_EXPIRED_TOKEN.body)
+    super(INVALID_OR_EXPIRED_TOKEN)
   }
 }

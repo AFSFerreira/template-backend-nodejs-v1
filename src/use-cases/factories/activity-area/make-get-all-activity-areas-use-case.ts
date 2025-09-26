@@ -1,9 +1,9 @@
-import { PrismaActivityAreaRepository } from '@repositories/prisma/prisma-activity-area-repository'
-import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-uase'
+import { PrismaActivityAreasRepository } from '@repositories/prisma/prisma-activity-area-repository'
+import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-case'
 
 export function makeGetAllActivityAreasUseCase() {
-  const activityAreaRepository = new PrismaActivityAreaRepository()
-  const getAllActivityAreasUseCase = new GetAllActivityAreasUseCase(activityAreaRepository)
+  const ActivityAreasRepository = new PrismaActivityAreasRepository()
+  const getAllActivityAreasUseCase = new GetAllActivityAreasUseCase(ActivityAreasRepository)
 
   return getAllActivityAreasUseCase
 }

@@ -1,6 +1,6 @@
 import type { Keyword, Prisma } from '@prisma/client'
 
-export interface KeywordRepository {
+export interface KeywordsRepository {
   create: (data: Prisma.KeywordUncheckedCreateInput) => Promise<Keyword>
   findBy: (where: Prisma.KeywordWhereInput) => Promise<Keyword | null>
   findOrCreate: (value: string) => Promise<Keyword>

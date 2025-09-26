@@ -3,6 +3,6 @@ import { ApiError } from '../api-error'
 
 export class EmptyUsersInfoError extends ApiError {
   constructor() {
-    super(NO_USERS_AVAILABLE.status, NO_USERS_AVAILABLE.body)
+    super(NO_USERS_AVAILABLE)
   }
 }

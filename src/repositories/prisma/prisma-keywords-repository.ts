@@ -1,8 +1,8 @@
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { KeywordRepository } from '../keyword-repository'
+import type { KeywordsRepository } from '../keywords-repository'
 
-export class PrismaKeywordRepository implements KeywordRepository {
+export class PrismaKeywordsRepository implements KeywordsRepository {
   async create(data: Prisma.KeywordUncheckedCreateInput) {
     const keyword = await prisma.keyword.create({ data })
     return keyword

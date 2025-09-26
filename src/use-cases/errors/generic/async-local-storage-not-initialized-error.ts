@@ -3,6 +3,6 @@ import { ApiError } from '../api-error'
 
 export class AsyncLocalStorageNotInitializedError extends ApiError {
   constructor() {
-    super(ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR.status, ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR.body)
+    super(ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR)
   }
 }

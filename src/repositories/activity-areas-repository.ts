@@ -9,7 +9,7 @@ export interface ActivityAreaQuery {
 
 export type ListAllActivityAreasQuery = getAllActivityAreasSchemaType
 
-export interface ActivityAreaRepository {
+export interface ActivityAreasRepository {
   create: (data: Prisma.ActivityAreaUncheckedCreateInput) => Promise<ActivityArea>
   findById: (id: number) => Promise<ActivityArea | null>
   findByArea: ({ area, type }: ActivityAreaQuery) => Promise<ActivityArea | null>

@@ -218,14 +218,14 @@ CREATE TABLE "public"."meeting_guest" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."meeting_participation" (
+CREATE TABLE "public"."meeting_participants" (
     "id" SERIAL NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
     "guest_id" INTEGER,
     "meeting_id" INTEGER NOT NULL,
 
-    CONSTRAINT "meeting_participation_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "meeting_participants_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -241,21 +241,21 @@ CREATE TABLE "public"."meeting_presentations" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."meeting_presentation_author" (
+CREATE TABLE "public"."meeting_presentation_authors" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "presentation_id" INTEGER NOT NULL,
 
-    CONSTRAINT "meeting_presentation_author_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "meeting_presentation_authors_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."meeting_presentation_affiliation" (
+CREATE TABLE "public"."meeting_presentation_affiliations" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "presentation_id" INTEGER NOT NULL,
 
-    CONSTRAINT "meeting_presentation_affiliation_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "meeting_presentation_affiliations_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -443,10 +443,10 @@ CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."me
 CREATE INDEX "meeting_payment_information_meeting_id_idx" ON "public"."meeting_payment_information"("meeting_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "meeting_participation_meeting_id_user_id_key" ON "public"."meeting_participation"("meeting_id", "user_id");
+CREATE UNIQUE INDEX "meeting_participants_meeting_id_user_id_key" ON "public"."meeting_participants"("meeting_id", "user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "meeting_participation_meeting_id_guest_id_key" ON "public"."meeting_participation"("meeting_id", "guest_id");
+CREATE UNIQUE INDEX "meeting_participants_meeting_id_guest_id_key" ON "public"."meeting_participants"("meeting_id", "guest_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meeting_presentations_participation_id_key" ON "public"."meeting_presentations"("participation_id");
@@ -524,22 +524,22 @@ ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payme
 ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_payment_info_id_fkey" FOREIGN KEY ("payment_info_id") REFERENCES "public"."payment_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_participation" ADD CONSTRAINT "meeting_participation_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participants" ADD CONSTRAINT "meeting_participants_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_participation" ADD CONSTRAINT "meeting_participation_guest_id_fkey" FOREIGN KEY ("guest_id") REFERENCES "public"."meeting_guest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participants" ADD CONSTRAINT "meeting_participants_guest_id_fkey" FOREIGN KEY ("guest_id") REFERENCES "public"."meeting_guest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_participation" ADD CONSTRAINT "meeting_participation_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_participants" ADD CONSTRAINT "meeting_participants_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_participation_id_fkey" FOREIGN KEY ("participation_id") REFERENCES "public"."meeting_participation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_participation_id_fkey" FOREIGN KEY ("participation_id") REFERENCES "public"."meeting_participants"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_presentation_author" ADD CONSTRAINT "meeting_presentation_author_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentation_authors" ADD CONSTRAINT "meeting_presentation_authors_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_presentation_affiliation" ADD CONSTRAINT "meeting_presentation_affiliation_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentation_affiliations" ADD CONSTRAINT "meeting_presentation_affiliations_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

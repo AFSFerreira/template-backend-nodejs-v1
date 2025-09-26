@@ -3,6 +3,6 @@ import { ApiError } from '../api-error'
 
 export class ImageTooBigError extends ApiError {
   constructor() {
-    super(IMAGE_TOO_BIG.status, IMAGE_TOO_BIG.body)
+    super(IMAGE_TOO_BIG)
   }
 }

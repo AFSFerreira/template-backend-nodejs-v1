@@ -1,8 +1,8 @@
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { EnrolledCourseRepository } from '../enrolled-course-repository'
+import type { EnrolledCoursesRepository } from '../enrolled-courses-repository'
 
-export class PrismaEnrolledCourseRepository implements EnrolledCourseRepository {
+export class PrismaEnrolledCoursesRepository implements EnrolledCoursesRepository {
   async create(data: Prisma.EnrolledCourseUncheckedCreateInput) {
     const enrolledCourse = await prisma.enrolledCourse.create({ data })
     return enrolledCourse

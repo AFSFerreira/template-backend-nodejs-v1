@@ -1,9 +1,10 @@
 import { meetingWithDetails } from '@custom-types/meeting-with-details'
 import { prisma } from '@lib/prisma'
-import type { ListAllMeetingsQuery, MeetingRepository } from '@repositories/meetings-repository'
+import type { ListAllMeetingsQuery, MeetingsRepository } from '@repositories/meetings-repository'
 import { evalOffset } from '@utils/eval-offset'
+import { mapStatusToDateFilter } from '@utils/map-status-to-date-filter'
 
-export class PrismaMeetingRepository implements MeetingRepository {
+export class PrismaMeetingsRepository implements MeetingsRepository {
   async findByPublicId(publicId: string) {
     const meeting = await prisma.meeting.findUnique({
       where: { publicId },
@@ -27,18 +28,7 @@ export class PrismaMeetingRepository implements MeetingRepository {
       }
     }
 
-    const lastDateConstraint = (() => {
-      switch (query.status) {
-        case 'ALL':
-          return undefined
-        case 'PENDING':
-          return { gte: new Date() }
-        case 'FINISHED':
-          return { lte: new Date() }
-        default:
-          return undefined
-      }
-    })()
+    const lastDateConstraint = mapStatusToDateFilter(query.status)
 
     const { offset: skip, limit: take, page } = evalOffset({ page: query.page, limit: query.limit })
 

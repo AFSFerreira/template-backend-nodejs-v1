@@ -1,5 +1,5 @@
 import type { User } from '@prisma/client'
-import type { AuthenticationAuditRepository } from '@repositories/authentication-audit-repository'
+import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { emailSchema } from '@schemas/utils/components/email-schema'
 import { compare } from 'bcryptjs'
@@ -22,7 +22,7 @@ const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXF
 export class AuthenticateUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly authenticationAuditRepository: AuthenticationAuditRepository,
+    private readonly AuthenticationAuditsRepository: AuthenticationAuditsRepository,
   ) {}
 
   async execute({
@@ -52,7 +52,7 @@ export class AuthenticateUseCase {
     }
 
     if (!doesPasswordMatch) {
-      await this.authenticationAuditRepository.create({
+      await this.AuthenticationAuditsRepository.create({
         ...auditAuthenticateObject,
         status: 'INCORRECT_PASSWORD',
       })
@@ -61,7 +61,7 @@ export class AuthenticateUseCase {
     }
 
     if (!user) {
-      await this.authenticationAuditRepository.create({
+      await this.AuthenticationAuditsRepository.create({
         ...auditAuthenticateObject,
         status: 'USER_NOT_EXISTS',
       })
@@ -73,7 +73,7 @@ export class AuthenticateUseCase {
 
     await this.usersRepository.setLastLogin(user.id)
 
-    await this.authenticationAuditRepository.create({
+    await this.AuthenticationAuditsRepository.create({
       ...auditAuthenticateObject,
       status: 'SUCCESS',
       userId: user.id,

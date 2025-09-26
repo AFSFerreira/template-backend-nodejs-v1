@@ -275,7 +275,7 @@ model MeetingPresentationAuthor {
   presentationId Int                 @map("presentation_id")
   Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("meeting_presentation_author")
+  @@map("meeting_presentation_authors")
 }
 
 model MeetingPresentationAffiliation {
@@ -284,7 +284,7 @@ model MeetingPresentationAffiliation {
   presentationId Int                 @map("presentation_id")
   Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("meeting_presentation_affiliation")
+  @@map("meeting_presentation_affiliations")
 }
 
 model Meeting {

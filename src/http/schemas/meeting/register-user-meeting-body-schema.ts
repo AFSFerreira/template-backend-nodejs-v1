@@ -2,5 +2,7 @@ import { presentationSchema } from '@schemas/utils/components/presentation-schem
 import z from 'zod'
 
 export const registerUserMeetingBodySchema = z.object({
-  ...presentationSchema.shape,
+  meetingPresentationData: presentationSchema.optional(),
 })
+
+export type RegisterUserMeetingBodySchemaType = z.infer<typeof registerUserMeetingBodySchema>

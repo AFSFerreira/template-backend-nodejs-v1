@@ -3,6 +3,6 @@ import { ApiError } from '../api-error'
 
 export class InvalidCredentialsError extends ApiError {
   constructor() {
-    super(INVALID_CREDENTIALS.status, INVALID_CREDENTIALS.body)
+    super(INVALID_CREDENTIALS)
   }
 }

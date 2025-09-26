@@ -2,7 +2,7 @@ import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 
-export class PrismaAcademicPublicationRepository implements AcademicPublicationsRepository {
+export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
   async create(data: Prisma.AcademicPublicationUncheckedCreateInput) {
     const academicPublication = await prisma.academicPublication.create({
       data,

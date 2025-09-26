@@ -1,4 +1,5 @@
 import path from 'node:path'
+import { MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
@@ -22,6 +23,13 @@ z.config(z.locales.pt())
 
 export const app = fastify({
   logger: false,
+  trustProxy: ['127.0.0.1', '::1', '10.0.0.0/8'],
+  bodyLimit: 1 * MB_IN_BYTES,
+  routerOptions: {
+    caseSensitive: true,
+    ignoreTrailingSlash: true,
+    maxParamLength: 512,
+  },
 })
 
 app.addHook('onRequest', logRequest)

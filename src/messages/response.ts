@@ -236,6 +236,22 @@ export const MEETING_NOT_FOUND = {
   status: 404,
   body: {
     code: 'MEETING_NOT_FOUND',
-    message: 'Meeting not found',
+    message: 'Reunião não encontrada',
   },
+}
+
+export const MEETING_ALREADY_FINISHED = {
+  status: 409,
+  body: {
+    code: 'MEETING_ALREADY_FINISHED',
+    message: 'A reunião já foi finalizada'
+  }
+}
+
+export const USER_ALREADY_REGISTERED_IN_MEETING = {
+  status: 409,
+  body: {
+    code: 'USER_ALREADY_REGISTERED_IN_MEETING',
+    message: 'O usuário já está cadastrado na reunião'
+  }
 }

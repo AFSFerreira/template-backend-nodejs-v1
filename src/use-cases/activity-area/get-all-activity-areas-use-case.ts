@@ -1,6 +1,6 @@
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { ActivityArea } from '@prisma/client'
-import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
 
 export type GetAllActivityAreasUseCaseRequest = getAllActivityAreasSchemaType
@@ -11,12 +11,12 @@ export interface GetAllActivityAreasUseCaseResponse {
 }
 
 export class GetAllActivityAreasUseCase {
-  constructor(private readonly activityAreaRepository: ActivityAreaRepository) {}
+  constructor(private readonly ActivityAreasRepository: ActivityAreasRepository) {}
 
   async execute(
     getAllActivityAreasUseCaseInput: GetAllActivityAreasUseCaseRequest,
   ): Promise<GetAllActivityAreasUseCaseResponse> {
-    const activityAreasInfo = await this.activityAreaRepository.listAllActivityAreas(getAllActivityAreasUseCaseInput)
+    const activityAreasInfo = await this.ActivityAreasRepository.listAllActivityAreas(getAllActivityAreasUseCaseInput)
 
     return activityAreasInfo
   }

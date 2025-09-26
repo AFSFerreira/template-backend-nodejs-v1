@@ -1,4 +1,4 @@
-import type { AddressStates } from '@repositories/address-repository'
+import type { AddressStates } from '@repositories/addresses-repository'
 
 interface HTTPAddressStates {
   state: string

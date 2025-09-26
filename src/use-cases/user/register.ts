@@ -4,7 +4,7 @@ import { env } from '@env/index'
 import { logger } from '@lib/logger'
 import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/logger'
 import { ActivityAreaType } from '@prisma/client'
-import type { ActivityAreaRepository } from '@repositories/activity-area-repository'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { highLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
@@ -31,7 +31,7 @@ interface RegisterUseCaseResponse {
 export class RegisterUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly activityAreasRepository: ActivityAreaRepository,
+    private readonly activityAreasRepository: ActivityAreasRepository,
   ) {}
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
