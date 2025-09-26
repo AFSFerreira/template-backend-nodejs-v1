@@ -255,3 +255,11 @@ export const USER_ALREADY_REGISTERED_IN_MEETING = {
     message: 'O usuário já está cadastrado na reunião',
   },
 }
+
+export const GUEST_ALREADY_REGISTERED_IN_MEETING = {
+  status: 409,
+  body: {
+    code: 'GUEST_ALREADY_REGISTERED_IN_MEETING',
+    message: 'O convidado com este email já está cadastrado na reunião'
+  }
+}

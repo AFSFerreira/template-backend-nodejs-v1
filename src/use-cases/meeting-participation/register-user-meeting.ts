@@ -44,7 +44,7 @@ export class RegisterUserMeetingUseCase {
       throw new MeetingAlreadyFinishedError()
     }
 
-    const userAlreadyRegistered = await this.meetingParticipantsRepository.findByUserAndMeeting({
+    const userAlreadyRegistered = await this.meetingParticipantsRepository.findByUserIdAndMeetingId({
       meetingId: meeting.id,
       userId: user.id,
     })

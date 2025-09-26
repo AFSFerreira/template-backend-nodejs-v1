@@ -3,7 +3,7 @@ import { presentationSchema } from '@schemas/utils/components/presentation-schem
 import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
 import z from 'zod'
 
-const registerGuestMeetingBodySchema = z.object({
+export const registerGuestMeetingBodySchema = z.object({
   meetingPresentationData: presentationSchema.optional(),
   guestEmail: emailSchema,
   guestFullName: upperCaseTextSchema,
