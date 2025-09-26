@@ -12,14 +12,20 @@ export interface CreateMeetingParticipationForGuestQuery extends RegisterGuestMe
   meetingId: number
 }
 
-export interface FindByUserAndMeetingInput {
+export interface FindByUserIdAndMeetingIdInput {
   userId: number
+  meetingId: number
+}
+
+export interface FindByGuestEmailAndMeetingId {
+  guestEmail: string
   meetingId: number
 }
 
 export interface MeetingParticipantsRepository {
   createForUser: (query: CreateMeetingParticipationForUserQuery) => Promise<MeetingParticipation>
   createForGuest: (query: CreateMeetingParticipationForGuestQuery) => Promise<MeetingParticipation>
-  findByUserAndMeeting: (query: FindByUserAndMeetingInput) => Promise<MeetingParticipation | null>
+  findByUserIdAndMeetingId: (query: FindByUserIdAndMeetingIdInput) => Promise<MeetingParticipation | null>
+  findByGuestEmailAndMeetingId: (query: FindByGuestEmailAndMeetingId) => Promise<MeetingParticipation | null>
   listParticipants: (meetingId: number) => Promise<MeetingParticipationWithDetails[]>
 }

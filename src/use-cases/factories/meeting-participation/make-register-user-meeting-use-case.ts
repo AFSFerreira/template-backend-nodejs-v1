@@ -1,7 +1,7 @@
 import { PrismaMeetingParticipantsRepository } from '@repositories/prisma/prisma-meeting-participants-repository'
 import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-repository'
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
-import { RegisterUserMeetingUseCase } from '@use-cases/meeting/register-user-meeting'
+import { RegisterUserMeetingUseCase } from '@use-cases/meeting-participation/register-user-meeting'
 
 export function makeRegisterUserMeetingUseCase() {
   const usersRepository = new PrismaUsersRepository()

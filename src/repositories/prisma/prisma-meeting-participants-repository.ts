@@ -2,7 +2,8 @@ import { prisma } from '@lib/prisma'
 import type {
   CreateMeetingParticipationForGuestQuery,
   CreateMeetingParticipationForUserQuery,
-  FindByUserAndMeetingInput,
+  FindByGuestEmailAndMeetingId,
+  FindByUserIdAndMeetingIdInput,
   MeetingParticipantsRepository,
 } from '@repositories/meeting-participants-repository'
 
@@ -44,11 +45,23 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
     return meetingParticipation
   }
 
-  async findByUserAndMeeting(query: FindByUserAndMeetingInput) {
+  async findByUserIdAndMeetingId(query: FindByUserIdAndMeetingIdInput) {
     const meetingParticipation = await prisma.meetingParticipation.findUnique({
       where: {
         meetingId_userId: query,
       },
+    })
+    return meetingParticipation
+  }
+
+  async findByGuestEmailAndMeetingId(query: FindByGuestEmailAndMeetingId) {
+    const meetingParticipation = await prisma.meetingParticipation.findFirst({
+      where: {
+        meetingId: query.meetingId,
+        Guest: {
+          email: query.guestEmail
+        }
+      }
     })
     return meetingParticipation
   }
