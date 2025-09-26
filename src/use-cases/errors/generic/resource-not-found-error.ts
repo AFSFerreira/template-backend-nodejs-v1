@@ -8,7 +8,7 @@ export class ResourceNotFoundError extends ApiError {
       body: {
         ...RESOURCE_NOT_FOUND.body,
         message: message ?? RESOURCE_NOT_FOUND.body.message,
-      }
+      },
     })
   }
 }

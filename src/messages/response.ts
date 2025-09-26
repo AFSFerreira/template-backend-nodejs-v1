@@ -244,14 +244,14 @@ export const MEETING_ALREADY_FINISHED = {
   status: 409,
   body: {
     code: 'MEETING_ALREADY_FINISHED',
-    message: 'A reunião já foi finalizada'
-  }
+    message: 'A reunião já foi finalizada',
+  },
 }
 
 export const USER_ALREADY_REGISTERED_IN_MEETING = {
   status: 409,
   body: {
     code: 'USER_ALREADY_REGISTERED_IN_MEETING',
-    message: 'O usuário já está cadastrado na reunião'
-  }
+    message: 'O usuário já está cadastrado na reunião',
+  },
 }

@@ -1,20 +1,25 @@
-import { prisma } from "@lib/prisma"
-import type { CreateMeetingParticipationForGuestQuery, CreateMeetingParticipationForUserQuery, FindByUserAndMeetingInput, MeetingParticipantsRepository } from "@repositories/meeting-participants-repository"
+import { prisma } from '@lib/prisma'
+import type {
+  CreateMeetingParticipationForGuestQuery,
+  CreateMeetingParticipationForUserQuery,
+  FindByUserAndMeetingInput,
+  MeetingParticipantsRepository,
+} from '@repositories/meeting-participants-repository'
 
 export class PrismaMeetingParticipantsRepository implements MeetingParticipantsRepository {
   async createForUser(query: CreateMeetingParticipationForUserQuery) {
     const meetingParticipation = await prisma.meetingParticipation.create({
       data: {
         Presentation: {
-          create: query.meetingPresentationData
+          create: query.meetingPresentationData,
         },
         Meeting: {
-          connect: { id: query.meetingId }
+          connect: { id: query.meetingId },
         },
         User: {
-          connect: { id: query.userId }
-        }
-      }
+          connect: { id: query.userId },
+        },
+      },
     })
     return meetingParticipation
   }
@@ -23,18 +28,18 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
     const meetingParticipation = await prisma.meetingParticipation.create({
       data: {
         Presentation: {
-          create: query.meetingPresentationData
+          create: query.meetingPresentationData,
         },
         Meeting: {
-          connect: { id: query.meetingId }
+          connect: { id: query.meetingId },
         },
         Guest: {
           create: {
             fullName: query.guestFullName,
             email: query.guestEmail,
-          }
-        }
-      }
+          },
+        },
+      },
     })
     return meetingParticipation
   }
@@ -42,8 +47,8 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
   async findByUserAndMeeting(query: FindByUserAndMeetingInput) {
     const meetingParticipation = await prisma.meetingParticipation.findUnique({
       where: {
-        meetingId_userId: query
-      }
+        meetingId_userId: query,
+      },
     })
     return meetingParticipation
   }
@@ -54,7 +59,7 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
       include: {
         Guest: true,
         User: true,
-      }
+      },
     })
     return participants
   }

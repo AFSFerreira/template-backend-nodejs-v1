@@ -11,7 +11,9 @@ interface HTTPMeetingParticipation {
 export class MeetingParticipationPresenter {
   static toHTTP(meetingParticipation: MeetingParticipation): HTTPMeetingParticipation
   static toHTTP(meetingParticipants: MeetingParticipation[]): HTTPMeetingParticipation[]
-  static toHTTP(input: MeetingParticipation | MeetingParticipation[]): HTTPMeetingParticipation | HTTPMeetingParticipation[] {
+  static toHTTP(
+    input: MeetingParticipation | MeetingParticipation[],
+  ): HTTPMeetingParticipation | HTTPMeetingParticipation[] {
     if (Array.isArray(input)) {
       return input.map((participation) => MeetingParticipationPresenter.toHTTP(participation))
     }

@@ -11,7 +11,7 @@ export function makeRegisterUserMeetingUseCase() {
   const registerUserMeetingUseCase = new RegisterUserMeetingUseCase(
     usersRepository,
     meetingsRepository,
-    meetingParticipantsRepository
+    meetingParticipantsRepository,
   )
 
   return registerUserMeetingUseCase
