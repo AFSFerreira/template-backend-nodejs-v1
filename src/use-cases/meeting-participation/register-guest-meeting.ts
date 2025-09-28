@@ -2,9 +2,9 @@ import type { MeetingParticipation } from "@prisma/client"
 import type { MeetingParticipantsRepository } from "@repositories/meeting-participants-repository"
 import type { MeetingsRepository } from "@repositories/meetings-repository"
 import type { RegisterGuestMeetingBodySchemaType } from "@schemas/meeting/register-guest-meeting-body-schema"
+import { MeetingNotFoundError } from "@use-cases/errors/meeting/meeting-not-found-error"
 import { GuestAlreadyRegisteredInMeetingError } from "@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error"
 import { MeetingAlreadyFinishedError } from "@use-cases/errors/meeting-participation/meeting-already-finished-error"
-import { MeetingNotFoundError } from "@use-cases/errors/meeting/meeting-not-found-error"
 import { toDateOnly } from "@utils/to-date-only"
 
 interface RegisterUserMeetingUseCaseRequest extends RegisterGuestMeetingBodySchemaType {
