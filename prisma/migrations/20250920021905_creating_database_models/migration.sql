@@ -212,6 +212,11 @@ CREATE TABLE "public"."meeting_guest" (
     "id" SERIAL NOT NULL,
     "full_name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "institution_name" TEXT NOT NULL,
+    "department_name" TEXT NOT NULL,
+    "occupation" "public"."OccupationType" NOT NULL,
+    "education_level" "public"."EducationLevelType" NOT NULL,
+    "wants_newsletter" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "meeting_guest_pkey" PRIMARY KEY ("id")

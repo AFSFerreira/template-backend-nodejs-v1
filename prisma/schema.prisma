@@ -229,6 +229,11 @@ model MeetingGuest {
   id                   Int                    @id @default(autoincrement())
   fullName             String                 @map("full_name")
   email                String
+  institutionName      String                 @map("institution_name")
+  departmentName       String                 @map("department_name")
+  occupation           OccupationType
+  educationLevel       EducationLevelType     @map("education_level")
+  wantsNewsletter      Boolean                @map("wants_newsletter")
   createdAt            DateTime               @default(now())
   MeetingParticipation MeetingParticipation[]
 
@@ -250,7 +255,7 @@ model MeetingParticipation {
 
   @@unique([meetingId, userId])
   @@unique([meetingId, guestId])
-  @@map("meeting_participation")
+  @@map("meeting_participants")
 }
 
 model MeetingPresentation {
@@ -275,7 +280,7 @@ model MeetingPresentationAuthor {
   presentationId Int                 @map("presentation_id")
   Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("meeting_presentation_author")
+  @@map("meeting_presentation_authors")
 }
 
 model MeetingPresentationAffiliation {
@@ -284,7 +289,7 @@ model MeetingPresentationAffiliation {
   presentationId Int                 @map("presentation_id")
   Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@map("meeting_presentation_affiliation")
+  @@map("meeting_presentation_affiliations")
 }
 
 model Meeting {
