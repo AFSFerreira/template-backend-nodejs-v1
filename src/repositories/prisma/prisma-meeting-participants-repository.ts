@@ -26,6 +26,8 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
   }
 
   async createForGuest(query: CreateMeetingParticipationForGuestQuery) {
+    const { meetingPresentationData, ...guestData } = query
+
     const meetingParticipation = await prisma.meetingParticipation.create({
       data: {
         Presentation: {
@@ -36,8 +38,8 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
         },
         Guest: {
           create: {
-            fullName: query.fullName,
-            email: query.email,
+            ...guestData,
+            wantsNewsletter: query.wantsNewsletter,
           },
         },
       },
