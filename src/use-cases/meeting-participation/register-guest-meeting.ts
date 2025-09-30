@@ -33,7 +33,7 @@ export class RegisterGuestMeetingUseCase {
     }
 
     const guestAlreadyRegistered = await this.meetingParticipantsRepository.findByGuestEmailAndMeetingId({
-      guestEmail: registerGuestMeetingUseCaseInput.guestEmail,
+      email: registerGuestMeetingUseCaseInput.email,
       meetingId: meeting.id,
     })
 

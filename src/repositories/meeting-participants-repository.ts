@@ -18,7 +18,7 @@ export interface FindByUserIdAndMeetingIdInput {
 }
 
 export interface FindByGuestEmailAndMeetingId {
-  guestEmail: string
+  email: string
   meetingId: number
 }
 

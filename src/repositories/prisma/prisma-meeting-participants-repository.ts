@@ -36,8 +36,8 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
         },
         Guest: {
           create: {
-            fullName: query.guestFullName,
-            email: query.guestEmail,
+            fullName: query.fullName,
+            email: query.email,
           },
         },
       },
@@ -59,7 +59,7 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
       where: {
         meetingId: query.meetingId,
         Guest: {
-          email: query.guestEmail
+          email: query.email
         }
       }
     })

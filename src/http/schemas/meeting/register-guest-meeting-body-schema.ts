@@ -5,8 +5,10 @@ import z from 'zod'
 
 export const registerGuestMeetingBodySchema = z.object({
   meetingPresentationData: presentationSchema.optional(),
-  guestEmail: emailSchema,
-  guestFullName: upperCaseTextSchema,
+  email: emailSchema,
+  fullName: upperCaseTextSchema,
+  institutionName: upperCaseTextSchema,
+  
 })
 
 export type RegisterGuestMeetingBodySchemaType = z.infer<typeof registerGuestMeetingBodySchema>
