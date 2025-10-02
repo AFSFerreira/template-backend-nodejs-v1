@@ -43,11 +43,15 @@ export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQue
 
   const scoreExpression = scores.length > 0 ? Prisma.sql`(${Prisma.join(scores, ' + ')})` : Prisma.sql`0`
 
+  if (query.orderBy.fullNameOrder) {
+    ordinations.push(Prisma.sql`u.full_name_unaccent ASC`)
+  }
+
   if (scores.length > 0) {
     ordinations.push(Prisma.sql`${scoreExpression} DESC`)
   }
 
-  ordinations.push(Prisma.sql`u.created_at DESC`)
+  ordinations.push(Prisma.sql`u.public_id ASC`)
 
   const orderByClause = Prisma.sql`ORDER BY ${Prisma.join(ordinations, ', ')}`
 
