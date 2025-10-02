@@ -9,7 +9,6 @@ import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
 import { z } from 'zod'
-import { getAllUsersSimplifiedQuerySchema } from './get-all-users-simplified-query-schema'
 import { emailSchema } from '../utils/components/email-schema'
 import { keywordSchema } from '../utils/components/keyword-schema'
 import { usernameSchema } from '../utils/components/username-schema'
@@ -17,7 +16,9 @@ import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
 const getAllUsersDetailedQueryRawSchema = z
   .object({
-    ...getAllUsersSimplifiedQuerySchema.shape,
+    fullName: upperCaseTextSchema,
+    institutionName: upperCaseTextSchema,
+    state: upperCaseTextSchema,
     email: emailSchema,
     username: usernameSchema,
     membershipStatus: membershipStatusArraySchema,
@@ -40,6 +41,7 @@ const getAllUsersDetailedQueryRawSchema = z
     orderBy: z
       .object({
         createdAtOrder: orderDirectionsSchema.default('desc'),
+        fullNameOrder: orderDirectionsSchema,
       })
       .partial(),
   })
@@ -63,6 +65,7 @@ export const getAllUsersDetailedQuerySchema = z.preprocess(
       : undefined,
     orderBy: {
       ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),
+      ...(query.fullNameOrder ? { fullNameOrder: query.fullNameOrder } : {}),
     },
   }),
   getAllUsersDetailedQueryRawSchema,

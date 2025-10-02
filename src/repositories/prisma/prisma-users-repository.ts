@@ -200,13 +200,13 @@ export class PrismaUsersRepository implements UsersRepository {
           fullName: true,
           email: true,
           emailIsPublic: true,
-          Address: {
-            select: { state: true },
-          },
-          Institution: {
-            select: { name: true },
-          },
+          Address: { select: { state: true } },
+          Institution: { select: { name: true } },
         },
+        orderBy: {
+          fullName: 'asc',
+          publicId: 'asc',
+        }
       })
 
       const formattedUsers = users.map((userInfo) => ({
