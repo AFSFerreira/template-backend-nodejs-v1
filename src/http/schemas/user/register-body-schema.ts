@@ -45,10 +45,10 @@ const professionalAndAcademicUserSchema = z.object({
   linkGoogleScholar: urlSchema.optional(),
   linkResearcherId: urlSchema.optional(),
   orcidNumber: orcidNumberSchema.optional(),
+  publicInformation: longLimitedNonemptyTextSchema.optional(),
   occupation: occupationSchema,
   departmentName: upperCaseTextSchema,
   astrobiologyOrRelatedStartYear: rangedYearSchema,
-  publicInformation: longLimitedNonemptyTextSchema,
 })
 
 const otherRootFieldsProfessionalAndAcademicSchema = z.object({
