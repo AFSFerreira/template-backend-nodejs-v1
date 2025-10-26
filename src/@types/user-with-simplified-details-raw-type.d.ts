@@ -1,4 +1,4 @@
-export interface CustomUserWithSimplifiedDetailsRaw {
+export interface UserWithSimplifiedDetailsRaw {
   id: number
   public_id: string
   full_name: string

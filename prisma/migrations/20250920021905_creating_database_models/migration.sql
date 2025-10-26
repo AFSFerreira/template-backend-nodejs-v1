@@ -112,7 +112,6 @@ CREATE TABLE "public"."enrolled_courses" (
 -- CreateTable
 CREATE TABLE "public"."academic_publications" (
     "id" SERIAL NOT NULL,
-    "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "publication_year" INTEGER NOT NULL,
     "journal_name" TEXT NOT NULL,
@@ -169,15 +168,24 @@ CREATE TABLE "public"."keywords" (
 -- CreateTable
 CREATE TABLE "public"."directors_board" (
     "id" SERIAL NOT NULL,
-    "public_id" TEXT NOT NULL,
+    "director_position_id" INTEGER NOT NULL,
     "director_board_profile_image" TEXT NOT NULL,
     "about_me" TEXT NOT NULL,
-    "position" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "directors_board_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."director_positions" (
+    "id" SERIAL NOT NULL,
+    "position" TEXT NOT NULL,
+    "precedence" INTEGER NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "director_positions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -409,9 +417,6 @@ CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses
 CREATE INDEX "enrolled_courses_user_id_idx" ON "public"."enrolled_courses"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "academic_publications_public_id_key" ON "public"."academic_publications"("public_id");
-
--- CreateIndex
 CREATE INDEX "academic_publications_user_id_idx" ON "public"."academic_publications"("user_id");
 
 -- CreateIndex
@@ -433,13 +438,16 @@ CREATE UNIQUE INDEX "area_of_activity_type_area_key" ON "public"."area_of_activi
 CREATE UNIQUE INDEX "keywords_value_key" ON "public"."keywords"("value");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "directors_board_public_id_key" ON "public"."directors_board"("public_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "directors_board_user_id_key" ON "public"."directors_board"("user_id");
 
 -- CreateIndex
 CREATE INDEX "directors_board_user_id_idx" ON "public"."directors_board"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "directors_board_director_position_id_key" ON "public"."directors_board"("director_position_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "director_positions_position_key" ON "public"."director_positions"("position");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."meeting_payment_information"("meeting_id");
@@ -521,6 +529,9 @@ ALTER TABLE "public"."academic_publication_authors" ADD CONSTRAINT "academic_pub
 
 -- AddForeignKey
 ALTER TABLE "public"."directors_board" ADD CONSTRAINT "directors_board_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."directors_board" ADD CONSTRAINT "directors_board_director_position_id_fkey" FOREIGN KEY ("director_position_id") REFERENCES "public"."director_positions"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

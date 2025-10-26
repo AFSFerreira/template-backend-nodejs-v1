@@ -31,7 +31,6 @@
       "@custom-types/*": ["src/@types/*"],
       "@utils/*": ["./src/utils/*"],
       "@services/*": ["./src/services/*"],
-      "@swagger-schemas/*": ["./src/swagger-schemas/*"],
       "@factories/*": ["./src/use-cases/factories/*"],
       "@env/*": ["./src/env/*"],
       "@presenters/*": ["./src/http/presenters/*"],
@@ -41,6 +40,6 @@
       "@messages/*": ["./src/messages/*"]
     }
   },
-  "include": ["./**/*.ts", "./tsconfig.json"],
+  "include": ["./**/*.ts", "./**/*.cjs", "./tsconfig.json"],
   "exclude": ["node_modules", "dist", "uploads"]
 }

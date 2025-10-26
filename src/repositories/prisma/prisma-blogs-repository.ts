@@ -1,9 +1,9 @@
+import type { BlogRaw } from '@custom-types/blog-raw-type'
 import { blogWithDetails } from '@custom-types/blog-with-details'
-import type { CustomBlogRaw } from '@custom-types/custom-blog-raw-type'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { BlogsRepository, ListAllBlogsQuery } from '@repositories/blogs-repository'
-import { customBlogAdapter } from './adapters/custom-blogs-adapter'
+import { blogAdapter } from './adapters/blogs/blog-adapter'
 import { buildListAllBlogsQuery } from './queries/blogs/build-list-all-blogs-query'
 
 export class PrismaBlogsRepository implements BlogsRepository {
@@ -60,7 +60,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
 
     const [countResult, blogs] = await Promise.all([
       prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<CustomBlogRaw[]>(searchQuery),
+      prisma.$queryRaw<BlogRaw[]>(searchQuery),
     ])
 
     const totalItems = countResult[0].total
@@ -68,7 +68,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     const totalPages = Math.ceil(totalItems / query.limit)
 
     return {
-      data: blogs.map(customBlogAdapter),
+      data: blogs.map(blogAdapter),
       meta: {
         totalItems,
         totalPages,

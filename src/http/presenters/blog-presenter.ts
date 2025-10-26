@@ -1,5 +1,5 @@
 import type { BlogWithDetails } from '@custom-types/blog-with-details'
-import type { BlogWithSimplifiedDetails } from '@custom-types/blog-with-simplified-details-type'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/custom-blog-with-simplified-details-type'
 
 interface HTTPSimplifiedBlog {
   id: string
@@ -25,10 +25,10 @@ interface HTTPBlog {
 }
 
 export class BlogPresenter {
-  static toHTTPSimplified(blog: BlogWithSimplifiedDetails): HTTPSimplifiedBlog
-  static toHTTPSimplified(blogs: BlogWithSimplifiedDetails[]): HTTPSimplifiedBlog[]
+  static toHTTPSimplified(blog: CustomBlogWithSimplifiedDetails): HTTPSimplifiedBlog
+  static toHTTPSimplified(blogs: CustomBlogWithSimplifiedDetails[]): HTTPSimplifiedBlog[]
   static toHTTPSimplified(
-    input: BlogWithSimplifiedDetails | BlogWithSimplifiedDetails[],
+    input: CustomBlogWithSimplifiedDetails | CustomBlogWithSimplifiedDetails[],
   ): HTTPSimplifiedBlog | HTTPSimplifiedBlog[] {
     if (Array.isArray(input)) {
       return input.map((blog) => BlogPresenter.toHTTPSimplified(blog))

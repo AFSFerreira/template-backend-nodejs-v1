@@ -6,10 +6,7 @@ export function makeRegisterGuestMeetingUseCase() {
   const meetingsRepository = new PrismaMeetingsRepository()
   const meetingParticipantsRepository = new PrismaMeetingParticipantsRepository()
 
-  const registerGuestMeetingUseCase = new RegisterGuestMeetingUseCase(
-    meetingsRepository,
-    meetingParticipantsRepository
-  )
+  const registerGuestMeetingUseCase = new RegisterGuestMeetingUseCase(meetingsRepository, meetingParticipantsRepository)
 
   return registerGuestMeetingUseCase
 }

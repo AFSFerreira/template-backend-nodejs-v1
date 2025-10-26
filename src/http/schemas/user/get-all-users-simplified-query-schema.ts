@@ -8,20 +8,23 @@ export const getAllUsersSimplifiedQueryRawSchema = z
     fullName: upperCaseTextSchema,
     institutionName: upperCaseTextSchema,
     state: upperCaseTextSchema,
-    orderBy: z.object({
-      fullNameOrder: orderDirectionsSchema,
-    })
-    .partial(),
+    orderBy: z
+      .object({
+        fullNameOrder: orderDirectionsSchema,
+      })
+      .partial(),
   })
   .partial()
   .extend(paginatedSchema.shape)
 
-export const getAllUsersSimplifiedQuerySchema = z.preprocess((query: any) => ({
-  ...query,
-  orderBy: {
-    ...(query.fullNameOrder ? { fullNameOrder: query.fullNameOrder } : {})
-  }
-}), getAllUsersSimplifiedQueryRawSchema)
-
+export const getAllUsersSimplifiedQuerySchema = z.preprocess(
+  (query: any) => ({
+    ...query,
+    orderBy: {
+      ...(query.fullNameOrder ? { fullNameOrder: query.fullNameOrder } : {}),
+    },
+  }),
+  getAllUsersSimplifiedQueryRawSchema,
+)
 
 export type GetAllUsersSimplifiedQuerySchemaType = z.infer<typeof getAllUsersSimplifiedQuerySchema>

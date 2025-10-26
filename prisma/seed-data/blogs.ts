@@ -7,7 +7,7 @@ import {
 } from './activity-areas'
 import { userData1 } from './users'
 
-const partialBlogData = {
+const partialBlogData1 = {
   authorName: userData1.fullName,
   bannerImage: 'null.png',
   content: {
@@ -27,8 +27,8 @@ const partialBlogData = {
   },
 }
 
-export const blogData = {
-  ...partialBlogData,
+export const blogData1 = {
+  ...partialBlogData1,
   title: 'INTRODUÇÃO À ASTROBIOLOGIA',
   searchContent: 'Olá Mundo',
   MainBlogCategory: {
@@ -41,7 +41,7 @@ export const blogData = {
 
 export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'CORPOS CELESTES',
     searchContent: 'Sol e Estrelas',
     MainBlogCategory: {
@@ -52,7 +52,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'VIDA EXTRATERRESTRE',
     searchContent: 'Busca por vida alienígena, exobiologia e organismos extremófilos',
     MainBlogCategory: {
@@ -63,7 +63,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'EXOPLANETAS E ZONAS HABITÁVEIS',
     searchContent: 'Planetas extrassolares, zona de Goldilocks e habitabilidade planetária',
     MainBlogCategory: {
@@ -74,7 +74,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'ORIGEM DA VIDA NA TERRA',
     searchContent: 'Evolução química, primeiros organismos e teorias sobre origem da vida',
     MainBlogCategory: {
@@ -85,7 +85,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'MISSÕES ESPACIAIS ASTROBIOLÓGICAS',
     searchContent: 'Mars Rover, Europa Clipper, exploração de Marte e luas de Júpiter',
     MainBlogCategory: {
@@ -96,7 +96,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'BIOSSINATURAS E DETECÇÃO DE VIDA',
     searchContent: 'Marcadores biológicos, espectroscopia e métodos de detecção remota',
     MainBlogCategory: {
@@ -107,7 +107,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'EXTREMÓFILOS E AMBIENTES EXTREMOS',
     searchContent: 'Organismos extremófilos, vida em condições adversas e analogos terrestres',
     MainBlogCategory: {
@@ -118,7 +118,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'QUÍMICA PREBIÓTICA',
     searchContent: 'Moléculas orgânicas complexas, aminoácidos no espaço e meteoritos',
     MainBlogCategory: {
@@ -129,7 +129,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'ATMOSFERAS PLANETÁRIAS E CLIMA',
     searchContent: 'Composição atmosférica, efeito estufa e evolução climática planetária',
     MainBlogCategory: {
@@ -140,7 +140,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'SETI E COMUNICAÇÃO EXTRATERRESTRE',
     searchContent: 'Search for Extraterrestrial Intelligence, radiotelescópios e sinais do espaço',
     MainBlogCategory: {
@@ -151,7 +151,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'EVOLUÇÃO ESTELAR E HABITABILIDADE',
     searchContent: 'Ciclo de vida das estrelas, anãs vermelhas e impacto na habitabilidade',
     MainBlogCategory: {
@@ -162,7 +162,7 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     },
   },
   {
-    ...partialBlogData,
+    ...partialBlogData1,
     title: 'PANSPERMIA E TRANSFERÊNCIA DE VIDA',
     searchContent: 'Teoria da panspermia, meteoritos e transferência de vida entre planetas',
     MainBlogCategory: {

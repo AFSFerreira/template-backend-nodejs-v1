@@ -1,19 +1,21 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
-import { activityAreasData, subActivityAreasData } from './seed-data/activity-areas'
-import { blogData, dummyBlogDataArray } from './seed-data/blogs'
+import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
+import { blogData1, dummyBlogDataArray } from './seed-data/blogs'
+import { directorPositionData1 } from './seed-data/director-positions'
+import { directorBoardData1 } from './seed-data/directors-board'
 import { meetingData1 } from './seed-data/meeting'
-import { paymentInfo } from './seed-data/payment-info'
+import { paymentInfo1 } from './seed-data/payment-info'
 import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 
 const prisma = new PrismaClient()
 
 async function main() {
-  const activityAreas = activityAreasData.map((activityArea) => ({
+  const activityAreas = activityAreasData1.map((activityArea) => ({
     area: activityArea,
     type: ActivityAreaType.AREA_OF_ACTIVITY,
   }))
 
-  const subActivityAreas = subActivityAreasData.map((subActivityArea) => ({
+  const subActivityAreas = subActivityAreasData1.map((subActivityArea) => ({
     area: subActivityArea,
     type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
   }))
@@ -23,11 +25,29 @@ async function main() {
     skipDuplicates: true,
   })
 
+  await prisma.directorPosition.upsert({
+    where: { position: directorPositionData1.position },
+    update: {},
+    create: directorPositionData1,
+  })
+
   // Criação de Usuário Admin:
-  await prisma.user.upsert({
+  const admin = await prisma.user.upsert({
     where: { email: userData1.email },
     update: {},
     create: userData1,
+  })
+
+  // Criação das Informações de Corpo Diretivo:
+  await prisma.directorBoard.upsert({
+    where: { userId: admin.id },
+    update: {},
+    create: {
+      ...directorBoardData1,
+      User: {
+        connect: { id: admin.id },
+      },
+    },
   })
 
   // Criação de Usuário Comum:
@@ -47,12 +67,12 @@ async function main() {
   }
 
   let existingBlog = await prisma.blog.findFirst({
-    where: { title: blogData.title },
+    where: { title: blogData1.title },
   })
 
   if (!existingBlog) {
     existingBlog = await prisma.blog.create({
-      data: blogData,
+      data: blogData1,
     })
   }
 
@@ -73,7 +93,7 @@ async function main() {
   await prisma.paymentInfo.upsert({
     where: { id: 1 },
     update: {},
-    create: paymentInfo,
+    create: paymentInfo1,
   })
 
   // Criação de Reuniões:

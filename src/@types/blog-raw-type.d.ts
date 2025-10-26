@@ -1,4 +1,4 @@
-export interface CustomBlogRaw {
+export interface BlogRaw {
   id: number
   public_id: string
   title: string

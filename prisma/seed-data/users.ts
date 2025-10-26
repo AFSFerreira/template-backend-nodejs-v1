@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/client'
 import {
   ActivityAreaType,
   EducationLevelType,
@@ -6,16 +7,15 @@ import {
   OccupationType,
   UserRoleType,
 } from '@prisma/client'
-import type { Prisma } from '@prisma/client'
 import { hashSync } from 'bcryptjs'
-import { academicPublicationsData } from './academic-publications'
-import { activityAreasData, subActivityAreasData } from './activity-areas'
-import { addressData1, addressData2 } from './addresses'
-import { directorBoardData } from './directors-board'
-import { enrolledCourseData } from './enrolled-courses'
-import { institutionData1, institutionData2 } from './institutions'
-import { keywordsData } from './keywords'
 import { env } from '../../src/env/index'
+import { academicPublicationsData1 } from './academic-publications'
+import { activityAreasData1, subActivityAreasData1 } from './activity-areas'
+import { addressData1, addressData2 } from './addresses'
+import { directorBoardData1 } from './directors-board'
+import { enrolledCourseData1 } from './enrolled-courses'
+import { institutionData1, institutionData2 } from './institutions'
+import { keywordsData1 } from './keywords'
 
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
 
@@ -48,14 +48,14 @@ export const userData1 = {
 
   Address: { create: addressData1 },
 
-  EnrolledCourse: { create: enrolledCourseData },
+  EnrolledCourse: { create: enrolledCourseData1 },
 
-  DirectorBoard: { create: directorBoardData },
+  DirectorBoard: { create: directorBoardData1 },
 
-  AcademicPublication: { create: academicPublicationsData },
+  AcademicPublication: { create: academicPublicationsData1 },
 
   Keyword: {
-    connectOrCreate: keywordsData.map((keyword) => ({
+    connectOrCreate: keywordsData1.map((keyword) => ({
       where: { value: keyword },
       create: { value: keyword },
     })),
@@ -71,7 +71,7 @@ export const userData1 = {
   ActivityArea: {
     connect: {
       type_area: {
-        area: activityAreasData[1],
+        area: activityAreasData1[1],
         type: ActivityAreaType.AREA_OF_ACTIVITY,
       },
     },
@@ -80,7 +80,7 @@ export const userData1 = {
   SubActivityArea: {
     connect: {
       type_area: {
-        area: subActivityAreasData[2],
+        area: subActivityAreasData1[2],
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       },
     },
@@ -116,9 +116,9 @@ export const userData2 = {
 
   Address: { create: addressData1 },
 
-  EnrolledCourse: { create: enrolledCourseData },
+  EnrolledCourse: { create: enrolledCourseData1 },
 
-  AcademicPublication: { create: academicPublicationsData },
+  AcademicPublication: { create: academicPublicationsData1 },
 
   Institution: {
     connectOrCreate: {
@@ -128,7 +128,7 @@ export const userData2 = {
   },
 
   Keyword: {
-    connectOrCreate: keywordsData.map((keyword) => ({
+    connectOrCreate: keywordsData1.map((keyword) => ({
       where: { value: keyword },
       create: { value: keyword },
     })),
@@ -137,7 +137,7 @@ export const userData2 = {
   ActivityArea: {
     connect: {
       type_area: {
-        area: activityAreasData[0],
+        area: activityAreasData1[0],
         type: ActivityAreaType.AREA_OF_ACTIVITY,
       },
     },
@@ -146,7 +146,7 @@ export const userData2 = {
   SubActivityArea: {
     connect: {
       type_area: {
-        area: subActivityAreasData[0],
+        area: subActivityAreasData1[0],
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       },
     },
@@ -178,9 +178,9 @@ const partialDummyUserData = {
 
   Address: { create: addressData2 },
 
-  EnrolledCourse: { create: enrolledCourseData },
+  EnrolledCourse: { create: enrolledCourseData1 },
 
-  AcademicPublication: { create: academicPublicationsData },
+  AcademicPublication: { create: academicPublicationsData1 },
 
   Institution: {
     connectOrCreate: {
@@ -190,7 +190,7 @@ const partialDummyUserData = {
   },
 
   Keyword: {
-    connectOrCreate: keywordsData.map((keyword) => ({
+    connectOrCreate: keywordsData1.map((keyword) => ({
       where: { value: keyword },
       create: { value: keyword },
     })),
@@ -199,7 +199,7 @@ const partialDummyUserData = {
   ActivityArea: {
     connect: {
       type_area: {
-        area: activityAreasData[0],
+        area: activityAreasData1[0],
         type: ActivityAreaType.AREA_OF_ACTIVITY,
       },
     },
@@ -208,7 +208,7 @@ const partialDummyUserData = {
   SubActivityArea: {
     connect: {
       type_area: {
-        area: subActivityAreasData[0],
+        area: subActivityAreasData1[0],
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       },
     },
@@ -236,7 +236,7 @@ for (let i = 1; i <= 20; i++) {
     email: `dummy-user${i}@email.com`,
 
     Keyword: {
-      connectOrCreate: keywordsData.slice(0, 2).map((keyword) => ({
+      connectOrCreate: keywordsData1.slice(0, 2).map((keyword) => ({
         where: { value: keyword },
         create: { value: keyword },
       })),

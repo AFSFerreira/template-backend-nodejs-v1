@@ -97,17 +97,24 @@ export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySc
   const { limit, offset } = evalOffset(query)
   const whereClause = conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` : Prisma.empty
 
-  const scoreExpression = scores.length > 0 ? Prisma.sql`(${Prisma.join(scores, ' + ')})` : Prisma.sql`0`
-
   if (scores.length > 0) {
-    ordinations.push(Prisma.sql`${scoreExpression} DESC`)
+    const scoreExpression = Prisma.sql`(${Prisma.join(scores, ' + ')})`
+    ordinations.unshift(Prisma.sql`${scoreExpression} DESC`)
   }
 
   if (query.orderBy) {
     if (query.orderBy.createdAtOrder) {
-      ordinations.push(Prisma.sql`u.created_at ${Prisma.raw(query.orderBy.createdAtOrder.toUpperCase())}`)
+      const createdAtOrder = query.orderBy.createdAtOrder.toUpperCase()
+      ordinations.push(Prisma.sql`u.created_at ${Prisma.raw(createdAtOrder)}`)
+    }
+
+    if (query.orderBy.fullNameOrder) {
+      const fullNameOrder = query.orderBy.fullNameOrder.toUpperCase()
+      ordinations.push(Prisma.sql`u.full_name_unaccent ${Prisma.raw(fullNameOrder)}`)
     }
   }
+
+  ordinations.push(Prisma.sql`u.id ASC`)
 
   const orderByClause = ordinations.length > 0 ? Prisma.sql`ORDER BY ${Prisma.join(ordinations, ', ')}` : Prisma.empty
 

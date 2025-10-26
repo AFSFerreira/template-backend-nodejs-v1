@@ -1,4 +1,4 @@
-export const enrolledCourseData = {
+export const enrolledCourseData1 = {
   courseName: 'INTRODUÇÃO À ASTROBIOLOGIA',
   startGraduationDate: new Date(`${'2025-06'}-01T00:00:00Z`),
   expectedGraduationDate: new Date(`${'2029-06'}-01T00:00:00Z`),

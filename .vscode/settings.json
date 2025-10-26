@@ -8,8 +8,10 @@
     "editor.defaultFormatter": "Prisma.prisma"
   },
   "cSpell.words": [
+    "Astrobio",
     "astrobiologia",
     "autoincrement",
+    "BUILDKIT",
     "cnpj",
     "dbgenerated",
     "fkey",
@@ -20,6 +22,7 @@
     "pkey",
     "plainto",
     "plpgsql",
+    "sbastrobiodb",
     "setweight",
     "treeify",
     "trgm",

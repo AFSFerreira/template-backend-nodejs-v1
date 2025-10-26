@@ -1,9 +1,9 @@
-import type { CustomUserWithSimplifiedDetailsRaw } from '@custom-types/custom-user-with-simplified-details-raw-type'
 import { userWithDetails } from '@custom-types/user-with-details'
+import type { UserWithSimplifiedDetailsRaw } from '@custom-types/user-with-simplified-details-raw-type'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
-import { customUserSimplifiedAdapter } from '@repositories/prisma/adapters/custom-user-simplified-adapter'
+import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import type {
   CreateUserQuery,
@@ -205,8 +205,8 @@ export class PrismaUsersRepository implements UsersRepository {
         },
         orderBy: {
           fullName: 'asc',
-          publicId: 'asc',
-        }
+          id: 'asc',
+        },
       })
 
       const formattedUsers = users.map((userInfo) => ({
@@ -234,7 +234,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const [countResult, users] = await Promise.all([
       prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<CustomUserWithSimplifiedDetailsRaw[]>(searchQuery),
+      prisma.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
     const totalItems = countResult[0].total
@@ -242,7 +242,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const totalPages = Math.ceil(totalItems / query.limit)
 
     return {
-      data: users.map(customUserSimplifiedAdapter),
+      data: users.map(userSimplifiedAdapter),
       meta: {
         totalItems,
         totalPages,
@@ -253,7 +253,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async listAllUsersSimplified(query?: ListAllUsersSimplifiedQuery) {
-    if (!query?.page || !query?.limit) {
+    if (!query) {
       const users = await prisma.user.findMany({
         select: {
           id: true,
@@ -267,6 +267,10 @@ export class PrismaUsersRepository implements UsersRepository {
           Institution: {
             select: { name: true },
           },
+        },
+        orderBy: {
+          fullName: 'asc',
+          id: 'asc',
         },
       })
 
@@ -295,7 +299,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const [countResult, users] = await Promise.all([
       prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<CustomUserWithSimplifiedDetailsRaw[]>(searchQuery),
+      prisma.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
     const totalItems = countResult[0].total
@@ -303,7 +307,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const totalPages = Math.ceil(totalItems / query.limit)
 
     return {
-      data: users.map(customUserSimplifiedAdapter),
+      data: users.map(userSimplifiedAdapter),
       meta: {
         totalItems,
         totalPages,

@@ -1,4 +1,4 @@
-import type { FastifyRequestWithFile } from '@custom-types/fastify-with-request-type'
+import type { FastifyRequestWithFile } from '@custom-types/fastify-request-with-file-type'
 import { fileSchema } from '@schemas/utils/components/file-schema'
 import { makeUploadRegisterProfileImageUseCase } from '@use-cases/factories/user/make-upload-register-profile-image-use-case'
 import type { FastifyReply } from 'fastify'

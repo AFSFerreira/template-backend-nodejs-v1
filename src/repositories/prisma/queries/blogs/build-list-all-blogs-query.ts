@@ -53,7 +53,9 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
     }
   }
 
-  const orderByClause = ordinations.length > 0 ? Prisma.sql`ORDER BY ${Prisma.join(ordinations, ', ')}` : Prisma.empty
+  ordinations.push(Prisma.sql`b.id ASC`)
+
+  const orderByClause = Prisma.sql`ORDER BY ${Prisma.join(ordinations, ', ')}`
 
   const subCategories = query.subCategories ?? []
   const subCategoriesUnique = Array.from(new Set(subCategories))

@@ -117,7 +117,6 @@ model EnrolledCourse {
 
 model AcademicPublication {
   id                         Int                         @id @default(autoincrement())
-  publicId                   String                      @unique @default(uuid(7)) @map("public_id")
   title                      String
   publicationYear            Int                         @map("publication_year")
   journalName                String                      @map("journal_name")
@@ -128,11 +127,15 @@ model AcademicPublication {
   createdAt                  DateTime                    @default(now()) @map("created_at")
   userId                     Int                         @map("user_id")
   activityAreaId             Int                         @map("activity_area_id")
+  title_tsv_pt               Unsupported("tsvector")?
+  title_unaccent             String?                     @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))"))
   AcademicPublicationAuthors AcademicPublicationAuthor[]
   ActivityArea               ActivityArea                @relation(fields: [activityAreaId], references: [id], onDelete: NoAction)
   User                       User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([title_unaccent(ops: raw("gin_trgm_ops"))], map: "idx_academic_publications_title_trgm_gin", type: Gin)
+  @@index([title_tsv_pt], map: "idx_academic_publications_title_tsv_pt", type: Gin)
   @@map("academic_publications")
 }
 
@@ -182,18 +185,28 @@ model Keyword {
 }
 
 model DirectorBoard {
-  id                        Int      @id @default(autoincrement())
-  publicId                  String   @unique @default(uuid(7)) @map("public_id")
-  directorBoardProfileImage String   @map("director_board_profile_image")
-  aboutMe                   String   @map("about_me")
-  position                  String
-  createdAt                 DateTime @default(now()) @map("created_at")
-  updatedAt                 DateTime @updatedAt @map("updated_at")
-  userId                    Int      @unique @map("user_id")
-  User                      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                        Int              @id @default(autoincrement())
+  directorPositionId        Int              @unique @map("director_position_id")
+  directorBoardProfileImage String           @map("director_board_profile_image")
+  aboutMe                   String           @map("about_me")
+  createdAt                 DateTime         @default(now()) @map("created_at")
+  updatedAt                 DateTime         @updatedAt @map("updated_at")
+  userId                    Int              @unique @map("user_id")
+  DirectorPosition          DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction)
+  User                      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("directors_board")
+}
+
+model DirectorPosition {
+  id            Int            @id @default(autoincrement())
+  position      String         @unique
+  precedence    Int
+  createdAt     DateTime       @default(now()) @map("created_at")
+  DirectorBoard DirectorBoard?
+
+  @@map("director_positions")
 }
 
 model PaymentInfo {
@@ -241,17 +254,15 @@ model MeetingGuest {
 }
 
 model MeetingParticipation {
-  id        Int           @id @default(autoincrement())
-  createdAt DateTime      @default(now()) @map("created_at")
-  userId    Int?          @map("user_id")
-  User      User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  guestId   Int?          @map("guest_id")
-  Guest     MeetingGuest? @relation(fields: [guestId], references: [id], onDelete: Cascade)
-
-  meetingId Int @map("meeting_id")
-
-  Presentation MeetingPresentation?
+  id           Int                  @id @default(autoincrement())
+  createdAt    DateTime             @default(now()) @map("created_at")
+  userId       Int?                 @map("user_id")
+  guestId      Int?                 @map("guest_id")
+  meetingId    Int                  @map("meeting_id")
+  Guest        MeetingGuest?        @relation(fields: [guestId], references: [id], onDelete: Cascade)
   Meeting      Meeting              @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  User         User?                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Presentation MeetingPresentation?
 
   @@unique([meetingId, userId])
   @@unique([meetingId, guestId])
@@ -259,18 +270,16 @@ model MeetingParticipation {
 }
 
 model MeetingPresentation {
-  id                   Int                  @id @default(autoincrement())
-  presentationType     PresentationType     @map("presentation_type")
+  id                   Int                              @id @default(autoincrement())
+  presentationType     PresentationType                 @map("presentation_type")
   title                String
   description          String
-  createdAt            DateTime             @default(now()) @map("created_at")
-  participationId      Int                  @map("participation_id")
-  MeetingParticipation MeetingParticipation @relation(fields: [participationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  createdAt            DateTime                         @default(now()) @map("created_at")
+  participationId      Int                              @unique @map("participation_id")
+  Affiliations         MeetingPresentationAffiliation[]
+  Authors              MeetingPresentationAuthor[]
+  MeetingParticipation MeetingParticipation             @relation(fields: [participationId], references: [id], onDelete: Cascade)
 
-  Authors      MeetingPresentationAuthor[]
-  Affiliations MeetingPresentationAffiliation[]
-
-  @@unique([participationId])
   @@map("meeting_presentations")
 }
 
@@ -278,7 +287,7 @@ model MeetingPresentationAuthor {
   id             Int                 @id @default(autoincrement())
   name           String
   presentationId Int                 @map("presentation_id")
-  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
 
   @@map("meeting_presentation_authors")
 }
@@ -287,7 +296,7 @@ model MeetingPresentationAffiliation {
   id             Int                 @id @default(autoincrement())
   name           String
   presentationId Int                 @map("presentation_id")
-  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
 
   @@map("meeting_presentation_affiliations")
 }
@@ -304,8 +313,8 @@ model Meeting {
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @updatedAt @map("updated_at")
   MeetingDate          MeetingDate[]
-  MeetingPaymentInfo   MeetingPaymentInfo?
   MeetingParticipation MeetingParticipation[]
+  MeetingPaymentInfo   MeetingPaymentInfo?
 
   @@index([lastDate])
   @@map("meetings")

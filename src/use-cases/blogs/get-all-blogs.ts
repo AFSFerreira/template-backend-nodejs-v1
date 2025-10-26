@@ -1,4 +1,4 @@
-import type { BlogWithSimplifiedDetails } from '@custom-types/blog-with-simplified-details-type'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/custom-blog-with-simplified-details-type'
 import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { GetAllPostsQuerySchemaType } from '@schemas/blog/get-all-posts-query-schema'
@@ -6,7 +6,7 @@ import type { GetAllPostsQuerySchemaType } from '@schemas/blog/get-all-posts-que
 interface GetAllBlogsUseCaseRequest extends GetAllPostsQuerySchemaType {}
 
 interface GetAllBlogsUseCaseResponse {
-  data: BlogWithSimplifiedDetails[]
+  data: CustomBlogWithSimplifiedDetails[]
   meta: PaginationMetaType
 }
 

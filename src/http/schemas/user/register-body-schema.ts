@@ -97,7 +97,7 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
     .array(
       z.object({
         title: upperCaseTextSchema,
-        authors: uppercaseTextArraySchema,
+        authors: uppercaseTextArraySchema.min(1),
         publicationYear: rangedYearSchema,
         area: upperCaseTextSchema,
         journalName: upperCaseTextSchema,

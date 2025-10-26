@@ -46,9 +46,9 @@ interface FlattenedUser {
   keywords: string
   publications: string
 
-  directorBoardPublicId: string
   directorBoardProfileImage: string
   aboutMe: string
+  directorPosition: string
 }
 
 export function flattenUser(user: UserWithDetails): FlattenedUser {
@@ -102,9 +102,9 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     publications:
       user.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(' | ') ?? '',
 
-    directorBoardPublicId: user.DirectorBoard?.publicId ?? '',
     directorBoardProfileImage: user.DirectorBoard?.directorBoardProfileImage ?? '',
     aboutMe: user.DirectorBoard?.aboutMe ?? '',
+    directorPosition: user.DirectorBoard?.DirectorPosition?.position ?? '',
   }
 
   return flattenedUser

@@ -1,6 +1,9 @@
+import type { AcademicPublicationRaw } from '@custom-types/academic-publication-raw-type'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
+import type { AcademicPublicationsRepository, ListAllAcademicPublicationsQuery } from '@repositories/academic-publications-repository'
+import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
+import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
 
 export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
   async create(data: Prisma.AcademicPublicationUncheckedCreateInput) {
@@ -26,6 +29,75 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
       where: { userId },
     })
     return academicPublication
+  }
+
+  async listAllAcademicPublications(query?: ListAllAcademicPublicationsQuery) {
+    if (!query) {
+      const academicPublications = await prisma.academicPublication.findMany({
+        select: {
+          id: true,
+          title: true,
+          journalName: true,
+          publicationYear: true,
+          volume: true,
+          editionNumber: true,
+          startPage: true,
+          linkDoi: true,
+          createdAt: true,
+          ActivityArea: {
+            select: {
+              area: true,
+            }
+          },
+          AcademicPublicationAuthors: {
+            select: {
+              name: true,
+            },
+            orderBy: {
+              name: 'asc',
+              id: 'asc',
+            }
+          },
+        },
+      })
+
+      const formattedAcademicPublications = academicPublications.map((academicPublicationInfo) => ({
+        ...academicPublicationInfo,
+        authorsName: academicPublicationInfo.AcademicPublicationAuthors.map((academicPublicationAuthorInfo) => academicPublicationAuthorInfo.name),
+        mainCategory: academicPublicationInfo.ActivityArea.area,
+      }))
+
+      return {
+        data: formattedAcademicPublications,
+        meta: {
+          totalItems: academicPublications.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: academicPublications.length,
+        },
+      }
+    }
+
+    const { searchQuery, countQuery } = buildListAllAcademicPublicationsQuery(query)
+
+    const [countResult, academicPublications] = await Promise.all([
+      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
+      prisma.$queryRaw<AcademicPublicationRaw[]>(searchQuery),
+    ])
+
+    const totalItems = countResult[0].total
+
+    const totalPages = Math.ceil(totalItems / query.limit)
+
+    return {
+      data: academicPublications.map(academicPublicationAdapter),
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize: query.limit,
+      },
+    }
   }
 
   async delete(id: number) {

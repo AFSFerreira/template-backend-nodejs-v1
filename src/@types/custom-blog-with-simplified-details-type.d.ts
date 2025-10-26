@@ -1,4 +1,4 @@
-export interface BlogWithSimplifiedDetails {
+export interface CustomBlogWithSimplifiedDetails {
   publicId: string
   title: string
   bannerImage: string

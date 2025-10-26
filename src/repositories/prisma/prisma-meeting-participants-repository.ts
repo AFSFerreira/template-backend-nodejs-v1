@@ -61,9 +61,9 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
       where: {
         meetingId: query.meetingId,
         Guest: {
-          email: query.email
-        }
-      }
+          email: query.email,
+        },
+      },
     })
     return meetingParticipation
   }

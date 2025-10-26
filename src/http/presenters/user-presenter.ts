@@ -96,9 +96,12 @@ interface HTTPAcademicPublications {
 }
 
 interface HTTPDirectorBoardInfo {
+  id: number
   directorBoardProfileImage: string
+  name: string
   aboutMe: string
   position: string
+  linkLattes?: string | null
 }
 
 interface HTTPUserWithDetails extends HTTPUserDetails {
@@ -223,9 +226,12 @@ export class UserPresenter {
       directorBoardInfo:
         input.DirectorBoard !== null
           ? {
+              id: input.DirectorBoard.id,
+              linkLattes: input.linkLattes,
+              name: input.fullName,
               directorBoardProfileImage: input.DirectorBoard.directorBoardProfileImage,
               aboutMe: input.DirectorBoard.aboutMe,
-              position: input.DirectorBoard.position,
+              position: input.DirectorBoard.DirectorPosition.position,
             }
           : null,
     }

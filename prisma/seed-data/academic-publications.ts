@@ -1,8 +1,8 @@
 import { ActivityAreaType } from '@prisma/client'
 import { academicPublicationsAuthorsData1 } from './academic-pulication-authors'
-import { subActivityAreasData } from './activity-areas'
+import { subActivityAreasData1 } from './activity-areas'
 
-export const academicPublicationsData = [
+export const academicPublicationsData1 = [
   {
     publicationYear: 2023,
     title: 'A ASCENSÃO DA ASTROBIOLOGIA - PARTE 1',
@@ -14,7 +14,7 @@ export const academicPublicationsData = [
     ActivityArea: {
       connect: {
         type_area: {
-          area: subActivityAreasData[0],
+          area: subActivityAreasData1[0],
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         },
       },
@@ -36,7 +36,7 @@ export const academicPublicationsData = [
     ActivityArea: {
       connect: {
         type_area: {
-          area: subActivityAreasData[0],
+          area: subActivityAreasData1[0],
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         },
       },

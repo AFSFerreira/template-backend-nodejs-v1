@@ -1,8 +1,8 @@
-import type { CustomUserWithSimplifiedDetailsRaw } from '@custom-types/custom-user-with-simplified-details-raw-type'
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
+import type { UserWithSimplifiedDetailsRaw } from '@custom-types/user-with-simplified-details-raw-type'
 
-export function customUserSimplifiedAdapter(
-  customSimplifiedUser: CustomUserWithSimplifiedDetailsRaw,
+export function userSimplifiedAdapter(
+  customSimplifiedUser: UserWithSimplifiedDetailsRaw,
 ): CustomUserWithSimplifiedDetails {
   return {
     id: customSimplifiedUser.id,

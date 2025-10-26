@@ -43,17 +43,19 @@ export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQue
 
   const { limit, offset } = evalOffset(query)
 
-  const scoreExpression = scores.length > 0 ? Prisma.sql`(${Prisma.join(scores, ' + ')})` : Prisma.sql`0`
-
-  if (query.orderBy.fullNameOrder) {
-    ordinations.push(Prisma.sql`u.full_name_unaccent ASC`)
-  }
-
   if (scores.length > 0) {
-    ordinations.push(Prisma.sql`${scoreExpression} DESC`)
+    const scoreExpression = Prisma.sql`(${Prisma.join(scores, ' + ')})`
+    ordinations.unshift(Prisma.sql`${scoreExpression} DESC`)
   }
 
-  ordinations.push(Prisma.sql`u.public_id ASC`)
+  if (query.orderBy) {
+    if (query.orderBy.fullNameOrder) {
+      const fullNameOrder = query.orderBy.fullNameOrder.toUpperCase()
+      ordinations.push(Prisma.sql`u.full_name_unaccent ${Prisma.raw(fullNameOrder)}`)
+    }
+  }
+
+  ordinations.push(Prisma.sql`u.id ASC`)
 
   const orderByClause = Prisma.sql`ORDER BY ${Prisma.join(ordinations, ', ')}`
 

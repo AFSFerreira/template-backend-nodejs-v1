@@ -35,7 +35,7 @@ BEGIN
     || setweight(
       to_tsvector(
         'portuguese',
-        unaccent(substring(coalesce(NEW.search_content, '') FROM 1 FOR 600))
+        unaccent(substring(coalesce(NEW.search_content, '') FROM 1 FOR 511))
       ),
       'B'
     );
@@ -80,3 +80,24 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER users_full_name_unaccent_trigger
 BEFORE INSERT OR UPDATE ON public.users
 FOR EACH ROW EXECUTE FUNCTION fill_users_full_name_unaccent_trigger();
+
+--------------------------------------------------------
+
+DROP TRIGGER IF EXISTS tsvector_pt_update_academic_publications_title ON public.academic_publications;
+DROP FUNCTION IF EXISTS academic_publications_title_tsv_pt_trigger;
+
+CREATE OR REPLACE FUNCTION academic_publications_title_tsv_pt_trigger()
+RETURNS trigger AS $$
+BEGIN
+  NEW.title_tsv_pt := to_tsvector(
+    'portuguese',
+    unaccent(substring(coalesce(NEW.title, '') FROM 1 FOR 255))
+  );
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tsvector_pt_update_academic_publications_title
+BEFORE INSERT OR UPDATE ON public.academic_publications
+FOR EACH ROW EXECUTE FUNCTION academic_publications_title_tsv_pt_trigger();
+

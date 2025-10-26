@@ -1,4 +1,4 @@
-export const paymentInfo = {
+export const paymentInfo1 = {
   pixKey: '00 00000-0000',
   bank: '0000.0000.0000',
   code: '123456',
