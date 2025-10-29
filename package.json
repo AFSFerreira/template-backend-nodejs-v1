@@ -74,7 +74,7 @@
     "fastify-cookie": "5.7.0",
     "fastify-multer": "2.0.3",
     "fs-extra": "11.3.2",
-    "ioredis": "5.8.0",
+    "ioredis": "5.8.2",
     "json2csv": "6.0.0-alpha.2",
     "jsonwebtoken": "9.0.2",
     "node-cron": "4.2.1",
