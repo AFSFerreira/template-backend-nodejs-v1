@@ -52,6 +52,7 @@ const professionalAndAcademicUserSchema = z.object({
 })
 
 const otherRootFieldsProfessionalAndAcademicSchema = z.object({
+  keyword: keywordSchema,
   institution: z.object({ name: upperCaseTextSchema }),
   activityArea: z.object({
     mainActivityArea: upperCaseTextSchema,
@@ -111,7 +112,6 @@ const otherRootFieldsProfessionalAndAcademicSchema = z.object({
 })
 
 const otherRootFieldsSchema = z.object({
-  keyword: keywordSchema,
   address: z.object({
     zip: upperCaseTextSchema,
     number: upperCaseTextSchema,
