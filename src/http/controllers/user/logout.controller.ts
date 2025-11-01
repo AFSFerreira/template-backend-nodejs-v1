@@ -1,6 +1,6 @@
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { INVALID_OR_EXPIRED_TOKEN, LOGOUT } from '@messages/response'
+import { INVALID_OR_EXPIRED_TOKEN, LOGOUT } from '@messages/responses'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {

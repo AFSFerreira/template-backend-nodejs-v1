@@ -11,4 +11,4 @@ npm run build
 
 npm run db:deploy
 
-env ASDF_NODEJS_VERSION=$NODE_VERSION_PM2 pm2 reload ecosystem.config.cjs
+env ASDF_NODEJS_VERSION=$NODE_VERSION_PM2 pm2 reload ecosystem.config.mjs

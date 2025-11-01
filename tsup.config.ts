@@ -13,6 +13,7 @@ export default defineConfig([
     entry: ["prisma/seed.ts"],
     outDir: "dist",
     format: ["esm"],
+    minify: true,
     sourcemap: false,
     clean: false,
   }

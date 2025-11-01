@@ -7,6 +7,7 @@ import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-foun
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/user-already-registered-in-meeting-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import { ensureExists, ensureNotExists } from '@utils/ensure'
 import { toDateOnly } from '@utils/to-date-only'
 
 interface RegisterUserMeetingUseCaseRequest extends RegisterUserMeetingBodySchemaType {
@@ -28,30 +29,27 @@ export class RegisterUserMeetingUseCase {
   async execute(
     registerUserMeetingUseCaseInput: RegisterUserMeetingUseCaseRequest,
   ): Promise<RegisterUserMeetingUseCaseResponse> {
-    const user = await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userId)
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userId),
+      error: new UserNotFoundError(),
+    })
 
-    if (!user) {
-      throw new UserNotFoundError()
-    }
-
-    const meeting = await this.meetingsRepository.findByPublicId(registerUserMeetingUseCaseInput.meetingId)
-
-    if (!meeting) {
-      throw new MeetingNotFoundError()
-    }
+    const meeting = ensureExists({
+      value: await this.meetingsRepository.findByPublicId(registerUserMeetingUseCaseInput.meetingId),
+      error: new MeetingNotFoundError(),
+    })
 
     if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
       throw new MeetingAlreadyFinishedError()
     }
 
-    const userAlreadyRegistered = await this.meetingParticipantsRepository.findByUserIdAndMeetingId({
-      meetingId: meeting.id,
-      userId: user.id,
+    ensureNotExists({
+      value: await this.meetingParticipantsRepository.findByUserIdAndMeetingId({
+        meetingId: meeting.id,
+        userId: user.id,
+      }),
+      error: new UserAlreadyRegisteredInMeetingError(),
     })
-
-    if (userAlreadyRegistered) {
-      throw new UserAlreadyRegisteredInMeetingError()
-    }
 
     const meetingParticipation = await this.meetingParticipantsRepository.createForUser({
       ...registerUserMeetingUseCaseInput,

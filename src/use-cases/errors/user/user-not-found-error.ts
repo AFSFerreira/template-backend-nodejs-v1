@@ -1,8 +1,8 @@
-import { USER_NOT_FOUND } from '@messages/response'
-import { ResourceNotFoundError } from '../generic/resource-not-found-error'
+import { USER_NOT_FOUND } from '@messages/responses'
+import { ApiError } from '../api-error'
 
-export class UserNotFoundError extends ResourceNotFoundError {
+export class UserNotFoundError extends ApiError {
   constructor() {
-    super(USER_NOT_FOUND.body.message)
+    super(USER_NOT_FOUND)
   }
 }

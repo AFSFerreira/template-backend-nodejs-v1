@@ -1,4 +1,4 @@
-import { USER_ALREADY_HAS_ADDRESS } from '@messages/response'
+import { USER_ALREADY_HAS_ADDRESS } from '@messages/responses'
 import { ApiError } from '../api-error'
 
 export class UserAlreadyHasAddressError extends ApiError {

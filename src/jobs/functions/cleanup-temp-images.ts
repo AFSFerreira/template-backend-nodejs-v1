@@ -1,10 +1,10 @@
-import fs from 'fs/promises'
-import path from 'node:path'
 import {
   ERASE_FILES_CONCURRENCY,
   TEMP_FILES_DIRECTORY_ABSOLUTE_PATH,
   TEMP_PROFILE_IMAGES_TTL_IN_MS,
 } from '@constants/jobs-configuration-constants'
+import fs from 'fs/promises'
+import path from 'node:path'
 
 import { logger } from '@lib/logger'
 import {
@@ -13,7 +13,7 @@ import {
   FILE_LIFETIME_CALCULATION_ERROR,
   FILE_REMOVAL_ERROR,
   LISTING_FILES_ERROR,
-} from '@messages/logger'
+} from '@messages/loggings'
 
 async function listFiles(dir: string) {
   return await fs.readdir(dir, { withFileTypes: true })

@@ -1,4 +1,4 @@
-import { IDENTITY_DOCUMENT_ALREADY_USED } from '@messages/response'
+import { IDENTITY_DOCUMENT_ALREADY_USED } from '@messages/responses'
 import { ApiError } from '../api-error'
 
 export class IdentityDocumentAlreadyUsed extends ApiError {

@@ -3,6 +3,7 @@ import { redis } from '@lib/redis'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { registerBlogViews } from '@services/register-blog-views'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
+import { ensureExists } from '@utils/ensure'
 
 interface FindByPublicIdWithVisualizationUseCaseRequest {
   publicId: string
@@ -20,13 +21,16 @@ export class FindByPublicIdWithVisualizationUseCase {
     publicId,
     ip,
   }: FindByPublicIdWithVisualizationUseCaseRequest): Promise<FindByPublicIdWithVisualizationUseCaseResponse> {
-    const blog = await this.blogsRepository.findByPublicId(publicId)
+    const blog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
+    })
 
-    if (!blog) {
-      throw new BlogNotFoundError()
-    }
-
-    const blogWasNotRecentlyViewed = await registerBlogViews(blog.id, ip, redis)
+    const blogWasNotRecentlyViewed = await registerBlogViews({
+      blogId: blog.id,
+      ip,
+      redis,
+    })
 
     if (blogWasNotRecentlyViewed) {
       this.blogsRepository.incrementAccessesNumber(blog.id)

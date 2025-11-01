@@ -4,9 +4,23 @@ import path from 'node:path'
 import type { CompressedImageInfo } from '@custom-types/compressed-image-info-type'
 import sharp from 'sharp'
 
-export async function saveCompressedImage(
-  imageBuffer: Buffer,
-  folderPath: string,
+interface SaveCompressedImageOptions {
+  dimensions: {
+    width: number
+    height: number
+  }
+  quality: number
+}
+
+interface SaveCompressedImage {
+  imageBuffer: Buffer
+  folderPath: string
+  options?: SaveCompressedImageOptions
+}
+
+export async function saveCompressedImage({
+  imageBuffer,
+  folderPath,
   options = {
     dimensions: {
       width: 192,
@@ -14,7 +28,7 @@ export async function saveCompressedImage(
     },
     quality: 70,
   },
-): Promise<CompressedImageInfo> {
+}: SaveCompressedImage): Promise<CompressedImageInfo> {
   const fileNameHash = crypto.randomBytes(10).toString('hex')
   const timestamp = Date.now()
   const finalName = `${fileNameHash}-${timestamp}.webp`

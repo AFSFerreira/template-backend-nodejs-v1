@@ -12,7 +12,7 @@ import {
   PASSWORD_TOO_LONG,
   PASSWORD_TOO_SHORT,
   PASSWORD_UPPERCASE,
-} from '@messages/validation'
+} from '@messages/validations'
 import { limitedNonemptyTextSchema } from '../primitives/limited-nonempty-text-schema'
 
 export const passwordSchema = limitedNonemptyTextSchema

@@ -1,8 +1,10 @@
 import { meetingWithDetails } from '@custom-types/meeting-with-details'
+import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
 import type { ListAllMeetingsQuery, MeetingsRepository } from '@repositories/meetings-repository'
 import { evalOffset } from '@utils/eval-offset'
-import { mapStatusToDateFilter } from '@utils/map-status-to-date-filter'
+import { evalTotalPages } from '@utils/eval-total-pages'
+import { mapMeetingStatusToDateFilter } from '@utils/map-status-to-date-filter'
 
 export class PrismaMeetingsRepository implements MeetingsRepository {
   async findByPublicId(publicId: string) {
@@ -14,8 +16,14 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
   }
 
   async listAllMeetings(query?: ListAllMeetingsQuery) {
+    const orderBy = {
+      lastDate: 'desc' as OrderableType,
+      title: 'asc' as OrderableType,
+      id: 'asc' as OrderableType,
+    }
+
     if (!query) {
-      const meetings = await prisma.meeting.findMany()
+      const meetings = await prisma.meeting.findMany({ orderBy })
 
       return {
         data: meetings,
@@ -28,9 +36,9 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
       }
     }
 
-    const lastDateConstraint = mapStatusToDateFilter(query.status)
+    const lastDateConstraint = mapMeetingStatusToDateFilter(query.status)
 
-    const { offset: skip, limit: take, page } = evalOffset({ page: query.page, limit: query.limit })
+    const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const where = { lastDate: lastDateConstraint }
 
@@ -40,18 +48,22 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
         where,
         skip,
         take,
+        orderBy,
       }),
     ])
 
-    const totalPages = Math.ceil(countResult / query.limit)
+    const pageSize = query.limit
+    const totalItems = countResult
+
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: meetings,
       meta: {
-        totalItems: countResult,
+        totalItems,
         totalPages,
-        currentPage: page,
-        pageSize: take,
+        currentPage: query.page,
+        pageSize,
       },
     }
   }

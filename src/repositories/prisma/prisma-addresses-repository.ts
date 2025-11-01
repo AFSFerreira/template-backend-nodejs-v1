@@ -1,27 +1,47 @@
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
+import { evalTotalPages } from '@utils/eval-total-pages'
 import type { AddressesRepository, ListAllAddressStateQuery } from '../addresses-repository'
 
 export class PrismaAddressesRepository implements AddressesRepository {
   async create(data: Prisma.AddressUncheckedCreateInput) {
-    const address = await prisma.address.create({
-      data,
-    })
+    const address = await prisma.address.create({ data })
     return address
   }
 
   async findBy(where: Prisma.AddressWhereInput) {
-    const address = await prisma.address.findFirst({
-      where,
-    })
+    const address = await prisma.address.findFirst({ where })
     return address
   }
 
-  async listAllAddressesStates(query: ListAllAddressStateQuery) {
-    const orderByClause = {
+  async listAllAddressesStates(query?: ListAllAddressStateQuery) {
+    const orderBy = {
       _count: { userId: query.orderBy.usersCount },
     }
+
+    // WIP:
+    // if (!query) {
+    //   const addresses = await prisma.address.findMany({
+    //     select: {
+    //       state: true,
+    //     },
+    //     orderBy: {
+    //       country: 'asc',
+    //       id: 'asc',
+    //     }
+    //   })
+
+    //   return {
+    //     data: addresses,
+    //     meta: {
+    //       totalItems: addresses.length,
+    //       totalPages: 1,
+    //       currentPage: 1,
+    //       pageSize: addresses.length,
+    //     }
+    //   }
+    // }
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
@@ -34,15 +54,16 @@ export class PrismaAddressesRepository implements AddressesRepository {
         _count: {
           userId: true,
         },
-        orderBy: orderByClause,
         skip,
         take,
+        orderBy,
       }),
     ])
 
+    const pageSize = query.limit
     const totalItems = countResult.length
 
-    const totalPages = Math.ceil(totalItems / take)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: addresses.map((address) => ({
@@ -53,7 +74,7 @@ export class PrismaAddressesRepository implements AddressesRepository {
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: take,
+        pageSize,
       },
     }
   }

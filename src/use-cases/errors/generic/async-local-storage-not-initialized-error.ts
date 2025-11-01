@@ -1,4 +1,4 @@
-import { ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR } from '@messages/response'
+import { ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR } from '@messages/responses'
 import { ApiError } from '../api-error'
 
 export class AsyncLocalStorageNotInitializedError extends ApiError {

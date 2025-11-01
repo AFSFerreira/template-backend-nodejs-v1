@@ -1,4 +1,9 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
+import {
+  ACTIVITY_AREA_MISSING_DESCRIPTION,
+  COMPLETION_DATE_BEFORE_START_DATE,
+  SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
+} from '@messages/validations'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 import { highLevelEducationSchema, lowLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
@@ -10,11 +15,6 @@ import { rangedYearSchema } from '@schemas/utils/primitives/ranged-year-schema'
 import { uppercaseTextArraySchema } from '@schemas/utils/primitives/uppercase-text-array-schema'
 import { urlSchema } from '@schemas/utils/primitives/url-schema'
 import { stripZodKeys } from '@utils/strip-zod-keys'
-import {
-  ACTIVITY_AREA_MISSING_DESCRIPTION,
-  COMPLETION_DATE_BEFORE_START_DATE,
-  SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
-} from 'src/messages/validation'
 import { z } from 'zod'
 import { emailSchema } from '../utils/components/email-schema'
 import { keywordSchema } from '../utils/components/keyword-schema'

@@ -1,13 +1,24 @@
 import { directorBoardWithUser } from '@custom-types/director-board-with-user'
+import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
 import type { DirectorBoardRepository, listAllDirectorBoardMembers } from '@repositories/directors-board-repository'
 import { evalOffset } from '@utils/eval-offset'
+import { evalTotalPages } from '@utils/eval-total-pages'
 
 export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
-    if (!query?.page || !query?.limit) {
+    const orderBy = {
+      DirectorPosition: {
+        precedence: query.orderBy.precedenceOrder,
+      },
+      User: { fullName: 'asc' as OrderableType },
+      id: 'asc' as OrderableType,
+    }
+
+    if (!query) {
       const directors = await prisma.directorBoard.findMany({
         include: directorBoardWithUser.include,
+        orderBy,
       })
 
       return {
@@ -21,11 +32,6 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
       }
     }
 
-    const orderByClause = {
-      DirectorPosition: {
-        precedence: query.orderBy.precedenceOrder,
-      },
-    }
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
@@ -34,14 +40,15 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
       prisma.directorBoard.findMany({
         skip,
         take,
-        orderBy: orderByClause,
+        orderBy,
         include: directorBoardWithUser.include,
       }),
     ])
 
+    const pageSize = query.limit
     const totalItems = countResult
 
-    const totalPages = Math.ceil(totalItems / query.limit)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: directors,
@@ -49,7 +56,7 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: query.limit,
+        pageSize,
       },
     }
   }

@@ -1,8 +1,10 @@
 import type { BlogRaw } from '@custom-types/blog-raw-type'
 import { blogWithDetails } from '@custom-types/blog-with-details'
+import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { BlogsRepository, ListAllBlogsQuery } from '@repositories/blogs-repository'
+import { evalTotalPages } from '@utils/eval-total-pages'
 import { blogAdapter } from './adapters/blogs/blog-adapter'
 import { buildListAllBlogsQuery } from './queries/blogs/build-list-all-blogs-query'
 
@@ -32,6 +34,11 @@ export class PrismaBlogsRepository implements BlogsRepository {
   }
 
   async listAllBlogs(query?: ListAllBlogsQuery) {
+    const orderBy = {
+      title: 'asc' as OrderableType,
+      id: 'asc' as OrderableType,
+    }
+
     if (!query) {
       const blogs = await prisma.blog.findMany({
         select: {
@@ -43,6 +50,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
           createdAt: true,
           updatedAt: true,
         },
+        orderBy,
       })
 
       return {
@@ -63,9 +71,10 @@ export class PrismaBlogsRepository implements BlogsRepository {
       prisma.$queryRaw<BlogRaw[]>(searchQuery),
     ])
 
+    const pageSize = query.limit
     const totalItems = countResult[0].total
 
-    const totalPages = Math.ceil(totalItems / query.limit)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: blogs.map(blogAdapter),
@@ -73,7 +82,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: query.limit,
+        pageSize,
       },
     }
   }

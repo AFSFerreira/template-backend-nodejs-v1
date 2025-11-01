@@ -8,7 +8,6 @@ import {
   UserRoleType,
 } from '@prisma/client'
 import { hashSync } from 'bcryptjs'
-import { env } from '../../src/env/index'
 import { academicPublicationsData1 } from './academic-publications'
 import { activityAreasData1, subActivityAreasData1 } from './activity-areas'
 import { addressData1, addressData2 } from './addresses'
@@ -16,6 +15,7 @@ import { directorBoardData1 } from './directors-board'
 import { enrolledCourseData1 } from './enrolled-courses'
 import { institutionData1, institutionData2 } from './institutions'
 import { keywordsData1 } from './keywords'
+import { env } from '../../src/env/index'
 
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
 

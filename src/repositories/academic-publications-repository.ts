@@ -10,7 +10,9 @@ export interface AcademicPublicationsRepository {
   createMany: (data: Prisma.AcademicPublicationUncheckedCreateInput[]) => Promise<void>
   findById: (id: number) => Promise<AcademicPublication | null>
   findManyByUserId: (userId: number) => Promise<AcademicPublication[]>
-  listAllAcademicPublications: (query?: ListAllAcademicPublicationsQuery) => Promise<PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]>>
+  listAllAcademicPublications: (
+    query?: ListAllAcademicPublicationsQuery,
+  ) => Promise<PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]>>
   delete: (id: number) => Promise<void>
   update: (id: number, data: Prisma.AcademicPublicationUpdateInput) => Promise<AcademicPublication>
 }

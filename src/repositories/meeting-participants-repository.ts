@@ -27,5 +27,5 @@ export interface MeetingParticipantsRepository {
   createForGuest: (query: CreateMeetingParticipationForGuestQuery) => Promise<MeetingParticipation>
   findByUserIdAndMeetingId: (query: FindByUserIdAndMeetingIdInput) => Promise<MeetingParticipation | null>
   findByGuestEmailAndMeetingId: (query: FindByGuestEmailAndMeetingId) => Promise<MeetingParticipation | null>
-  listParticipants: (meetingId: number) => Promise<MeetingParticipationWithDetails[]>
+  listAllParticipants: (meetingId: number) => Promise<MeetingParticipationWithDetails[]>
 }

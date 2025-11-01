@@ -1,4 +1,4 @@
-import { MISSING_CHECK_AVAILABILITIES_INPUT } from '@messages/response'
+import { MISSING_CHECK_AVAILABILITIES_INPUT } from '@messages/responses'
 import { ApiError } from '../api-error'
 
 export class MissingCheckAvailabilitiesInput extends ApiError {

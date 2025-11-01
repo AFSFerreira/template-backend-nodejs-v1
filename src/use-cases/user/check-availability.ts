@@ -17,24 +17,24 @@ export class CheckAvailabilityUseCase {
     const checks: Array<[string, () => Promise<boolean>]> = [
       [
         'email',
-        async () => await this.usersRepository.checkIfAvailable({ email: checkAvailabilityUseCaseInput.email }),
+        async () => !!(await this.usersRepository.findUniqueBy({ email: checkAvailabilityUseCaseInput.email })),
       ],
       [
         'username',
         async () =>
-          await this.usersRepository.checkIfAvailable({
+          !!(await this.usersRepository.findUniqueBy({
             username: checkAvailabilityUseCaseInput.username,
-          }),
+          })),
       ],
       [
         'identity',
         async () =>
-          await this.usersRepository.checkIfAvailable({
+          !!(await this.usersRepository.findUniqueBy({
             identityType_identityDocument: {
               identityType: checkAvailabilityUseCaseInput.identity.identityType,
               identityDocument: checkAvailabilityUseCaseInput.identity.identityDocument,
             },
-          }),
+          })),
       ],
     ]
 

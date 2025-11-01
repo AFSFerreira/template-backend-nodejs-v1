@@ -1,4 +1,4 @@
-import { INVALID_CREDENTIALS } from '@messages/response'
+import { INVALID_CREDENTIALS } from '@messages/responses'
 import { ApiError } from '../api-error'
 
 export class InvalidCredentialsError extends ApiError {

@@ -1,4 +1,4 @@
-import { FORBIDDEN } from '@messages/response'
+import { FORBIDDEN } from '@messages/responses'
 import type { UserRoleType } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

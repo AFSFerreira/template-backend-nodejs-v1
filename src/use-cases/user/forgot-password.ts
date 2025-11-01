@@ -42,7 +42,10 @@ export class ForgotPasswordUseCase {
       throw new UserNotFoundForPasswordResetError()
     }
 
-    const user = await this.usersRepository.setPasswordToken(userAlreadyExists.id, tokenData)
+    const user = await this.usersRepository.setPasswordToken({
+      id: userAlreadyExists.id,
+      tokenData,
+    })
 
     return { user, token: recoveryPasswordToken }
   }

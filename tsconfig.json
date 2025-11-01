@@ -40,6 +40,6 @@
       "@messages/*": ["./src/messages/*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.cjs", "./tsconfig.json"],
-  "exclude": ["node_modules", "dist", "uploads"]
+  "include": ["./**/*.ts", "./**/*.mjs"],
+  "exclude": ["node_modules", "dist", "uploads", "./**/*.cjs", "./**/*.js", "./**/*.json"]
 }

@@ -1,6 +1,6 @@
 import { IS_DEBUG } from '@constants/env-constants'
 import { logger } from '@lib/logger'
-import { PG_TRGM_NOT_ENABLED } from '@messages/logger'
+import { PG_TRGM_NOT_ENABLED } from '@messages/loggings'
 import type { PrismaClient } from '@prisma/client'
 
 export async function ensurePgTrgmAvailable(prisma: PrismaClient) {

@@ -1,4 +1,4 @@
-export function mapStatusToDateFilter(status: string) {
+export function mapMeetingStatusToDateFilter(status: string) {
   switch (status) {
     case 'ALL':
       return undefined

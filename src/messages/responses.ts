@@ -1,6 +1,7 @@
 import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-constants'
+import type { IApiError } from '@custom-types/api-error-type'
 
-export const NO_USERS_AVAILABLE = {
+export const NO_USERS_AVAILABLE: IApiError = {
   status: 204,
   body: {
     code: 'NO_USERS_AVAILABLE',
@@ -8,7 +9,7 @@ export const NO_USERS_AVAILABLE = {
   },
 }
 
-export const INVALID_CREDENTIALS = {
+export const INVALID_CREDENTIALS: IApiError = {
   status: 401,
   body: {
     code: 'INVALID_CREDENTIALS',
@@ -16,7 +17,7 @@ export const INVALID_CREDENTIALS = {
   },
 }
 
-export const MISSING_AUTHORIZATION_TOKEN = {
+export const MISSING_AUTHORIZATION_TOKEN: IApiError = {
   status: 401,
   body: {
     code: 'MISSING_AUTHORIZATION_TOKEN',
@@ -24,7 +25,7 @@ export const MISSING_AUTHORIZATION_TOKEN = {
   },
 }
 
-export const INVALID_AREA_OF_ACTIVITY = {
+export const INVALID_AREA_OF_ACTIVITY: IApiError = {
   status: 400,
   body: {
     code: 'INVALID_AREA_OF_ACTIVITY',
@@ -32,7 +33,7 @@ export const INVALID_AREA_OF_ACTIVITY = {
   },
 }
 
-export const INVALID_OR_EXPIRED_TOKEN = {
+export const INVALID_OR_EXPIRED_TOKEN: IApiError = {
   status: 401,
   body: {
     code: 'INVALID_OR_EXPIRED_TOKEN',
@@ -40,7 +41,7 @@ export const INVALID_OR_EXPIRED_TOKEN = {
   },
 }
 
-export const RESOURCE_NOT_FOUND = {
+export const RESOURCE_NOT_FOUND: IApiError = {
   status: 404,
   body: {
     code: 'RESOURCE_NOT_FOUND',
@@ -48,7 +49,7 @@ export const RESOURCE_NOT_FOUND = {
   },
 }
 
-export const USER_ALREADY_EXISTS = {
+export const USER_ALREADY_EXISTS: IApiError = {
   status: 409,
   body: {
     code: 'USER_ALREADY_EXISTS',
@@ -56,7 +57,7 @@ export const USER_ALREADY_EXISTS = {
   },
 }
 
-export const USER_ALREADY_HAS_ADDRESS = {
+export const USER_ALREADY_HAS_ADDRESS: IApiError = {
   status: 409,
   body: {
     code: 'USER_ALREADY_HAS_ADDRESS',
@@ -64,7 +65,7 @@ export const USER_ALREADY_HAS_ADDRESS = {
   },
 }
 
-export const USER_IMAGE_PROCESSING_ERROR = {
+export const USER_IMAGE_PROCESSING_ERROR: IApiError = {
   status: 500,
   body: {
     code: 'USER_IMAGE_PROCESSING_ERROR',
@@ -72,7 +73,7 @@ export const USER_IMAGE_PROCESSING_ERROR = {
   },
 }
 
-export const USER_NOT_FOUND = {
+export const USER_NOT_FOUND: IApiError = {
   status: 404,
   body: {
     code: 'USER_NOT_FOUND',
@@ -80,7 +81,7 @@ export const USER_NOT_FOUND = {
   },
 }
 
-export const PASSWORD_RESET_IF_USER_EXISTS = {
+export const PASSWORD_RESET_IF_USER_EXISTS: IApiError = {
   status: 200,
   body: {
     code: 'PASSWORD_RESET_IF_USER_EXISTS',
@@ -88,15 +89,31 @@ export const PASSWORD_RESET_IF_USER_EXISTS = {
   },
 }
 
-export const USER_WITH_SAME_EMAIL_OR_USERNAME = {
+export const USER_WITH_SAME_EMAIL: IApiError = {
   status: 409,
   body: {
-    code: 'USER_WITH_SAME_EMAIL_OR_USERNAME',
-    message: 'Já existe um usuário com o mesmo e-mail ou nome de usuário',
+    code: 'USER_WITH_SAME_EMAIL',
+    message: 'Já existe um usuário com o mesmo e-mail',
   },
 }
 
-export const FORBIDDEN = {
+export const USER_WITH_SAME_USERNAME: IApiError = {
+  status: 409,
+  body: {
+    code: 'USER_WITH_SAME_USERNAME',
+    message: 'Já existe um usuário com o mesmo username',
+  },
+}
+
+export const USER_WITH_SAME_IDENTITY_DOCUMENT: IApiError = {
+  status: 409,
+  body: {
+    code: 'USER_WITH_SAME_IDENTITY_DOCUMENT',
+    message: 'Já existe um usuário com o mesmo documento de identificação',
+  },
+}
+
+export const FORBIDDEN: IApiError = {
   status: 403,
   body: {
     code: 'FORBIDDEN',
@@ -104,7 +121,7 @@ export const FORBIDDEN = {
   },
 }
 
-export const UNAUTHORIZED = {
+export const UNAUTHORIZED: IApiError = {
   status: 401,
   body: {
     code: 'UNAUTHORIZED',
@@ -112,7 +129,7 @@ export const UNAUTHORIZED = {
   },
 }
 
-export const BODY_REQUIRED = {
+export const BODY_REQUIRED: IApiError = {
   status: 400,
   body: {
     code: 'BODY_REQUIRED',
@@ -120,7 +137,7 @@ export const BODY_REQUIRED = {
   },
 }
 
-export const INVALID_INSTITUTION_NAME = {
+export const INVALID_INSTITUTION_NAME: IApiError = {
   status: 400,
   body: {
     code: 'INVALID_INSTITUTION_NAME',
@@ -128,7 +145,7 @@ export const INVALID_INSTITUTION_NAME = {
   },
 }
 
-export const MISSING_CHECK_AVAILABILITIES_INPUT = {
+export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiError = {
   status: 400,
   body: {
     code: 'MISSING_CHECK_AVAILABILITIES_INPUT',
@@ -136,7 +153,7 @@ export const MISSING_CHECK_AVAILABILITIES_INPUT = {
   },
 }
 
-export const IDENTITY_DOCUMENT_ALREADY_USED = {
+export const IDENTITY_DOCUMENT_ALREADY_USED: IApiError = {
   status: 409,
   body: {
     code: 'IDENTITY_DOCUMENT_ALREADY_USED',
@@ -144,7 +161,7 @@ export const IDENTITY_DOCUMENT_ALREADY_USED = {
   },
 }
 
-export const INACTIVE_USER = {
+export const INACTIVE_USER: IApiError = {
   status: 403,
   body: {
     code: 'INACTIVE_USER',
@@ -152,7 +169,7 @@ export const INACTIVE_USER = {
   },
 }
 
-export const IDENTITY_INFO_MISSING = {
+export const IDENTITY_INFO_MISSING: IApiError = {
   status: 400,
   body: {
     code: 'IDENTITY_INFO_MISSING',
@@ -160,7 +177,7 @@ export const IDENTITY_INFO_MISSING = {
   },
 }
 
-export const IMAGE_TOO_BIG = {
+export const IMAGE_TOO_BIG: IApiError = {
   status: 413,
   body: {
     code: 'IMAGE_TOO_BIG',
@@ -168,7 +185,7 @@ export const IMAGE_TOO_BIG = {
   },
 }
 
-export const TOO_MANY_REQUESTS = {
+export const TOO_MANY_REQUESTS: IApiError = {
   status: 429,
   body: {
     code: 'TOO_MANY_REQUESTS',
@@ -176,7 +193,7 @@ export const TOO_MANY_REQUESTS = {
   },
 }
 
-export const VALIDATION_ERROR = {
+export const VALIDATION_ERROR: IApiError = {
   status: 400,
   body: {
     code: 'VALIDATION_ERROR',
@@ -184,7 +201,7 @@ export const VALIDATION_ERROR = {
   },
 }
 
-export const INTERNAL_SERVER_ERROR = {
+export const INTERNAL_SERVER_ERROR: IApiError = {
   status: 500,
   body: {
     code: 'INTERNAL_SERVER_ERROR',
@@ -192,7 +209,7 @@ export const INTERNAL_SERVER_ERROR = {
   },
 }
 
-export const ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR = {
+export const ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR: IApiError = {
   status: 500,
   body: {
     code: 'ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR',
@@ -200,7 +217,7 @@ export const ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR = {
   },
 }
 
-export const SYNTAX_ERROR = {
+export const SYNTAX_ERROR: IApiError = {
   status: 400,
   body: {
     code: 'SYNTAX_ERROR',
@@ -208,7 +225,7 @@ export const SYNTAX_ERROR = {
   },
 }
 
-export const LOGOUT = {
+export const LOGOUT: IApiError = {
   status: 200,
   body: {
     code: 'SUCCESSFUL_LOGOUT',
@@ -216,7 +233,7 @@ export const LOGOUT = {
   },
 }
 
-export const PASSWORD_RESET_SUCCESSFUL = {
+export const PASSWORD_RESET_SUCCESSFUL: IApiError = {
   status: 200,
   body: {
     code: 'PASSWORD_RESET_SUCCESSFUL',
@@ -224,7 +241,7 @@ export const PASSWORD_RESET_SUCCESSFUL = {
   },
 }
 
-export const BLOG_NOT_FOUND = {
+export const BLOG_NOT_FOUND: IApiError = {
   status: 404,
   body: {
     code: 'BLOG_NOT_FOUND',
@@ -232,7 +249,7 @@ export const BLOG_NOT_FOUND = {
   },
 }
 
-export const MEETING_NOT_FOUND = {
+export const MEETING_NOT_FOUND: IApiError = {
   status: 404,
   body: {
     code: 'MEETING_NOT_FOUND',
@@ -240,7 +257,7 @@ export const MEETING_NOT_FOUND = {
   },
 }
 
-export const MEETING_ALREADY_FINISHED = {
+export const MEETING_ALREADY_FINISHED: IApiError = {
   status: 409,
   body: {
     code: 'MEETING_ALREADY_FINISHED',
@@ -248,7 +265,7 @@ export const MEETING_ALREADY_FINISHED = {
   },
 }
 
-export const USER_ALREADY_REGISTERED_IN_MEETING = {
+export const USER_ALREADY_REGISTERED_IN_MEETING: IApiError = {
   status: 409,
   body: {
     code: 'USER_ALREADY_REGISTERED_IN_MEETING',
@@ -256,7 +273,7 @@ export const USER_ALREADY_REGISTERED_IN_MEETING = {
   },
 }
 
-export const GUEST_ALREADY_REGISTERED_IN_MEETING = {
+export const GUEST_ALREADY_REGISTERED_IN_MEETING: IApiError = {
   status: 409,
   body: {
     code: 'GUEST_ALREADY_REGISTERED_IN_MEETING',

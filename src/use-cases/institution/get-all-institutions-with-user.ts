@@ -15,7 +15,7 @@ export class GetAllInstitutionsWithUsersUseCase {
   async execute(
     getAllInstitutionsWithUsersUseCaseInput: GetAllInstitutionsWithUsersUseCaseRequest,
   ): Promise<GetAllInstitutionsWithUsersUseCaseResponse> {
-    const institutionsInfo = await this.institutionsRepository.listInstitutionsWithUsersCount(
+    const institutionsInfo = await this.institutionsRepository.listAllInstitutionsWithUsersCount(
       getAllInstitutionsWithUsersUseCaseInput,
     )
 

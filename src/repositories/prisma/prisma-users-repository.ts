@@ -5,13 +5,16 @@ import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
+import { evalTotalPages } from '@utils/eval-total-pages'
 import type {
+  ChangeUserPasswordQuery,
   CreateUserQuery,
-  FindByEmailOrUsernameQuery,
   FindByIdentityDocumentQuery,
+  FindConflictingUserQuery,
   ListAllUsersDetailedQuery,
   ListAllUsersSimplifiedQuery,
-  TokenData,
+  SetPasswordTokenQuery,
+  UpdateUserQuery,
   UsersRepository,
 } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
@@ -114,16 +117,16 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async checkIfAvailable(where: Prisma.UserWhereUniqueInput) {
-    const user = await prisma.user.findUnique({ where })
-    return !!user
-  }
-
   async findBy(where: Prisma.UserWhereInput) {
     const user = await prisma.user.findFirst({
       where,
       include: userWithDetails.include,
     })
+    return user
+  }
+
+  async findUniqueBy(where: Prisma.UserWhereUniqueInput) {
+    const user = await prisma.user.findUnique({ where })
     return user
   }
 
@@ -157,9 +160,9 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async findByIdentityDocument(data: FindByIdentityDocumentQuery) {
+  async findByIdentityDocument(query: FindByIdentityDocumentQuery) {
     const user = await prisma.user.findUnique({
-      where: { identityType_identityDocument: data },
+      where: { identityType_identityDocument: query },
     })
     return user
   }
@@ -173,10 +176,10 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async findByEmailOrUsername({ email, username }: FindByEmailOrUsernameQuery) {
+  async findConflictingUser({ email, username, identity }: FindConflictingUserQuery) {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email }, { username }],
+        OR: [{ email }, { username }, identity],
       },
     })
 
@@ -186,6 +189,10 @@ export class PrismaUsersRepository implements UsersRepository {
   async listAllUsers() {
     const users = await prisma.user.findMany({
       include: userWithDetails.include,
+      orderBy: {
+        fullName: 'asc',
+        id: 'asc',
+      },
     })
 
     return users
@@ -237,9 +244,10 @@ export class PrismaUsersRepository implements UsersRepository {
       prisma.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
+    const pageSize = query.limit
     const totalItems = countResult[0].total
 
-    const totalPages = Math.ceil(totalItems / query.limit)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: users.map(userSimplifiedAdapter),
@@ -247,7 +255,7 @@ export class PrismaUsersRepository implements UsersRepository {
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: query.limit,
+        pageSize,
       },
     }
   }
@@ -302,9 +310,10 @@ export class PrismaUsersRepository implements UsersRepository {
       prisma.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
+    const pageSize = query.limit
     const totalItems = countResult[0].total
 
-    const totalPages = Math.ceil(totalItems / query.limit)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: users.map(userSimplifiedAdapter),
@@ -312,7 +321,7 @@ export class PrismaUsersRepository implements UsersRepository {
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: query.limit,
+        pageSize,
       },
     }
   }
@@ -334,7 +343,7 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async update(id: number, data: Prisma.UserUpdateInput) {
+  async update({ id, data }: UpdateUserQuery) {
     const user = await prisma.user.update({
       where: { id },
       data,
@@ -350,7 +359,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async changePassword(id: number, passwordHash: string) {
+  async changePassword({ id, passwordHash }: ChangeUserPasswordQuery) {
     const user = await prisma.user.update({
       where: { id },
       data: {
@@ -362,10 +371,10 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async setPasswordToken(id: number, tokenData: TokenData) {
+  async setPasswordToken({ id, tokenData }: SetPasswordTokenQuery) {
     const user = await prisma.user.update({
       where: { id },
-      data: { ...tokenData },
+      data: tokenData,
     })
     return user
   }

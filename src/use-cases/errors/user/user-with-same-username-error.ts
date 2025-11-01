@@ -1,0 +1,8 @@
+import { USER_WITH_SAME_USERNAME } from '@messages/responses'
+import { ApiError } from '../api-error'
+
+export class UserWithSameUsername extends ApiError {
+  constructor() {
+    super(USER_WITH_SAME_USERNAME)
+  }
+}

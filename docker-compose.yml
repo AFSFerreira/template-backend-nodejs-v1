@@ -1,17 +1,16 @@
 services:
   postgres:
-    image: bitnamilegacy/postgresql:17.6.0-debian-12-r4@sha256:926356130b77d5742d8ce605b258d35db9b62f2f8fd1601f9dbaef0c8a710a8d
+    image: postgres:14.19-alpine3.21@sha256:5078d8d88aa34e961582822feb73eef6b1b1f45965debdadab848bd254c2d336
     container_name: ${POSTGRES_CONTAINER_NAME:-astrobio-pg}
     restart: on-failure:5
     environment:
-      - POSTGRESQL_USERNAME=${POSTGRES_USERNAME}
-      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRESQL_DATABASE=${POSTGRES_DB}
-      - POSTGRESQL_PORT_NUMBER=5432
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - ${POSTGRES_PORT:-5432}:5432
     volumes:
-      - postgres_data:/bitnami/postgresql
+      - postgres_data:/postgresql
     # networks:
     #   - app-network
     healthcheck:
@@ -22,25 +21,37 @@ services:
       start_period: 15s
 
   redis:
-    image: bitnamilegacy/redis:8.2.1-debian-12-r0@sha256:25bf63f3caf75af4628c0dfcf39859ad1ac8abe135be85e99699f9637b16dc28
-    container_name: ${POSTGRES_CONTAINER_NAME:-astrobio-redis}
+    image: redis:8.2.2-bookworm@sha256:4521b581dbddea6e7d81f8fe95ede93f5648aaa66a9dacd581611bf6fe7527bd
+    container_name: ${REDIS_CONTAINER_NAME:-astrobio-redis}
     restart: on-failure:5
-    environment:
-      - REDIS_PASSWORD=${REDIS_PASSWORD}
-      - REDIS_MAXMEMORY_POLICY=noeviction
-      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
-      - REDIS_MAXMEMORY=512mb
-      - REDIS_PORT_NUMBER=6379
-      - REDIS_AOF_ENABLED=yes
-      - REDIS_DATABASES=16
+    env_file: .env
     ports:
       - ${REDIS_PORT:-6379}:6379
     volumes:
-      - redis_data:/bitnami/redis
+      - redis_data:/redis
+      # - ./redis.conf:/usr/local/etc/redis/redis.conf
     # networks:
     #   - app-network
+    command: >
+      sh -c "
+        redis-server
+        --requirepass ${REDIS_PASSWORD}
+        --maxmemory ${REDIS_MAXMEMORY:-256}
+        --maxmemory-policy ${REDIS_MAXMEMORY_POLICY:-noeviction}
+        --protected-mode ${REDIS_PROTECTED_MODE:-yes}
+        --appendonly ${REDIS_AOF_ENABLED:-no}
+        --databases ${REDIS_DATABASES:-16}
+        --bind ${REDIS_HOST:-localhost}
+        --port ${REDIS_PORT:-6379}
+        --rename-command FLUSHDB ''
+        --rename-command FLUSHALL ''
+        --save 900 1
+        --save 600 10
+        --save 300 100
+        --save 60 10000
+      "
     healthcheck:
-      test: ['CMD', 'redis-cli', 'ping']
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5

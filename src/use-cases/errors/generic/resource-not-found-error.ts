@@ -1,4 +1,4 @@
-import { RESOURCE_NOT_FOUND } from '@messages/response'
+import { RESOURCE_NOT_FOUND } from '@messages/responses'
 import { ApiError } from '../api-error'
 
 export class ResourceNotFoundError extends ApiError {

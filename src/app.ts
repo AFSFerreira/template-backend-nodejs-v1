@@ -1,4 +1,3 @@
-import path from 'node:path'
 import { MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
@@ -7,19 +6,19 @@ import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import fastifyStatic from '@fastify/static'
 import { logger } from '@lib/logger'
-import { UNHANDLED_ERROR } from '@messages/logger'
-import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/response'
+import '@lib/zod/index'
+import { UNHANDLED_ERROR } from '@messages/loggings'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
+import path from 'node:path'
 import z, { ZodError } from 'zod'
 import { env } from './env/index'
 import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
 import { appRoutes } from './http/routes'
-
-z.config(z.locales.pt())
+import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
 
 export const app = fastify({
   logger: false,
@@ -32,17 +31,13 @@ export const app = fastify({
   },
 })
 
-app.addHook('onRequest', logRequest)
-app.addHook('onResponse', logResponse)
-app.addHook('preSerialization', preSerialization)
-
 app.register(cors, {
   origin: env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Authorization', 'Content-Type'],
   exposedHeaders: ['Authorization'],
-  maxAge: ms('24h') / 1000, // Cache de 24 horas
+  maxAge: ms('2h') / 1000, // Cache de 2 horas
 })
 
 app.register(fastifyJwt, {
@@ -67,6 +62,10 @@ app.register(fastifyStatic, {
     response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
   },
 })
+
+app.addHook('onRequest', logRequest)
+app.addHook('onResponse', logResponse)
+app.addHook('preSerialization', preSerialization)
 
 app.register(fastifyCookie)
 app.register(multipart)

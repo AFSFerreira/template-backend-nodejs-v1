@@ -7,26 +7,6 @@ export class PrismaAuthenticationAuditsRepository implements AuthenticationAudit
     const authenticationAudit = await prisma.authenticationAudit.create({
       data,
     })
-
     return authenticationAudit
-  }
-
-  async findAll() {
-    const authenticationAuditList = await prisma.authenticationAudit.findMany()
-
-    return authenticationAuditList
-  }
-
-  async getLast() {
-    const authenticationAudit = await prisma.authenticationAudit.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-      take: 1,
-    })
-
-    if (authenticationAudit.length === 0) return null
-
-    return authenticationAudit[0]
   }
 }

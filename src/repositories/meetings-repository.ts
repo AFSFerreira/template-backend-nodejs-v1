@@ -6,7 +6,7 @@ import type { GetAllMeetingsQuerySchemaType } from '@schemas/meeting/get-all-mee
 export interface ListAllMeetingsQuery extends GetAllMeetingsQuerySchemaType {}
 
 export interface MeetingsRepository {
-  // create: (data: Prisma.MeetingCreateInput) => Promise<Meeting> // Em Criação
+  // create: (data: Prisma.MeetingCreateInput) => Promise<Meeting> // WIP
   findByPublicId: (publicId: string) => Promise<MeetingWithDetails | null>
   listAllMeetings: (query?: ListAllMeetingsQuery) => Promise<PaginatedResult<Meeting[]>>
 }

@@ -1,7 +1,12 @@
 import type { AcademicPublicationRaw } from '@custom-types/academic-publication-raw-type'
+import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { AcademicPublicationsRepository, ListAllAcademicPublicationsQuery } from '@repositories/academic-publications-repository'
+import type {
+  AcademicPublicationsRepository,
+  ListAllAcademicPublicationsQuery,
+} from '@repositories/academic-publications-repository'
+import { evalTotalPages } from '@utils/eval-total-pages'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
 
@@ -27,11 +32,20 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
   async findManyByUserId(userId: number) {
     const academicPublication = await prisma.academicPublication.findMany({
       where: { userId },
+      orderBy: {
+        title: 'asc',
+        id: 'asc',
+      },
     })
     return academicPublication
   }
 
   async listAllAcademicPublications(query?: ListAllAcademicPublicationsQuery) {
+    const orderBy = {
+      name: 'asc' as OrderableType,
+      id: 'asc' as OrderableType,
+    }
+
     if (!query) {
       const academicPublications = await prisma.academicPublication.findMany({
         select: {
@@ -47,23 +61,22 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
           ActivityArea: {
             select: {
               area: true,
-            }
+            },
           },
           AcademicPublicationAuthors: {
             select: {
               name: true,
             },
-            orderBy: {
-              name: 'asc',
-              id: 'asc',
-            }
+            orderBy,
           },
         },
       })
 
       const formattedAcademicPublications = academicPublications.map((academicPublicationInfo) => ({
         ...academicPublicationInfo,
-        authorsName: academicPublicationInfo.AcademicPublicationAuthors.map((academicPublicationAuthorInfo) => academicPublicationAuthorInfo.name),
+        authorsName: academicPublicationInfo.AcademicPublicationAuthors.map(
+          (academicPublicationAuthorInfo) => academicPublicationAuthorInfo.name,
+        ),
         mainCategory: academicPublicationInfo.ActivityArea.area,
       }))
 
@@ -85,9 +98,10 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
       prisma.$queryRaw<AcademicPublicationRaw[]>(searchQuery),
     ])
 
+    const pageSize = query.limit
     const totalItems = countResult[0].total
 
-    const totalPages = Math.ceil(totalItems / query.limit)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: academicPublications.map(academicPublicationAdapter),
@@ -95,7 +109,7 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: query.limit,
+        pageSize,
       },
     }
   }

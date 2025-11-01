@@ -2,6 +2,7 @@ import type { User } from '@prisma/client'
 import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { emailSchema } from '@schemas/utils/components/email-schema'
+import { usernameSchema } from '@schemas/utils/components/username-schema'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
@@ -32,13 +33,16 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    let user: User | null
-
-    if (emailSchema.safeParse(login).success) {
-      user = await this.usersRepository.findByEmail(login)
-    } else {
-      user = await this.usersRepository.findByUsername(login)
-    }
+    const user: User | null = await (async () => {
+      switch (true) {
+        case emailSchema.safeParse(login).success:
+          return await this.usersRepository.findByEmail(login)
+        case usernameSchema.safeParse(login).success:
+          return await this.usersRepository.findByUsername(login)
+        default:
+          return null
+      }
+    })()
 
     const hashToCompare = user?.passwordHash ?? DUMMY_HASH
 
@@ -51,15 +55,6 @@ export class AuthenticateUseCase {
       userId: user?.id ?? null,
     }
 
-    if (!doesPasswordMatch) {
-      await this.AuthenticationAuditsRepository.create({
-        ...auditAuthenticateObject,
-        status: 'INCORRECT_PASSWORD',
-      })
-
-      throw new InvalidCredentialsError()
-    }
-
     if (!user) {
       await this.AuthenticationAuditsRepository.create({
         ...auditAuthenticateObject,
@@ -70,6 +65,15 @@ export class AuthenticateUseCase {
     }
 
     await this.usersRepository.incrementLoginAttempts(user.id)
+
+    if (!doesPasswordMatch) {
+      await this.AuthenticationAuditsRepository.create({
+        ...auditAuthenticateObject,
+        status: 'INCORRECT_PASSWORD',
+      })
+
+      throw new InvalidCredentialsError()
+    }
 
     await this.usersRepository.setLastLogin(user.id)
 

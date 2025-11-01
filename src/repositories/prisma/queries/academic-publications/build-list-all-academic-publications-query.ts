@@ -35,9 +35,7 @@ export function buildListAllAcademicPublicationsQuery(query: GetAllAcademicPubli
     conditions.push(Prisma.sql`ap.publication_year ${Prisma.raw(op)} ${val}::int`)
   }
 
-  const whereClause = conditions.length > 0
-    ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}`
-    : Prisma.empty
+  const whereClause = conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` : Prisma.empty
 
   const { limit, offset } = evalOffset(query)
 

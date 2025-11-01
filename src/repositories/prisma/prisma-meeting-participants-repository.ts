@@ -68,12 +68,17 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
     return meetingParticipation
   }
 
-  async listParticipants(meetingId: number) {
+  async listAllParticipants(meetingId: number) {
     const participants = await prisma.meetingParticipation.findMany({
       where: { meetingId },
       include: {
         Guest: true,
         User: true,
+      },
+      orderBy: {
+        Meeting: { lastDate: 'desc' },
+        Guest: { fullName: 'asc' },
+        id: 'asc',
       },
     })
     return participants

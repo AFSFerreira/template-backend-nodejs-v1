@@ -13,8 +13,12 @@ interface GetAllAcademicPublicationsUseCaseResponse {
 export class GetAllAcademicPublicationsUseCase {
   constructor(private readonly academicPublicationsRepository: AcademicPublicationsRepository) {}
 
-  async execute(getAllAcademicPublicationsUseCaseInput: GetAllAcademicPublicationsUseCaseRequest): Promise<GetAllAcademicPublicationsUseCaseResponse> {
-    const academicPublications = await this.academicPublicationsRepository.listAllAcademicPublications(getAllAcademicPublicationsUseCaseInput)
+  async execute(
+    getAllAcademicPublicationsUseCaseInput: GetAllAcademicPublicationsUseCaseRequest,
+  ): Promise<GetAllAcademicPublicationsUseCaseResponse> {
+    const academicPublications = await this.academicPublicationsRepository.listAllAcademicPublications(
+      getAllAcademicPublicationsUseCaseInput,
+    )
 
     return academicPublications
   }

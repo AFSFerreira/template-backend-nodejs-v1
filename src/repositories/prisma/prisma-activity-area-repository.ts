@@ -1,7 +1,9 @@
+import type { OrderableType } from '@custom-types/orderable'
 import type { QueryMode } from '@custom-types/query-mode'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
+import { evalTotalPages } from '@utils/eval-total-pages'
 import type {
   ActivityAreaQuery,
   ActivityAreasRepository,
@@ -30,13 +32,15 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   }
 
   async listAllActivityAreas(query?: ListAllActivityAreasQuery) {
-    if (!query?.page || !query?.limit) {
-      const activityAreas = await prisma.activityArea.findMany({
-        where: {
-          area: PrismaActivityAreasRepository.buildStartsWithFilter(query?.name),
-          type: query?.type,
-        },
-      })
+    const orderBy = {
+      type: 'asc' as OrderableType,
+      area: 'asc' as OrderableType,
+      id: 'asc' as OrderableType,
+    }
+
+    if (!query) {
+      const activityAreas = await prisma.activityArea.findMany({ orderBy })
+
       return {
         data: activityAreas,
         meta: {
@@ -50,24 +54,25 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 
-    const [totalItems, activityAreas] = await prisma.$transaction(async (prismaTx) => {
-      const totalItems = await prismaTx.activityArea.count({
-        where: { type: query.type },
-      })
+    const where = {
+      area: PrismaActivityAreasRepository.buildStartsWithFilter(query.name),
+      type: query.type,
+    }
 
-      const activityAreas = await prismaTx.activityArea.findMany({
-        where: {
-          area: PrismaActivityAreasRepository.buildStartsWithFilter(query.name),
-          type: query.type,
-        },
+    const [countResult, activityAreas] = await Promise.all([
+      prisma.activityArea.count({ where }),
+      prisma.activityArea.findMany({
+        where,
         skip,
         take,
-      })
+        orderBy,
+      }),
+    ])
 
-      return [totalItems, activityAreas]
-    })
+    const pageSize = query.limit
+    const totalItems = countResult
 
-    const totalPages = Math.ceil(totalItems / query.limit)
+    const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
       data: activityAreas,
@@ -75,7 +80,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
         totalItems,
         totalPages,
         currentPage: query.page,
-        pageSize: query.limit,
+        pageSize,
       },
     }
   }
@@ -96,6 +101,11 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
     const activityAreas = await prisma.activityArea.findMany({
       where: {
         OR: areas,
+      },
+      orderBy: {
+        type: 'asc',
+        area: 'asc',
+        id: 'asc',
       },
     })
     return activityAreas

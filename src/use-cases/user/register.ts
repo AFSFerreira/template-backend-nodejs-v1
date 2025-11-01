@@ -2,17 +2,20 @@ import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-constants'
 import type { UserWithDetails } from '@custom-types/user-with-details'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/logger'
+import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { UsersRepository } from '@repositories/users-repository'
+import type { FindConflictingUserQuery, UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { highLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
-import { IdentityDocumentAlreadyUsed } from '@use-cases/errors/user/identity-document-already-used-error'
+import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
+import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
+import { objectDeepEqual } from '@utils/object-deep-equal'
 import { persistUserProfileImage } from '@utils/persist-user-profile-image'
 import { hash } from 'bcryptjs'
+import stableStringify from 'json-stable-stringify'
 import { InvalidActivityArea } from '../errors/user/invalid-activity-areas-error'
-import { UserWithSameEmailOrUsernameError } from '../errors/user/user-with-same-email-error'
+import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 
 interface RegisterUseCaseRequest {
   user: RegisterUserBodySchemaType['user']
@@ -35,32 +38,35 @@ export class RegisterUseCase {
   ) {}
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
-    const existingUser = await this.usersRepository.findByEmailOrUsername({
+    const userAlreadyExists = await this.usersRepository.findConflictingUser({
       email: registerUseCaseInput.user.email,
       username: registerUseCaseInput.user.username,
+      identity: registerUseCaseInput.user.identity as FindConflictingUserQuery["identity"],
     })
 
-    if (existingUser) {
-      throw new UserWithSameEmailOrUsernameError()
-    }
+    if (userAlreadyExists) {
+      if (userAlreadyExists.email === registerUseCaseInput.user.email) {
+        throw new UserWithSameEmail()
+      }
 
-    const documentAlreadyUsed = await this.usersRepository.findByIdentityDocument({
-      identityDocument: registerUseCaseInput.user.identity.identityDocument,
-      identityType: registerUseCaseInput.user.identity.identityType,
-    })
+      if (userAlreadyExists.username === registerUseCaseInput.user.username) {
+        throw new UserWithSameUsername()
+      }
 
-    if (documentAlreadyUsed) {
-      throw new IdentityDocumentAlreadyUsed()
+      if (objectDeepEqual({ identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType }, registerUseCaseInput.user.identity)) {
+        throw new UserWithSameIdentityDocument()
+      }
     }
 
     if (highLevelEducationSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
       // Valida as áreas de atividade dos artigos e do usuário:
-      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academPub) => ({
-        area: academPub.area,
+      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
+        area: academicPub.area,
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       }))
 
       const allUserActivityAreas = [
+        ...academicPublicationsActivityAreas,
         {
           area: registerUseCaseInput.activityArea.mainActivityArea,
           type: ActivityAreaType.AREA_OF_ACTIVITY,
@@ -69,14 +75,13 @@ export class RegisterUseCase {
           area: registerUseCaseInput.activityArea.subActivityArea,
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         },
-        ...academicPublicationsActivityAreas,
       ]
 
       const activityAreasFound = await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
 
       const activityAreasFoundSet = new Set(
         activityAreasFound.map((activityArea) =>
-          JSON.stringify({
+          stableStringify({
             area: activityArea.area,
             type: activityArea.type,
           }),
@@ -84,7 +89,7 @@ export class RegisterUseCase {
       )
 
       const wrongActivityAreas = allUserActivityAreas.filter((activityArea) => {
-        return !activityAreasFoundSet.has(JSON.stringify(activityArea))
+        return !activityAreasFoundSet.has(stableStringify(activityArea))
       })
 
       if (wrongActivityAreas.length !== 0) {

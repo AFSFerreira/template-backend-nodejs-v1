@@ -12,7 +12,7 @@ export type ListAllActivityAreasQuery = getAllActivityAreasSchemaType
 export interface ActivityAreasRepository {
   create: (data: Prisma.ActivityAreaUncheckedCreateInput) => Promise<ActivityArea>
   findById: (id: number) => Promise<ActivityArea | null>
-  findByArea: ({ area, type }: ActivityAreaQuery) => Promise<ActivityArea | null>
+  findByArea: (query: ActivityAreaQuery) => Promise<ActivityArea | null>
   listAllActivityAreas: (query?: ListAllActivityAreasQuery) => Promise<PaginatedResult<ActivityArea[]>>
   findManyByArea: (areas: ActivityAreaQuery[]) => Promise<ActivityArea[]>
   delete: (id: number) => Promise<void>
