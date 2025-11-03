@@ -32,19 +32,19 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
   async findManyByUserId(userId: number) {
     const academicPublication = await prisma.academicPublication.findMany({
       where: { userId },
-      orderBy: {
-        title: 'asc',
-        id: 'asc',
-      },
+      orderBy: [
+        { title: 'asc' },
+        { id: 'asc' },
+      ]
     })
     return academicPublication
   }
 
   async listAllAcademicPublications(query?: ListAllAcademicPublicationsQuery) {
-    const orderBy = {
-      name: 'asc' as OrderableType,
-      id: 'asc' as OrderableType,
-    }
+    const orderBy = [
+      { name: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const academicPublications = await prisma.academicPublication.findMany({

@@ -1,4 +1,4 @@
-import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
+import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
 import z from 'zod'
@@ -10,7 +10,7 @@ export const getAllUsersSimplifiedQueryRawSchema = z
     state: upperCaseTextSchema,
     orderBy: z
       .object({
-        fullNameOrder: orderDirectionsSchema,
+        fullNameOrder: orderDirectionsEnumSchema,
       })
       .partial(),
   })

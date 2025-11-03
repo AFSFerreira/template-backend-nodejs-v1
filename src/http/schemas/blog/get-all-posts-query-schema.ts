@@ -1,6 +1,6 @@
 import { LONG_LIMITED_CHARACTERS_SIZE } from '@constants/validation-constants'
 import { subCategoriesSchema } from '@schemas/utils/components/sub-categories-schema'
-import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
+import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
@@ -15,8 +15,8 @@ const getAllPostsQueryRawSchema = z
     subCategories: subCategoriesSchema,
     orderBy: z
       .object({
-        createdAtOrder: orderDirectionsSchema.default('desc'),
-        accessCountOrder: orderDirectionsSchema,
+        createdAtOrder: orderDirectionsEnumSchema.default('desc'),
+        accessCountOrder: orderDirectionsEnumSchema,
       })
       .partial(),
   })

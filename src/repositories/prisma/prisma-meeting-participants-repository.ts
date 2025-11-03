@@ -75,11 +75,11 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
         Guest: true,
         User: true,
       },
-      orderBy: {
-        Meeting: { lastDate: 'desc' },
-        Guest: { fullName: 'asc' },
-        id: 'asc',
-      },
+      orderBy: [
+        { Meeting: { lastDate: 'desc' } },
+        { Guest: { fullName: 'asc' } },
+        { id: 'asc' }
+      ]
     })
     return participants
   }

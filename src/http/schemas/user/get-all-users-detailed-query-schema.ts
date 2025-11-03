@@ -1,10 +1,10 @@
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 import { membershipStatusArraySchema } from '@schemas/utils/components/membership-status-array-schema'
-import { comparableSchema } from '@schemas/utils/enums/comparable-schema'
-import { educationLevelSchema } from '@schemas/utils/enums/education-level-schema'
-import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
-import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
-import { userRoleSchema } from '@schemas/utils/enums/user-role-schema'
+import { comparableEnumSchema } from '@schemas/utils/enums/comparable-enum-schema'
+import { educationLevelSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schema'
+import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
+import { userRoleEnumSchema } from '@schemas/utils/enums/user-role-enum-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
@@ -23,25 +23,25 @@ const getAllUsersDetailedQueryRawSchema = z
     username: usernameSchema,
     membershipStatus: membershipStatusArraySchema,
     departmentName: upperCaseTextSchema,
-    role: userRoleSchema,
+    role: userRoleEnumSchema,
     receiveReports: booleanSchema,
     mainActivityArea: upperCaseTextSchema,
     subActivityArea: upperCaseTextSchema,
     keywords: keywordSchema,
-    occupation: occupationSchema,
+    occupation: occupationEnumSchema,
     educationLevel: educationLevelSchema,
     birthdate: z.object({
       date: birthdateSchema,
-      birthdateComparison: comparableSchema.default('equals'),
+      birthdateComparison: comparableEnumSchema.default('equals'),
     }),
     astrobiologyOrRelatedStartYear: z.object({
       year: positiveIntegerSchema,
-      astrobiologyOrRelatedStartYearComparison: comparableSchema.default('equals'),
+      astrobiologyOrRelatedStartYearComparison: comparableEnumSchema.default('equals'),
     }),
     orderBy: z
       .object({
-        createdAtOrder: orderDirectionsSchema.default('desc'),
-        fullNameOrder: orderDirectionsSchema,
+        createdAtOrder: orderDirectionsEnumSchema.default('desc'),
+        fullNameOrder: orderDirectionsEnumSchema,
       })
       .partial(),
   })

@@ -1,4 +1,4 @@
 import { PresentationType } from '@prisma/client'
 import z from 'zod'
 
-export const presentationTypeSchema = z.enum(PresentationType)
+export const presentationTypeEnumSchema = z.enum(PresentationType)

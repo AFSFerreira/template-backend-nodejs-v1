@@ -32,11 +32,11 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   }
 
   async listAllActivityAreas(query?: ListAllActivityAreasQuery) {
-    const orderBy = {
-      type: 'asc' as OrderableType,
-      area: 'asc' as OrderableType,
-      id: 'asc' as OrderableType,
-    }
+    const orderBy = [
+      { type: 'asc' as OrderableType },
+      { area: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const activityAreas = await prisma.activityArea.findMany({ orderBy })
@@ -99,14 +99,12 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
 
   async findManyByArea(areas: ActivityAreaQuery[]) {
     const activityAreas = await prisma.activityArea.findMany({
-      where: {
-        OR: areas,
-      },
-      orderBy: {
-        type: 'asc',
-        area: 'asc',
-        id: 'asc',
-      },
+      where: { OR: areas },
+      orderBy: [
+        { type: 'asc' },
+        { area: 'asc' },
+        { id: 'asc' },
+      ]
     })
     return activityAreas
   }

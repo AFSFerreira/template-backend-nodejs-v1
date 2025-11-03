@@ -47,6 +47,7 @@ model User {
   activityAreaDescription        String?                  @map("activity_area_description")
   subActivityAreaDescription     String?                  @map("sub_activity_area_description")
   email                          String                   @unique
+  secondaryEmail                 String?                  @map("secondary_email")
   passwordHash                   String                   @map("password_hash")
   loginAttempts                  Int                      @default(0) @map("login_attempts")
   lastLogin                      DateTime?                @map("last_login")
@@ -478,3 +479,4 @@ enum ActivityAreaType {
   AREA_OF_ACTIVITY
   SUB_AREA_OF_ACTIVITY
 }
+

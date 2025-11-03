@@ -1,24 +1,24 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
 import {
   ACTIVITY_AREA_MISSING_DESCRIPTION,
-  COMPLETION_DATE_BEFORE_START_DATE,
-  SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
 } from '@messages/validations'
+import { academicPublicationsSchema } from '@schemas/utils/components/academic-publication-schema'
+import { activityAreaSchema } from '@schemas/utils/components/activity-area-schema'
+import { enrolledCourseSchema } from '@schemas/utils/components/enrolled-course-schema'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
+import { institutionSchema } from '@schemas/utils/components/institution-schema'
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
-import { highLevelEducationSchema, lowLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
-import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
+import { highLevelEducationEnumSchema, highLevelStudentEnumSchema, lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
 import { rangedYearSchema } from '@schemas/utils/primitives/ranged-year-schema'
-import { uppercaseTextArraySchema } from '@schemas/utils/primitives/uppercase-text-array-schema'
 import { urlSchema } from '@schemas/utils/primitives/url-schema'
 import { stripZodKeys } from '@utils/strip-zod-keys'
 import { z } from 'zod'
 import { emailSchema } from '../utils/components/email-schema'
 import { keywordSchema } from '../utils/components/keyword-schema'
-import { monthYearSchema } from '../utils/components/month-year-schema'
 import { orcidNumberSchema } from '../utils/components/orcid-number-schema'
 import { passwordSchema } from '../utils/components/password-schema'
 import { usernameSchema } from '../utils/components/username-schema'
@@ -27,6 +27,7 @@ import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
 const commonUserSchema = z.object({
   email: emailSchema,
+  secondaryEmail: emailSchema,
   password: passwordSchema,
   fullName: upperCaseTextSchema,
   username: usernameSchema,
@@ -46,69 +47,21 @@ const professionalAndAcademicUserSchema = z.object({
   linkResearcherId: urlSchema.optional(),
   orcidNumber: orcidNumberSchema.optional(),
   publicInformation: longLimitedNonemptyTextSchema.optional(),
-  occupation: occupationSchema,
+  occupation: occupationEnumSchema,
   departmentName: upperCaseTextSchema,
   astrobiologyOrRelatedStartYear: rangedYearSchema,
 })
 
+const otherRootFieldsStudentAndAcademicSchema = z.object({
+  enrolledCourse: enrolledCourseSchema
+})
+
 const otherRootFieldsProfessionalAndAcademicSchema = z.object({
   keyword: keywordSchema,
-  institution: z.object({ name: upperCaseTextSchema }),
-  activityArea: z.object({
-    mainActivityArea: upperCaseTextSchema,
-    subActivityArea: upperCaseTextSchema,
-  }),
+  institution: institutionSchema,
+  activityArea: activityAreaSchema,
 
-  enrolledCourse: z
-    .object({
-      courseName: upperCaseTextSchema.optional(),
-      startGraduationDate: monthYearSchema,
-      expectedGraduationDate: monthYearSchema,
-      supervisorName: upperCaseTextSchema.optional(),
-      scholarshipHolder: booleanSchema,
-      sponsoringOrganization: upperCaseTextSchema.optional(),
-    })
-    .superRefine((data, ctx) => {
-      if (data.startGraduationDate > data.expectedGraduationDate) {
-        ctx.addIssue({
-          code: 'custom',
-          message: COMPLETION_DATE_BEFORE_START_DATE,
-          path: ['expectedGraduationDate'],
-        })
-      }
-
-      if (data.scholarshipHolder && !data.sponsoringOrganization) {
-        ctx.addIssue({
-          code: 'custom',
-          message: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
-          path: ['sponsoringOrganization'],
-        })
-      }
-
-      if (!data.scholarshipHolder && data.sponsoringOrganization) {
-        ctx.addIssue({
-          code: 'custom',
-          message: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
-          path: ['scholarshipHolder'],
-        })
-      }
-    }),
-
-  academicPublication: z
-    .array(
-      z.object({
-        title: upperCaseTextSchema,
-        authors: uppercaseTextArraySchema.min(1),
-        publicationYear: rangedYearSchema,
-        area: upperCaseTextSchema,
-        journalName: upperCaseTextSchema,
-        volume: upperCaseTextSchema,
-        editionNumber: upperCaseTextSchema,
-        startPage: upperCaseTextSchema,
-        linkDoi: urlSchema,
-      }),
-    )
-    .max(5),
+  academicPublication: academicPublicationsSchema.max(5),
 })
 
 const otherRootFieldsSchema = z.object({
@@ -126,22 +79,35 @@ const otherRootFieldsSchema = z.object({
 
 const lowLevelEducationRegisterBodySchema = z.object({
   ...otherRootFieldsSchema.shape,
+  ...stripZodKeys(otherRootFieldsStudentAndAcademicSchema).shape,
   ...stripZodKeys(otherRootFieldsProfessionalAndAcademicSchema).shape,
   user: z.object({
     ...commonUserSchema.shape,
     ...stripZodKeys(professionalAndAcademicUserSchema).shape,
-    educationLevel: lowLevelEducationSchema,
+    educationLevel: lowLevelEducationEnumSchema,
+  }),
+})
+
+const highLevelStudentRegisterBodySchema = z.object({
+  ...otherRootFieldsSchema.shape,
+  ...otherRootFieldsStudentAndAcademicSchema.shape,
+  ...otherRootFieldsProfessionalAndAcademicSchema.shape,
+  user: z.object({
+    ...commonUserSchema.shape,
+    ...professionalAndAcademicUserSchema.shape,
+    educationLevel: highLevelStudentEnumSchema,
   }),
 })
 
 const highLevelEducationRegisterBodySchema = z
   .object({
     ...otherRootFieldsSchema.shape,
+    ...stripZodKeys(otherRootFieldsStudentAndAcademicSchema).shape,
     ...otherRootFieldsProfessionalAndAcademicSchema.shape,
     user: z.object({
       ...commonUserSchema.shape,
       ...professionalAndAcademicUserSchema.shape,
-      educationLevel: highLevelEducationSchema,
+      educationLevel: highLevelEducationEnumSchema,
     }),
   })
   .superRefine((data, ctx) => {
@@ -178,6 +144,7 @@ const highLevelEducationRegisterBodySchema = z
     }
   })
 
-export const registerBodySchema = z.union([highLevelEducationRegisterBodySchema, lowLevelEducationRegisterBodySchema])
+export const registerBodySchema = z.union([highLevelStudentRegisterBodySchema, highLevelEducationRegisterBodySchema, lowLevelEducationRegisterBodySchema])
 
+export type FullRegisterUserBodySchemaType = z.infer<typeof highLevelStudentRegisterBodySchema>
 export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

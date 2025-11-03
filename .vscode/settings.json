@@ -15,6 +15,7 @@
     "BUILDKIT",
     "cnpj",
     "dbgenerated",
+    "falhar",
     "fkey",
     "FLUSHALL",
     "FLUSHDB",

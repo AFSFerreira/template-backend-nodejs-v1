@@ -189,10 +189,10 @@ export class PrismaUsersRepository implements UsersRepository {
   async listAllUsers() {
     const users = await prisma.user.findMany({
       include: userWithDetails.include,
-      orderBy: {
-        fullName: 'asc',
-        id: 'asc',
-      },
+      orderBy: [
+        { fullName: 'asc' },
+        { id: 'asc' },
+      ]
     })
 
     return users
@@ -210,10 +210,10 @@ export class PrismaUsersRepository implements UsersRepository {
           Address: { select: { state: true } },
           Institution: { select: { name: true } },
         },
-        orderBy: {
-          fullName: 'asc',
-          id: 'asc',
-        },
+        orderBy: [
+          { fullName: 'asc' },
+          { id: 'asc' }
+        ]
       })
 
       const formattedUsers = users.map((userInfo) => ({
@@ -276,10 +276,10 @@ export class PrismaUsersRepository implements UsersRepository {
             select: { name: true },
           },
         },
-        orderBy: {
-          fullName: 'asc',
-          id: 'asc',
-        },
+        orderBy: [
+          { fullName: 'asc' },
+          { id: 'asc' },
+        ]
       })
 
       const formattedUsers = users.map((userInfo) => ({

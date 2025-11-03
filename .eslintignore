@@ -1,4 +1,7 @@
 **/*.js
+**/*.json
+**/*.mjs
+**/*.cjs
 node_modules
 build
 dist

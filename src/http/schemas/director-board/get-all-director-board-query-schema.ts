@@ -1,10 +1,10 @@
-import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
+import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
 
 export const getAllDirectorBoardRawSchema = z
   .object({
-    orderBy: z.object({ precedenceOrder: orderDirectionsSchema.default('asc') }).partial(),
+    orderBy: z.object({ precedenceOrder: orderDirectionsEnumSchema.default('asc') }).partial(),
   })
   .partial()
   .extend(paginatedSchema.shape)

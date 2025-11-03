@@ -29,10 +29,10 @@ export class PrismaKeywordsRepository implements KeywordsRepository {
           some: { id: userId },
         },
       },
-      orderBy: {
-        value: 'asc',
-        id: 'asc',
-      },
+      orderBy: [
+        { value: 'asc' },
+        { id: 'asc' },
+      ]
     })
     return keywords
   }

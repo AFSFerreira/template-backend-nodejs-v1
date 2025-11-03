@@ -1,7 +1,7 @@
 import { MembershipStatusType } from '@prisma/client'
 import z from 'zod'
-import { membershipStatusSchema } from '../enums/membership-status-schema'
+import { membershipStatusEnumSchema } from '../enums/membership-status-enum-schema'
 
 export const membershipStatusArraySchema = z
-  .union([z.array(membershipStatusSchema), membershipStatusSchema.transform((val) => [val])])
+  .union([z.array(membershipStatusEnumSchema), membershipStatusEnumSchema.transform((val) => [val])])
   .default([MembershipStatusType.ACTIVE])

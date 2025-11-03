@@ -16,8 +16,31 @@ export class PrismaAddressesRepository implements AddressesRepository {
   }
 
   async listAllAddressesStates(query?: ListAllAddressStateQuery) {
-    const orderBy = {
+    const orderBy = [{
       _count: { userId: query.orderBy.usersCount },
+    }]
+
+    if (!query) {
+      const addresses = await prisma.address.groupBy({
+        by: ['state'],
+        _count: {
+          userId: true,
+        },
+        orderBy,
+      })
+
+      return {
+        data: addresses.map((address) => ({
+          state: address.state,
+          usersCount: address._count.userId,
+        })),
+        meta: {
+          totalItems: addresses.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: addresses.length,
+        }
+      }
     }
 
     // WIP:

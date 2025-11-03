@@ -1,7 +1,7 @@
 import { emailSchema } from '@schemas/utils/components/email-schema'
 import { presentationSchema } from '@schemas/utils/components/presentation-schema'
-import { educationLevelSchema } from '@schemas/utils/enums/education-level-schema'
-import { occupationSchema } from '@schemas/utils/enums/occupation-schema'
+import { educationLevelSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
 import z from 'zod'
@@ -12,7 +12,7 @@ export const registerGuestMeetingBodySchema = z.object({
   fullName: upperCaseTextSchema,
   institutionName: upperCaseTextSchema,
   departmentName: upperCaseTextSchema,
-  occupation: occupationSchema,
+  occupation: occupationEnumSchema,
   educationLevel: educationLevelSchema,
   wantsNewsletter: booleanSchema,
 })

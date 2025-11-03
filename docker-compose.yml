@@ -36,7 +36,7 @@ services:
       sh -c "
         redis-server
         --requirepass ${REDIS_PASSWORD}
-        --maxmemory ${REDIS_MAXMEMORY:-256}
+        --maxmemory ${REDIS_MAXMEMORY:-256mb}
         --maxmemory-policy ${REDIS_MAXMEMORY_POLICY:-noeviction}
         --protected-mode ${REDIS_PROTECTED_MODE:-yes}
         --appendonly ${REDIS_AOF_ENABLED:-no}
@@ -55,6 +55,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
 
   # backend:
   #   env_file: .env
@@ -77,7 +78,6 @@ services:
   #     - backend_uploads:/usr/src/app/uploads
   #   networks:
   #     - app-network
-
 
 volumes:
   postgres_data:

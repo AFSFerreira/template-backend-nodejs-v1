@@ -1,6 +1,6 @@
 import { LONG_LIMITED_CHARACTERS_SIZE } from '@constants/validation-constants'
-import { comparableSchema } from '@schemas/utils/enums/comparable-schema'
-import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
+import { comparableEnumSchema } from '@schemas/utils/enums/comparable-enum-schema'
+import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { rangedYearSchema } from '@schemas/utils/primitives/ranged-year-schema'
@@ -13,11 +13,11 @@ const getAllAcademicPublicationsQueryRawSchema = z
     mainCategory: upperCaseTextSchema,
     publicationYear: z.object({
       year: rangedYearSchema,
-      publicationYearComparisonOrder: comparableSchema.default('equals'),
+      publicationYearComparisonOrder: comparableEnumSchema.default('equals'),
     }),
     orderBy: z
       .object({
-        createdAtOrder: orderDirectionsSchema.default('desc'),
+        createdAtOrder: orderDirectionsEnumSchema.default('desc'),
       })
       .partial(),
   })

@@ -1,14 +1,14 @@
-import { meetingStatusSchema } from '@schemas/utils/enums/meeting-status-schema'
-import { orderDirectionsSchema } from '@schemas/utils/enums/order-directions-schema'
+import { meetingStatusEnumSchema } from '@schemas/utils/enums/meeting-status-enum-schema'
+import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
 
 export const getAllMeetingsQueryRawSchema = z
   .object({
-    status: meetingStatusSchema.default('ALL'),
+    status: meetingStatusEnumSchema.default('ALL'),
     orderBy: z
       .object({
-        createdAtOrder: orderDirectionsSchema.default('desc'),
+        createdAtOrder: orderDirectionsEnumSchema.default('desc'),
       })
       .partial(),
   })

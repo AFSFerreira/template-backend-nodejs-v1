@@ -7,13 +7,15 @@ import { evalTotalPages } from '@utils/eval-total-pages'
 
 export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
-    const orderBy = {
-      DirectorPosition: {
-        precedence: query.orderBy.precedenceOrder,
+    const orderBy = [
+      {
+        DirectorPosition: {
+          precedence: query.orderBy.precedenceOrder,
+        }
       },
-      User: { fullName: 'asc' as OrderableType },
-      id: 'asc' as OrderableType,
-    }
+      { User: { fullName: 'asc' as OrderableType } },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const directors = await prisma.directorBoard.findMany({
@@ -31,7 +33,6 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
         },
       }
     }
-
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 

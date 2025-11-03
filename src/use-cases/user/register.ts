@@ -7,7 +7,7 @@ import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { FindConflictingUserQuery, UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
-import { highLevelEducationSchema } from '@schemas/utils/enums/education-level-schema'
+import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { objectDeepEqual } from '@utils/object-deep-equal'
@@ -20,7 +20,7 @@ import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 interface RegisterUseCaseRequest {
   user: RegisterUserBodySchemaType['user']
   address: RegisterUserBodySchemaType['address']
-  keyword: RegisterUserBodySchemaType['keyword']
+  keyword?: RegisterUserBodySchemaType['keyword']
   enrolledCourse?: RegisterUserBodySchemaType['enrolledCourse']
   academicPublication?: RegisterUserBodySchemaType['academicPublication']
   activityArea?: RegisterUserBodySchemaType['activityArea']
@@ -58,12 +58,13 @@ export class RegisterUseCase {
       }
     }
 
-    if (highLevelEducationSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
+    if (!lowLevelEducationEnumSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
       // Valida as áreas de atividade dos artigos e do usuário:
-      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
-        area: academicPub.area,
-        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      }))
+      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map(
+        (academicPub) => ({
+          area: academicPub.area,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        }))
 
       const allUserActivityAreas = [
         ...academicPublicationsActivityAreas,

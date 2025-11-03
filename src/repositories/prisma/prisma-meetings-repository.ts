@@ -16,11 +16,11 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
   }
 
   async listAllMeetings(query?: ListAllMeetingsQuery) {
-    const orderBy = {
-      lastDate: 'desc' as OrderableType,
-      title: 'asc' as OrderableType,
-      id: 'asc' as OrderableType,
-    }
+    const orderBy = [
+      { lastDate: 'desc' as OrderableType },
+      { title: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const meetings = await prisma.meeting.findMany({ orderBy })

@@ -63,6 +63,7 @@ CREATE TABLE "public"."users" (
     "activity_area_description" TEXT,
     "sub_activity_area_description" TEXT,
     "email" TEXT NOT NULL,
+    "secondary_email" TEXT;
     "password_hash" TEXT NOT NULL,
     "login_attempts" INTEGER NOT NULL DEFAULT 0,
     "last_login" TIMESTAMP(3),
