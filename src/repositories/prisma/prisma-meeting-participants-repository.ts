@@ -53,6 +53,7 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
         meetingId_userId: query,
       },
     })
+    console.log("encontrado:", meetingParticipation)
     return meetingParticipation
   }
 

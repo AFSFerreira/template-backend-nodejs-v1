@@ -4,11 +4,11 @@ interface IEnsure<T> {
 }
 
 export function ensureExists<S>({ value, error }: IEnsure<S>) {
-  if (value === null || value === undefined) throw error
+  if (value !== null || value !== undefined) throw error
   return value
 }
 
 export function ensureNotExists<S>({ value, error }: IEnsure<S>) {
-  if (value !== null || value !== undefined) throw error
-  return value
+  if (value === null || value === undefined) return value
+  throw error
 }
