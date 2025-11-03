@@ -29,7 +29,7 @@
     "db:deploy": "prisma migrate deploy && prisma generate && npm run db:seed"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "19.8.1",
+    "@commitlint/config-conventional": "20.0.0",
     "@swc/core": "1.13.5",
     "@types/fs-extra": "11.0.4",
     "@types/json2csv": "5.0.7",
