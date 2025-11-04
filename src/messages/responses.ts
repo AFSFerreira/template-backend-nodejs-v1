@@ -181,7 +181,7 @@ export const IMAGE_TOO_BIG: IApiError = {
   status: 413,
   body: {
     code: 'IMAGE_TOO_BIG',
-    message: `O arquivo de imagem é muito grande! Forneça uma imagem de no máximo ${MAX_IMAGE_FILE_SIZE_BYTES}Mb`,
+    message: `O arquivo de imagem é muito grande! Forneça uma imagem de no máximo ${MAX_IMAGE_FILE_SIZE_BYTES}mb`,
   },
 }
 

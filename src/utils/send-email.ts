@@ -1,4 +1,4 @@
-import { transporterOptions } from '@constants/email-configuration'
+import { transporterOptions } from '@constants/email-configuration-constants'
 import type { SendEmailRequest } from '@custom-types/send-email-request-type'
 import { env } from '@env/index'
 import nodemailer from 'nodemailer'

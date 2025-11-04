@@ -1,24 +1,23 @@
-import { BASE_PROJECT_PATH, MB_IN_BYTES } from '@constants/file-constants'
+import { MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
-import fastifyStatic from '@fastify/static'
 import { logger } from '@lib/logger'
 import '@lib/zod/index'
 import { UNHANDLED_ERROR } from '@messages/loggings'
+import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
-import path from 'node:path'
 import z, { ZodError } from 'zod'
 import { env } from './env/index'
 import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
 import { appRoutes } from './http/routes'
-import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
+import { staticFileRoutes } from './http/plugins/static-files'
 
 export const app = fastify({
   logger: false,
@@ -51,29 +50,7 @@ app.register(fastifyJwt, {
   },
 })
 
-app.register(fastifyStatic, {
-  root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'user', 'profile-images'),
-  prefix: '/static/users/profile-images',
-  decorateReply: false,
-  serveDotFiles: false,
-  maxAge: '1y',
-
-  setHeaders: (response, _pathName) => {
-    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
-  },
-})
-
-app.register(fastifyStatic, {
-  root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'meeting', 'banner'),
-  prefix: '/static/meetings/banners/',
-  decorateReply: false,
-  serveDotFiles: false,
-  maxAge: '1y',
-
-  setHeaders: (response, _pathName) => {
-    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
-  },
-})
+app.register(staticFileRoutes)
 
 app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)
