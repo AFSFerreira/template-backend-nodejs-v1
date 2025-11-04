@@ -43,24 +43,12 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
-    const TODAY = new Date()
-    TODAY.setHours(0, 0, 0, 0)
-
     const where = {
       lastDate: lastDateConstraint,
-      ...(query.alreadyFinished !== undefined ?
-         ({
-           lastDate: query.alreadyFinished ?
-           { lte: TODAY } :
-           { gte: TODAY }
-         }) : {}
-      ),
     }
 
     const [countResult, meetings] = await Promise.all([
-      prisma.meeting.count({ where: {
-
-      } }),
+      prisma.meeting.count({ where }),
       prisma.meeting.findMany({
         where,
         skip,
