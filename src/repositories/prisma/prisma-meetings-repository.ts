@@ -1,4 +1,3 @@
-import { TODAY } from '@constants/date-constants'
 import { meetingWithDetails } from '@custom-types/meeting-with-details'
 import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
@@ -43,6 +42,9 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     const lastDateConstraint = mapMeetingStatusToDateFilter(query.status)
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
+
+    const TODAY = new Date()
+    TODAY.setHours(0, 0, 0, 0)
 
     const where = {
       lastDate: lastDateConstraint,
