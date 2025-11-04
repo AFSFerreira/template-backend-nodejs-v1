@@ -1,13 +1,11 @@
 import { meetingStatusEnumSchema } from '@schemas/utils/enums/meeting-status-enum-schema'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
-import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
 
 export const getAllMeetingsQueryRawSchema = z
   .object({
     status: meetingStatusEnumSchema.default('ALL'),
-    alreadyFinished: booleanSchema,
     orderBy: z
       .object({
         createdAtOrder: orderDirectionsEnumSchema.default('desc'),
