@@ -344,9 +344,116 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async update({ id, data }: UpdateUserQuery) {
+    // HACK: O criador dessa implementação de atualização tem
+    // plena consciência que apagar os registros antigos e criar novos
+    // está longe de ser a implementação ideal, mas o cenário atual
+    // demanda essa "gambiarra". Para quem estiver fazendo a manutenção disso
+    // no futuro, minhas sinceras desculpas pelo inconveniente. :D
+
+    const keywordsConnectOrCreateData = data.keyword
+      ? {
+          connectOrCreate: data.keyword.map((value: string) => ({
+            where: { value },
+            create: { value },
+          })),
+        }
+      : undefined
+
+    const academicPublicationCreateData = data.academicPublication
+      ? {
+          create: data.academicPublication.map((academicPublication) => {
+            const { area, authors, ...filteredAcademicPublicationData } = academicPublication
+            return {
+              ...filteredAcademicPublicationData,
+              AcademicPublicationAuthors: {
+                create: authors.map((author) => ({
+                  name: author,
+                })),
+              },
+              ActivityArea: {
+                connect: {
+                  type_area: {
+                    area,
+                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                  },
+                },
+              },
+            }
+          }),
+        }
+      : undefined
+
+    const enrolledCourseCreateData = data.enrolledCourse
+      ? {
+          create: {
+            ...data.enrolledCourse,
+            scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+          },
+        }
+      : undefined
+
+    const institutionConnectOrCreateData = data.institution
+      ? {
+          connectOrCreate: {
+            create: { name: data.institution.name },
+            where: { name: data.institution.name },
+          },
+        }
+      : undefined
+
+    const activityAreaConnectData = data.activityArea
+      ? {
+          connect: {
+            type_area: {
+              area: data.activityArea.mainActivityArea,
+              type: ActivityAreaType.AREA_OF_ACTIVITY,
+            },
+          },
+        }
+      : undefined
+
+    const subActivityAreaConnectData = data.activityArea
+      ? {
+          connect: {
+            type_area: {
+              area: data.activityArea.subActivityArea,
+              type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+            },
+          },
+        }
+      : undefined
+
+    const addressCreateData = {
+      create: data.address,
+    }
+
+    // Removendo registros antigos:
+    await prisma.address.delete({
+      where: { userId: id }
+    })
+
+    await prisma.enrolledCourse.delete({
+      where: { userId: id }
+    })
+
+    await prisma.academicPublication.deleteMany({
+      where: { userId: id }
+    })
+
     const user = await prisma.user.update({
       where: { id },
-      data,
+      data: {
+        ...data.user,
+        emailIsPublic: data.user.emailIsPublic,
+        receiveReports: data.user.receiveReports,
+        Address: addressCreateData,
+        EnrolledCourse: enrolledCourseCreateData,
+        Institution: institutionConnectOrCreateData,
+        AcademicPublication: academicPublicationCreateData,
+        Keyword: keywordsConnectOrCreateData,
+        ActivityArea: activityAreaConnectData,
+        SubActivityArea: subActivityAreaConnectData,
+      },
       include: userWithDetails.include,
     })
     return user

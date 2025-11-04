@@ -5,6 +5,7 @@ import type { EducationLevelType, IdentityType, OccupationType, Prisma, User } f
 import type { getAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-users-detailed-query-schema'
 import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
+import type { UpdateUserBodySchemaType } from '@schemas/user/update-user-body-schema'
 
 export type ListAllUsersDetailedQuery = getAllUsersDetailedQuerySchemaType
 
@@ -41,7 +42,7 @@ export interface FindByIdentityDocumentQuery {
 
 export interface UpdateUserQuery {
   id: number
-  data: Prisma.UserUpdateInput
+  data: UpdateUserBodySchemaType
 }
 
 export interface ChangeUserPasswordQuery {

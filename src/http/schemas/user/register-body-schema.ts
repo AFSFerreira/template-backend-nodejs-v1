@@ -24,8 +24,9 @@ import { passwordSchema } from '../utils/components/password-schema'
 import { usernameSchema } from '../utils/components/username-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
+import { addressSchema } from '@schemas/utils/components/address-schema'
 
-const commonUserSchema = z.object({
+export const commonUserSchema = z.object({
   email: emailSchema,
   secondaryEmail: emailSchema,
   password: passwordSchema,
@@ -41,7 +42,7 @@ const commonUserSchema = z.object({
   subActivityAreaDescription: longLimitedNonemptyTextSchema.optional(),
 })
 
-const professionalAndAcademicUserSchema = z.object({
+export const professionalAndAcademicUserSchema = z.object({
   linkLattes: urlSchema.optional(),
   linkGoogleScholar: urlSchema.optional(),
   linkResearcherId: urlSchema.optional(),
@@ -52,29 +53,19 @@ const professionalAndAcademicUserSchema = z.object({
   astrobiologyOrRelatedStartYear: rangedYearSchema,
 })
 
-const otherRootFieldsStudentAndAcademicSchema = z.object({
+export const otherRootFieldsStudentAndAcademicSchema = z.object({
   enrolledCourse: enrolledCourseSchema
 })
 
-const otherRootFieldsProfessionalAndAcademicSchema = z.object({
+export const otherRootFieldsProfessionalAndAcademicSchema = z.object({
   keyword: keywordSchema,
   institution: institutionSchema,
   activityArea: activityAreaSchema,
-
   academicPublication: academicPublicationsSchema.max(5),
 })
 
-const otherRootFieldsSchema = z.object({
-  address: z.object({
-    zip: upperCaseTextSchema,
-    number: upperCaseTextSchema,
-    district: upperCaseTextSchema,
-    street: upperCaseTextSchema,
-    city: upperCaseTextSchema,
-    country: upperCaseTextSchema,
-    state: upperCaseTextSchema,
-    complement: upperCaseTextSchema.optional(),
-  }),
+export const otherRootFieldsSchema = z.object({
+  address: addressSchema,
 })
 
 const lowLevelEducationRegisterBodySchema = z.object({
@@ -146,5 +137,4 @@ const highLevelEducationRegisterBodySchema = z
 
 export const registerBodySchema = z.union([highLevelStudentRegisterBodySchema, highLevelEducationRegisterBodySchema, lowLevelEducationRegisterBodySchema])
 
-export type FullRegisterUserBodySchemaType = z.infer<typeof highLevelStudentRegisterBodySchema>
 export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>
