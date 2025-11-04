@@ -1,7 +1,8 @@
+import { TODAY } from '@constants/date-constants'
 import { meetingWithDetails } from '@custom-types/meeting-with-details'
 import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
-import type { ListAllMeetingsQuery, MeetingsRepository } from '@repositories/meetings-repository'
+import type { ListAllMeetingsQuery, ListOngoingMeetingsQuery, MeetingsRepository } from '@repositories/meetings-repository'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/map-status-to-date-filter'
@@ -55,6 +56,65 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     const pageSize = query.limit
     const totalItems = countResult
 
+    const totalPages = evalTotalPages({ pageSize, totalItems })
+
+    return {
+      data: meetings,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize,
+      },
+    }
+  }
+
+  async listOngoingMeetings(query?: ListOngoingMeetingsQuery) {
+    const orderBy = [
+      { lastDate: 'desc' as OrderableType },
+      { title: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
+
+    const where = {
+      lastDate: {
+        gte: TODAY
+      }
+    }
+
+    if (!query) {
+      const meetings = await prisma.meeting.findMany({
+        where,
+        orderBy,
+        include: meetingWithDetails.include
+      })
+
+      return {
+        data: meetings,
+        meta: {
+          totalItems: meetings.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: meetings.length,
+        },
+      }
+    }
+
+    const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
+
+    const [countResult, meetings] = await Promise.all([
+      prisma.meeting.count({ where }),
+      prisma.meeting.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+        include: meetingWithDetails.include
+      }),
+    ])
+
+    const pageSize = query.limit
+    const totalItems = countResult
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {

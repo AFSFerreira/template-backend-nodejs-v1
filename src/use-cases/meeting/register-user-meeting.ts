@@ -43,8 +43,6 @@ export class RegisterUserMeetingUseCase {
       throw new MeetingAlreadyFinishedError()
     }
 
-    console.log("chegou aquoi1")
-
     ensureNotExists({
       value: await this.meetingParticipantsRepository.findByUserIdAndMeetingId({
         meetingId: meeting.id,
@@ -52,8 +50,6 @@ export class RegisterUserMeetingUseCase {
       }),
       error: new UserAlreadyRegisteredInMeetingError(),
     })
-
-    console.log("passou do check")
 
     const meetingParticipation = await this.meetingParticipantsRepository.createForUser({
       ...registerUserMeetingUseCaseInput,

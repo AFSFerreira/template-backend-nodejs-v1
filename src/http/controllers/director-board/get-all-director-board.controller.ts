@@ -1,6 +1,6 @@
 import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { getAllDirectorBoardSchema } from '@schemas/director-board/get-all-director-board-query-schema'
-import { makeGetAllDirectorBoardUseCase } from '@use-cases/factories/directive-corp/make-get-all-directive-corp-use-case'
+import { makeGetAllDirectorBoardUseCase } from '@use-cases/factories/director-board/make-get-all-directive-corp-use-case'
 import type { FastifyRequest, FastifyReply } from 'fastify'
 
 export async function getAllDirectorBoard(request: FastifyRequest, reply: FastifyReply) {
