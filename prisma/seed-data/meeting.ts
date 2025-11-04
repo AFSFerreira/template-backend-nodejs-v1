@@ -3,7 +3,7 @@ export const meetingData1 = {
   image: 'null.png',
   description: 'Incididunt sit voluptate aliquip ut fugiat do dolor aliqua nostrud do nulla mollit.',
   location: 'UNIVERSIDADE FEDERAL FLUMINENSE',
-  lastDate: new Date('2025-09-23'),
+  lastDate: new Date('2025-12-31'),
   MeetingDate: {
     create: [
       {
@@ -13,7 +13,7 @@ export const meetingData1 = {
         date: new Date('2025-09-22'),
       },
       {
-        date: new Date('2025-09-23'),
+        date: new Date('2025-12-31'),
       },
     ],
   },

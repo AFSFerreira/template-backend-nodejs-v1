@@ -29,6 +29,7 @@ interface HTTPOngoingMeeting {
   id: string
   title: string
   description: string
+  image: string
   dates: Date[]
   location: string
   createdAt: Date
@@ -94,6 +95,7 @@ export class MeetingPresenter {
       id: input.publicId,
       title: input.title,
       description: input.description,
+      image: input.image,
       dates: input.MeetingDate.map((meetingDate) => meetingDate.date),
       location: input.location,
       createdAt: input.createdAt,
