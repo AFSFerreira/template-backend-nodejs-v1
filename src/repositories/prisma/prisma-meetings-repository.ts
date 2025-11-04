@@ -46,11 +46,19 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
 
     const where = {
       lastDate: lastDateConstraint,
-      ...(query.alreadyFinished ? { lt: TODAY } : { gte: TODAY }),
+      ...(query.alreadyFinished !== undefined ?
+         ({
+           lastDate: query.alreadyFinished ?
+           { lte: TODAY } :
+           { gte: TODAY }
+         }) : {}
+      ),
     }
 
     const [countResult, meetings] = await Promise.all([
-      prisma.meeting.count({ where }),
+      prisma.meeting.count({ where: {
+
+      } }),
       prisma.meeting.findMany({
         where,
         skip,
