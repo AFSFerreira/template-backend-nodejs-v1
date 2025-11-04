@@ -16,6 +16,7 @@ import { logout } from './logout.controller'
 import { refreshToken } from './refresh-token.controller'
 import { register } from './register.controller'
 import { resetPassword } from './reset-password.controller'
+import { updateUser } from './update-user.controller'
 import { uploadRegisterProfileImage } from './upload-register-profile-image.controller'
 
 export async function userRoutes(app: FastifyInstance) {
@@ -50,6 +51,12 @@ export async function userRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
     },
     getUserByPublicId,
+  )
+  app.patch('/update/me',
+    {
+      preHandler: [verifyJwt],
+    },
+    updateUser
   )
 
   // Register Routes:
