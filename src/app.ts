@@ -51,11 +51,6 @@ app.register(fastifyJwt, {
   },
 })
 
-console.log(
-  '📁 Caminho estático resolvido:',
-  BASE_PROJECT_PATH
-)
-
 app.register(fastifyStatic, {
   root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'user', 'profile-images'),
   prefix: '/static/users/profile-images',
