@@ -1,6 +1,6 @@
 export const meetingData1 = {
   title: 'PRIMEIRA REUNIÃO DE ASTROBIOLOGIA',
-  image: 'null.png',
+  image: 'meeting-2026.jpg',
   description: 'Incididunt sit voluptate aliquip ut fugiat do dolor aliqua nostrud do nulla mollit.',
   location: 'UNIVERSIDADE FEDERAL FLUMINENSE',
   lastDate: new Date('2025-12-31'),

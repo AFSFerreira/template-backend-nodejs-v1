@@ -52,8 +52,20 @@ app.register(fastifyJwt, {
 })
 
 app.register(fastifyStatic, {
-  root: path.resolve(__dirname, '..', 'uploads', 'profile-images'),
+  root: path.resolve(__dirname, '..', 'uploads', 'user', 'profile-images'),
   prefix: '/users/profile-images/',
+  decorateReply: false,
+  serveDotFiles: false,
+  maxAge: '1y',
+
+  setHeaders: (response, _pathName) => {
+    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
+  },
+})
+
+app.register(fastifyStatic, {
+  root: path.resolve(__dirname, '..', 'uploads', 'meeting', 'banner'),
+  prefix: '/meetings/banners/',
   decorateReply: false,
   serveDotFiles: false,
   maxAge: '1y',
