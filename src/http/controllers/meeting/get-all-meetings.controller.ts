@@ -11,7 +11,7 @@ export async function getAllMeetings(request: FastifyRequest, reply: FastifyRepl
   const { data, meta } = await getAllMeetingsUseCase.execute(parsedQuery)
 
   return await reply.status(200).send({
-    data: MeetingPresenter.toHTTP(data),
+    data: MeetingPresenter.toHTTPDetailed(data),
     meta,
   })
 }

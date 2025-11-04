@@ -3,7 +3,7 @@ import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-
 import { blogData1, dummyBlogDataArray } from './seed-data/blogs'
 import { directorPositionData1 } from './seed-data/director-positions'
 import { directorBoardData1 } from './seed-data/directors-board'
-import { meetingData1 } from './seed-data/meeting'
+import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'
 import { paymentInfo1 } from './seed-data/payment-info'
 import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 
@@ -107,6 +107,20 @@ async function main() {
     await prisma.meeting.create({
       data: meetingData1,
     })
+  }
+
+  for (const finishedMeeting of alreadyFinishedMeetings) {
+    const finishedMeetingAlreadyExists = await prisma.meeting.findFirst({
+      where: {
+        title: finishedMeeting.title,
+      },
+    })
+
+    if (!finishedMeetingAlreadyExists) {
+      await prisma.meeting.create({
+        data: finishedMeeting,
+      })
+    }
   }
 }
 

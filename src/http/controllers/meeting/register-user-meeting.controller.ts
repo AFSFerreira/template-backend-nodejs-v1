@@ -1,6 +1,6 @@
 import { registerUserMeetingBodySchema } from '@schemas/meeting/register-user-meeting-body-schema'
 import { registerUserMeetingParamsSchema } from '@schemas/meeting/register-user-meeting-params-schema'
-import { makeRegisterUserMeetingUseCase } from '@use-cases/factories/meeting-participation/make-register-user-meeting-use-case'
+import { makeRegisterUserMeetingUseCase } from '@use-cases/factories/meeting/make-register-user-meeting-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function registerUserMeeting(request: FastifyRequest, reply: FastifyReply) {

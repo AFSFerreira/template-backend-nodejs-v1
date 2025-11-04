@@ -1,4 +1,4 @@
-import { MB_IN_BYTES } from '@constants/file-constants'
+import { BASE_PROJECT_PATH, MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
@@ -52,8 +52,20 @@ app.register(fastifyJwt, {
 })
 
 app.register(fastifyStatic, {
-  root: path.resolve(__dirname, '..', 'uploads', 'profile-images'),
-  prefix: '/users/profile-images/',
+  root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'user', 'profile-images'),
+  prefix: '/static/users/profile-images',
+  decorateReply: false,
+  serveDotFiles: false,
+  maxAge: '1y',
+
+  setHeaders: (response, _pathName) => {
+    response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
+  },
+})
+
+app.register(fastifyStatic, {
+  root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'meeting', 'banner'),
+  prefix: '/static/meetings/banners/',
   decorateReply: false,
   serveDotFiles: false,
   maxAge: '1y',

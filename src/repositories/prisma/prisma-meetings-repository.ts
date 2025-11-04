@@ -23,7 +23,10 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     ]
 
     if (!query) {
-      const meetings = await prisma.meeting.findMany({ orderBy })
+      const meetings = await prisma.meeting.findMany({
+        orderBy,
+        include: meetingWithDetails.include,
+      })
 
       return {
         data: meetings,
@@ -40,15 +43,30 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
-    const where = { lastDate: lastDateConstraint }
+    const TODAY = new Date()
+    TODAY.setHours(0, 0, 0, 0)
+
+    const where = {
+      lastDate: lastDateConstraint,
+      ...(query.alreadyFinished !== undefined ?
+         ({
+           lastDate: query.alreadyFinished ?
+           { lte: TODAY } :
+           { gte: TODAY }
+         }) : {}
+      ),
+    }
 
     const [countResult, meetings] = await Promise.all([
-      prisma.meeting.count({ where }),
+      prisma.meeting.count({ where: {
+
+      } }),
       prisma.meeting.findMany({
         where,
         skip,
         take,
         orderBy,
+        include: meetingWithDetails.include,
       }),
     ])
 

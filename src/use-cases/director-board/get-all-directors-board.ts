@@ -10,7 +10,7 @@ interface GetAllDirectorBoardUseCaseResponse {
   meta: PaginationMetaType
 }
 
-export class GetAllDirectiveCorpUseCase {
+export class GetAllDirectorsBoard {
   constructor(private readonly directorBoardRepository: DirectorBoardRepository) {}
 
   async execute(

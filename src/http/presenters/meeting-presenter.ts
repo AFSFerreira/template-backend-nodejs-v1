@@ -25,6 +25,16 @@ interface HTTPMeetingWithDetails extends HTTPMeeting {
   meetingDates: Date[]
 }
 
+interface HTTPOngoingMeeting {
+  id: string
+  title: string
+  description: string
+  image: string
+  dates: Date[]
+  location: string
+  createdAt: Date
+}
+
 export class MeetingPresenter {
   static toHTTP(meeting: Meeting): HTTPMeeting
   static toHTTP(meetings: Meeting[]): HTTPMeeting[]
@@ -70,7 +80,25 @@ export class MeetingPresenter {
         value: input.MeetingPaymentInfo.value.toString(),
         limitDate: input.MeetingPaymentInfo.limitDate,
       },
-      meetingDates: input.MeetingDate.map((date) => date.date),
+      meetingDates: input.MeetingDate.map((meetingDate) => meetingDate.date),
+    }
+  }
+
+  static toHTTPOngoing(meeting: MeetingWithDetails): HTTPOngoingMeeting
+  static toHTTPOngoing(meetings: MeetingWithDetails[]): HTTPOngoingMeeting[]
+  static toHTTPOngoing(input: MeetingWithDetails | MeetingWithDetails[]): HTTPOngoingMeeting | HTTPOngoingMeeting[] {
+    if (Array.isArray(input)) {
+      return input.map((meeting) => MeetingPresenter.toHTTPOngoing(meeting))
+    }
+
+    return {
+      id: input.publicId,
+      title: input.title,
+      description: input.description,
+      image: input.image,
+      dates: input.MeetingDate.map((meetingDate) => meetingDate.date),
+      location: input.location,
+      createdAt: input.createdAt,
     }
   }
 }
