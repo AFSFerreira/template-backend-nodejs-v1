@@ -1,5 +1,5 @@
 import { ALL_UNIVERSITIES_LIST } from "@constants/url-constants"
-import type { PaginationMetaType } from "@custom-types/pagination-meta-type"
+import type { PaginatedResult } from "@custom-types/pagination-meta-type"
 import type { UniversitiesApiResponse } from "@custom-types/universities-api-response-type"
 import type { InstitutionsRepository } from "@repositories/institutions-repository"
 import type { GetAllInstitutionsSchemaType } from "@schemas/institution/get-all-institutions-query-schema"
@@ -10,10 +10,7 @@ import { paginateArray } from "@utils/paginate-array"
 
 interface GetAllInstitutionsNamesUseCaseRequest extends GetAllInstitutionsSchemaType {}
 
-interface GetAllInstitutionsNamesUseCaseResponse {
-  data: string[]
-  meta: PaginationMetaType
-}
+interface GetAllInstitutionsNamesUseCaseResponse extends PaginatedResult<string[]> {}
 
 export class GetAllInstitutionsNamesUseCase {
   constructor(private readonly institutionsRepository: InstitutionsRepository) {}

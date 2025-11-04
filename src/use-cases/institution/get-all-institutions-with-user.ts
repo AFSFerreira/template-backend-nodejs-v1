@@ -1,13 +1,10 @@
-import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { InstitutionsRepository, InstitutionsUsersCount } from '@repositories/institutions-repository'
 import type { GetAllInstitutionsWithUsersQuerySchemaType } from '@schemas/institution/get-all-institutions-with-users-query-schema'
 
 interface GetAllInstitutionsWithUsersUseCaseRequest extends GetAllInstitutionsWithUsersQuerySchemaType {}
 
-interface GetAllInstitutionsWithUsersUseCaseResponse {
-  data: InstitutionsUsersCount[]
-  meta: PaginationMetaType
-}
+interface GetAllInstitutionsWithUsersUseCaseResponse extends PaginatedResult<InstitutionsUsersCount[]> {}
 
 export class GetAllInstitutionsWithUsersUseCase {
   constructor(private readonly institutionsRepository: InstitutionsRepository) {}

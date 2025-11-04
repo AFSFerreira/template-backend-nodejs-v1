@@ -1,14 +1,11 @@
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/custom-user-with-simplified-details-type'
-import type { PaginationMetaType } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { getAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-users-detailed-query-schema'
 
 type GetAllUsersDetailedUseCaseRequest = getAllUsersDetailedQuerySchemaType
 
-interface GetAllUsersCaseResponse {
-  data: CustomUserWithSimplifiedDetails[]
-  meta: PaginationMetaType
-}
+interface GetAllUsersCaseResponse extends PaginatedResult<CustomUserWithSimplifiedDetails[]> {}
 
 export class GetAllUsersDetailedUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
