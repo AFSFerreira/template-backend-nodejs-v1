@@ -10,12 +10,10 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
   const updateUserUseCase = makeUpdateUserUseCase()
   const { user } = await updateUserUseCase.execute({
     userId,
-    data: parsedBody
+    data: parsedBody,
   })
 
   return await reply.status(200).send({
-      data: {
-        user: UserPresenter.toHTTPDetailed(user)
-      }
-    })
+    data: { user: UserPresenter.toHTTPDetailed(user) },
+  })
 }

@@ -16,9 +16,11 @@ export class PrismaAddressesRepository implements AddressesRepository {
   }
 
   async listAllAddressesStates(query?: ListAllAddressStateQuery) {
-    const orderBy = [{
-      _count: { userId: query.orderBy.usersCount },
-    }]
+    const orderBy = [
+      {
+        _count: { userId: query.orderBy.usersCount },
+      },
+    ]
 
     if (!query) {
       const addresses = await prisma.address.groupBy({
@@ -39,7 +41,7 @@ export class PrismaAddressesRepository implements AddressesRepository {
           totalPages: 1,
           currentPage: 1,
           pageSize: addresses.length,
-        }
+        },
       }
     }
 

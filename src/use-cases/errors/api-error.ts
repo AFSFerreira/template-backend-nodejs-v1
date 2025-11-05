@@ -1,4 +1,4 @@
-import type { IApiError, IApiErrorBody } from "@custom-types/api-error-type"
+import type { IApiError, IApiErrorBody } from '@custom-types/api-error-type'
 
 export class ApiError extends Error {
   public status: number

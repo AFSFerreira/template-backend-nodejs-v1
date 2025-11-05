@@ -149,7 +149,7 @@ export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiError = {
   status: 400,
   body: {
     code: 'MISSING_CHECK_AVAILABILITIES_INPUT',
-    message: 'Propriedades de entrada ausentes. Forneça pelo menos uma delas',
+    message: 'Propriedades de entrada ausentes Forneça pelo menos uma delas',
   },
 }
 
@@ -166,6 +166,14 @@ export const INACTIVE_USER: IApiError = {
   body: {
     code: 'INACTIVE_USER',
     message: 'Usuário atualmente inativo',
+  },
+}
+
+export const PENDING_USER: IApiError = {
+  status: 403,
+  body: {
+    code: 'PENDING_USER',
+    message: 'O pedido de cadastro ainda está aguardando aprovação da equipe de moderação',
   },
 }
 
@@ -189,7 +197,7 @@ export const TOO_MANY_REQUESTS: IApiError = {
   status: 429,
   body: {
     code: 'TOO_MANY_REQUESTS',
-    message: 'Você excedeu o limite de requisições. Por favor, tente novamente mais tarde',
+    message: 'Você excedeu o limite de requisições Por favor, tente novamente mais tarde',
   },
 }
 
@@ -286,5 +294,77 @@ export const RETRIEVE_INSTITUTIONS_ERROR: IApiError = {
   body: {
     code: 'RETRIEVE_INSTITUTIONS_ERROR',
     message: 'Falha ao tentar recuperar as informações das universidades',
-  }
+  },
+}
+
+export const MULTER_LIMIT_FILE_SIZE: IApiError = {
+  status: 413,
+  body: {
+    code: 'MULTER_LIMIT_FILE_SIZE',
+    message: 'O arquivo enviado excede o tamanho máximo permitido',
+  },
+}
+
+export const MULTER_LIMIT_FILE_COUNT: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_LIMIT_FILE_COUNT',
+    message: 'Foram enviados mais arquivos do que o permitido',
+  },
+}
+
+export const MULTER_LIMIT_FIELD_KEY: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_LIMIT_FIELD_KEY',
+    message: 'O nome de um campo enviado é muito longo',
+  },
+}
+
+export const MULTER_LIMIT_FIELD_VALUE: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_LIMIT_FIELD_VALUE',
+    message: 'O valor de um campo enviado é muito longo',
+  },
+}
+
+export const MULTER_LIMIT_FIELD_COUNT: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_LIMIT_FIELD_COUNT',
+    message: 'Foram enviados mais campos do que o permitido',
+  },
+}
+
+export const MULTER_LIMIT_UNEXPECTED_FILE: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_LIMIT_UNEXPECTED_FILE',
+    message: 'Um campo de arquivo inesperado foi enviado',
+  },
+}
+
+export const MULTER_LIMIT_PART_COUNT: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_LIMIT_PART_COUNT',
+    message: 'O corpo da requisição contém partes demais',
+  },
+}
+
+export const MULTER_MISSING_FIELD_NAME: IApiError = {
+  status: 400,
+  body: {
+    code: 'MULTER_MISSING_FIELD_NAME',
+    message: 'Um dos arquivos enviados não possui nome de campo',
+  },
+}
+
+export const MULTER_UNKNOWN_ERROR: IApiError = {
+  status: 500,
+  body: {
+    code: 'MULTER_UNKNOWN_ERROR',
+    message: 'Ocorreu um erro desconhecido durante o upload do arquivo',
+  },
 }

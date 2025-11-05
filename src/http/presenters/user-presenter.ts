@@ -173,6 +173,11 @@ export class UserPresenter {
       createdAt,
       updatedAt,
       activityAreaId,
+      institutionId,
+      subActivityAreaId,
+      fullNameUnaccent,
+      interestDescription,
+      Institution,
       ActivityArea,
       AcademicPublication,
       Keyword,
@@ -185,55 +190,60 @@ export class UserPresenter {
     return {
       ...filteredUser,
       id: input.publicId,
+      interestDescription: input.interestDescription,
       birthdate: formatDate(input.birthdate),
 
-      institutionName: input.Institution.name,
+      institutionName: input.Institution ? input.Institution.name : undefined,
 
-      keywords: input.Keyword.map((keyword) => keyword.value),
+      keywords: input.Keyword && input.Keyword?.length > 0 ? input.Keyword.map((keyword) => keyword.value) : undefined,
 
-      mainActivityArea: input.ActivityArea.area,
+      mainActivityArea: input.ActivityArea ? input.ActivityArea.area : undefined,
 
       address: {
-        zip: input.Address?.zip,
-        number: input.Address?.number,
-        district: input.Address?.district,
-        street: input.Address?.street,
-        city: input.Address?.city,
-        country: input.Address?.country,
-        state: input.Address?.state,
+        zip: input.Address.zip,
+        number: input.Address.number,
+        district: input.Address.district,
+        street: input.Address.street,
+        city: input.Address.city,
+        country: input.Address.country,
+        state: input.Address.state,
       },
 
-      enrolledCourse: {
-        courseName: input.EnrolledCourse?.courseName,
-        startGraduationDate: formatDate(input.EnrolledCourse?.startGraduationDate, 'mm/yyyy'),
-        expectedGraduationDate: formatDate(input.EnrolledCourse?.expectedGraduationDate, 'mm/yyyy'),
-        supervisorName: input.EnrolledCourse?.supervisorName,
-        scholarshipHolder: input.EnrolledCourse?.scholarshipHolder,
-        sponsoringOrganization: input.EnrolledCourse?.sponsoringOrganization,
-      },
+      enrolledCourse: input.EnrolledCourse
+        ? {
+            courseName: input.EnrolledCourse.courseName,
+            startGraduationDate: formatDate(input.EnrolledCourse.startGraduationDate, 'mm/yyyy'),
+            expectedGraduationDate: formatDate(input.EnrolledCourse.expectedGraduationDate, 'mm/yyyy'),
+            supervisorName: input.EnrolledCourse.supervisorName,
+            scholarshipHolder: input.EnrolledCourse.scholarshipHolder,
+            sponsoringOrganization: input.EnrolledCourse.sponsoringOrganization,
+          }
+        : undefined,
 
-      academicPublications: input.AcademicPublication.map((academicPublication) => ({
-        title: academicPublication.title,
-        authors: academicPublication.AcademicPublicationAuthors.map((author) => author.name),
-        publicationYear: academicPublication.publicationYear,
-        journalName: academicPublication.journalName,
-        volume: academicPublication.volume,
-        editionNumber: academicPublication.editionNumber,
-        startPage: academicPublication.startPage,
-        linkDoi: academicPublication.linkDoi,
-      })),
+      academicPublications:
+        input.AcademicPublication && input.AcademicPublication?.length > 0
+          ? input.AcademicPublication.map((academicPublication) => ({
+              title: academicPublication.title,
+              authors: academicPublication.AcademicPublicationAuthors.map((author) => author.name),
+              publicationYear: academicPublication.publicationYear,
+              journalName: academicPublication.journalName,
+              volume: academicPublication.volume,
+              editionNumber: academicPublication.editionNumber,
+              startPage: academicPublication.startPage,
+              linkDoi: academicPublication.linkDoi,
+            }))
+          : undefined,
 
-      directorBoardInfo:
-        input.DirectorBoard !== null
-          ? {
-              id: input.DirectorBoard.id,
-              linkLattes: input.linkLattes,
-              name: input.fullName,
-              directorBoardProfileImage: input.DirectorBoard.directorBoardProfileImage,
-              aboutMe: input.DirectorBoard.aboutMe,
-              position: input.DirectorBoard.DirectorPosition.position,
-            }
-          : null,
+      directorBoardInfo: input.DirectorBoard
+        ? {
+            id: input.DirectorBoard.id,
+            linkLattes: input.linkLattes,
+            name: input.fullName,
+            directorBoardProfileImage: input.DirectorBoard.directorBoardProfileImage,
+            aboutMe: input.DirectorBoard.aboutMe,
+            position: input.DirectorBoard.DirectorPosition.position,
+          }
+        : undefined,
     }
   }
 }

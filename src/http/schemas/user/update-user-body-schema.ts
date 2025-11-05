@@ -1,10 +1,20 @@
 import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
-import { highLevelEducationEnumSchema, highLevelStudentEnumSchema, lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import {
+  highLevelEducationEnumSchema,
+  highLevelStudentEnumSchema,
+  lowLevelEducationEnumSchema,
+} from '@schemas/utils/enums/education-level-enum-schema'
 import { stripZodKeys } from '@utils/strip-zod-keys'
 import { z } from 'zod'
-import { commonUserSchema, otherRootFieldsProfessionalAndAcademicSchema, otherRootFieldsSchema, otherRootFieldsStudentAndAcademicSchema, professionalAndAcademicUserSchema } from './register-body-schema'
+import {
+  commonUserSchema,
+  otherRootFieldsProfessionalAndAcademicSchema,
+  otherRootFieldsSchema,
+  otherRootFieldsStudentAndAcademicSchema,
+  professionalAndAcademicUserSchema,
+} from './register-body-schema'
 
-export const commonUpdateUserSchema = commonUserSchema.omit({ identity: true })
+export const commonUpdateUserSchema = commonUserSchema.omit({ identity: true, interestDescription: true })
 
 const professionalAndAcademicUpdateUserSchema = professionalAndAcademicUserSchema
 
@@ -81,6 +91,10 @@ const highLevelEducationUpdateBodySchema = z
     }
   })
 
-export const updateBodySchema = z.union([highLevelStudentUpdateBodySchema, highLevelEducationUpdateBodySchema, lowLevelEducationUpdateBodySchema])
+export const updateBodySchema = z.union([
+  highLevelStudentUpdateBodySchema,
+  highLevelEducationUpdateBodySchema,
+  lowLevelEducationUpdateBodySchema,
+])
 
 export type UpdateUserBodySchemaType = z.infer<typeof updateBodySchema>

@@ -1,14 +1,17 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
-import {
-  ACTIVITY_AREA_MISSING_DESCRIPTION,
-} from '@messages/validations'
+import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
 import { academicPublicationsSchema } from '@schemas/utils/components/academic-publication-schema'
 import { activityAreaSchema } from '@schemas/utils/components/activity-area-schema'
+import { addressSchema } from '@schemas/utils/components/address-schema'
 import { enrolledCourseSchema } from '@schemas/utils/components/enrolled-course-schema'
 import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
 import { institutionSchema } from '@schemas/utils/components/institution-schema'
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
-import { highLevelEducationEnumSchema, highLevelStudentEnumSchema, lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import {
+  highLevelEducationEnumSchema,
+  highLevelStudentEnumSchema,
+  lowLevelEducationEnumSchema,
+} from '@schemas/utils/enums/education-level-enum-schema'
 import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
@@ -24,7 +27,6 @@ import { passwordSchema } from '../utils/components/password-schema'
 import { usernameSchema } from '../utils/components/username-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
-import { addressSchema } from '@schemas/utils/components/address-schema'
 
 export const commonUserSchema = z.object({
   email: emailSchema,
@@ -54,7 +56,7 @@ export const professionalAndAcademicUserSchema = z.object({
 })
 
 export const otherRootFieldsStudentAndAcademicSchema = z.object({
-  enrolledCourse: enrolledCourseSchema
+  enrolledCourse: enrolledCourseSchema,
 })
 
 export const otherRootFieldsProfessionalAndAcademicSchema = z.object({
@@ -135,6 +137,10 @@ const highLevelEducationRegisterBodySchema = z
     }
   })
 
-export const registerBodySchema = z.union([highLevelStudentRegisterBodySchema, highLevelEducationRegisterBodySchema, lowLevelEducationRegisterBodySchema])
+export const registerBodySchema = z.union([
+  highLevelStudentRegisterBodySchema,
+  highLevelEducationRegisterBodySchema,
+  lowLevelEducationRegisterBodySchema,
+])
 
 export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>

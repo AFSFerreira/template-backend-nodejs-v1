@@ -1,4 +1,4 @@
-export function objectDeepEqual(a: any, b: any): boolean {
+export function objectDeepEqual(a: unknown, b: unknown): boolean {
   if (a === b) {
     return true
   }
@@ -7,8 +7,8 @@ export function objectDeepEqual(a: any, b: any): boolean {
     return false
   }
 
-  const keysA = Object.keys(a as Record<string, any>)
-  const keysB = Object.keys(b as Record<string, any>)
+  const keysA = Object.keys(a as Record<string, unknown>)
+  const keysB = Object.keys(b as Record<string, unknown>)
 
   if (keysA.length !== keysB.length) {
     return false

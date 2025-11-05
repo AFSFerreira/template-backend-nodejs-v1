@@ -11,7 +11,7 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
       {
         DirectorPosition: {
           precedence: query.orderBy.precedenceOrder,
-        }
+        },
       },
       { User: { fullName: 'asc' as OrderableType } },
       { id: 'asc' as OrderableType },

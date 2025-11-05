@@ -1,7 +1,7 @@
 import { userWithDetails } from '@custom-types/user-with-details'
 import type { UserWithSimplifiedDetailsRaw } from '@custom-types/user-with-simplified-details-raw-type'
 import { prisma } from '@lib/prisma'
-import type { Prisma } from '@prisma/client'
+import type { Prisma, PrismaPromise } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
@@ -20,6 +20,15 @@ import type {
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 export class PrismaUsersRepository implements UsersRepository {
+  static async ignoreClientKnownRequestError<T>(prismaPromise: PrismaPromise<T>): Promise<T | null> {
+    try {
+      return await prismaPromise
+    } catch (error: unknown) {
+      // if (!(error instanceof PrismaClientKnownRequestError)) throw error
+      return null
+    }
+  }
+
   async create(data: CreateUserQuery) {
     const keywordsConnectOrCreateData = data.keyword
       ? {
@@ -101,8 +110,8 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.create({
       data: {
         ...data.user,
-        emailIsPublic: data.user.emailIsPublic,
-        receiveReports: data.user.receiveReports,
+        emailIsPublic: data.user.emailIsPublic ?? false,
+        receiveReports: data.user.receiveReports ?? false,
         Address: addressCreateData,
         EnrolledCourse: enrolledCourseCreateData,
         Institution: institutionConnectOrCreateData,
@@ -179,7 +188,7 @@ export class PrismaUsersRepository implements UsersRepository {
   async findConflictingUser({ email, username, identity }: FindConflictingUserQuery) {
     const user = await prisma.user.findFirst({
       where: {
-        OR: [{ email }, { username }, identity],
+        OR: [...(email ? [{ email }] : []), ...(username ? [{ username }] : []), ...(identity ? [identity] : [])],
       },
     })
 
@@ -189,10 +198,7 @@ export class PrismaUsersRepository implements UsersRepository {
   async listAllUsers() {
     const users = await prisma.user.findMany({
       include: userWithDetails.include,
-      orderBy: [
-        { fullName: 'asc' },
-        { id: 'asc' },
-      ]
+      orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
     })
 
     return users
@@ -210,10 +216,7 @@ export class PrismaUsersRepository implements UsersRepository {
           Address: { select: { state: true } },
           Institution: { select: { name: true } },
         },
-        orderBy: [
-          { fullName: 'asc' },
-          { id: 'asc' }
-        ]
+        orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
       })
 
       const formattedUsers = users.map((userInfo) => ({
@@ -276,10 +279,7 @@ export class PrismaUsersRepository implements UsersRepository {
             select: { name: true },
           },
         },
-        orderBy: [
-          { fullName: 'asc' },
-          { id: 'asc' },
-        ]
+        orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
       })
 
       const formattedUsers = users.map((userInfo) => ({
@@ -346,9 +346,9 @@ export class PrismaUsersRepository implements UsersRepository {
   async update({ id, data }: UpdateUserQuery) {
     // HACK: O criador dessa implementação de atualização tem
     // plena consciência que apagar os registros antigos e criar novos
-    // está longe de ser a implementação ideal, mas o cenário atual
-    // demanda essa "gambiarra". Para quem estiver fazendo a manutenção disso
-    // no futuro, minhas sinceras desculpas pelo inconveniente. :D
+    // está longe de ser a implementação ideal, mas o cenário atual e a pressa pra
+    // entregar o projeto demanda essa "gambiarra". Para quem estiver fazendo a
+    // manutenção disso no futuro, minhas sinceras desculpas pelo inconveniente. :D
 
     const keywordsConnectOrCreateData = data.keyword
       ? {
@@ -428,24 +428,59 @@ export class PrismaUsersRepository implements UsersRepository {
     }
 
     // Removendo registros antigos:
-    await prisma.address.delete({
-      where: { userId: id }
-    })
+    await PrismaUsersRepository.ignoreClientKnownRequestError(
+      prisma.address.delete({
+        where: { userId: id },
+      }),
+    )
 
-    await prisma.enrolledCourse.delete({
-      where: { userId: id }
-    })
+    await PrismaUsersRepository.ignoreClientKnownRequestError(
+      prisma.enrolledCourse.delete({
+        where: { userId: id },
+      }),
+    )
 
-    await prisma.academicPublication.deleteMany({
-      where: { userId: id }
+    await PrismaUsersRepository.ignoreClientKnownRequestError(
+      prisma.academicPublication.deleteMany({
+        where: { userId: id },
+      }),
+    )
+
+    await PrismaUsersRepository.ignoreClientKnownRequestError(
+      prisma.directorBoard.delete({
+        where: { userId: id },
+      }),
+    )
+
+    // Removendo relações:
+    await prisma.user.update({
+      where: { id },
+      data: {
+        linkLattes: null,
+        linkGoogleScholar: null,
+        linkResearcherId: null,
+        orcidNumber: null,
+        departmentName: null,
+        institutionComplement: null,
+        astrobiologyOrRelatedStartYear: null,
+        publicInformation: null,
+        activityAreaDescription: null,
+        subActivityAreaDescription: null,
+        secondaryEmail: null,
+        activityAreaId: null,
+        subActivityAreaId: null,
+        institutionId: null,
+        occupation: null,
+        Keyword: { set: [] },
+      },
     })
 
     const user = await prisma.user.update({
       where: { id },
       data: {
         ...data.user,
-        emailIsPublic: data.user.emailIsPublic,
-        receiveReports: data.user.receiveReports,
+        emailIsPublic: data.user.emailIsPublic ?? false,
+        receiveReports: data.user.receiveReports ?? false,
         Address: addressCreateData,
         EnrolledCourse: enrolledCourseCreateData,
         Institution: institutionConnectOrCreateData,
@@ -456,6 +491,7 @@ export class PrismaUsersRepository implements UsersRepository {
       },
       include: userWithDetails.include,
     })
+
     return user
   }
 

@@ -1,11 +1,7 @@
-import {
-  ERASE_FILES_CONCURRENCY,
-  TEMP_FILES_DIRECTORY_ABSOLUTE_PATH,
-  TEMP_PROFILE_IMAGES_TTL_IN_MS,
-} from '@constants/jobs-configuration-constants'
 import fs from 'fs/promises'
 import path from 'node:path'
-
+import { TEMP_FILES_DIRECTORY_ABSOLUTE_PATH } from '@constants/file-constants'
+import { ERASE_FILES_CONCURRENCY, TEMP_PROFILE_IMAGES_TTL_IN_MS } from '@constants/jobs-configuration-constants'
 import { logger } from '@lib/logger'
 import {
   DAILY_TEMP_IMAGES_CLEANUP,

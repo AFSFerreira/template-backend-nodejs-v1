@@ -41,7 +41,7 @@ export class RegisterUseCase {
     const userAlreadyExists = await this.usersRepository.findConflictingUser({
       email: registerUseCaseInput.user.email,
       username: registerUseCaseInput.user.username,
-      identity: registerUseCaseInput.user.identity as FindConflictingUserQuery["identity"],
+      identity: registerUseCaseInput.user.identity as FindConflictingUserQuery['identity'],
     })
 
     if (userAlreadyExists) {
@@ -53,18 +53,22 @@ export class RegisterUseCase {
         throw new UserWithSameUsername()
       }
 
-      if (objectDeepEqual({ identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType }, registerUseCaseInput.user.identity)) {
+      if (
+        objectDeepEqual(
+          { identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType },
+          registerUseCaseInput.user.identity,
+        )
+      ) {
         throw new UserWithSameIdentityDocument()
       }
     }
 
     if (!lowLevelEducationEnumSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
       // Valida as áreas de atividade dos artigos e do usuário:
-      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map(
-        (academicPub) => ({
-          area: academicPub.area,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        }))
+      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
+        area: academicPub.area,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      }))
 
       const allUserActivityAreas = [
         ...academicPublicationsActivityAreas,

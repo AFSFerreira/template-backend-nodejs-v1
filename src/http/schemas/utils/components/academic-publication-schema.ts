@@ -1,8 +1,8 @@
-import z from "zod"
-import { rangedYearSchema } from "../primitives/ranged-year-schema"
-import { uppercaseTextArraySchema } from "../primitives/uppercase-text-array-schema"
-import { upperCaseTextSchema } from "../primitives/uppercase-text-schema"
-import { urlSchema } from "../primitives/url-schema"
+import z from 'zod'
+import { rangedYearSchema } from '../primitives/ranged-year-schema'
+import { uppercaseTextArraySchema } from '../primitives/uppercase-text-array-schema'
+import { upperCaseTextSchema } from '../primitives/uppercase-text-schema'
+import { urlSchema } from '../primitives/url-schema'
 
 export const academicPublicationsSchema = z.array(
   z.object({

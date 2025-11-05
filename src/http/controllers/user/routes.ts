@@ -52,18 +52,19 @@ export async function userRoutes(app: FastifyInstance) {
     },
     getUserByPublicId,
   )
-  app.patch('/update/me',
+  app.patch(
+    '/update/me',
     {
       preHandler: [verifyJwt],
     },
-    updateUser
+    updateUser,
   )
 
   // Register Routes:
   app.post(
     '/',
     {
-      ...rateLimit({ max: 5, timeWindow: '1d' }),
+      ...rateLimit({ max: 10, timeWindow: '1d' }),
     },
     register,
   )
@@ -91,11 +92,18 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/forgot-password',
     {
-      ...rateLimit({ max: 10, timeWindow: '60m' }),
+      ...rateLimit({ max: 10, timeWindow: '1h' }),
     },
     forgotPassword,
   )
   app.patch('/reset-password', resetPassword)
+  app.patch(
+    '/me',
+    {
+      preHandler: [verifyJwt],
+    },
+    updateUser,
+  )
   app.delete(
     '/sessions',
     {

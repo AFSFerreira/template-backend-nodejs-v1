@@ -1,5 +1,5 @@
-import z from "zod"
-import { upperCaseTextSchema } from "../primitives/uppercase-text-schema"
+import z from 'zod'
+import { upperCaseTextSchema } from '../primitives/uppercase-text-schema'
 
 export const addressSchema = z.object({
   zip: upperCaseTextSchema,

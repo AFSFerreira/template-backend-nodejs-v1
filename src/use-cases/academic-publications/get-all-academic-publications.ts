@@ -5,7 +5,8 @@ import type { GetAllAcademicPublicationsQuerySchemaType } from '@schemas/academi
 
 interface GetAllAcademicPublicationsUseCaseRequest extends GetAllAcademicPublicationsQuerySchemaType {}
 
-interface GetAllAcademicPublicationsUseCaseResponse extends PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]> {}
+interface GetAllAcademicPublicationsUseCaseResponse
+  extends PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]> {}
 
 export class GetAllAcademicPublicationsUseCase {
   constructor(private readonly academicPublicationsRepository: AcademicPublicationsRepository) {}

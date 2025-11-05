@@ -48,9 +48,7 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     }
 
     const [countResult, meetings] = await Promise.all([
-      prisma.meeting.count({ where: {
-
-      } }),
+      prisma.meeting.count({ where: {} }),
       prisma.meeting.findMany({
         where,
         skip,

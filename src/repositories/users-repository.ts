@@ -27,9 +27,9 @@ export interface CreateUserQuery {
 }
 
 export interface FindConflictingUserQuery {
-  email: string
-  username: string
-  identity: {
+  email?: string
+  username?: string
+  identity?: {
     identityDocument: string
     identityType: IdentityType
   }
@@ -42,7 +42,11 @@ export interface FindByIdentityDocumentQuery {
 
 export interface UpdateUserQuery {
   id: number
-  data: UpdateUserBodySchemaType
+  data: Omit<UpdateUserBodySchemaType, 'user'> & {
+    user: Omit<UpdateUserBodySchemaType['user'], 'password'> & {
+      passwordHash: string
+    }
+  }
 }
 
 export interface ChangeUserPasswordQuery {

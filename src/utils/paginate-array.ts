@@ -4,11 +4,7 @@ interface IPaginateArray<T> {
   limit: number
 }
 
-export function paginateArray<T>({
-  array,
-  page = 1,
-  limit = 10
-}: IPaginateArray<T>): T[] {
+export function paginateArray<T>({ array, page = 1, limit = 10 }: IPaginateArray<T>): T[] {
   const totalItems = array.length
   const totalPages = Math.max(1, Math.ceil(totalItems / limit))
 

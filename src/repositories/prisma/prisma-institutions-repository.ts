@@ -3,7 +3,11 @@ import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
-import type { InstitutionsRepository, ListAllInstitutionsNamesQuery, ListAllInstitutionsWithUsersQuery } from '../institutions-repository'
+import type {
+  InstitutionsRepository,
+  ListAllInstitutionsNamesQuery,
+  ListAllInstitutionsWithUsersQuery,
+} from '../institutions-repository'
 
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
   async create(data: Prisma.InstitutionUncheckedCreateInput) {
@@ -28,10 +32,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
   }
 
   async listAllInstitutionsNames(query?: ListAllInstitutionsNamesQuery) {
-    const orderBy = [
-      { name: 'asc' as OrderableType },
-      { id: 'asc' as OrderableType },
-    ]
+    const orderBy = [{ name: 'asc' as OrderableType }, { id: 'asc' as OrderableType }]
 
     if (!query) {
       const institutions = await prisma.institution.findMany({ orderBy })
@@ -45,7 +46,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
           totalPages: 1,
           currentPage: 1,
           pageSize: institutions.length,
-        }
+        },
       }
     }
 
@@ -102,9 +103,11 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
   }
 
   async listAllInstitutionsWithUsersCount(query?: ListAllInstitutionsWithUsersQuery) {
-    const orderBy = [{
-      User: { _count: query.orderBy.usersCount },
-    }]
+    const orderBy = [
+      {
+        User: { _count: query.orderBy.usersCount },
+      },
+    ]
 
     const include = {
       _count: {

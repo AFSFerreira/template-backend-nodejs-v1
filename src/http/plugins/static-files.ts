@@ -1,7 +1,7 @@
-import path from "node:path"
-import { BASE_PROJECT_PATH } from "@constants/file-constants"
-import fastifyStatic from "@fastify/static"
-import type { FastifyInstance } from "fastify"
+import path from 'node:path'
+import { BASE_PROJECT_PATH } from '@constants/file-constants'
+import fastifyStatic from '@fastify/static'
+import type { FastifyInstance } from 'fastify'
 
 export async function staticFileRoutes(app: FastifyInstance) {
   const staticRouteConfigurations = {

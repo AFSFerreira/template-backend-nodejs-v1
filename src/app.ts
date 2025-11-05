@@ -1,10 +1,11 @@
-import { BASE_PROJECT_PATH, MB_IN_BYTES } from '@constants/file-constants'
+import { MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import { logger } from '@lib/logger'
+import { getMulterError } from '@lib/multer/helpers/handle-multer-errors'
 import '@lib/zod/index'
 import { UNHANDLED_ERROR } from '@messages/loggings'
 import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
@@ -16,8 +17,8 @@ import { env } from './env/index'
 import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
-import { appRoutes } from './http/routes'
 import { staticFileRoutes } from './http/plugins/static-files'
+import { appRoutes } from './http/routes'
 
 export const app = fastify({
   logger: false,
@@ -50,12 +51,11 @@ app.register(fastifyJwt, {
   },
 })
 
-app.register(staticFileRoutes)
-
 app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)
 app.addHook('preSerialization', preSerialization)
 
+app.register(staticFileRoutes)
 app.register(fastifyCookie)
 app.register(multipart)
 app.register(rateLimit)
@@ -84,6 +84,11 @@ app.setErrorHandler((error, _request, reply) => {
   if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {
     logger.warn(BODY_REQUIRED.body)
     return reply.status(BODY_REQUIRED.status).send(BODY_REQUIRED.body)
+  }
+
+  if (error.name === 'MulterError') {
+    const multerError = getMulterError(error)
+    return reply.status(multerError.status).send(multerError.body)
   }
 
   // TODO: Send error to monitoring service (SENTRY)

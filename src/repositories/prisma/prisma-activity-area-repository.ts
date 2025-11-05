@@ -11,7 +11,7 @@ import type {
 } from '../activity-areas-repository'
 
 export class PrismaActivityAreasRepository implements ActivityAreasRepository {
-  static buildStartsWithFilter(value: any) {
+  static buildStartsWithFilter(value: unknown) {
     if (!value) return undefined
 
     return { startsWith: value, mode: 'insensitive' as QueryMode }
@@ -32,11 +32,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   }
 
   async listAllActivityAreas(query?: ListAllActivityAreasQuery) {
-    const orderBy = [
-      { type: 'asc' as OrderableType },
-      { area: 'asc' as OrderableType },
-      { id: 'asc' as OrderableType },
-    ]
+    const orderBy = [{ type: 'asc' as OrderableType }, { area: 'asc' as OrderableType }, { id: 'asc' as OrderableType }]
 
     if (!query) {
       const activityAreas = await prisma.activityArea.findMany({ orderBy })
@@ -100,11 +96,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   async findManyByArea(areas: ActivityAreaQuery[]) {
     const activityAreas = await prisma.activityArea.findMany({
       where: { OR: areas },
-      orderBy: [
-        { type: 'asc' },
-        { area: 'asc' },
-        { id: 'asc' },
-      ]
+      orderBy: [{ type: 'asc' }, { area: 'asc' }, { id: 'asc' }],
     })
     return activityAreas
   }
