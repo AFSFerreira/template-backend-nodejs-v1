@@ -1,4 +1,4 @@
-import { MB_IN_BYTES } from '@constants/file-constants'
+import { BASE_PROJECT_PATH, MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
