@@ -28,7 +28,7 @@ import { addressSchema } from '@schemas/utils/components/address-schema'
 
 export const commonUserSchema = z.object({
   email: emailSchema,
-  secondaryEmail: emailSchema,
+  secondaryEmail: emailSchema.optional(),
   password: passwordSchema,
   fullName: upperCaseTextSchema,
   username: usernameSchema,
