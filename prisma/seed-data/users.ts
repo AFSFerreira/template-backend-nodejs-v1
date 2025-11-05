@@ -88,7 +88,7 @@ export const userData1 = {
 }
 
 export const userData2 = {
-  fullName: 'COMMON USER',
+  fullName: 'Douglas Galante',
   username: 'USER.USER',
   email: 'user@email.com',
   passwordHash,
