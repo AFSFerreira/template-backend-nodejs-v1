@@ -2,7 +2,7 @@ import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
 import { blogData1, dummyBlogDataArray } from './seed-data/blogs'
 import { directorPositionData1 } from './seed-data/director-positions'
-import { directorBoardData1 } from './seed-data/directors-board'
+import { directorBoardData1, directorBoardData2 } from './seed-data/directors-board'
 import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'
 import { paymentInfo1 } from './seed-data/payment-info'
 import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
@@ -51,10 +51,34 @@ async function main() {
   })
 
   // Criação de Usuário Comum:
-  await prisma.user.upsert({
+  const manager = await prisma.user.upsert({
     where: { email: userData2.email },
     update: {},
     create: userData2,
+  })
+
+  // Criação das Informações de Corpo Diretivo:
+  await prisma.directorBoard.upsert({
+    where: { userId: admin.id },
+    update: {},
+    create: {
+      ...directorBoardData1,
+      User: {
+        connect: { id: admin.id },
+      },
+    },
+  })
+
+  // Criação das Informações de Corpo Diretivo:
+  await prisma.directorBoard.upsert({
+    where: { userId: manager.id },
+    update: {},
+    create: {
+      ...directorBoardData2,
+      User: {
+        connect: { id: manager.id },
+      },
+    },
   })
 
   // Criação de Usuários Dummy:

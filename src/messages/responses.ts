@@ -280,3 +280,11 @@ export const GUEST_ALREADY_REGISTERED_IN_MEETING: IApiError = {
     message: 'O convidado com este email já está cadastrado na reunião',
   },
 }
+
+export const RETRIEVE_INSTITUTIONS_ERROR: IApiError = {
+  status: 503,
+  body: {
+    code: 'RETRIEVE_INSTITUTIONS_ERROR',
+    message: 'Falha ao tentar recuperar as informações das universidades',
+  }
+}
