@@ -5,6 +5,8 @@ interface HTTPDirectorBoardInfo {
   fullName: string
   directorBoardProfileImage: string
   position: string
+  linkLattes?: string
+  aboutMe: string
 }
 
 export class DirectorBoardPresenter {
@@ -22,6 +24,8 @@ export class DirectorBoardPresenter {
       fullName: input.User.fullName,
       directorBoardProfileImage: input.directorBoardProfileImage,
       position: input.DirectorPosition.position,
+      linkLattes: input.User.linkLattes,
+      aboutMe: input.aboutMe,
     }
   }
 }
