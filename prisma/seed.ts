@@ -1,7 +1,7 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
 import { blogData1, dummyBlogDataArray } from './seed-data/blogs'
-import { directorPositionData1 } from './seed-data/director-positions'
+import { directorPositionsArray } from './seed-data/director-positions'
 import { directorBoardData1, directorBoardData2 } from './seed-data/directors-board'
 import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'
 import { paymentInfo1 } from './seed-data/payment-info'
@@ -25,10 +25,9 @@ async function main() {
     skipDuplicates: true,
   })
 
-  await prisma.directorPosition.upsert({
-    where: { position: directorPositionData1.position },
-    update: {},
-    create: directorPositionData1,
+  await prisma.directorPosition.createMany({
+    data: directorPositionsArray,
+    skipDuplicates: true,
   })
 
   // Criação de Usuário Admin:

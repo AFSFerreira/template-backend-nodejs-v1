@@ -7,3 +7,5 @@ export const directorPositionData2 = {
   position: 'Vice Presidente',
   precedence: 2,
 }
+
+export const directorPositionsArray = [directorPositionData1, directorPositionData2]

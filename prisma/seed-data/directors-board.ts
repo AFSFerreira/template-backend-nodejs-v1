@@ -1,4 +1,4 @@
-import { directorPositionData1 } from './director-positions'
+import { directorPositionData1, directorPositionData2 } from './director-positions'
 
 export const directorBoardData1 = {
   aboutMe: 'Olá, eu sou o diretor da Sociedade Brasileira de Astrobiologia!',
@@ -15,7 +15,7 @@ export const directorBoardData2 = {
   directorBoardProfileImage: 'http://google.com/profile-image.jpg',
   DirectorPosition: {
     connect: {
-      position: directorPositionData1.position,
+      position: directorPositionData2.position,
     },
   },
 }
