@@ -40,6 +40,6 @@
       "@lib/*": ["./src/lib/*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.mjs"],
+  "include": ["./**/*.ts", "./**/*.mjs", "ecosystem.config.cjs"],
   "exclude": ["node_modules", "dist", "uploads", "./**/*.cjs", "./**/*.js", "./**/*.json"]
 }

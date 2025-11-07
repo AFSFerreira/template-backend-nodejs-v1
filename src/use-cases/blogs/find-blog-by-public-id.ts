@@ -17,10 +17,7 @@ interface FindBlogByPublicIdUseCaseResponse {
 export class FindBlogByPublicIdUseCase {
   constructor(private readonly blogsRepository: BlogsRepository) {}
 
-  async execute({
-    publicId,
-    ip,
-  }: FindBlogByPublicIdUseCaseRequest): Promise<FindBlogByPublicIdUseCaseResponse> {
+  async execute({ publicId, ip }: FindBlogByPublicIdUseCaseRequest): Promise<FindBlogByPublicIdUseCaseResponse> {
     const blog = ensureExists({
       value: await this.blogsRepository.findByPublicId(publicId),
       error: new BlogNotFoundError(),

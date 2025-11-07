@@ -30,7 +30,6 @@ import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
 export const commonUserSchema = z.object({
   email: emailSchema,
-  secondaryEmail: emailSchema.optional(),
   password: passwordSchema,
   fullName: upperCaseTextSchema,
   username: usernameSchema,
@@ -48,6 +47,7 @@ export const professionalAndAcademicUserSchema = z.object({
   linkLattes: urlSchema.optional(),
   linkGoogleScholar: urlSchema.optional(),
   linkResearcherId: urlSchema.optional(),
+  secondaryEmail: emailSchema.optional(),
   orcidNumber: orcidNumberSchema.optional(),
   publicInformation: longLimitedNonemptyTextSchema.optional(),
   occupation: occupationEnumSchema,

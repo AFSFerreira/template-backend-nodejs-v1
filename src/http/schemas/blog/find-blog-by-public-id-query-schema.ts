@@ -5,6 +5,4 @@ export const findBlogByPublicIdParamsSchema = z.object({
   publicId: uuidv7Schema,
 })
 
-export type findBlogByPublicIdParamsSchemaType = z.infer<
-  typeof findBlogByPublicIdParamsSchema
->
+export type findBlogByPublicIdParamsSchemaType = z.infer<typeof findBlogByPublicIdParamsSchema>

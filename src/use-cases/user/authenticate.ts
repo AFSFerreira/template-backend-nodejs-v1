@@ -3,10 +3,10 @@ import type { AuthenticationAuditsRepository } from '@repositories/authenticatio
 import type { UsersRepository } from '@repositories/users-repository'
 import { emailSchema } from '@schemas/utils/components/email-schema'
 import { usernameSchema } from '@schemas/utils/components/username-schema'
+import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
+import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
-import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
-import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 
 interface AuthenticateUseCaseRequest {
   login: string

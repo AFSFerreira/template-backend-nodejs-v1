@@ -1,5 +1,5 @@
-import { BLOG_HTML_CACHE_TTL } from "@constants/redis-configuration-constants"
-import type Redis from "ioredis"
+import { BLOG_HTML_CACHE_TTL } from '@constants/redis-configuration-constants'
+import type Redis from 'ioredis'
 
 interface IGetBlogHTMLCached {
   blogId: number
@@ -23,7 +23,7 @@ export async function getBlogHTMLCached({ blogId, redis }: IGetBlogHTMLCached) {
 
 export async function setBlogHTMLCache({ blogId, htmlContent, redis }: ISetBlogHTMLCache) {
   const key = generateBlogHtmlKey(blogId)
-  const wasCached: "OK" | null = await redis.set(key, htmlContent, 'PX', BLOG_HTML_CACHE_TTL, 'NX')
+  const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', BLOG_HTML_CACHE_TTL, 'NX')
 
   if (!wasCached) {
     // Reseta o TTL do cache sem overhead de IO de escrita:

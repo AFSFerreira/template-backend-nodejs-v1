@@ -28,7 +28,7 @@ export async function staticFileRoutes(app: FastifyInstance) {
     {
       prefix: '/static/blogs/banners/',
       root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'blog', 'banners'),
-    }
+    },
   ]
 
   for (const fileRoute of fileRoutes) {
