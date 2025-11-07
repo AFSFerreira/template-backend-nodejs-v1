@@ -17,7 +17,6 @@ interface HTTPBlog {
   bannerImage: string
   authorName: string
   accessCount: number
-  searchContent: string
   createdAt: Date
   updatedAt: Date
   mainCategory: string
@@ -60,6 +59,7 @@ export class BlogPresenter {
       mainBlogCategoryId,
       userId,
       MainBlogCategory,
+      searchContent,
       Subcategories,
       User,
       ...filteredBlog

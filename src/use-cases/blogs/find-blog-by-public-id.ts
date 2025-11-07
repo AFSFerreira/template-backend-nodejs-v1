@@ -5,22 +5,22 @@ import { registerBlogViews } from '@services/register-blog-views'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/ensure'
 
-interface FindByPublicIdWithVisualizationUseCaseRequest {
+interface FindBlogByPublicIdUseCaseRequest {
   publicId: string
   ip: string
 }
 
-interface FindByPublicIdWithVisualizationUseCaseResponse {
+interface FindBlogByPublicIdUseCaseResponse {
   blog: BlogWithDetails
 }
 
-export class FindByPublicIdWithVisualizationUseCase {
+export class FindBlogByPublicIdUseCase {
   constructor(private readonly blogsRepository: BlogsRepository) {}
 
   async execute({
     publicId,
     ip,
-  }: FindByPublicIdWithVisualizationUseCaseRequest): Promise<FindByPublicIdWithVisualizationUseCaseResponse> {
+  }: FindBlogByPublicIdUseCaseRequest): Promise<FindBlogByPublicIdUseCaseResponse> {
     const blog = ensureExists({
       value: await this.blogsRepository.findByPublicId(publicId),
       error: new BlogNotFoundError(),

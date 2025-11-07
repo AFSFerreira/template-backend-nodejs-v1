@@ -3,7 +3,7 @@ import type { ActivityArea } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
 
-export type GetAllActivityAreasUseCaseRequest = getAllActivityAreasSchemaType
+export interface GetAllActivityAreasUseCaseRequest extends getAllActivityAreasSchemaType {}
 
 export interface GetAllActivityAreasUseCaseResponse extends PaginatedResult<ActivityArea[]> {}
 

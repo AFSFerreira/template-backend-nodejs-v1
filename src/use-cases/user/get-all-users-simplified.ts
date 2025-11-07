@@ -3,7 +3,7 @@ import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
 
-type GetAllUsersUseCaseRequest = GetAllUsersSimplifiedQuerySchemaType
+interface GetAllUsersUseCaseRequest extends GetAllUsersSimplifiedQuerySchemaType {}
 
 interface GetAllUsersSimplifiedCaseResponse extends PaginatedResult<CustomUserWithSimplifiedDetails[]> {}
 

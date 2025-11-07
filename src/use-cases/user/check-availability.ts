@@ -2,7 +2,7 @@ import type { UsersRepository } from '@repositories/users-repository'
 import type { CheckAvailabilityQuerySchemaType } from '@schemas/user/check-availability-query-schema'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
 
-type CheckAvailabilityUseCaseRequest = CheckAvailabilityQuerySchemaType
+interface CheckAvailabilityUseCaseRequest extends CheckAvailabilityQuerySchemaType {}
 
 interface CheckAvailabilityUseCaseResponse {
   availabilities: Record<string, boolean>

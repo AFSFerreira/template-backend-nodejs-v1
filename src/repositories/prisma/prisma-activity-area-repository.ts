@@ -14,7 +14,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   static buildStartsWithFilter(value: unknown) {
     if (!value) return undefined
 
-    return { startsWith: value, mode: 'insensitive' as QueryMode }
+    return { startsWith: value as string, mode: 'insensitive' as QueryMode }
   }
 
   async create(data: Prisma.ActivityAreaUncheckedCreateInput) {

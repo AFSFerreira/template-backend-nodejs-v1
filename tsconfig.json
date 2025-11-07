@@ -23,21 +23,21 @@
     "sourceMap": false,
 
     "paths": {
+      "@presenters/*": ["./src/http/presenters/*"],
+      "@factories/*": ["./src/use-cases/factories/*"],
+      "@middlewares/*": ["./src/http/middlewares/*"],
+      "@schemas/*": ["./src/http/schemas/*"],
       "@uploads/*": ["./src/uploads/*"],
       "@use-cases/*": ["./src/use-cases/*"],
       "@repositories/*": ["./src/repositories/*"],
-      "@schemas/*": ["./src/http/schemas/*"],
-      "@middlewares/*": ["./src/http/middlewares/*"],
       "@custom-types/*": ["src/@types/*"],
       "@utils/*": ["./src/utils/*"],
       "@services/*": ["./src/services/*"],
-      "@factories/*": ["./src/use-cases/factories/*"],
-      "@env/*": ["./src/env/*"],
-      "@presenters/*": ["./src/http/presenters/*"],
-      "@lib/*": ["./src/lib/*"],
       "@constants/*": ["./src/constants/*"],
       "@templates/*": ["./src/templates/*"],
-      "@messages/*": ["./src/messages/*"]
+      "@messages/*": ["./src/messages/*"],
+      "@env/*": ["./src/env/*"],
+      "@lib/*": ["./src/lib/*"]
     }
   },
   "include": ["./**/*.ts", "./**/*.mjs"],

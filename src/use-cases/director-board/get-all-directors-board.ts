@@ -3,7 +3,7 @@ import type { PaginatedResult } from '@custom-types/pagination-meta-type'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import type { getAllDirectorBoardSchemaType } from '@schemas/director-board/get-all-director-board-query-schema'
 
-type GetAllDirectorBoardUseCaseRequest = getAllDirectorBoardSchemaType
+interface GetAllDirectorBoardUseCaseRequest extends getAllDirectorBoardSchemaType {}
 
 interface GetAllDirectorBoardUseCaseResponse extends PaginatedResult<DirectorBoardWithUser[]> {}
 
