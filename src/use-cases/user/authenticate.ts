@@ -1,10 +1,12 @@
-import type { User } from '@prisma/client'
+import { MembershipStatusType, type User } from '@prisma/client'
 import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { emailSchema } from '@schemas/utils/components/email-schema'
 import { usernameSchema } from '@schemas/utils/components/username-schema'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
+import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
+import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 
 interface AuthenticateUseCaseRequest {
   login: string
@@ -62,6 +64,14 @@ export class AuthenticateUseCase {
       })
 
       throw new InvalidCredentialsError()
+    }
+
+    if (user.membershipStatus === MembershipStatusType.PENDING) {
+      throw new MembershipStatusPendingError()
+    }
+
+    if (user.membershipStatus === MembershipStatusType.INACTIVE) {
+      throw new MembershipStatusInactiveError()
     }
 
     await this.usersRepository.incrementLoginAttempts(user.id)
