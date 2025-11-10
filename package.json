@@ -74,7 +74,7 @@
     "@tiptap/extension-image": "3.10.5",
     "@tiptap/extension-text-align": "3.10.5",
     "@tiptap/html": "3.10.2",
-    "@tiptap/starter-kit": "3.10.2",
+    "@tiptap/starter-kit": "3.10.5",
     "bcryptjs": "3.0.3",
     "cpf-cnpj-validator": "1.0.3",
     "date-fns": "4.1.0",
