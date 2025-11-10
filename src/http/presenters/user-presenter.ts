@@ -60,6 +60,7 @@ interface HTTPUserDetails {
   publicInformation: string
   keywords: string[]
   mainActivityArea: string
+  subActivityArea: string
   address: HTTPAddress
   enrolledCourse: HTTPEnrolledCourse
   academicPublications: HTTPAcademicPublications[]
@@ -179,6 +180,7 @@ export class UserPresenter {
       interestDescription,
       Institution,
       ActivityArea,
+      SubActivityArea,
       AcademicPublication,
       Keyword,
       Address,
@@ -198,6 +200,7 @@ export class UserPresenter {
       keywords: input.Keyword && input.Keyword?.length > 0 ? input.Keyword.map((keyword) => keyword.value) : undefined,
 
       mainActivityArea: input.ActivityArea ? input.ActivityArea.area : undefined,
+      subActivityArea: input.SubActivityArea ? input.SubActivityArea.area : undefined,
 
       address: {
         zip: input.Address.zip,

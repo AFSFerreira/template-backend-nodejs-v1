@@ -5,3 +5,4 @@ export const MAX_INTEREST_DESCRIPTION_SIZE = 2000
 export const RANDOM_BYTES_NUMBER = 32
 export const MIN_PASSWORD_SIZE = 8
 export const MAX_PASSWORD_SIZE = 64
+export const KEYWORD_MAX_LENGTH = 50
