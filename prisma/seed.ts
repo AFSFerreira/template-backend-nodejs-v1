@@ -1,7 +1,7 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import type { User } from '@prisma/client'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
-import { blogData1, dummyBlogDataArray } from './seed-data/blogs'
+import { dummyBlogDataArray } from './seed-data/blogs'
 import { directorPositionsArray } from './seed-data/director-positions'
 import { directorBoardsArray } from './seed-data/directors-board'
 import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'

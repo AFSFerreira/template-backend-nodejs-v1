@@ -29,7 +29,7 @@ export async function getAllInstitutions(
       ? allApiInstitutions.filter((institution) => institution.name.toUpperCase().trim().includes(universityName))
       : allApiInstitutions
 
-    filteredInstitutions.forEach((institution) => allInstitutions.add(institution.name))
+    filteredInstitutions.forEach((institution) => allInstitutions.add(institution.name.toUpperCase()))
   }
 
   const allSystemInstitutions = await institutionsRepository.listAllInstitutionsNames({ name: universityName, limit })
