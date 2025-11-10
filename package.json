@@ -69,7 +69,7 @@
     "@fastify/multipart": "9.2.1",
     "@fastify/rate-limit": "10.3.0",
     "@fastify/static": "8.2.0",
-    "@prisma/client": "6.16.2",
+    "@prisma/client": "6.19.0",
     "@tiptap/core": "3.10.2",
     "@tiptap/extension-image": "3.10.5",
     "@tiptap/extension-text-align": "3.10.5",
