@@ -22,7 +22,7 @@ import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-u
 export class PrismaUsersRepository implements UsersRepository {
   static async ignoreClientKnownRequestError<T>(prismaPromise: PrismaPromise<T>): Promise<T | null> {
     try {
-      return prismaPromise
+      return await prismaPromise
     } catch (error: unknown) {
       // if (!(error instanceof PrismaClientKnownRequestError)) throw error
       return null

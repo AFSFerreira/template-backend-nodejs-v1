@@ -84,15 +84,15 @@ async function main() {
     })
   }
 
-  let existingBlog = await prisma.blog.findFirst({
-    where: { title: blogData1.title },
-  })
+  // let existingBlog = await prisma.blog.findFirst({
+  //   where: { title: blogData1.title },
+  // })
 
-  if (!existingBlog) {
-    existingBlog = await prisma.blog.create({
-      data: blogData1,
-    })
-  }
+  // if (!existingBlog) {
+  //   existingBlog = await prisma.blog.create({
+  //     data: blogData1,
+  //   })
+  // }
 
   // Criação de Blogs Dummy:
   for (const blogInfo of dummyBlogDataArray) {
