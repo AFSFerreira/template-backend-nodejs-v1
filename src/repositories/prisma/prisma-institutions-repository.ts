@@ -32,7 +32,10 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
   }
 
   async listAllInstitutionsNames(query?: ListAllInstitutionsNamesQuery) {
-    const orderBy = [{ name: 'asc' as OrderableType }, { id: 'asc' as OrderableType }]
+    const orderBy: Prisma.InstitutionOrderByWithRelationInput[] = [
+      { name: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const institutions = await prisma.institution.findMany({ orderBy })
@@ -50,36 +53,16 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
       }
     }
 
-    const include = {
-      _count: {
-        select: { User: true },
-      },
-    }
-
-    if (!query) {
-      const institutions = await prisma.institution.findMany({ orderBy, include })
-
-      const formattedInstitutions = institutions.map((institution) => ({
-        name: institution.name,
-        usersCount: institution._count.User,
-      }))
-
-      return {
-        data: formattedInstitutions,
-        meta: {
-          totalItems: institutions.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: institutions.length,
-        },
-      }
+    const where: Prisma.InstitutionWhereInput = {
+      name: { contains: query.name },
     }
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, institutions] = await Promise.all([
-      prisma.institution.count(),
+      prisma.institution.count({ where }),
       prisma.institution.findMany({
+        where,
         skip,
         take,
         orderBy,
@@ -103,13 +86,13 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
   }
 
   async listAllInstitutionsWithUsersCount(query?: ListAllInstitutionsWithUsersQuery) {
-    const orderBy = [
+    const orderBy: Prisma.InstitutionOrderByWithRelationInput[] = [
       {
         User: { _count: query.orderBy.usersCount },
       },
     ]
 
-    const include = {
+    const include: Prisma.InstitutionInclude = {
       _count: {
         select: { User: true },
       },

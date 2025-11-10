@@ -11,7 +11,7 @@ CREATE TYPE "public"."OccupationType" AS ENUM ('RESEARCHER', 'PROFESSOR', 'STUDE
 CREATE TYPE "public"."EducationLevelType" AS ENUM ('ELEMENTARY_SCHOOL', 'HIGH_SCHOOL', 'UNDERGRADUATE_STUDENT', 'BACHELOR', 'MASTER_STUDENT', 'MASTER', 'DOCTORATE_STUDENT', 'DOCTORATE', 'POST_DOCTORATE_STUDENT', 'POST_DOCTORATE', 'OTHER');
 
 -- CreateEnum
-CREATE TYPE "public"."MembershipStatusType" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING', 'REJECTED');
+CREATE TYPE "public"."MembershipStatusType" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING');
 
 -- CreateEnum
 CREATE TYPE "public"."IdentityType" AS ENUM ('CPF', 'RNE', 'PASSPORT');
@@ -310,7 +310,6 @@ CREATE TABLE "public"."blogs" (
     "search_content" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
-    "main_blog_category_id" INTEGER NOT NULL,
     "user_id" INTEGER,
 
     CONSTRAINT "blogs_pkey" PRIMARY KEY ("id")
@@ -478,9 +477,6 @@ CREATE INDEX "meeting_date_meeting_id_idx" ON "public"."meeting_date"("meeting_i
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "public"."blogs"("public_id");
 
 -- CreateIndex
-CREATE INDEX "blogs_main_blog_category_id_idx" ON "public"."blogs"("main_blog_category_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("public_id");
 
 -- CreateIndex
@@ -560,9 +556,6 @@ ALTER TABLE "public"."meeting_presentation_affiliations" ADD CONSTRAINT "meeting
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_main_blog_category_id_fkey" FOREIGN KEY ("main_blog_category_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

@@ -1,6 +1,7 @@
 import { meetingWithDetails } from '@custom-types/meeting-with-details'
 import type { OrderableType } from '@custom-types/orderable'
 import { prisma } from '@lib/prisma'
+import type { Prisma } from '@prisma/client'
 import type { ListAllMeetingsQuery, MeetingsRepository } from '@repositories/meetings-repository'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
@@ -16,7 +17,7 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
   }
 
   async listAllMeetings(query?: ListAllMeetingsQuery) {
-    const orderBy = [
+    const orderBy: Prisma.MeetingOrderByWithRelationInput[] = [
       { lastDate: 'desc' as OrderableType },
       { title: 'asc' as OrderableType },
       { id: 'asc' as OrderableType },
@@ -41,14 +42,14 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
 
     const lastDateConstraint = mapMeetingStatusToDateFilter(query.status)
 
-    const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
-
-    const where = {
+    const where: Prisma.MeetingWhereInput = {
       lastDate: lastDateConstraint,
     }
 
+    const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
+
     const [countResult, meetings] = await Promise.all([
-      prisma.meeting.count({ where: {} }),
+      prisma.meeting.count({ where }),
       prisma.meeting.findMany({
         where,
         skip,

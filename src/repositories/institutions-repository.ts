@@ -10,7 +10,9 @@ export interface InstitutionsUsersCount {
   usersCount: number
 }
 
-export interface ListAllInstitutionsNamesQuery extends PaginationType {}
+export interface ListAllInstitutionsNamesQuery extends PaginationType {
+  name?: string
+}
 
 export interface InstitutionsRepository {
   create: (data: Prisma.InstitutionUncheckedCreateInput) => Promise<Institution>

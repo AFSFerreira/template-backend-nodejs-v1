@@ -11,7 +11,7 @@ import { hashSync } from 'bcryptjs'
 import { academicPublicationsData1 } from './academic-publications'
 import { activityAreasData1, subActivityAreasData1 } from './activity-areas'
 import { addressData1, addressData2 } from './addresses'
-import { directorBoardData1 } from './directors-board'
+import { directorBoardsArray } from './directors-board'
 import { enrolledCourseData1 } from './enrolled-courses'
 import { institutionData1, institutionData2 } from './institutions'
 import { keywordsData1 } from './keywords'
@@ -19,7 +19,7 @@ import { env } from '../../src/env/index'
 
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
 
-export const userData1 = {
+export const userData1: Prisma.UserCreateInput = {
   fullName: 'ADMIN',
   username: 'ADMIN.ADMIN',
   email: 'admin@email.com',
@@ -50,7 +50,7 @@ export const userData1 = {
 
   EnrolledCourse: { create: enrolledCourseData1 },
 
-  DirectorBoard: { create: directorBoardData1 },
+  // DirectorBoard: { create: directorBoardData1 },
 
   AcademicPublication: { create: academicPublicationsData1 },
 
@@ -226,6 +226,8 @@ export const dummyUserInfoArray: Prisma.UserCreateInput[] = [
   },
 ]
 
+export const dummyUserDirectorBoardInfoArray: Prisma.UserCreateInput[] = []
+
 // Criando Usuários Dummy para Testar Paginações no Frontend:
 for (let i = 1; i <= 20; i++) {
   dummyUserInfoArray.push({
@@ -243,3 +245,22 @@ for (let i = 1; i <= 20; i++) {
     },
   })
 }
+
+// WARNING: Remover esse Trecho de Informações Posteriormente
+// Criando Usuários Dummy do Corpo Diretivo:
+directorBoardsArray.forEach((directorBoard, index) => {
+  dummyUserDirectorBoardInfoArray.push({
+    ...partialDummyUserData,
+    identityDocument: `000.000.000-${(index + 50).toString().padStart(2, '0')}`,
+    fullName: directorBoard.fullName,
+    username: directorBoard.fullName.split(' ').join('.'),
+    email: `director-email-${index + 1}@email.com`,
+
+    Keyword: {
+      connectOrCreate: keywordsData1.slice(0, 2).map((keyword) => ({
+        where: { value: keyword },
+        create: { value: keyword },
+      })),
+    },
+  })
+})

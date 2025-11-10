@@ -2,7 +2,6 @@ import crypto from 'node:crypto'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailSchema } from '@schemas/utils/components/email-schema'
 import ms from 'ms'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
@@ -19,13 +18,7 @@ export class ForgotPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute({ login }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
-    let userAlreadyExists: User | null | undefined
-
-    if (emailSchema.safeParse(login).success) {
-      userAlreadyExists = await this.usersRepository.findByEmail(login)
-    } else {
-      userAlreadyExists = await this.usersRepository.findByUsername(login)
-    }
+    const userAlreadyExists: User | null = await this.usersRepository.findByEmails(login)
 
     const recoveryPasswordToken = crypto.randomBytes(RANDOM_BYTES_NUMBER).toString('hex')
 

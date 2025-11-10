@@ -1,11 +1,12 @@
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
+import type { User } from '@prisma/client'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
 import { blogData1, dummyBlogDataArray } from './seed-data/blogs'
 import { directorPositionsArray } from './seed-data/director-positions'
-import { directorBoardData1, directorBoardData2 } from './seed-data/directors-board'
+import { directorBoardsArray } from './seed-data/directors-board'
 import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'
 import { paymentInfo1 } from './seed-data/payment-info'
-import { dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
+import { dummyUserDirectorBoardInfoArray, dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 
 const prisma = new PrismaClient()
 
@@ -31,54 +32,31 @@ async function main() {
   })
 
   // Criação de Usuário Admin:
-  const admin = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { email: userData1.email },
     update: {},
     create: userData1,
   })
 
-  // Criação das Informações de Corpo Diretivo:
-  await prisma.directorBoard.upsert({
-    where: { userId: admin.id },
-    update: {},
-    create: {
-      ...directorBoardData1,
-      User: {
-        connect: { id: admin.id },
-      },
-    },
-  })
-
-  // Criação de Usuário Comum:
-  const manager = await prisma.user.upsert({
+  // Criação de Usuário Manager:
+  await prisma.user.upsert({
     where: { email: userData2.email },
     update: {},
     create: userData2,
   })
 
-  // Criação das Informações de Corpo Diretivo:
-  await prisma.directorBoard.upsert({
-    where: { userId: admin.id },
-    update: {},
-    create: {
-      ...directorBoardData1,
-      User: {
-        connect: { id: admin.id },
-      },
-    },
-  })
+  // Criação de Usuários Dummy do Corpo Diretivo:
+  const dummyDirectorBoardUsers: User[] = []
 
-  // Criação das Informações de Corpo Diretivo:
-  await prisma.directorBoard.upsert({
-    where: { userId: manager.id },
-    update: {},
-    create: {
-      ...directorBoardData2,
-      User: {
-        connect: { id: manager.id },
-      },
-    },
-  })
+  for (const dummyUserDirectorBoardInfo of dummyUserDirectorBoardInfoArray) {
+    dummyDirectorBoardUsers.push(
+      await prisma.user.upsert({
+        where: { email: dummyUserDirectorBoardInfo.email },
+        update: {},
+        create: dummyUserDirectorBoardInfo,
+      }),
+    )
+  }
 
   // Criação de Usuários Dummy:
   for (const userInfo of dummyUserInfoArray) {
@@ -86,6 +64,23 @@ async function main() {
       where: { email: userInfo.email },
       update: {},
       create: userInfo,
+    })
+  }
+
+  // Criação das Informações de Corpo Diretivo:
+  for (let i = 1; i < dummyDirectorBoardUsers.length; i++) {
+    const dummyDirectorInfo = dummyDirectorBoardUsers[i]
+    const dummyDirectorBoardInfo = directorBoardsArray[i]
+
+    const { fullName, ...filteredInfo } = dummyDirectorBoardInfo
+
+    await prisma.directorBoard.upsert({
+      where: { userId: dummyDirectorInfo.id },
+      update: {},
+      create: {
+        ...filteredInfo,
+        User: { connect: { id: dummyDirectorInfo.id } },
+      },
     })
   }
 

@@ -22,7 +22,7 @@ import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-u
 export class PrismaUsersRepository implements UsersRepository {
   static async ignoreClientKnownRequestError<T>(prismaPromise: PrismaPromise<T>): Promise<T | null> {
     try {
-      return await prismaPromise
+      return prismaPromise
     } catch (error: unknown) {
       // if (!(error instanceof PrismaClientKnownRequestError)) throw error
       return null
@@ -142,6 +142,15 @@ export class PrismaUsersRepository implements UsersRepository {
   async findByEmail(email: string) {
     const user = await prisma.user.findUnique({
       where: { email },
+    })
+    return user
+  }
+
+  async findByEmails(email: string) {
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email }, { secondaryEmail: email }],
+      },
     })
     return user
   }
@@ -330,9 +339,7 @@ export class PrismaUsersRepository implements UsersRepository {
     await prisma.user.update({
       where: { id },
       data: {
-        loginAttempts: {
-          increment: 1,
-        },
+        loginAttempts: { increment: 1 },
       },
     })
   }
@@ -427,53 +434,54 @@ export class PrismaUsersRepository implements UsersRepository {
       create: data.address,
     }
 
-    // Removendo registros antigos:
-    await PrismaUsersRepository.ignoreClientKnownRequestError(
-      prisma.address.delete({
-        where: { userId: id },
+    await Promise.all([
+      PrismaUsersRepository.ignoreClientKnownRequestError(
+        prisma.address.delete({
+          where: { userId: id },
+        }),
+      ),
+      PrismaUsersRepository.ignoreClientKnownRequestError(
+        prisma.enrolledCourse.delete({
+          where: { userId: id },
+        }),
+      ),
+      PrismaUsersRepository.ignoreClientKnownRequestError(
+        prisma.academicPublication.deleteMany({
+          where: { userId: id },
+        }),
+      ),
+      PrismaUsersRepository.ignoreClientKnownRequestError(
+        prisma.directorBoard.delete({
+          where: { userId: id },
+        }),
+      ),
+      PrismaUsersRepository.ignoreClientKnownRequestError(
+        prisma.directorBoard.delete({
+          where: { userId: id },
+        }),
+      ),
+      prisma.user.update({
+        where: { id },
+        data: {
+          linkLattes: null,
+          linkGoogleScholar: null,
+          linkResearcherId: null,
+          orcidNumber: null,
+          departmentName: null,
+          institutionComplement: null,
+          astrobiologyOrRelatedStartYear: null,
+          publicInformation: null,
+          activityAreaDescription: null,
+          subActivityAreaDescription: null,
+          secondaryEmail: null,
+          activityAreaId: null,
+          subActivityAreaId: null,
+          institutionId: null,
+          occupation: null,
+          Keyword: { set: [] },
+        },
       }),
-    )
-
-    await PrismaUsersRepository.ignoreClientKnownRequestError(
-      prisma.enrolledCourse.delete({
-        where: { userId: id },
-      }),
-    )
-
-    await PrismaUsersRepository.ignoreClientKnownRequestError(
-      prisma.academicPublication.deleteMany({
-        where: { userId: id },
-      }),
-    )
-
-    await PrismaUsersRepository.ignoreClientKnownRequestError(
-      prisma.directorBoard.delete({
-        where: { userId: id },
-      }),
-    )
-
-    // Removendo relações:
-    await prisma.user.update({
-      where: { id },
-      data: {
-        linkLattes: null,
-        linkGoogleScholar: null,
-        linkResearcherId: null,
-        orcidNumber: null,
-        departmentName: null,
-        institutionComplement: null,
-        astrobiologyOrRelatedStartYear: null,
-        publicInformation: null,
-        activityAreaDescription: null,
-        subActivityAreaDescription: null,
-        secondaryEmail: null,
-        activityAreaId: null,
-        subActivityAreaId: null,
-        institutionId: null,
-        occupation: null,
-        Keyword: { set: [] },
-      },
-    })
+    ])
 
     const user = await prisma.user.update({
       where: { id },

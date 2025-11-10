@@ -167,7 +167,6 @@ model ActivityArea {
   type                ActivityAreaType
   createdAt           DateTime              @default(now()) @map("created_at")
   AcademicPublication AcademicPublication[]
-  Blog                Blog[]                @relation("main_blog_category")
   UserActivityArea    User[]                @relation("activity_area")
   UserSubActivityArea User[]                @relation("sub_activity_area")
   BlogSubCategory     Blog[]                @relation("blog_subcategories")
@@ -343,15 +342,12 @@ model Blog {
   searchContent      String                   @map("search_content")
   createdAt          DateTime                 @default(now()) @map("created_at")
   updatedAt          DateTime                 @updatedAt @map("updated_at")
-  mainBlogCategoryId Int                      @map("main_blog_category_id")
   userId             Int?                     @map("user_id")
   searchTsvPt        Unsupported("tsvector")? @map("search_tsv_pt")
   titleUnaccent      String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent")
-  MainBlogCategory   ActivityArea             @relation("main_blog_category", fields: [mainBlogCategoryId], references: [id], onDelete: NoAction)
   User               User?                    @relation(fields: [userId], references: [id])
   Subcategories      ActivityArea[]           @relation("blog_subcategories")
 
-  @@index([mainBlogCategoryId])
   @@index([searchTsvPt], map: "idx_blogs_search_tsv_pt", type: Gin)
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_blogs_title_trgm_gin", type: Gin)
   @@map("blogs")
@@ -461,7 +457,6 @@ enum MembershipStatusType {
   ACTIVE
   INACTIVE
   PENDING
-  REJECTED
 }
 
 enum IdentityType {

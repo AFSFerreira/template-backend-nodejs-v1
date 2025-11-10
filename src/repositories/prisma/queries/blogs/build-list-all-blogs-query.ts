@@ -30,10 +30,6 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
     conditions.push(Prisma.sql`u.public_id = ${query.authorId}`)
   }
 
-  if (query.mainCategory) {
-    conditions.push(Prisma.sql`mc.area ILIKE ${query.mainCategory}`)
-  }
-
   const scoreExpression = scores.length > 0 ? Prisma.sql`(${Prisma.join(scores, ' + ')})` : Prisma.sql`0`
 
   const { limit, offset } = evalOffset(query)
@@ -78,7 +74,6 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
       b.updated_at
     FROM blogs b
     LEFT JOIN users u ON u.id = b.user_id
-    LEFT JOIN area_of_activity mc ON mc.id = b.main_blog_category_id
     LEFT JOIN _blog_subcategories bs ON bs."B" = b.id
     LEFT JOIN area_of_activity sc ON sc.id = bs."A" AND sc.type = ${ActivityAreaType.SUB_AREA_OF_ACTIVITY}::"ActivityAreaType"
     ${whereClause}
@@ -93,7 +88,6 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
       SELECT b.id
       FROM blogs b
       LEFT JOIN users u ON u.id = b.user_id
-      LEFT JOIN area_of_activity mc ON mc.id = b.main_blog_category_id
       LEFT JOIN _blog_subcategories bs ON bs."B" = b.id
       LEFT JOIN area_of_activity sc ON sc.id = bs."A" AND sc.type = ${ActivityAreaType.SUB_AREA_OF_ACTIVITY}::"ActivityAreaType"
       ${whereClause}

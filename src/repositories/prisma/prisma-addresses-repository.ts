@@ -45,29 +45,6 @@ export class PrismaAddressesRepository implements AddressesRepository {
       }
     }
 
-    // WIP:
-    // if (!query) {
-    //   const addresses = await prisma.address.findMany({
-    //     select: {
-    //       state: true,
-    //     },
-    //     orderBy: {
-    //       country: 'asc',
-    //       id: 'asc',
-    //     }
-    //   })
-
-    //   return {
-    //     data: addresses,
-    //     meta: {
-    //       totalItems: addresses.length,
-    //       totalPages: 1,
-    //       currentPage: 1,
-    //       pageSize: addresses.length,
-    //     }
-    //   }
-    // }
-
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, addresses] = await Promise.all([

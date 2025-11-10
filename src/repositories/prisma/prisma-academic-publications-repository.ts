@@ -38,7 +38,10 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
   }
 
   async listAllAcademicPublications(query?: ListAllAcademicPublicationsQuery) {
-    const orderBy = [{ name: 'asc' as OrderableType }, { id: 'asc' as OrderableType }]
+    const orderBy: Prisma.AcademicPublicationOrderByWithRelationInput[] = [
+      { title: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const academicPublications = await prisma.academicPublication.findMany({
@@ -53,17 +56,13 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
           linkDoi: true,
           createdAt: true,
           ActivityArea: {
-            select: {
-              area: true,
-            },
+            select: { area: true },
           },
           AcademicPublicationAuthors: {
-            select: {
-              name: true,
-            },
-            orderBy,
+            select: { name: true },
           },
         },
+        orderBy,
       })
 
       const formattedAcademicPublications = academicPublications.map((academicPublicationInfo) => ({

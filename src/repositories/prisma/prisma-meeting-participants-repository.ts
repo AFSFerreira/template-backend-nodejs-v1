@@ -31,7 +31,7 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
     const meetingParticipation = await prisma.meetingParticipation.create({
       data: {
         Presentation: {
-          create: query.meetingPresentationData,
+          create: meetingPresentationData,
         },
         Meeting: {
           connect: { id: query.meetingId },
@@ -39,7 +39,7 @@ export class PrismaMeetingParticipantsRepository implements MeetingParticipantsR
         Guest: {
           create: {
             ...guestData,
-            wantsNewsletter: query.wantsNewsletter,
+            wantsNewsletter: query.wantsNewsletter ?? false,
           },
         },
       },

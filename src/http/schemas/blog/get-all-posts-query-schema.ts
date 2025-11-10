@@ -3,7 +3,6 @@ import { subCategoriesSchema } from '@schemas/utils/components/sub-categories-sc
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
-import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
 import { uuidv7Schema } from '@schemas/utils/primitives/uuidv7-schema'
 import z from 'zod'
 
@@ -11,7 +10,6 @@ const getAllPostsQueryRawSchema = z
   .object({
     searchContent: nonemptyTextSchema.max(LONG_LIMITED_CHARACTERS_SIZE),
     authorId: uuidv7Schema,
-    mainCategory: upperCaseTextSchema,
     subCategories: subCategoriesSchema,
     orderBy: z
       .object({

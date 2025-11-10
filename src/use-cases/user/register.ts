@@ -5,9 +5,12 @@ import { logger } from '@lib/logger'
 import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { FindConflictingUserQuery, UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import { getAllInstitutions } from '@services/get-all-institutions'
+import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { objectDeepEqual } from '@utils/object-deep-equal'
@@ -35,6 +38,7 @@ export class RegisterUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly activityAreasRepository: ActivityAreasRepository,
+    private readonly institutionsRepository: InstitutionsRepository,
   ) {}
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
@@ -102,6 +106,14 @@ export class RegisterUseCase {
           wrongActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
         )
       }
+    }
+
+    const institutionsNames = await getAllInstitutions(this.institutionsRepository, {
+      name: registerUseCaseInput.institution.name,
+    })
+
+    if (!institutionsNames.includes(registerUseCaseInput.institution.name)) {
+      throw new InvalidInstitutionName()
     }
 
     // Caso ocorra um erro durante a

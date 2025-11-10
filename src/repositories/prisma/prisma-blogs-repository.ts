@@ -34,7 +34,10 @@ export class PrismaBlogsRepository implements BlogsRepository {
   }
 
   async listAllBlogs(query?: ListAllBlogsQuery) {
-    const orderBy = [{ title: 'asc' as OrderableType }, { id: 'asc' as OrderableType }]
+    const orderBy: Prisma.BlogOrderByWithRelationInput[] = [
+      { title: 'asc' as OrderableType },
+      { id: 'asc' as OrderableType },
+    ]
 
     if (!query) {
       const blogs = await prisma.blog.findMany({

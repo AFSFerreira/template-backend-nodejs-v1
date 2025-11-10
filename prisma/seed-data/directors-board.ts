@@ -1,21 +1,64 @@
-import { directorPositionData1, directorPositionData2 } from './director-positions'
+import { directorPositionsArray } from './director-positions'
 
 export const directorBoardData1 = {
-  aboutMe: 'Olá, eu sou o diretor da Sociedade Brasileira de Astrobiologia!',
-  directorBoardProfileImage: 'http://google.com/profile-image.jpg',
-  DirectorPosition: {
-    connect: {
-      position: directorPositionData1.position,
-    },
-  },
+  fullName: 'Gustavo Porto de Mello',
+  aboutMe:
+    'Astrônomo (UFRJ, 1986), doutor em Astrofísica (ON, 1996) e astrobiólogo. Professor do Observatório do Valongo/UFRJ desde 1993. Sócio fundador e atual presidente da Sociedade Brasileira de Astrobiologia. Coautor da descoberta da gêmea solar 18 Scorpii e de proposta da Kappa Ceti como análoga do Sol jovem. 55+ artigos, intensa divulgação científica desde 1987.',
+  directorBoardProfileImage: 'Gustavo-Melo.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[0].position } },
 }
 
 export const directorBoardData2 = {
-  aboutMe: 'Olá, eu sou o vice diretor da SBA!',
-  directorBoardProfileImage: 'http://google.com/profile-image.jpg',
-  DirectorPosition: {
-    connect: {
-      position: directorPositionData2.position,
-    },
-  },
+  fullName: 'Douglas Galante',
+  aboutMe:
+    'Bacharel em Ciências Moleculares (USP), doutor em Astronomia (IAG-USP) e pós-doutor pelo IAG-USP. Ex-coordenador do Grupo Carnaúba do Sirius/CNPEM. Professor de Geobiologia no IGc-USP. Atua em Geobiologia, Astrobiologia e Ciências Planetárias, estudando efeitos de radiação e a interação da vida com o ambiente em múltiplas escalas.',
+  directorBoardProfileImage: 'Douglas-Galante.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[1].position } },
 }
+
+export const directorBoardData3 = {
+  fullName: 'Beatriz Siffert',
+  aboutMe:
+    'Bacharel (2004) e doutora (2008) em Física (UFRJ), com pós-doutorados na Univ. Federico II (Itália), no CBPF e no IF/UFRJ. Professora na UFRJ (campus Duque de Caxias) desde 2016. Experiência em Astropartículas, Cosmologia e Astrobiologia; atuou com raios cósmicos, matéria escura e habitabilidade/exoplanetas.',
+  directorBoardProfileImage: 'Beatriz-Siffert.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[2].position } },
+}
+
+export const directorBoardData4 = {
+  fullName: 'Amanda Bendia',
+  aboutMe:
+    'Bióloga (UFRJ), mestrado em Biofísica (UFRJ) e doutorado em Microbiologia (USP). Professora doutora no Instituto Oceanográfico/USP, onde coordena o Laboratório de Extremófilos Marinhos. Pesquisa extremófilos em oceanos e Antártica, coordena o projeto AeroMicroAntar e atua fortemente em divulgação científica.',
+  directorBoardProfileImage: 'Amanda-Bendia.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[3].position } },
+}
+
+export const directorBoardData5 = {
+  fullName: 'Fábio Rodrigues',
+  aboutMe:
+    'Formado em Ciências Moleculares (USP) e doutor pelo IQ-USP. Pós-doutorado no IQ-USP; experiência no LNLS em espectroscopia EUV. Docente do IQ-USP e pesquisador associado ao NAP/Astrobio. Pesquisa química de interações entre microrganismos e substratos inorgânicos e bioassinaturas espectroscópicas.',
+  directorBoardProfileImage: 'Fabio-Rodrigues.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[4].position } },
+}
+
+export const directorBoardData6 = {
+  fullName: 'Flávia Callefo',
+  aboutMe: 'Biografia da Flávia Callefo.',
+  directorBoardProfileImage: 'default.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[5].position } },
+}
+
+export const directorBoardData7 = {
+  fullName: 'Claudia Lage',
+  aboutMe: 'Biografia da Claudia Lage.',
+  directorBoardProfileImage: 'Claudia-Lage.png',
+  DirectorPosition: { connect: { position: directorPositionsArray[6].position } },
+}
+
+export const directorBoardsArray = [
+  directorBoardData1,
+  directorBoardData2,
+  directorBoardData3,
+  directorBoardData4,
+  directorBoardData5,
+  directorBoardData6,
+]

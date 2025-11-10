@@ -18,12 +18,19 @@ export async function forgotPassword(request: FastifyRequest, reply: FastifyRepl
 
   const sendEmailUseCase = makeSendEmailUseCase()
 
+  const emailInfo = {
+    email: user.email,
+    username: user.username,
+    fullName: user.fullName,
+    token,
+  }
+
   try {
     await sendEmailUseCase.execute({
-      to: user.email,
+      to: [user.email, user.secondaryEmail].find((email) => email === login),
       subject: PASSWORD_RESET_SUBJECT,
-      message: forgotPasswordTextTemplate(user.fullName, token),
-      html: forgotPasswordHtmlTemplate(user.fullName, token),
+      message: forgotPasswordTextTemplate(emailInfo),
+      html: forgotPasswordHtmlTemplate(emailInfo),
     })
   } catch (error) {
     logger.error({ ...error, targetId: user.publicId }, PASSWORD_RESET_EMAIL_FAILED)

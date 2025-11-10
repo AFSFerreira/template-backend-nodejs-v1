@@ -4,7 +4,7 @@ import z from 'zod'
 
 export const getAllInstitutionsSchema = z
   .object({
-    name: upperCaseTextSchema,
+    name: upperCaseTextSchema.min(5),
   })
   .partial()
   .extend(paginatedSchema.shape)

@@ -5,12 +5,12 @@ dist
 
 # Arquivos de Imagem de Perfil:
 uploads/blog/banners/*
+# uploads/director-board/profile-images/*
 uploads/meeting/banner/*
 uploads/user/profile-images/*
 uploads/temp/user/profile-images/*
-!uploads/blog/banners/blog-banner.jpg
+!uploads/**/default.png
 !uploads/meeting/banner/meeting-2026.jpg
-!uploads/user/profile-images/default-profile-pic.png
 !uploads/temp/user/profile-images/.gitkeep
 
 # Logs:
