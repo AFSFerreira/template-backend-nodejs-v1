@@ -35,7 +35,7 @@ export const userData1: Prisma.UserCreateInput = {
   departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
   institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
   occupation: OccupationType.RESEARCHER,
-  educationLevel: EducationLevelType.DOCTORATE,
+  educationLevel: EducationLevelType.DOCTORATE_STUDENT,
   emailIsPublic: true,
   astrobiologyOrRelatedStartYear: 2010,
   interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',

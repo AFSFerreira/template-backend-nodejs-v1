@@ -368,3 +368,11 @@ export const MULTER_UNKNOWN_ERROR: IApiError = {
     message: 'Ocorreu um erro desconhecido durante o upload do arquivo',
   },
 }
+
+export const INVALID_BODY_FORMAT_JSON: IApiError = {
+  status: 401,
+  body: {
+    code: 'INVALID_BODY_FORMAT_JSON',
+    message: 'Formato inválido do JSON do corpo de requisição',
+  }
+}

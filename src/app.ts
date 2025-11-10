@@ -8,7 +8,7 @@ import { logger } from '@lib/logger'
 import { getMulterError } from '@lib/multer/helpers/handle-multer-errors'
 import '@lib/zod/index'
 import { UNHANDLED_ERROR } from '@messages/loggings'
-import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
+import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, INVALID_BODY_FORMAT_JSON, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
@@ -84,6 +84,11 @@ app.setErrorHandler((error, _request, reply) => {
   if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {
     logger.warn(BODY_REQUIRED.body)
     return reply.status(BODY_REQUIRED.status).send(BODY_REQUIRED.body)
+  }
+
+  if (error.code === 'FST_ERR_CTP_INVALID_JSON_BODY') {
+    logger.warn(INVALID_BODY_FORMAT_JSON)
+    return reply.status(INVALID_BODY_FORMAT_JSON.status).send(INVALID_BODY_FORMAT_JSON.body)
   }
 
   if (error.name === 'MulterError') {

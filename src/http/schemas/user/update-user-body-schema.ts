@@ -1,4 +1,5 @@
 import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
+import { passwordSchema } from '@schemas/utils/components/password-schema'
 import {
   highLevelEducationEnumSchema,
   highLevelStudentEnumSchema,
@@ -14,7 +15,16 @@ import {
   professionalAndAcademicUserSchema,
 } from './register-body-schema'
 
-export const commonUpdateUserSchema = commonUserSchema.omit({ identity: true, interestDescription: true })
+export const commonUpdateUserSchema = commonUserSchema
+  .omit({
+    identity: true,
+    interestDescription: true,
+    password: true,
+  })
+  .extend({
+    password: passwordSchema,
+  })
+  .partial()
 
 const professionalAndAcademicUpdateUserSchema = professionalAndAcademicUserSchema
 
