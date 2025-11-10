@@ -15,16 +15,12 @@ import {
   professionalAndAcademicUserSchema,
 } from './register-body-schema'
 
-export const commonUpdateUserSchema = commonUserSchema
-  .omit({
-    identity: true,
-    interestDescription: true,
-    password: true,
-  })
-  .extend({
-    password: passwordSchema,
-  })
-  .partial()
+export const commonUpdateUserSchema = z.object({
+  ...commonUserSchema.shape,
+  identity: z.undefined(),
+  interestDescription: z.undefined(),
+  password: passwordSchema.optional(),
+})
 
 const professionalAndAcademicUpdateUserSchema = professionalAndAcademicUserSchema
 
