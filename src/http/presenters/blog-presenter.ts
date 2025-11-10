@@ -19,7 +19,6 @@ interface HTTPBlog {
   accessCount: number
   createdAt: Date
   updatedAt: Date
-  mainCategory: string
   subCategories: string[]
 }
 
@@ -56,9 +55,7 @@ export class BlogPresenter {
       publicId,
       content,
       titleUnaccent,
-      mainBlogCategoryId,
       userId,
-      MainBlogCategory,
       searchContent,
       Subcategories,
       User,
@@ -69,7 +66,6 @@ export class BlogPresenter {
       ...filteredBlog,
       id: input.publicId,
       authorName: input.User.fullName ?? input.authorName,
-      mainCategory: input.MainBlogCategory.area,
       subCategories: input.Subcategories.map((sc) => sc.area),
     }
   }
