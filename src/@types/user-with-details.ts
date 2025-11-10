@@ -11,6 +11,7 @@ export const userWithDetails = Prisma.validator<Prisma.UserDefaultArgs>()({
     AcademicPublication: {
       include: {
         AcademicPublicationAuthors: true,
+        ActivityArea: true,
       },
     },
     DirectorBoard: {

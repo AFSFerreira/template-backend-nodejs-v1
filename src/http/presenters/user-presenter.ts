@@ -234,6 +234,7 @@ export class UserPresenter {
               editionNumber: academicPublication.editionNumber,
               startPage: academicPublication.startPage,
               linkDoi: academicPublication.linkDoi,
+              area: academicPublication.ActivityArea.area,
             }))
           : undefined,
 
