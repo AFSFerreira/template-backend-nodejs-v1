@@ -260,6 +260,7 @@ for (let i = 0; i <= 20; i++) {
 directorBoardsArray.forEach((directorBoard, index) => {
   dummyUserDirectorBoardInfoArray.push({
     ...partialDummyUserData,
+    linkLattes: directorBoard.linkLattes,
     role: directorBoard.DirectorPosition.connect.position === directorPositionData1.position ? UserRoleType.ADMIN : UserRoleType.MANAGER,
     identityDocument: `000.000.000-${(index + 50).toString().padStart(2, '0')}`,
     fullName: directorBoard.fullName,
