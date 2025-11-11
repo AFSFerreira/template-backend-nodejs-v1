@@ -12,7 +12,7 @@ export const directorBoardData2 = {
   fullName: 'Douglas Galante',
   aboutMe:
     'Bacharel em Ciências Moleculares (USP), doutor em Astronomia (IAG-USP) e pós-doutor pelo IAG-USP. Ex-coordenador do Grupo Carnaúba do Sirius/CNPEM. Professor de Geobiologia no IGc-USP. Atua em Geobiologia, Astrobiologia e Ciências Planetárias, estudando efeitos de radiação e a interação da vida com o ambiente em múltiplas escalas.',
-  directorBoardProfileImage: 'Douglas-Galante.png',
+  directorBoardProfileImage: 'Douglas-Galante.jpg',
   DirectorPosition: { connect: { position: directorPositionsArray[1].position } },
 }
 
@@ -36,7 +36,7 @@ export const directorBoardData5 = {
   fullName: 'Fábio Rodrigues',
   aboutMe:
     'Formado em Ciências Moleculares (USP) e doutor pelo IQ-USP. Pós-doutorado no IQ-USP; experiência no LNLS em espectroscopia EUV. Docente do IQ-USP e pesquisador associado ao NAP/Astrobio. Pesquisa química de interações entre microrganismos e substratos inorgânicos e bioassinaturas espectroscópicas.',
-  directorBoardProfileImage: 'Fabio-Rodrigues.png',
+  directorBoardProfileImage: 'Fabio-Rodrigues.jpeg',
   DirectorPosition: { connect: { position: directorPositionsArray[4].position } },
 }
 
@@ -61,4 +61,5 @@ export const directorBoardsArray = [
   directorBoardData4,
   directorBoardData5,
   directorBoardData6,
+  directorBoardData7,
 ]

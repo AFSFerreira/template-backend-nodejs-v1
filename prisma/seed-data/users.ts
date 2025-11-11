@@ -230,7 +230,7 @@ export const dummyUserInfoArray: Prisma.UserCreateInput[] = [
 export const dummyUserDirectorBoardInfoArray: Prisma.UserCreateInput[] = []
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
-for (let i = 1; i <= 20; i++) {
+for (let i = 0; i <= 20; i++) {
   dummyUserInfoArray.push({
     ...partialDummyUserData,
     identityDocument: `000.000.000-${i.toString().padStart(2, '0')}`,
