@@ -4,7 +4,7 @@ export const directorBoardData1 = {
   fullName: 'Gustavo Porto de Mello',
   aboutMe:
     'Astrônomo (UFRJ, 1986), doutor em Astrofísica (ON, 1996) e astrobiólogo. Professor do Observatório do Valongo/UFRJ desde 1993. Sócio fundador e atual presidente da Sociedade Brasileira de Astrobiologia. Coautor da descoberta da gêmea solar 18 Scorpii e de proposta da Kappa Ceti como análoga do Sol jovem. 55+ artigos, intensa divulgação científica desde 1987.',
-  directorBoardProfileImage: 'Gustavo-Melo.png',
+  directorBoardProfileImage: 'Gustavo-Melo.jpg',
   DirectorPosition: { connect: { position: directorPositionsArray[0].position } },
 }
 
