@@ -65,7 +65,7 @@ export class BlogPresenter {
     return {
       ...filteredBlog,
       id: input.publicId,
-      authorName: input.User.fullName ?? input.authorName,
+      authorName: input.User?.fullName ?? input.authorName,
       subCategories: input.Subcategories.map((sc) => sc.area),
     }
   }

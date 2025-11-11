@@ -24,7 +24,7 @@ SET search_tsv_pt =
   || setweight(
     to_tsvector(
       'portuguese',
-      unaccent(substring(coalesce(search_content, '') FROM 1 FOR 511))
+      unaccent(substring(coalesce(search_content, '') FROM 1 FOR 600))
     ),
     'B'
   );

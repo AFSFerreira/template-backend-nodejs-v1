@@ -10,25 +10,30 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     bannerImage: 'default.png',
     title: 'Apresentação do blog da SBAstrobio',
     authorName: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').fullName,
-      Subcategories: {
-        connect: [subActivityAreasConnection1],
-      },
+    Subcategories: {
+      connect: [subActivityAreasConnection1],
     },
-    {
-      ...blogSearchContent2,
-      title: 'Entrevista com um astrobiólogo: Dimas Zaia',
-      bannerImage: 'dimas-zaia.png',
-      authorName: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').fullName,
-      content: proseMirrorData2,
-      User: {
-        connect: {
-          email: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').email
-        }
-      },
-      Subcategories: {
-        connect: [subActivityAreasConnection4, subActivityAreasConnection5],
+    User: {
+      connect: {
+        email: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').email
       }
     },
+  },
+  {
+    ...blogSearchContent2,
+    title: 'Entrevista com um astrobiólogo: Dimas Zaia',
+    bannerImage: 'dimas-zaia.png',
+    authorName: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').fullName,
+    content: proseMirrorData2,
+    User: {
+      connect: {
+        email: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').email
+      }
+    },
+    Subcategories: {
+      connect: [subActivityAreasConnection4, subActivityAreasConnection5],
+    }
+  },
 //   {
 //     ...partialBlogData1,
 //     title: 'VIDA EXTRATERRESTRE',
