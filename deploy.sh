@@ -3,7 +3,7 @@ set -e
 
 source ~/.bashrc
 
-git pull origin dev
+git pull origin dev --rebase
 
 npm ci
 
