@@ -11,12 +11,12 @@ import { hashSync } from 'bcryptjs'
 import { academicPublicationsData1 } from './academic-publications'
 import { activityAreasData1, subActivityAreasData1 } from './activity-areas'
 import { addressData1, addressData2 } from './addresses'
+import { directorPositionData1 } from './director-positions'
 import { directorBoardsArray } from './directors-board'
 import { enrolledCourseData1 } from './enrolled-courses'
 import { institutionData1, institutionData2 } from './institutions'
 import { keywordsData1 } from './keywords'
 import { env } from '../../src/env/index'
-import { directorPositionData1 } from './director-positions'
 
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
 
