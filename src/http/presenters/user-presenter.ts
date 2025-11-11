@@ -94,6 +94,7 @@ interface HTTPAcademicPublications {
   editionNumber: string
   startPage: string
   linkDoi: string
+  area: string
 }
 
 interface HTTPDirectorBoardInfo {

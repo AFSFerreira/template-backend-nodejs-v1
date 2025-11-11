@@ -26,7 +26,7 @@ export const directorPositionData5: Prisma.DirectorPositionCreateInput = {
 }
 
 export const directorPositionData6: Prisma.DirectorPositionCreateInput = {
-  position: 'Conselheio(a)',
+  position: 'Conselheiro(a)',
   precedence: 4,
 }
 
