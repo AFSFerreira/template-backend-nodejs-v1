@@ -225,6 +225,14 @@ export const dummyUserInfoArray: Prisma.UserCreateInput[] = [
     username: 'alicia123',
     email: 'alicia@gmail.com',
   },
+  {
+    ...partialDummyUserData,
+    receiveReports: false,
+    identityDocument: `200.000.000-00`,
+    fullName: 'DANILO ALBERGARIA',
+    username: 'douglas.albergaria',
+    email: 'albergaria@gmail.com',
+  },
 ]
 
 export const dummyUserDirectorBoardInfoArray: Prisma.UserCreateInput[] = []

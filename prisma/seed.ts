@@ -4,6 +4,7 @@ import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-
 import { dummyBlogDataArray } from './seed-data/blogs'
 import { directorPositionsArray } from './seed-data/director-positions'
 import { directorBoardsArray } from './seed-data/directors-board'
+import { institutionsDataArray } from './seed-data/institutions'
 import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'
 import { paymentInfo1 } from './seed-data/payment-info'
 import { dummyUserDirectorBoardInfoArray, dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
@@ -28,6 +29,11 @@ async function main() {
 
   await prisma.directorPosition.createMany({
     data: directorPositionsArray,
+    skipDuplicates: true,
+  })
+
+  await prisma.institution.createMany({
+    data: institutionsDataArray.map((institution) => ({ name: institution })),
     skipDuplicates: true,
   })
 
