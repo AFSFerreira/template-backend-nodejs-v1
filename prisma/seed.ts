@@ -78,7 +78,7 @@ async function main() {
     const dummyDirectorInfo = dummyDirectorBoardUsers[i]
     const dummyDirectorBoardInfo = directorBoardsArray[i]
 
-    const { fullName, ...filteredInfo } = dummyDirectorBoardInfo
+    const { fullName, linkLattes, ...filteredInfo } = dummyDirectorBoardInfo
 
     await prisma.directorBoard.upsert({
       where: { userId: dummyDirectorInfo.id },
