@@ -68,7 +68,7 @@ async function main() {
   }
 
   // Criação das Informações de Corpo Diretivo:
-  for (let i = 1; i < dummyDirectorBoardUsers.length; i++) {
+  for (let i = 0; i < dummyDirectorBoardUsers.length; i++) {
     const dummyDirectorInfo = dummyDirectorBoardUsers[i]
     const dummyDirectorBoardInfo = directorBoardsArray[i]
 
