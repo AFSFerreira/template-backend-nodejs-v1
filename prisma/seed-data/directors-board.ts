@@ -4,7 +4,7 @@ export const directorBoardData1 = {
   fullName: 'Gustavo Porto de Mello',
   aboutMe:
     'Astrônomo (UFRJ, 1986), doutor em Astrofísica (ON, 1996) e astrobiólogo. Professor do Observatório do Valongo/UFRJ desde 1993. Sócio fundador e atual presidente da Sociedade Brasileira de Astrobiologia. Coautor da descoberta da gêmea solar 18 Scorpii e de proposta da Kappa Ceti como análoga do Sol jovem. 55+ artigos, intensa divulgação científica desde 1987.',
-  directorBoardProfileImage: 'Gustavo-Melo.jpg',
+  directorBoardProfileImage: 'Gustavo-Melo.png',
   linkLattes: 'http://lattes.cnpq.br/1918385364299862',
   DirectorPosition: { connect: { position: directorPositionsArray[0].position } },
 }
@@ -13,7 +13,7 @@ export const directorBoardData2 = {
   fullName: 'Douglas Galante',
   aboutMe:
     'Bacharel em Ciências Moleculares (USP), doutor em Astronomia (IAG-USP) e pós-doutor pelo IAG-USP. Ex-coordenador do Grupo Carnaúba do Sirius/CNPEM. Professor de Geobiologia no IGc-USP. Atua em Geobiologia, Astrobiologia e Ciências Planetárias, estudando efeitos de radiação e a interação da vida com o ambiente em múltiplas escalas.',
-  directorBoardProfileImage: 'Douglas-Galante.jpg',
+  directorBoardProfileImage: 'Douglas-Galante.png',
   linkLattes: 'http://lattes.cnpq.br/9117662545474146',
   DirectorPosition: { connect: { position: directorPositionsArray[1].position } },
 }
@@ -40,7 +40,7 @@ export const directorBoardData5 = {
   fullName: 'Fábio Rodrigues',
   aboutMe:
     'Formado em Ciências Moleculares (USP) e doutor pelo IQ-USP. Pós-doutorado no IQ-USP; experiência no LNLS em espectroscopia EUV. Docente do IQ-USP e pesquisador associado ao NAP/Astrobio. Pesquisa química de interações entre microrganismos e substratos inorgânicos e bioassinaturas espectroscópicas.',
-  directorBoardProfileImage: 'Fabio-Rodrigues.jpeg',
+  directorBoardProfileImage: 'Fabio-Rodrigues.png',
   linkLattes: 'http://lattes.cnpq.br/5822376591265210',
   DirectorPosition: { connect: { position: directorPositionsArray[4].position } },
 }
@@ -48,7 +48,7 @@ export const directorBoardData5 = {
 export const directorBoardData6 = {
   fullName: 'Flávia Callefo',
   aboutMe: 'Biografia da Flávia Callefo.',
-  directorBoardProfileImage: 'default.png',
+  directorBoardProfileImage: 'Flavia-Callefo.png',
   linkLattes: 'http://lattes.cnpq.br/1704175571734114',
   DirectorPosition: { connect: { position: directorPositionsArray[5].position } },
 }
