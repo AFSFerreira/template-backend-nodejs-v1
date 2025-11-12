@@ -35,6 +35,11 @@ export const directorPositionData7: Prisma.DirectorPositionCreateInput = {
   precedence: 4,
 }
 
+export const directorPositionData8: Prisma.DirectorPositionCreateInput = {
+  position: 'Secretário(a)',
+  precedence: 5,
+}
+
 export const directorPositionsArray: Prisma.DirectorPositionCreateInput[] = [
   directorPositionData1,
   directorPositionData2,
@@ -43,4 +48,5 @@ export const directorPositionsArray: Prisma.DirectorPositionCreateInput[] = [
   directorPositionData5,
   directorPositionData6,
   directorPositionData7,
+  directorPositionData8,
 ]

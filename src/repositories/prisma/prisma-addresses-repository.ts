@@ -1,5 +1,5 @@
 import { prisma } from '@lib/prisma'
-import type { Prisma } from '@prisma/client'
+import { UserRoleType, type Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
 import type { AddressesRepository, ListAllAddressStateQuery } from '../addresses-repository'
@@ -22,12 +22,19 @@ export class PrismaAddressesRepository implements AddressesRepository {
       },
     ]
 
+    const where = {
+      User: {
+        role: { notIn: [UserRoleType.ADMIN, UserRoleType.MANAGER] },
+      },
+    }
+
     if (!query) {
       const addresses = await prisma.address.groupBy({
         by: ['state'],
         _count: {
           userId: true,
         },
+        where,
         orderBy,
       })
 
@@ -50,12 +57,14 @@ export class PrismaAddressesRepository implements AddressesRepository {
     const [countResult, addresses] = await Promise.all([
       prisma.address.groupBy({
         by: ['state'],
+        where,
       }),
       prisma.address.groupBy({
         by: ['state'],
         _count: {
           userId: true,
         },
+        where,
         skip,
         take,
         orderBy,
