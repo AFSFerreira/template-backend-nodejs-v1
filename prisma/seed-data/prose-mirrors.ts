@@ -137,12 +137,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -173,12 +174,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -200,12 +202,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -227,12 +230,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -254,12 +258,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -281,12 +286,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -317,12 +323,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -344,12 +351,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -384,12 +392,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -420,12 +429,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -447,12 +457,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -474,12 +485,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -510,12 +522,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -550,12 +563,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -577,12 +591,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -604,12 +619,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -627,7 +643,8 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -649,12 +666,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -689,12 +707,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -716,12 +735,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -743,12 +763,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -770,12 +791,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -797,12 +819,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -824,12 +847,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -860,12 +884,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
@@ -887,12 +912,13 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
+          "text": " "
         }
       ]
     },
     {
-      "type": "paragraph",
+      "type": "heading",
+      "attrs": { "level": 3 },
       "content": [
         {
           "type": "text",
