@@ -88,15 +88,6 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Entrevista"
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
           "text": "Entrevista com um astrobiólogo: Dimas Zaia"
         }
       ]
@@ -106,7 +97,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Por Danilo Albergaria"
+          "text": " "
         }
       ]
     },
@@ -115,7 +106,65 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "O encontro do químico Dimas Zaia com a astrobiologia foi fortuito."
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "O encontro do químico Dimas Zaia com a astrobiologia foi fortuito. No começo da década de 1990, enquanto bisbilhotava o acervo de uma biblioteca em Nova York – onde fazia parte de seu doutorado – Zaia topou com uma lombada azul e um título intrigante: "
+        },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ],
+          "text": "Origins of Life and Evolution of Biospheres [Origens da Vida e Evolução das Biosferas]"
+        },
+        {
+          "type": "text",
+          "text": ". Foi paixão à primeira vista: o contato com o tema da química pré-biótica redirecionou uma carreira que até então focava na química analítica e vinha sendo um pouco frustrante."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Com o interesse científico voltado ao sempre aceso debate sobre as origens da vida, o professor de química da Universidade Estadual de Londrina deu contribuições valiosas e originais a essa área, um dos ramos da astrobiologia. Zaia contribuiu para a compreensão da interação de mecanismos de adsorção de moléculas em minerais, fundamental para desvendar sua pré-concentração na Terra primitiva. Essa pré-concentração deve ter sido necessária para que ocorresse o aumento da complexidade dos compostos orgânicos, precursores dos primeiros seres vivos."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Além de se dedicar à pesquisa e ao ensino, Zaia também atuou na divulgação científica. Entre 2017 e 2021, foi vice-presidente da Sociedade Brasileira de Astrobiologia. Nessa entrevista, ele conta em detalhes sua trajetória e explora alguns de seus principais interesses científicos.  "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
         }
       ]
     },
@@ -133,7 +182,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Desde criança, sempre gostei de ciência e de ler. Gostava muito de história, e ainda gosto."
+          "text": "Desde criança, sempre gostei de ciência e de ler. Gostava muito de história, e ainda gosto. E sempre gostei de biologia, de física, de química. Quando chegou o momento de fazer a graduação, escolhi a química, que era um dos cursos na Universidade Estadual de Maringá, onde eu morava na época. Me graduei no final de 1980 e fui no início de 1981 fazer mestrado no Instituto de Química da Universidade de São Paulo (USP)."
         }
       ]
     },
@@ -142,7 +191,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "E sempre gostei de biologia, de física, de química. Quando chegou o momento de fazer a graduação, escolhi a química, que era um dos cursos na Universidade Estadual de Maringá, onde eu morava na época."
+          "text": "Pesquisar é uma questão de gosto. Uma vez, fiz um estágio no laboratório do professor Osvaldo Sala e perguntei um dia para ele o que é necessário para ser um bom cientista. Nunca me esqueço que ele arregalou o olho e falou: \"você tem que gostar de estudar e ler, é só isso. Tem que gostar de estudar, tem que ter curiosidade. Não é uma profissão para qualquer pessoa. Uma pessoa que não gosta de estudar não pode ter essa profissão.” Então tem que gostar de estudar, tem que ter curiosidade. Enfim, concluí o mestrado em 1985 e me mudei para Londrina."
         }
       ]
     },
@@ -151,34 +200,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Me graduei no final de 1980 e fui no início de 1981 fazer mestrado no Instituto de Química da Universidade de São Paulo (USP)."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": "Pesquisar é uma questão de gosto. Uma vez, fiz um estágio no laboratório do professor Osvaldo Sala e perguntei um dia para ele o que é necessário para ser um bom cientista."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": "\"Você tem que gostar de estudar e ler, é só isso. Tem que gostar de estudar, tem que ter curiosidade. Não é uma profissão para qualquer pessoa.\""
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": "Então tem que gostar de estudar, tem que ter curiosidade. Enfim, concluí o mestrado em 1985 e me mudei para Londrina."
+          "text": " "
         }
       ]
     },
@@ -196,7 +218,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Eu trabalhei com química analítica. Aliás, toda a minha formação foi focada nessa área."
+          "text": "Eu trabalhei com química analítica. Aliás, toda a minha formação foi focada nessa área. Meu orientador, Dr. Jaim Lichtig, trabalhava com eletronanalítica Desenvolvemos metodologias para determinação de iodato e bromato em diversos meios, farinha, sal, água do mar, por exemplo."
         }
       ]
     },
@@ -205,7 +227,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Meu orientador, Dr. Jaim Lichtig, trabalhava com eletroanalítica. Desenvolvemos metodologias para determinação de iodato e bromato em diversos meios — farinha, sal, água do mar, por exemplo."
+          "text": " "
         }
       ]
     },
@@ -223,7 +245,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Sim, na USP, com o mesmo orientador, o professor Jaim Lichtig. No doutorado, perguntei se ele aceitaria que eu fizesse a tese aqui de Londrina. Ele concordou."
+          "text": "Sim, na USP, com o mesmo orientador, o professor Jaim Lichtig. No doutorado, perguntei se ele aceitaria que eu fizesse a tese aqui de Londrina. Ele concordou. Em 1992, fui para os Estados Unidos, com uma bolsa sanduíche, pesquisar na Universidade Rockefeller. Lá, trabalhei com o [químico norte-americano] Robert Bruce Merrifield (1921-2006). Na década de 60, ele desenvolveu uma técnica de síntese de peptídeos em fase sólida. Antes disso, todo o processo de síntese e purificação para fazer um peptídeo de 20 aminoácidos demorava em torno de 2 anos. Com a técnica dele, dava para fazer em um mês. Depois ele desenvolveu uma máquina para fazer peptídeo. Eu cheguei a ver um protótipo dessa máquina na casa dele. Com ela dava para fazer um peptídeo em 24 horas."
         }
       ]
     },
@@ -232,16 +254,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Em 1992, fui para os Estados Unidos, com uma bolsa sanduíche, pesquisar na Universidade Rockefeller. Lá, trabalhei com o químico norte-americano Robert Bruce Merrifield (1921–2006)."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": "Na década de 60, ele desenvolveu uma técnica de síntese de peptídeos em fase sólida. Antes disso, todo o processo de síntese e purificação para fazer um peptídeo de 20 aminoácidos demorava em torno de 2 anos. Com a técnica dele, dava para fazer em um mês. Depois ele desenvolveu uma máquina para fazer peptídeo. Eu cheguei a ver um protótipo dessa máquina na casa dele. Com ela dava para fazer um peptídeo em 24 horas."
+          "text": " "
         }
       ]
     },
@@ -268,7 +281,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Como foi essa experiência nos EUA?"
+          "text": " "
         }
       ]
     },
@@ -277,7 +290,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "É o tipo da experiência que todo mundo na área acadêmica deve ter. É fundamental para tomar contato com visões diferentes. A Rockefeller era, e ainda é, uma universidade topo de linha nos Estados Unidos."
+          "text": "Ele criou uma linha de produção de proteínas, então? (risos)"
         }
       ]
     },
@@ -286,7 +299,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Na época em que eu estava lá, a cada 4 ou 5 anos uma pessoa que trabalhou ou trabalhava lá ganhava um prêmio Nobel. Eu fui fazer síntese de peptídeo e checar se esses peptídeos tinham atividade farmacológica. Sintetizei dezenas de peptídeos, mas, infelizmente, nenhum deles mostrou atividade farmacológica. Então eu não consegui publicar nada."
+          "text": "Exatamente (risos)."
         }
       ]
     },
@@ -295,7 +308,43 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Em ciência, as pessoas têm que se acostumar com a frustração. Às vezes você pensa em fazer uma coisa, gasta um tempo grande, muita energia e dinheiro, e não dá em nada."
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Você ficou dois anos lá, nesse doutorado sanduíche. Como foi essa experiência?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "É o tipo da experiência que todo mundo na área acadêmica deve ter. É fundamental para tomar contato com visões diferentes. A Rockefeller era, e ainda é, uma universidade topo de linha nos Estados Unidos. Na época em que eu estava lá, a cada 4 ou 5 anos uma pessoa que trabalhou ou trabalhava lá ganhava um prêmio Nobel."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Eu fui fazer síntese de peptídeo e checar se esses peptídeos tinham atividade farmacológica. Sintetizei dezenas de peptídeos, mas, infelizmente, nenhum deles mostrou atividade farmacológica. Então eu não consegui publicar nada. Em ciência, as pessoas têm que se acostumar com a frustração. Às vezes você pensa em fazer uma coisa, gasta um tempo grande, muita energia e dinheiro, e não dá em nada. Quando fiz todas as sínteses, analisei os dados e expliquei para o professor: \"nós modificamos essa parte do peptídeo e acho que ele fica um pouco móvel; não está aderindo às membranas para fazer o efeito que ele tem que fazer do outro lado da célula”. Ele me falou: \"quando escrevi esse projeto, eu tinha certeza de que esses peptídeos iriam funcionar\". Eu falei: \"mas infelizmente não funcionam\"."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
         }
       ]
     },
@@ -313,7 +362,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Eu sintetizei um peptídeo chamado VIP, vaso ativo intestinal. Queríamos fazer um peptídeo que aumentasse esse efeito do vaso ativo. Esse peptídeo foi originalmente encontrado no intestino, e depois também foi encontrado no cérebro. É um vasodilatador."
+          "text": "Eu sintetizei um peptídeo chamado VIP, vaso ativo intestinal. Queríamos fazer um peptídeo que aumentasse esse efeito do vaso ativo. Esse peptídeo foi originalmente encontrado no intestino, e depois também foi encontrado no cérebro. É um vasodilatador. Os peptídeos não apresentaram efeito esperado e não gerou publicação, mas a experiência da pesquisa em si foi de grande aprendizado. E foi lá que eu tive meu primeiro contato com a astrobiologia."
         }
       ]
     },
@@ -322,7 +371,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Os peptídeos não apresentaram o efeito esperado e não gerou publicação, mas a experiência da pesquisa em si foi de grande aprendizado."
+          "text": " "
         }
       ]
     },
@@ -331,7 +380,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Como foi seu primeiro contato com a astrobiologia?"
+          "text": "Como foi esse primeiro contato?"
         }
       ]
     },
@@ -353,7 +402,7 @@ export const proseMirrorData2 = {
         },
         {
           "type": "text",
-          "text": ". Eram exemplares de uma revista sobre pesquisas em origens da vida publicada pela ISSOL (International Society for the Study of the Origin of Life)."
+          "text": ". Eram exemplares de uma revista sobre pesquisas em origens da vida publicada pela ISSOL [International Society for the Study of the Origin of Life, que posteriormente se tornou International Astrobiology Society]. Comecei a ler e pensei na mesma hora: \"é isso que eu vou fazer para o resto da minha vida”. Eu me apaixonei. Finalmente eu tinha achado um tema cientificamente muito atraente."
         }
       ]
     },
@@ -362,7 +411,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Comecei a ler e pensei na mesma hora: \"é isso que eu vou fazer para o resto da minha vida\". Eu me apaixonei. Finalmente eu tinha achado um tema cientificamente muito atraente."
+          "text": " "
         }
       ]
     },
@@ -371,7 +420,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "O que te atraiu no tema da química pré-biótica?"
+          "text": "O que te atraiu no tema da química pré-biótica, da origem da vida?"
         }
       ]
     },
@@ -380,7 +429,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Conhecemos muito pouco sobre a origem da vida; é um tema desafiador. Esse desafio tem várias vertentes, desde a obviamente científica, a parte química, mas também tem uma vertente filosófica. O que nós estamos propondo fazer: achar um meio de fazer um ser vivo a partir de matéria inanimada."
+          "text": "Conhecemos muito pouco sobre a origem da vida, é um tema desafiador. Esse desafio tem várias vertentes, desde a obviamente científica, a parte química, mas também tem uma vertente filosófica. Veja o que que nós estamos propondo fazer: achar um meio de fazer um ser vivo a partir de matéria inanimada. Tanto do ponto de vista filosófico como da química, isso é extremamente desafiador."
         }
       ]
     },
@@ -389,7 +438,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Tanto do ponto de vista filosófico como da química, isso é extremamente desafiador. Uma pessoa que está começando em ciência precisa achar alguma coisa que realmente a desafie e interesse, que realmente a motive levantar de manhã, ir para o laboratório e fazer experimentos."
+          "text": "Uma pessoa que está começando em ciência precisa achar alguma coisa que realmente a desafie e interesse, que realmente a motive levantar de manhã, ir para o laboratório e fazer experimentos. Veja, o trabalho do pesquisador é extenuante e ingrato. Eu fiquei dois anos nos EUA, ia trabalhar de sábado mesmo com esposa e filhas lá. Trabalhei muito e não consegui publicar nada. Em 1994, o professor Merrifield me ofereceu mais um ano de bolsa para continuar a pesquisa, mas decidi voltar para o Brasil."
         }
       ]
     },
@@ -398,7 +447,16 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Quando volta ao Brasil, como prosseguiu a carreira?"
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Quando volta, o senhor começa a estudar a química pré-biótica e se torna professor na Universidade Estadual de Londrina?"
         }
       ]
     },
@@ -416,7 +474,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Qual era o estado do conhecimento sobre origens da vida na época?"
+          "text": " "
         }
       ]
     },
@@ -425,7 +483,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Já havia um debate sobre o mundo do RNA — cenário hipotético em que o RNA teria precedido o DNA e as proteínas. O que chamamos de química pré-biótica era, na verdade, muita gente simulando determinados ambientes para ver quais moléculas orgânicas podiam ser formadas."
+          "text": "Qual era o estado do conhecimento de origens da vida nessa época?"
         }
       ]
     },
@@ -434,7 +492,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "O que sabemos de química pré-biótica são os tipos de moléculas que provavelmente existiram na Terra primitiva, e temos uma ideia das quantidades delas também. Mas quando vamos para a próxima etapa, que é a formação de polímeros, a coisa começa a se complicar."
+          "text": "Já havia um debate sobre o mundo do RNA [nota do entrevistador: cenário hipotético em que o RNA teria precedido o DNA e as proteínas, carregando informação genética e catalizando reações químicas]. O que nós chamamos de química pré-biótica era, na verdade, muita gente simulando determinados ambientes para ver quais moléculas orgânicas podiam ser formadas. O que sabemos de química pré-biótica são os tipos de moléculas que provavelmente existiram na Terra primitiva, e temos uma ideia das quantidades delas também. Mas quando vamos para a próxima etapa, que é a formação de polímeros, a coisa começa a se complicar."
         }
       ]
     },
@@ -443,7 +501,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Como as moléculas podem ter se concentrado?"
+          "text": " "
         }
       ]
     },
@@ -452,7 +510,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Moléculas podem “grudar” na superfície de um mineral com o fenômeno da adsorção. Dependendo do mineral, pode ocorrer a adsorção — a molécula “grudando” na superfície — e a absorção, quando uma molécula penetra nas intercamadas do mineral ou em seus poros."
+          "text": "O que significa essa complicação?"
         }
       ]
     },
@@ -461,7 +519,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "No oceano primitivo, as moléculas, sintetizadas no planeta ou trazidas por meteoritos, estavam muito diluídas. Para haver evolução molecular, em que as moléculas orgânicas vão se tornando mais complexas, precisa haver uma pré-concentração numa superfície."
+          "text": "Na Terra pré-biótica havia uma mistura muito grande de moléculas orgânicas. Por exemplo, os aminoácidos: só no meteorito Murchison que caiu na Austrália [em 1969], detectaram mais de 80 tipos diferentes de aminoácidos. Mas os seres vivos utilizam apenas 20 aminoácidos. Como foram selecionados esses 20 aminoácidos? Dentro da mistura de moléculas na Terra primitiva, como surgiu alguma estrutura relevante para a origem da vida? Esse é um dos grandes problemas."
         }
       ]
     },
@@ -470,7 +528,56 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Isso é importante para que elas reajam entre si. Isso vai formando moléculas orgânicas mais complexas, com cadeias maiores de carbono. Se não ocorrer uma pré-concentração dessas moléculas, a evolução molecular nunca ocorreria. É aí que entram os minerais com capacidade de adsorção, concentrando essas moléculas em suas superfícies."
+          "text": "O outro é a baixa concentração destas moléculas nos oceanos da Terra. Há 4 bilhões de anos atrás, a quantidade de terra seca no planeta era muito menor, somente 25% do que nós temos hoje. A maior parte das moléculas orgânicas que fossem produzidas ou que viessem de fora, com os asteroides, acabaria ficando no oceano, diluída, em concentração muito baixa. Essas moléculas precisam se encontrar para reagir, e para isso é preciso concentrá-las em algum lugar."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Como, então, as moléculas podem ter se concentrado?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Moléculas podem “grudar” na superfície de um mineral com o fenômeno da adsorção. Dependendo do mineral, pode ocorrer a adsorção – a molécula “grudando” na superfície – e a absorção, quando a molécula penetra nas intercamadas do mineral ou em seus poros. No oceano primitivo, as moléculas, sintetizadas no planeta ou trazidas por meteoritos que caíam no mar, estavam muito diluídas. Para haver evolução molecular, em que as moléculas orgânicas vão se tornando mais complexas, precisa haver uma pré-concentração numa superfície. Isso é importante para que elas reajam entre si. Isso vai formando moléculas orgânicas mais complexas, com cadeias maiores de carbono. Se não ocorrer uma pré-concentração dessas moléculas, a evolução molecular nunca ocorreria. É aí que entram os minerais com capacidade de adsorção, concentrando essas moléculas em suas superfícies. Um dos primeiros a difundir estas ideias foi [o físico irlandês] J. D. Bernal (1901-1971) em seu livro "
+        },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "italic"
+            }
+          ],
+          "text": "The physical basis of life"
+        },
+        {
+          "type": "text",
+          "text": " (1951)."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
         }
       ]
     },
@@ -488,7 +595,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "É uma molécula extremamente importante para a síntese de aminoácidos e bases nitrogenadas. Fizemos experimentos para adsorver o ácido cianídrico em dez minerais diferentes. O ácido cianídrico não adsorveu nos minerais, então combinamos ácido cianídrico com ferro (II), formando um composto ferrocianeto. Esse composto adsorveu na superfície dos minerais, mostrando alta adsorção."
+          "text": "É uma molécula extremamente importante para a síntese de aminoácidos e bases nitrogenadas. Fizemos experimentos para adsorver o ácido cianídrico dez minerais diferentes. Este trabalho foi parte da tese de doutorado do Rafael Samulewski, que orientei. O ácido cianídrico não adsorveu nos minerais. Então nós combinamos ácido cianídrico com ferro (II) [nota do entrevistador: o íon de ferro com carga +2], formando um composto ferrocianeto. E esse composto adsorveu na superfície dos minerais, mostrando alta adsorção."
         }
       ]
     },
@@ -497,7 +604,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Que experimentos vinham a seguir?"
+          "text": " "
         }
       ]
     },
@@ -506,7 +613,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Com o ferrocianeto, encontramos cenários em que a adsorção seria possível e possibilitaria uma pré-concentração de moléculas que ajudam a tornar mais complexa a química pré-biótica. Uma aluna de doutorado, Tallita Stéfanne e Silva, foi ao México, na UNAM, testar amostras do ferrocianeto adsorvido em minerais e lá vão fazer uma irradiação gama para ver se a radiação produz alguma molécula de interesse biológico."
+          "text": "Com o ferrocianeto, o senhor encontrou cenários em que a adsorção seria possível. A adsorção possibilita uma pré-concentração de moléculas que ajudam a tornar mais complexa a química pré-biótica. É isso?"
         }
       ]
     },
@@ -515,7 +622,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Quais foram suas outras contribuições à área?"
+          "text": "Exatamente. Vão formar moléculas mais complexas na superfície do mineral. Inclusive, em breve uma aluna de doutorado, Tallita Stéfanne e Silva, vai ao México, na UNAM [Universidad Nacional Autónoma de México]. Ela vai testar amostras do ferrocianeto adsorvido em minerais e, lá, vão fazer uma irradiação gama para ver se a radiação gama produz alguma molécula de interesse biológico."
         }
       ]
     },
@@ -524,7 +631,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Desde 2004 publiquei artigos mostrando que boa parte dos experimentos em química pré-biótica não estavam muito corretos pois eram feitos em água destilada e em soluções salinas de cloreto de sódio. Em raras exceções usaram magnésio, cloreto e cálcio."
+          "text": " "
         }
       ]
     },
@@ -533,7 +640,43 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Propus duas composições de água do mar: uma rica em magnésio e outra rica em cálcio. No entanto, o oceano primitivo da Terra, muito provavelmente, era rico em cálcio e cloreto, com um pouco de magnésio e sódio. O oceano atual tem alta concentração de cloreto de sódio; isso faz toda a diferença para a adsorção."
+          "text": "Então, dependendo da exposição dessas concentrações de molécula a determinada radiação, pode haver reações que tornam as moléculas mais complexas. Em algum momento isso pode resultar em algo como o que a gente conhece como vida?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Não, mas pode resultar em moléculas mais complexas, ou mesmo na decomposição destas moléculas."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Quais foram suas outras contribuições à química pré-biótica?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Desde 2004 publiquei artigos em que mostro que boa parte dos experimentos em química pré-biótica não estavam muito corretos pois eram feitos em água destilada e em soluções salinas de cloreto de sódio. Em raras exceções usaram magnésio, cloreto e cálcio. Neste período baseado em alguns trabalhos propus duas composições de água do mar. Uma rica em magnésio e outra rica em cálcio. No entanto, o oceano primitivo da Terra, muito provavelmente, era rico em cálcio e cloreto, com um pouco de magnésio e sódio. O oceano atualmente tem alta concentração de cloreto de sódio. Isso faz toda a diferença para a adsorção."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
         }
       ]
     },
@@ -551,7 +694,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Publiquei um artigo, em 2021, na revista "
+          "text": "Eu publiquei um artigo, em 2021, na revista "
         },
         {
           "type": "text",
@@ -564,7 +707,7 @@ export const proseMirrorData2 = {
         },
         {
           "type": "text",
-          "text": ". Nele, sugiro vários experimentos para entender como os aminoácidos proteicos foram incorporados nos peptídeos/proteínas ao invés dos não-proteicos. O problema desses experimentos é que eles consomem muito tempo e dinheiro."
+          "text": ". Nele, sugiro vários experimentos para entender como os aminoácidos proteicos foram incorporados nos peptídeos/proteínas ao invés dos não-proteicos. O problema desses experimentos é que eles consomem muito tempo e dinheiro. Então, procurei professores da matemática aqui na UEL, Paulo Laerte Natti e Eliandro Rodrigues Cirilo, eles geraram um programa baseado nos dados que eu forneci. Estão calculando matematicamente qual proporção de aminoácidos vai aparecer nesses peptídeos."
         }
       ]
     },
@@ -573,7 +716,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Procurei professores da matemática na UEL, que geraram um programa baseado nos dados que eu forneci e calcularam matematicamente qual proporção de aminoácidos vai aparecer nesses peptídeos."
+          "text": " "
         }
       ]
     },
@@ -582,7 +725,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "O senhor se aposentou em 2021 — parou?"
+          "text": "O senhor se aposentou em 2021, mas não parece ter parado."
         }
       ]
     },
@@ -591,7 +734,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Eu ainda tenho alguns artigos para escrever, a tese da minha última orientanda e mais alguns trabalhos que quero finalizar. Então, não parei completamente."
+          "text": "Eu ainda tenho alguns artigos para escrever. Tem a tese da minha última orientanda, também, e mais alguns trabalhos que eu ainda quero escrever sobre esses assuntos que eu discuti com você. Então, eu ainda tenho algumas coisas para fazer."
         }
       ]
     },
@@ -600,7 +743,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Como foi a formação da astrobiologia no Brasil?"
+          "text": " "
         }
       ]
     },
@@ -609,7 +752,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Os primeiros astrobiólogos que conheci foram o Fábio Rodrigues e o Douglas Galante. Eles me contataram e vieram para Londrina. Depois conheci Jorge Horvath e Eduardo Janot Pacheco, entre outros. Participei do primeiro encontro de astrobiologia no Brasil, em 2006, no Rio de Janeiro."
+          "text": "Voltemos um pouco à sua trajetória e o contexto histórico. Ali no começo dos anos 2000, a astrobiologia tomava a forma que conhecemos hoje, que engloba origem da vida. Como começa sua troca com os pesquisadores que estavam desenvolvendo a área aqui no Brasil?"
         }
       ]
     },
@@ -618,7 +761,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Chegou-se a cogitar um programa de pós-graduação em astrobiologia, mas isso ainda não avançou. A ideia de uma sociedade, entretanto, frutificou: fui um dos sócios-fundadores da Sociedade Brasileira de Astrobiologia e atuei como vice-presidente entre 2017 e 2021."
+          "text": "Os primeiros astrobiólogos que eu conheci foram o Fábio [Rodrigues, professor do IQ-USP] e o Douglas [Galante, professor do Instituto de Geociências, IGc-USP]. Se não me engano, ainda eram estudantes, faziam o doutorado. Eles me mandaram e-mail dizendo que queriam conversar comigo e vieram para Londrina. Isso já faz uns 15 anos, ou até mais, e somos amigos até hoje. Depois acabei conhecendo os [astrônomos] Jorge Horvath e Eduardo Janot Pacheco, professores do Instituto Astronômico e Geofísico (IAG) da USP. Conheci a professora Cláudia Lage [bióloga da Universidade Federal do Rio de Janeiro], e a professora Miram Pacheco [bióloga da Universidade Federal de São Carlos, Campus Sorocaba] Professor Jorge Quillfedet [bioquímico da Universidade Federal do Rio Grande do Sul], Gustavo Porto de Mello [astrônomo da UFRJ]. Participei do primeiro encontro de astrobiologia no Brasil, em 2006, no Rio de Janeiro. Eu cito aqui algumas pessoas com quem tive contato naquela época, mas obviamente existem muitas outras que contribuíram para a formação da Sociedade. Todo esse pessoal estava lá."
         }
       ]
     },
@@ -627,7 +770,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Qual é a importância da astrobiologia para educação e divulgação?"
+          "text": " "
         }
       ]
     },
@@ -636,7 +779,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "A astrobiologia tem enorme potencial para atrair jovens para a ciência. Escrevi artigos de divulgação e orientei dissertações no programa de mestrado de formação de professores na UEL. Até uma aluna do ensino médio fez um experimento em meu laboratório para apresentar em um evento de iniciação científica."
+          "text": "Vocês estavam tentando estruturar um programa de pesquisa coerente, que ligasse as várias partes da astrobiologia?"
         }
       ]
     },
@@ -645,7 +788,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Qual é a sua percepção sobre o futuro da área?"
+          "text": "Exatamente. Na verdade, chegou-se a cogitar um programa de pós-graduação em astrobiologia, mas isso ainda não foi para frente. Mas a ideia de uma sociedade frutificou. Fui um dos sócios-fundadores, assim como todas essas pessoas que eu citei. Todos contribuíram bastante. O professor Eduardo Janot Pacheco [astrofísico do IAG-USP] deu uma grande contribuição e foi o primeiro presidente da sociedade e eu junto com ele o Vice-Presidente. Gustavo Porto de Mello [astrônomo da UFRJ], o atual presidente, também. Todos eles são pioneiros aqui no Brasil."
         }
       ]
     },
@@ -654,7 +797,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Cito Albert Eschenmoser: \"a origem da vida não pode ser descoberta, mas tem de ser reinventada\". As possíveis condições necessárias para a origem da vida foram perdidas no passado. É possível que nunca saibamos se a vida surgiu na Terra ou veio de fora — contaminação entre planetas e sondas complica a interpretação."
+          "text": " "
         }
       ]
     },
@@ -663,7 +806,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Se encontrarmos vida em Marte idêntica à da Terra, teremos que considerar contaminação. Se for distinta, aí sim seria uma descoberta marcante."
+          "text": "O senhor acaba sendo o primeiro vice-presidente da Sociedade Brasileira de Astrobiologia. Como foi essa experiência?"
         }
       ]
     },
@@ -672,7 +815,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "A vida é comum no universo?"
+          "text": "Somos ainda uma sociedade pequena, lutando para sobreviver, mas foi uma experiência muito legal fazer uma sociedade de astrobiologia pois a área pode atrair muitos jovens para a ciência. A astrobiologia tem enorme potencial para a educação e a divulgação científica. Escrevi alguns artigos de divulgação de astrobiologia, no programa de mestrado de formação para professores na UEL e orientei duas dissertações dentro desse programa. Há uns três meses atrás, uma aluna do ensino médio me procurou para fazer um experimento de astrobiologia. Ela foi no meu laboratório, nós plantamos sementes, e agora ela vai apresentar o trabalho num evento de iniciação cientifica aqui em Londrina."
         }
       ]
     },
@@ -681,7 +824,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Espero que sim, mas há gargalos: o surgimento da primeira célula, a transição para pluricelularidade (que levou cerca de 2 bilhões de anos na Terra) e, depois, o surgimento de inteligência social. Mesmo assim, o universo é muito grande e essas etapas podem ocorrer em outros lugares."
+          "text": " "
         }
       ]
     },
@@ -690,7 +833,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Onde procurar vida hoje?"
+          "text": "Qual é a sua percepção em relação ao futuro da área de química pré-biótica e origens da vida?"
         }
       ]
     },
@@ -699,7 +842,7 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Marte é um alvo promissor por ter sido semelhante ao nosso planeta no início. As luas geladas de Júpiter e Saturno também são interessantes. Exoplanetas e suas atmosferas podem indicar bioassinaturas, mas a presença de oxigênio ou ozônio não prova vida — pois podem ter origens abiológicas. Detectar vapor d'água e outras moléculas relevantes é um bom começo, mas a confirmação final seria direta: encontrar e identificar vida alienígena."
+          "text": "Um artigo, que sempre gosto de mencionar, do professor Albert Eschenmose faz uma citação interessante sobre essa questão da origem da vida: “a origem da vida não pode ser descoberta, mas tem de ser reinventada”. As possíveis condições e etapas necessárias para origem da vida a partir de matéria inanimada foram há muito perdidas. Outra coisa: muito provavelmente a gente nunca vai saber se de fato a vida surgiu no planeta Terra ou se ela foi trazida de fora, por meteoritos, por exemplo."
         }
       ]
     },
@@ -708,9 +851,109 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": "Entrevista transcrita e formatada — conteúdo preservado do texto original."
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Por que o senhor acha que nunca vamos distinguir se a vida surgiu aqui ou se ela foi trazida de fora?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Vamos supor que encontrem alguma forma de vida em Marte e que, após testes, cheguem à conclusão de que é a mesma linhagem da vida na Terra.  Podemos pensar que houve contaminação de um planeta para o outro, ou mesma uma sonda contaminou o planeta. Mas onde teria começado a vida? Foi a Terra que contaminou Marte ou foi Marte que contaminou a Terra? Agora, se a gente encontrar uma forma de vida em Marte que não tenha nada a ver com a nossa, é diferente."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Pode ser que fazer um ser vivo a partir de matéria inanimada não seja uma coisa tão complicada, porque as janelas de tempo para o surgimento da vida na Terra – que era bombardeada por meteoritos – não são muito grandes: entre 100 milhões e 500 milhões de anos. Se a janela para o surgimento da vida for realmente pequena, fazer um ser vivo aqui na Terra não deve ser tão difícil, mas alguém pode dizer: “[a vida] pode ter vindo de fora\". Essa hipótese continua viável até que alguém consiga mostrar efetivamente que nenhuma forma de vida consegue sobreviver a uma viagem de milhares ou milhões de anos num meteorito ou cometa."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Quais especulações passam na sua cabeça em relação à prevalência de vida no universo? Acha que houve várias biogêneses espalhadas em sistemas planetários pelo universo? Quão comum ou incomum o senhor acha que é a vida?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Eu espero que a vida seja um fenômeno mais ou menos comum. Mas existem os gargalos. O primeiro gargalo é o surgimento da primeira célula. Depois temos os gargalos da evolução. A evolução de seres unicelulares para pluricelulares, no nosso planeta, demorou 2 bilhões de anos. E a maioria da vida do nosso planeta são ainda de seres unicelulares. Dos seres pluricelulares até chegar a uma forma de vida que tenha algo que a gente chama de inteligência, que vive em sociedade, que discute, é outro gargalo. Enfim, têm todos esses gargalos a serem considerados, mesmo assim o universo é muito grande."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Hoje, na busca por vida extraterrestre, há vários objetos de interesse no sistema solar, como Marte e as luas geladas dos gigantes gasosos, mas também há a procura em exoplanetas, com análise espectroscópica de suas atmosferas em busca de bioassinaturas – alguns até falam em buscar por tecnoassinaturas. Qual é o seu palpite com relação à busca por vida?"
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "Existe, talvez, uma boa possibilidade [de encontrarmos indícios de vida] em Marte, pois foi um planeta muito semelhante ao nosso no início de sua história. Talvez as luas de Saturno ou Júpiter também ofereçam uma possibilidade razoável. Análises de atmosferas de exoplanetas podem gerar uma boa indicação, mas mesmo a detecção de compostos ligados à vida, como oxigênio ou mesmo ozônio, não responde à pergunta pois podem ser produzidos por decomposição da água, por radiação. De qualquer forma, se você consegue detectar vapor de água e outras moléculas relevantes, pode ser uma indicação importante. Obviamente a indicação final seria: \"olá, pessoal, nós somos de tal mundo.” Nunca se sabe."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": " "
         }
       ]
     }
   ]
 }
+
