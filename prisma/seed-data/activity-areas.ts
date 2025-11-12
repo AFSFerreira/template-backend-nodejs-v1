@@ -65,21 +65,35 @@ export const subActivityAreasConnection2 = {
 
 export const subActivityAreasConnection3 = {
   type_area: {
-    area: subActivityAreasData1[1],
+    area: subActivityAreasData1[8],
     type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
   }
 }
 
 export const subActivityAreasConnection4 = {
   type_area: {
-    area: subActivityAreasData1[8],
+    area: subActivityAreasData1[11],
     type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
   }
 }
 
 export const subActivityAreasConnection5 = {
   type_area: {
-    area: subActivityAreasData1[11],
+    area: subActivityAreasData1[3],
+    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+  }
+}
+
+export const subActivityAreasConnection6 = {
+  type_area: {
+    area: subActivityAreasData1[10],
+    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+  }
+}
+
+export const subActivityAreasConnection7 = {
+  type_area: {
+    area: subActivityAreasData1[14],
     type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
   }
 }

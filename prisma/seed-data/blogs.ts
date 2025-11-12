@@ -1,21 +1,22 @@
 import type { Prisma } from '@prisma/client'
-import { subActivityAreasConnection1, subActivityAreasConnection4, subActivityAreasConnection5 } from './activity-areas'
-import { blogSearchContent1, blogSearchContent2 } from './blog-contents'
-import { proseMirrorData2 } from './prose-mirrors'
+import { activityAreaConnection1, subActivityAreasConnection1, subActivityAreasConnection3, subActivityAreasConnection4, subActivityAreasConnection5, subActivityAreasConnection6, subActivityAreasConnection7 } from './activity-areas'
+import { blogSearchContent1, blogSearchContent2, blogSearchContent3 } from './blog-contents'
 import { dummyUserInfoArray } from './users'
+
+const daniloInfo = dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria')
 
 export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
   {
     ...blogSearchContent1,
     bannerImage: 'default.png',
     title: 'Apresentação do blog da SBAstrobio',
-    authorName: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').fullName,
+    authorName: daniloInfo.fullName,
     Subcategories: {
       connect: [subActivityAreasConnection1],
     },
     User: {
       connect: {
-        email: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').email
+        email: daniloInfo.email
       }
     },
   },
@@ -23,15 +24,28 @@ export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
     ...blogSearchContent2,
     title: 'Entrevista com um astrobiólogo: Dimas Zaia',
     bannerImage: 'dimas-zaia.png',
-    authorName: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').fullName,
-    content: proseMirrorData2,
+    authorName: daniloInfo.fullName,
     User: {
       connect: {
-        email: dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria').email
+        email: daniloInfo.email
       }
     },
     Subcategories: {
-      connect: [subActivityAreasConnection4, subActivityAreasConnection5],
+      connect: [subActivityAreasConnection3, subActivityAreasConnection4],
+    }
+  },
+  {
+    ...blogSearchContent3,
+    title: 'Entrevista com um astrobiólogo — Eduardo Janot Pacheco',
+    bannerImage: 'eduardo-pacheco.png',
+    authorName: daniloInfo.fullName,
+    User: {
+      connect: {
+        email: daniloInfo.email
+      }
+    },
+    Subcategories: {
+      connect: [activityAreaConnection1, subActivityAreasConnection5, subActivityAreasConnection6, subActivityAreasConnection7]
     }
   },
 //   {
