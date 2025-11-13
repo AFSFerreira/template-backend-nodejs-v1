@@ -13,8 +13,7 @@ const paymentInfo = {
 export const meetingData1 = {
   title: 'VIII REUNIÃO ANUAL',
   image: 'meeting-2025.png',
-  description:
-    '',
+  description: 'A Sociedade Brasileira de Astrobiologia (SBA) tem o prazer de anunciar a realização da sua 8ª Reunião Anual. Este evento consolidado tornou-se o principal ponto de encontro para pesquisadores, estudantes e profissionais dedicados a compreender a origem, evolução, distribuição e o futuro da vida no universo. Nesta 8ª edição, buscaremos fortalecer ainda mais a colaboração interdisciplinar que define nossa área, unindo Astronomia, Biologia, Geologia, Química e Ciências Humanas. A reunião será um espaço vital para apresentar novas descobertas, discutir desafios metodológicos e fomentar novas parcerias no cenário científico brasileiro e internacional.',
   location: 'Instituto Oceanográfico - USP - São Paulo',
   lastDate: new Date('2025-11-14'),
   MeetingDate: {
