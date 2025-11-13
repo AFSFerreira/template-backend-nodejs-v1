@@ -128,15 +128,6 @@ export const proseMirrorData2 = {
       "content": [
         {
           "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
           "text": " "
         }
       ]
@@ -170,15 +161,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -194,15 +176,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Eu trabalhei com química analítica. Aliás, toda a minha formação foi focada nessa área. Meu orientador, Dr. Jaim Lichtig, trabalhava com eletronanalítica Desenvolvemos metodologias para determinação de iodato e bromato em diversos meios, farinha, sal, água do mar, por exemplo."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -226,15 +199,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -254,15 +218,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -278,15 +233,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Exatamente (risos)."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -319,15 +265,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -343,15 +280,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Eu sintetizei um peptídeo chamado VIP, vaso ativo intestinal. Queríamos fazer um peptídeo que aumentasse esse efeito do vaso ativo. Esse peptídeo foi originalmente encontrado no intestino, e depois também foi encontrado no cérebro. É um vasodilatador. Os peptídeos não apresentaram efeito esperado e não gerou publicação, mas a experiência da pesquisa em si foi de grande aprendizado. E foi lá que eu tive meu primeiro contato com a astrobiologia."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -388,15 +316,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -425,15 +344,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -453,15 +363,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -477,15 +378,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Já havia um debate sobre o mundo do RNA [nota do entrevistador: cenário hipotético em que o RNA teria precedido o DNA e as proteínas, carregando informação genética e catalizando reações químicas]. O que nós chamamos de química pré-biótica era, na verdade, muita gente simulando determinados ambientes para ver quais moléculas orgânicas podiam ser formadas. O que sabemos de química pré-biótica são os tipos de moléculas que provavelmente existiram na Terra primitiva, e temos uma ideia das quantidades delas também. Mas quando vamos para a próxima etapa, que é a formação de polímeros, a coisa começa a se complicar."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -514,15 +406,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "O outro é a baixa concentração destas moléculas nos oceanos da Terra. Há 4 bilhões de anos atrás, a quantidade de terra seca no planeta era muito menor, somente 25% do que nós temos hoje. A maior parte das moléculas orgânicas que fossem produzidas ou que viessem de fora, com os asteroides, acabaria ficando no oceano, diluída, em concentração muito baixa. Essas moléculas precisam se encontrar para reagir, e para isso é preciso concentrá-las em algum lugar."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -559,15 +442,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -587,15 +461,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -611,15 +476,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Exatamente. Vão formar moléculas mais complexas na superfície do mineral. Inclusive, em breve uma aluna de doutorado, Tallita Stéfanne e Silva, vai ao México, na UNAM [Universidad Nacional Autónoma de México]. Ela vai testar amostras do ferrocianeto adsorvido em minerais e, lá, vão fazer uma irradiação gama para ver se a radiação gama produz alguma molécula de interesse biológico."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -662,15 +518,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -703,15 +550,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -727,15 +565,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Eu ainda tenho alguns artigos para escrever. Tem a tese da minha última orientanda, também, e mais alguns trabalhos que eu ainda quero escrever sobre esses assuntos que eu discuti com você. Então, eu ainda tenho algumas coisas para fazer."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -759,15 +588,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -783,15 +603,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Exatamente. Na verdade, chegou-se a cogitar um programa de pós-graduação em astrobiologia, mas isso ainda não foi para frente. Mas a ideia de uma sociedade frutificou. Fui um dos sócios-fundadores, assim como todas essas pessoas que eu citei. Todos contribuíram bastante. O professor Eduardo Janot Pacheco [astrofísico do IAG-USP] deu uma grande contribuição e foi o primeiro presidente da sociedade e eu junto com ele o Vice-Presidente. Gustavo Porto de Mello [astrônomo da UFRJ], o atual presidente, também. Todos eles são pioneiros aqui no Brasil."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -815,15 +626,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -839,15 +641,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Um artigo, que sempre gosto de mencionar, do professor Albert Eschenmose faz uma citação interessante sobre essa questão da origem da vida: “a origem da vida não pode ser descoberta, mas tem de ser reinventada”. As possíveis condições e etapas necessárias para origem da vida a partir de matéria inanimada foram há muito perdidas. Outra coisa: muito provavelmente a gente nunca vai saber se de fato a vida surgiu no planeta Terra ou se ela foi trazida de fora, por meteoritos, por exemplo."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     },
@@ -880,15 +673,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -908,15 +692,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
@@ -932,24 +707,6 @@ export const proseMirrorData2 = {
         {
           "type": "text",
           "text": "Existe, talvez, uma boa possibilidade [de encontrarmos indícios de vida] em Marte, pois foi um planeta muito semelhante ao nosso no início de sua história. Talvez as luas de Saturno ou Júpiter também ofereçam uma possibilidade razoável. Análises de atmosferas de exoplanetas podem gerar uma boa indicação, mas mesmo a detecção de compostos ligados à vida, como oxigênio ou mesmo ozônio, não responde à pergunta pois podem ser produzidos por decomposição da água, por radiação. De qualquer forma, se você consegue detectar vapor de água e outras moléculas relevantes, pode ser uma indicação importante. Obviamente a indicação final seria: \"olá, pessoal, nós somos de tal mundo.” Nunca se sabe."
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
         }
       ]
     }
