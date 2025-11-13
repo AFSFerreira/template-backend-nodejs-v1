@@ -47,7 +47,7 @@ export const directorBoardData5 = {
 
 export const directorBoardData6 = {
   fullName: 'Flávia Callefo',
-  aboutMe: 'Biografia da Flávia Callefo.',
+  aboutMe: 'Licenciada (2011), mestre (2014) e doutora (2018) em Ciências Biológicas/Geociências (UNICAMP), com doutorado-sanduíche na Old Dominion University (EUA). Pós-doutoranda no Laboratório Nacional de Luz Síncrotron (Sirius – Linha Carnaúba/FAPESP). Experiência em Paleontologia, Geobiologia e Paleometria, com foco em estruturas microbianas e estudos paleoambientais. Interesse em Astrobiologia, especialmente em bioassinaturas geoquímicas e biominerais. Membro votante da Subcomissão do Pré-Criogeniano (ICS) e secretária da Sociedade Brasileira de Astrobiologia.',
   directorBoardProfileImage: 'Flavia-Callefo.png',
   linkLattes: 'http://lattes.cnpq.br/1704175571734114',
   DirectorPosition: { connect: { position: directorPositionsArray[7].position } },
@@ -55,7 +55,7 @@ export const directorBoardData6 = {
 
 export const directorBoardData7 = {
   fullName: 'Claudia Lage',
-  aboutMe: 'Biografia da Claudia Lage.',
+  aboutMe: 'Bacharel (1985), mestre (1990) e doutora (1995) em Ciências Biológicas (UFRJ), com pós-doutorados na USP e no CEA-França em reparo de DNA bacteriano. Professora associada na UFRJ desde 1994, atuou também como visiting professor na Open University (UK) e na Université de Nice Sophia-Antipolis (França), com colaborações em Astrobiologia e projetos bilaterais França-Brasil (PICS-CNRS). Tem experiência em Biofísica, com ênfase em dano e reparo de DNA, mutagênese e fotobiologia, integrando grupos de pesquisa do CNPq e tendo recebido o Prêmio de Inovação Médica em Genética (2018).',
   directorBoardProfileImage: 'Claudia-Lage.png',
   linkLattes: 'http://lattes.cnpq.br/4916914753471904',
   DirectorPosition: { connect: { position: directorPositionsArray[6].position } },
