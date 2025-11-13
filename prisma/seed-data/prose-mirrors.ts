@@ -124,15 +124,6 @@ export const proseMirrorData2 = {
       ]
     },
     {
-      "type": "paragraph",
-      "content": [
-        {
-          "type": "text",
-          "text": " "
-        }
-      ]
-    },
-    {
       "type": "heading",
       "attrs": { "level": 3 },
       "content": [
