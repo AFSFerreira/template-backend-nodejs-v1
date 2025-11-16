@@ -1,11 +1,9 @@
-import type { AcademicPublicationRaw } from '@custom-types/academic-publication-raw-type'
-import type { OrderableType } from '@custom-types/orderable'
+import type { AcademicPublicationRaw } from '@custom-types/adapter/input/academic-publication-raw-type'
+import type { ListAllAcademicPublicationsQuery } from '@custom-types/repositories/academic-publication/list-all-academic-publications-query'
+import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type {
-  AcademicPublicationsRepository,
-  ListAllAcademicPublicationsQuery,
-} from '@repositories/academic-publications-repository'
+import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import { evalTotalPages } from '@utils/eval-total-pages'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'

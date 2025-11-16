@@ -1,3 +1,4 @@
+import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/user-presenter'
 import { getAllUsersSimplifiedQuerySchema } from '@schemas/user/get-all-users-simplified-query-schema'
 import { makeGetAllUsersSimplifiedUseCase } from '@use-cases/factories/user/make-get-all-users-simplified-use-case'
@@ -9,5 +10,5 @@ export async function getAllUsersSimplified(request: FastifyRequest, reply: Fast
 
   const { data, meta } = await getAllUsersUseCase.execute(parsedQuery)
 
-  return await reply.status(200).send({ data: UserPresenter.toHTTPSimplified(data), meta })
+  return await reply.status(200).send({ data: UserPresenter.toHTTP(data, USER_SIMPLIFIED_PRESENTER_KEY), meta })
 }

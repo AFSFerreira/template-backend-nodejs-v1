@@ -1,3 +1,4 @@
+import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/user-presenter'
 import { updateBodySchema } from '@schemas/user/update-user-body-schema'
 import { makeUpdateUserUseCase } from '@use-cases/factories/user/make-update-user-use-case'
@@ -14,6 +15,6 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
   })
 
   return await reply.status(200).send({
-    data: { user: UserPresenter.toHTTPDetailed(user) },
+    data: UserPresenter.toHTTP(user, USER_DETAILED_PRESENTER_KEY),
   })
 }

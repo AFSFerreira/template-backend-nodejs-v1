@@ -1,21 +1,20 @@
-import type { ActivityArea, ActivityAreaType } from '@prisma/client'
-
-interface HTTPActivityArea {
-  area: string
-  type: ActivityAreaType
-}
+import { ACTIVITY_AREA_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { presenterRegistry } from './presenter-registry'
 
 export class ActivityAreaPresenter {
-  static toHTTP(activityArea: ActivityArea): HTTPActivityArea
-  static toHTTP(activityAreas: ActivityArea[]): HTTPActivityArea[]
-  static toHTTP(input: ActivityArea | ActivityArea[]): HTTPActivityArea | HTTPActivityArea[] {
+  static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
+
+  static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
+
+  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
     if (Array.isArray(input)) {
-      return input.map((activityArea) => ActivityAreaPresenter.toHTTP(activityArea))
+      return input.map((item) => ActivityAreaPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    return {
-      area: input.area,
-      type: input.type,
-    }
+    const strategy = presenterRegistry.get(contextKey ?? ACTIVITY_AREA_DEFAULT_PRESENTER_KEY)
+
+    const result = strategy.toHTTP(input)
+
+    return result as TOutput
   }
 }

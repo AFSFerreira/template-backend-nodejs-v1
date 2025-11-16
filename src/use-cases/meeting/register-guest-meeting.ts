@@ -1,3 +1,5 @@
+import { logger } from '@lib/logger'
+import { REGISTER_GUEST_MEETING } from '@messages/loggings'
 import type { MeetingParticipation } from '@prisma/client'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
@@ -46,6 +48,15 @@ export class RegisterGuestMeetingUseCase {
       ...registerGuestMeetingUseCaseInput,
       meetingId: meeting.id,
     })
+
+    logger.info(
+      {
+        meetingId: meeting.id,
+        guestEmail: registerGuestMeetingUseCaseInput.email,
+        fullName: registerGuestMeetingUseCaseInput.fullName,
+      },
+      REGISTER_GUEST_MEETING,
+    )
 
     return { meetingParticipation }
   }

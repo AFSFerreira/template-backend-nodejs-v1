@@ -6,7 +6,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 export async function refreshToken(request: FastifyRequest, reply: FastifyReply) {
   try {
     await request.jwtVerify({ onlyCookie: true })
-  } catch (error) {
+  } catch (_error: unknown) {
     logger.debug(INVALID_OR_EXPIRED_TOKEN.body)
     return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send(INVALID_OR_EXPIRED_TOKEN.body)
   }

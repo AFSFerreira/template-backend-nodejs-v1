@@ -1,11 +1,9 @@
+import type { CreateMeetingParticipationForGuestQuery } from '@custom-types/repositories/meeting-participants/create-meeting-participation-for-guest-query'
+import type { CreateMeetingParticipationForUserQuery } from '@custom-types/repositories/meeting-participants/create-meeting-participation-for-user-query'
+import type { FindByGuestEmailAndMeetingId } from '@custom-types/repositories/meeting-participants/find-by-guest-email-and-meeting-id'
+import type { FindByUserIdAndMeetingIdInput } from '@custom-types/repositories/meeting-participants/find-by-user-id-and-meeting-id-input'
 import { prisma } from '@lib/prisma'
-import type {
-  CreateMeetingParticipationForGuestQuery,
-  CreateMeetingParticipationForUserQuery,
-  FindByGuestEmailAndMeetingId,
-  FindByUserIdAndMeetingIdInput,
-  MeetingParticipantsRepository,
-} from '@repositories/meeting-participants-repository'
+import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 
 export class PrismaMeetingParticipantsRepository implements MeetingParticipantsRepository {
   async createForUser(query: CreateMeetingParticipationForUserQuery) {

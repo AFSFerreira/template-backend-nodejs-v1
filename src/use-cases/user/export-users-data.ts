@@ -1,3 +1,5 @@
+import { logger } from '@lib/logger'
+import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
 import { exportUsersAsCsv } from '@services/export-users'
 import { EmptyUsersInfoError } from '../errors/user/empty-users-info-error'
@@ -19,6 +21,8 @@ export class ExportUsersDataUseCase {
     }
 
     const usersCSVInfo = exportUsersAsCsv(allUsersInfo)
+
+    logger.info(ALL_USERS_INFO_EXPORTED)
 
     return { usersCSVInfo }
   }

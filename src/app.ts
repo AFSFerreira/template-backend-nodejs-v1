@@ -7,8 +7,15 @@ import rateLimit from '@fastify/rate-limit'
 import { logger } from '@lib/logger'
 import { getMulterError } from '@lib/multer/helpers/handle-multer-errors'
 import '@lib/zod/index'
+import '@presenters/import-index'
 import { UNHANDLED_ERROR } from '@messages/loggings'
-import { BODY_REQUIRED, INTERNAL_SERVER_ERROR, INVALID_BODY_FORMAT_JSON, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses'
+import {
+  BODY_REQUIRED,
+  INTERNAL_SERVER_ERROR,
+  INVALID_BODY_FORMAT_JSON,
+  SYNTAX_ERROR,
+  VALIDATION_ERROR,
+} from '@messages/responses'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
@@ -72,22 +79,22 @@ app.setErrorHandler((error, _request, reply) => {
   }
 
   if (error instanceof ApiError) {
-    logger.warn(error.body)
+    logger.debug(error.body)
     return reply.status(error.status).send(error.body)
   }
 
   if (error instanceof SyntaxError) {
-    logger.warn(SYNTAX_ERROR.body)
+    logger.debug(SYNTAX_ERROR.body)
     return reply.status(SYNTAX_ERROR.status).send(SYNTAX_ERROR.body)
   }
 
   if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {
-    logger.warn(BODY_REQUIRED.body)
+    logger.debug(BODY_REQUIRED.body)
     return reply.status(BODY_REQUIRED.status).send(BODY_REQUIRED.body)
   }
 
   if (error.code === 'FST_ERR_CTP_INVALID_JSON_BODY') {
-    logger.warn(INVALID_BODY_FORMAT_JSON)
+    logger.debug(INVALID_BODY_FORMAT_JSON)
     return reply.status(INVALID_BODY_FORMAT_JSON.status).send(INVALID_BODY_FORMAT_JSON.body)
   }
 
@@ -97,7 +104,14 @@ app.setErrorHandler((error, _request, reply) => {
   }
 
   // TODO: Send error to monitoring service (SENTRY)
-  logger.error({ error }, UNHANDLED_ERROR)
+  logger.error(
+    {
+      errorName: error instanceof Error ? error.name : String(error),
+      errorMessage: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    },
+    UNHANDLED_ERROR,
+  )
 
   return reply.status(INTERNAL_SERVER_ERROR.status).send(INTERNAL_SERVER_ERROR.body)
 })

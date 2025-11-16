@@ -1,5 +1,5 @@
 import { ALL_UNIVERSITIES_LIST, UNIVERSITIES_API } from '@constants/url-constants'
-import type { UniversitiesApiResponse } from '@custom-types/universities-api-response-type'
+import type { UniversitiesApiResponse } from '@custom-types/custom/universities-api-response-type'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { GetAllInstitutionsSchemaType } from '@schemas/institution/get-all-institutions-query-schema'
 
@@ -13,7 +13,8 @@ export async function getAllInstitutions(
   query: IGetAllInstitutionsQuery,
 ) {
   const universityName = query.name
-  const limit = query.limit ?? Number.MAX_SAFE_INTEGER
+  const limit = query.limit ?? 10
+  const page = query.page ?? 1
 
   const allInstitutions = new Set<string>()
 
@@ -32,7 +33,11 @@ export async function getAllInstitutions(
     filteredInstitutions.forEach((institution) => allInstitutions.add(institution.name.toUpperCase()))
   }
 
-  const allSystemInstitutions = await institutionsRepository.listAllInstitutionsNames({ name: universityName, limit })
+  const allSystemInstitutions = await institutionsRepository.listAllInstitutionsNames({
+    name: universityName,
+    limit,
+    page,
+  })
   allSystemInstitutions.data.forEach((institution) => allInstitutions.add(institution))
 
   return Array.from(allInstitutions)

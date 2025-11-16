@@ -1,21 +1,20 @@
-import type { AddressStates } from '@repositories/addresses-repository'
-
-interface HTTPAddressStates {
-  state: string
-  usersCount: number
-}
+import { ADDRESS_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { presenterRegistry } from './presenter-registry'
 
 export class AddressPresenter {
-  static toHTTP(addressState: AddressStates): HTTPAddressStates
-  static toHTTP(addressStates: AddressStates[]): HTTPAddressStates[]
-  static toHTTP(input: AddressStates | AddressStates[]): HTTPAddressStates | HTTPAddressStates[] {
+  static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
+
+  static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
+
+  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
     if (Array.isArray(input)) {
-      return input.map((addressState) => AddressPresenter.toHTTP(addressState))
+      return input.map((item) => AddressPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    return {
-      state: input.state,
-      usersCount: input.usersCount,
-    }
+    const strategy = presenterRegistry.get(contextKey ?? ADDRESS_DEFAULT_PRESENTER_KEY)
+
+    const result = strategy.toHTTP(input)
+
+    return result as TOutput
   }
 }

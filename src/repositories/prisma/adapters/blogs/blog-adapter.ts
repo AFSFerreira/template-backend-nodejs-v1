@@ -1,5 +1,5 @@
-import type { BlogRaw } from '@custom-types/blog-raw-type'
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/custom-blog-with-simplified-details-type'
+import type { BlogRaw } from '@custom-types/adapter/input/blog-raw-type'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/output/custom-blog-with-simplified-details-type'
 
 export function blogAdapter(customBlog: BlogRaw): CustomBlogWithSimplifiedDetails {
   return {

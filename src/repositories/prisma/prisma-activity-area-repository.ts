@@ -1,14 +1,12 @@
-import type { OrderableType } from '@custom-types/orderable'
-import type { QueryMode } from '@custom-types/query-mode'
+import type { QueryMode } from '@custom-types/custom/query-mode'
+import type { ActivityAreaQuery } from '@custom-types/repositories/activity-area/activity-area-query'
+import type { ListAllActivityAreasQuery } from '@custom-types/repositories/activity-area/list-all-activity-areas-query'
+import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
-import type {
-  ActivityAreaQuery,
-  ActivityAreasRepository,
-  ListAllActivityAreasQuery,
-} from '../activity-areas-repository'
 
 export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   static buildStartsWithFilter(value: unknown) {

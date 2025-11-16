@@ -1,31 +1,20 @@
-import type { DirectorBoardWithUser } from '@custom-types/director-board-with-user'
-
-interface HTTPDirectorBoardInfo {
-  id: string
-  fullName: string
-  directorBoardProfileImage: string
-  position: string
-  linkLattes?: string
-  aboutMe: string
-}
+import { DIRECTOR_BOARD_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { presenterRegistry } from './presenter-registry'
 
 export class DirectorBoardPresenter {
-  static toHTTPSimplified(directorBoardMember: DirectorBoardWithUser): HTTPDirectorBoardInfo
-  static toHTTPSimplified(directorBoardMembers: DirectorBoardWithUser[]): HTTPDirectorBoardInfo[]
-  static toHTTPSimplified(
-    input: DirectorBoardWithUser | DirectorBoardWithUser[],
-  ): HTTPDirectorBoardInfo | HTTPDirectorBoardInfo[] {
+  static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
+
+  static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
+
+  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
     if (Array.isArray(input)) {
-      return input.map((member) => DirectorBoardPresenter.toHTTPSimplified(member))
+      return input.map((item) => DirectorBoardPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    return {
-      id: input.User.publicId,
-      fullName: input.User.fullName,
-      directorBoardProfileImage: input.directorBoardProfileImage,
-      position: input.DirectorPosition.position,
-      linkLattes: input.User.linkLattes,
-      aboutMe: input.aboutMe,
-    }
+    const strategy = presenterRegistry.get(contextKey ?? DIRECTOR_BOARD_DEFAULT_PRESENTER_KEY)
+
+    const result = strategy.toHTTP(input)
+
+    return result as TOutput
   }
 }

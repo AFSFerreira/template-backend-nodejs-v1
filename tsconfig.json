@@ -8,20 +8,16 @@
     "lib": ["es2022"],
     "types": ["node"],
     "resolveJsonModule": true,
-
+    "experimentalDecorators": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-
-    "typeRoots": ["./node_modules/@types", "./src/@types"],
-
     "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmitOnError": true,
     "skipLibCheck": true,
-
     "removeComments": false,
     "sourceMap": false,
-
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
     "paths": {
       "@presenters/*": ["./src/http/presenters/*"],
       "@factories/*": ["./src/use-cases/factories/*"],
@@ -40,6 +36,6 @@
       "@lib/*": ["./src/lib/*"]
     }
   },
-  "include": ["./**/*.ts", "./**/*.mjs", "ecosystem.config.cjs"],
-  "exclude": ["node_modules", "dist", "uploads", "./**/*.cjs", "./**/*.js", "./**/*.json"]
+  "include": ["./**/*.ts"],
+  "exclude": ["node_modules", "dist", "uploads", "./**/*.cjs", "./**/*.js", "./**/*.json", "ecosystem.config.cjs", "./**/*.mjs"]
 }

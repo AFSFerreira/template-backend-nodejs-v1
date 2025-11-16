@@ -1,5 +1,7 @@
 import crypto from 'node:crypto'
 import { env } from '@env/index'
+import { logger } from '@lib/logger'
+import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings'
 import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -37,6 +39,8 @@ export class ResetPasswordUseCase {
       id: userFound.id,
       passwordHash,
     })
+
+    logger.info(RESET_PASSWORD_SUCCESSFUL)
 
     return { user }
   }

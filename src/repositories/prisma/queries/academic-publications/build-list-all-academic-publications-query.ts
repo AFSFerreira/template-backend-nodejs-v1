@@ -10,18 +10,18 @@ export function buildListAllAcademicPublicationsQuery(query: GetAllAcademicPubli
 
   if (query.title) {
     const title = query.title.toUpperCase()
-    const unaccentedTitle = Prisma.sql`unaccent(${title})`
-    const tsQuery = Prisma.sql`plainto_tsquery('portuguese', ${unaccentedTitle})`
+    const unaccentedSearchContent = Prisma.sql`unaccent(${title})`
+    const tsQuery = Prisma.sql`plainto_tsquery('portuguese', ${unaccentedSearchContent})`
 
     conditions.push(
       Prisma.sql`(
-        ap.title_unaccent % ${unaccentedTitle} OR
-        ap.title_unaccent ILIKE unaccent(${`%${title}%`}) OR
-        ap.title_tsv_pt @@ ${tsQuery}
+        ap.title_unaccent % ${unaccentedSearchContent} OR
+        ap.title_tsv_pt @@ ${tsQuery} OR
+        ap.title_unaccent ILIKE '%' || ${unaccentedSearchContent} || '%'
       )`,
     )
 
-    scores.push(Prisma.sql`similarity(ap.title_unaccent, ${unaccentedTitle}) * 0.7`)
+    scores.push(Prisma.sql`similarity(ap.title_unaccent, ${unaccentedSearchContent}) * 0.7`)
     scores.push(Prisma.sql`ts_rank(ap.title_tsv_pt, ${tsQuery}) * 0.3`)
   }
 

@@ -1,3 +1,4 @@
+import { BLOG_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { findBlogByPublicIdParamsSchema } from '@schemas/blog/find-blog-by-public-id-query-schema'
 import { makeFindBlogByPublicIdUseCase } from '@use-cases/factories/blog/make-find-blog-by-public-id-use-case'
@@ -12,5 +13,5 @@ export async function findBlogByPublicId(request: FastifyRequest, reply: Fastify
 
   const { blog } = await findBlogByPublicIdUseCase.execute({ publicId: parsedQuery.publicId, ip })
 
-  return await reply.status(200).send({ data: BlogPresenter.toHTTP(blog) })
+  return await reply.status(200).send({ data: BlogPresenter.toHTTP(blog, BLOG_DETAILED_PRESENTER_KEY) })
 }

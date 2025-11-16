@@ -1,72 +1,20 @@
-import type { BlogWithDetails } from '@custom-types/blog-with-details'
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/custom-blog-with-simplified-details-type'
-
-interface HTTPSimplifiedBlog {
-  id: string
-  title: string
-  bannerImage: string
-  searchContent: string
-  accessCount: number
-  createdAt: Date
-  updatedAt: Date
-}
-
-interface HTTPBlog {
-  id: string
-  title: string
-  bannerImage: string
-  authorName: string
-  accessCount: number
-  createdAt: Date
-  updatedAt: Date
-  subCategories: string[]
-}
+import { BLOG_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { presenterRegistry } from './presenter-registry'
 
 export class BlogPresenter {
-  static toHTTPSimplified(blog: CustomBlogWithSimplifiedDetails): HTTPSimplifiedBlog
-  static toHTTPSimplified(blogs: CustomBlogWithSimplifiedDetails[]): HTTPSimplifiedBlog[]
-  static toHTTPSimplified(
-    input: CustomBlogWithSimplifiedDetails | CustomBlogWithSimplifiedDetails[],
-  ): HTTPSimplifiedBlog | HTTPSimplifiedBlog[] {
+  static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
+
+  static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
+
+  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
     if (Array.isArray(input)) {
-      return input.map((blog) => BlogPresenter.toHTTPSimplified(blog))
+      return input.map((item) => BlogPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    return {
-      id: input.publicId,
-      title: input.title,
-      bannerImage: input.bannerImage,
-      searchContent: input.searchContent,
-      accessCount: input.accessCount,
-      createdAt: input.createdAt,
-      updatedAt: input.updatedAt,
-    }
-  }
+    const strategy = presenterRegistry.get(contextKey ?? BLOG_DEFAULT_PRESENTER_KEY)
 
-  static toHTTP(blog: BlogWithDetails): HTTPBlog
-  static toHTTP(blogs: BlogWithDetails[]): HTTPBlog[]
-  static toHTTP(input: BlogWithDetails | BlogWithDetails[]): HTTPBlog | HTTPBlog[] {
-    if (Array.isArray(input)) {
-      return input.map((blog) => BlogPresenter.toHTTP(blog))
-    }
+    const result = strategy.toHTTP(input)
 
-    const {
-      id,
-      publicId,
-      content,
-      titleUnaccent,
-      userId,
-      searchContent,
-      Subcategories,
-      User,
-      ...filteredBlog
-    } = input
-
-    return {
-      ...filteredBlog,
-      id: input.publicId,
-      authorName: input.User?.fullName ?? input.authorName,
-      subCategories: input.Subcategories.map((sc) => sc.area),
-    }
+    return result as TOutput
   }
 }

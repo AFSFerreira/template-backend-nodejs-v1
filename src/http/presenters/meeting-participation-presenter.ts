@@ -1,28 +1,20 @@
-import type { MeetingParticipation } from '@prisma/client'
+import { MEETING_PARTICIPATION_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { presenterRegistry } from './presenter-registry'
 
-interface HTTPMeetingParticipation {
-  createdAt: Date
-  userId: number | null
-  guestId: number | null
-  meetingId: number
-}
-
-// TODO: Verificar posteriormente se este presenter é necessário e, se não for, removê-lo
 export class MeetingParticipationPresenter {
-  static toHTTP(meetingParticipation: MeetingParticipation): HTTPMeetingParticipation
-  static toHTTP(meetingParticipants: MeetingParticipation[]): HTTPMeetingParticipation[]
-  static toHTTP(
-    input: MeetingParticipation | MeetingParticipation[],
-  ): HTTPMeetingParticipation | HTTPMeetingParticipation[] {
+  static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
+
+  static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
+
+  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
     if (Array.isArray(input)) {
-      return input.map((participation) => MeetingParticipationPresenter.toHTTP(participation))
+      return input.map((item) => MeetingParticipationPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    return {
-      createdAt: input.createdAt,
-      userId: input.userId,
-      guestId: input.guestId,
-      meetingId: input.meetingId,
-    }
+    const strategy = presenterRegistry.get(contextKey ?? MEETING_PARTICIPATION_DEFAULT_PRESENTER_KEY)
+
+    const result = strategy.toHTTP(input)
+
+    return result as TOutput
   }
 }

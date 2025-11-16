@@ -261,9 +261,12 @@ directorBoardsArray.forEach((directorBoard, index) => {
   dummyUserDirectorBoardInfoArray.push({
     ...partialDummyUserData,
     linkLattes: directorBoard.linkLattes,
-    role: directorBoard.DirectorPosition.connect.position === directorPositionData1.position ? UserRoleType.ADMIN : UserRoleType.MANAGER,
+    role:
+      directorBoard.DirectorPosition.connect.position === directorPositionData1.position
+        ? UserRoleType.ADMIN
+        : UserRoleType.MANAGER,
     identityDocument: `000.000.000-${(index + 50).toString().padStart(2, '0')}`,
-    fullName: directorBoard.fullName,
+    fullName: directorBoard.fullName.toUpperCase(),
     username: directorBoard.fullName.split(' ').join('.'),
     email: `director-email-${index + 1}@email.com`,
 

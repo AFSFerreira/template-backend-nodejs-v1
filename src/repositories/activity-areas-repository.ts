@@ -1,13 +1,7 @@
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
-import type { ActivityArea, ActivityAreaType, Prisma } from '@prisma/client'
-import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
-
-export interface ActivityAreaQuery {
-  area: string
-  type: ActivityAreaType
-}
-
-export type ListAllActivityAreasQuery = getAllActivityAreasSchemaType
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { ActivityAreaQuery } from '@custom-types/repositories/activity-area/activity-area-query'
+import type { ListAllActivityAreasQuery } from '@custom-types/repositories/activity-area/list-all-activity-areas-query'
+import type { ActivityArea, Prisma } from '@prisma/client'
 
 export interface ActivityAreasRepository {
   create: (data: Prisma.ActivityAreaUncheckedCreateInput) => Promise<ActivityArea>

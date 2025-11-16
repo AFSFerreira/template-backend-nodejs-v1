@@ -1,4 +1,4 @@
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
 import { ensureExists } from '@utils/ensure'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'

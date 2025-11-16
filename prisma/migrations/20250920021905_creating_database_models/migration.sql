@@ -29,7 +29,7 @@ CREATE TABLE "public"."authentication_audits" (
     "remote_port" TEXT,
     "browser" TEXT,
     "status" "public"."AuthenticationStatusType" NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
 
     CONSTRAINT "authentication_audits_pkey" PRIMARY KEY ("id")
@@ -41,7 +41,7 @@ CREATE TABLE "public"."users" (
     "public_id" TEXT NOT NULL,
     "full_name" TEXT NOT NULL,
     "username" TEXT NOT NULL,
-    "birthdate" TIMESTAMP(3) NOT NULL,
+    "birthdate" DATE NOT NULL,
     "profile_image" TEXT NOT NULL,
     "link_lattes" TEXT,
     "link_google_scholar" TEXT,
@@ -66,11 +66,11 @@ CREATE TABLE "public"."users" (
     "secondary_email" TEXT,
     "password_hash" TEXT NOT NULL,
     "login_attempts" INTEGER NOT NULL DEFAULT 0,
-    "last_login" TIMESTAMP(3),
+    "last_login" TIMESTAMPTZ(3),
     "recovery_password_token" TEXT,
-    "recovery_password_token_expires_at" TIMESTAMP(3),
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "recovery_password_token_expires_at" TIMESTAMPTZ(3),
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
     "activity_area_id" INTEGER,
     "sub_activity_area_id" INTEGER,
     "institution_id" INTEGER,
@@ -89,7 +89,7 @@ CREATE TABLE "public"."addresses" (
     "state" TEXT NOT NULL,
     "country" TEXT NOT NULL,
     "complement" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "addresses_pkey" PRIMARY KEY ("id")
@@ -99,12 +99,12 @@ CREATE TABLE "public"."addresses" (
 CREATE TABLE "public"."enrolled_courses" (
     "id" SERIAL NOT NULL,
     "course_name" TEXT,
-    "start_graduation_date" TIMESTAMP(3),
-    "expected_graduation_date" TIMESTAMP(3),
+    "start_graduation_date" DATE,
+    "expected_graduation_date" DATE,
     "supervisor_name" TEXT,
     "scholarship_holder" BOOLEAN NOT NULL,
     "sponsoring_organization" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "enrolled_courses_pkey" PRIMARY KEY ("id")
@@ -120,7 +120,7 @@ CREATE TABLE "public"."academic_publications" (
     "edition_number" TEXT NOT NULL,
     "start_page" TEXT NOT NULL,
     "link_doi" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
     "activity_area_id" INTEGER NOT NULL,
 
@@ -142,7 +142,7 @@ CREATE TABLE "public"."institutions" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "institutions_pkey" PRIMARY KEY ("id")
 );
@@ -152,7 +152,7 @@ CREATE TABLE "public"."area_of_activity" (
     "id" SERIAL NOT NULL,
     "area" TEXT NOT NULL,
     "type" "public"."ActivityAreaType" NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "area_of_activity_pkey" PRIMARY KEY ("id")
 );
@@ -161,7 +161,7 @@ CREATE TABLE "public"."area_of_activity" (
 CREATE TABLE "public"."keywords" (
     "id" SERIAL NOT NULL,
     "value" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "keywords_pkey" PRIMARY KEY ("id")
 );
@@ -172,8 +172,8 @@ CREATE TABLE "public"."directors_board" (
     "director_position_id" INTEGER NOT NULL,
     "director_board_profile_image" TEXT NOT NULL,
     "about_me" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
     "user_id" INTEGER NOT NULL,
 
     CONSTRAINT "directors_board_pkey" PRIMARY KEY ("id")
@@ -184,21 +184,21 @@ CREATE TABLE "public"."director_positions" (
     "id" SERIAL NOT NULL,
     "position" TEXT NOT NULL,
     "precedence" INTEGER NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "director_positions_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "public"."payment_info" (
-    "id" INTEGER NOT NULL DEFAULT 1,
+    "id" SMALLINT NOT NULL DEFAULT 1,
     "pix_key" TEXT NOT NULL,
     "bank" TEXT NOT NULL,
     "code" TEXT NOT NULL,
     "agency" TEXT NOT NULL,
     "account" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "payment_info_pkey" PRIMARY KEY ("id")
 );
@@ -207,9 +207,9 @@ CREATE TABLE "public"."payment_info" (
 CREATE TABLE "public"."meeting_payment_information" (
     "id" SERIAL NOT NULL,
     "value" DECIMAL(10,2) NOT NULL,
-    "limit_date" TIMESTAMP(3) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "limit_date" DATE NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
     "payment_info_id" INTEGER NOT NULL,
     "meeting_id" INTEGER NOT NULL,
 
@@ -226,7 +226,7 @@ CREATE TABLE "public"."meeting_guest" (
     "occupation" "public"."OccupationType" NOT NULL,
     "education_level" "public"."EducationLevelType" NOT NULL,
     "wants_newsletter" BOOLEAN NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "meeting_guest_pkey" PRIMARY KEY ("id")
 );
@@ -234,7 +234,7 @@ CREATE TABLE "public"."meeting_guest" (
 -- CreateTable
 CREATE TABLE "public"."meeting_participants" (
     "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
     "guest_id" INTEGER,
     "meeting_id" INTEGER NOT NULL,
@@ -248,7 +248,7 @@ CREATE TABLE "public"."meeting_presentations" (
     "presentation_type" "public"."PresentationType" NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "participation_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_presentations_pkey" PRIMARY KEY ("id")
@@ -280,10 +280,10 @@ CREATE TABLE "public"."meetings" (
     "image" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "location" TEXT NOT NULL,
-    "last_date" TIMESTAMP(3) NOT NULL,
+    "last_date" DATE NOT NULL,
     "participants_count" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "meetings_pkey" PRIMARY KEY ("id")
 );
@@ -291,8 +291,8 @@ CREATE TABLE "public"."meetings" (
 -- CreateTable
 CREATE TABLE "public"."meeting_date" (
     "id" SERIAL NOT NULL,
-    "date" TIMESTAMP(3) NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "date" DATE NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "meeting_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_date_pkey" PRIMARY KEY ("id")
@@ -308,8 +308,8 @@ CREATE TABLE "public"."blogs" (
     "access_count" INTEGER NOT NULL DEFAULT 0,
     "content" JSON NOT NULL,
     "search_content" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
     "user_id" INTEGER,
 
     CONSTRAINT "blogs_pkey" PRIMARY KEY ("id")
@@ -323,8 +323,8 @@ CREATE TABLE "public"."newsletters" (
     "edition" TEXT NOT NULL,
     "number" TEXT NOT NULL,
     "comments_quantity" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "newsletters_pkey" PRIMARY KEY ("id")
 );
@@ -336,7 +336,7 @@ CREATE TABLE "public"."newsletter_items" (
     "content" TEXT NOT NULL,
     "image" TEXT NOT NULL,
     "link_report" TEXT NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "newsletter_id" INTEGER NOT NULL,
 
     CONSTRAINT "newsletter_items_pkey" PRIMARY KEY ("id")
@@ -348,8 +348,8 @@ CREATE TABLE "public"."comments" (
     "content" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
     "likes_quantity" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL,
     "newsletter_id" INTEGER NOT NULL,
     "user_id" INTEGER,
     "parent_comment_id" INTEGER,
@@ -360,11 +360,23 @@ CREATE TABLE "public"."comments" (
 -- CreateTable
 CREATE TABLE "public"."comment_likes" (
     "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER,
     "newsletter_comment_id" INTEGER NOT NULL,
 
     CONSTRAINT "comment_likes_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "carousel_banners" (
+    "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "image" TEXT NOT NULL,
+    "link" TEXT,
+    "precedence" INTEGER NOT NULL DEFAULT 0,
+
+    CONSTRAINT "carousel_banners_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -400,6 +412,9 @@ CREATE INDEX "users_membership_status_idx" ON "public"."users"("membership_statu
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_identity_type_identity_document_key" ON "public"."users"("identity_type", "identity_document");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_secondary_email_key" ON "users"("secondary_email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "addresses_user_id_key" ON "public"."addresses"("user_id");
@@ -490,6 +505,12 @@ CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id"
 
 -- CreateIndex
 CREATE INDEX "comment_likes_newsletter_comment_id_idx" ON "public"."comment_likes"("newsletter_comment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "carousel_banners_public_id_key" ON "carousel_banners"("public_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "carousel_banners_precedence_key" ON "carousel_banners"("precedence");
 
 -- CreateIndex
 CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");

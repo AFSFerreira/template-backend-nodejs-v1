@@ -7,5 +7,7 @@ export async function persistUserProfileImage(tempImageName: string) {
 
   const newImagePath = path.resolve(REGISTER_PROFILE_IMAGES_PATH, tempImageName)
 
+  await fs.ensureDir(REGISTER_PROFILE_IMAGES_PATH)
+
   await fs.move(oldImagePath, newImagePath, { overwrite: false })
 }

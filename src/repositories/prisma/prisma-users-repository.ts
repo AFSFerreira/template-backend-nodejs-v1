@@ -1,29 +1,27 @@
-import { userWithDetails } from '@custom-types/user-with-details'
-import type { UserWithSimplifiedDetailsRaw } from '@custom-types/user-with-simplified-details-raw-type'
+import type { UserWithSimplifiedDetailsRaw } from '@custom-types/adapter/input/user-with-simplified-details-raw-type'
+import type { ChangeUserPasswordQuery } from '@custom-types/repositories/user/change-user-password-query'
+import type { CreateUserQuery } from '@custom-types/repositories/user/create-user-query'
+import type { FindByIdentityDocumentQuery } from '@custom-types/repositories/user/find-by-identity-document-query'
+import type { FindConflictingUserQuery } from '@custom-types/repositories/user/find-conflicting-user-query'
+import type { ListAllUsersDetailedQuery } from '@custom-types/repositories/user/list-all-users-detailed-query'
+import type { ListAllUsersSimplifiedQuery } from '@custom-types/repositories/user/list-all-users-simplified-query'
+import type { SetPasswordTokenQuery } from '@custom-types/repositories/user/set-password-token-query'
+import type { UpdateUserQuery } from '@custom-types/repositories/user/update-user-query'
+import { userWithDetails } from '@custom-types/validator/user-with-details'
 import { prisma } from '@lib/prisma'
 import type { Prisma, PrismaPromise } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/eval-total-pages'
-import type {
-  ChangeUserPasswordQuery,
-  CreateUserQuery,
-  FindByIdentityDocumentQuery,
-  FindConflictingUserQuery,
-  ListAllUsersDetailedQuery,
-  ListAllUsersSimplifiedQuery,
-  SetPasswordTokenQuery,
-  UpdateUserQuery,
-  UsersRepository,
-} from '../users-repository'
+import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 export class PrismaUsersRepository implements UsersRepository {
   static async ignoreClientKnownRequestError<T>(prismaPromise: PrismaPromise<T>): Promise<T | null> {
     try {
       return await prismaPromise
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       // if (!(error instanceof PrismaClientKnownRequestError)) throw error
       return null
     }
@@ -67,6 +65,8 @@ export class PrismaUsersRepository implements UsersRepository {
       ? {
           create: {
             ...data.enrolledCourse,
+            startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
+            expectedGraduationDate: new Date(data.enrolledCourse.expectedGraduationDate),
             scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
           },
         }
@@ -110,6 +110,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const user = await prisma.user.create({
       data: {
         ...data.user,
+        birthdate: new Date(data.user.birthdate),
         emailIsPublic: data.user.emailIsPublic ?? false,
         receiveReports: data.user.receiveReports ?? false,
         Address: addressCreateData,

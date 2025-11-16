@@ -1,5 +1,6 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
-import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
+import { ACTIVITY_AREA_MISSING_DESCRIPTION, INVALID_EDUCATION_LEVEL_TYPE } from '@messages/validations'
+import { EducationLevelType } from '@prisma/client'
 import { academicPublicationsSchema } from '@schemas/utils/components/academic-publication-schema'
 import { activityAreaSchema } from '@schemas/utils/components/activity-area-schema'
 import { addressSchema } from '@schemas/utils/components/address-schema'
@@ -8,6 +9,7 @@ import { identityDocumentSchema } from '@schemas/utils/components/identity-docum
 import { institutionSchema } from '@schemas/utils/components/institution-schema'
 import { birthdateSchema } from '@schemas/utils/components/limited-date-schema'
 import {
+  educationLevelSchema,
   highLevelEducationEnumSchema,
   highLevelStudentEnumSchema,
   lowLevelEducationEnumSchema,
@@ -137,10 +139,54 @@ const highLevelEducationRegisterBodySchema = z
     }
   })
 
-export const registerBodySchema = z.union([
-  highLevelStudentRegisterBodySchema,
-  highLevelEducationRegisterBodySchema,
-  lowLevelEducationRegisterBodySchema,
-])
+export const registerBodyRawSchema = z
+  .object({
+    user: z
+      .object({
+        educationLevel: educationLevelSchema,
+      })
+      .loose(),
+  })
+  .loose()
 
-export type RegisterUserBodySchemaType = z.infer<typeof registerBodySchema>
+export const registerBodySchema = registerBodyRawSchema.superRefine((data, ctx) => {
+  const educationLevel = data.user.educationLevel
+
+  let targetSchema: z.ZodType | null = (() => {
+    switch (true) {
+      case highLevelEducationEnumSchema.safeParse(educationLevel).success:
+        return highLevelEducationRegisterBodySchema
+      case highLevelStudentEnumSchema.safeParse(educationLevel).success:
+        return highLevelStudentRegisterBodySchema
+      case lowLevelEducationEnumSchema.safeParse(educationLevel).success:
+        return lowLevelEducationRegisterBodySchema
+      default:
+        return null
+    }
+  })()
+
+  if (!targetSchema) {
+    ctx.addIssue({
+      code: 'custom',
+      message: INVALID_EDUCATION_LEVEL_TYPE,
+      path: ['user', 'educationLevel'],
+      received: educationLevel,
+      options: EducationLevelType,
+    })
+    return
+  }
+
+  const result = targetSchema.safeParse(data)
+
+  if (!result.success) {
+    result.error.issues.forEach((issue) => {
+      ctx.addIssue({ ...issue })
+    })
+  }
+})
+
+type LowLevelType = z.infer<typeof lowLevelEducationRegisterBodySchema>
+type HighLevelStudentType = z.infer<typeof highLevelStudentRegisterBodySchema>
+type HighLevelEducationType = z.infer<typeof highLevelEducationRegisterBodySchema>
+
+export type RegisterUserBodySchemaType = LowLevelType | HighLevelStudentType | HighLevelEducationType

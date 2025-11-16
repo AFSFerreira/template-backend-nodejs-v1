@@ -1,16 +1,18 @@
 import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-constants'
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { FindConflictingUserQuery } from '@custom-types/repositories/user/find-conflicting-user-query'
+import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/loggings'
+import { PROFILE_IMAGE_PERSIST_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
-import type { FindConflictingUserQuery, UsersRepository } from '@repositories/users-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
 import { getAllInstitutions } from '@services/get-all-institutions'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
+import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { objectDeepEqual } from '@utils/object-deep-equal'
@@ -65,6 +67,8 @@ export class RegisterUseCase {
       ) {
         throw new UserWithSameIdentityDocument()
       }
+
+      throw new UserAlreadyExistsError()
     }
 
     if (!lowLevelEducationEnumSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
@@ -124,7 +128,7 @@ export class RegisterUseCase {
       try {
         await persistUserProfileImage(registerUseCaseInput.user.profileImage)
         imageHandleError = false
-      } catch (error) {
+      } catch (_error: unknown) {
         logger.error({ profileImage: registerUseCaseInput.user.profileImage }, PROFILE_IMAGE_PERSIST_ERROR)
       }
     }
@@ -148,6 +152,8 @@ export class RegisterUseCase {
       enrolledCourse: registerUseCaseInput.enrolledCourse,
       keyword: registerUseCaseInput.keyword,
     })
+
+    logger.info(SUCCESSFUL_USER_CREATION)
 
     return { user }
   }

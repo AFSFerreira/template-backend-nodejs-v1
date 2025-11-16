@@ -1,3 +1,5 @@
+import { logger } from '@lib/logger'
+import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings'
 import { MembershipStatusType, type User } from '@prisma/client'
 import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
@@ -92,6 +94,8 @@ export class AuthenticateUseCase {
       status: 'SUCCESS',
       userId: user.id,
     })
+
+    logger.info({ userId: user.id }, AUTHENTICATION_SUCCESSFUL)
 
     return { user }
   }

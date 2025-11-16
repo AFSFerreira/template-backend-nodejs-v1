@@ -1,9 +1,5 @@
+import type { UpdateKeywordsQuery } from '@custom-types/repositories/keyword/update-keywords-query'
 import type { Keyword, Prisma } from '@prisma/client'
-
-export interface UpdateKeywordsQuery {
-  id: number
-  data: Prisma.KeywordUpdateInput
-}
 
 export interface KeywordsRepository {
   create: (data: Prisma.KeywordUncheckedCreateInput) => Promise<Keyword>

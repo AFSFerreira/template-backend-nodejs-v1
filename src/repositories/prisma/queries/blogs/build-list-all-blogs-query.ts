@@ -17,8 +17,8 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
     conditions.push(
       Prisma.sql`(
         b.title_unaccent % ${unaccentedSearchContent} OR
-        b.title_unaccent ILIKE unaccent(${`%${searchContent}%`}) OR
-        b.search_tsv_pt @@ ${tsQuery}
+        b.search_tsv_pt @@ ${tsQuery} OR
+        b.title_unaccent ILIKE '%' || ${unaccentedSearchContent} || '%'
       )`,
     )
 
@@ -30,12 +30,11 @@ export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
     conditions.push(Prisma.sql`u.public_id = ${query.authorId}`)
   }
 
-  const scoreExpression = scores.length > 0 ? Prisma.sql`(${Prisma.join(scores, ' + ')})` : Prisma.sql`0`
-
   const { limit, offset } = evalOffset(query)
   const whereClause = conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(conditions, ' AND ')}` : Prisma.empty
 
   if (scores.length > 0) {
+    const scoreExpression = Prisma.sql`(${Prisma.join(scores, ' + ')})`
     ordinations.push(Prisma.sql`${scoreExpression} DESC`)
   }
 

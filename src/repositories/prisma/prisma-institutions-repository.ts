@@ -1,13 +1,11 @@
-import type { OrderableType } from '@custom-types/orderable'
+import type { ListAllInstitutionsNamesQuery } from '@custom-types/repositories/institution/list-all-institutions-names-query'
+import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repositories/institution/list-all-institutions-with-users-query'
+import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
-import type {
-  InstitutionsRepository,
-  ListAllInstitutionsNamesQuery,
-  ListAllInstitutionsWithUsersQuery,
-} from '../institutions-repository'
+import type { InstitutionsRepository } from '../institutions-repository'
 
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
   async create(data: Prisma.InstitutionUncheckedCreateInput) {

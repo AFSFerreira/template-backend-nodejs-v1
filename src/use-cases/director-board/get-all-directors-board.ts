@@ -1,5 +1,5 @@
-import type { DirectorBoardWithUser } from '@custom-types/director-board-with-user'
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { DirectorBoardWithUser } from '@custom-types/validator/director-board-with-user'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import type { getAllDirectorBoardSchemaType } from '@schemas/director-board/get-all-director-board-query-schema'
 

@@ -13,4 +13,4 @@ export const TEMP_FILES_DIRECTORY_ABSOLUTE_PATH = path.resolve(REGISTER_TEMP_PRO
 
 export const MB_IN_BYTES = 1024 * 1024
 
-export const MAX_IMAGE_FILE_SIZE_BYTES = 2 * MB_IN_BYTES // Tamanho limite de 2mb
+export const MAX_IMAGE_FILE_SIZE_BYTES = 5 * MB_IN_BYTES // Tamanho limite de 5mb

@@ -1,6 +1,7 @@
+import type { UpdateKeywordsQuery } from '@custom-types/repositories/keyword/update-keywords-query'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { KeywordsRepository, UpdateKeywordsQuery } from '../keywords-repository'
+import type { KeywordsRepository } from '../keywords-repository'
 
 export class PrismaKeywordsRepository implements KeywordsRepository {
   async create(data: Prisma.KeywordUncheckedCreateInput) {

@@ -1,4 +1,4 @@
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { GetAllInstitutionsSchemaType } from '@schemas/institution/get-all-institutions-query-schema'
 import { getAllInstitutions } from '@services/get-all-institutions'

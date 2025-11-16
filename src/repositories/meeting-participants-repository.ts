@@ -1,26 +1,9 @@
-import type { MeetingParticipationWithDetails } from '@custom-types/meeting-participation-with-details'
+import type { CreateMeetingParticipationForGuestQuery } from '@custom-types/repositories/meeting-participants/create-meeting-participation-for-guest-query'
+import type { CreateMeetingParticipationForUserQuery } from '@custom-types/repositories/meeting-participants/create-meeting-participation-for-user-query'
+import type { FindByGuestEmailAndMeetingId } from '@custom-types/repositories/meeting-participants/find-by-guest-email-and-meeting-id'
+import type { FindByUserIdAndMeetingIdInput } from '@custom-types/repositories/meeting-participants/find-by-user-id-and-meeting-id-input'
+import type { MeetingParticipationWithDetails } from '@custom-types/validator/meeting-participation-with-details'
 import type { MeetingParticipation } from '@prisma/client'
-import type { RegisterGuestMeetingBodySchemaType } from '@schemas/meeting/register-guest-meeting-body-schema'
-import type { RegisterUserMeetingBodySchemaType } from '@schemas/meeting/register-user-meeting-body-schema'
-
-export interface CreateMeetingParticipationForUserQuery extends RegisterUserMeetingBodySchemaType {
-  meetingId: number
-  userId: number
-}
-
-export interface CreateMeetingParticipationForGuestQuery extends RegisterGuestMeetingBodySchemaType {
-  meetingId: number
-}
-
-export interface FindByUserIdAndMeetingIdInput {
-  userId: number
-  meetingId: number
-}
-
-export interface FindByGuestEmailAndMeetingId {
-  email: string
-  meetingId: number
-}
 
 export interface MeetingParticipantsRepository {
   createForUser: (query: CreateMeetingParticipationForUserQuery) => Promise<MeetingParticipation>

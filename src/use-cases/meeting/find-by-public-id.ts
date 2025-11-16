@@ -1,4 +1,4 @@
-import type { MeetingWithDetails } from '@custom-types/meeting-with-details'
+import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { ensureExists } from '@utils/ensure'
 import { MeetingNotFoundError } from '../errors/meeting/meeting-not-found-error'

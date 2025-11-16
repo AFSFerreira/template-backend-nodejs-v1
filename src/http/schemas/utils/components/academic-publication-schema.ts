@@ -1,8 +1,8 @@
 import z from 'zod'
+import { doiSchema } from './doi-schema'
 import { rangedYearSchema } from '../primitives/ranged-year-schema'
 import { uppercaseTextArraySchema } from '../primitives/uppercase-text-array-schema'
 import { upperCaseTextSchema } from '../primitives/uppercase-text-schema'
-import { urlSchema } from '../primitives/url-schema'
 
 export const academicPublicationsSchema = z.array(
   z.object({
@@ -14,6 +14,6 @@ export const academicPublicationsSchema = z.array(
     volume: upperCaseTextSchema,
     editionNumber: upperCaseTextSchema,
     startPage: upperCaseTextSchema,
-    linkDoi: urlSchema,
+    linkDoi: doiSchema,
   }),
 )

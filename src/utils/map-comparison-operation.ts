@@ -1,4 +1,4 @@
-import type { ComparableType } from '@custom-types/orderable'
+import type { ComparableType } from '@custom-types/validator/orderable'
 
 export function mapComparisonOperation(operation: ComparableType) {
   switch (operation) {

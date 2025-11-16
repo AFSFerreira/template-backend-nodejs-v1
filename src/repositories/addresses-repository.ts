@@ -1,13 +1,7 @@
-import { type PaginatedResult } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { AddressStates } from '@custom-types/repositories/address/address-states'
+import type { ListAllAddressStateQuery } from '@custom-types/repositories/address/list-all-address-state-query'
 import type { Address, Prisma } from '@prisma/client'
-import type { GetAllStatesQuerySchemaType } from '@schemas/address/get-all-states-query-schema'
-
-export interface ListAllAddressStateQuery extends GetAllStatesQuerySchemaType {}
-
-export interface AddressStates {
-  state: string
-  usersCount: number
-}
 
 export interface AddressesRepository {
   create: (data: Prisma.AddressUncheckedCreateInput) => Promise<Address>

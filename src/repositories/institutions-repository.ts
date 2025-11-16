@@ -1,18 +1,8 @@
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
-import type { PaginationType } from '@custom-types/pagination-type'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { InstitutionsUsersCount } from '@custom-types/repositories/institution/institutions-users-count'
+import type { ListAllInstitutionsNamesQuery } from '@custom-types/repositories/institution/list-all-institutions-names-query'
+import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repositories/institution/list-all-institutions-with-users-query'
 import type { Institution, Prisma } from '@prisma/client'
-import type { GetAllInstitutionsWithUsersQuerySchemaType } from '@schemas/institution/get-all-institutions-with-users-query-schema'
-
-export interface ListAllInstitutionsWithUsersQuery extends GetAllInstitutionsWithUsersQuerySchemaType {}
-
-export interface InstitutionsUsersCount {
-  name: string
-  usersCount: number
-}
-
-export interface ListAllInstitutionsNamesQuery extends PaginationType {
-  name?: string
-}
 
 export interface InstitutionsRepository {
   create: (data: Prisma.InstitutionUncheckedCreateInput) => Promise<Institution>

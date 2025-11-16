@@ -1,3 +1,4 @@
+import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/user-presenter'
 import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-params-schema'
 import { makeFindUserByPublicIdUseCase } from '@use-cases/factories/user/make-find-by-public-id-use-case'
@@ -8,5 +9,5 @@ export async function getUserByPublicId(request: FastifyRequest, reply: FastifyR
   const findUserByIdUseCase = makeFindUserByPublicIdUseCase()
 
   const { user } = await findUserByIdUseCase.execute({ publicId })
-  return await reply.status(200).send({ user: UserPresenter.toHTTPDetailed(user) })
+  return await reply.status(200).send({ data: UserPresenter.toHTTP(user, USER_DETAILED_PRESENTER_KEY) })
 }

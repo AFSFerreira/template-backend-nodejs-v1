@@ -1,8 +1,9 @@
-import { directorBoardWithUser } from '@custom-types/director-board-with-user'
-import type { OrderableType } from '@custom-types/orderable'
+import type { listAllDirectorBoardMembers } from '@custom-types/repositories/director-board/list-all-director-board-members'
+import { directorBoardWithUser } from '@custom-types/validator/director-board-with-user'
+import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import type { DirectorBoardRepository, listAllDirectorBoardMembers } from '@repositories/directors-board-repository'
+import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { evalOffset } from '@utils/eval-offset'
 import { evalTotalPages } from '@utils/eval-total-pages'
 

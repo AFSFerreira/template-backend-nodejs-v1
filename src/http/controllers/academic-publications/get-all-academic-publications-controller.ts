@@ -1,3 +1,4 @@
+import { ACADEMIC_PUBLICATION_FILTERED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { AcademicPublicationPresenter } from '@presenters/academic-publication-presenter'
 import { getAllAcademicPublicationsQuerySchema } from '@schemas/academic-publication/get-all-academic-publications-query-schema'
 import { makeGetAllAcademicPublicationsUseCase } from '@use-cases/factories/academic-publication/make-get-all-academic-publications-use-case'
@@ -9,5 +10,7 @@ export async function getAllAcademicPublicationsController(request: FastifyReque
 
   const { data, meta } = await getAllAcademicPublicationsUseCase.execute(parsedQuery)
 
-  return await reply.status(200).send({ data: AcademicPublicationPresenter.toHTTP(data), meta })
+  return await reply
+    .status(200)
+    .send({ data: AcademicPublicationPresenter.toHTTP(data, ACADEMIC_PUBLICATION_FILTERED_PRESENTER_KEY), meta })
 }

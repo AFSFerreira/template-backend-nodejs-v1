@@ -1,4 +1,4 @@
-import type { RateLimitInput } from '@custom-types/rate-limit-input-type'
+import type { RateLimitInput } from '@custom-types/custom/rate-limit-input-type'
 import { RateLimitError } from '@use-cases/errors/generic/rate-limit-error'
 import type { RouteOptions } from 'fastify'
 import { getClientIp } from './get-client-ip'

@@ -1,5 +1,5 @@
 import { MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-constants'
-import type { IApiError } from '@custom-types/api-error-type'
+import type { IApiError } from '@custom-types/custom/api-error-type'
 
 export const NO_USERS_AVAILABLE: IApiError = {
   status: 204,
@@ -374,5 +374,5 @@ export const INVALID_BODY_FORMAT_JSON: IApiError = {
   body: {
     code: 'INVALID_BODY_FORMAT_JSON',
     message: 'Formato inválido do JSON do corpo de requisição',
-  }
+  },
 }

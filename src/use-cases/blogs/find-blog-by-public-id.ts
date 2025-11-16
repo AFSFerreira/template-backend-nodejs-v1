@@ -1,4 +1,4 @@
-import type { BlogWithDetails } from '@custom-types/blog-with-details'
+import type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
 import { redis } from '@lib/redis'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { registerBlogViews } from '@services/register-blog-views'

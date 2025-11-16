@@ -1,4 +1,4 @@
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import type { Keyword } from '@prisma/client'
 
 interface FlattenedUser {

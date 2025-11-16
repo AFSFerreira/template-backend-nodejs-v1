@@ -81,916 +81,916 @@ export const proseMirrorData1 = {
 }
 
 export const proseMirrorData2 = {
-  "type": "doc",
-  "content": [
+  type: 'doc',
+  content: [
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "O encontro do químico Dimas Zaia com a astrobiologia foi fortuito. No começo da década de 1990, enquanto bisbilhotava o acervo de uma biblioteca em Nova York – onde fazia parte de seu doutorado – Zaia topou com uma lombada azul e um título intrigante: "
+          type: 'text',
+          text: 'O encontro do químico Dimas Zaia com a astrobiologia foi fortuito. No começo da década de 1990, enquanto bisbilhotava o acervo de uma biblioteca em Nova York – onde fazia parte de seu doutorado – Zaia topou com uma lombada azul e um título intrigante: ',
         },
         {
-          "type": "text",
-          "marks": [
+          type: 'text',
+          marks: [
             {
-              "type": "italic"
-            }
+              type: 'italic',
+            },
           ],
-          "text": "Origins of Life and Evolution of Biospheres [Origens da Vida e Evolução das Biosferas]"
+          text: 'Origins of Life and Evolution of Biospheres [Origens da Vida e Evolução das Biosferas]',
         },
         {
-          "type": "text",
-          "text": ". Foi paixão à primeira vista: o contato com o tema da química pré-biótica redirecionou uma carreira que até então focava na química analítica e vinha sendo um pouco frustrante."
-        }
-      ]
+          type: 'text',
+          text: '. Foi paixão à primeira vista: o contato com o tema da química pré-biótica redirecionou uma carreira que até então focava na química analítica e vinha sendo um pouco frustrante.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Com o interesse científico voltado ao sempre aceso debate sobre as origens da vida, o professor de química da Universidade Estadual de Londrina deu contribuições valiosas e originais a essa área, um dos ramos da astrobiologia. Zaia contribuiu para a compreensão da interação de mecanismos de adsorção de moléculas em minerais, fundamental para desvendar sua pré-concentração na Terra primitiva. Essa pré-concentração deve ter sido necessária para que ocorresse o aumento da complexidade dos compostos orgânicos, precursores dos primeiros seres vivos."
-        }
-      ]
+          type: 'text',
+          text: 'Com o interesse científico voltado ao sempre aceso debate sobre as origens da vida, o professor de química da Universidade Estadual de Londrina deu contribuições valiosas e originais a essa área, um dos ramos da astrobiologia. Zaia contribuiu para a compreensão da interação de mecanismos de adsorção de moléculas em minerais, fundamental para desvendar sua pré-concentração na Terra primitiva. Essa pré-concentração deve ter sido necessária para que ocorresse o aumento da complexidade dos compostos orgânicos, precursores dos primeiros seres vivos.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Além de se dedicar à pesquisa e ao ensino, Zaia também atuou na divulgação científica. Entre 2017 e 2021, foi vice-presidente da Sociedade Brasileira de Astrobiologia. Nessa entrevista, ele conta em detalhes sua trajetória e explora alguns de seus principais interesses científicos.  "
-        }
-      ]
+          type: 'text',
+          text: 'Além de se dedicar à pesquisa e ao ensino, Zaia também atuou na divulgação científica. Entre 2017 e 2021, foi vice-presidente da Sociedade Brasileira de Astrobiologia. Nessa entrevista, ele conta em detalhes sua trajetória e explora alguns de seus principais interesses científicos.  ',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Professor Dimas, como nasceu o seu interesse por ciência?"
-        }
-      ]
+          type: 'text',
+          text: 'Professor Dimas, como nasceu o seu interesse por ciência?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Desde criança, sempre gostei de ciência e de ler. Gostava muito de história, e ainda gosto. E sempre gostei de biologia, de física, de química. Quando chegou o momento de fazer a graduação, escolhi a química, que era um dos cursos na Universidade Estadual de Maringá, onde eu morava na época. Me graduei no final de 1980 e fui no início de 1981 fazer mestrado no Instituto de Química da Universidade de São Paulo (USP)."
-        }
-      ]
+          type: 'text',
+          text: 'Desde criança, sempre gostei de ciência e de ler. Gostava muito de história, e ainda gosto. E sempre gostei de biologia, de física, de química. Quando chegou o momento de fazer a graduação, escolhi a química, que era um dos cursos na Universidade Estadual de Maringá, onde eu morava na época. Me graduei no final de 1980 e fui no início de 1981 fazer mestrado no Instituto de Química da Universidade de São Paulo (USP).',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Pesquisar é uma questão de gosto. Uma vez, fiz um estágio no laboratório do professor Osvaldo Sala e perguntei um dia para ele o que é necessário para ser um bom cientista. Nunca me esqueço que ele arregalou o olho e falou: \"você tem que gostar de estudar e ler, é só isso. Tem que gostar de estudar, tem que ter curiosidade. Não é uma profissão para qualquer pessoa. Uma pessoa que não gosta de estudar não pode ter essa profissão.” Então tem que gostar de estudar, tem que ter curiosidade. Enfim, concluí o mestrado em 1985 e me mudei para Londrina."
-        }
-      ]
+          type: 'text',
+          text: 'Pesquisar é uma questão de gosto. Uma vez, fiz um estágio no laboratório do professor Osvaldo Sala e perguntei um dia para ele o que é necessário para ser um bom cientista. Nunca me esqueço que ele arregalou o olho e falou: "você tem que gostar de estudar e ler, é só isso. Tem que gostar de estudar, tem que ter curiosidade. Não é uma profissão para qualquer pessoa. Uma pessoa que não gosta de estudar não pode ter essa profissão.” Então tem que gostar de estudar, tem que ter curiosidade. Enfim, concluí o mestrado em 1985 e me mudei para Londrina.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Qual foi o tema do seu mestrado?"
-        }
-      ]
+          type: 'text',
+          text: 'Qual foi o tema do seu mestrado?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu trabalhei com química analítica. Aliás, toda a minha formação foi focada nessa área. Meu orientador, Dr. Jaim Lichtig, trabalhava com eletronanalítica Desenvolvemos metodologias para determinação de iodato e bromato em diversos meios, farinha, sal, água do mar, por exemplo."
-        }
-      ]
+          type: 'text',
+          text: 'Eu trabalhei com química analítica. Aliás, toda a minha formação foi focada nessa área. Meu orientador, Dr. Jaim Lichtig, trabalhava com eletronanalítica Desenvolvemos metodologias para determinação de iodato e bromato em diversos meios, farinha, sal, água do mar, por exemplo.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "O senhor fez o doutorado também na USP?"
-        }
-      ]
+          type: 'text',
+          text: 'O senhor fez o doutorado também na USP?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Sim, na USP, com o mesmo orientador, o professor Jaim Lichtig. No doutorado, perguntei se ele aceitaria que eu fizesse a tese aqui de Londrina. Ele concordou. Em 1992, fui para os Estados Unidos, com uma bolsa sanduíche, pesquisar na Universidade Rockefeller. Lá, trabalhei com o [químico norte-americano] Robert Bruce Merrifield (1921-2006). Na década de 60, ele desenvolveu uma técnica de síntese de peptídeos em fase sólida. Antes disso, todo o processo de síntese e purificação para fazer um peptídeo de 20 aminoácidos demorava em torno de 2 anos. Com a técnica dele, dava para fazer em um mês. Depois ele desenvolveu uma máquina para fazer peptídeo. Eu cheguei a ver um protótipo dessa máquina na casa dele. Com ela dava para fazer um peptídeo em 24 horas."
-        }
-      ]
+          type: 'text',
+          text: 'Sim, na USP, com o mesmo orientador, o professor Jaim Lichtig. No doutorado, perguntei se ele aceitaria que eu fizesse a tese aqui de Londrina. Ele concordou. Em 1992, fui para os Estados Unidos, com uma bolsa sanduíche, pesquisar na Universidade Rockefeller. Lá, trabalhei com o [químico norte-americano] Robert Bruce Merrifield (1921-2006). Na década de 60, ele desenvolveu uma técnica de síntese de peptídeos em fase sólida. Antes disso, todo o processo de síntese e purificação para fazer um peptídeo de 20 aminoácidos demorava em torno de 2 anos. Com a técnica dele, dava para fazer em um mês. Depois ele desenvolveu uma máquina para fazer peptídeo. Eu cheguei a ver um protótipo dessa máquina na casa dele. Com ela dava para fazer um peptídeo em 24 horas.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Esse foi o grande impacto do professor Merrifield na ciência?"
-        }
-      ]
+          type: 'text',
+          text: 'Esse foi o grande impacto do professor Merrifield na ciência?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Ele fez uma revolução na área de fisiologia, farmacologia assim como muitas outras áreas porque, a partir da nova técnica, foi possível sintetizar praticamente qualquer tipo de peptídeo em grande quantidade, rapidamente, a baixo custo. Quando ele ganhou o prêmio Nobel de Química, em 1984, ele era conhecido como o Henry Ford das proteínas (risos)."
-        }
-      ]
+          type: 'text',
+          text: 'Ele fez uma revolução na área de fisiologia, farmacologia assim como muitas outras áreas porque, a partir da nova técnica, foi possível sintetizar praticamente qualquer tipo de peptídeo em grande quantidade, rapidamente, a baixo custo. Quando ele ganhou o prêmio Nobel de Química, em 1984, ele era conhecido como o Henry Ford das proteínas (risos).',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Ele criou uma linha de produção de proteínas, então? (risos)"
-        }
-      ]
+          type: 'text',
+          text: 'Ele criou uma linha de produção de proteínas, então? (risos)',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Exatamente (risos)."
-        }
-      ]
+          type: 'text',
+          text: 'Exatamente (risos).',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Você ficou dois anos lá, nesse doutorado sanduíche. Como foi essa experiência?"
-        }
-      ]
+          type: 'text',
+          text: 'Você ficou dois anos lá, nesse doutorado sanduíche. Como foi essa experiência?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "É o tipo da experiência que todo mundo na área acadêmica deve ter. É fundamental para tomar contato com visões diferentes. A Rockefeller era, e ainda é, uma universidade topo de linha nos Estados Unidos. Na época em que eu estava lá, a cada 4 ou 5 anos uma pessoa que trabalhou ou trabalhava lá ganhava um prêmio Nobel."
-        }
-      ]
+          type: 'text',
+          text: 'É o tipo da experiência que todo mundo na área acadêmica deve ter. É fundamental para tomar contato com visões diferentes. A Rockefeller era, e ainda é, uma universidade topo de linha nos Estados Unidos. Na época em que eu estava lá, a cada 4 ou 5 anos uma pessoa que trabalhou ou trabalhava lá ganhava um prêmio Nobel.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu fui fazer síntese de peptídeo e checar se esses peptídeos tinham atividade farmacológica. Sintetizei dezenas de peptídeos, mas, infelizmente, nenhum deles mostrou atividade farmacológica. Então eu não consegui publicar nada. Em ciência, as pessoas têm que se acostumar com a frustração. Às vezes você pensa em fazer uma coisa, gasta um tempo grande, muita energia e dinheiro, e não dá em nada. Quando fiz todas as sínteses, analisei os dados e expliquei para o professor: \"nós modificamos essa parte do peptídeo e acho que ele fica um pouco móvel; não está aderindo às membranas para fazer o efeito que ele tem que fazer do outro lado da célula”. Ele me falou: \"quando escrevi esse projeto, eu tinha certeza de que esses peptídeos iriam funcionar\". Eu falei: \"mas infelizmente não funcionam\"."
-        }
-      ]
+          type: 'text',
+          text: 'Eu fui fazer síntese de peptídeo e checar se esses peptídeos tinham atividade farmacológica. Sintetizei dezenas de peptídeos, mas, infelizmente, nenhum deles mostrou atividade farmacológica. Então eu não consegui publicar nada. Em ciência, as pessoas têm que se acostumar com a frustração. Às vezes você pensa em fazer uma coisa, gasta um tempo grande, muita energia e dinheiro, e não dá em nada. Quando fiz todas as sínteses, analisei os dados e expliquei para o professor: "nós modificamos essa parte do peptídeo e acho que ele fica um pouco móvel; não está aderindo às membranas para fazer o efeito que ele tem que fazer do outro lado da célula”. Ele me falou: "quando escrevi esse projeto, eu tinha certeza de que esses peptídeos iriam funcionar". Eu falei: "mas infelizmente não funcionam".',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Qual efeito o senhor estava esperando ver?"
-        }
-      ]
+          type: 'text',
+          text: 'Qual efeito o senhor estava esperando ver?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu sintetizei um peptídeo chamado VIP, vaso ativo intestinal. Queríamos fazer um peptídeo que aumentasse esse efeito do vaso ativo. Esse peptídeo foi originalmente encontrado no intestino, e depois também foi encontrado no cérebro. É um vasodilatador. Os peptídeos não apresentaram efeito esperado e não gerou publicação, mas a experiência da pesquisa em si foi de grande aprendizado. E foi lá que eu tive meu primeiro contato com a astrobiologia."
-        }
-      ]
+          type: 'text',
+          text: 'Eu sintetizei um peptídeo chamado VIP, vaso ativo intestinal. Queríamos fazer um peptídeo que aumentasse esse efeito do vaso ativo. Esse peptídeo foi originalmente encontrado no intestino, e depois também foi encontrado no cérebro. É um vasodilatador. Os peptídeos não apresentaram efeito esperado e não gerou publicação, mas a experiência da pesquisa em si foi de grande aprendizado. E foi lá que eu tive meu primeiro contato com a astrobiologia.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Como foi esse primeiro contato?"
-        }
-      ]
+          type: 'text',
+          text: 'Como foi esse primeiro contato?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu sempre fui um rato de biblioteca. Um belo dia, andando pela biblioteca, eu vi uns livrinhos azuis com o título "
+          type: 'text',
+          text: 'Eu sempre fui um rato de biblioteca. Um belo dia, andando pela biblioteca, eu vi uns livrinhos azuis com o título ',
         },
         {
-          "type": "text",
-          "marks": [
+          type: 'text',
+          marks: [
             {
-              "type": "italic"
-            }
+              type: 'italic',
+            },
           ],
-          "text": "Origins of Life and Evolution of Biospheres"
+          text: 'Origins of Life and Evolution of Biospheres',
         },
         {
-          "type": "text",
-          "text": ". Eram exemplares de uma revista sobre pesquisas em origens da vida publicada pela ISSOL [International Society for the Study of the Origin of Life, que posteriormente se tornou International Astrobiology Society]. Comecei a ler e pensei na mesma hora: \"é isso que eu vou fazer para o resto da minha vida”. Eu me apaixonei. Finalmente eu tinha achado um tema cientificamente muito atraente."
-        }
-      ]
+          type: 'text',
+          text: '. Eram exemplares de uma revista sobre pesquisas em origens da vida publicada pela ISSOL [International Society for the Study of the Origin of Life, que posteriormente se tornou International Astrobiology Society]. Comecei a ler e pensei na mesma hora: "é isso que eu vou fazer para o resto da minha vida”. Eu me apaixonei. Finalmente eu tinha achado um tema cientificamente muito atraente.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "O que te atraiu no tema da química pré-biótica, da origem da vida?"
-        }
-      ]
+          type: 'text',
+          text: 'O que te atraiu no tema da química pré-biótica, da origem da vida?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Conhecemos muito pouco sobre a origem da vida, é um tema desafiador. Esse desafio tem várias vertentes, desde a obviamente científica, a parte química, mas também tem uma vertente filosófica. Veja o que que nós estamos propondo fazer: achar um meio de fazer um ser vivo a partir de matéria inanimada. Tanto do ponto de vista filosófico como da química, isso é extremamente desafiador."
-        }
-      ]
+          type: 'text',
+          text: 'Conhecemos muito pouco sobre a origem da vida, é um tema desafiador. Esse desafio tem várias vertentes, desde a obviamente científica, a parte química, mas também tem uma vertente filosófica. Veja o que que nós estamos propondo fazer: achar um meio de fazer um ser vivo a partir de matéria inanimada. Tanto do ponto de vista filosófico como da química, isso é extremamente desafiador.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Uma pessoa que está começando em ciência precisa achar alguma coisa que realmente a desafie e interesse, que realmente a motive levantar de manhã, ir para o laboratório e fazer experimentos. Veja, o trabalho do pesquisador é extenuante e ingrato. Eu fiquei dois anos nos EUA, ia trabalhar de sábado mesmo com esposa e filhas lá. Trabalhei muito e não consegui publicar nada. Em 1994, o professor Merrifield me ofereceu mais um ano de bolsa para continuar a pesquisa, mas decidi voltar para o Brasil."
-        }
-      ]
+          type: 'text',
+          text: 'Uma pessoa que está começando em ciência precisa achar alguma coisa que realmente a desafie e interesse, que realmente a motive levantar de manhã, ir para o laboratório e fazer experimentos. Veja, o trabalho do pesquisador é extenuante e ingrato. Eu fiquei dois anos nos EUA, ia trabalhar de sábado mesmo com esposa e filhas lá. Trabalhei muito e não consegui publicar nada. Em 1994, o professor Merrifield me ofereceu mais um ano de bolsa para continuar a pesquisa, mas decidi voltar para o Brasil.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Quando volta, o senhor começa a estudar a química pré-biótica e se torna professor na Universidade Estadual de Londrina?"
-        }
-      ]
+          type: 'text',
+          text: 'Quando volta, o senhor começa a estudar a química pré-biótica e se torna professor na Universidade Estadual de Londrina?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Quando voltei ainda tinha que fazer cursos, terminar alguns experimentos, escrever a tese, artigos e defender minha tese de doutorado. Na Universidade Estadual de Londrina, estou no Departamento de Química onde ensino físico-química. Meu trabalho na química pré-biótica sempre foi voltado para físico-química."
-        }
-      ]
+          type: 'text',
+          text: 'Quando voltei ainda tinha que fazer cursos, terminar alguns experimentos, escrever a tese, artigos e defender minha tese de doutorado. Na Universidade Estadual de Londrina, estou no Departamento de Química onde ensino físico-química. Meu trabalho na química pré-biótica sempre foi voltado para físico-química.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Qual era o estado do conhecimento de origens da vida nessa época?"
-        }
-      ]
+          type: 'text',
+          text: 'Qual era o estado do conhecimento de origens da vida nessa época?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Já havia um debate sobre o mundo do RNA [nota do entrevistador: cenário hipotético em que o RNA teria precedido o DNA e as proteínas, carregando informação genética e catalizando reações químicas]. O que nós chamamos de química pré-biótica era, na verdade, muita gente simulando determinados ambientes para ver quais moléculas orgânicas podiam ser formadas. O que sabemos de química pré-biótica são os tipos de moléculas que provavelmente existiram na Terra primitiva, e temos uma ideia das quantidades delas também. Mas quando vamos para a próxima etapa, que é a formação de polímeros, a coisa começa a se complicar."
-        }
-      ]
+          type: 'text',
+          text: 'Já havia um debate sobre o mundo do RNA [nota do entrevistador: cenário hipotético em que o RNA teria precedido o DNA e as proteínas, carregando informação genética e catalizando reações químicas]. O que nós chamamos de química pré-biótica era, na verdade, muita gente simulando determinados ambientes para ver quais moléculas orgânicas podiam ser formadas. O que sabemos de química pré-biótica são os tipos de moléculas que provavelmente existiram na Terra primitiva, e temos uma ideia das quantidades delas também. Mas quando vamos para a próxima etapa, que é a formação de polímeros, a coisa começa a se complicar.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "O que significa essa complicação?"
-        }
-      ]
+          type: 'text',
+          text: 'O que significa essa complicação?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Na Terra pré-biótica havia uma mistura muito grande de moléculas orgânicas. Por exemplo, os aminoácidos: só no meteorito Murchison que caiu na Austrália [em 1969], detectaram mais de 80 tipos diferentes de aminoácidos. Mas os seres vivos utilizam apenas 20 aminoácidos. Como foram selecionados esses 20 aminoácidos? Dentro da mistura de moléculas na Terra primitiva, como surgiu alguma estrutura relevante para a origem da vida? Esse é um dos grandes problemas."
-        }
-      ]
+          type: 'text',
+          text: 'Na Terra pré-biótica havia uma mistura muito grande de moléculas orgânicas. Por exemplo, os aminoácidos: só no meteorito Murchison que caiu na Austrália [em 1969], detectaram mais de 80 tipos diferentes de aminoácidos. Mas os seres vivos utilizam apenas 20 aminoácidos. Como foram selecionados esses 20 aminoácidos? Dentro da mistura de moléculas na Terra primitiva, como surgiu alguma estrutura relevante para a origem da vida? Esse é um dos grandes problemas.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "O outro é a baixa concentração destas moléculas nos oceanos da Terra. Há 4 bilhões de anos atrás, a quantidade de terra seca no planeta era muito menor, somente 25% do que nós temos hoje. A maior parte das moléculas orgânicas que fossem produzidas ou que viessem de fora, com os asteroides, acabaria ficando no oceano, diluída, em concentração muito baixa. Essas moléculas precisam se encontrar para reagir, e para isso é preciso concentrá-las em algum lugar."
-        }
-      ]
+          type: 'text',
+          text: 'O outro é a baixa concentração destas moléculas nos oceanos da Terra. Há 4 bilhões de anos atrás, a quantidade de terra seca no planeta era muito menor, somente 25% do que nós temos hoje. A maior parte das moléculas orgânicas que fossem produzidas ou que viessem de fora, com os asteroides, acabaria ficando no oceano, diluída, em concentração muito baixa. Essas moléculas precisam se encontrar para reagir, e para isso é preciso concentrá-las em algum lugar.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Como, então, as moléculas podem ter se concentrado?"
-        }
-      ]
+          type: 'text',
+          text: 'Como, então, as moléculas podem ter se concentrado?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Moléculas podem “grudar” na superfície de um mineral com o fenômeno da adsorção. Dependendo do mineral, pode ocorrer a adsorção – a molécula “grudando” na superfície – e a absorção, quando a molécula penetra nas intercamadas do mineral ou em seus poros. No oceano primitivo, as moléculas, sintetizadas no planeta ou trazidas por meteoritos que caíam no mar, estavam muito diluídas. Para haver evolução molecular, em que as moléculas orgânicas vão se tornando mais complexas, precisa haver uma pré-concentração numa superfície. Isso é importante para que elas reajam entre si. Isso vai formando moléculas orgânicas mais complexas, com cadeias maiores de carbono. Se não ocorrer uma pré-concentração dessas moléculas, a evolução molecular nunca ocorreria. É aí que entram os minerais com capacidade de adsorção, concentrando essas moléculas em suas superfícies. Um dos primeiros a difundir estas ideias foi [o físico irlandês] J. D. Bernal (1901-1971) em seu livro "
+          type: 'text',
+          text: 'Moléculas podem “grudar” na superfície de um mineral com o fenômeno da adsorção. Dependendo do mineral, pode ocorrer a adsorção – a molécula “grudando” na superfície – e a absorção, quando a molécula penetra nas intercamadas do mineral ou em seus poros. No oceano primitivo, as moléculas, sintetizadas no planeta ou trazidas por meteoritos que caíam no mar, estavam muito diluídas. Para haver evolução molecular, em que as moléculas orgânicas vão se tornando mais complexas, precisa haver uma pré-concentração numa superfície. Isso é importante para que elas reajam entre si. Isso vai formando moléculas orgânicas mais complexas, com cadeias maiores de carbono. Se não ocorrer uma pré-concentração dessas moléculas, a evolução molecular nunca ocorreria. É aí que entram os minerais com capacidade de adsorção, concentrando essas moléculas em suas superfícies. Um dos primeiros a difundir estas ideias foi [o físico irlandês] J. D. Bernal (1901-1971) em seu livro ',
         },
         {
-          "type": "text",
-          "marks": [
+          type: 'text',
+          marks: [
             {
-              "type": "italic"
-            }
+              type: 'italic',
+            },
           ],
-          "text": "The physical basis of life"
+          text: 'The physical basis of life',
         },
         {
-          "type": "text",
-          "text": " (1951)."
-        }
-      ]
+          type: 'text',
+          text: ' (1951).',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Qual é a importância do cianeto na química pré-biótica?"
-        }
-      ]
+          type: 'text',
+          text: 'Qual é a importância do cianeto na química pré-biótica?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "É uma molécula extremamente importante para a síntese de aminoácidos e bases nitrogenadas. Fizemos experimentos para adsorver o ácido cianídrico dez minerais diferentes. Este trabalho foi parte da tese de doutorado do Rafael Samulewski, que orientei. O ácido cianídrico não adsorveu nos minerais. Então nós combinamos ácido cianídrico com ferro (II) [nota do entrevistador: o íon de ferro com carga +2], formando um composto ferrocianeto. E esse composto adsorveu na superfície dos minerais, mostrando alta adsorção."
-        }
-      ]
+          type: 'text',
+          text: 'É uma molécula extremamente importante para a síntese de aminoácidos e bases nitrogenadas. Fizemos experimentos para adsorver o ácido cianídrico dez minerais diferentes. Este trabalho foi parte da tese de doutorado do Rafael Samulewski, que orientei. O ácido cianídrico não adsorveu nos minerais. Então nós combinamos ácido cianídrico com ferro (II) [nota do entrevistador: o íon de ferro com carga +2], formando um composto ferrocianeto. E esse composto adsorveu na superfície dos minerais, mostrando alta adsorção.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Com o ferrocianeto, o senhor encontrou cenários em que a adsorção seria possível. A adsorção possibilita uma pré-concentração de moléculas que ajudam a tornar mais complexa a química pré-biótica. É isso?"
-        }
-      ]
+          type: 'text',
+          text: 'Com o ferrocianeto, o senhor encontrou cenários em que a adsorção seria possível. A adsorção possibilita uma pré-concentração de moléculas que ajudam a tornar mais complexa a química pré-biótica. É isso?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Exatamente. Vão formar moléculas mais complexas na superfície do mineral. Inclusive, em breve uma aluna de doutorado, Tallita Stéfanne e Silva, vai ao México, na UNAM [Universidad Nacional Autónoma de México]. Ela vai testar amostras do ferrocianeto adsorvido em minerais e, lá, vão fazer uma irradiação gama para ver se a radiação gama produz alguma molécula de interesse biológico."
-        }
-      ]
+          type: 'text',
+          text: 'Exatamente. Vão formar moléculas mais complexas na superfície do mineral. Inclusive, em breve uma aluna de doutorado, Tallita Stéfanne e Silva, vai ao México, na UNAM [Universidad Nacional Autónoma de México]. Ela vai testar amostras do ferrocianeto adsorvido em minerais e, lá, vão fazer uma irradiação gama para ver se a radiação gama produz alguma molécula de interesse biológico.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Então, dependendo da exposição dessas concentrações de molécula a determinada radiação, pode haver reações que tornam as moléculas mais complexas. Em algum momento isso pode resultar em algo como o que a gente conhece como vida?"
-        }
-      ]
+          type: 'text',
+          text: 'Então, dependendo da exposição dessas concentrações de molécula a determinada radiação, pode haver reações que tornam as moléculas mais complexas. Em algum momento isso pode resultar em algo como o que a gente conhece como vida?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Não, mas pode resultar em moléculas mais complexas, ou mesmo na decomposição destas moléculas."
-        }
-      ]
+          type: 'text',
+          text: 'Não, mas pode resultar em moléculas mais complexas, ou mesmo na decomposição destas moléculas.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Quais foram suas outras contribuições à química pré-biótica?"
-        }
-      ]
+          type: 'text',
+          text: 'Quais foram suas outras contribuições à química pré-biótica?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Desde 2004 publiquei artigos em que mostro que boa parte dos experimentos em química pré-biótica não estavam muito corretos pois eram feitos em água destilada e em soluções salinas de cloreto de sódio. Em raras exceções usaram magnésio, cloreto e cálcio. Neste período baseado em alguns trabalhos propus duas composições de água do mar. Uma rica em magnésio e outra rica em cálcio. No entanto, o oceano primitivo da Terra, muito provavelmente, era rico em cálcio e cloreto, com um pouco de magnésio e sódio. O oceano atualmente tem alta concentração de cloreto de sódio. Isso faz toda a diferença para a adsorção."
-        }
-      ]
+          type: 'text',
+          text: 'Desde 2004 publiquei artigos em que mostro que boa parte dos experimentos em química pré-biótica não estavam muito corretos pois eram feitos em água destilada e em soluções salinas de cloreto de sódio. Em raras exceções usaram magnésio, cloreto e cálcio. Neste período baseado em alguns trabalhos propus duas composições de água do mar. Uma rica em magnésio e outra rica em cálcio. No entanto, o oceano primitivo da Terra, muito provavelmente, era rico em cálcio e cloreto, com um pouco de magnésio e sódio. O oceano atualmente tem alta concentração de cloreto de sódio. Isso faz toda a diferença para a adsorção.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Em que o senhor trabalhou mais recentemente?"
-        }
-      ]
+          type: 'text',
+          text: 'Em que o senhor trabalhou mais recentemente?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu publiquei um artigo, em 2021, na revista "
+          type: 'text',
+          text: 'Eu publiquei um artigo, em 2021, na revista ',
         },
         {
-          "type": "text",
-          "marks": [
+          type: 'text',
+          marks: [
             {
-              "type": "italic"
-            }
+              type: 'italic',
+            },
           ],
-          "text": "Symmetry"
+          text: 'Symmetry',
         },
         {
-          "type": "text",
-          "text": ". Nele, sugiro vários experimentos para entender como os aminoácidos proteicos foram incorporados nos peptídeos/proteínas ao invés dos não-proteicos. O problema desses experimentos é que eles consomem muito tempo e dinheiro. Então, procurei professores da matemática aqui na UEL, Paulo Laerte Natti e Eliandro Rodrigues Cirilo, eles geraram um programa baseado nos dados que eu forneci. Estão calculando matematicamente qual proporção de aminoácidos vai aparecer nesses peptídeos."
-        }
-      ]
+          type: 'text',
+          text: '. Nele, sugiro vários experimentos para entender como os aminoácidos proteicos foram incorporados nos peptídeos/proteínas ao invés dos não-proteicos. O problema desses experimentos é que eles consomem muito tempo e dinheiro. Então, procurei professores da matemática aqui na UEL, Paulo Laerte Natti e Eliandro Rodrigues Cirilo, eles geraram um programa baseado nos dados que eu forneci. Estão calculando matematicamente qual proporção de aminoácidos vai aparecer nesses peptídeos.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "O senhor se aposentou em 2021, mas não parece ter parado."
-        }
-      ]
+          type: 'text',
+          text: 'O senhor se aposentou em 2021, mas não parece ter parado.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu ainda tenho alguns artigos para escrever. Tem a tese da minha última orientanda, também, e mais alguns trabalhos que eu ainda quero escrever sobre esses assuntos que eu discuti com você. Então, eu ainda tenho algumas coisas para fazer."
-        }
-      ]
+          type: 'text',
+          text: 'Eu ainda tenho alguns artigos para escrever. Tem a tese da minha última orientanda, também, e mais alguns trabalhos que eu ainda quero escrever sobre esses assuntos que eu discuti com você. Então, eu ainda tenho algumas coisas para fazer.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Voltemos um pouco à sua trajetória e o contexto histórico. Ali no começo dos anos 2000, a astrobiologia tomava a forma que conhecemos hoje, que engloba origem da vida. Como começa sua troca com os pesquisadores que estavam desenvolvendo a área aqui no Brasil?"
-        }
-      ]
+          type: 'text',
+          text: 'Voltemos um pouco à sua trajetória e o contexto histórico. Ali no começo dos anos 2000, a astrobiologia tomava a forma que conhecemos hoje, que engloba origem da vida. Como começa sua troca com os pesquisadores que estavam desenvolvendo a área aqui no Brasil?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Os primeiros astrobiólogos que eu conheci foram o Fábio [Rodrigues, professor do IQ-USP] e o Douglas [Galante, professor do Instituto de Geociências, IGc-USP]. Se não me engano, ainda eram estudantes, faziam o doutorado. Eles me mandaram e-mail dizendo que queriam conversar comigo e vieram para Londrina. Isso já faz uns 15 anos, ou até mais, e somos amigos até hoje. Depois acabei conhecendo os [astrônomos] Jorge Horvath e Eduardo Janot Pacheco, professores do Instituto Astronômico e Geofísico (IAG) da USP. Conheci a professora Cláudia Lage [bióloga da Universidade Federal do Rio de Janeiro], e a professora Miram Pacheco [bióloga da Universidade Federal de São Carlos, Campus Sorocaba] Professor Jorge Quillfedet [bioquímico da Universidade Federal do Rio Grande do Sul], Gustavo Porto de Mello [astrônomo da UFRJ]. Participei do primeiro encontro de astrobiologia no Brasil, em 2006, no Rio de Janeiro. Eu cito aqui algumas pessoas com quem tive contato naquela época, mas obviamente existem muitas outras que contribuíram para a formação da Sociedade. Todo esse pessoal estava lá."
-        }
-      ]
+          type: 'text',
+          text: 'Os primeiros astrobiólogos que eu conheci foram o Fábio [Rodrigues, professor do IQ-USP] e o Douglas [Galante, professor do Instituto de Geociências, IGc-USP]. Se não me engano, ainda eram estudantes, faziam o doutorado. Eles me mandaram e-mail dizendo que queriam conversar comigo e vieram para Londrina. Isso já faz uns 15 anos, ou até mais, e somos amigos até hoje. Depois acabei conhecendo os [astrônomos] Jorge Horvath e Eduardo Janot Pacheco, professores do Instituto Astronômico e Geofísico (IAG) da USP. Conheci a professora Cláudia Lage [bióloga da Universidade Federal do Rio de Janeiro], e a professora Miram Pacheco [bióloga da Universidade Federal de São Carlos, Campus Sorocaba] Professor Jorge Quillfedet [bioquímico da Universidade Federal do Rio Grande do Sul], Gustavo Porto de Mello [astrônomo da UFRJ]. Participei do primeiro encontro de astrobiologia no Brasil, em 2006, no Rio de Janeiro. Eu cito aqui algumas pessoas com quem tive contato naquela época, mas obviamente existem muitas outras que contribuíram para a formação da Sociedade. Todo esse pessoal estava lá.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Vocês estavam tentando estruturar um programa de pesquisa coerente, que ligasse as várias partes da astrobiologia?"
-        }
-      ]
+          type: 'text',
+          text: 'Vocês estavam tentando estruturar um programa de pesquisa coerente, que ligasse as várias partes da astrobiologia?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Exatamente. Na verdade, chegou-se a cogitar um programa de pós-graduação em astrobiologia, mas isso ainda não foi para frente. Mas a ideia de uma sociedade frutificou. Fui um dos sócios-fundadores, assim como todas essas pessoas que eu citei. Todos contribuíram bastante. O professor Eduardo Janot Pacheco [astrofísico do IAG-USP] deu uma grande contribuição e foi o primeiro presidente da sociedade e eu junto com ele o Vice-Presidente. Gustavo Porto de Mello [astrônomo da UFRJ], o atual presidente, também. Todos eles são pioneiros aqui no Brasil."
-        }
-      ]
+          type: 'text',
+          text: 'Exatamente. Na verdade, chegou-se a cogitar um programa de pós-graduação em astrobiologia, mas isso ainda não foi para frente. Mas a ideia de uma sociedade frutificou. Fui um dos sócios-fundadores, assim como todas essas pessoas que eu citei. Todos contribuíram bastante. O professor Eduardo Janot Pacheco [astrofísico do IAG-USP] deu uma grande contribuição e foi o primeiro presidente da sociedade e eu junto com ele o Vice-Presidente. Gustavo Porto de Mello [astrônomo da UFRJ], o atual presidente, também. Todos eles são pioneiros aqui no Brasil.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "O senhor acaba sendo o primeiro vice-presidente da Sociedade Brasileira de Astrobiologia. Como foi essa experiência?"
-        }
-      ]
+          type: 'text',
+          text: 'O senhor acaba sendo o primeiro vice-presidente da Sociedade Brasileira de Astrobiologia. Como foi essa experiência?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Somos ainda uma sociedade pequena, lutando para sobreviver, mas foi uma experiência muito legal fazer uma sociedade de astrobiologia pois a área pode atrair muitos jovens para a ciência. A astrobiologia tem enorme potencial para a educação e a divulgação científica. Escrevi alguns artigos de divulgação de astrobiologia, no programa de mestrado de formação para professores na UEL e orientei duas dissertações dentro desse programa. Há uns três meses atrás, uma aluna do ensino médio me procurou para fazer um experimento de astrobiologia. Ela foi no meu laboratório, nós plantamos sementes, e agora ela vai apresentar o trabalho num evento de iniciação cientifica aqui em Londrina."
-        }
-      ]
+          type: 'text',
+          text: 'Somos ainda uma sociedade pequena, lutando para sobreviver, mas foi uma experiência muito legal fazer uma sociedade de astrobiologia pois a área pode atrair muitos jovens para a ciência. A astrobiologia tem enorme potencial para a educação e a divulgação científica. Escrevi alguns artigos de divulgação de astrobiologia, no programa de mestrado de formação para professores na UEL e orientei duas dissertações dentro desse programa. Há uns três meses atrás, uma aluna do ensino médio me procurou para fazer um experimento de astrobiologia. Ela foi no meu laboratório, nós plantamos sementes, e agora ela vai apresentar o trabalho num evento de iniciação cientifica aqui em Londrina.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Qual é a sua percepção em relação ao futuro da área de química pré-biótica e origens da vida?"
-        }
-      ]
+          type: 'text',
+          text: 'Qual é a sua percepção em relação ao futuro da área de química pré-biótica e origens da vida?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Um artigo, que sempre gosto de mencionar, do professor Albert Eschenmose faz uma citação interessante sobre essa questão da origem da vida: “a origem da vida não pode ser descoberta, mas tem de ser reinventada”. As possíveis condições e etapas necessárias para origem da vida a partir de matéria inanimada foram há muito perdidas. Outra coisa: muito provavelmente a gente nunca vai saber se de fato a vida surgiu no planeta Terra ou se ela foi trazida de fora, por meteoritos, por exemplo."
-        }
-      ]
+          type: 'text',
+          text: 'Um artigo, que sempre gosto de mencionar, do professor Albert Eschenmose faz uma citação interessante sobre essa questão da origem da vida: “a origem da vida não pode ser descoberta, mas tem de ser reinventada”. As possíveis condições e etapas necessárias para origem da vida a partir de matéria inanimada foram há muito perdidas. Outra coisa: muito provavelmente a gente nunca vai saber se de fato a vida surgiu no planeta Terra ou se ela foi trazida de fora, por meteoritos, por exemplo.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Por que o senhor acha que nunca vamos distinguir se a vida surgiu aqui ou se ela foi trazida de fora?"
-        }
-      ]
+          type: 'text',
+          text: 'Por que o senhor acha que nunca vamos distinguir se a vida surgiu aqui ou se ela foi trazida de fora?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Vamos supor que encontrem alguma forma de vida em Marte e que, após testes, cheguem à conclusão de que é a mesma linhagem da vida na Terra.  Podemos pensar que houve contaminação de um planeta para o outro, ou mesma uma sonda contaminou o planeta. Mas onde teria começado a vida? Foi a Terra que contaminou Marte ou foi Marte que contaminou a Terra? Agora, se a gente encontrar uma forma de vida em Marte que não tenha nada a ver com a nossa, é diferente."
-        }
-      ]
+          type: 'text',
+          text: 'Vamos supor que encontrem alguma forma de vida em Marte e que, após testes, cheguem à conclusão de que é a mesma linhagem da vida na Terra.  Podemos pensar que houve contaminação de um planeta para o outro, ou mesma uma sonda contaminou o planeta. Mas onde teria começado a vida? Foi a Terra que contaminou Marte ou foi Marte que contaminou a Terra? Agora, se a gente encontrar uma forma de vida em Marte que não tenha nada a ver com a nossa, é diferente.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Pode ser que fazer um ser vivo a partir de matéria inanimada não seja uma coisa tão complicada, porque as janelas de tempo para o surgimento da vida na Terra – que era bombardeada por meteoritos – não são muito grandes: entre 100 milhões e 500 milhões de anos. Se a janela para o surgimento da vida for realmente pequena, fazer um ser vivo aqui na Terra não deve ser tão difícil, mas alguém pode dizer: “[a vida] pode ter vindo de fora\". Essa hipótese continua viável até que alguém consiga mostrar efetivamente que nenhuma forma de vida consegue sobreviver a uma viagem de milhares ou milhões de anos num meteorito ou cometa."
-        }
-      ]
+          type: 'text',
+          text: 'Pode ser que fazer um ser vivo a partir de matéria inanimada não seja uma coisa tão complicada, porque as janelas de tempo para o surgimento da vida na Terra – que era bombardeada por meteoritos – não são muito grandes: entre 100 milhões e 500 milhões de anos. Se a janela para o surgimento da vida for realmente pequena, fazer um ser vivo aqui na Terra não deve ser tão difícil, mas alguém pode dizer: “[a vida] pode ter vindo de fora". Essa hipótese continua viável até que alguém consiga mostrar efetivamente que nenhuma forma de vida consegue sobreviver a uma viagem de milhares ou milhões de anos num meteorito ou cometa.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Quais especulações passam na sua cabeça em relação à prevalência de vida no universo? Acha que houve várias biogêneses espalhadas em sistemas planetários pelo universo? Quão comum ou incomum o senhor acha que é a vida?"
-        }
-      ]
+          type: 'text',
+          text: 'Quais especulações passam na sua cabeça em relação à prevalência de vida no universo? Acha que houve várias biogêneses espalhadas em sistemas planetários pelo universo? Quão comum ou incomum o senhor acha que é a vida?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu espero que a vida seja um fenômeno mais ou menos comum. Mas existem os gargalos. O primeiro gargalo é o surgimento da primeira célula. Depois temos os gargalos da evolução. A evolução de seres unicelulares para pluricelulares, no nosso planeta, demorou 2 bilhões de anos. E a maioria da vida do nosso planeta são ainda de seres unicelulares. Dos seres pluricelulares até chegar a uma forma de vida que tenha algo que a gente chama de inteligência, que vive em sociedade, que discute, é outro gargalo. Enfim, têm todos esses gargalos a serem considerados, mesmo assim o universo é muito grande."
-        }
-      ]
+          type: 'text',
+          text: 'Eu espero que a vida seja um fenômeno mais ou menos comum. Mas existem os gargalos. O primeiro gargalo é o surgimento da primeira célula. Depois temos os gargalos da evolução. A evolução de seres unicelulares para pluricelulares, no nosso planeta, demorou 2 bilhões de anos. E a maioria da vida do nosso planeta são ainda de seres unicelulares. Dos seres pluricelulares até chegar a uma forma de vida que tenha algo que a gente chama de inteligência, que vive em sociedade, que discute, é outro gargalo. Enfim, têm todos esses gargalos a serem considerados, mesmo assim o universo é muito grande.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": { "level": 3 },
-      "content": [
+      type: 'heading',
+      attrs: { level: 3 },
+      content: [
         {
-          "type": "text",
-          "text": "Hoje, na busca por vida extraterrestre, há vários objetos de interesse no sistema solar, como Marte e as luas geladas dos gigantes gasosos, mas também há a procura em exoplanetas, com análise espectroscópica de suas atmosferas em busca de bioassinaturas – alguns até falam em buscar por tecnoassinaturas. Qual é o seu palpite com relação à busca por vida?"
-        }
-      ]
+          type: 'text',
+          text: 'Hoje, na busca por vida extraterrestre, há vários objetos de interesse no sistema solar, como Marte e as luas geladas dos gigantes gasosos, mas também há a procura em exoplanetas, com análise espectroscópica de suas atmosferas em busca de bioassinaturas – alguns até falam em buscar por tecnoassinaturas. Qual é o seu palpite com relação à busca por vida?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Existe, talvez, uma boa possibilidade [de encontrarmos indícios de vida] em Marte, pois foi um planeta muito semelhante ao nosso no início de sua história. Talvez as luas de Saturno ou Júpiter também ofereçam uma possibilidade razoável. Análises de atmosferas de exoplanetas podem gerar uma boa indicação, mas mesmo a detecção de compostos ligados à vida, como oxigênio ou mesmo ozônio, não responde à pergunta pois podem ser produzidos por decomposição da água, por radiação. De qualquer forma, se você consegue detectar vapor de água e outras moléculas relevantes, pode ser uma indicação importante. Obviamente a indicação final seria: \"olá, pessoal, nós somos de tal mundo.” Nunca se sabe."
-        }
-      ]
-    }
-  ]
+          type: 'text',
+          text: 'Existe, talvez, uma boa possibilidade [de encontrarmos indícios de vida] em Marte, pois foi um planeta muito semelhante ao nosso no início de sua história. Talvez as luas de Saturno ou Júpiter também ofereçam uma possibilidade razoável. Análises de atmosferas de exoplanetas podem gerar uma boa indicação, mas mesmo a detecção de compostos ligados à vida, como oxigênio ou mesmo ozônio, não responde à pergunta pois podem ser produzidos por decomposição da água, por radiação. De qualquer forma, se você consegue detectar vapor de água e outras moléculas relevantes, pode ser uma indicação importante. Obviamente a indicação final seria: "olá, pessoal, nós somos de tal mundo.” Nunca se sabe.',
+        },
+      ],
+    },
+  ],
 }
 
 export const proseMirrorData3 = {
-  "type": "doc",
-  "content": [
+  type: 'doc',
+  content: [
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "A astrobiologia entrou na vida do astrônomo Eduardo Janot Pacheco no ano 2000, na forma de um convite da CNES, a agência espacial francesa, para participar da missão CoRoT (COnvection, ROtation and planetary Transits), o primeiro satélite capaz de detectar planetas rochosos na órbita de estrelas próximas ao sistema solar. Lançado em 2006, o satélite cumpriu a promessa no ano seguinte, com a descoberta do exoplaneta CoRoT-Exo 7b, o primeiro planeta rochoso detectado fora do sistema solar."
-        }
-      ]
+          type: 'text',
+          text: 'A astrobiologia entrou na vida do astrônomo Eduardo Janot Pacheco no ano 2000, na forma de um convite da CNES, a agência espacial francesa, para participar da missão CoRoT (COnvection, ROtation and planetary Transits), o primeiro satélite capaz de detectar planetas rochosos na órbita de estrelas próximas ao sistema solar. Lançado em 2006, o satélite cumpriu a promessa no ano seguinte, com a descoberta do exoplaneta CoRoT-Exo 7b, o primeiro planeta rochoso detectado fora do sistema solar.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Durante a missão, de 2006 a 2014, Janot Pacheco presidiu o Comitê CoRoT Brazil, coordenando a bem-sucedida participação brasileira. O sucessor do CoRoT, chamado de PLATO 2.0 (PLAnetary Transits and Oscillation of stars), vem sendo desenvolvido desde 2015 pela ESA, a agência espacial europeia. Dado o sucesso na missão anterior, a ciência e a engenharia brasileiras também participam ativamente da PLATO 2.0. Janot Pacheco lidera a atuação brasileira no PLATO, que tem financiamento da Fundação de Amparo à Pesquisa do Estado de São Paulo (Fapesp) e é coordenada pelo Instituto de Astronomia e Geofísica da Universidade de São Paulo (IAG-USP), onde o astrônomo é professor sênior."
-        }
-      ]
+          type: 'text',
+          text: 'Durante a missão, de 2006 a 2014, Janot Pacheco presidiu o Comitê CoRoT Brazil, coordenando a bem-sucedida participação brasileira. O sucessor do CoRoT, chamado de PLATO 2.0 (PLAnetary Transits and Oscillation of stars), vem sendo desenvolvido desde 2015 pela ESA, a agência espacial europeia. Dado o sucesso na missão anterior, a ciência e a engenharia brasileiras também participam ativamente da PLATO 2.0. Janot Pacheco lidera a atuação brasileira no PLATO, que tem financiamento da Fundação de Amparo à Pesquisa do Estado de São Paulo (Fapesp) e é coordenada pelo Instituto de Astronomia e Geofísica da Universidade de São Paulo (IAG-USP), onde o astrônomo é professor sênior.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Antes de se envolver em pesquisas sobre exoplanetas, Janot Pacheco deu contribuições outras importantes à astrofísica, avançando o conhecimento de emissão de raios-X por estrelas de nêutrons em sistemas binários. Além disso, com a participação no CoRoT, o astrônomo contribuiu para o avanço da astrossismologia, a área dedicada à compreensão da estrutura interna das estrelas por meio da observação de estelemotos, ou terremotos estelares. Os objetivos do PLATO podem ser mais ambiciosos, mas continuam semelhantes aos do CoRoT: detectar exoplanetas e estudar a astrossismologia. Aposentado, Janot Pacheco continua sendo uma das principais referências brasileiras em ambas as áreas."
-        }
-      ]
+          type: 'text',
+          text: 'Antes de se envolver em pesquisas sobre exoplanetas, Janot Pacheco deu contribuições outras importantes à astrofísica, avançando o conhecimento de emissão de raios-X por estrelas de nêutrons em sistemas binários. Além disso, com a participação no CoRoT, o astrônomo contribuiu para o avanço da astrossismologia, a área dedicada à compreensão da estrutura interna das estrelas por meio da observação de estelemotos, ou terremotos estelares. Os objetivos do PLATO podem ser mais ambiciosos, mas continuam semelhantes aos do CoRoT: detectar exoplanetas e estudar a astrossismologia. Aposentado, Janot Pacheco continua sendo uma das principais referências brasileiras em ambas as áreas.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "As pesquisas em exoplanetas resultaram em alguns dos avanços mais importantes para a astrobiologia nas últimas décadas, com a descoberta de mais de 6 mil planetas extrassolares. Interessado em entender a prevalência da vida no universo, Janot Pacheco também atua para fomentar a astrobiologia no Brasil: foi um dos sócios-fundadores da Sociedade Brasileira de Astrobiologia e o primeiro presidente da entidade, cargo que exerceu entre 2017 e 2021. Nessa entrevista, ele conta um pouco de sua trajetória, seus interesses de pesquisa, e as colaborações com os europeus no CoRoT e no PLATO."
-        }
-      ]
+          type: 'text',
+          text: 'As pesquisas em exoplanetas resultaram em alguns dos avanços mais importantes para a astrobiologia nas últimas décadas, com a descoberta de mais de 6 mil planetas extrassolares. Interessado em entender a prevalência da vida no universo, Janot Pacheco também atua para fomentar a astrobiologia no Brasil: foi um dos sócios-fundadores da Sociedade Brasileira de Astrobiologia e o primeiro presidente da entidade, cargo que exerceu entre 2017 e 2021. Nessa entrevista, ele conta um pouco de sua trajetória, seus interesses de pesquisa, e as colaborações com os europeus no CoRoT e no PLATO.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Eu gostaria de saber sobre sua própria trajetória, professor Janot. Quando o senhor decidiu ser astrônomo?"
-        }
-      ]
+          type: 'text',
+          text: 'Eu gostaria de saber sobre sua própria trajetória, professor Janot. Quando o senhor decidiu ser astrônomo?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Na graduação, estudei engenharia elétrica e engenharia nuclear. Devia ter feito física. Na época, eu achava que física era para dar aula no ensino secundário [atual ensino médio]. Sou mineiro, de Belo Horizonte. Lá tem o Instituto de Pesquisas Radioativas da UFMG [Universidade Federal de Minas Gerais], onde tem o curso de engenharia nuclear, e ingressei nele. Mas sempre gostei muito da astronomia, desde criança. Fui astrônomo amador na adolescência. Entre os 15 e os 17, fui sócio do Centro de Estudos Astronômicos César Lattes e fundei a Sociedade de Estudos Astronômicos de Minas Gerais (SEA-MG). Quando o [astrônomo brasileiro] Silvio Ferraz Mello, uma das maiores referências em mecânica celeste no mundo, voltou com o doutorado da França no inicio dos anos 1970 e abriu um departamento de astronomia no ITA [Instituto Tecnológico da Aeronáutica], não hesitei. Fui fazer mestrado lá com uma bolsa de meio salário que recebia no IPR-UFMG. O meu foi um do primeiros mestrados de astronomia no Brasil e, em seguida, fui para a França fazer doutorado. Naquela época, nossos contatos com a astronomia da França eram muito fortes – continuam sendo. Fiz meu PhD na [Universidade de] Paris VII e voltei para o Brasil em 1987. Tinha sido contratado no IAG-USP em 1970 como engenheiro tecnicista, depois passei a docente nos anos 1980. Me aposentei em 2015 como professor sênior. Quando você se aposenta no sistema universitário quase não muda nada: não dá mais aula na graduação, não participa de comissões, mas continua orientando e pesquisando. Eu trabalho mais em pesquisa hoje, remotamente, do que quando estava na ativa."
-        }
-      ]
+          type: 'text',
+          text: 'Na graduação, estudei engenharia elétrica e engenharia nuclear. Devia ter feito física. Na época, eu achava que física era para dar aula no ensino secundário [atual ensino médio]. Sou mineiro, de Belo Horizonte. Lá tem o Instituto de Pesquisas Radioativas da UFMG [Universidade Federal de Minas Gerais], onde tem o curso de engenharia nuclear, e ingressei nele. Mas sempre gostei muito da astronomia, desde criança. Fui astrônomo amador na adolescência. Entre os 15 e os 17, fui sócio do Centro de Estudos Astronômicos César Lattes e fundei a Sociedade de Estudos Astronômicos de Minas Gerais (SEA-MG). Quando o [astrônomo brasileiro] Silvio Ferraz Mello, uma das maiores referências em mecânica celeste no mundo, voltou com o doutorado da França no inicio dos anos 1970 e abriu um departamento de astronomia no ITA [Instituto Tecnológico da Aeronáutica], não hesitei. Fui fazer mestrado lá com uma bolsa de meio salário que recebia no IPR-UFMG. O meu foi um do primeiros mestrados de astronomia no Brasil e, em seguida, fui para a França fazer doutorado. Naquela época, nossos contatos com a astronomia da França eram muito fortes – continuam sendo. Fiz meu PhD na [Universidade de] Paris VII e voltei para o Brasil em 1987. Tinha sido contratado no IAG-USP em 1970 como engenheiro tecnicista, depois passei a docente nos anos 1980. Me aposentei em 2015 como professor sênior. Quando você se aposenta no sistema universitário quase não muda nada: não dá mais aula na graduação, não participa de comissões, mas continua orientando e pesquisando. Eu trabalho mais em pesquisa hoje, remotamente, do que quando estava na ativa.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Como o senhor se envolveu na missão CoRoT?"
-        }
-      ]
+          type: 'text',
+          text: 'Como o senhor se envolveu na missão CoRoT?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu estava em Paris no ano 2000, durante um pós-doutorado, e apareceu essa oportunidade de entrar numa colaboração do satélite CoRoT. Convenci o pessoal do INPE [Instituto Nacional de Pesquisas Espaciais] a comprar uma estação para a base de Alcântara, no Maranhão, para receber os dados do satélite. Selecionei três engenheiros brasileiros, formados na Poli [Escola Politécnica da USP] e no Instituto de Tecnologia de Mauá, que trabalharam no desenvolvimento do software e análise de dados do satélite. Foi a partir de 2009 que começou efetivamente a participação brasileira no espaço, não pegando carona em satélite dos outros, mas participando de um satélite com software, e fazendo ciência. A participação brasileira no CoRoT foi muito profícua e os engenheiros se saíram brilhantemente. Quando o satélite estava no período final de sua vida, lançaram o projeto PLATO, da Agência Espacial Européia, com orçamento de 1,2 bilhões de euros. Hoje, o Brasil é o único país de fora da União Europeia que participa desse projeto, por causa do nosso trabalho prévio no CoRoT."
-        }
-      ]
+          type: 'text',
+          text: 'Eu estava em Paris no ano 2000, durante um pós-doutorado, e apareceu essa oportunidade de entrar numa colaboração do satélite CoRoT. Convenci o pessoal do INPE [Instituto Nacional de Pesquisas Espaciais] a comprar uma estação para a base de Alcântara, no Maranhão, para receber os dados do satélite. Selecionei três engenheiros brasileiros, formados na Poli [Escola Politécnica da USP] e no Instituto de Tecnologia de Mauá, que trabalharam no desenvolvimento do software e análise de dados do satélite. Foi a partir de 2009 que começou efetivamente a participação brasileira no espaço, não pegando carona em satélite dos outros, mas participando de um satélite com software, e fazendo ciência. A participação brasileira no CoRoT foi muito profícua e os engenheiros se saíram brilhantemente. Quando o satélite estava no período final de sua vida, lançaram o projeto PLATO, da Agência Espacial Européia, com orçamento de 1,2 bilhões de euros. Hoje, o Brasil é o único país de fora da União Europeia que participa desse projeto, por causa do nosso trabalho prévio no CoRoT.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "O PLATO vai procurar exoplanetas análogos à Terra?"
-        }
-      ]
+          type: 'text',
+          text: 'O PLATO vai procurar exoplanetas análogos à Terra?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "O PLATO vai procurar planetas parecidos com a Terra, rochosos e pequenos. A vida precisa aparentemente de uma superfície e de água para se desenvolver, principalmente a vida complexa. O problema é que nós só temos um modelo, um exemplo, que é a vida terrestre. O PLATO vai analisar estrelas parecidas com o Sol em busca de gêmeas da Terra. Depois, vamos tentar analisar a atmosfera desses planetas terrestres com outros satélites. A vida apareceu aqui e deve aparecer em outros lugares quando tiver condições. As anãs vermelhas, que são pequenininhas, constituem 78% das estrelas da galáxia, e os planetas delas são quase todos pequenos e rochosos. A conclusão é que deve haver vários bilhões de planetas rochosos na galáxia. Isso, para mim, é o argumento mais forte para dizer que deve haver vida fora da Terra. É ridículo pensar que foi só aqui [que a vida surgiu]."
-        }
-      ]
+          type: 'text',
+          text: 'O PLATO vai procurar planetas parecidos com a Terra, rochosos e pequenos. A vida precisa aparentemente de uma superfície e de água para se desenvolver, principalmente a vida complexa. O problema é que nós só temos um modelo, um exemplo, que é a vida terrestre. O PLATO vai analisar estrelas parecidas com o Sol em busca de gêmeas da Terra. Depois, vamos tentar analisar a atmosfera desses planetas terrestres com outros satélites. A vida apareceu aqui e deve aparecer em outros lugares quando tiver condições. As anãs vermelhas, que são pequenininhas, constituem 78% das estrelas da galáxia, e os planetas delas são quase todos pequenos e rochosos. A conclusão é que deve haver vários bilhões de planetas rochosos na galáxia. Isso, para mim, é o argumento mais forte para dizer que deve haver vida fora da Terra. É ridículo pensar que foi só aqui [que a vida surgiu].',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Quais foram os assuntos do seu mestrado e do seu doutorado?"
-        }
-      ]
+          type: 'text',
+          text: 'Quais foram os assuntos do seu mestrado e do seu doutorado?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Estrelas chamadas cefeidas, que são estrelas variáveis pulsantes. Analisei um caso particular delas no ITA. Na França, no doutorado, analisei algo completamente diferente: emissões de raios-X. Fiz uma tese sobre estrelas binárias de raios-X, estrelas que são duplas, mas uma delas é uma estrela de nêutrons que emite raios-X."
-        }
-      ]
+          type: 'text',
+          text: 'Estrelas chamadas cefeidas, que são estrelas variáveis pulsantes. Analisei um caso particular delas no ITA. Na França, no doutorado, analisei algo completamente diferente: emissões de raios-X. Fiz uma tese sobre estrelas binárias de raios-X, estrelas que são duplas, mas uma delas é uma estrela de nêutrons que emite raios-X.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Qual seria a diferença na emissão entre uma estrela de nêutrons sozinha e uma que faz parte de um par binário?"
-        }
-      ]
+          type: 'text',
+          text: 'Qual seria a diferença na emissão entre uma estrela de nêutrons sozinha e uma que faz parte de um par binário?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Uma estrela de nêutrons é muito densa, tem uns dez quilômetros de diâmetro, e faz um poço muito profundo de potencial gravitacional. Se você joga matéria lá, quando a matéria cai, acelera e chega com energia muito elevada. Isso é transformado em raio-X. Os fótons emitidos pela estrela de nêutrons, nessa situação, são de raio-X. Mas é preciso uma companheira para jogar a matéria na estrela de nêutrons. Ela, sozinha, em geral, emite rádio. Num sistema binário, as órbitas vão se aproximando, chegando perto – quanto mais perto, mais matéria da estrela companheira é jogada na estrela de nêutrons e esta acaba emitindo raio-X."
-        }
-      ]
+          type: 'text',
+          text: 'Uma estrela de nêutrons é muito densa, tem uns dez quilômetros de diâmetro, e faz um poço muito profundo de potencial gravitacional. Se você joga matéria lá, quando a matéria cai, acelera e chega com energia muito elevada. Isso é transformado em raio-X. Os fótons emitidos pela estrela de nêutrons, nessa situação, são de raio-X. Mas é preciso uma companheira para jogar a matéria na estrela de nêutrons. Ela, sozinha, em geral, emite rádio. Num sistema binário, as órbitas vão se aproximando, chegando perto – quanto mais perto, mais matéria da estrela companheira é jogada na estrela de nêutrons e esta acaba emitindo raio-X.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Depois do doutorado, o senhor passou a estudar astrossismologia?"
-        }
-      ]
+          type: 'text',
+          text: 'Depois do doutorado, o senhor passou a estudar astrossismologia?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Não, ainda trabalhei muitos anos com estrelas binárias de raio-X no IAG durante os anos 1990. Aí, no ano 2000, uma das pesquisadoras principais do CoRoT entrou na minha sala, no Observatório de Paris-Meudon, e convidou o Brasil a participar da missão. O satélite fazia sismologia estelar e fotometria. Eu aderi ao projeto, e convidei outros colegas brasileiros, que também aderiram. Nos anos noventa descobrimos que estrelas também têm “estelemotos” [espécie de terremotos estelares], como o Sol. A astrossismologia é uma forma de analisar o interior da estrela, pois as ondas que observamos na superfície nos informa sobre a fisica da cavidade onde se propagaram, ou seja, do interior das estrelas. Com o CoRoT, tivemos um avanço enorme nessa área. A precisão necessária para fazer sismologia estelar é parecida com a necessária para detectar o eclipse de um planetinha passando na frente de uma estrela. Então comecei a me interessar por exoplanetas também. Formei um grupo de estudantes de exoplanetas no Brasil. Com o CoRoT, isso foi crescendo. Hoje coordeno a participação brasileira no PLATO."
-        }
-      ]
+          type: 'text',
+          text: 'Não, ainda trabalhei muitos anos com estrelas binárias de raio-X no IAG durante os anos 1990. Aí, no ano 2000, uma das pesquisadoras principais do CoRoT entrou na minha sala, no Observatório de Paris-Meudon, e convidou o Brasil a participar da missão. O satélite fazia sismologia estelar e fotometria. Eu aderi ao projeto, e convidei outros colegas brasileiros, que também aderiram. Nos anos noventa descobrimos que estrelas também têm “estelemotos” [espécie de terremotos estelares], como o Sol. A astrossismologia é uma forma de analisar o interior da estrela, pois as ondas que observamos na superfície nos informa sobre a fisica da cavidade onde se propagaram, ou seja, do interior das estrelas. Com o CoRoT, tivemos um avanço enorme nessa área. A precisão necessária para fazer sismologia estelar é parecida com a necessária para detectar o eclipse de um planetinha passando na frente de uma estrela. Então comecei a me interessar por exoplanetas também. Formei um grupo de estudantes de exoplanetas no Brasil. Com o CoRoT, isso foi crescendo. Hoje coordeno a participação brasileira no PLATO.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Como foi a sua participação na redação do Plano Nacional de Astronomia?"
-        }
-      ]
+          type: 'text',
+          text: 'Como foi a sua participação na redação do Plano Nacional de Astronomia?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Eu era presidente da Sociedade Astronômica Brasileira desde 2009. O então ministro da ciência e da tecnologia, o físico pernambucano Sérgio Rezende, um homem com uma visão fantástica de futuro, me chamou para coordenar um Plano Nacional de Astronomia (PNA), para que o ministério pudesse saber onde investir. Setenta pessoas da comunidade astronômica trabalharam durante vários anos. Apresentamos o plano, mas o Rezende saiu do ministério logo depois e o plano acabou ficando na gaveta. Muito pouca coisa foi feita, o que é lamentável. Agora o Ministério atual está fazendo uma atualização desse plano, sob a liderança da Sociedade Astronômica Brasileira."
-        }
-      ]
+          type: 'text',
+          text: 'Eu era presidente da Sociedade Astronômica Brasileira desde 2009. O então ministro da ciência e da tecnologia, o físico pernambucano Sérgio Rezende, um homem com uma visão fantástica de futuro, me chamou para coordenar um Plano Nacional de Astronomia (PNA), para que o ministério pudesse saber onde investir. Setenta pessoas da comunidade astronômica trabalharam durante vários anos. Apresentamos o plano, mas o Rezende saiu do ministério logo depois e o plano acabou ficando na gaveta. Muito pouca coisa foi feita, o que é lamentável. Agora o Ministério atual está fazendo uma atualização desse plano, sob a liderança da Sociedade Astronômica Brasileira.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Naquela época da elaboração do Plano, o [segundo governo do presidente] Lula aumentou de 2 para 7 bilhões o orçamento do MCTI [Ministério da Ciência, Tecnologia e Inovação]. Foi uma época muito boa. Começamos a pensar: vamos tentar ingressar no ESO [European Southern Observatory], participar do maior conjunto de observatórios de ponta do mundo no Chile. Os benefícios seriam gigantescos. Imagina a indústria brasileira engajada no ESO, trabalhando com engenheiros em mecânica de precisão, óptica, eletrônica. Pode parecer caro entrar nesses projetos, mas é preciso levar em conta os benefícios que adviriam em ciência e em desenvolvimento de tecnologias. Tudo isso traria muitos benefícios para a própria indústria brasileira. Conseguimos aprovar no Congresso um projeto de lei de ingresso no ESO após dois anos de lobby. Faltava o governo assinar. Nunca assinaram. A [então presidente da república Dilma Rousseff] não quis. O Sérgio Rezende ficava atônito, pois o ESO custava relativamente muito pouco, algo em torno de metade [dos juros diários] da dívida brasileira. O projeto foi aprovado no Congresso em 2017, mas não foi implementado."
-        }
-      ]
+          type: 'text',
+          text: 'Naquela época da elaboração do Plano, o [segundo governo do presidente] Lula aumentou de 2 para 7 bilhões o orçamento do MCTI [Ministério da Ciência, Tecnologia e Inovação]. Foi uma época muito boa. Começamos a pensar: vamos tentar ingressar no ESO [European Southern Observatory], participar do maior conjunto de observatórios de ponta do mundo no Chile. Os benefícios seriam gigantescos. Imagina a indústria brasileira engajada no ESO, trabalhando com engenheiros em mecânica de precisão, óptica, eletrônica. Pode parecer caro entrar nesses projetos, mas é preciso levar em conta os benefícios que adviriam em ciência e em desenvolvimento de tecnologias. Tudo isso traria muitos benefícios para a própria indústria brasileira. Conseguimos aprovar no Congresso um projeto de lei de ingresso no ESO após dois anos de lobby. Faltava o governo assinar. Nunca assinaram. A [então presidente da república Dilma Rousseff] não quis. O Sérgio Rezende ficava atônito, pois o ESO custava relativamente muito pouco, algo em torno de metade [dos juros diários] da dívida brasileira. O projeto foi aprovado no Congresso em 2017, mas não foi implementado.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Como o senhor avalia a astronomia brasileira em relação aos grandes centros na Europa e Estados Unidos?"
-        }
-      ]
+          type: 'text',
+          text: 'Como o senhor avalia a astronomia brasileira em relação aos grandes centros na Europa e Estados Unidos?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Mostramos nessas colaborações internacionais que em muitas áreas de astrofísica, dá para competir com os europeus e americanos. Os astrofísicos brasileiros se destacaram bastante no CoRoT. Os engenheiros brasileiros têm nível para fazer projetos atendendo à exigência europeia da ESA. Isso me dá muita satisfação. Descobrimos que é possível a engenharia brasileira trabalhar em projetos espaciais, que são os mais exigentes de todos. Somos bem menos numerosos que nos Estados Unidos, e aqui não tem tanto dinheiro quanto lá. O investimento em ciência no Brasil é muito baixo, muito menor do que em países em desenvolvimento como a Índia. Mas individualmente, as pessoas fazem muita coisa."
-        }
-      ]
+          type: 'text',
+          text: 'Mostramos nessas colaborações internacionais que em muitas áreas de astrofísica, dá para competir com os europeus e americanos. Os astrofísicos brasileiros se destacaram bastante no CoRoT. Os engenheiros brasileiros têm nível para fazer projetos atendendo à exigência europeia da ESA. Isso me dá muita satisfação. Descobrimos que é possível a engenharia brasileira trabalhar em projetos espaciais, que são os mais exigentes de todos. Somos bem menos numerosos que nos Estados Unidos, e aqui não tem tanto dinheiro quanto lá. O investimento em ciência no Brasil é muito baixo, muito menor do que em países em desenvolvimento como a Índia. Mas individualmente, as pessoas fazem muita coisa.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Como foi a sua participação na Sociedade Brasileira de Astrobiologia?"
-        }
-      ]
+          type: 'text',
+          text: 'Como foi a sua participação na Sociedade Brasileira de Astrobiologia?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Fui um dos fundadores, em 2017. Achei que já havia massa crítica de gente trabalhando em áreas que confluem para a astrobiologia e seria útil fazer uma sociedade que pudesse dialogar com as agências de financiamento. Fundamos a sociedade com o Gustavo [Porto de Mello, atual presidente, astrônomo no Observatório do Valongo da Universidade Federal do Rio de Janeiro], Douglas [Galante, atual vice-presidente, professor do Instituto de Geociências da USP], Fábio [Rodrigues, diretor do Laboratório de Astrobiologia da USP] e outros em São Paulo. Fui presidente durante quatro anos. Foi uma iniciativa que valeu a pena. Começou a aparecer gente de Natal até o Rio Grande do Sul trabalhando em astrobiologia, e surgiram grupos de pesquisa e laboratórios por universidades e centros de pesquisa de todo o Brasil."
-        }
-      ]
+          type: 'text',
+          text: 'Fui um dos fundadores, em 2017. Achei que já havia massa crítica de gente trabalhando em áreas que confluem para a astrobiologia e seria útil fazer uma sociedade que pudesse dialogar com as agências de financiamento. Fundamos a sociedade com o Gustavo [Porto de Mello, atual presidente, astrônomo no Observatório do Valongo da Universidade Federal do Rio de Janeiro], Douglas [Galante, atual vice-presidente, professor do Instituto de Geociências da USP], Fábio [Rodrigues, diretor do Laboratório de Astrobiologia da USP] e outros em São Paulo. Fui presidente durante quatro anos. Foi uma iniciativa que valeu a pena. Começou a aparecer gente de Natal até o Rio Grande do Sul trabalhando em astrobiologia, e surgiram grupos de pesquisa e laboratórios por universidades e centros de pesquisa de todo o Brasil.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "As pesquisas em astrobiologia na USP, tocadas principalmente no Laboratório de Astrobiologia (AstroLab) no Instituto de Química são focadas em microbiologia e geobiologia, mas seria importante ter maior integração com a astronomia."
-        }
-      ]
+          type: 'text',
+          text: 'As pesquisas em astrobiologia na USP, tocadas principalmente no Laboratório de Astrobiologia (AstroLab) no Instituto de Química são focadas em microbiologia e geobiologia, mas seria importante ter maior integração com a astronomia.',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "O IAG é centrado em astrofísica. Tem algumas pessoas no instituto com interesse em astrobiologia, como o Jorge Meléndez, que trabalha com abundâncias de exoplanetas, e o Jorge Horvath. Durante anos tentei essa integração, mas não consegui grande coisa porque as pesquisas do IAG estão concentradas em astrofísica. Além disso, promover astrobiologia pode ser visto com certa desconfiança nos meios da física. Mas acho extremamente importante. É pesquisar sobre uma das perguntas mais antigas da humanidade: estamos sós no universo?"
-        }
-      ]
+          type: 'text',
+          text: 'O IAG é centrado em astrofísica. Tem algumas pessoas no instituto com interesse em astrobiologia, como o Jorge Meléndez, que trabalha com abundâncias de exoplanetas, e o Jorge Horvath. Durante anos tentei essa integração, mas não consegui grande coisa porque as pesquisas do IAG estão concentradas em astrofísica. Além disso, promover astrobiologia pode ser visto com certa desconfiança nos meios da física. Mas acho extremamente importante. É pesquisar sobre uma das perguntas mais antigas da humanidade: estamos sós no universo?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "Vai haver pelo menos duas missões para Vênus na próxima década. Um engenheiro brasileiro trabalhando no PLATO acabou interagindo com a parte alemã da ESA, envolvida na [missão orbital] EnVision. Combinamos que o Brasil podia ter dois PI’s [Principal Investigator] científicos na EnVision. Vênus é quase gêmeo da Terra mas sua atmosfera teve um efeito estufa de runaway. Quem se interessou mais na participação foram os geofísicos do IAG. De fato, é uma missão mais de geofísica. Na astronomia, o pessoal ainda não se abriu muito para a exploração espacial. Sobre a integração com a astrobiologia: o IAG é o centro mais importante onde se faz astrofísica no Brasil, os concursos de ingresso são muito exigentes, e é preciso começar a trazer gente que faça seminários em astrobiologia, criando oportunidades de colaboração e mostrando que pode ser muito interessante cientificamente. Ainda precisa fazer um pouco disso antes de se conseguir um movimento mais concreto de integração."
-        }
-      ]
+          type: 'text',
+          text: 'Vai haver pelo menos duas missões para Vênus na próxima década. Um engenheiro brasileiro trabalhando no PLATO acabou interagindo com a parte alemã da ESA, envolvida na [missão orbital] EnVision. Combinamos que o Brasil podia ter dois PI’s [Principal Investigator] científicos na EnVision. Vênus é quase gêmeo da Terra mas sua atmosfera teve um efeito estufa de runaway. Quem se interessou mais na participação foram os geofísicos do IAG. De fato, é uma missão mais de geofísica. Na astronomia, o pessoal ainda não se abriu muito para a exploração espacial. Sobre a integração com a astrobiologia: o IAG é o centro mais importante onde se faz astrofísica no Brasil, os concursos de ingresso são muito exigentes, e é preciso começar a trazer gente que faça seminários em astrobiologia, criando oportunidades de colaboração e mostrando que pode ser muito interessante cientificamente. Ainda precisa fazer um pouco disso antes de se conseguir um movimento mais concreto de integração.',
+        },
+      ],
     },
     {
-      "type": "heading",
-      "attrs": {
-        "level": 3
+      type: 'heading',
+      attrs: {
+        level: 3,
       },
-      "content": [
+      content: [
         {
-          "type": "text",
-          "text": "Quais são os planos para o futuro da astrobiologia no Brasil?"
-        }
-      ]
+          type: 'text',
+          text: 'Quais são os planos para o futuro da astrobiologia no Brasil?',
+        },
+      ],
     },
     {
-      "type": "paragraph",
-      "content": [
+      type: 'paragraph',
+      content: [
         {
-          "type": "text",
-          "text": "A gente pensa em fazer uma pós-graduação em astrobiologia. Evidentemente tem essas áreas todas envolvidas na astrobiologia, microbiologia, astrofísica, geofísica, astroquímica etc., uma vastidão de assuntos de pesquisa, e não há trabalho de pesquisa científica sem a pós-graduação. É só na pós-graduação que se aprende as ferramentas científicas e se consegue ter autonomia de pesquisa. A Capes [Coordenação de Aperfeiçoamento de Pessoal de Nível Superior do governo federal] tem um programa multidisciplinar usado, por exemplo, pelos químicos, que também tem muitas áreas diferentes, e que podemos tomar como exemplo. Nós vamos tentar fazer isso, porque sem isso não se avança muito. A especialização ainda é muito forte e você não pode esperar que um biólogo venha a fazer pós-graduação no IAG. É muito difícil. Mas a ideia é fazer essa pós-graduação em astrobiologia, em diversos locais."
-        }
-      ]
-    }
-  ]
+          type: 'text',
+          text: 'A gente pensa em fazer uma pós-graduação em astrobiologia. Evidentemente tem essas áreas todas envolvidas na astrobiologia, microbiologia, astrofísica, geofísica, astroquímica etc., uma vastidão de assuntos de pesquisa, e não há trabalho de pesquisa científica sem a pós-graduação. É só na pós-graduação que se aprende as ferramentas científicas e se consegue ter autonomia de pesquisa. A Capes [Coordenação de Aperfeiçoamento de Pessoal de Nível Superior do governo federal] tem um programa multidisciplinar usado, por exemplo, pelos químicos, que também tem muitas áreas diferentes, e que podemos tomar como exemplo. Nós vamos tentar fazer isso, porque sem isso não se avança muito. A especialização ainda é muito forte e você não pode esperar que um biólogo venha a fazer pós-graduação no IAG. É muito difícil. Mas a ideia é fazer essa pós-graduação em astrobiologia, em diversos locais.',
+        },
+      ],
+    },
+  ],
 }

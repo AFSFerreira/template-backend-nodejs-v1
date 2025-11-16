@@ -1,3 +1,4 @@
+import { ADDRESS_WITH_USERS_COUNT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { AddressPresenter } from '@presenters/address-presenter'
 import { getAllStatesQuerySchema } from '@schemas/address/get-all-states-query-schema'
 import { makeGetAllStatesUseCase } from '@use-cases/factories/address/make-get-all-states-use-case'
@@ -11,7 +12,7 @@ export async function getAllStates(request: FastifyRequest, reply: FastifyReply)
   const { data, meta } = await getAllStatesUseCase.execute(parsedQuery)
 
   return await reply.status(200).send({
-    data: AddressPresenter.toHTTP(data),
+    data: AddressPresenter.toHTTP(data, ADDRESS_WITH_USERS_COUNT_PRESENTER_KEY),
     meta,
   })
 }

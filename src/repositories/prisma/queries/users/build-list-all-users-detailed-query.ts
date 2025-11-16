@@ -18,8 +18,8 @@ export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySc
     conditions.push(
       Prisma.sql`(
         u.full_name_unaccent % ${unaccentedSearchContent} OR
-        u.full_name_unaccent ILIKE unaccent(${`%${searchContent}%`}) OR
-        u.full_name_tsv_pt @@ ${tsQuery}
+        u.full_name_tsv_pt @@ ${tsQuery} OR
+        u.full_name_unaccent ILIKE '%' || ${unaccentedSearchContent} || '%'
       )`,
     )
 

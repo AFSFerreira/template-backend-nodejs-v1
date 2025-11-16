@@ -1,8 +1,6 @@
-import type { MeetingWithDetails } from '@custom-types/meeting-with-details'
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
-import type { GetAllMeetingsQuerySchemaType } from '@schemas/meeting/get-all-meetings-query-schema'
-
-export interface ListAllMeetingsQuery extends GetAllMeetingsQuerySchemaType {}
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { ListAllMeetingsQuery } from '@custom-types/repositories/meeting/list-all-meetings-query'
+import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
 
 export interface MeetingsRepository {
   // create: (data: Prisma.MeetingCreateInput) => Promise<Meeting> // WIP

@@ -1,9 +1,7 @@
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/custom-academic-publication-with-simplified-details-type'
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
+import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/adapter/output/custom-academic-publication-with-simplified-details-type'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { ListAllAcademicPublicationsQuery } from '@custom-types/repositories/academic-publication/list-all-academic-publications-query'
 import type { AcademicPublication, Prisma } from '@prisma/client'
-import type { GetAllAcademicPublicationsQuerySchemaType } from '@schemas/academic-publication/get-all-academic-publications-query-schema'
-
-export type ListAllAcademicPublicationsQuery = GetAllAcademicPublicationsQuerySchemaType
 
 export interface AcademicPublicationsRepository {
   create: (data: Prisma.AcademicPublicationUncheckedCreateInput) => Promise<AcademicPublication>

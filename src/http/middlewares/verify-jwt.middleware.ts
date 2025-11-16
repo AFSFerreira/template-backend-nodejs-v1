@@ -8,7 +8,7 @@ export async function verifyJwt(request: FastifyRequest, reply: FastifyReply) {
   try {
     await request.jwtVerify()
     setUserId(request.user.sub)
-  } catch (error) {
+  } catch (_error: unknown) {
     logger.debug(UNAUTHORIZED.body)
     return await reply.status(UNAUTHORIZED.status).send(UNAUTHORIZED.body)
   }

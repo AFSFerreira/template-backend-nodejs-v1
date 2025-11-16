@@ -14,8 +14,8 @@ import { uppercaseTextWithoutInnerSpacesSchema } from '../primitives/uppercase-t
 const cpfIdentityDocumentSchema = z.preprocess(
   (data) => (typeof data === 'string' ? cpf.strip(data) : data),
   uppercaseTextWithoutInnerSpacesSchema
-    .length(11, { message: INVALID_CPF_LENGTH })
-    .refine(cpf.isValid, { message: INVALID_CPF_FORMAT })
+    .length(11, INVALID_CPF_LENGTH)
+    .refine(cpf.isValid, INVALID_CPF_FORMAT)
     .transform(cpf.format),
 )
 

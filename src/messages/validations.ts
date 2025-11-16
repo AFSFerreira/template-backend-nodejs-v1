@@ -53,3 +53,9 @@ export const PASSWORD_LOWERCASE = 'A senha deve conter pelo menos uma letra min�
 export const PASSWORD_DIGIT = 'A senha deve conter pelo menos um número'
 
 export const PASSWORD_SPECIAL_CHARACTER = 'A senha deve conter pelo menos um caractere especial'
+
+export const INVALID_EDUCATION_LEVEL_TYPE = 'Valor inválido para educationLevel'
+
+export const INVALID_BIRTHDATE_RANGE = 'Data de nascimento inválida'
+
+export const INVALID_DOI_FORMAT = 'Link DOI com formato inválido'

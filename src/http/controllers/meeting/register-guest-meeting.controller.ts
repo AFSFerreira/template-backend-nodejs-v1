@@ -1,4 +1,3 @@
-import { MeetingParticipationPresenter } from '@presenters/meeting-participation-presenter'
 import { registerGuestMeetingBodySchema } from '@schemas/meeting/register-guest-meeting-body-schema'
 import { registerGuestMeetingParamsSchema } from '@schemas/meeting/register-guest-meeting-params-schema'
 import { makeRegisterGuestMeetingUseCase } from '@use-cases/factories/meeting/make-register-guest-meeting-use-case'
@@ -10,12 +9,10 @@ export async function registerGuestMeeting(request: FastifyRequest, reply: Fasti
 
   const registerGuestMeetingUseCase = makeRegisterGuestMeetingUseCase()
 
-  const { meetingParticipation } = await registerGuestMeetingUseCase.execute({
+  await registerGuestMeetingUseCase.execute({
     ...parsedBody,
     meetingId,
   })
 
-  return await reply.status(201).send({
-    data: MeetingParticipationPresenter.toHTTP(meetingParticipation),
-  })
+  return await reply.status(201).send()
 }

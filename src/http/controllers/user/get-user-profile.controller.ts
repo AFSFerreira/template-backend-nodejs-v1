@@ -1,3 +1,4 @@
+import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/user-presenter'
 import { makeGetUserProfileUseCase } from '@use-cases/factories/user/make-get-user-profile-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
@@ -11,8 +12,6 @@ export async function getUserProfile(request: FastifyRequest, reply: FastifyRepl
   })
 
   return await reply.status(200).send({
-    data: {
-      user: UserPresenter.toHTTPDetailed(user),
-    },
+    data: UserPresenter.toHTTP(user, USER_DETAILED_PRESENTER_KEY),
   })
 }

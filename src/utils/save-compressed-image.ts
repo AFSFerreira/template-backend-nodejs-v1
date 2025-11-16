@@ -1,7 +1,7 @@
-import fs from 'fs/promises'
 import crypto from 'node:crypto'
 import path from 'node:path'
-import type { CompressedImageInfo } from '@custom-types/compressed-image-info-type'
+import type { CompressedImageInfo } from '@custom-types/custom/compressed-image-info-type'
+import fs from 'fs-extra'
 import sharp from 'sharp'
 
 interface SaveCompressedImageOptions {
@@ -40,9 +40,7 @@ export async function saveCompressedImage({
     .webp({ quality: options.quality })
     .toBuffer()
 
-  await fs.mkdir(folderPath, { recursive: true })
-
-  await fs.writeFile(finalImagePath, compressedImageBuffer)
+  await fs.outputFile(finalImagePath, compressedImageBuffer)
 
   return { finalImagePath, compressedImageBuffer }
 }

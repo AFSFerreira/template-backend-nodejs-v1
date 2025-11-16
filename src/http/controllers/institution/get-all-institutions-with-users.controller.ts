@@ -1,3 +1,4 @@
+import { INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { InstitutionPresenter } from '@presenters/institution-presenter'
 import { getAllInstitutionsWithUsersQuerySchema } from '@schemas/institution/get-all-institutions-with-users-query-schema'
 import { makeGetAllInstitutionsWithUsersUseCase } from '@use-cases/factories/institution/make-get-all-institutions-with-users-use-case'
@@ -11,7 +12,7 @@ export async function getAllInstitutionsWithUsers(request: FastifyRequest, reply
   const { data, meta } = await getAllInstitutionsWithUsersUseCase.execute(parsedQuery)
 
   return await reply.status(200).send({
-    data: InstitutionPresenter.toHTTP(data),
+    data: InstitutionPresenter.toHTTP(data, INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY),
     meta,
   })
 }

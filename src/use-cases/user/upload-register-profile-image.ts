@@ -29,7 +29,7 @@ export class UploadRegisterProfileImageUseCase {
       })
 
       return { fileName: path.basename(finalImagePath) }
-    } catch (error) {
+    } catch (_error: unknown) {
       throw new UserImageStorageError()
     }
   }

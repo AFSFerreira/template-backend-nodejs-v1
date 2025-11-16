@@ -1,5 +1,7 @@
 import crypto from 'node:crypto'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
+import { logger } from '@lib/logger'
+import { CHANGE_PASSWORD_SUCCESSFUL } from '@messages/loggings'
 import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import ms from 'ms'
@@ -39,6 +41,8 @@ export class ForgotPasswordUseCase {
       id: userAlreadyExists.id,
       tokenData,
     })
+
+    logger.info({ login }, CHANGE_PASSWORD_SUCCESSFUL)
 
     return { user, token: recoveryPasswordToken }
   }

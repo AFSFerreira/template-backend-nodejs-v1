@@ -39,8 +39,12 @@ function toSerializable(value: unknown, alreadySeen: WeakSet<object>) {
     return null
   }
 
-  if (value instanceof Date || Buffer.isBuffer(value) || value instanceof Readable) {
+  if (Buffer.isBuffer(value) || value instanceof Readable) {
     return value
+  }
+
+  if (value instanceof Date) {
+    return value.toISOString()
   }
 
   if (value instanceof Map) {

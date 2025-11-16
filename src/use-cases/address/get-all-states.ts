@@ -1,4 +1,4 @@
-import type { PaginatedResult } from '@custom-types/pagination-meta-type'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { AddressesRepository, AddressStates } from '@repositories/addresses-repository'
 import type { GetAllStatesQuerySchemaType } from '@schemas/address/get-all-states-query-schema'
 

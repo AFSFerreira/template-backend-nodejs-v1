@@ -1,5 +1,7 @@
-import type { UserWithDetails } from '@custom-types/user-with-details'
+import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import { env } from '@env/index'
+import { logger } from '@lib/logger'
+import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { UpdateUserBodySchemaType } from '@schemas/user/update-user-body-schema'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
@@ -57,6 +59,8 @@ export class UpdateUserUseCase {
         },
       },
     })
+
+    logger.info({ userId }, USER_UPDATE_SUCCESSFUL)
 
     return { user: updatedUser }
   }

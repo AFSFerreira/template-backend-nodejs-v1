@@ -1,5 +1,5 @@
-import type { AcademicPublicationRaw } from '@custom-types/academic-publication-raw-type'
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/custom-academic-publication-with-simplified-details-type'
+import type { AcademicPublicationRaw } from '@custom-types/adapter/input/academic-publication-raw-type'
+import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/adapter/output/custom-academic-publication-with-simplified-details-type'
 
 export function academicPublicationAdapter(
   rawPublication: AcademicPublicationRaw,

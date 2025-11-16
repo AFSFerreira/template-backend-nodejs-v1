@@ -1,6 +1,7 @@
 import path from 'node:path'
 import { BASE_PROJECT_PATH } from '@constants/file-constants'
 import fastifyStatic from '@fastify/static'
+import type { FastifyStaticOptions } from '@fastify/static'
 import type { FastifyInstance } from 'fastify'
 
 export async function staticFileRoutes(app: FastifyInstance) {
@@ -10,11 +11,7 @@ export async function staticFileRoutes(app: FastifyInstance) {
     cacheControl: true,
     immutable: true,
     maxAge: '1y',
-
-    // setHeaders: (response: SetHeadersResponse, _pathName: string) => {
-    //   response.setHeader('Cache-Control', `public, max-age=${ms('1y')}, immutable`)
-    // },
-  }
+  } satisfies FastifyStaticOptions
 
   const fileRoutes = [
     {
