@@ -20,6 +20,7 @@ import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-non
 import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
 import { rangedYearSchema } from '@schemas/utils/primitives/ranged-year-schema'
 import { urlSchema } from '@schemas/utils/primitives/url-schema'
+import { getTrueMapping } from '@utils/get-true-mapping'
 import { stripZodKeys } from '@utils/strip-zod-keys'
 import { z } from 'zod'
 import { emailSchema } from '../utils/components/email-schema'
@@ -139,31 +140,30 @@ const highLevelEducationRegisterBodySchema = z
     }
   })
 
-export const registerBodyRawSchema = z
-  .object({
-    user: z
-      .object({
-        educationLevel: educationLevelSchema,
-      })
-      .loose(),
-  })
-  .loose()
+export const registerBodyRawSchema = z.object({
+  user: z.object({
+    educationLevel: educationLevelSchema,
+  }).loose()
+})
+.loose()
 
-export const registerBodySchema = registerBodyRawSchema.superRefine((data, ctx) => {
+export const registerBodySchema = registerBodyRawSchema.transform((data, ctx) => {
   const educationLevel = data.user.educationLevel
 
-  let targetSchema: z.ZodType | null = (() => {
-    switch (true) {
-      case highLevelEducationEnumSchema.safeParse(educationLevel).success:
-        return highLevelEducationRegisterBodySchema
-      case highLevelStudentEnumSchema.safeParse(educationLevel).success:
-        return highLevelStudentRegisterBodySchema
-      case lowLevelEducationEnumSchema.safeParse(educationLevel).success:
-        return lowLevelEducationRegisterBodySchema
-      default:
-        return null
-    }
-  })()
+  const targetSchema = getTrueMapping<z.ZodType>([
+    {
+      expression: highLevelEducationEnumSchema.safeParse(educationLevel).success,
+      value: highLevelEducationRegisterBodySchema,
+    },
+    {
+      expression: highLevelStudentEnumSchema.safeParse(educationLevel).success,
+      value: highLevelStudentRegisterBodySchema,
+    },
+    {
+      expression: lowLevelEducationEnumSchema.safeParse(educationLevel).success,
+      value: lowLevelEducationRegisterBodySchema,
+    },
+  ])
 
   if (!targetSchema) {
     ctx.addIssue({
@@ -173,7 +173,7 @@ export const registerBodySchema = registerBodyRawSchema.superRefine((data, ctx) 
       received: educationLevel,
       options: EducationLevelType,
     })
-    return
+    return z.NEVER
   }
 
   const result = targetSchema.safeParse(data)
@@ -182,7 +182,10 @@ export const registerBodySchema = registerBodyRawSchema.superRefine((data, ctx) 
     result.error.issues.forEach((issue) => {
       ctx.addIssue({ ...issue })
     })
+    return z.NEVER
   }
+
+  return result.data
 })
 
 type LowLevelType = z.infer<typeof lowLevelEducationRegisterBodySchema>

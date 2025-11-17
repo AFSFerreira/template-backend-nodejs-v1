@@ -34,7 +34,7 @@ export const app = fastify({
   routerOptions: {
     caseSensitive: true,
     ignoreTrailingSlash: true,
-    maxParamLength: 512,
+    maxParamLength: 256,
   },
 })
 

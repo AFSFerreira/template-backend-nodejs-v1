@@ -9,7 +9,7 @@ import type { SetPasswordTokenQuery } from '@custom-types/repositories/user/set-
 import type { UpdateUserQuery } from '@custom-types/repositories/user/update-user-query'
 import { userWithDetails } from '@custom-types/validator/user-with-details'
 import { prisma } from '@lib/prisma'
-import type { Prisma, PrismaPromise } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
@@ -18,15 +18,6 @@ import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 export class PrismaUsersRepository implements UsersRepository {
-  static async ignoreClientKnownRequestError<T>(prismaPromise: PrismaPromise<T>): Promise<T | null> {
-    try {
-      return await prismaPromise
-    } catch (_error: unknown) {
-      // if (!(error instanceof PrismaClientKnownRequestError)) throw error
-      return null
-    }
-  }
-
   async create(data: CreateUserQuery) {
     const keywordsConnectOrCreateData = data.keyword
       ? {
@@ -352,14 +343,9 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async update({ id, data }: UpdateUserQuery) {
-    // HACK: O criador dessa implementação de atualização tem
-    // plena consciência que apagar os registros antigos e criar novos
-    // está longe de ser a implementação ideal, mas o cenário atual e a pressa pra
-    // entregar o projeto demanda essa "gambiarra". Para quem estiver fazendo a
-    // manutenção disso no futuro, minhas sinceras desculpas pelo inconveniente. :D
-
-    const keywordsConnectOrCreateData = data.keyword
+    const keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] = data.keyword
       ? {
+          set: [],
           connectOrCreate: data.keyword.map((value: string) => ({
             where: { value },
             create: { value },
@@ -367,17 +353,25 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const academicPublicationCreateData = data.academicPublication
+    const academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] = data.academicPublication
       ? {
+          deleteMany: {},
+
+          // 2. Cria as novas baseadas na lista enviada
           create: data.academicPublication.map((academicPublication) => {
             const { area, authors, ...filteredAcademicPublicationData } = academicPublication
+
             return {
               ...filteredAcademicPublicationData,
+
+              // Recria os autores
               AcademicPublicationAuthors: {
                 create: authors.map((author) => ({
                   name: author,
                 })),
               },
+
+              // Reconecta a área de atividade
               ActivityArea: {
                 connect: {
                   type_area: {
@@ -391,25 +385,28 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const enrolledCourseCreateData = data.enrolledCourse
+    const enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] = data.enrolledCourse
       ? {
-          create: {
-            ...data.enrolledCourse,
-            scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+          upsert: {
+            create: {
+              ...data.enrolledCourse,
+              scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+            },
+            update: {
+              ...data.enrolledCourse,
+              scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+            },
           },
         }
       : undefined
 
-    const institutionConnectOrCreateData = data.institution
+    const institutionConnectData: Prisma.UserUpdateInput['Institution'] = data.institution
       ? {
-          connectOrCreate: {
-            create: { name: data.institution.name },
-            where: { name: data.institution.name },
-          },
+          connect: { name: data.institution.name },
         }
       : undefined
 
-    const activityAreaConnectData = data.activityArea
+    const activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] = data.activityArea
       ? {
           connect: {
             type_area: {
@@ -420,7 +417,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const subActivityAreaConnectData = data.activityArea
+    const subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] = data.activityArea
       ? {
           connect: {
             type_area: {
@@ -431,58 +428,14 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const addressCreateData = {
-      create: data.address,
-    }
-
-    await Promise.all([
-      PrismaUsersRepository.ignoreClientKnownRequestError(
-        prisma.address.delete({
-          where: { userId: id },
-        }),
-      ),
-      PrismaUsersRepository.ignoreClientKnownRequestError(
-        prisma.enrolledCourse.delete({
-          where: { userId: id },
-        }),
-      ),
-      PrismaUsersRepository.ignoreClientKnownRequestError(
-        prisma.academicPublication.deleteMany({
-          where: { userId: id },
-        }),
-      ),
-      PrismaUsersRepository.ignoreClientKnownRequestError(
-        prisma.directorBoard.delete({
-          where: { userId: id },
-        }),
-      ),
-      PrismaUsersRepository.ignoreClientKnownRequestError(
-        prisma.directorBoard.delete({
-          where: { userId: id },
-        }),
-      ),
-      prisma.user.update({
-        where: { id },
-        data: {
-          linkLattes: null,
-          linkGoogleScholar: null,
-          linkResearcherId: null,
-          orcidNumber: null,
-          departmentName: null,
-          institutionComplement: null,
-          astrobiologyOrRelatedStartYear: null,
-          publicInformation: null,
-          activityAreaDescription: null,
-          subActivityAreaDescription: null,
-          secondaryEmail: null,
-          activityAreaId: null,
-          subActivityAreaId: null,
-          institutionId: null,
-          occupation: null,
-          Keyword: { set: [] },
-        },
-      }),
-    ])
+    const addressUpsertData: Prisma.UserUpdateInput['Address'] = data.address
+      ? {
+          upsert: {
+            create: data.address,
+            update: data.address,
+          },
+        }
+      : undefined
 
     const user = await prisma.user.update({
       where: { id },
@@ -490,9 +443,9 @@ export class PrismaUsersRepository implements UsersRepository {
         ...data.user,
         emailIsPublic: data.user.emailIsPublic ?? false,
         receiveReports: data.user.receiveReports ?? false,
-        Address: addressCreateData,
-        EnrolledCourse: enrolledCourseCreateData,
-        Institution: institutionConnectOrCreateData,
+        Address: addressUpsertData,
+        EnrolledCourse: enrolledCourseUpsertData,
+        Institution: institutionConnectData,
         AcademicPublication: academicPublicationCreateData,
         Keyword: keywordsConnectOrCreateData,
         ActivityArea: activityAreaConnectData,

@@ -3,6 +3,14 @@ import { identityDocumentSchema } from '@schemas/utils/components/identity-docum
 import z from 'zod'
 import { usernameSchema } from '../utils/components/username-schema'
 
+const checkAvailabilityQueryRawSchema = z.object({
+  username: usernameSchema,
+  email: emailSchema,
+  secondaryEmail: emailSchema,
+  identity: identityDocumentSchema,
+})
+.partial()
+
 export const checkAvailabilityQuerySchema = z.preprocess(
   (query: any) => ({
     ...query,
@@ -15,13 +23,7 @@ export const checkAvailabilityQuerySchema = z.preprocess(
         }
       : {}),
   }),
-  z
-    .object({
-      username: usernameSchema,
-      email: emailSchema,
-      identity: identityDocumentSchema,
-    })
-    .partial(),
+  checkAvailabilityQueryRawSchema,
 )
 
 export type CheckAvailabilityQuerySchemaType = z.infer<typeof checkAvailabilityQuerySchema>

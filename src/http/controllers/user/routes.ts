@@ -64,7 +64,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      ...rateLimit({ max: 10, timeWindow: '1d' }),
+      ...rateLimit({ max: 100, timeWindow: '1d' }),
     },
     register,
   )
@@ -72,7 +72,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/uploads/profile-image',
     {
       preHandler: [upload.single('profileImage')],
-      ...rateLimit({ max: 5, timeWindow: '30s' }),
+      ...rateLimit({ max: 500, timeWindow: '30s' }),
     },
     uploadRegisterProfileImage,
   )
@@ -92,7 +92,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/forgot-password',
     {
-      ...rateLimit({ max: 10, timeWindow: '1h' }),
+      ...rateLimit({ max: 100, timeWindow: '1h' }),
     },
     forgotPassword,
   )

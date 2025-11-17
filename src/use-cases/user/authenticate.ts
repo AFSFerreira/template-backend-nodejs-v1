@@ -7,6 +7,7 @@ import { emailSchema } from '@schemas/utils/components/email-schema'
 import { usernameSchema } from '@schemas/utils/components/username-schema'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
+import { getTrueMapping } from '@utils/get-true-mapping'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
@@ -37,16 +38,16 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const user: User | null = await (async () => {
-      switch (true) {
-        case emailSchema.safeParse(login).success:
-          return await this.usersRepository.findByEmail(login)
-        case usernameSchema.safeParse(login).success:
-          return await this.usersRepository.findByUsername(login)
-        default:
-          return null
-      }
-    })()
+    const user = getTrueMapping<User>([
+      {
+        expression: emailSchema.safeParse(login).success,
+        value: await this.usersRepository.findByEmail(login),
+      },
+      {
+        expression: usernameSchema.safeParse(login).success,
+        value: await this.usersRepository.findByUsername(login),
+      },
+    ])
 
     const hashToCompare = user?.passwordHash ?? DUMMY_HASH
 

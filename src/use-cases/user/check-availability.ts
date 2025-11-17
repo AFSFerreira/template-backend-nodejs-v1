@@ -20,6 +20,10 @@ export class CheckAvailabilityUseCase {
         async () => !!(await this.usersRepository.findUniqueBy({ email: checkAvailabilityUseCaseInput.email })),
       ],
       [
+        'secondaryEmail',
+        async () => !!(await this.usersRepository.findUniqueBy({ secondaryEmail: checkAvailabilityUseCaseInput.secondaryEmail }))
+      ],
+      [
         'username',
         async () =>
           !!(await this.usersRepository.findUniqueBy({
