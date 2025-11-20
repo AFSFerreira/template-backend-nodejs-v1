@@ -1,5 +1,5 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
-import { ACTIVITY_AREA_MISSING_DESCRIPTION, INVALID_EDUCATION_LEVEL_TYPE } from '@messages/validations'
+import { INVALID_EDUCATION_LEVEL_TYPE } from '@messages/validations'
 import { EducationLevelType } from '@prisma/client'
 import { academicPublicationsSchema } from '@schemas/utils/components/academic-publication-schema'
 import { activityAreaSchema } from '@schemas/utils/components/activity-area-schema'
@@ -30,6 +30,7 @@ import { passwordSchema } from '../utils/components/password-schema'
 import { usernameSchema } from '../utils/components/username-schema'
 import { nonemptyTextSchema } from '../utils/primitives/nonempty-text-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
+import { validateActivityAreaRefinement } from '@schemas/utils/helpers/validate-activity-area-refinement'
 
 export const commonUserSchema = z.object({
   email: emailSchema,
@@ -93,52 +94,19 @@ const highLevelStudentRegisterBodySchema = z.object({
     ...professionalAndAcademicUserSchema.shape,
     educationLevel: highLevelStudentEnumSchema,
   }),
+}).superRefine(validateActivityAreaRefinement)
+
+const highLevelEducationRegisterBodySchema = z.object({
+  ...otherRootFieldsSchema.shape,
+  ...stripZodKeys(otherRootFieldsStudentAndAcademicSchema).shape,
+  ...otherRootFieldsProfessionalAndAcademicSchema.shape,
+  user: z.object({
+    ...commonUserSchema.shape,
+    ...professionalAndAcademicUserSchema.shape,
+    educationLevel: highLevelEducationEnumSchema,
+  }),
 })
-
-const highLevelEducationRegisterBodySchema = z
-  .object({
-    ...otherRootFieldsSchema.shape,
-    ...stripZodKeys(otherRootFieldsStudentAndAcademicSchema).shape,
-    ...otherRootFieldsProfessionalAndAcademicSchema.shape,
-    user: z.object({
-      ...commonUserSchema.shape,
-      ...professionalAndAcademicUserSchema.shape,
-      educationLevel: highLevelEducationEnumSchema,
-    }),
-  })
-  .superRefine((data, ctx) => {
-    if (data.activityArea.mainActivityArea === 'OUTRA' && !data.user.activityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'mainActivityArea'],
-      })
-    }
-
-    if (data.activityArea.mainActivityArea !== 'OUTRA' && data.user.activityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'mainActivityArea'],
-      })
-    }
-
-    if (data.activityArea.subActivityArea === 'OUTRA' && !data.user.subActivityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'subActivityArea'],
-      })
-    }
-
-    if (data.activityArea.subActivityArea !== 'OUTRA' && data.user.subActivityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'subActivityArea'],
-      })
-    }
-  })
+.superRefine(validateActivityAreaRefinement)
 
 export const registerBodyRawSchema = z.object({
   user: z.object({
