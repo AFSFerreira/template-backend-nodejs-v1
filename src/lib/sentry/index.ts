@@ -14,6 +14,7 @@ export function initSentry(app: FastifyInstance) {
     tracesSampleRate: 1.0,
     profileSessionSampleRate: 1.0,
     profileLifecycle: 'trace',
+    release: env.SENTRY_RELEASE,
   })
 
   Sentry.setupFastifyErrorHandler(app)

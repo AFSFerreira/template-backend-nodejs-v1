@@ -16,6 +16,7 @@ const envSchema = z.object({
 
   // Sentry:
   SENTRY_DSN: z.url().trim().nonempty().optional(),
+  SENTRY_RELEASE: z.string().trim().nonempty().default('dev-local'),
 
   // REDIS:
   REDIS_HOST: z.string().trim().nonempty(),

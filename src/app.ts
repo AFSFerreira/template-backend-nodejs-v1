@@ -30,10 +30,6 @@ import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
 import { staticFileRoutes } from './http/plugins/static-files'
 import { appRoutes } from './http/routes'
-import { initSentry } from '@lib/sentry'
-import { logError } from '@lib/logger/helpers/log-error'
-import { HAS_SENTRY, IS_PROD } from '@constants/env-constants'
-import * as Sentry from "@sentry/node"
 
 export const app = fastify({
   logger: false,
