@@ -17,7 +17,11 @@ export async function healthCheck(_request: FastifyRequest, reply: FastifyReply)
     reply.status(200).send({ status: 'ok', uptime, timestamp })
   } catch (error) {
     const duration = Date.now() - startTime
-    logError(error, { duration }, 'Healthcheck failed')
+    logError({
+      error,
+      context: { duration },
+      message: 'Healthcheck failed',
+    })
 
     reply.status(500).send({ status: 'error', message: 'Internal healthcheck error' })
   }

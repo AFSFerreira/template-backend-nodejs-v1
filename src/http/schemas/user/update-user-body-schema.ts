@@ -1,106 +1,24 @@
-import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
-import { passwordSchema } from '@schemas/utils/components/password-schema'
-import {
-  highLevelEducationEnumSchema,
-  highLevelStudentEnumSchema,
-  lowLevelEducationEnumSchema,
-} from '@schemas/utils/enums/education-level-enum-schema'
-import { stripZodKeys } from '@utils/strip-zod-keys'
+import type { highLevelEducationUpdateBodySchema } from '@schemas/utils/components/user/high-level-education-update-body-schema'
+import type { highLevelStudentUpdateBodySchema } from '@schemas/utils/components/user/high-level-student-update-body-schema'
+import type { lowLevelEducationUpdateBodySchema } from '@schemas/utils/components/user/low-level-education-update-body-schema'
+import { educationLevelSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import { transformUpdateBody } from '@schemas/utils/helpers/transform-update-body'
 import { z } from 'zod'
-import {
-  commonUserSchema,
-  otherRootFieldsProfessionalAndAcademicSchema,
-  otherRootFieldsSchema,
-  otherRootFieldsStudentAndAcademicSchema,
-  professionalAndAcademicUserSchema,
-} from './register-body-schema'
 
-export const commonUpdateUserSchema = z.object({
-  ...commonUserSchema.shape,
-  identity: z.undefined(),
-  interestDescription: z.undefined(),
-  password: passwordSchema.optional(),
-})
-
-const professionalAndAcademicUpdateUserSchema = professionalAndAcademicUserSchema
-
-const otherRootFieldsStudentAndAcademicUpdateSchema = otherRootFieldsStudentAndAcademicSchema
-
-const otherRootFieldsProfessionalAndAcademicUpdateSchema = otherRootFieldsProfessionalAndAcademicSchema
-
-const otherRootFieldsUpdateSchema = otherRootFieldsSchema
-
-const lowLevelEducationUpdateBodySchema = z.object({
-  ...otherRootFieldsUpdateSchema.shape,
-  ...stripZodKeys(otherRootFieldsStudentAndAcademicUpdateSchema).shape,
-  ...stripZodKeys(otherRootFieldsProfessionalAndAcademicUpdateSchema).shape,
-  user: z.object({
-    ...commonUpdateUserSchema.shape,
-    ...stripZodKeys(professionalAndAcademicUpdateUserSchema).shape,
-    educationLevel: lowLevelEducationEnumSchema,
-  }),
-})
-
-const highLevelStudentUpdateBodySchema = z.object({
-  ...otherRootFieldsUpdateSchema.shape,
-  ...otherRootFieldsStudentAndAcademicUpdateSchema.shape,
-  ...otherRootFieldsProfessionalAndAcademicUpdateSchema.shape,
-  user: z.object({
-    ...commonUpdateUserSchema.shape,
-    ...professionalAndAcademicUpdateUserSchema.shape,
-    educationLevel: highLevelStudentEnumSchema,
-  }),
-})
-
-const highLevelEducationUpdateBodySchema = z
+const updateBodyRawSchema = z
   .object({
-    ...otherRootFieldsUpdateSchema.shape,
-    ...stripZodKeys(otherRootFieldsStudentAndAcademicUpdateSchema).shape,
-    ...otherRootFieldsProfessionalAndAcademicUpdateSchema.shape,
-    user: z.object({
-      ...commonUpdateUserSchema.shape,
-      ...professionalAndAcademicUpdateUserSchema.shape,
-      educationLevel: highLevelEducationEnumSchema,
-    }),
+    user: z
+      .object({
+        educationLevel: educationLevelSchema,
+      })
+      .loose(),
   })
-  .superRefine((data, ctx) => {
-    if (data.activityArea.mainActivityArea === 'OUTRA' && !data.user.activityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'mainActivityArea'],
-      })
-    }
+  .loose()
 
-    if (data.activityArea.mainActivityArea !== 'OUTRA' && data.user.activityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'mainActivityArea'],
-      })
-    }
+export const updateBodySchema = updateBodyRawSchema.transform(transformUpdateBody)
 
-    if (data.activityArea.subActivityArea === 'OUTRA' && !data.user.subActivityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'subActivityArea'],
-      })
-    }
+type LowLevelType = z.infer<typeof lowLevelEducationUpdateBodySchema>
+type HighLevelStudentType = z.infer<typeof highLevelStudentUpdateBodySchema>
+type HighLevelEducationType = z.infer<typeof highLevelEducationUpdateBodySchema>
 
-    if (data.activityArea.subActivityArea !== 'OUTRA' && data.user.subActivityAreaDescription) {
-      ctx.addIssue({
-        code: 'custom',
-        message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-        path: ['activityAreas', 'subActivityArea'],
-      })
-    }
-  })
-
-export const updateBodySchema = z.union([
-  highLevelStudentUpdateBodySchema,
-  highLevelEducationUpdateBodySchema,
-  lowLevelEducationUpdateBodySchema,
-])
-
-export type UpdateUserBodySchemaType = z.infer<typeof updateBodySchema>
+export type UpdateUserBodySchemaType = LowLevelType | HighLevelStudentType | HighLevelEducationType

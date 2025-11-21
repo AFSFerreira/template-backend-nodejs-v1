@@ -1,11 +1,8 @@
-import type { ActivityAreaValidationData } from "@custom-types/custom/activity-area-validation-data"
-import { ACTIVITY_AREA_MISSING_DESCRIPTION } from "@messages/validations"
-import type z from "zod"
+import type { ActivityAreaValidationData } from '@custom-types/custom/activity-area-validation-data'
+import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
+import type { RefinementCtx } from 'zod'
 
-export function validateActivityAreaRefinement(
-  data: ActivityAreaValidationData,
-  ctx: z.RefinementCtx
-) {
+export function validateActivityAreaRefinement(data: ActivityAreaValidationData, ctx: RefinementCtx) {
   if (data.activityArea.mainActivityArea === 'OUTRA' && !data.user.activityAreaDescription) {
     ctx.addIssue({
       code: 'custom',

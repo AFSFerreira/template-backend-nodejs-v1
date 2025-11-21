@@ -1,6 +1,12 @@
 import { logger } from '..'
 
-export function logError(error: unknown, context: Record<string, unknown> = {}, message: string = 'Unexpected error') {
+interface ILogError {
+  error: unknown
+  context?: Record<string, unknown>
+  message: string
+}
+
+export function logError({ error, context = {}, message = 'Unexpected error' }: ILogError) {
   logger.error(
     {
       ...(error instanceof Error

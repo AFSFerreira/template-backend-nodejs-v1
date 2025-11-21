@@ -14,14 +14,17 @@ const envSchema = z.object({
   JWT_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('2h'),
   JWT_REFRESH_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('7d'),
 
+  // Sentry:
+  SENTRY_DSN: z.url().trim().nonempty().optional(),
+
   // REDIS:
-  REDIS_HOST: z.string().trim().nonempty(),
+  REDIS_HOST: z.url().trim().nonempty(),
   REDIS_PORT: z.coerce.number().int().positive().default(6379),
   REDIS_PASSWORD: z.string().trim().nonempty(),
   REDIS_DB: z.coerce.number().int().nonnegative().default(0),
 
   // URLs de Conexão:
-  FRONTEND_URL: z.string().trim().nonempty().default('http://localhost:5173'),
+  FRONTEND_URL: z.url().trim().nonempty().default('http://localhost:5173'),
 
   // SMTP:
   SMTP_EMAIL: z.email(),

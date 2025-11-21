@@ -1,6 +1,6 @@
 import { LONG_LIMITED_CHARACTERS_SIZE } from '@constants/validation-constants'
-import { subCategoriesSchema } from '@schemas/utils/components/sub-categories-schema'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
+import { subCategoriesSchema } from '@schemas/utils/generic-components/sub-categories-schema'
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { uuidv7Schema } from '@schemas/utils/primitives/uuidv7-schema'

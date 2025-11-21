@@ -1,3 +1,4 @@
+import { HAS_SENTRY, IS_PROD } from '@constants/env-constants'
 import { MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
@@ -5,9 +6,11 @@ import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import { getMulterError } from '@lib/multer/helpers/handle-multer-errors'
 import '@lib/zod/index'
 import '@presenters/import-index'
+import { initSentry } from '@lib/sentry'
 import { UNHANDLED_ERROR } from '@messages/loggings'
 import {
   BODY_REQUIRED,
@@ -16,6 +19,7 @@ import {
   SYNTAX_ERROR,
   VALIDATION_ERROR,
 } from '@messages/responses'
+import * as Sentry from '@sentry/node'
 import { ApiError } from '@use-cases/errors/api-error'
 import fastify from 'fastify'
 import ms from 'ms'
@@ -68,6 +72,8 @@ app.register(multipart)
 app.register(rateLimit)
 app.register(appRoutes)
 
+initSentry(app)
+
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
     const errorTree = z.treeifyError(error)
@@ -103,15 +109,14 @@ app.setErrorHandler((error, _request, reply) => {
     return reply.status(multerError.status).send(multerError.body)
   }
 
-  // TODO: Send error to monitoring service (SENTRY)
-  logger.error(
-    {
-      errorName: error instanceof Error ? error.name : String(error),
-      errorMessage: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-    },
-    UNHANDLED_ERROR,
-  )
+  if (IS_PROD && HAS_SENTRY) {
+    Sentry.captureException(error)
+  } else {
+    logError({
+      error,
+      message: UNHANDLED_ERROR,
+    })
+  }
 
   return reply.status(INTERNAL_SERVER_ERROR.status).send(INTERNAL_SERVER_ERROR.body)
 })

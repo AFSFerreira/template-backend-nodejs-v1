@@ -1,15 +1,16 @@
-import { emailSchema } from '@schemas/utils/components/email-schema'
-import { identityDocumentSchema } from '@schemas/utils/components/identity-document-schema'
+import { emailSchema } from '@schemas/utils/generic-components/email-schema'
+import { identityDocumentSchema } from '@schemas/utils/generic-components/identity-document-schema'
 import z from 'zod'
-import { usernameSchema } from '../utils/components/username-schema'
+import { usernameSchema } from '../utils/generic-components/username-schema'
 
-const checkAvailabilityQueryRawSchema = z.object({
-  username: usernameSchema,
-  email: emailSchema,
-  secondaryEmail: emailSchema,
-  identity: identityDocumentSchema,
-})
-.partial()
+const checkAvailabilityQueryRawSchema = z
+  .object({
+    username: usernameSchema,
+    email: emailSchema,
+    secondaryEmail: emailSchema,
+    identity: identityDocumentSchema,
+  })
+  .partial()
 
 export const checkAvailabilityQuerySchema = z.preprocess(
   (query: any) => ({
