@@ -2,9 +2,8 @@ import { HAS_SENTRY } from '@constants/env-constants'
 import { env } from '@env/index'
 import * as Sentry from '@sentry/node'
 import { nodeProfilingIntegration } from '@sentry/profiling-node'
-import type { FastifyInstance } from 'fastify'
 
-export function initSentry(app: FastifyInstance) {
+export function initSentry() {
   if (!HAS_SENTRY) return
 
   Sentry.init({
@@ -17,5 +16,5 @@ export function initSentry(app: FastifyInstance) {
     release: env.SENTRY_RELEASE,
   })
 
-  Sentry.setupFastifyErrorHandler(app)
+  // Sentry.setupFastifyErrorHandler(app)
 }

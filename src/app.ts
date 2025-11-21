@@ -1,4 +1,4 @@
-import { HAS_SENTRY, IS_PROD } from '@constants/env-constants'
+import { HAS_SENTRY } from '@constants/env-constants'
 import { MB_IN_BYTES } from '@constants/file-constants'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
@@ -72,7 +72,7 @@ app.register(multipart)
 app.register(rateLimit)
 app.register(appRoutes)
 
-initSentry(app)
+initSentry()
 
 app.setErrorHandler((error, _request, reply) => {
   if (error instanceof ZodError) {
@@ -109,7 +109,7 @@ app.setErrorHandler((error, _request, reply) => {
     return reply.status(multerError.status).send(multerError.body)
   }
 
-  if (IS_PROD && HAS_SENTRY) {
+  if (HAS_SENTRY) {
     Sentry.captureException(error)
   } else {
     logError({
