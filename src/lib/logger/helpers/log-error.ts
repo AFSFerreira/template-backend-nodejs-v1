@@ -6,7 +6,9 @@ interface ILogError {
   message: string
 }
 
-export function logError({ error, context = {}, message = 'Unexpected error' }: ILogError) {
+export function logError(
+  { error, context = {}, message = 'Unexpected error' }: ILogError
+) {
   logger.error(
     {
       ...(error instanceof Error
