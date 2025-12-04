@@ -1,5 +1,6 @@
-import { ActivityAreaType, PrismaClient } from '@prisma/client'
+import { adapter } from '@lib/prisma/helpers/configuration'
 import type { User } from '@prisma/client'
+import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
 import { dummyBlogDataArray } from './seed-data/blogs'
 import { directorPositionsArray } from './seed-data/director-positions'
@@ -9,7 +10,7 @@ import { alreadyFinishedMeetings, meetingData1 } from './seed-data/meeting'
 import { paymentInfo1 } from './seed-data/payment-info'
 import { dummyUserDirectorBoardInfoArray, dummyUserInfoArray, userData1, userData2 } from './seed-data/users'
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({ adapter })
 
 async function main() {
   const activityAreas = activityAreasData1.map((activityArea) => ({

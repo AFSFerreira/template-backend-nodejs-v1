@@ -1,11 +1,8 @@
-import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { ActivityArea } from '@prisma/client'
+import type {
+  GetAllActivityAreasUseCaseRequest,
+  GetAllActivityAreasUseCaseResponse,
+} from '@custom-types/use-cases/activity-area/get-all-activity-areas-use-case'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { getAllActivityAreasSchemaType } from '@schemas/activity-area/get-all-activity-areas-schema'
-
-export interface GetAllActivityAreasUseCaseRequest extends getAllActivityAreasSchemaType {}
-
-export interface GetAllActivityAreasUseCaseResponse extends PaginatedResult<ActivityArea[]> {}
 
 export class GetAllActivityAreasUseCase {
   constructor(private readonly ActivityAreasRepository: ActivityAreasRepository) {}

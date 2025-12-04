@@ -1,15 +1,10 @@
-import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
+import type {
+  FindMeetingByPublicIdUseCaseRequest,
+  FindMeetingByPublicIdUseCaseResponse,
+} from '@custom-types/use-cases/meeting/find-by-public-id'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { ensureExists } from '@utils/ensure'
+import { ensureExists } from '@utils/guards/ensure'
 import { MeetingNotFoundError } from '../errors/meeting/meeting-not-found-error'
-
-interface FindMeetingByPublicIdUseCaseRequest {
-  publicId: string
-}
-
-interface FindMeetingByPublicIdUseCaseResponse {
-  meeting: MeetingWithDetails
-}
 
 export class FindMeetingByPublicIdUseCase {
   constructor(private readonly MeetingsRepository: MeetingsRepository) {}

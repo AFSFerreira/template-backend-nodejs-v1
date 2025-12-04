@@ -8,5 +8,3 @@ export const getAllInstitutionsSchema = z
   })
   .partial()
   .extend(paginatedSchema.shape)
-
-export type GetAllInstitutionsSchemaType = z.infer<typeof getAllInstitutionsSchema>

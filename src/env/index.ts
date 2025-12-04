@@ -18,7 +18,10 @@ const envSchema = z.object({
   SENTRY_DSN: z.url().trim().nonempty().optional(),
   SENTRY_RELEASE: z.string().trim().nonempty().default('dev-local'),
 
-  // REDIS:
+  // Database:
+  DATABASE_URL: z.url().trim().nonempty(),
+
+  // Redis:
   REDIS_HOST: z.string().trim().nonempty(),
   REDIS_PORT: z.coerce.number().int().positive().default(6379),
   REDIS_PASSWORD: z.string().trim().nonempty(),

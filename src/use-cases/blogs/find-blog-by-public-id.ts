@@ -1,18 +1,12 @@
-import type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
+import type {
+  FindBlogByPublicIdUseCaseRequest,
+  FindBlogByPublicIdUseCaseResponse,
+} from '@custom-types/use-cases/blogs/find-blog-by-public-id'
 import { redis } from '@lib/redis'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { registerBlogViews } from '@services/register-blog-views'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
-import { ensureExists } from '@utils/ensure'
-
-interface FindBlogByPublicIdUseCaseRequest {
-  publicId: string
-  ip: string
-}
-
-interface FindBlogByPublicIdUseCaseResponse {
-  blog: BlogWithDetails
-}
+import { ensureExists } from '@utils/guards/ensure'
 
 export class FindBlogByPublicIdUseCase {
   constructor(private readonly blogsRepository: BlogsRepository) {}

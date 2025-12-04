@@ -23,6 +23,7 @@ export interface UsersRepository {
   findByIdentityDocument: (query: FindByIdentityDocumentQuery) => Promise<User | null>
   findConflictingUser: (query: FindConflictingUserQuery) => Promise<User | null>
   listAllUsers: () => Promise<UserWithDetails[]>
+  streamAllUsers: (batchSize?: number) => AsyncIterable<UserWithDetails>
   listAllUsersDetailed: (
     query?: ListAllUsersDetailedQuery,
   ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>

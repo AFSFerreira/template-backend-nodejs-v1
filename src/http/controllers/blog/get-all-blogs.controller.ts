@@ -6,9 +6,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getAllBlogs(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllPostsQuerySchema.parse(request.query)
-  const getAllBlogsUseCase = makeGetAllBlogsUseCase()
+  const useCase = makeGetAllBlogsUseCase()
 
-  const { data, meta } = await getAllBlogsUseCase.execute(parsedQuery)
+  const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({ data: BlogPresenter.toHTTP(data, BLOG_SIMPLIFIED_PRESENTER_KEY), meta })
 }

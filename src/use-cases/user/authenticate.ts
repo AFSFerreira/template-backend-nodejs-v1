@@ -1,3 +1,4 @@
+import type { AuthenticateUseCaseRequest, AuthenticateUseCaseResponse } from '@custom-types/use-cases/user/authenticate'
 import { logger } from '@lib/logger'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings'
 import { MembershipStatusType, type User } from '@prisma/client'
@@ -7,21 +8,9 @@ import { emailSchema } from '@schemas/utils/generic-components/email-schema'
 import { usernameSchema } from '@schemas/utils/generic-components/username-schema'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
-import { getTrueMapping } from '@utils/get-true-mapping'
+import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { compare } from 'bcryptjs'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
-
-interface AuthenticateUseCaseRequest {
-  login: string
-  password: string
-  ipAddress?: string
-  remotePort?: string
-  browser?: string
-}
-
-interface AuthenticateUseCaseResponse {
-  user: User
-}
 
 const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
 

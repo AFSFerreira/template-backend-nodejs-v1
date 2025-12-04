@@ -2,7 +2,7 @@ import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
 
-export const getAllDirectorBoardRawSchema = z
+const getAllDirectorBoardRawSchema = z
   .object({
     orderBy: z.object({ precedenceOrder: orderDirectionsEnumSchema.default('asc') }).partial(),
   })
@@ -18,5 +18,3 @@ export const getAllDirectorBoardSchema = z.preprocess(
   }),
   getAllDirectorBoardRawSchema,
 )
-
-export type getAllDirectorBoardSchemaType = z.infer<typeof getAllDirectorBoardSchema>

@@ -1,15 +1,15 @@
 import { LONG_LIMITED_CHARACTERS_SIZE } from '@constants/validation-constants'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
+import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { subCategoriesSchema } from '@schemas/utils/generic-components/sub-categories-schema'
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
-import { uuidv7Schema } from '@schemas/utils/primitives/uuidv7-schema'
 import z from 'zod'
 
 const getAllPostsQueryRawSchema = z
   .object({
     searchContent: nonemptyTextSchema.max(LONG_LIMITED_CHARACTERS_SIZE),
-    authorId: uuidv7Schema,
+    authorId: modelPublicIdSchema,
     subCategories: subCategoriesSchema,
     orderBy: z
       .object({
@@ -31,5 +31,3 @@ export const getAllPostsQuerySchema = z.preprocess(
   }),
   getAllPostsQueryRawSchema,
 )
-
-export type GetAllPostsQuerySchemaType = z.infer<typeof getAllPostsQuerySchema>

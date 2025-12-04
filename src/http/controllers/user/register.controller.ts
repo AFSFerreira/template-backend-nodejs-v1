@@ -1,5 +1,5 @@
+import type { RegisterUserBodySchemaType } from '@custom-types/schemas/user/register-body-schema'
 import { registerBodySchema } from '@schemas/user/register-body-schema'
-import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { makeRegisterUseCase } from '@use-cases/factories/user/make-register-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

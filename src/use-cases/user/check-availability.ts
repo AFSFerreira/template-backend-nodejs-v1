@@ -1,12 +1,9 @@
+import type {
+  CheckAvailabilityUseCaseRequest,
+  CheckAvailabilityUseCaseResponse,
+} from '@custom-types/use-cases/user/check-availability'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { CheckAvailabilityQuerySchemaType } from '@schemas/user/check-availability-query-schema'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
-
-interface CheckAvailabilityUseCaseRequest extends CheckAvailabilityQuerySchemaType {}
-
-interface CheckAvailabilityUseCaseResponse {
-  availabilities: Record<string, boolean>
-}
 
 export class CheckAvailabilityUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}

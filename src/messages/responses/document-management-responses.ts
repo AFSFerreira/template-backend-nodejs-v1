@@ -1,0 +1,18 @@
+import { MAX_DOCUMENT_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/file-constants'
+import type { IApiError } from '@custom-types/custom/api-error-type'
+
+export const MISSING_STATUTE_FILE: IApiError = {
+  status: 404,
+  body: {
+    code: 'MISSING_STATUTE_FILE',
+    message: 'O arquivo de estatuto não pôde ser encontrado',
+  },
+}
+
+export const DOCUMENT_TOO_BIG: IApiError = {
+  status: 413,
+  body: {
+    code: 'DOCUMENT_TOO_BIG',
+    message: `O arquivo enviado excede o tamanho limite de ${(MAX_DOCUMENT_FILE_SIZE_BYTES / MB_IN_BYTES).toFixed(0)}mb`,
+  },
+}

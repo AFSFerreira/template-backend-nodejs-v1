@@ -1,40 +1,24 @@
-import { DEFAULT_PROFILE_IMAGE_PATH } from '@constants/file-constants'
+import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/file-constants'
 import type { FindConflictingUserQuery } from '@custom-types/repositories/user/find-conflicting-user-query'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { RegisterUseCaseRequest, RegisterUseCaseResponse } from '@custom-types/use-cases/user/register'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { PROFILE_IMAGE_PERSIST_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings'
+import { SUCCESSFUL_USER_CREATION } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { RegisterUserBodySchemaType } from '@schemas/user/register-body-schema'
 import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
 import { getAllInstitutions } from '@services/get-all-institutions'
+import { persistUserProfileImage } from '@services/persist-user-profile-image'
+import { validateActivityAreas } from '@services/validate-activity-areas'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
-import { objectDeepEqual } from '@utils/object-deep-equal'
-import { persistUserProfileImage } from '@utils/persist-user-profile-image'
+import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hash } from 'bcryptjs'
-import stableStringify from 'json-stable-stringify'
-import { InvalidActivityArea } from '../errors/user/invalid-activity-areas-error'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
-
-interface RegisterUseCaseRequest {
-  user: RegisterUserBodySchemaType['user']
-  address: RegisterUserBodySchemaType['address']
-  keyword?: RegisterUserBodySchemaType['keyword']
-  enrolledCourse?: RegisterUserBodySchemaType['enrolledCourse']
-  academicPublication?: RegisterUserBodySchemaType['academicPublication']
-  activityArea?: RegisterUserBodySchemaType['activityArea']
-  institution?: RegisterUserBodySchemaType['institution']
-}
-
-interface RegisterUseCaseResponse {
-  user: UserWithDetails
-}
 
 export class RegisterUseCase {
   constructor(
@@ -72,13 +56,12 @@ export class RegisterUseCase {
     }
 
     if (!lowLevelEducationEnumSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
-      // Valida as áreas de atividade dos artigos e do usuário:
       const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
         area: academicPub.area,
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       }))
 
-      const allUserActivityAreas = [
+      const activityAreas = [
         ...academicPublicationsActivityAreas,
         {
           area: registerUseCaseInput.activityArea.mainActivityArea,
@@ -90,48 +73,27 @@ export class RegisterUseCase {
         },
       ]
 
-      const activityAreasFound = await this.activityAreasRepository.findManyByArea(allUserActivityAreas)
-
-      const activityAreasFoundSet = new Set(
-        activityAreasFound.map((activityArea) =>
-          stableStringify({
-            area: activityArea.area,
-            type: activityArea.type,
-          }),
-        ),
-      )
-
-      const wrongActivityAreas = allUserActivityAreas.filter((activityArea) => {
-        return !activityAreasFoundSet.has(stableStringify(activityArea))
+      await validateActivityAreas({
+        activityAreas,
+        activityAreasRepository: this.activityAreasRepository,
       })
-
-      if (wrongActivityAreas.length !== 0) {
-        throw new InvalidActivityArea(
-          wrongActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-        )
-      }
     }
 
-    const institutionsNames = await getAllInstitutions(this.institutionsRepository, {
-      name: registerUseCaseInput.institution.name,
+    const institutionsNames = await getAllInstitutions({
+      institutionsRepository: this.institutionsRepository,
+      query: {
+        name: registerUseCaseInput.institution.name,
+        limit: Number.MAX_SAFE_INTEGER,
+      },
     })
 
     if (!institutionsNames.includes(registerUseCaseInput.institution.name)) {
       throw new InvalidInstitutionName()
     }
 
-    // Caso ocorra um erro durante a
-    // persistência da imagem de perfil:
-    let imageHandleError = true
-
-    if (registerUseCaseInput.user.profileImage) {
-      try {
-        await persistUserProfileImage(registerUseCaseInput.user.profileImage)
-        imageHandleError = false
-      } catch (_error: unknown) {
-        logger.error({ profileImage: registerUseCaseInput.user.profileImage }, PROFILE_IMAGE_PERSIST_ERROR)
-      }
-    }
+    const profileImagePersistSuccess = registerUseCaseInput.user.profileImage
+      ? await persistUserProfileImage(registerUseCaseInput.user.profileImage)
+      : false
 
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
@@ -142,7 +104,7 @@ export class RegisterUseCase {
         ...filteredUserInfo,
         identityType: identity.identityType,
         identityDocument: identity.identityDocument,
-        profileImage: imageHandleError ? DEFAULT_PROFILE_IMAGE_PATH : registerUseCaseInput.user.profileImage,
+        profileImage: profileImagePersistSuccess ? DEFAULT_PROFILE_IMAGE_NAME : registerUseCaseInput.user.profileImage,
         passwordHash,
       },
       institution: registerUseCaseInput.institution,

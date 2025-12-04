@@ -1,15 +1,7 @@
+import type { SendEmailUseCaseRequest } from '@custom-types/use-cases/messaging/send-email'
 import { logger } from '@lib/logger'
 import { SEND_EMAIL_MESSAGE } from '@messages/loggings'
-import { sendEmail } from '@utils/send-email'
-import type { Attachment } from 'nodemailer/lib/mailer'
-
-interface SendEmailUseCaseRequest {
-  to: string
-  subject: string
-  message: string
-  html: string
-  attachments?: Attachment[]
-}
+import { sendEmail } from '@services/send-email'
 
 export class SendEmailUseCase {
   async execute({ to, subject, message, html, attachments }: SendEmailUseCaseRequest) {

@@ -1,11 +1,8 @@
-import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { DirectorBoardWithUser } from '@custom-types/validator/director-board-with-user'
+import type {
+  GetAllDirectorBoardUseCaseRequest,
+  GetAllDirectorBoardUseCaseResponse,
+} from '@custom-types/use-cases/director-board/get-all-directors-board'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import type { getAllDirectorBoardSchemaType } from '@schemas/director-board/get-all-director-board-query-schema'
-
-interface GetAllDirectorBoardUseCaseRequest extends getAllDirectorBoardSchemaType {}
-
-interface GetAllDirectorBoardUseCaseResponse extends PaginatedResult<DirectorBoardWithUser[]> {}
 
 export class GetAllDirectorsBoard {
   constructor(private readonly directorBoardRepository: DirectorBoardRepository) {}

@@ -1,14 +1,9 @@
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type {
+  GetUserProfileUseCaseRequest,
+  GetUserProfileUseCaseResponse,
+} from '@custom-types/use-cases/user/get-user-profile'
 import type { UsersRepository } from '@repositories/users-repository'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
-
-interface GetUserProfileUseCaseRequest {
-  publicId: string
-}
-
-interface GetUserProfileUseCaseResponse {
-  user: UserWithDetails
-}
 
 export class GetUserProfileUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}

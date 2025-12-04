@@ -11,5 +11,3 @@ export const authenticateBodySchema = z.object(
     error: INVALID_AUTHENTICATION_INPUT,
   },
 )
-
-export type AuthenticateSchemaType = z.infer<typeof authenticateBodySchema>

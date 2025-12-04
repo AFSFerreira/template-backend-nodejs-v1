@@ -16,5 +16,3 @@ export const registerGuestMeetingBodySchema = z.object({
   educationLevel: educationLevelSchema,
   wantsNewsletter: booleanSchema,
 })
-
-export type RegisterGuestMeetingBodySchemaType = z.infer<typeof registerGuestMeetingBodySchema>

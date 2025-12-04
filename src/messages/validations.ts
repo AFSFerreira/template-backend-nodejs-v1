@@ -1,4 +1,6 @@
+import { allowedDocumentMimeTypes, allowedImageMimeTypes } from '@constants/file-constants'
 import { MAX_PASSWORD_SIZE, MIN_PASSWORD_SIZE, VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
+import { mapMimeTypeToExtension } from '@utils/mappers/map-mime-type'
 
 export const MAIN_ACTIVITY_AREA_AND_SPECIFIC_ACTIVITY_DESCRIPTION =
   'Se "Outra" for selecionada como a área principal de atividade, uma descrição deve ser fornecida — e não deve ser fornecida caso contrário'
@@ -59,3 +61,7 @@ export const INVALID_EDUCATION_LEVEL_TYPE = 'Valor inválido para educationLevel
 export const INVALID_BIRTHDATE_RANGE = 'Data de nascimento inválida'
 
 export const INVALID_DOI_FORMAT = 'Link DOI com formato inválido'
+
+export const ALLOWED_DOCUMENT_EXTENSIONS = `Formato de arquivo inválido. Formatos suportados: ${allowedDocumentMimeTypes.map((mime) => mapMimeTypeToExtension(mime)).join(', ')}`
+
+export const ALLOWED_IMAGE_EXTENSIONS = `Formato de imagem inválido. Formatos suportados: ${allowedImageMimeTypes.map((mime) => mapMimeTypeToExtension(mime)).join(', ')}`

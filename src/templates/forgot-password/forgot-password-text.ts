@@ -1,11 +1,5 @@
+import type { IForgotPasswordTextTemplate } from '@custom-types/templates/forgot-password'
 import { env } from '@env/index'
-
-interface IForgotPasswordTextTemplate {
-  fullName: string
-  token: string
-  email: string
-  username: string
-}
 
 export function forgotPasswordTextTemplate({ fullName, username, token, email }: IForgotPasswordTextTemplate) {
   const url = `${env.FRONTEND_URL}/reset-password?token=${token}`

@@ -33,6 +33,10 @@ export const CHANGE_PASSWORD_SUCCESSFUL = 'Pedido de alteração de senha bem su
 
 export const USER_UPDATE_SUCCESSFUL = 'Atualização de informações de usuário bem sucedida'
 
+export const USER_DELETION_SUCCESSFUL = 'Conta de usuário deletada com sucesso'
+
+export const USER_DELETION_BY_ADMIN_SUCCESSFUL = 'Conta de usuário deletada por administrador com sucesso'
+
 export const RESET_PASSWORD_SUCCESSFUL = 'Pedido de restauração de senha bem sucedida'
 
 export const AUTHENTICATION_SUCCESSFUL = 'Autenticação bem sucedida'
@@ -42,3 +46,17 @@ export const SEND_EMAIL_MESSAGE = 'Envio de email bem sucedido'
 export const REGISTER_GUEST_MEETING = 'Convidado cadastrado na reunião com sucesso'
 
 export const REGISTER_USER_MEETING = 'Usuário cadastrado na reunião com sucesso'
+
+export const NO_FILES_FOUND_TO_DELETE = 'Nenhum arquivo com o padrão fornecido foi encontrado para remover'
+
+export const FILES_SUCCESSFULLY_DELETED = 'Todos os arquivos foram removidos com sucesso'
+
+export const FILE_DELETION_ERROR = 'Um erro ocorreu ao tentar remover os arquivos'
+
+export const SINGLE_FILE_DELETION_ERROR = 'Ocorreu um erro ao tentar remover um arquivo'
+
+export const SWAP_FILE_LOOP_ERROR = 'Um erro ocorreu ao tentar trocar o conteúdo de um arquivo'
+
+export const FILE_RETRIEVAL_ERROR = 'Erro de recuperação de arquivos'
+
+export const SAVE_MULTIPART_FILE_ERROR = 'Ocorreu um erro ao tentar persistir um arquivo'

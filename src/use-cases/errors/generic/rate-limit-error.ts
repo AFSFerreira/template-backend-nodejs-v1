@@ -1,5 +1,5 @@
-import { TOO_MANY_REQUESTS } from '@messages/responses'
-import { ApiError } from '../api-error'
+import { ApiError } from '@errors/api-error'
+import { TOO_MANY_REQUESTS } from '@messages/responses/common-responses'
 
 export class RateLimitError extends ApiError {
   constructor() {

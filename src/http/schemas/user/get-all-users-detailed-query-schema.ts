@@ -9,8 +9,8 @@ import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
 import { z } from 'zod'
+import { keywordSchema } from '../utils/components/keyword/keyword-schema'
 import { emailSchema } from '../utils/generic-components/email-schema'
-import { keywordSchema } from '../utils/generic-components/keyword-schema'
 import { usernameSchema } from '../utils/generic-components/username-schema'
 import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
 
@@ -70,5 +70,3 @@ export const getAllUsersDetailedQuerySchema = z.preprocess(
   }),
   getAllUsersDetailedQueryRawSchema,
 )
-
-export type getAllUsersDetailedQuerySchemaType = z.infer<typeof getAllUsersDetailedQuerySchema>

@@ -7,9 +7,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 export async function getAllInstitutionsWithUsers(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllInstitutionsWithUsersQuerySchema.parse(request.query)
 
-  const getAllInstitutionsWithUsersUseCase = makeGetAllInstitutionsWithUsersUseCase()
+  const useCase = makeGetAllInstitutionsWithUsersUseCase()
 
-  const { data, meta } = await getAllInstitutionsWithUsersUseCase.execute(parsedQuery)
+  const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({
     data: InstitutionPresenter.toHTTP(data, INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY),

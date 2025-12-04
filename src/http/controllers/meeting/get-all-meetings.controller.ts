@@ -7,9 +7,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 export async function getAllMeetings(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllMeetingsQuerySchema.parse(request.query)
 
-  const getAllMeetingsUseCase = makeGetAllMeetingsUseCase()
+  const useCase = makeGetAllMeetingsUseCase()
 
-  const { data, meta } = await getAllMeetingsUseCase.execute(parsedQuery)
+  const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({
     data: MeetingPresenter.toHTTP(data, MEETING_DETAILED_PRESENTER_KEY),

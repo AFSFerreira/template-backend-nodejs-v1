@@ -5,8 +5,8 @@ import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import { evalOffset } from '@utils/eval-offset'
-import { evalTotalPages } from '@utils/eval-total-pages'
+import { evalOffset } from '@utils/pagination/eval-offset'
+import { evalTotalPages } from '@utils/pagination/eval-total-pages'
 
 export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   static buildStartsWithFilter(value: unknown) {
@@ -95,7 +95,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
     return activityArea
   }
 
-  async findManyByArea(areas: ActivityAreaQuery[]) {
+  async findManyBy(areas: ActivityAreaQuery[]) {
     const activityAreas = await prisma.activityArea.findMany({
       where: { OR: areas },
       orderBy: [{ type: 'asc' }, { area: 'asc' }, { id: 'asc' }],

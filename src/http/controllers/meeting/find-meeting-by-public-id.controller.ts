@@ -7,9 +7,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 export async function findMeetingByPublicId(request: FastifyRequest, reply: FastifyReply) {
   const { publicId } = findUserByPublicIdParamsSchema.parse(request.params)
 
-  const findMeetingByPublicIdUseCase = makeFindMeetingByPublicIdUseCase()
+  const useCase = makeFindMeetingByPublicIdUseCase()
 
-  const { meeting } = await findMeetingByPublicIdUseCase.execute({ publicId })
+  const { meeting } = await useCase.execute({ publicId })
 
   return await reply.status(200).send({
     data: MeetingPresenter.toHTTP(meeting, MEETING_DETAILED_PRESENTER_KEY),

@@ -1,6 +1,7 @@
 import { logger } from '@lib/logger'
 import { setUserId } from '@lib/logger/helpers/set-user-id'
-import { INACTIVE_USER, PENDING_USER, UNAUTHORIZED } from '@messages/responses'
+import { UNAUTHORIZED } from '@messages/responses/common-responses'
+import { INACTIVE_USER, PENDING_USER } from '@messages/responses/user-responses'
 import { MembershipStatusType } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 

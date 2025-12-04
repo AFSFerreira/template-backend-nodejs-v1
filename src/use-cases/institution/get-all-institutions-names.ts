@@ -1,13 +1,11 @@
-import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type {
+  GetAllInstitutionsNamesUseCaseRequest,
+  GetAllInstitutionsNamesUseCaseResponse,
+} from '@custom-types/use-cases/institution/get-all-institutions-names'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
-import type { GetAllInstitutionsSchemaType } from '@schemas/institution/get-all-institutions-query-schema'
 import { getAllInstitutions } from '@services/get-all-institutions'
-import { evalTotalPages } from '@utils/eval-total-pages'
-import { paginateArray } from '@utils/paginate-array'
-
-interface GetAllInstitutionsNamesUseCaseRequest extends GetAllInstitutionsSchemaType {}
-
-interface GetAllInstitutionsNamesUseCaseResponse extends PaginatedResult<string[]> {}
+import { evalTotalPages } from '@utils/pagination/eval-total-pages'
+import { paginateArray } from '@utils/pagination/paginate-array'
 
 export class GetAllInstitutionsNamesUseCase {
   constructor(private readonly institutionsRepository: InstitutionsRepository) {}
@@ -16,7 +14,10 @@ export class GetAllInstitutionsNamesUseCase {
     getAllInstitutionsUseCaseInput: GetAllInstitutionsNamesUseCaseRequest,
   ): Promise<GetAllInstitutionsNamesUseCaseResponse> {
     const { limit, page } = getAllInstitutionsUseCaseInput
-    const allInstitutionsArray = await getAllInstitutions(this.institutionsRepository, getAllInstitutionsUseCaseInput)
+    const allInstitutionsArray = await getAllInstitutions({
+      institutionsRepository: this.institutionsRepository,
+      query: getAllInstitutionsUseCaseInput,
+    })
 
     const pageSize = limit
     const totalItems = allInstitutionsArray.length

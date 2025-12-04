@@ -1,29 +1,29 @@
+import { Readable } from 'node:stream'
+import type { ExportUsersDataUseCaseResponse } from '@custom-types/use-cases/user/export-users-data'
 import { logger } from '@lib/logger'
 import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
-import { exportUsersAsCsv } from '@services/export-users'
-import { EmptyUsersInfoError } from '../errors/user/empty-users-info-error'
-
-// interface ExportUsersDataUseCaseRequest {}
-
-interface ExportUsersDataUseCaseResponse {
-  usersCSVInfo: string
-}
+import { flattenUser } from '@services/flatten-user'
+import { Transform } from 'json2csv'
 
 export class ExportUsersDataUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}
 
   async execute(): Promise<ExportUsersDataUseCaseResponse> {
-    const allUsersInfo = await this.usersRepository.listAllUsers()
+    const usersGenerator = this.usersRepository.streamAllUsers()
 
-    if (allUsersInfo.length <= 0) {
-      throw new EmptyUsersInfoError()
-    }
+    const sourceStream = Readable.from(usersGenerator)
 
-    const usersCSVInfo = exportUsersAsCsv(allUsersInfo)
+    const csvTransform = new Transform(
+      {
+        header: true,
+        transforms: [(item) => flattenUser(item)],
+      },
+      { objectMode: true },
+    )
 
     logger.info(ALL_USERS_INFO_EXPORTED)
 
-    return { usersCSVInfo }
+    return { usersCSVInfo: sourceStream.pipe(csvTransform) }
   }
 }

@@ -1,16 +1,20 @@
-import type { FastifyRequestWithFile } from '@custom-types/libs/fastify-request-with-file-type'
-import { fileSchema } from '@schemas/utils/generic-components/file-schema'
+import { profilePictureFileConfig } from '@constants/multipart-configuration-constants'
+import { imageSchema } from '@schemas/utils/generic-components/image-schema'
 import { makeUploadRegisterProfileImageUseCase } from '@use-cases/factories/user/make-upload-register-profile-image-use-case'
-import type { FastifyReply } from 'fastify'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 
-export async function uploadRegisterProfileImage(request: FastifyRequestWithFile, reply: FastifyReply) {
-  const { buffer, size } = fileSchema.parse(request.file)
+export async function uploadRegisterProfileImage(request: FastifyRequest, reply: FastifyReply) {
+  const filePart = await request.file(profilePictureFileConfig)
 
-  const uploadRegisterProfileImageUseCase = makeUploadRegisterProfileImageUseCase()
+  imageSchema.parse(filePart)
 
-  const { fileName } = await uploadRegisterProfileImageUseCase.execute({
+  const buffer = await filePart.toBuffer()
+
+  const useCase = makeUploadRegisterProfileImageUseCase()
+
+  const { fileName } = await useCase.execute({
     buffer,
-    size,
+    sizeInBytes: buffer.length,
   })
 
   return await reply.status(201).send({

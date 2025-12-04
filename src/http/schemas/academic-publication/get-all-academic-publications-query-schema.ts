@@ -36,5 +36,3 @@ export const getAllAcademicPublicationsQuerySchema = z.preprocess(
   }),
   getAllAcademicPublicationsQueryRawSchema,
 )
-
-export type GetAllAcademicPublicationsQuerySchemaType = z.infer<typeof getAllAcademicPublicationsQuerySchema>

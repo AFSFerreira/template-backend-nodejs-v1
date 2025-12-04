@@ -4,9 +4,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function checkAvailability(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = checkAvailabilityQuerySchema.parse(request.query)
-  const checkEmailAvailabilityUseCase = makeCheckAvailabilityUseCase()
+  const useCase = makeCheckAvailabilityUseCase()
 
-  const { availabilities } = await checkEmailAvailabilityUseCase.execute(parsedQuery)
+  const { availabilities } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({ data: availabilities })
 }

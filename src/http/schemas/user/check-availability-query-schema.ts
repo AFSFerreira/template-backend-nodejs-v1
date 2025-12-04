@@ -26,5 +26,3 @@ export const checkAvailabilityQuerySchema = z.preprocess(
   }),
   checkAvailabilityQueryRawSchema,
 )
-
-export type CheckAvailabilityQuerySchemaType = z.infer<typeof checkAvailabilityQuerySchema>

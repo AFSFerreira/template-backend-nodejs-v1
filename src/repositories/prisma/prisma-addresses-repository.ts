@@ -1,8 +1,8 @@
 import type { ListAllAddressStateQuery } from '@custom-types/repositories/address/list-all-address-state-query'
 import { prisma } from '@lib/prisma'
 import { UserRoleType, type Prisma } from '@prisma/client'
-import { evalOffset } from '@utils/eval-offset'
-import { evalTotalPages } from '@utils/eval-total-pages'
+import { evalOffset } from '@utils/pagination/eval-offset'
+import { evalTotalPages } from '@utils/pagination/eval-total-pages'
 import type { AddressesRepository } from '../addresses-repository'
 
 export class PrismaAddressesRepository implements AddressesRepository {

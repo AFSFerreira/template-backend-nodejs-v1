@@ -74,6 +74,8 @@ export default [
         }
       ],
 
+      "@typescript-eslint/consistent-type-exports": "error",
+
       "unicorn/filename-case": [
         "error",
         {

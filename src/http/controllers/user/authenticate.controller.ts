@@ -11,9 +11,9 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
   const { remotePort } = request.socket
   const browserName = Array.isArray(browser) ? browser[0] : browser
 
-  const authenticateUseCase = makeAuthenticateUseCase()
+  const useCase = makeAuthenticateUseCase()
 
-  const { user } = await authenticateUseCase.execute({
+  const { user } = await useCase.execute({
     login,
     password,
     ipAddress,

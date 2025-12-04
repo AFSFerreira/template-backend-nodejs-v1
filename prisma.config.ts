@@ -8,7 +8,6 @@ export default defineConfig({
     path: path.join('prisma', 'migrations'),
     seed: 'npx tsx ./prisma/seed.ts',
   },
-  engine: 'classic',
   datasource: {
     url: env('DATABASE_URL'),
   },

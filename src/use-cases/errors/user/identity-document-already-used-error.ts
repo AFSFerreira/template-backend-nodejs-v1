@@ -1,5 +1,5 @@
-import { IDENTITY_DOCUMENT_ALREADY_USED } from '@messages/responses'
-import { ApiError } from '../api-error'
+import { ApiError } from '@errors/api-error'
+import { IDENTITY_DOCUMENT_ALREADY_USED } from '@messages/responses/user-responses'
 
 export class IdentityDocumentAlreadyUsed extends ApiError {
   constructor() {

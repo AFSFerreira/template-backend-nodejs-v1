@@ -5,9 +5,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 export async function getAllInstitutionsNames(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllInstitutionsSchema.parse(request.query)
 
-  const getAllInstitutionsNamesUseCase = makeGetAllInstitutionsNamesUseCase()
+  const useCase = makeGetAllInstitutionsNamesUseCase()
 
-  const { data, meta } = await getAllInstitutionsNamesUseCase.execute(parsedQuery)
+  const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({ data, meta })
 }

@@ -26,5 +26,3 @@ export const getAllUsersSimplifiedQuerySchema = z.preprocess(
   }),
   getAllUsersSimplifiedQueryRawSchema,
 )
-
-export type GetAllUsersSimplifiedQuerySchemaType = z.infer<typeof getAllUsersSimplifiedQuerySchema>

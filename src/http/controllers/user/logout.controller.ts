@@ -1,6 +1,6 @@
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { INVALID_OR_EXPIRED_TOKEN, LOGOUT } from '@messages/responses'
+import { INVALID_OR_EXPIRED_TOKEN, LOGOUT } from '@messages/responses/user-responses'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
@@ -9,7 +9,7 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
   } catch (error) {
     if (error instanceof Error) {
       logger.debug(INVALID_OR_EXPIRED_TOKEN.body)
-      return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send(INVALID_OR_EXPIRED_TOKEN.body)
+      return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send({ data: INVALID_OR_EXPIRED_TOKEN.body })
     }
   }
 
@@ -21,5 +21,5 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
       httpOnly: true,
     })
     .status(LOGOUT.status)
-    .send(LOGOUT.body)
+    .send({ data: LOGOUT.body })
 }

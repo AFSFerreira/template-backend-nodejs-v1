@@ -7,9 +7,9 @@ export async function registerGuestMeeting(request: FastifyRequest, reply: Fasti
   const { meetingId } = registerGuestMeetingParamsSchema.parse(request.params)
   const parsedBody = registerGuestMeetingBodySchema.parse(request.body)
 
-  const registerGuestMeetingUseCase = makeRegisterGuestMeetingUseCase()
+  const useCase = makeRegisterGuestMeetingUseCase()
 
-  await registerGuestMeetingUseCase.execute({
+  await useCase.execute({
     ...parsedBody,
     meetingId,
   })

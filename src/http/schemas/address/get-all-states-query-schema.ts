@@ -22,5 +22,3 @@ export const getAllStatesQuerySchema = z.preprocess(
   }),
   getAllStatesQueryRawSchema,
 )
-
-export type GetAllStatesQuerySchemaType = z.infer<typeof getAllStatesQueryRawSchema>

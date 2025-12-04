@@ -6,8 +6,8 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getUserByPublicId(request: FastifyRequest, reply: FastifyReply) {
   const { publicId } = findUserByPublicIdParamsSchema.parse(request.params)
-  const findUserByIdUseCase = makeFindUserByPublicIdUseCase()
+  const useCase = makeFindUserByPublicIdUseCase()
 
-  const { user } = await findUserByIdUseCase.execute({ publicId })
+  const { user } = await useCase.execute({ publicId })
   return await reply.status(200).send({ data: UserPresenter.toHTTP(user, USER_DETAILED_PRESENTER_KEY) })
 }

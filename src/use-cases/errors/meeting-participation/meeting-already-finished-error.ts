@@ -1,5 +1,5 @@
-import { MEETING_ALREADY_FINISHED } from '@messages/responses'
-import { ApiError } from '../api-error'
+import { ApiError } from '@errors/api-error'
+import { MEETING_ALREADY_FINISHED } from '@messages/responses/meeting-responses'
 
 export class MeetingAlreadyFinishedError extends ApiError {
   constructor() {

@@ -1,5 +1,5 @@
 import { highLevelStudentEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
-import { validateActivityAreaRefinement } from '@schemas/utils/helpers/validate-activity-area-refinement'
+import { validateActivityAreaRefinement } from '@schemas/utils/helpers/user/validate-activity-area-refinement'
 import z from 'zod'
 import { commonUpdateUserSchema } from './common-update-user-schema'
 import { otherRootFieldsProfessionalAndAcademicSchema } from './other-root-fields-professional-and-academic-schema'
@@ -12,10 +12,13 @@ export const highLevelStudentUpdateBodySchema = z
     ...otherRootFieldsSchema.shape,
     ...otherRootFieldsStudentAndAcademicSchema.shape,
     ...otherRootFieldsProfessionalAndAcademicSchema.shape,
-    user: z.object({
-      ...commonUpdateUserSchema.shape,
-      ...professionalAndAcademicUserSchema.shape,
-      educationLevel: highLevelStudentEnumSchema,
-    }),
+    user: z
+      .object({
+        ...commonUpdateUserSchema.shape,
+        ...professionalAndAcademicUserSchema.shape,
+      })
+      .partial()
+      .extend({ educationLevel: highLevelStudentEnumSchema }),
   })
   .superRefine(validateActivityAreaRefinement)
+  .partial()

@@ -1,4 +1,4 @@
-import { stripZodKeys } from '@utils/strip-zod-keys'
+import { stripZodKeys } from '@utils/object/strip-zod-keys'
 import z from 'zod'
 import { commonUserSchema } from './common-user-schema-schema'
 import { otherRootFieldsProfessionalAndAcademicSchema } from './other-root-fields-professional-and-academic-schema'

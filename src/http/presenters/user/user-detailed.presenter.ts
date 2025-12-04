@@ -3,7 +3,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
 import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { truncateDate } from '@utils/truncate-date'
+import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(USER_DETAILED_PRESENTER_KEY)
 export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetails> {

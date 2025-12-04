@@ -1,6 +1,6 @@
+import type { GetAllUsersSimplifiedQuerySchemaType } from '@custom-types/schemas/user/get-all-users-simplified-query-schema'
 import { MembershipStatusType, Prisma, UserRoleType } from '@prisma/client'
-import type { GetAllUsersSimplifiedQuerySchemaType } from '@schemas/user/get-all-users-simplified-query-schema'
-import { evalOffset } from '@utils/eval-offset'
+import { evalOffset } from '@utils/pagination/eval-offset'
 
 export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQuerySchemaType) {
   const conditions: Prisma.Sql[] = [

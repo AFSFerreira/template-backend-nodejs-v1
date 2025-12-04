@@ -1,25 +1,18 @@
+import type {
+  RegisterUserMeetingUseCaseRequest,
+  RegisterUserMeetingUseCaseResponse,
+} from '@custom-types/use-cases/meeting/register-user-meeting'
 import { logger } from '@lib/logger'
 import { REGISTER_USER_MEETING } from '@messages/loggings'
-import type { MeetingParticipation } from '@prisma/client'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { RegisterUserMeetingBodySchemaType } from '@schemas/meeting/register-user-meeting-body-schema'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/user-already-registered-in-meeting-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { ensureExists, ensureNotExists } from '@utils/ensure'
-import { toDateOnly } from '@utils/to-date-only'
-
-interface RegisterUserMeetingUseCaseRequest extends RegisterUserMeetingBodySchemaType {
-  userId: string
-  meetingId: string
-}
-
-interface RegisterUserMeetingUseCaseResponse {
-  meetingParticipation: MeetingParticipation
-}
+import { toDateOnly } from '@utils/formatters/to-date-only'
+import { ensureExists, ensureNotExists } from '@utils/guards/ensure'
 
 export class RegisterUserMeetingUseCase {
   constructor(
@@ -32,7 +25,7 @@ export class RegisterUserMeetingUseCase {
     registerUserMeetingUseCaseInput: RegisterUserMeetingUseCaseRequest,
   ): Promise<RegisterUserMeetingUseCaseResponse> {
     const user = ensureExists({
-      value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userId),
+      value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userPublicId),
       error: new UserNotFoundError(),
     })
 

@@ -1,7 +1,7 @@
+import type { GetAllUsersDetailedQuerySchemaType } from '@custom-types/schemas/user/get-all-users-detailed-query-schema'
 import { ActivityAreaType, Prisma } from '@prisma/client'
-import type { getAllUsersDetailedQuerySchemaType as GetAllUsersDetailedQuerySchemaType } from '@schemas/user/get-all-users-detailed-query-schema'
-import { evalOffset } from '@utils/eval-offset'
-import { mapComparisonOperation } from '@utils/map-comparison-operation'
+import { mapComparisonOperation } from '@utils/mappers/map-comparison-operation'
+import { evalOffset } from '@utils/pagination/eval-offset'
 
 export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySchemaType) {
   const conditions: Prisma.Sql[] = []

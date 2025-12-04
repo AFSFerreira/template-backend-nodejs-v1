@@ -6,9 +6,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getAllAcademicPublicationsController(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllAcademicPublicationsQuerySchema.parse(request.query)
-  const getAllAcademicPublicationsUseCase = makeGetAllAcademicPublicationsUseCase()
+  const useCase = makeGetAllAcademicPublicationsUseCase()
 
-  const { data, meta } = await getAllAcademicPublicationsUseCase.execute(parsedQuery)
+  const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply
     .status(200)

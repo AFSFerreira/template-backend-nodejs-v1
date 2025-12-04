@@ -15,11 +15,9 @@
  */
 
 import { Readable } from 'node:stream'
+import type { OptionalPipeObject } from '@custom-types/custom/optional-pipe-object'
 import { Prisma } from '@prisma/client'
-import { Decimal } from '@prisma/client/runtime/library'
 import type { DoneFuncWithErrOrRes, FastifyReply, FastifyRequest } from 'fastify'
-
-type OptionalPipeObject = object & { pipe?: unknown }
 
 function hasPipe(value: unknown) {
   const isNotNull = value !== null
@@ -33,7 +31,7 @@ function hasPipe(value: unknown) {
 function toSerializable(value: unknown, alreadySeen: WeakSet<object>) {
   if (value === null || value === undefined) return value
   if (typeof value === 'bigint') return value.toString()
-  if (value instanceof Decimal) return value.toString()
+  if (value instanceof Prisma.Decimal) return value.toString()
 
   if (value === Prisma.DbNull || value === Prisma.JsonNull || value === Prisma.AnyNull) {
     return null

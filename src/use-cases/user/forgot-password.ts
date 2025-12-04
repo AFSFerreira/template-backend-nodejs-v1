@@ -1,20 +1,16 @@
 import crypto from 'node:crypto'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
+import type {
+  ForgotPasswordUseCaseRequest,
+  ForgotPasswordUseCaseResponse,
+} from '@custom-types/use-cases/user/forgot-password'
 import { logger } from '@lib/logger'
 import { CHANGE_PASSWORD_SUCCESSFUL } from '@messages/loggings'
 import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import ms from 'ms'
+
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
-
-interface ForgotPasswordUseCaseRequest {
-  login: string
-}
-
-interface ForgotPasswordUseCaseResponse {
-  user: User
-  token: string
-}
 
 export class ForgotPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}

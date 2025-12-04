@@ -8,6 +8,6 @@ export interface ActivityAreasRepository {
   findById: (id: number) => Promise<ActivityArea | null>
   findByArea: (query: ActivityAreaQuery) => Promise<ActivityArea | null>
   listAllActivityAreas: (query?: ListAllActivityAreasQuery) => Promise<PaginatedResult<ActivityArea[]>>
-  findManyByArea: (areas: ActivityAreaQuery[]) => Promise<ActivityArea[]>
+  findManyBy: (areas: ActivityAreaQuery[]) => Promise<ActivityArea[]>
   delete: (id: number) => Promise<void>
 }

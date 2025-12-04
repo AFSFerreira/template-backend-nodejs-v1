@@ -1,5 +1,5 @@
-import { INVALID_INSTITUTION_NAME } from '@messages/responses'
-import { ApiError } from '../api-error'
+import { ApiError } from '@errors/api-error'
+import { INVALID_INSTITUTION_NAME } from '@messages/responses/institution-responses'
 
 export class InvalidInstitutionName extends ApiError {
   constructor() {

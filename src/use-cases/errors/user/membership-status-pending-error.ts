@@ -1,5 +1,5 @@
-import { PENDING_USER } from '@messages/responses'
-import { ApiError } from '../api-error'
+import { ApiError } from '@errors/api-error'
+import { PENDING_USER } from '@messages/responses/user-responses'
 
 export class MembershipStatusPendingError extends ApiError {
   constructor() {

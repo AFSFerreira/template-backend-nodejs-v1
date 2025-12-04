@@ -24,5 +24,3 @@ export const getAllMeetingsQuerySchema = z.preprocess(
   }),
   getAllMeetingsQueryRawSchema,
 )
-
-export type GetAllMeetingsQuerySchemaType = z.infer<typeof getAllMeetingsQuerySchema>

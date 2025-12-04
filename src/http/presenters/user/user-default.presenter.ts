@@ -3,7 +3,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type { HTTPUser } from '@custom-types/presenter/user/user-default'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import type { User } from '@prisma/client'
-import { truncateDate } from '@utils/truncate-date'
+import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(USER_DEFAULT_PRESENTER_KEY)
 export class UserDefaultPresenter implements IPresenterStrategy<User, HTTPUser> {

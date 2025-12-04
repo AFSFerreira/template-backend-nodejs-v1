@@ -4,6 +4,7 @@ import { activityAreaRoutes } from './controllers/activity-area/routes'
 import { addressRoutes } from './controllers/address/routes'
 import { blogRoutes } from './controllers/blog/routes'
 import { directorBoardRoutes } from './controllers/director-board/routes'
+import { documentManagementRoutes } from './controllers/document-management/routes'
 import { healthCheck } from './controllers/health-check/health-check.controller'
 import { institutionRoutes } from './controllers/institution/routes'
 import { meetingRoutes } from './controllers/meeting/routes'
@@ -18,6 +19,7 @@ export async function appRoutes(app: FastifyInstance) {
   app.register(userRoutes, { prefix: '/users' })
   app.register(meetingRoutes, { prefix: '/meetings' })
   app.register(directorBoardRoutes, { prefix: '/directors-board' })
+  app.register(documentManagementRoutes, { prefix: '/document-management' })
 
   app.get('/health', healthCheck)
 }

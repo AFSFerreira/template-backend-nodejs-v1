@@ -4,16 +4,11 @@ import { makeGetAllActivityAreasUseCase } from '@use-cases/factories/activity-ar
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getAllActivityAreas(request: FastifyRequest, reply: FastifyReply) {
-  const { name, type, page, limit } = getAllActivityAreasSchema.parse(request.query)
+  const parsedQuery = getAllActivityAreasSchema.parse(request.query)
 
-  const getAllActivityAreasUseCase = makeGetAllActivityAreasUseCase()
+  const useCase = makeGetAllActivityAreasUseCase()
 
-  const { data, meta } = await getAllActivityAreasUseCase.execute({
-    name,
-    type,
-    page,
-    limit,
-  })
+  const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({
     data: ActivityAreaPresenter.toHTTP(data),

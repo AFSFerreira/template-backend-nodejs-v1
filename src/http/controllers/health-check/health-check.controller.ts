@@ -20,7 +20,7 @@ export async function healthCheck(_request: FastifyRequest, reply: FastifyReply)
     logError({
       error,
       context: { duration },
-      message: 'Healthcheck failed'
+      message: 'Healthcheck failed',
     })
 
     reply.status(500).send({ status: 'error', message: 'Internal healthcheck error' })

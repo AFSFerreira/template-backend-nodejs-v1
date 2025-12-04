@@ -1,11 +1,13 @@
-import { upload } from '@lib/multer'
+import { MANAGER_PERMISSIONS } from '@constants/route-configuration-constants'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
+import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
-import { UserRoleType } from '@prisma/client'
-import { rateLimit } from '@utils/rate-limit'
+import { rateLimit } from '@utils/http/rate-limit'
 import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate.controller'
 import { checkAvailability } from './check-availability.controller'
+import { deleteUserByAdmin } from './delete-user-by-admin.controller'
+import { deleteUser } from './delete-user.controller'
 import { exportUsersData } from './export-users-data.controller'
 import { forgotPassword } from './forgot-password.controller'
 import { getAllUsersDetailed } from './get-all-users-detailed.controller'
@@ -16,6 +18,8 @@ import { logout } from './logout.controller'
 import { refreshToken } from './refresh-token.controller'
 import { register } from './register.controller'
 import { resetPassword } from './reset-password.controller'
+import { reviewMembershipStatus } from './review-membership-status.controller'
+import { updateUserByPublicId } from './update-user-by-public-id.controller'
 import { updateUser } from './update-user.controller'
 import { uploadRegisterProfileImage } from './upload-register-profile-image.controller'
 
@@ -24,16 +28,44 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/all-users-detailed',
     {
-      preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     getAllUsersDetailed,
   )
   app.get(
     '/export',
     {
-      preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     exportUsersData,
+  )
+  app.get(
+    '/:publicId',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    getUserByPublicId,
+  )
+  app.patch(
+    '/update/:publicId',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    updateUserByPublicId,
+  )
+  app.patch(
+    '/:publicId/review-membership-status',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    reviewMembershipStatus,
+  )
+  app.delete(
+    '/:publicId',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    deleteUserByAdmin,
   )
 
   // User Routes:
@@ -45,19 +77,19 @@ export async function userRoutes(app: FastifyInstance) {
     getUserProfile,
   )
   app.get('/all-users', getAllUsersSimplified)
-  app.get(
-    '/:publicId',
-    {
-      preHandler: [verifyJwt, verifyUserRole([UserRoleType.ADMIN, UserRoleType.MANAGER])],
-    },
-    getUserByPublicId,
-  )
   app.patch(
     '/update/me',
     {
       preHandler: [verifyJwt],
     },
     updateUser,
+  )
+  app.delete(
+    '/me',
+    {
+      preHandler: [verifyJwt],
+    },
+    deleteUser,
   )
 
   // Register Routes:
@@ -71,7 +103,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/profile-image',
     {
-      preHandler: [upload.single('profileImage')],
+      preHandler: [verifyMultipart],
       ...rateLimit({ max: 500, timeWindow: '30s' }),
     },
     uploadRegisterProfileImage,

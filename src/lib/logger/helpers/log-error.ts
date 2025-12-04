@@ -1,14 +1,7 @@
+import type { ILogError } from '@custom-types/libs/logger/log-error'
 import { logger } from '..'
 
-interface ILogError {
-  error: unknown
-  context?: Record<string, unknown>
-  message: string
-}
-
-export function logError(
-  { error, context = {}, message = 'Unexpected error' }: ILogError
-) {
+export function logError({ error, context = {}, message = 'Unexpected error' }: ILogError) {
   logger.error(
     {
       ...(error instanceof Error

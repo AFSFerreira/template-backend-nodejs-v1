@@ -1,15 +1,13 @@
-import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { AddressesRepository, AddressStates } from '@repositories/addresses-repository'
-import type { GetAllStatesQuerySchemaType } from '@schemas/address/get-all-states-query-schema'
-
-export interface GetAllStatesUseCaseRequest extends GetAllStatesQuerySchemaType {}
-
-export interface GetAllActivityAreasUseCaseResponse extends PaginatedResult<AddressStates[]> {}
+import type {
+  GetAllStatesUseCaseRequest,
+  GetAllStatesUseCaseResponse,
+} from '@custom-types/use-cases/address/get-all-states'
+import type { AddressesRepository } from '@repositories/addresses-repository'
 
 export class GetAllStatesUseCase {
   constructor(private readonly addressesRepository: AddressesRepository) {}
 
-  async execute(getAllStatesUseCaseInput: GetAllStatesUseCaseRequest): Promise<GetAllActivityAreasUseCaseResponse> {
+  async execute(getAllStatesUseCaseInput: GetAllStatesUseCaseRequest): Promise<GetAllStatesUseCaseResponse> {
     const addressesInfo = await this.addressesRepository.listAllAddressesStates(getAllStatesUseCaseInput)
 
     return addressesInfo

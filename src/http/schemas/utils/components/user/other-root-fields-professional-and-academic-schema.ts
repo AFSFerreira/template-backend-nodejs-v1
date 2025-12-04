@@ -1,8 +1,8 @@
 import z from 'zod'
-import { academicPublicationsSchema } from '../../generic-components/academic-publication-schema'
-import { activityAreaSchema } from '../../generic-components/activity-area-schema'
-import { institutionSchema } from '../../generic-components/institution-schema'
-import { keywordSchema } from '../../generic-components/keyword-schema'
+import { academicPublicationsSchema } from '../academic-publication/academic-publication-schema'
+import { activityAreaSchema } from '../activity-area/activity-area-schema'
+import { institutionSchema } from '../institution/institution-schema'
+import { keywordSchema } from '../keyword/keyword-schema'
 
 export const otherRootFieldsProfessionalAndAcademicSchema = z.object({
   keyword: keywordSchema,

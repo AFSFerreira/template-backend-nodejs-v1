@@ -1,12 +1,8 @@
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/adapter/output/custom-academic-publication-with-simplified-details-type'
-import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type {
+  GetAllAcademicPublicationsUseCaseRequest,
+  GetAllAcademicPublicationsUseCaseResponse,
+} from '@custom-types/use-cases/academic-publications/get-all-academic-publications'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
-import type { GetAllAcademicPublicationsQuerySchemaType } from '@schemas/academic-publication/get-all-academic-publications-query-schema'
-
-interface GetAllAcademicPublicationsUseCaseRequest extends GetAllAcademicPublicationsQuerySchemaType {}
-
-interface GetAllAcademicPublicationsUseCaseResponse
-  extends PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]> {}
 
 export class GetAllAcademicPublicationsUseCase {
   constructor(private readonly academicPublicationsRepository: AcademicPublicationsRepository) {}

@@ -1,8 +1,6 @@
-import { uuidv7Schema } from '@schemas/utils/primitives/uuidv7-schema'
+import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import z from 'zod'
 
 export const findMeetingByPublicIdParamsSchema = z.object({
-  publicId: uuidv7Schema,
+  publicId: modelPublicIdSchema,
 })
-
-export type FindMeetingByPublicIdParamsSchemaType = z.infer<typeof findMeetingByPublicIdParamsSchema>

@@ -10,5 +10,3 @@ export const getAllActivityAreasSchema = z
   })
   .partial()
   .extend(paginatedSchema.shape)
-
-export type getAllActivityAreasSchemaType = z.infer<typeof getAllActivityAreasSchema>

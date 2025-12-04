@@ -1,22 +1,16 @@
 import crypto from 'node:crypto'
+import type {
+  ResetPasswordUseCaseRequest,
+  ResetPasswordUseCaseResponse,
+} from '@custom-types/use-cases/user/reset-password'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
 import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings'
-import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { ensureExists } from '@utils/ensure'
+import { ensureExists } from '@utils/guards/ensure'
 import { hash } from 'bcryptjs'
 import { InvalidTokenError } from '../errors/user/invalid-token-error'
-
-interface ResetPasswordUseCaseRequest {
-  newPassword: string
-  token: string
-}
-
-interface ResetPasswordUseCaseResponse {
-  user: User
-}
 
 export class ResetPasswordUseCase {
   constructor(private readonly usersRepository: UsersRepository) {}

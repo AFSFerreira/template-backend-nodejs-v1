@@ -1,4 +1,4 @@
-import { stripZodKeys } from '@utils/strip-zod-keys'
+import { stripZodKeys } from '@utils/object/strip-zod-keys'
 import z from 'zod'
 import { commonUserSchema } from './common-user-schema-schema'
 import { otherRootFieldsProfessionalAndAcademicSchema } from './other-root-fields-professional-and-academic-schema'
@@ -6,7 +6,7 @@ import { otherRootFieldsSchema } from './other-root-fields-schema'
 import { otherRootFieldsStudentAndAcademicSchema } from './other-root-fields-student-and-academic-schema'
 import { professionalAndAcademicUserSchema } from './professional-and-academic-user-schema'
 import { highLevelEducationEnumSchema } from '../../enums/education-level-enum-schema'
-import { validateActivityAreaRefinement } from '../../helpers/validate-activity-area-refinement'
+import { validateActivityAreaRefinement } from '../../helpers/user/validate-activity-area-refinement'
 
 export const highLevelEducationRegisterBodySchema = z
   .object({

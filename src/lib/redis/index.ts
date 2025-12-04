@@ -1,4 +1,4 @@
-import { redisConnection } from '@constants/redis-configuration-constants'
 import Redis from 'ioredis'
+import { redisConnection } from './helpers/configuration'
 
 export const redis = new Redis(redisConnection)

@@ -1,18 +1,7 @@
 import { BLOG_HTML_CACHE_TTL } from '@constants/redis-configuration-constants'
+import type { IGetBlogHTMLCached, ISetBlogHTMLCache } from '@custom-types/services/blogs-html-cache'
 import { logger } from '@lib/logger'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings'
-import type Redis from 'ioredis'
-
-interface IGetBlogHTMLCached {
-  blogId: number
-  redis: Redis
-}
-
-interface ISetBlogHTMLCache {
-  blogId: number
-  htmlContent: string
-  redis: Redis
-}
 
 const generateBlogHtmlKey = (blogId: number) => `cache:blog:${blogId}:html`
 

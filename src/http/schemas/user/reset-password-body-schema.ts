@@ -6,5 +6,3 @@ export const resetPasswordBodySchema = z.object({
   newPassword: passwordSchema,
   token: resetPasswordTokenSchema,
 })
-
-export type ResetPasswordBodySchemaType = z.infer<typeof resetPasswordBodySchema>

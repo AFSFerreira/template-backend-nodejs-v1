@@ -7,13 +7,13 @@ import type { ListAllUsersDetailedQuery } from '@custom-types/repositories/user/
 import type { ListAllUsersSimplifiedQuery } from '@custom-types/repositories/user/list-all-users-simplified-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repositories/user/set-password-token-query'
 import type { UpdateUserQuery } from '@custom-types/repositories/user/update-user-query'
-import { userWithDetails } from '@custom-types/validator/user-with-details'
+import { userWithDetails, type UserWithDetails } from '@custom-types/validator/user-with-details'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
-import { evalTotalPages } from '@utils/eval-total-pages'
+import { evalTotalPages } from '@utils/pagination/eval-total-pages'
 import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
@@ -196,6 +196,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
+  // TODO: Apagar essa bomba atômica depois
   async listAllUsers() {
     const users = await prisma.user.findMany({
       include: userWithDetails.include,
@@ -203,6 +204,26 @@ export class PrismaUsersRepository implements UsersRepository {
     })
 
     return users
+  }
+
+  async *streamAllUsers(batchSize = 500) {
+    let cursor: number | undefined = undefined
+
+    while (true) {
+      const batch: UserWithDetails[] = await prisma.user.findMany({
+        take: batchSize,
+        skip: cursor ? 1 : 0,
+        cursor: cursor ? { id: cursor } : undefined,
+        include: userWithDetails.include,
+        orderBy: { id: 'asc' },
+      })
+
+      if (batch.length === 0) break
+
+      for (const user of batch) yield user
+
+      cursor = batch.at(-1).id
+    }
   }
 
   async listAllUsersDetailed(query?: ListAllUsersDetailedQuery) {
@@ -357,21 +378,18 @@ export class PrismaUsersRepository implements UsersRepository {
       ? {
           deleteMany: {},
 
-          // 2. Cria as novas baseadas na lista enviada
           create: data.academicPublication.map((academicPublication) => {
             const { area, authors, ...filteredAcademicPublicationData } = academicPublication
 
             return {
               ...filteredAcademicPublicationData,
 
-              // Recria os autores
               AcademicPublicationAuthors: {
                 create: authors.map((author) => ({
                   name: author,
                 })),
               },
 
-              // Reconecta a área de atividade
               ActivityArea: {
                 connect: {
                   type_area: {
