@@ -6,6 +6,8 @@ import { logger } from '@lib/logger'
 import { SUCCESSFUL_USER_CREATION } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { AddressCountryRepository } from '@repositories/address-countries-repository'
+import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
@@ -25,6 +27,8 @@ export class RegisterUseCase {
     private readonly usersRepository: UsersRepository,
     private readonly activityAreasRepository: ActivityAreasRepository,
     private readonly institutionsRepository: InstitutionsRepository,
+    private readonly addressStatesRepository: AddressStatesRepository,
+    private readonly addressCountriesRepository: AddressCountryRepository,
   ) {}
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
@@ -91,6 +95,13 @@ export class RegisterUseCase {
       throw new InvalidInstitutionName()
     }
 
+    const addressCountry = await this.addressCountriesRepository.findOrCreate(registerUseCaseInput.address.country)
+
+    const addressState = await this.addressStatesRepository.findOrCreate({
+      state: registerUseCaseInput.address.state,
+      countryId: addressCountry.id,
+    })
+
     const profileImagePersistSuccess = registerUseCaseInput.user.profileImage
       ? await persistUserProfileImage(registerUseCaseInput.user.profileImage)
       : false
@@ -98,18 +109,22 @@ export class RegisterUseCase {
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
     const { password, identity, ...filteredUserInfo } = registerUseCaseInput.user
+    const { state, country, ...filteredAddressInfo } = registerUseCaseInput.address
 
     const user = await this.usersRepository.create({
       user: {
         ...filteredUserInfo,
         identityType: identity.identityType,
         identityDocument: identity.identityDocument,
-        profileImage: profileImagePersistSuccess ? DEFAULT_PROFILE_IMAGE_NAME : registerUseCaseInput.user.profileImage,
+        profileImage: profileImagePersistSuccess ? registerUseCaseInput.user.profileImage : DEFAULT_PROFILE_IMAGE_NAME,
         passwordHash,
+      },
+      address: {
+        ...filteredAddressInfo,
+        stateId: addressState.id,
       },
       institution: registerUseCaseInput.institution,
       activityArea: registerUseCaseInput.activityArea,
-      address: registerUseCaseInput.address,
       academicPublication: registerUseCaseInput.academicPublication,
       enrolledCourse: registerUseCaseInput.enrolledCourse,
       keyword: registerUseCaseInput.keyword,

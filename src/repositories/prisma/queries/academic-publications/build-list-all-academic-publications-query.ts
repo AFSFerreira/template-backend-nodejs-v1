@@ -1,7 +1,7 @@
 import type { GetAllAcademicPublicationsQuerySchemaType } from '@custom-types/schemas/academic-pulication/get-all-academic-publications-query-schema'
 import { Prisma } from '@prisma/client'
+import { evalOffset } from '@utils/generics/eval-offset'
 import { mapComparisonOperation } from '@utils/mappers/map-comparison-operation'
-import { evalOffset } from '@utils/pagination/eval-offset'
 
 export function buildListAllAcademicPublicationsQuery(query: GetAllAcademicPublicationsQuerySchemaType) {
   const conditions: Prisma.Sql[] = []

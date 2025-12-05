@@ -4,8 +4,8 @@ import type {
 } from '@custom-types/use-cases/institution/get-all-institutions-names'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { getAllInstitutions } from '@services/get-all-institutions'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
-import { paginateArray } from '@utils/pagination/paginate-array'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { paginateArray } from '@utils/generics/paginate-array'
 
 export class GetAllInstitutionsNamesUseCase {
   constructor(private readonly institutionsRepository: InstitutionsRepository) {}

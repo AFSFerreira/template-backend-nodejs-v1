@@ -1,7 +1,7 @@
-ALTER TABLE "public"."users"
+ALTER TABLE public.users
   ADD COLUMN IF NOT EXISTS full_name_tsv_pt tsvector;
 
-UPDATE "public"."users"
+UPDATE public.users
 SET full_name_tsv_pt = to_tsvector(
     'portuguese',
     unaccent(substring(coalesce(full_name, '') FROM 1 FOR 255))
@@ -9,10 +9,10 @@ SET full_name_tsv_pt = to_tsvector(
 
 --------------------------------------------------------
 
-ALTER TABLE "public"."blogs"
+ALTER TABLE public.blogs
   ADD COLUMN IF NOT EXISTS search_tsv_pt tsvector;
 
-UPDATE "public"."blogs"
+UPDATE public.blogs
 SET search_tsv_pt =
   setweight(
     to_tsvector(
@@ -31,10 +31,10 @@ SET search_tsv_pt =
 
 --------------------------------------------------------
 
-ALTER TABLE "public"."academic_publications"
+ALTER TABLE public.academic_publications
   ADD COLUMN IF NOT EXISTS title_tsv_pt tsvector;
 
-UPDATE "public"."academic_publications"
+UPDATE public.academic_publications
 SET title_tsv_pt = to_tsvector(
     'portuguese',
     unaccent(substring(coalesce(title, '') FROM 1 FOR 255))

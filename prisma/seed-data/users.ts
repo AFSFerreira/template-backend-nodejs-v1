@@ -10,7 +10,6 @@ import {
 import { hashSync } from 'bcryptjs'
 import { academicPublicationsData1 } from './academic-publications'
 import { activityAreasData1, subActivityAreasData1 } from './activity-areas'
-import { addressData1, addressData2 } from './addresses'
 import { directorPositionData1 } from './director-positions'
 import { directorBoardsArray } from './directors-board'
 import { enrolledCourseData1 } from './enrolled-courses'
@@ -18,9 +17,11 @@ import { institutionData1, institutionData2 } from './institutions'
 import { keywordsData1 } from './keywords'
 import { env } from '../../src/env/index'
 
+type PartialUserCreateInput = Omit<Prisma.UserCreateInput, 'Address'>
+
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
 
-export const userData1: Prisma.UserCreateInput = {
+export const userData1: PartialUserCreateInput = {
   fullName: 'ADMIN',
   username: 'ADMIN.ADMIN',
   email: 'admin@email.com',
@@ -46,8 +47,6 @@ export const userData1: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-00',
   publicInformation: 'ASTROBIÓLOGO',
-
-  Address: { create: addressData1 },
 
   EnrolledCourse: { create: enrolledCourseData1 },
 
@@ -88,7 +87,7 @@ export const userData1: Prisma.UserCreateInput = {
   },
 }
 
-export const userData2 = {
+export const userData2: PartialUserCreateInput = {
   fullName: 'Douglas Galante',
   username: 'USER.USER',
   email: 'user@email.com',
@@ -114,8 +113,6 @@ export const userData2 = {
   identityType: IdentityType.CPF,
   identityDocument: '987.654.321-00',
   publicInformation: 'ASTROBIÓLOGO',
-
-  Address: { create: addressData1 },
 
   EnrolledCourse: { create: enrolledCourseData1 },
 
@@ -177,8 +174,6 @@ const partialDummyUserData = {
   identityType: IdentityType.CPF,
   publicInformation: 'ASTROBIÓLOGO',
 
-  Address: { create: addressData2 },
-
   EnrolledCourse: { create: enrolledCourseData1 },
 
   AcademicPublication: { create: academicPublicationsData1 },
@@ -216,7 +211,7 @@ const partialDummyUserData = {
   },
 }
 
-export const dummyUserInfoArray: Prisma.UserCreateInput[] = [
+export const dummyUserInfoArray: PartialUserCreateInput[] = [
   {
     ...partialDummyUserData,
     receiveReports: false,
@@ -235,7 +230,7 @@ export const dummyUserInfoArray: Prisma.UserCreateInput[] = [
   },
 ]
 
-export const dummyUserDirectorBoardInfoArray: Prisma.UserCreateInput[] = []
+export const dummyUserDirectorBoardInfoArray: PartialUserCreateInput[] = []
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
 for (let i = 0; i <= 20; i++) {

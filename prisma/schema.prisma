@@ -81,22 +81,47 @@ model User {
 }
 
 model Address {
-  id         Int      @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   zip        String
   number     String
   street     String
   district   String
   city       String
-  state      String
-  country    String
+  stateId    Int          @map("state_id")
+  State      AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   complement String?
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId     Int      @unique @map("user_id")
-  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+  userId     Int          @unique @map("user_id")
+  User       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([state])
+  @@index([stateId])
   @@index([userId])
   @@map("addresses")
+}
+
+model AddressState {
+  id        Int    @id @default(autoincrement())
+  name      String
+  countryId Int    @map("country_id")
+
+  Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  Address Address[]
+
+  @@unique([name, countryId])
+  @@map("address_states")
+}
+
+model AddressCountry {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  State AddressState[] @relation()
+
+  @@index([name])
+  @@map("address_countries")
 }
 
 model EnrolledCourse {

@@ -10,8 +10,8 @@ export interface CreateUserQuery {
     identityType: IdentityType
     identityDocument: string
   }
+  address: Omit<RegisterUserBodySchemaType['address'], 'state' | 'country'> & { stateId: number }
   activityArea: RegisterUserBodySchemaType['activityArea']
-  address: RegisterUserBodySchemaType['address']
   enrolledCourse: RegisterUserBodySchemaType['enrolledCourse']
   academicPublication: RegisterUserBodySchemaType['academicPublication']
   keyword: RegisterUserBodySchemaType['keyword']

@@ -3,8 +3,8 @@ import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repositori
 import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
-import { evalOffset } from '@utils/pagination/eval-offset'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
+import { evalOffset } from '@utils/generics/eval-offset'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import type { InstitutionsRepository } from '../institutions-repository'
 
 export class PrismaInstitutionsRepository implements InstitutionsRepository {

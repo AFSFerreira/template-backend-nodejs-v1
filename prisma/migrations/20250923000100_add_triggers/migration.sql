@@ -83,6 +83,23 @@ FOR EACH ROW EXECUTE FUNCTION fill_users_full_name_unaccent_trigger();
 
 --------------------------------------------------------
 
+DROP TRIGGER IF EXISTS academic_publications_title_unaccent_trigger ON public.academic_publications;
+DROP FUNCTION IF EXISTS fill_academic_publications_title_unaccented_columns;
+
+CREATE OR REPLACE FUNCTION fill_academic_publications_title_unaccented_columns()
+RETURNS trigger AS $$
+BEGIN
+  NEW.title_unaccent := unaccent(substring(coalesce(NEW.title, '') FROM 1 FOR 255));
+  RETURN NEW;
+END
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER academic_publications_title_unaccent_trigger
+BEFORE INSERT OR UPDATE ON public.academic_publications
+FOR EACH ROW EXECUTE FUNCTION fill_academic_publications_title_unaccented_columns();
+
+--------------------------------------------------------
+
 DROP TRIGGER IF EXISTS tsvector_pt_update_academic_publications_title ON public.academic_publications;
 DROP FUNCTION IF EXISTS academic_publications_title_tsv_pt_trigger;
 

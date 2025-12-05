@@ -1,6 +1,6 @@
 import type { GetAllPostsQuerySchemaType } from '@custom-types/schemas/blog/get-all-posts-query-schema'
 import { ActivityAreaType, Prisma } from '@prisma/client'
-import { evalOffset } from '@utils/pagination/eval-offset'
+import { evalOffset } from '@utils/generics/eval-offset'
 
 export function buildListAllBlogsQuery(query: GetAllPostsQuerySchemaType) {
   const conditions: Prisma.Sql[] = []

@@ -1,7 +1,9 @@
 import { HAS_SENTRY } from '@constants/env-constants'
 import { env } from '@env/index'
+import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses'
 import * as Sentry from '@sentry/node'
 import { nodeProfilingIntegration } from '@sentry/profiling-node'
+import { getBusinessError } from '@services/get-business-error'
 
 export function initSentry() {
   if (!HAS_SENTRY) return
@@ -14,6 +16,16 @@ export function initSentry() {
     profileSessionSampleRate: 1.0,
     profileLifecycle: 'trace',
     release: env.SENTRY_RELEASE,
+
+    beforeSend: (event, hint) => {
+      const error = hint.originalException as Error
+
+      if (getBusinessError(error) !== INTERNAL_SERVER_ERROR) {
+        return null
+      }
+
+      return event
+    },
   })
 
   // Sentry.setupFastifyErrorHandler(app)

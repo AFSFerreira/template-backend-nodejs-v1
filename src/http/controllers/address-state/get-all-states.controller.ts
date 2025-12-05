@@ -1,7 +1,7 @@
 import { ADDRESS_WITH_USERS_COUNT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { makeGetAllStatesUseCase } from '@factories/address-state/make-get-all-states-use-case'
 import { AddressPresenter } from '@presenters/address-presenter'
 import { getAllStatesQuerySchema } from '@schemas/address/get-all-states-query-schema'
-import { makeGetAllStatesUseCase } from '@use-cases/factories/address/make-get-all-states-use-case'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function getAllStates(request: FastifyRequest, reply: FastifyReply) {

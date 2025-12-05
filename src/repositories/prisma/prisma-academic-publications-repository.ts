@@ -4,7 +4,7 @@ import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
 

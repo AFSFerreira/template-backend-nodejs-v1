@@ -5,7 +5,7 @@ import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { blogAdapter } from './adapters/blogs/blog-adapter'
 import { buildListAllBlogsQuery } from './queries/blogs/build-list-all-blogs-query'
 

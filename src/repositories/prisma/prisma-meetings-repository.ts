@@ -4,9 +4,9 @@ import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { evalOffset } from '@utils/generics/eval-offset'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/mappers/map-status-to-date-filter'
-import { evalOffset } from '@utils/pagination/eval-offset'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
 
 export class PrismaMeetingsRepository implements MeetingsRepository {
   async findByPublicId(publicId: string) {

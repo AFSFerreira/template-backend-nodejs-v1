@@ -13,13 +13,13 @@ import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 export class PrismaUsersRepository implements UsersRepository {
   async create(data: CreateUserQuery) {
-    const keywordsConnectOrCreateData = data.keyword
+    const keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] = data.keyword
       ? {
           connectOrCreate: data.keyword.map((value: string) => ({
             where: { value },
@@ -28,7 +28,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const academicPublicationCreateData = data.academicPublication
+    const academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] = data.academicPublication
       ? {
           create: data.academicPublication.map((academicPublication) => {
             const { area, authors, ...filteredAcademicPublicationData } = academicPublication
@@ -52,7 +52,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const enrolledCourseCreateData = data.enrolledCourse
+    const enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] = data.enrolledCourse
       ? {
           create: {
             ...data.enrolledCourse,
@@ -63,7 +63,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const institutionConnectOrCreateData = data.institution
+    const institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] = data.institution
       ? {
           connectOrCreate: {
             create: { name: data.institution.name },
@@ -72,7 +72,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const activityAreaConnectData = data.activityArea
+    const activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] = data.activityArea
       ? {
           connect: {
             type_area: {
@@ -83,7 +83,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const subActivityAreaConnectData = data.activityArea
+    const subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] = data.activityArea
       ? {
           connect: {
             type_area: {
@@ -94,8 +94,16 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const addressCreateData = {
-      create: data.address,
+    const { stateId, ...filteredAddressInfo } = data.address
+    const addressCreateData: Prisma.UserCreateInput['Address'] = {
+      create: {
+        ...filteredAddressInfo,
+        State: {
+          connect: {
+            id: stateId,
+          },
+        },
+      },
     }
 
     const user = await prisma.user.create({
@@ -235,7 +243,7 @@ export class PrismaUsersRepository implements UsersRepository {
           fullName: true,
           email: true,
           emailIsPublic: true,
-          Address: { select: { state: true } },
+          Address: { select: { State: { select: { name: true } } } },
           Institution: { select: { name: true } },
         },
         orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
@@ -248,7 +256,7 @@ export class PrismaUsersRepository implements UsersRepository {
         email: userInfo.email,
         emailIsPublic: userInfo.emailIsPublic,
         institutionName: userInfo.Institution.name,
-        state: userInfo.Address.state,
+        state: userInfo.Address.State.name,
       }))
 
       return {
@@ -295,7 +303,7 @@ export class PrismaUsersRepository implements UsersRepository {
           email: true,
           emailIsPublic: true,
           Address: {
-            select: { state: true },
+            select: { State: { select: { name: true } } },
           },
           Institution: {
             select: { name: true },
@@ -311,7 +319,7 @@ export class PrismaUsersRepository implements UsersRepository {
         email: userInfo.email,
         emailIsPublic: userInfo.emailIsPublic,
         institutionName: userInfo.Institution.name,
-        state: userInfo.Address.state,
+        state: userInfo.Address.State.name,
       }))
 
       return {
@@ -367,6 +375,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] = data.keyword
       ? {
           set: [],
+
           connectOrCreate: data.keyword.map((value: string) => ({
             where: { value },
             create: { value },

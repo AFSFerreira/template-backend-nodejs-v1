@@ -4,8 +4,8 @@ import type { OrderableType } from '@custom-types/validator/orderable'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import { evalOffset } from '@utils/pagination/eval-offset'
-import { evalTotalPages } from '@utils/pagination/eval-total-pages'
+import { evalOffset } from '@utils/generics/eval-offset'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 
 export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {

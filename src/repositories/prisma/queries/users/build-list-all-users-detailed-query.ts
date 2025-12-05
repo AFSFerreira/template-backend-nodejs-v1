@@ -1,7 +1,7 @@
 import type { GetAllUsersDetailedQuerySchemaType } from '@custom-types/schemas/user/get-all-users-detailed-query-schema'
 import { ActivityAreaType, Prisma } from '@prisma/client'
+import { evalOffset } from '@utils/generics/eval-offset'
 import { mapComparisonOperation } from '@utils/mappers/map-comparison-operation'
-import { evalOffset } from '@utils/pagination/eval-offset'
 
 export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySchemaType) {
   const conditions: Prisma.Sql[] = []
@@ -67,7 +67,7 @@ export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySc
   }
 
   if (query.state) {
-    conditions.push(Prisma.sql`a.state ILIKE ${query.state}`)
+    conditions.push(Prisma.sql`ast.name ILIKE ${query.state}`)
   }
 
   if (query.mainActivityArea) {
@@ -134,17 +134,18 @@ export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySc
       u.full_name,
       u.email,
       u.email_is_public,
-      a.state,
+      ast.name as state,
       i.name as institution_name
     FROM users u
     LEFT JOIN institutions i ON i.id = u.institution_id
     LEFT JOIN addresses a ON a.user_id = u.id
+    LEFT JOIN address_states ast ON a.state_id = ast.id
     LEFT JOIN area_of_activity aa_main ON aa_main.id = u.activity_area_id
     LEFT JOIN area_of_activity aa_sub ON aa_sub.id = u.sub_activity_area_id
     LEFT JOIN "_KeywordToUser" ktu ON ktu."B" = u.id
     LEFT JOIN keywords k ON k.id = ktu."A"
     ${whereClause}
-    GROUP BY u.id, i.id, a.id, aa_main.id, aa_sub.id
+    GROUP BY u.id, i.id, a.id, ast.id, aa_main.id, aa_sub.id
     ${havingClause}
     ${orderByClause}
     LIMIT ${Prisma.sql`${limit}`} OFFSET ${Prisma.sql`${offset}`}
@@ -156,12 +157,13 @@ export function buildListAllUsersDetailedQuery(query: GetAllUsersDetailedQuerySc
       FROM users u
       LEFT JOIN institutions i ON i.id = u.institution_id
       LEFT JOIN addresses a ON a.user_id = u.id
+      LEFT JOIN address_states ast ON a.state_id = ast.id
       LEFT JOIN area_of_activity aa_main ON aa_main.id = u.activity_area_id
       LEFT JOIN area_of_activity aa_sub ON aa_sub.id = u.sub_activity_area_id
       LEFT JOIN "_KeywordToUser" ktu ON ktu."B" = u.id
       LEFT JOIN keywords k ON k.id = ktu."A"
       ${whereClause}
-      GROUP BY u.id, i.id, a.id, aa_main.id, aa_sub.id
+      GROUP BY u.id, i.id, a.id, ast.id, aa_main.id, aa_sub.id
       ${havingClause}
     ) AS t;
   `
