@@ -19,6 +19,8 @@ import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
 import { staticFileRoutes } from './http/plugins/static-files'
 import { appRoutes } from './http/routes'
+import "reflect-metadata"
+import '@lib/tsyringe/index'
 
 export const app = fastify(fastifyConfig)
 
