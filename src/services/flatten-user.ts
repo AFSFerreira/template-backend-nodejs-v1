@@ -27,13 +27,13 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
 
+    zip: user.Address?.zip ?? '',
     number: user.Address?.number ?? '',
     street: user.Address?.street ?? '',
     district: user.Address?.district ?? '',
     city: user.Address?.city ?? '',
-    state: user.Address?.state ?? '',
-    zip: user.Address?.zip ?? '',
-    country: user.Address?.country ?? '',
+    state: user.Address?.State?.name ?? '',
+    country: user.Address?.State?.Country?.name ?? '',
     complement: user.Address?.complement ?? '',
 
     mainAreaActivity: user.ActivityArea?.area ?? '',

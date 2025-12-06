@@ -1,14 +1,15 @@
 import type { RegisterUserBodySchemaType } from '@custom-types/schemas/user/register-body-schema'
 import { registerBodySchema } from '@schemas/user/register-body-schema'
-import { makeRegisterUseCase } from '@use-cases/factories/user/make-register-use-case'
+import { RegisterUseCase } from '@use-cases/user/register'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const parsedBody = registerBodySchema.parse(request.body) as RegisterUserBodySchemaType
 
-  const registerUserCase = makeRegisterUseCase()
+  const useCase = container.resolve(RegisterUseCase)
 
-  await registerUserCase.execute(parsedBody)
+  await useCase.execute(parsedBody)
 
   return await reply.status(201).send()
 }

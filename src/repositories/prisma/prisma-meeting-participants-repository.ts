@@ -4,7 +4,9 @@ import type { FindByGuestEmailAndMeetingId } from '@custom-types/repositories/me
 import type { FindByUserIdAndMeetingIdInput } from '@custom-types/repositories/meeting-participants/find-by-user-id-and-meeting-id-input'
 import { prisma } from '@lib/prisma'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class PrismaMeetingParticipantsRepository implements MeetingParticipantsRepository {
   async createForUser(query: CreateMeetingParticipationForUserQuery) {
     const meetingParticipation = await prisma.meetingParticipation.create({

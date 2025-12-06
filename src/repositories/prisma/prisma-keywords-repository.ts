@@ -1,8 +1,10 @@
 import type { UpdateKeywordsQuery } from '@custom-types/repositories/keyword/update-keywords-query'
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
+import { injectable } from 'tsyringe'
 import type { KeywordsRepository } from '../keywords-repository'
 
+@injectable()
 export class PrismaKeywordsRepository implements KeywordsRepository {
   async create(data: Prisma.KeywordUncheckedCreateInput) {
     const keyword = await prisma.keyword.create({ data })

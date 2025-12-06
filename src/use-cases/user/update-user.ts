@@ -2,6 +2,7 @@ import type { UpdateUserQuery } from '@custom-types/repositories/user/update-use
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
@@ -16,14 +17,25 @@ import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-e
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { ensureExists } from '@utils/guards/ensure'
 import { hash } from 'bcryptjs'
+import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
+@injectable()
 export class UpdateUserUseCase {
   constructor(
+    @inject(tokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(tokens.repositories.activityAreas)
     private readonly activityAreasRepository: ActivityAreasRepository,
+
+    @inject(tokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
+
+    @inject(tokens.repositories.addressStates)
     private readonly addressStatesRepository: AddressStatesRepository,
+
+    @inject(tokens.repositories.addressCountries)
     private readonly addressCountriesRepository: AddressCountryRepository,
   ) {}
 

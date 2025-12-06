@@ -2,11 +2,17 @@ import type {
   CheckAvailabilityUseCaseRequest,
   CheckAvailabilityUseCaseResponse,
 } from '@custom-types/use-cases/user/check-availability'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { UsersRepository } from '@repositories/users-repository'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export class CheckAvailabilityUseCase {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    @inject(tokens.repositories.users)
+    private readonly usersRepository: UsersRepository,
+  ) {}
 
   async execute(
     checkAvailabilityUseCaseInput: CheckAvailabilityUseCaseRequest,

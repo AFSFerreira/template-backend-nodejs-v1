@@ -10,6 +10,7 @@
     "types": ["node"],
     "resolveJsonModule": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "verbatimModuleSyntax": true,
     "allowJs": true,

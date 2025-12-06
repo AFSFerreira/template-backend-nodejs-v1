@@ -1,10 +1,12 @@
 import { checkAvailabilityQuerySchema } from '@schemas/user/check-availability-query-schema'
-import { makeCheckAvailabilityUseCase } from '@use-cases/factories/user/make-check-availability-use-case'
+import { CheckAvailabilityUseCase } from '@use-cases/user/check-availability'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function checkAvailability(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = checkAvailabilityQuerySchema.parse(request.query)
-  const useCase = makeCheckAvailabilityUseCase()
+
+  const useCase = container.resolve(CheckAvailabilityUseCase)
 
   const { availabilities } = await useCase.execute(parsedQuery)
 

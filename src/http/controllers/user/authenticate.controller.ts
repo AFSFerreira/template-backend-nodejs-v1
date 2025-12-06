@@ -1,8 +1,9 @@
 import { env } from '@env/index'
 import { UserPresenter } from '@presenters/user-presenter'
 import { authenticateBodySchema } from '@schemas/user/authenticate-body-schema'
-import { makeAuthenticateUseCase } from '@use-cases/factories/user/make-authenticate-use-case'
+import { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
   const { login, password } = authenticateBodySchema.parse(request.body)
@@ -11,7 +12,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
   const { remotePort } = request.socket
   const browserName = Array.isArray(browser) ? browser[0] : browser
 
-  const useCase = makeAuthenticateUseCase()
+  const useCase = container.resolve(AuthenticateUseCase)
 
   const { user } = await useCase.execute({
     login,

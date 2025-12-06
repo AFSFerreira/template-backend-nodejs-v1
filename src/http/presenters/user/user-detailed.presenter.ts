@@ -55,8 +55,8 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails
             district: input.Address.district,
             street: input.Address.street,
             city: input.Address.city,
-            country: input.Address.country,
-            state: input.Address.state,
+            country: input.Address.State.Country.name,
+            state: input.Address.State.name,
             complement: input.Address.complement,
           }
         : undefined,

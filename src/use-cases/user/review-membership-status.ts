@@ -2,14 +2,20 @@ import type {
   ReviewMembershipStatusUseCaseRequest,
   ReviewMembershipStatusUseCaseResponse,
 } from '@custom-types/use-cases/user/review-membership-status'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/guards/ensure'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export class ReviewMembershipStatusUseCase {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    @inject(tokens.repositories.users)
+    private readonly usersRepository: UsersRepository,
+  ) {}
 
   async execute({
     publicId,

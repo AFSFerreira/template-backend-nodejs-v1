@@ -8,7 +8,9 @@ import type {
 import { saveCompressedImage } from '@services/save-compressed-image'
 import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
 import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class UploadRegisterProfileImageUseCase {
   async execute({
     buffer,

@@ -7,7 +7,9 @@ import type {
 } from '@custom-types/use-cases/document-management/upload-document'
 import { swapMultipartFiles } from '@services/swap-multipart-files'
 import { FileTooBigError } from '@use-cases/errors/document-management/file-too-big-error'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class UploadElectionNoticeUseCase {
   async execute({
     filePart,

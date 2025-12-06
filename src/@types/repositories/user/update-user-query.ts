@@ -10,6 +10,6 @@ export interface UpdateUserQuery {
       membershipStatus?: MembershipStatusType
     }
   } & {
-    address: Omit<UpdateUserBodySchemaType['address'], 'state' | 'country'> & { stateId: number }
+    address?: Omit<UpdateUserBodySchemaType['address'], 'state' | 'country'> & { stateId: number }
   }
 }

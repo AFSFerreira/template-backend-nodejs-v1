@@ -3,14 +3,20 @@ import type {
   DeleteUserByAdminUseCaseResponse,
 } from '@custom-types/use-cases/user/delete-user-by-admin'
 import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_DELETION_BY_ADMIN_SUCCESSFUL } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
 import { ensureExists } from '@utils/guards/ensure'
 
+import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
+@injectable()
 export class DeleteUserByAdminUseCase {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    @inject(tokens.repositories.users)
+    private readonly usersRepository: UsersRepository,
+  ) {}
 
   async execute({
     adminPublicId,

@@ -3,6 +3,7 @@ import type {
   RegisterUserMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-user-meeting'
 import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { REGISTER_USER_MEETING } from '@messages/loggings'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
@@ -13,11 +14,18 @@ import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-p
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { toDateOnly } from '@utils/formatters/to-date-only'
 import { ensureExists, ensureNotExists } from '@utils/guards/ensure'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export class RegisterUserMeetingUseCase {
   constructor(
+    @inject(tokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(tokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
+
+    @inject(tokens.repositories.meetingParticipants)
     private readonly meetingParticipantsRepository: MeetingParticipantsRepository,
   ) {}
 

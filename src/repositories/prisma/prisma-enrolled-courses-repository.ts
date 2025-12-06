@@ -1,7 +1,9 @@
 import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
+import { injectable } from 'tsyringe'
 import type { EnrolledCoursesRepository } from '../enrolled-courses-repository'
 
+@injectable()
 export class PrismaEnrolledCoursesRepository implements EnrolledCoursesRepository {
   async create(data: Prisma.EnrolledCourseUncheckedCreateInput) {
     const enrolledCourse = await prisma.enrolledCourse.create({ data })

@@ -7,7 +7,9 @@ import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/mappers/map-status-to-date-filter'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class PrismaMeetingsRepository implements MeetingsRepository {
   async findByPublicId(publicId: string) {
     const meeting = await prisma.meeting.findUnique({

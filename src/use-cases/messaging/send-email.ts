@@ -2,7 +2,9 @@ import type { SendEmailUseCaseRequest } from '@custom-types/use-cases/messaging/
 import { logger } from '@lib/logger'
 import { SEND_EMAIL_MESSAGE } from '@messages/loggings'
 import { sendEmail } from '@services/send-email'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class SendEmailUseCase {
   async execute({ to, subject, message, html, attachments }: SendEmailUseCaseRequest) {
     const email = await sendEmail({ to, subject, message, html, attachments })

@@ -1,12 +1,14 @@
 import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/user-presenter'
 import { getAllUsersSimplifiedQuerySchema } from '@schemas/user/get-all-users-simplified-query-schema'
-import { makeGetAllUsersSimplifiedUseCase } from '@use-cases/factories/user/make-get-all-users-simplified-use-case'
+import { GetAllUsersSimplifiedUseCase } from '@use-cases/user/get-all-users-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function getAllUsersSimplified(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllUsersSimplifiedQuerySchema.parse(request.query)
-  const useCase = makeGetAllUsersSimplifiedUseCase()
+
+  const useCase = container.resolve(GetAllUsersSimplifiedUseCase)
 
   const { data, meta } = await useCase.execute(parsedQuery)
 

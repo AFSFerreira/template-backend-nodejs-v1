@@ -1,7 +1,9 @@
 import { prisma } from '@lib/prisma'
 import { type Prisma } from '@prisma/client'
+import { injectable } from 'tsyringe'
 import type { AddressesRepository } from '../addresses-repository'
 
+@injectable()
 export class PrismaAddressesRepository implements AddressesRepository {
   async create(data: Prisma.AddressUncheckedCreateInput) {
     const address = await prisma.address.create({ data })

@@ -6,7 +6,9 @@ import type { Prisma } from '@prisma/client'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
     const orderBy: Prisma.DirectorBoardOrderByWithRelationInput[] = [

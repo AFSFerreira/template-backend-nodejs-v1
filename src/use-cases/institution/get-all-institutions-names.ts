@@ -2,13 +2,19 @@ import type {
   GetAllInstitutionsNamesUseCaseRequest,
   GetAllInstitutionsNamesUseCaseResponse,
 } from '@custom-types/use-cases/institution/get-all-institutions-names'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { getAllInstitutions } from '@services/get-all-institutions'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { paginateArray } from '@utils/generics/paginate-array'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export class GetAllInstitutionsNamesUseCase {
-  constructor(private readonly institutionsRepository: InstitutionsRepository) {}
+  constructor(
+    @inject(tokens.repositories.institutions)
+    private readonly institutionsRepository: InstitutionsRepository,
+  ) {}
 
   async execute(
     getAllInstitutionsUseCaseInput: GetAllInstitutionsNamesUseCaseRequest,

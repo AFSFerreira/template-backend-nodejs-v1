@@ -6,9 +6,11 @@ import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 import { blogAdapter } from './adapters/blogs/blog-adapter'
 import { buildListAllBlogsQuery } from './queries/blogs/build-list-all-blogs-query'
 
+@injectable()
 export class PrismaBlogsRepository implements BlogsRepository {
   async create(data: Prisma.BlogUncheckedCreateInput) {
     const blog = await prisma.blog.create({

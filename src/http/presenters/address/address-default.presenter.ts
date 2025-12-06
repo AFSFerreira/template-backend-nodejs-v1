@@ -1,6 +1,6 @@
 import { ADDRESS_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPAddress } from '@custom-types/presenter/user/user-detailed'
+import type { HTTPAddress } from '@custom-types/presenter/address/addres-default'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import type { Address } from '@prisma/client'
 

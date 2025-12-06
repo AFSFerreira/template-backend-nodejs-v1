@@ -5,8 +5,10 @@ import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 import type { InstitutionsRepository } from '../institutions-repository'
 
+@injectable()
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
   async create(data: Prisma.InstitutionUncheckedCreateInput) {
     const institution = await prisma.institution.create({

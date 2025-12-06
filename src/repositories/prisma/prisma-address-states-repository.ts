@@ -4,7 +4,9 @@ import { MembershipStatusType, UserRoleType, type Prisma } from '@prisma/client'
 import type { AddressStateFindOrCreateQuery, AddressStatesRepository } from '@repositories/address-states-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class PrismaAddressStatesRepository implements AddressStatesRepository {
   async findOrCreate(data: AddressStateFindOrCreateQuery) {
     const addressState = await prisma.addressState.upsert({

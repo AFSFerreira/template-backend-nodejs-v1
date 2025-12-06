@@ -4,7 +4,9 @@ import type { GetStatuteUseCaseResponse } from '@custom-types/use-cases/document
 import { getFiles } from '@services/get-files'
 import { MissingStatuteFileError } from '@use-cases/errors/document-management/missing-statute-file-error'
 import fs from 'fs-extra'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class GetStatuteUseCase {
   async execute(): Promise<GetStatuteUseCaseResponse> {
     const files = await getFiles(STATUTE_FILE_NAME_PATTERN)

@@ -3,6 +3,7 @@ import type { FindConflictingUserQuery } from '@custom-types/repositories/user/f
 import type { RegisterUseCaseRequest, RegisterUseCaseResponse } from '@custom-types/use-cases/user/register'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { SUCCESSFUL_USER_CREATION } from '@messages/loggings'
 import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
@@ -20,14 +21,25 @@ import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-s
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hash } from 'bcryptjs'
+import { inject, injectable } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 
+@injectable()
 export class RegisterUseCase {
   constructor(
+    @inject(tokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(tokens.repositories.activityAreas)
     private readonly activityAreasRepository: ActivityAreasRepository,
+
+    @inject(tokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
+
+    @inject(tokens.repositories.addressStates)
     private readonly addressStatesRepository: AddressStatesRepository,
+
+    @inject(tokens.repositories.addressCountries)
     private readonly addressCountriesRepository: AddressCountryRepository,
   ) {}
 

@@ -1,13 +1,19 @@
 import { Readable } from 'node:stream'
 import type { ExportUsersDataUseCaseResponse } from '@custom-types/use-cases/user/export-users-data'
 import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
 import { flattenUser } from '@services/flatten-user'
 import { Transform } from 'json2csv'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export class ExportUsersDataUseCase {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(
+    @inject(tokens.repositories.users)
+    private readonly usersRepository: UsersRepository,
+  ) {}
 
   async execute(): Promise<ExportUsersDataUseCaseResponse> {
     const usersGenerator = this.usersRepository.streamAllUsers()

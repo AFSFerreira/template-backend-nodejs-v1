@@ -5,7 +5,9 @@ import type { GetElectionNoticeUseCaseResponse } from '@custom-types/use-cases/d
 import { getFiles } from '@services/get-files'
 import { MissingElectionNoticeFileError } from '@use-cases/errors/document-management/missing-election-notice-file-error'
 import fs from 'fs-extra'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class GetElectionNoticeUseCase {
   async execute(): Promise<GetElectionNoticeUseCaseResponse> {
     const files = await getFiles(ELECTION_NOTICE_FILE_NAME_PATTERN)

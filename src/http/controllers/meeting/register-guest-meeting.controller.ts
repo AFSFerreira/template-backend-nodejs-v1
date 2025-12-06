@@ -1,13 +1,14 @@
 import { registerGuestMeetingBodySchema } from '@schemas/meeting/register-guest-meeting-body-schema'
 import { registerGuestMeetingParamsSchema } from '@schemas/meeting/register-guest-meeting-params-schema'
-import { makeRegisterGuestMeetingUseCase } from '@use-cases/factories/meeting/make-register-guest-meeting-use-case'
+import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function registerGuestMeeting(request: FastifyRequest, reply: FastifyReply) {
   const { meetingId } = registerGuestMeetingParamsSchema.parse(request.params)
   const parsedBody = registerGuestMeetingBodySchema.parse(request.body)
 
-  const useCase = makeRegisterGuestMeetingUseCase()
+  const useCase = container.resolve(RegisterGuestMeetingUseCase)
 
   await useCase.execute({
     ...parsedBody,

@@ -5,9 +5,11 @@ import { prisma } from '@lib/prisma'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
 
+@injectable()
 export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
   async create(data: Prisma.AcademicPublicationUncheckedCreateInput) {
     const academicPublication = await prisma.academicPublication.create({

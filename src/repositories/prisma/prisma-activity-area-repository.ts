@@ -7,7 +7,9 @@ import type { Prisma } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 
+@injectable()
 export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   static buildStartsWithFilter(value: unknown) {
     if (!value) return undefined

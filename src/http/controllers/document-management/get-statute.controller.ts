@@ -1,10 +1,11 @@
 import path from 'node:path'
-import { makeGetStatuteUseCase } from '@factories/document-management/make-get-statute-use-case'
+import { GetStatuteUseCase } from '@use-cases/document-management/get-statute'
 import { mapExtensionToMimeType } from '@utils/mappers/map-mime-type'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function getStatute(_request: FastifyRequest, reply: FastifyReply) {
-  const useCase = makeGetStatuteUseCase()
+  const useCase = container.resolve(GetStatuteUseCase)
 
   const { filename, stream } = await useCase.execute()
 

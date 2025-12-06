@@ -1,12 +1,14 @@
 import { DIRECTOR_BOARD_WITH_USER_PRESENTER_KEY } from '@constants/presenters-constants'
 import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { getAllDirectorBoardSchema } from '@schemas/director-board/get-all-director-board-query-schema'
-import { makeGetAllDirectorBoardUseCase } from '@use-cases/factories/director-board/make-get-all-directive-corp-use-case'
+import { GetAllDirectorsBoard } from '@use-cases/director-board/get-all-directors-board'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
-export async function getAllDirectorBoard(request: FastifyRequest, reply: FastifyReply) {
+export async function getAllDirectorsBoard(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllDirectorBoardSchema.parse(request.query)
-  const useCase = makeGetAllDirectorBoardUseCase()
+
+  const useCase = container.resolve(GetAllDirectorsBoard)
 
   const { data, meta } = await useCase.execute(parsedQuery)
 

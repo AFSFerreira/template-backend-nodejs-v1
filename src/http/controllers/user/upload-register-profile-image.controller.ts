@@ -1,7 +1,8 @@
 import { profilePictureFileConfig } from '@constants/multipart-configuration-constants'
 import { imageSchema } from '@schemas/utils/generic-components/image-schema'
-import { makeUploadRegisterProfileImageUseCase } from '@use-cases/factories/user/make-upload-register-profile-image-use-case'
+import { UploadRegisterProfileImageUseCase } from '@use-cases/user/upload-register-profile-image'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function uploadRegisterProfileImage(request: FastifyRequest, reply: FastifyReply) {
   const filePart = await request.file(profilePictureFileConfig)
@@ -10,7 +11,7 @@ export async function uploadRegisterProfileImage(request: FastifyRequest, reply:
 
   const buffer = await filePart.toBuffer()
 
-  const useCase = makeUploadRegisterProfileImageUseCase()
+  const useCase = container.resolve(UploadRegisterProfileImageUseCase)
 
   const { fileName } = await useCase.execute({
     buffer,

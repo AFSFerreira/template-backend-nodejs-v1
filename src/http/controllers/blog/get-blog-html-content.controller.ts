@@ -1,11 +1,13 @@
 import { HTML_HEADER } from '@constants/header-constants'
-import { makeGetBlogHtmlContentUseCase } from '@factories/blog/make-get-blog-html-content-use-case'
 import { getBlogHtmlContentParamsSchema } from '@schemas/blog/get-blog-html-content-params-schema'
+import { GetBlogHTMLContentUseCase } from '@use-cases/blogs/get-blog-html-content'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function getBlogHtmlContent(request: FastifyRequest, reply: FastifyReply) {
   const parsedParams = getBlogHtmlContentParamsSchema.parse(request.params)
-  const useCase = makeGetBlogHtmlContentUseCase()
+
+  const useCase = container.resolve(GetBlogHTMLContentUseCase)
 
   const { htmlContent } = await useCase.execute(parsedParams)
 

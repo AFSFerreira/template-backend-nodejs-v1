@@ -5,18 +5,19 @@ import { PASSWORD_RESET_IF_USER_EXISTS } from '@messages/responses/user-response
 import { forgotPasswordBodySchema } from '@schemas/user/forgot-password-body-schema'
 import { forgotPasswordHtmlTemplate } from '@templates/forgot-password/forgot-password-html'
 import { forgotPasswordTextTemplate } from '@templates/forgot-password/forgot-password-text'
-import { makeSendEmailUseCase } from '@use-cases/factories/messaging/make-send-email-use-case'
-import { makeForgotPasswordUseCase } from '@use-cases/factories/user/make-forgot-password-use-case'
+import { SendEmailUseCase } from '@use-cases/messaging/send-email'
+import { ForgotPasswordUseCase } from '@use-cases/user/forgot-password'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function forgotPassword(request: FastifyRequest, reply: FastifyReply) {
   const { login } = forgotPasswordBodySchema.parse(request.body)
 
-  const useCase = makeForgotPasswordUseCase()
+  const useCase = container.resolve(ForgotPasswordUseCase)
 
   const { user, token } = await useCase.execute({ login })
 
-  const sendEmailUseCase = makeSendEmailUseCase()
+  const sendEmailUseCase = container.resolve(SendEmailUseCase)
 
   const emailInfo = {
     email: user.email,

@@ -2,10 +2,16 @@ import type {
   GetAllInstitutionsWithUsersUseCaseRequest,
   GetAllInstitutionsWithUsersUseCaseResponse,
 } from '@custom-types/use-cases/institution/get-all-institutions-with-user'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
+import { inject, injectable } from 'tsyringe'
 
+@injectable()
 export class GetAllInstitutionsWithUsersUseCase {
-  constructor(private readonly institutionsRepository: InstitutionsRepository) {}
+  constructor(
+    @inject(tokens.repositories.institutions)
+    private readonly institutionsRepository: InstitutionsRepository,
+  ) {}
 
   async execute(
     getAllInstitutionsWithUsersUseCaseInput: GetAllInstitutionsWithUsersUseCaseRequest,

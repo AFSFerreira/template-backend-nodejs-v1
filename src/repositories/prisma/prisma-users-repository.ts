@@ -14,9 +14,11 @@ import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
+import { injectable } from 'tsyringe'
 import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
+@injectable()
 export class PrismaUsersRepository implements UsersRepository {
   async create(data: CreateUserQuery) {
     const keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] = data.keyword

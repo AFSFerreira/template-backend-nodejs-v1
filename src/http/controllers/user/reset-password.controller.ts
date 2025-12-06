@@ -1,12 +1,13 @@
 import { PASSWORD_RESET_SUCCESSFUL } from '@messages/responses/user-responses'
 import { resetPasswordBodySchema } from '@schemas/user/reset-password-body-schema'
-import { makeResetPasswordUseCase } from '@use-cases/factories/user/make-reset-password-use-case'
+import { ResetPasswordUseCase } from '@use-cases/user/reset-password'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function resetPassword(request: FastifyRequest, reply: FastifyReply) {
   const { newPassword, token } = resetPasswordBodySchema.parse(request.body)
 
-  const useCase = makeResetPasswordUseCase()
+  const useCase = container.resolve(ResetPasswordUseCase)
 
   await useCase.execute({
     newPassword,

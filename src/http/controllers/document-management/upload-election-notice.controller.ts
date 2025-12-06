@@ -1,15 +1,16 @@
 import { DOCUMENTS_PATH } from '@constants/file-constants'
 import { electionNoticeMultipartFileConfig } from '@constants/multipart-configuration-constants'
-import { makeUploadElectionNoticeUseCase } from '@factories/document-management/make-upload-election-notice-use-case'
 import { documentSchema } from '@schemas/utils/generic-components/document-schema'
+import { UploadElectionNoticeUseCase } from '@use-cases/document-management/upload-election-notice'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { container } from 'tsyringe'
 
 export async function uploadElectionNotice(request: FastifyRequest, reply: FastifyReply) {
   const filePart = await request.file(electionNoticeMultipartFileConfig)
 
   const { filename } = documentSchema.parse(filePart)
 
-  const useCase = makeUploadElectionNoticeUseCase()
+  const useCase = container.resolve(UploadElectionNoticeUseCase)
 
   await useCase.execute({ filePart, baseFolder: DOCUMENTS_PATH, originalFilename: filename })
 

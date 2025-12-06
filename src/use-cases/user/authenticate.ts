@@ -1,5 +1,6 @@
 import type { AuthenticateUseCaseRequest, AuthenticateUseCaseResponse } from '@custom-types/use-cases/user/authenticate'
 import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings'
 import { MembershipStatusType, type User } from '@prisma/client'
 import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
@@ -10,13 +11,18 @@ import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { compare } from 'bcryptjs'
+import { inject, injectable } from 'tsyringe'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
 const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
 
+@injectable()
 export class AuthenticateUseCase {
   constructor(
+    @inject(tokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(tokens.repositories.authenticationAudits)
     private readonly AuthenticationAuditsRepository: AuthenticationAuditsRepository,
   ) {}
 
