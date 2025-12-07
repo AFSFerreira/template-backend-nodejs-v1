@@ -17,11 +17,15 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   ) {}
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
     const orderBy: Prisma.DirectorBoardOrderByWithRelationInput[] = [
-      {
-        DirectorPosition: {
-          precedence: query.orderBy.precedenceOrder,
-        },
-      },
+      ...(query?.orderBy?.precedenceOrder
+        ? [
+            {
+              DirectorPosition: {
+                precedence: query.orderBy.precedenceOrder,
+              },
+            },
+          ]
+        : []),
       { User: { fullName: 'asc' as OrderableType } },
       { id: 'asc' as OrderableType },
     ]

@@ -1,12 +1,9 @@
-import type { UpdateUserBodySchemaType } from '@custom-types/schemas/user/update-user-body-schema'
 import type { UserWithDetails } from '@custom-types/validator/user-with-details'
-import type { EducationLevelType } from '@prisma/client'
+import type { UpdateUserUseCaseRequestBody } from './update-user-use-case-request-body'
 
 export interface UpdateUserUseCaseRequest {
   publicId: string
-  data: Omit<UpdateUserBodySchemaType, 'user'> & {
-    user?: Omit<UpdateUserBodySchemaType['user'], 'educationLevel'> & { educationLevel?: EducationLevelType }
-  }
+  data: UpdateUserUseCaseRequestBody
 }
 
 export interface UpdateUserUseCaseResponse {

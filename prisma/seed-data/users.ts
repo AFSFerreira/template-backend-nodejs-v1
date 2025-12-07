@@ -211,6 +211,15 @@ const partialDummyUserData = {
   },
 }
 
+export const daniloInfo = {
+  ...partialDummyUserData,
+  receiveReports: false,
+  identityDocument: `200.000.000-00`,
+  fullName: 'DANILO ALBERGARIA',
+  username: 'douglas.albergaria',
+  email: 'albergaria@gmail.com',
+}
+
 export const dummyUserInfoArray: PartialUserCreateInput[] = [
   {
     ...partialDummyUserData,
@@ -220,14 +229,7 @@ export const dummyUserInfoArray: PartialUserCreateInput[] = [
     username: 'alicia123',
     email: 'alicia@gmail.com',
   },
-  {
-    ...partialDummyUserData,
-    receiveReports: false,
-    identityDocument: `200.000.000-00`,
-    fullName: 'DANILO ALBERGARIA',
-    username: 'douglas.albergaria',
-    email: 'albergaria@gmail.com',
-  },
+  daniloInfo,
 ]
 
 export const dummyUserDirectorBoardInfoArray: PartialUserCreateInput[] = []

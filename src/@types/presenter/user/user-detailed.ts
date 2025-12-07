@@ -5,30 +5,30 @@ export interface HTTPUserDetails {
   fullName: string
   email: string
   username: string
-  role: UserRoleType
+  role: UserRoleType | null
   birthdate: string | null | undefined
   linkLattes: string | null
   linkGoogleScholar: string | null
   linkResearcherId: string | null
   orcidNumber: string | null
-  institutionName: string
+  institutionName?: string
   departmentName: string | null
   institutionComplement: string | null
-  occupation: OccupationType
+  occupation: OccupationType | null
   educationLevel: EducationLevelType
   identityType: IdentityType
   identityDocument: string
   emailIsPublic: boolean
-  astrobiologyOrRelatedStartYear: number
+  astrobiologyOrRelatedStartYear: number | null
   interestDescription: string
   receiveReports: boolean
-  publicInformation: string
-  keywords: string[]
-  mainActivityArea: string
-  subActivityArea: string
-  address: HTTPAddress
-  enrolledCourse: HTTPEnrolledCourse
-  academicPublications: HTTPAcademicPublications[]
+  publicInformation: string | null
+  keywords?: string[]
+  mainActivityArea?: string
+  subActivityArea?: string
+  address?: HTTPAddress
+  enrolledCourse?: HTTPEnrolledCourse
+  academicPublications?: HTTPAcademicPublications[]
 }
 
 export interface HTTPAddress {
@@ -39,7 +39,7 @@ export interface HTTPAddress {
   city: string | undefined
   state: string | undefined
   country: string | undefined
-  complement?: string
+  complement?: string | null
 }
 
 interface HTTPEnrolledCourse {
@@ -72,5 +72,5 @@ interface HTTPDirectorBoardInfo {
 }
 
 export interface HTTPUserWithDetails extends HTTPUserDetails {
-  directorBoardInfo: HTTPDirectorBoardInfo | null
+  directorBoardInfo?: HTTPDirectorBoardInfo | null
 }

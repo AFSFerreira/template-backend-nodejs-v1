@@ -22,7 +22,6 @@ export interface UsersRepository {
   findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
   findByIdentityDocument: (query: FindByIdentityDocumentQuery) => Promise<User | null>
   findConflictingUser: (query: FindConflictingUserQuery) => Promise<User | null>
-  listAllUsers: () => Promise<UserWithDetails[]>
   streamAllUsers: (batchSize?: number) => AsyncIterable<UserWithDetails>
   listAllUsersDetailed: (
     query?: ListAllUsersDetailedQuery,

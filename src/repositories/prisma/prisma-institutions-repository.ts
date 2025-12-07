@@ -92,9 +92,14 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
 
   async listAllInstitutionsWithUsersCount(query?: ListAllInstitutionsWithUsersQuery) {
     const orderBy: Prisma.InstitutionOrderByWithRelationInput[] = [
-      {
-        User: { _count: query.orderBy.usersCount },
-      },
+      ...(query?.orderBy?.usersCount
+        ? [
+            {
+              User: { _count: query.orderBy.usersCount },
+            },
+          ]
+        : []),
+      { id: 'asc' },
     ]
 
     const include: Prisma.InstitutionInclude = {
@@ -104,7 +109,10 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     }
 
     if (!query) {
-      const institutions = await this.dbContext.client.institution.findMany({ orderBy, include })
+      const institutions = await this.dbContext.client.institution.findMany({
+        orderBy: [{ User: { _count: 'desc' } }, { id: 'asc' }],
+        include,
+      })
 
       const formattedInstitutions = institutions.map((institution) => ({
         name: institution.name,

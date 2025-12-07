@@ -6,6 +6,7 @@ import type {
   UploadRegisterProfileImageUseCaseResponse,
 } from '@custom-types/use-cases/user/upload-register-profile-image'
 import { saveCompressedImage } from '@services/save-compressed-image'
+import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
 import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
 import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { injectable } from 'tsyringe'
@@ -13,9 +14,15 @@ import { injectable } from 'tsyringe'
 @injectable()
 export class UploadRegisterProfileImageUseCase {
   async execute({
-    buffer,
-    sizeInBytes,
+    filePart,
   }: UploadRegisterProfileImageUseCaseRequest): Promise<UploadRegisterProfileImageUseCaseResponse> {
+    if (!filePart) {
+      throw new MissingMultipartContentFile()
+    }
+
+    const buffer = await filePart.toBuffer()
+    const sizeInBytes = buffer.length
+
     if (sizeInBytes > MAX_IMAGE_FILE_SIZE_BYTES) {
       throw new ImageTooBigError()
     }

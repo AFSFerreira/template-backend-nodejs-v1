@@ -13,10 +13,11 @@ import type { AddressCountryRepository } from '@repositories/address-countries-r
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
-import { getAllInstitutions } from '@services/get-all-institutions'
+import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
+import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { persistUserProfileImage } from '@services/persist-user-profile-image'
 import { validateActivityAreas } from '@services/validate-activity-areas'
+import { validateInstitutionName } from '@services/validate-institution-name'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
@@ -85,7 +86,10 @@ export class RegisterUseCase {
           throw new UserAlreadyExistsError()
         }
 
-        if (!lowLevelEducationEnumSchema.safeParse(registerUseCaseInput.user.educationLevel).success) {
+        if (
+          isRegisterUserHighLevelStudentEducation(registerUseCaseInput) ||
+          isRegisterUserHighLevelEducation(registerUseCaseInput)
+        ) {
           const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
             area: academicPub.area,
             type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
@@ -107,18 +111,15 @@ export class RegisterUseCase {
             activityAreas,
             activityAreasRepository: this.activityAreasRepository,
           })
-        }
 
-        const institutionsNames = await getAllInstitutions({
-          institutionsRepository: this.institutionsRepository,
-          query: {
-            name: registerUseCaseInput.institution.name,
-            limit: Number.MAX_SAFE_INTEGER,
-          },
-        })
+          const isValidInstitution = await validateInstitutionName({
+            institution: registerUseCaseInput.institution.name,
+            institutionsRepository: this.institutionsRepository,
+          })
 
-        if (!institutionsNames.includes(registerUseCaseInput.institution.name)) {
-          throw new InvalidInstitutionName()
+          if (!isValidInstitution) {
+            throw new InvalidInstitutionName()
+          }
         }
 
         const addressCountry = await this.addressCountriesRepository.findOrCreate(registerUseCaseInput.address.country)
@@ -132,24 +133,21 @@ export class RegisterUseCase {
         const { state, country, ...filteredAddressInfo } = registerUseCaseInput.address
 
         const user = await this.usersRepository.create({
+          ...registerUseCaseInput,
           user: {
             ...filteredUserInfo,
             identityType: identity.identityType,
             identityDocument: identity.identityDocument,
-            profileImage: profileImagePersistSuccess
-              ? registerUseCaseInput.user.profileImage
-              : DEFAULT_PROFILE_IMAGE_NAME,
+            profileImage:
+              profileImagePersistSuccess && registerUseCaseInput.user.profileImage
+                ? registerUseCaseInput.user.profileImage
+                : DEFAULT_PROFILE_IMAGE_NAME,
             passwordHash,
           },
           address: {
             ...filteredAddressInfo,
             stateId: addressState.id,
           },
-          institution: registerUseCaseInput.institution,
-          activityArea: registerUseCaseInput.activityArea,
-          academicPublication: registerUseCaseInput.academicPublication,
-          enrolledCourse: registerUseCaseInput.enrolledCourse,
-          keyword: registerUseCaseInput.keyword,
         })
 
         return user

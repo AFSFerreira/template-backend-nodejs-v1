@@ -177,3 +177,11 @@ export const MEMBERSHIP_STATUS_NOT_PENDING: IApiError = {
     message: 'O status de membro do usuário não está pendente',
   },
 }
+
+export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiError = {
+  status: 401,
+  body: {
+    code: 'PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER',
+    message: 'A recuperação de senha não foi solicitada pelo usuário',
+  },
+}

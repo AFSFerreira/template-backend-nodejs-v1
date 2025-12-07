@@ -28,7 +28,7 @@ function hasPipe(value: unknown) {
   return isNotNull && isObject && hasPipeProperty && hasPipeFunction
 }
 
-function toSerializable(value: unknown, alreadySeen: WeakSet<object>) {
+function toSerializable(value: unknown, alreadySeen: WeakSet<object>): unknown {
   if (value === null || value === undefined) return value
   if (typeof value === 'bigint') return value.toString()
   if (value instanceof Prisma.Decimal) return value.toString()

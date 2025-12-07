@@ -1,0 +1,14 @@
+import type { EducationLevelType } from '@prisma/client'
+import {
+  HIGH_LEVEL_EDUCATION_TYPE_ARRAY,
+  HIGH_LEVEL_STUDENT_EDUCATION_TYPE_ARRAY,
+  LOW_LEVEL_EDUCATION_TYPE_ARRAY,
+} from './arrays'
+
+export const LOW_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(LOW_LEVEL_EDUCATION_TYPE_ARRAY)
+
+export const HIGH_LEVEL_EDUCATION_STUDENT_TYPE_SET = new Set<EducationLevelType>(
+  HIGH_LEVEL_STUDENT_EDUCATION_TYPE_ARRAY,
+)
+
+export const HIGH_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(HIGH_LEVEL_EDUCATION_TYPE_ARRAY)

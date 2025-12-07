@@ -6,5 +6,5 @@ export interface ReviewMembershipStatusUseCaseRequest extends ReviewMembershipSt
 }
 
 export interface ReviewMembershipStatusUseCaseResponse {
-  user?: UserWithDetails
+  user: UserWithDetails | null
 }

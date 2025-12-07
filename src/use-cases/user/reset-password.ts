@@ -8,6 +8,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
+import { PasswordRecoveryNotRequestedByUserError } from '@use-cases/errors/user/password-recovery-not-requested-by-user-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/guards/ensure'
 import { hashToken } from '@utils/tokens/hash-token'
@@ -34,6 +35,10 @@ export class ResetPasswordUseCase {
         value: await this.usersRepository.validateUserToken(tokenHash),
         error: new UserNotFoundError(),
       })
+
+      if (!userFound.recoveryPasswordTokenExpiresAt) {
+        throw new PasswordRecoveryNotRequestedByUserError()
+      }
 
       if (userFound.recoveryPasswordTokenExpiresAt < new Date()) {
         throw new InvalidTokenError()

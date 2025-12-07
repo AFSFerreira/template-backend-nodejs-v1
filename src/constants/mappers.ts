@@ -24,7 +24,7 @@ export const OPERATION_TO_SYMBOL_MAP = new Map<string, string>([
   ['gte', '>='],
 ])
 
-export const STATUS_FILTER_MAP = new Map<string, Record<string, Date>>([
+export const STATUS_FILTER_MAP = new Map<string, Record<string, Date> | undefined>([
   ['ALL', undefined],
   ['PENDING', { gte: new Date() }],
   ['FINISHED', { lte: new Date() }],

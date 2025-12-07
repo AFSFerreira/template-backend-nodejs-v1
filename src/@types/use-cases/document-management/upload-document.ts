@@ -1,7 +1,7 @@
 import type { MultipartFile } from '@fastify/multipart'
 
 export interface UploadDocumentUseCaseRequest {
-  filePart: MultipartFile
+  filePart?: MultipartFile
   baseFolder: string
   originalFilename: string
 }

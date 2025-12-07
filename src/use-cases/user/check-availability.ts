@@ -17,6 +17,8 @@ export class CheckAvailabilityUseCase {
   async execute(
     checkAvailabilityUseCaseInput: CheckAvailabilityUseCaseRequest,
   ): Promise<CheckAvailabilityUseCaseResponse> {
+    const identity = checkAvailabilityUseCaseInput.identity
+
     const checks: Array<[string, () => Promise<boolean>]> = [
       [
         'email',
@@ -34,21 +36,23 @@ export class CheckAvailabilityUseCase {
             username: checkAvailabilityUseCaseInput.username,
           })),
       ],
-      [
-        'identity',
-        async () =>
-          !!(await this.usersRepository.findUniqueBy({
-            identityType_identityDocument: {
-              identityType: checkAvailabilityUseCaseInput.identity.identityType,
-              identityDocument: checkAvailabilityUseCaseInput.identity.identityDocument,
-            },
-          })),
-      ],
+      ...(identity
+        ? [
+            [
+              'identity',
+              async () =>
+                !!(await this.usersRepository.findUniqueBy({
+                  identityType_identityDocument: {
+                    identityType: identity.identityType,
+                    identityDocument: identity.identityDocument,
+                  },
+                })),
+            ] as [string, () => Promise<boolean>],
+          ]
+        : []),
     ]
 
-    const activeChecks = checks.filter(([key, _]) => {
-      return !!checkAvailabilityUseCaseInput[key as keyof CheckAvailabilityUseCaseResponse]
-    })
+    const activeChecks = checks.filter(([key, _]) => key in checkAvailabilityUseCaseInput)
 
     if (activeChecks.length === 0) {
       throw new MissingCheckAvailabilitiesInput()

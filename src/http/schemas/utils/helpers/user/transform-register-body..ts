@@ -16,14 +16,15 @@ import {
 export function transformRegisterBodySchema(data: EducationLevelTransformData, ctx: RefinementCtx) {
   const educationLevel = data.user.educationLevel
 
+  // NOTE: A ordem de verificação dos schemas importa!
   const targetSchema = getTrueMapping<ZodType>([
-    {
-      expression: highLevelEducationEnumSchema.safeParse(educationLevel).success,
-      value: highLevelEducationRegisterBodySchema,
-    },
     {
       expression: highLevelStudentEnumSchema.safeParse(educationLevel).success,
       value: highLevelStudentRegisterBodySchema,
+    },
+    {
+      expression: highLevelEducationEnumSchema.safeParse(educationLevel).success,
+      value: highLevelEducationRegisterBodySchema,
     },
     {
       expression: lowLevelEducationEnumSchema.safeParse(educationLevel).success,

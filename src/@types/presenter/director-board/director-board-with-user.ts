@@ -3,6 +3,6 @@ export interface HTTPDirectorBoardWithUser {
   fullName: string
   directorBoardProfileImage: string
   position: string
-  linkLattes?: string
+  linkLattes: string | null
   aboutMe: string
 }

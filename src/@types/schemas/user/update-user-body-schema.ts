@@ -1,10 +1,8 @@
-import type { highLevelEducationUpdateBodySchema } from '@schemas/utils/components/user/high-level-education-update-body-schema'
-import type { highLevelStudentUpdateBodySchema } from '@schemas/utils/components/user/high-level-student-update-body-schema'
-import type { lowLevelEducationUpdateBodySchema } from '@schemas/utils/components/user/low-level-education-update-body-schema'
-import type z from 'zod'
+import type { UpdateUserHighLevelEducationType } from '../utils/update-user-high-level-education-type'
+import type { UpdateUserHighLevelStudentEducationType } from '../utils/update-user-high-level-student-education-type'
+import type { UpdateUserLowLevelEducationType } from '../utils/update-user-low-level-education-type'
 
-type LowLevelType = z.infer<typeof lowLevelEducationUpdateBodySchema>
-type HighLevelStudentType = z.infer<typeof highLevelStudentUpdateBodySchema>
-type HighLevelEducationType = z.infer<typeof highLevelEducationUpdateBodySchema>
-
-export type UpdateUserBodySchemaType = LowLevelType | HighLevelStudentType | HighLevelEducationType
+export type UpdateUserBodySchemaType =
+  | UpdateUserLowLevelEducationType
+  | UpdateUserHighLevelStudentEducationType
+  | UpdateUserHighLevelEducationType

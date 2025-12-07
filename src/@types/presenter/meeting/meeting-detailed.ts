@@ -12,6 +12,6 @@ interface HTTPMeetingPaymentInfo {
 
 export interface HTTPMeetingWithDetails extends HTTPMeeting {
   location: string
-  meetingPaymentInfo: HTTPMeetingPaymentInfo
+  meetingPaymentInfo?: HTTPMeetingPaymentInfo
   meetingDates: Date[]
 }

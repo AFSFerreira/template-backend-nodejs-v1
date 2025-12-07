@@ -1,6 +1,6 @@
 import { env } from '@env/index'
-import ms from 'ms'
 import type SMTPTransport from 'nodemailer/lib/smtp-transport'
+import { SMTP_CONNECTION_TIMEOUT, SMTP_GREETING_TIMEOUT, SMTP_SOCKET_TIMEOUT } from './timing-constants'
 
 export const transporterOptions: SMTPTransport.Options = {
   host: env.SMTP_HOST,
@@ -10,7 +10,7 @@ export const transporterOptions: SMTPTransport.Options = {
     user: env.SMTP_EMAIL,
     pass: env.SMTP_PASSWORD,
   },
-  connectionTimeout: ms('10s'),
-  greetingTimeout: ms('5s'),
-  socketTimeout: ms('20s'),
+  connectionTimeout: SMTP_CONNECTION_TIMEOUT,
+  greetingTimeout: SMTP_GREETING_TIMEOUT,
+  socketTimeout: SMTP_SOCKET_TIMEOUT,
 }

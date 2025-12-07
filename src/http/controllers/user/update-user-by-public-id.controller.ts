@@ -1,4 +1,5 @@
 import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
+import type { UpdateUserBodySchemaType } from '@custom-types/schemas/user/update-user-body-schema'
 import { UserPresenter } from '@presenters/user-presenter'
 import { updateUserByPublicIdBodySchema } from '@schemas/user/update-user-by-public-id-body-schema'
 import { updateUserByPublicIdParamsSchema } from '@schemas/user/update-user-by-public-id-params-schema'
@@ -8,7 +9,7 @@ import { container } from 'tsyringe'
 
 export async function updateUserByPublicId(request: FastifyRequest, reply: FastifyReply) {
   const { publicId } = updateUserByPublicIdParamsSchema.parse(request.params)
-  const parsedBody = updateUserByPublicIdBodySchema.parse(request.body)
+  const parsedBody = updateUserByPublicIdBodySchema.parse(request.body) as UpdateUserBodySchemaType
 
   const useCase = container.resolve(UpdateUserUseCase)
 

@@ -6,7 +6,7 @@ export interface FlattenedUser {
   birthDate: string
   institutionName: string
   departmentName: string
-  occupation: string
+  occupation: string | null
   educationLevel: string
   membershipStatus: string
   identityType: string
@@ -14,8 +14,8 @@ export interface FlattenedUser {
   activityAreaDescription: string
   subActivityAreaDescription: string
   interestDescription: string
-  publicInformation: string
-  astrobiologyOrRelatedStartYear: number
+  publicInformation: string | null
+  astrobiologyOrRelatedStartYear: number | null
   emailIsPublic: boolean
   receiveReports: boolean
   lastLogin: string

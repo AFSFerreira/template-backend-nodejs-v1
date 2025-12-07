@@ -14,6 +14,10 @@ import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
+import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
+import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
+import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
+import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import type { UsersRepository } from '../users-repository'
@@ -26,41 +30,21 @@ export class PrismaUsersRepository implements UsersRepository {
     private readonly dbContext: DatabaseContext,
   ) {}
   async create(data: CreateUserQuery) {
-    const keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] = data.keyword
-      ? {
-          connectOrCreate: data.keyword.map((value: string) => ({
-            where: { value },
-            create: { value },
-          })),
-        }
-      : undefined
+    let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined = undefined
 
-    const academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] = data.academicPublication
-      ? {
-          create: data.academicPublication.map((academicPublication) => {
-            const { area, authors, ...filteredAcademicPublicationData } = academicPublication
-            return {
-              ...filteredAcademicPublicationData,
-              AcademicPublicationAuthors: {
-                create: authors.map((author) => ({
-                  name: author,
-                })),
-              },
-              ActivityArea: {
-                connect: {
-                  type_area: {
-                    area,
-                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                  },
-                },
-              },
-            }
-          }),
-        }
-      : undefined
+    let academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] | undefined = undefined
 
-    const enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] = data.enrolledCourse
-      ? {
+    let enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] | undefined = undefined
+
+    let institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] | undefined = undefined
+
+    let activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] | undefined = undefined
+
+    let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined = undefined
+
+    if (isRegisterUserHighLevelEducation(data)) {
+      if (isRegisterUserHighLevelStudentEducation(data)) {
+        enrolledCourseCreateData = {
           create: {
             ...data.enrolledCourse,
             startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
@@ -68,38 +52,62 @@ export class PrismaUsersRepository implements UsersRepository {
             scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
           },
         }
-      : undefined
+      }
 
-    const institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] = data.institution
-      ? {
-          connectOrCreate: {
-            create: { name: data.institution.name },
-            where: { name: data.institution.name },
-          },
-        }
-      : undefined
+      keywordsConnectOrCreateData = {
+        connectOrCreate: data.keyword.map((value: string) => ({
+          where: { value },
+          create: { value },
+        })),
+      }
 
-    const activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] = data.activityArea
-      ? {
-          connect: {
-            type_area: {
-              area: data.activityArea.mainActivityArea,
-              type: ActivityAreaType.AREA_OF_ACTIVITY,
+      academicPublicationCreateData = {
+        create: data.academicPublication.map((academicPublication) => {
+          const { area, authors, ...filteredAcademicPublicationData } = academicPublication
+          return {
+            ...filteredAcademicPublicationData,
+            AcademicPublicationAuthors: {
+              create: authors.map((author) => ({
+                name: author,
+              })),
             },
-          },
-        }
-      : undefined
-
-    const subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] = data.activityArea
-      ? {
-          connect: {
-            type_area: {
-              area: data.activityArea.subActivityArea,
-              type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+            ActivityArea: {
+              connect: {
+                type_area: {
+                  area,
+                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                },
+              },
             },
+          }
+        }),
+      }
+
+      institutionConnectOrCreateData = {
+        connectOrCreate: {
+          create: { name: data.institution.name },
+          where: { name: data.institution.name },
+        },
+      }
+
+      activityAreaConnectData = {
+        connect: {
+          type_area: {
+            area: data.activityArea.mainActivityArea,
+            type: ActivityAreaType.AREA_OF_ACTIVITY,
           },
-        }
-      : undefined
+        },
+      }
+
+      subActivityAreaConnectData = {
+        connect: {
+          type_area: {
+            area: data.activityArea.subActivityArea,
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          },
+        },
+      }
+    }
 
     const { stateId, ...filteredAddressInfo } = data.address
     const addressCreateData: Prisma.UserCreateInput['Address'] = {
@@ -211,16 +219,6 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  // TODO: Apagar essa bomba atômica depois
-  async listAllUsers() {
-    const users = await this.dbContext.client.user.findMany({
-      include: userWithDetails.include,
-      orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
-    })
-
-    return users
-  }
-
   async *streamAllUsers(batchSize = 500) {
     let cursor: number | undefined = undefined
 
@@ -237,7 +235,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
       for (const user of batch) yield user
 
-      cursor = batch.at(-1).id
+      cursor = batch.at(-1)?.id
     }
   }
 
@@ -262,8 +260,8 @@ export class PrismaUsersRepository implements UsersRepository {
         fullName: userInfo.fullName,
         email: userInfo.email,
         emailIsPublic: userInfo.emailIsPublic,
-        institutionName: userInfo.Institution.name,
-        state: userInfo.Address.State.name,
+        institutionName: userInfo.Institution?.name,
+        state: userInfo.Address?.State.name,
       }))
 
       return {
@@ -325,8 +323,8 @@ export class PrismaUsersRepository implements UsersRepository {
         fullName: userInfo.fullName,
         email: userInfo.email,
         emailIsPublic: userInfo.emailIsPublic,
-        institutionName: userInfo.Institution.name,
-        state: userInfo.Address.State.name,
+        institutionName: userInfo.Institution?.name,
+        state: userInfo.Address?.State.name,
       }))
 
       return {
@@ -379,88 +377,99 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async update({ id, data }: UpdateUserQuery) {
-    const keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] = data.keyword
-      ? {
-          set: [],
+    let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined = undefined
 
-          connectOrCreate: data.keyword.map((value: string) => ({
-            where: { value },
-            create: { value },
-          })),
-        }
-      : undefined
+    let academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] | undefined = undefined
 
-    const academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] = data.academicPublication
-      ? {
-          deleteMany: {},
+    let enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] | undefined = undefined
 
-          create: data.academicPublication.map((academicPublication) => {
-            const { area, authors, ...filteredAcademicPublicationData } = academicPublication
+    let institutionConnectData: Prisma.UserUpdateInput['Institution'] | undefined = undefined
 
-            return {
-              ...filteredAcademicPublicationData,
+    let activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] | undefined = undefined
 
-              AcademicPublicationAuthors: {
-                create: authors.map((author) => ({
-                  name: author,
-                })),
-              },
+    let subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] | undefined = undefined
 
-              ActivityArea: {
-                connect: {
-                  type_area: {
-                    area,
-                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                  },
+    if (isUpdateUserHighLevelStudentEducation(data)) {
+      if (isUpdateUserHighLevelEducation(data)) {
+        enrolledCourseUpsertData = data.enrolledCourse
+          ? {
+              upsert: {
+                create: {
+                  ...data.enrolledCourse,
+                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+                },
+                update: {
+                  ...data.enrolledCourse,
+                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
                 },
               },
             }
-          }),
-        }
-      : undefined
+          : undefined
+      }
 
-    const enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] = data.enrolledCourse
-      ? {
-          upsert: {
-            create: {
-              ...data.enrolledCourse,
-              scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-            },
-            update: {
-              ...data.enrolledCourse,
-              scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-            },
-          },
-        }
-      : undefined
+      keywordsConnectOrCreateData = data.keyword
+        ? {
+            set: [],
+            connectOrCreate: data.keyword.map((value: string) => ({
+              where: { value },
+              create: { value },
+            })),
+          }
+        : undefined
 
-    const institutionConnectData: Prisma.UserUpdateInput['Institution'] = data.institution
-      ? {
-          connect: { name: data.institution.name },
-        }
-      : undefined
+      academicPublicationCreateData = data.academicPublication
+        ? {
+            deleteMany: {},
+            create: data.academicPublication.map((academicPublication) => {
+              const { area, authors, ...filteredAcademicPublicationData } = academicPublication
+              return {
+                ...filteredAcademicPublicationData,
+                AcademicPublicationAuthors: {
+                  create: authors.map((author) => ({
+                    name: author,
+                  })),
+                },
+                ActivityArea: {
+                  connect: {
+                    type_area: {
+                      area,
+                      type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                    },
+                  },
+                },
+              }
+            }),
+          }
+        : undefined
 
-    const activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] = data.activityArea
-      ? {
-          connect: {
-            type_area: {
-              area: data.activityArea.mainActivityArea,
-              type: ActivityAreaType.AREA_OF_ACTIVITY,
-            },
-          },
-        }
-      : undefined
+      institutionConnectData = data.institution
+        ? {
+            connect: { name: data.institution.name },
+          }
+        : undefined
 
-    const subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] = data.activityArea
-      ? {
-          connect: {
-            type_area: {
-              area: data.activityArea.subActivityArea,
-              type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      activityAreaConnectData = data.activityArea
+        ? {
+            connect: {
+              type_area: {
+                area: data.activityArea.mainActivityArea,
+                type: ActivityAreaType.AREA_OF_ACTIVITY,
+              },
             },
-          },
-        }
-      : undefined
+          }
+        : undefined
+
+      subActivityAreaConnectData = data.activityArea
+        ? {
+            connect: {
+              type_area: {
+                area: data.activityArea.subActivityArea,
+                type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+              },
+            },
+          }
+        : undefined
+    }
 
     const addressUpsertData: Prisma.UserUpdateInput['Address'] = data.address
       ? {
@@ -475,8 +484,6 @@ export class PrismaUsersRepository implements UsersRepository {
       where: { id },
       data: {
         ...data.user,
-        emailIsPublic: data.user.emailIsPublic ?? false,
-        receiveReports: data.user.receiveReports ?? false,
         Address: addressUpsertData,
         EnrolledCourse: enrolledCourseUpsertData,
         Institution: institutionConnectData,

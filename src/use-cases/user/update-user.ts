@@ -11,9 +11,12 @@ import type { AddressCountryRepository } from '@repositories/address-countries-r
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { getAllInstitutions } from '@services/get-all-institutions'
+import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
+import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validate-activity-areas'
+import { validateInstitutionName } from '@services/validate-institution-name'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
+import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { ensureExists } from '@utils/guards/ensure'
@@ -66,12 +69,16 @@ export class UpdateUserUseCase {
             username: data.user.username,
           })
 
-          if (userConflictingUpdateInfo.email === data.user.email) {
-            throw new UserWithSameEmail()
-          }
+          if (userConflictingUpdateInfo) {
+            if (userConflictingUpdateInfo.email === data.user.email) {
+              throw new UserWithSameEmail()
+            }
 
-          if (userConflictingUpdateInfo.username === data.user.username) {
-            throw new UserWithSameUsername()
+            if (userConflictingUpdateInfo.username === data.user.username) {
+              throw new UserWithSameUsername()
+            }
+
+            throw new UserAlreadyExistsError()
           }
         }
 
@@ -99,45 +106,44 @@ export class UpdateUserUseCase {
         }
       }
 
-      if (data.academicPublication) {
-        const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
-          area: academicPub.area,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        }))
+      if (isUpdateUserHighLevelStudentEducation(data) || isUpdateUserHighLevelEducation(data)) {
+        if (data.academicPublication) {
+          const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
+            area: academicPub.area,
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          }))
 
-        const activityAreas = [
-          ...academicPublicationsActivityAreas,
-          ...(data.activityArea
-            ? [
-                {
-                  area: data.activityArea.mainActivityArea,
-                  type: ActivityAreaType.AREA_OF_ACTIVITY,
-                },
-                {
-                  area: data.activityArea.subActivityArea,
-                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                },
-              ]
-            : []),
-        ]
+          const activityAreas = [
+            ...academicPublicationsActivityAreas,
+            ...(data.activityArea
+              ? [
+                  {
+                    area: data.activityArea.mainActivityArea,
+                    type: ActivityAreaType.AREA_OF_ACTIVITY,
+                  },
+                  {
+                    area: data.activityArea.subActivityArea,
+                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                  },
+                ]
+              : []),
+          ]
 
-        await validateActivityAreas({
-          activityAreas,
-          activityAreasRepository: this.activityAreasRepository,
-        })
-      }
+          await validateActivityAreas({
+            activityAreas,
+            activityAreasRepository: this.activityAreasRepository,
+          })
+        }
 
-      if (data.institution.name) {
-        const institutionsNames = await getAllInstitutions({
-          institutionsRepository: this.institutionsRepository,
-          query: {
-            name: data.institution.name,
-            limit: Number.MAX_SAFE_INTEGER,
-          },
-        })
+        if (data.institution) {
+          const isValidInstitution = await validateInstitutionName({
+            institution: data.institution.name,
+            institutionsRepository: this.institutionsRepository,
+          })
 
-        if (!institutionsNames.includes(data.institution.name)) {
-          throw new InvalidInstitutionName()
+          if (!isValidInstitution) {
+            throw new InvalidInstitutionName()
+          }
         }
       }
 

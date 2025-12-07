@@ -1,3 +1,3 @@
-export function truncateDate(date: Date): string {
-  return date.toISOString().split('T')[0]
+export function truncateDate(date: Date | null): string {
+  return date ? date.toISOString().split('T')[0] : ''
 }

@@ -9,14 +9,9 @@ export async function uploadRegisterProfileImage(request: FastifyRequest, reply:
 
   imageSchema.parse(filePart)
 
-  const buffer = await filePart.toBuffer()
-
   const useCase = container.resolve(UploadRegisterProfileImageUseCase)
 
-  const { fileName } = await useCase.execute({
-    buffer,
-    sizeInBytes: buffer.length,
-  })
+  const { fileName } = await useCase.execute({ filePart })
 
   return await reply.status(201).send({
     data: { profileImage: fileName },

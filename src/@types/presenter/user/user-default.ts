@@ -13,13 +13,13 @@ export interface HTTPUser {
   orcidNumber: string | null
   departmentName: string | null
   institutionComplement: string | null
-  occupation: OccupationType
+  occupation: OccupationType | null
   educationLevel: EducationLevelType
   identityType: IdentityType
   identityDocument: string
   emailIsPublic: boolean
-  astrobiologyOrRelatedStartYear: number
+  astrobiologyOrRelatedStartYear: number | null
   interestDescription: string
   receiveReports: boolean
-  publicInformation: string
+  publicInformation: string | null
 }

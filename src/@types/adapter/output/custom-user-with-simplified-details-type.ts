@@ -4,6 +4,6 @@ export interface CustomUserWithSimplifiedDetails {
   fullName: string
   email: string
   emailIsPublic: boolean
-  state: string
-  institutionName: string
+  state?: string
+  institutionName?: string
 }

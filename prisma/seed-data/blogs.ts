@@ -9,9 +9,7 @@ import {
   subActivityAreasConnection7,
 } from './activity-areas'
 import { blogSearchContent1, blogSearchContent2, blogSearchContent3 } from './blog-contents'
-import { dummyUserInfoArray } from './users'
-
-const daniloInfo = dummyUserInfoArray.find((director) => director.fullName.toLowerCase() === 'danilo albergaria')
+import { daniloInfo } from './users'
 
 export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
   {

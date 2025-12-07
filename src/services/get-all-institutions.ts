@@ -7,7 +7,9 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
   const limit = query.limit ?? 10
   const page = query.page ?? 1
 
-  const allInstitutions = new Set<string>()
+  // NOTE: Feito com listas porque o uso de conjuntos
+  // não permitiria uma paginação sob o array de maneira determinística:
+  const allInstitutions = new Array<string>()
 
   const institutionsRequestUrl = universityName
     ? `${UNIVERSITIES_API}?name_contains=${universityName}`
@@ -21,7 +23,12 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
       ? allApiInstitutions.filter((institution) => institution.name.toUpperCase().trim().includes(universityName))
       : allApiInstitutions
 
-    filteredInstitutions.forEach((institution) => allInstitutions.add(institution.name.toUpperCase()))
+    filteredInstitutions.forEach((institution) => {
+      const formattedName = institution.name.trim().toUpperCase()
+      if (allInstitutions.includes(formattedName)) return
+
+      allInstitutions.push(formattedName)
+    })
   }
 
   const allSystemInstitutions = await institutionsRepository.listAllInstitutionsNames({
@@ -29,7 +36,13 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
     limit,
     page,
   })
-  allSystemInstitutions.data.forEach((institution) => allInstitutions.add(institution))
 
-  return Array.from(allInstitutions)
+  allSystemInstitutions.data.forEach((institution) => {
+    const formattedName = institution.trim().toUpperCase()
+    if (allInstitutions.includes(formattedName)) return
+
+    allInstitutions.push(formattedName)
+  })
+
+  return allInstitutions
 }

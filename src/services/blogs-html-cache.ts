@@ -1,4 +1,4 @@
-import { BLOG_HTML_CACHE_TTL } from '@constants/redis-configuration-constants'
+import { BLOG_HTML_CACHE_TTL } from '@constants/timing-constants'
 import type { IGetBlogHTMLCached, ISetBlogHTMLCache } from '@custom-types/services/blogs-html-cache'
 import { logger } from '@lib/logger'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings'

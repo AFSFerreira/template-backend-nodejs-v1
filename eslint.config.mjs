@@ -50,6 +50,7 @@ export default [
       "@typescript-eslint/prefer-nullish-coalescing": "off",
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-non-null-assertion": "error",
       "no-dupe-class-members": "off",
 
       "no-console": "error",

@@ -1,8 +1,9 @@
+import type { AddressStateFindOrCreateQuery } from '@custom-types/repositories/address-state/address-state-find-or-create-query'
 import type { ListAllAddressStateQuery } from '@custom-types/repositories/address-state/list-all-address-state-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, UserRoleType, type Prisma } from '@prisma/client'
-import type { AddressStateFindOrCreateQuery, AddressStatesRepository } from '@repositories/address-states-repository'
+import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -36,7 +37,7 @@ export class PrismaAddressStatesRepository implements AddressStatesRepository {
   }
 
   async listAllAddressesStates(query?: ListAllAddressStateQuery) {
-    const userConstraint: Prisma.AddressStateFindManyArgs['where']['Address']['some'] = {
+    const userConstraint: Prisma.AddressWhereInput = {
       User: {
         role: {
           notIn: [UserRoleType.ADMIN, UserRoleType.MANAGER],

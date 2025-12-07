@@ -1,6 +1,6 @@
 export interface HTTPMeetingParticipation {
-  userId?: number
-  guestId?: number
+  userId: number | null
+  guestId: number | null
   meetingId: number
   createdAt: Date
 }

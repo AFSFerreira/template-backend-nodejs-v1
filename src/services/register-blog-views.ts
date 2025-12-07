@@ -1,4 +1,4 @@
-import { BLOG_IP_VIEW_TTL } from '@constants/redis-configuration-constants'
+import { BLOG_IP_VIEW_TTL } from '@constants/timing-constants'
 import type { IRegisterBlogViews } from '@custom-types/services/register-blog-views'
 import { logger } from '@lib/logger'
 import { BLOG_VISUALIZATION_CACHED } from '@messages/loggings'

@@ -1,6 +1,7 @@
+import type { MultipartFile } from '@fastify/multipart'
+
 export interface UploadRegisterProfileImageUseCaseRequest {
-  buffer: Buffer
-  sizeInBytes: number
+  filePart?: MultipartFile
 }
 
 export interface UploadRegisterProfileImageUseCaseResponse {

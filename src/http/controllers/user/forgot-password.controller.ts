@@ -28,13 +28,13 @@ export async function forgotPassword(request: FastifyRequest, reply: FastifyRepl
 
   try {
     await sendEmailUseCase.execute({
-      to: [user.email, user.secondaryEmail].find((email) => email === login),
+      to: login,
       subject: PASSWORD_RESET_SUBJECT,
       message: forgotPasswordTextTemplate(emailInfo),
       html: forgotPasswordHtmlTemplate(emailInfo),
     })
   } catch (error) {
-    logger.error({ ...error, targetId: user.publicId }, PASSWORD_RESET_EMAIL_FAILED)
+    logger.error({ error, targetId: user.publicId }, PASSWORD_RESET_EMAIL_FAILED)
   }
 
   return await reply.status(PASSWORD_RESET_IF_USER_EXISTS.status).send({ data: PASSWORD_RESET_IF_USER_EXISTS.body })

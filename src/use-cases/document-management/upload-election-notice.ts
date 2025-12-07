@@ -7,6 +7,7 @@ import type {
 } from '@custom-types/use-cases/document-management/upload-document'
 import { swapMultipartFiles } from '@services/swap-multipart-files'
 import { FileTooBigError } from '@use-cases/errors/document-management/file-too-big-error'
+import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -16,6 +17,10 @@ export class UploadElectionNoticeUseCase {
     baseFolder,
     originalFilename,
   }: UploadDocumentUseCaseRequest): Promise<UploadDocumentUseCaseResponse> {
+    if (!filePart) {
+      throw new MissingMultipartContentFile()
+    }
+
     const filename = `${ELECTION_NOTICE_FILE_NAME}${path.extname(originalFilename)}`
 
     const persistImageIsSuccessful = await swapMultipartFiles([

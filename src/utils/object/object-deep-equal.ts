@@ -1,3 +1,5 @@
+import type { UnknownRecord } from '@custom-types/custom/unknown-record'
+
 export function objectDeepEqual(a: unknown, b: unknown): boolean {
   if (a === b) {
     return true
@@ -7,12 +9,12 @@ export function objectDeepEqual(a: unknown, b: unknown): boolean {
     return false
   }
 
-  const keysA = Object.keys(a as Record<string, unknown>)
-  const keysB = Object.keys(b as Record<string, unknown>)
+  const keysA = Object.keys(a as UnknownRecord)
+  const keysB = Object.keys(b as UnknownRecord)
 
   if (keysA.length !== keysB.length) {
     return false
   }
 
-  return keysA.every((key) => objectDeepEqual(a[key], b[key]))
+  return keysA.every((key) => objectDeepEqual((a as UnknownRecord)[key], (b as UnknownRecord)[key]))
 }

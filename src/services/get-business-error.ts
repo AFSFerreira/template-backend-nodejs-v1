@@ -1,7 +1,7 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 import { ApiError } from '@errors/api-error'
 import { INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses/common-responses'
-import { isFastifyError } from '@utils/guards/is-fastify-error'
+import { isFastifyError } from '@services/guards/is-fastify-error'
 import z, { ZodError } from 'zod'
 import { getFastifyError } from './get-fastify-error'
 

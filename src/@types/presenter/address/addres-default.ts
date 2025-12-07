@@ -4,5 +4,5 @@ export interface HTTPAddress {
   street: string
   district: string
   city: string
-  complement?: string
+  complement: string | null
 }
