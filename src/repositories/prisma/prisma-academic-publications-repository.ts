@@ -1,36 +1,42 @@
 import type { AcademicPublicationRaw } from '@custom-types/adapter/input/academic-publication-raw-type'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repositories/academic-publication/list-all-academic-publications-query'
 import type { OrderableType } from '@custom-types/validator/orderable'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
 
 @injectable()
 export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
+
   async create(data: Prisma.AcademicPublicationUncheckedCreateInput) {
-    const academicPublication = await prisma.academicPublication.create({
+    const academicPublication = await this.dbContext.client.academicPublication.create({
       data,
     })
     return academicPublication
   }
 
   async createMany(data: Prisma.AcademicPublicationUncheckedCreateInput[]) {
-    await prisma.academicPublication.createMany({ data })
+    await this.dbContext.client.academicPublication.createMany({ data })
   }
 
   async findById(id: number) {
-    const academicPublication = await prisma.academicPublication.findUnique({
+    const academicPublication = await this.dbContext.client.academicPublication.findUnique({
       where: { id },
     })
     return academicPublication
   }
 
   async findManyByUserId(userId: number) {
-    const academicPublication = await prisma.academicPublication.findMany({
+    const academicPublication = await this.dbContext.client.academicPublication.findMany({
       where: { userId },
       orderBy: [{ title: 'asc' }, { id: 'asc' }],
     })
@@ -44,7 +50,7 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
     ]
 
     if (!query) {
-      const academicPublications = await prisma.academicPublication.findMany({
+      const academicPublications = await this.dbContext.client.academicPublication.findMany({
         select: {
           id: true,
           title: true,
@@ -87,8 +93,8 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
     const { searchQuery, countQuery } = buildListAllAcademicPublicationsQuery(query)
 
     const [countResult, academicPublications] = await Promise.all([
-      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<AcademicPublicationRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
+      this.dbContext.client.$queryRaw<AcademicPublicationRaw[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -108,11 +114,11 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
   }
 
   async delete(id: number) {
-    await prisma.academicPublication.delete({ where: { id } })
+    await this.dbContext.client.academicPublication.delete({ where: { id } })
   }
 
   async update(id: number, data: Prisma.AcademicPublicationUpdateInput) {
-    const academicPublication = await prisma.academicPublication.update({
+    const academicPublication = await this.dbContext.client.academicPublication.update({
       where: { id },
       data,
     })

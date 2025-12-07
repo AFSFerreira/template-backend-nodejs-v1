@@ -2,7 +2,7 @@ import { env } from '@env/index'
 import type { FastifyCorsOptions } from '@fastify/cors'
 import ms from 'ms'
 
-export const corsConfig = {
+export const corsConfiguration = {
   origin: env.FRONTEND_URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],

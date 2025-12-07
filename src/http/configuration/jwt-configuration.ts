@@ -1,7 +1,7 @@
 import { env } from '@env/index'
 import type { FastifyJWTOptions } from '@fastify/jwt'
 
-export const jwtConfig = {
+export const jwtConfiguration = {
   secret: env.JWT_SECRET,
   cookie: {
     cookieName: 'refreshToken',

@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 import path from 'node:path'
-import type { CompressedImageInfo } from '@custom-types/custom/compressed-image-info-type'
+import type { CompressedImageInfo } from '@custom-types/services/compressed-image-info-type'
 import type { SaveCompressedImage } from '@custom-types/services/save-compressed-image.'
 import fs from 'fs-extra'
 import sharp from 'sharp'

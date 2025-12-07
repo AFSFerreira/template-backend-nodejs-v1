@@ -1,6 +1,5 @@
 import 'reflect-metadata'
-
-// Import repositories
+import { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
@@ -32,7 +31,6 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { container } from 'tsyringe'
 import { tokens } from './helpers/tokens'
 
-// Registrando Repositórios:
 container.register<AcademicPublicationsRepository>(
   tokens.repositories.academicPublications,
   PrismaAcademicPublicationsRepository,
@@ -75,3 +73,7 @@ container.registerSingleton<MeetingParticipantsRepository>(
 container.registerSingleton<MeetingsRepository>(tokens.repositories.meetings, PrismaMeetingsRepository)
 
 container.registerSingleton<UsersRepository>(tokens.repositories.users, PrismaUsersRepository)
+
+// ------------------------------------------------------------------------------------------------------------------------------- //
+
+container.registerSingleton<DatabaseContext>(tokens.infra.database, DatabaseContext)

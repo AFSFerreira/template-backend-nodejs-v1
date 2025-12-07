@@ -1,23 +1,28 @@
 import type { UpdateKeywordsQuery } from '@custom-types/repositories/keyword/update-keywords-query'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 import type { KeywordsRepository } from '../keywords-repository'
 
 @injectable()
 export class PrismaKeywordsRepository implements KeywordsRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async create(data: Prisma.KeywordUncheckedCreateInput) {
-    const keyword = await prisma.keyword.create({ data })
+    const keyword = await this.dbContext.client.keyword.create({ data })
     return keyword
   }
 
   async findBy(where: Prisma.KeywordWhereInput) {
-    const keyword = await prisma.keyword.findFirst({ where })
+    const keyword = await this.dbContext.client.keyword.findFirst({ where })
     return keyword
   }
 
   async findOrCreate(value: string) {
-    const keyword = await prisma.keyword.upsert({
+    const keyword = await this.dbContext.client.keyword.upsert({
       where: { value },
       update: {},
       create: { value },
@@ -26,7 +31,7 @@ export class PrismaKeywordsRepository implements KeywordsRepository {
   }
 
   async findManyByUserId(userId: number) {
-    const keywords = await prisma.keyword.findMany({
+    const keywords = await this.dbContext.client.keyword.findMany({
       where: {
         User: {
           some: { id: userId },
@@ -38,11 +43,11 @@ export class PrismaKeywordsRepository implements KeywordsRepository {
   }
 
   async delete(id: number) {
-    await prisma.keyword.delete({ where: { id } })
+    await this.dbContext.client.keyword.delete({ where: { id } })
   }
 
   async update({ id, data }: UpdateKeywordsQuery) {
-    const keyword = await prisma.keyword.update({ where: { id }, data })
+    const keyword = await this.dbContext.client.keyword.update({ where: { id }, data })
     return keyword
   }
 }

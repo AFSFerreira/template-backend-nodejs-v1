@@ -1,15 +1,20 @@
 import type { ListAllAddressStateQuery } from '@custom-types/repositories/address-state/list-all-address-state-query'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, UserRoleType, type Prisma } from '@prisma/client'
 import type { AddressStateFindOrCreateQuery, AddressStatesRepository } from '@repositories/address-states-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaAddressStatesRepository implements AddressStatesRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async findOrCreate(data: AddressStateFindOrCreateQuery) {
-    const addressState = await prisma.addressState.upsert({
+    const addressState = await this.dbContext.client.addressState.upsert({
       where: {
         name_countryId: {
           name: data.state,
@@ -66,7 +71,7 @@ export class PrismaAddressStatesRepository implements AddressStatesRepository {
     ]
 
     if (!query) {
-      const addressesGrouped = await prisma.addressState.findMany({
+      const addressesGrouped = await this.dbContext.client.addressState.findMany({
         where,
         include,
         orderBy,
@@ -91,8 +96,8 @@ export class PrismaAddressStatesRepository implements AddressStatesRepository {
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, addressesGrouped] = await Promise.all([
-      prisma.addressState.count({ where }),
-      prisma.addressState.findMany({
+      this.dbContext.client.addressState.count({ where }),
+      this.dbContext.client.addressState.findMany({
         where,
         skip,
         take,

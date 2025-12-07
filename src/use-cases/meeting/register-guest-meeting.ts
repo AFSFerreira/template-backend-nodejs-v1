@@ -3,6 +3,7 @@ import type {
   RegisterGuestMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-guest-meeting'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { REGISTER_GUEST_MEETING } from '@messages/loggings'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
@@ -22,36 +23,42 @@ export class RegisterGuestMeetingUseCase {
 
     @inject(tokens.repositories.meetingParticipants)
     private readonly meetingParticipantsRepository: MeetingParticipantsRepository,
+
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(
     registerGuestMeetingUseCaseInput: RegisterGuestMeetingUseCaseRequest,
   ): Promise<RegisterGuestMeetingUseCaseResponse> {
-    const meeting = ensureExists({
-      value: await this.meetingsRepository.findByPublicId(registerGuestMeetingUseCaseInput.meetingId),
-      error: new MeetingNotFoundError(),
-    })
+    const meetingParticipation = await this.dbContext.runInTransaction(async () => {
+      const meeting = ensureExists({
+        value: await this.meetingsRepository.findByPublicId(registerGuestMeetingUseCaseInput.meetingId),
+        error: new MeetingNotFoundError(),
+      })
 
-    if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
-      throw new MeetingAlreadyFinishedError()
-    }
+      if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
+        throw new MeetingAlreadyFinishedError()
+      }
 
-    ensureNotExists({
-      value: await this.meetingParticipantsRepository.findByGuestEmailAndMeetingId({
-        email: registerGuestMeetingUseCaseInput.email,
+      ensureNotExists({
+        value: await this.meetingParticipantsRepository.findByGuestEmailAndMeetingId({
+          email: registerGuestMeetingUseCaseInput.email,
+          meetingId: meeting.id,
+        }),
+        error: new GuestAlreadyRegisteredInMeetingError(),
+      })
+
+      const participation = await this.meetingParticipantsRepository.createForGuest({
+        ...registerGuestMeetingUseCaseInput,
         meetingId: meeting.id,
-      }),
-      error: new GuestAlreadyRegisteredInMeetingError(),
-    })
+      })
 
-    const meetingParticipation = await this.meetingParticipantsRepository.createForGuest({
-      ...registerGuestMeetingUseCaseInput,
-      meetingId: meeting.id,
+      return participation
     })
 
     logger.info(
       {
-        meetingId: meeting.id,
         guestEmail: registerGuestMeetingUseCaseInput.email,
         fullName: registerGuestMeetingUseCaseInput.fullName,
       },

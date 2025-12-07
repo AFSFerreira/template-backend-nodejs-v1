@@ -14,10 +14,10 @@ export async function persistUserProfileImage(tempImageName: string) {
 
     await fs.move(oldImagePath, newImagePath, { overwrite: false })
 
-    return true
+    return newImagePath
   } catch (error: unknown) {
     logError({ error, message: PROFILE_IMAGE_PERSIST_ERROR })
 
-    return false
+    return null
   }
 }

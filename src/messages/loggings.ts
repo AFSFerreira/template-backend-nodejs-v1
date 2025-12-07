@@ -29,7 +29,7 @@ export const BLOG_VISUALIZATION_CACHED = 'Visualização de blog adicionada ao c
 
 export const SUCCESSFUL_USER_CREATION = 'Cadastro de um novo usuário bem sucedido'
 
-export const CHANGE_PASSWORD_SUCCESSFUL = 'Pedido de alteração de senha bem sucedida'
+export const CHANGE_PASSWORD_REQUEST_SUCCESSFUL = 'Pedido de alteração de senha bem sucedida'
 
 export const USER_UPDATE_SUCCESSFUL = 'Atualização de informações de usuário bem sucedida'
 
@@ -60,3 +60,6 @@ export const SWAP_FILE_LOOP_ERROR = 'Um erro ocorreu ao tentar trocar o conteúd
 export const FILE_RETRIEVAL_ERROR = 'Erro de recuperação de arquivos'
 
 export const SAVE_MULTIPART_FILE_ERROR = 'Ocorreu um erro ao tentar persistir um arquivo'
+
+export const REMOVE_REGISTER_IMAGE_FALLBACK_ERROR =
+  'Ocorreu um erro ao tentar remover a imagem de perfil após uma tentativa de cadastro de usuário mal sucedida'

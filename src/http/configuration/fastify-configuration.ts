@@ -1,10 +1,10 @@
-import { MB_IN_BYTES } from '@constants/file-constants'
+import { KB_IN_BYTES } from '@constants/file-constants'
 import type { FastifyServerOptions } from 'fastify'
 
-export const fastifyConfig = {
+export const fastifyConfiguration = {
   logger: false,
   trustProxy: ['127.0.0.1', '::1', '10.0.0.0/8'],
-  bodyLimit: 1 * MB_IN_BYTES,
+  bodyLimit: 100 * KB_IN_BYTES,
   routerOptions: {
     caseSensitive: true,
     ignoreTrailingSlash: true,

@@ -1,34 +1,33 @@
-import 'reflect-metadata'
-import '@lib/tsyringe/index'
-import '@lib/zod/index'
-import '@presenters/import-index'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import { initSentry } from '@lib/sentry'
+import '@lib/tsyringe/index'
+import '@lib/zod/index'
+import '@presenters/import-index'
 import { fastifyErrorHandler } from '@services/fastify-error-handler'
 import fastify from 'fastify'
-import { corsConfig } from 'src/http/configuration/cors-config'
-import { fastifyConfig } from 'src/http/configuration/fastify-config'
-import { jwtConfig } from 'src/http/configuration/jwt-config'
-import { multipartConfig } from './http/configuration/multipart-config'
+import { corsConfiguration } from 'src/http/configuration/cors-configuration'
+import { fastifyConfiguration } from 'src/http/configuration/fastify-configuration'
+import { jwtConfiguration } from 'src/http/configuration/jwt-configuration'
+import { multipartConfiguration } from './http/configuration/multipart-configuration'
 import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
 import { staticFileRoutes } from './http/plugins/static-files'
 import { appRoutes } from './http/routes'
 
-export const app = fastify(fastifyConfig)
+export const app = fastify(fastifyConfiguration)
 
-app.register(multipart, multipartConfig)
+app.register(multipart, multipartConfiguration)
 app.register(staticFileRoutes)
 app.register(fastifyCookie)
 app.register(rateLimit)
 app.register(appRoutes)
-app.register(cors, corsConfig)
-app.register(fastifyJwt, jwtConfig)
+app.register(cors, corsConfiguration)
+app.register(fastifyJwt, jwtConfiguration)
 
 app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)

@@ -15,12 +15,7 @@ export const tokens = {
     meetings: 'MeetingsRepository',
     users: 'UsersRepository',
   },
-
-  // providers: {
-  //   mail: "MailProvider",
-  //   storage: "StorageProvider",
-  //   hash: "HashProvider",
-  //   jwt: "JwtProvider",
-  //   cache: "CacheProvider"
-  // }
+  infra: {
+    database: 'DatabaseContext',
+  },
 }

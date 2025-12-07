@@ -1,5 +1,6 @@
 import { Readable } from 'node:stream'
 import type { ExportUsersDataUseCaseResponse } from '@custom-types/use-cases/user/export-users-data'
+import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings'
@@ -30,6 +31,6 @@ export class ExportUsersDataUseCase {
 
     logger.info(ALL_USERS_INFO_EXPORTED)
 
-    return { usersCSVInfo: sourceStream.pipe(csvTransform) }
+    return { usersCSVInfo: sourceStream.pipe<Transform<UserWithDetails>>(csvTransform) }
   }
 }

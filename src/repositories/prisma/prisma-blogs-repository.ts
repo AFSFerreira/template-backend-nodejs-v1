@@ -2,18 +2,23 @@ import type { BlogRaw } from '@custom-types/adapter/input/blog-raw-type'
 import type { ListAllBlogsQuery } from '@custom-types/repositories/blog/list-all-blogs-query'
 import { blogWithDetails } from '@custom-types/validator/blog-with-details'
 import type { OrderableType } from '@custom-types/validator/orderable'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 import { blogAdapter } from './adapters/blogs/blog-adapter'
 import { buildListAllBlogsQuery } from './queries/blogs/build-list-all-blogs-query'
 
 @injectable()
 export class PrismaBlogsRepository implements BlogsRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async create(data: Prisma.BlogUncheckedCreateInput) {
-    const blog = await prisma.blog.create({
+    const blog = await this.dbContext.client.blog.create({
       data,
       include: blogWithDetails.include,
     })
@@ -21,7 +26,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
   }
 
   async findById(id: number) {
-    const blog = await prisma.blog.findUnique({
+    const blog = await this.dbContext.client.blog.findUnique({
       where: { id },
       include: blogWithDetails.include,
     })
@@ -29,7 +34,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
   }
 
   async findByPublicId(publicId: string) {
-    const blog = await prisma.blog.findUnique({
+    const blog = await this.dbContext.client.blog.findUnique({
       where: { publicId },
       include: blogWithDetails.include,
     })
@@ -43,7 +48,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     ]
 
     if (!query) {
-      const blogs = await prisma.blog.findMany({
+      const blogs = await this.dbContext.client.blog.findMany({
         select: {
           publicId: true,
           title: true,
@@ -70,8 +75,8 @@ export class PrismaBlogsRepository implements BlogsRepository {
     const { searchQuery, countQuery } = buildListAllBlogsQuery(query)
 
     const [countResult, blogs] = await Promise.all([
-      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<BlogRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
+      this.dbContext.client.$queryRaw<BlogRaw[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -91,7 +96,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
   }
 
   async incrementAccessesNumber(id: number) {
-    await prisma.blog.update({
+    await this.dbContext.client.blog.update({
       where: { id },
       data: {
         accessCount: { increment: 1 },

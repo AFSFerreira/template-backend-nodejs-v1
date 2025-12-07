@@ -1,15 +1,20 @@
 import type { listAllDirectorBoardMembers } from '@custom-types/repositories/director-board/list-all-director-board-members'
 import { directorBoardWithUser } from '@custom-types/validator/director-board-with-user'
 import type { OrderableType } from '@custom-types/validator/orderable'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
     const orderBy: Prisma.DirectorBoardOrderByWithRelationInput[] = [
       {
@@ -22,7 +27,7 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
     ]
 
     if (!query) {
-      const directors = await prisma.directorBoard.findMany({
+      const directors = await this.dbContext.client.directorBoard.findMany({
         include: directorBoardWithUser.include,
         orderBy,
       })
@@ -41,8 +46,8 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, directors] = await Promise.all([
-      prisma.directorBoard.count(),
-      prisma.directorBoard.findMany({
+      this.dbContext.client.directorBoard.count(),
+      this.dbContext.client.directorBoard.findMany({
         skip,
         take,
         orderBy,

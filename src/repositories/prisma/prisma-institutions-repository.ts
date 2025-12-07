@@ -1,31 +1,36 @@
 import type { ListAllInstitutionsNamesQuery } from '@custom-types/repositories/institution/list-all-institutions-names-query'
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repositories/institution/list-all-institutions-with-users-query'
 import type { OrderableType } from '@custom-types/validator/orderable'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 import type { InstitutionsRepository } from '../institutions-repository'
 
 @injectable()
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async create(data: Prisma.InstitutionUncheckedCreateInput) {
-    const institution = await prisma.institution.create({
+    const institution = await this.dbContext.client.institution.create({
       data,
     })
     return institution
   }
 
   async findById(id: number) {
-    const institution = await prisma.institution.findUnique({
+    const institution = await this.dbContext.client.institution.findUnique({
       where: { id },
     })
     return institution
   }
 
   async findByName(name: string) {
-    const institution = await prisma.institution.findUnique({
+    const institution = await this.dbContext.client.institution.findUnique({
       where: { name },
     })
     return institution
@@ -38,7 +43,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     ]
 
     if (!query) {
-      const institutions = await prisma.institution.findMany({ orderBy })
+      const institutions = await this.dbContext.client.institution.findMany({ orderBy })
 
       const formattedInstitutions = institutions.map((institution) => institution.name)
 
@@ -60,8 +65,8 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, institutions] = await Promise.all([
-      prisma.institution.count({ where }),
-      prisma.institution.findMany({
+      this.dbContext.client.institution.count({ where }),
+      this.dbContext.client.institution.findMany({
         where,
         skip,
         take,
@@ -99,7 +104,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     }
 
     if (!query) {
-      const institutions = await prisma.institution.findMany({ orderBy, include })
+      const institutions = await this.dbContext.client.institution.findMany({ orderBy, include })
 
       const formattedInstitutions = institutions.map((institution) => ({
         name: institution.name,
@@ -120,8 +125,8 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, institutions] = await Promise.all([
-      prisma.institution.count(),
-      prisma.institution.findMany({
+      this.dbContext.client.institution.count(),
+      this.dbContext.client.institution.findMany({
         skip,
         take,
         orderBy,

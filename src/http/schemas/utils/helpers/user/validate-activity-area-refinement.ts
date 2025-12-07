@@ -1,4 +1,4 @@
-import type { ActivityAreaValidationData } from '@custom-types/custom/activity-area-validation-data'
+import type { ActivityAreaValidationData } from '@custom-types/schemas/utils/activity-area-validation-data'
 import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
 import type { RefinementCtx } from 'zod'
 

@@ -2,6 +2,7 @@ import type {
   ReviewMembershipStatusUseCaseRequest,
   ReviewMembershipStatusUseCaseResponse,
 } from '@custom-types/use-cases/user/review-membership-status'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
@@ -15,35 +16,42 @@ export class ReviewMembershipStatusUseCase {
   constructor(
     @inject(tokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     membershipStatusReview,
   }: ReviewMembershipStatusUseCaseRequest): Promise<ReviewMembershipStatusUseCaseResponse> {
-    const user = ensureExists({
-      value: await this.usersRepository.findByPublicId(publicId),
-      error: new UserNotFoundError(),
+    const user = await this.dbContext.runInTransaction(async () => {
+      const user = ensureExists({
+        value: await this.usersRepository.findByPublicId(publicId),
+        error: new UserNotFoundError(),
+      })
+
+      if (user.membershipStatus !== MembershipStatusType.PENDING) {
+        throw new MembershipStatusNotPending()
+      }
+
+      if (membershipStatusReview === 'REJECTED') {
+        // TODO: Verificar se enviamos um email?
+        await this.usersRepository.delete(user.id)
+
+        return null
+      }
+
+      const updatedUser = await this.usersRepository.update({
+        id: user.id,
+        data: {
+          user: { membershipStatus: membershipStatusReview },
+        },
+      })
+
+      return updatedUser
     })
 
-    if (user.membershipStatus !== MembershipStatusType.PENDING) {
-      throw new MembershipStatusNotPending()
-    }
-
-    if (membershipStatusReview === 'REJECTED') {
-      // TODO: Verificar se enviamos um email?
-      await this.usersRepository.delete(user.id)
-
-      return {}
-    }
-
-    const updatedUser = await this.usersRepository.update({
-      id: user.id,
-      data: {
-        user: { membershipStatus: membershipStatusReview },
-      },
-    })
-
-    return { user: updatedUser }
+    return { user }
   }
 }

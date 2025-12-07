@@ -4,4 +4,5 @@ import { Pool } from 'pg'
 
 const connectionString = env.DATABASE_URL
 const pool = new Pool({ connectionString })
+
 export const adapter = new PrismaPg(pool)

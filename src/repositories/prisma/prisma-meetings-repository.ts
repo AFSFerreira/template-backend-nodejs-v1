@@ -1,18 +1,23 @@
 import type { ListAllMeetingsQuery } from '@custom-types/repositories/meeting/list-all-meetings-query'
 import { meetingWithDetails } from '@custom-types/validator/meeting-with-details'
 import type { OrderableType } from '@custom-types/validator/orderable'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/mappers/map-status-to-date-filter'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaMeetingsRepository implements MeetingsRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async findByPublicId(publicId: string) {
-    const meeting = await prisma.meeting.findUnique({
+    const meeting = await this.dbContext.client.meeting.findUnique({
       where: { publicId },
       include: meetingWithDetails.include,
     })
@@ -27,7 +32,7 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     ]
 
     if (!query) {
-      const meetings = await prisma.meeting.findMany({
+      const meetings = await this.dbContext.client.meeting.findMany({
         orderBy,
         include: meetingWithDetails.include,
       })
@@ -52,8 +57,8 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, meetings] = await Promise.all([
-      prisma.meeting.count({ where }),
-      prisma.meeting.findMany({
+      this.dbContext.client.meeting.count({ where }),
+      this.dbContext.client.meeting.findMany({
         where,
         skip,
         take,

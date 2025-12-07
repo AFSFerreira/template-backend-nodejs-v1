@@ -8,18 +8,23 @@ import type { ListAllUsersSimplifiedQuery } from '@custom-types/repositories/use
 import type { SetPasswordTokenQuery } from '@custom-types/repositories/user/set-password-token-query'
 import type { UpdateUserQuery } from '@custom-types/repositories/user/update-user-query'
 import { userWithDetails, type UserWithDetails } from '@custom-types/validator/user-with-details'
-import { prisma } from '@lib/prisma'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 @injectable()
 export class PrismaUsersRepository implements UsersRepository {
+  constructor(
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
   async create(data: CreateUserQuery) {
     const keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] = data.keyword
       ? {
@@ -108,7 +113,7 @@ export class PrismaUsersRepository implements UsersRepository {
       },
     }
 
-    const user = await prisma.user.create({
+    const user = await this.dbContext.client.user.create({
       data: {
         ...data.user,
         birthdate: new Date(data.user.birthdate),
@@ -129,7 +134,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findBy(where: Prisma.UserWhereInput) {
-    const user = await prisma.user.findFirst({
+    const user = await this.dbContext.client.user.findFirst({
       where,
       include: userWithDetails.include,
     })
@@ -137,19 +142,19 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findUniqueBy(where: Prisma.UserWhereUniqueInput) {
-    const user = await prisma.user.findUnique({ where })
+    const user = await this.dbContext.client.user.findUnique({ where })
     return user
   }
 
   async findByEmail(email: string) {
-    const user = await prisma.user.findUnique({
+    const user = await this.dbContext.client.user.findUnique({
       where: { email },
     })
     return user
   }
 
   async findByEmails(email: string) {
-    const user = await prisma.user.findFirst({
+    const user = await this.dbContext.client.user.findFirst({
       where: {
         OR: [{ email }, { secondaryEmail: email }],
       },
@@ -158,14 +163,14 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findByUsername(username: string) {
-    const user = await prisma.user.findUnique({
+    const user = await this.dbContext.client.user.findUnique({
       where: { username },
     })
     return user
   }
 
   async findById(id: number) {
-    const user = await prisma.user.findUnique({
+    const user = await this.dbContext.client.user.findUnique({
       where: { id },
       include: userWithDetails.include,
     })
@@ -173,7 +178,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findByPublicId(publicId: string) {
-    const user = await prisma.user.findUnique({
+    const user = await this.dbContext.client.user.findUnique({
       where: { publicId },
       include: userWithDetails.include,
     })
@@ -181,14 +186,14 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findByIdentityDocument(query: FindByIdentityDocumentQuery) {
-    const user = await prisma.user.findUnique({
+    const user = await this.dbContext.client.user.findUnique({
       where: { identityType_identityDocument: query },
     })
     return user
   }
 
   async setLastLogin(id: number) {
-    await prisma.user.update({
+    await this.dbContext.client.user.update({
       where: { id },
       data: {
         lastLogin: new Date(),
@@ -197,7 +202,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async findConflictingUser({ email, username, identity }: FindConflictingUserQuery) {
-    const user = await prisma.user.findFirst({
+    const user = await this.dbContext.client.user.findFirst({
       where: {
         OR: [...(email ? [{ email }] : []), ...(username ? [{ username }] : []), ...(identity ? [identity] : [])],
       },
@@ -208,7 +213,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
   // TODO: Apagar essa bomba atômica depois
   async listAllUsers() {
-    const users = await prisma.user.findMany({
+    const users = await this.dbContext.client.user.findMany({
       include: userWithDetails.include,
       orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
     })
@@ -220,7 +225,7 @@ export class PrismaUsersRepository implements UsersRepository {
     let cursor: number | undefined = undefined
 
     while (true) {
-      const batch: UserWithDetails[] = await prisma.user.findMany({
+      const batch: UserWithDetails[] = await this.dbContext.client.user.findMany({
         take: batchSize,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,
@@ -238,7 +243,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async listAllUsersDetailed(query?: ListAllUsersDetailedQuery) {
     if (!query) {
-      const users = await prisma.user.findMany({
+      const users = await this.dbContext.client.user.findMany({
         select: {
           id: true,
           publicId: true,
@@ -275,8 +280,8 @@ export class PrismaUsersRepository implements UsersRepository {
     const { searchQuery, countQuery } = buildListAllUsersDetailedQuery(query)
 
     const [countResult, users] = await Promise.all([
-      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
+      this.dbContext.client.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -297,7 +302,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
   async listAllUsersSimplified(query?: ListAllUsersSimplifiedQuery) {
     if (!query) {
-      const users = await prisma.user.findMany({
+      const users = await this.dbContext.client.user.findMany({
         select: {
           id: true,
           publicId: true,
@@ -338,8 +343,8 @@ export class PrismaUsersRepository implements UsersRepository {
     const { searchQuery, countQuery } = buildListAllUsersSimplifiedQuery(query)
 
     const [countResult, users] = await Promise.all([
-      prisma.$queryRaw<Array<{ total: number }>>(countQuery),
-      prisma.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
+      this.dbContext.client.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -359,7 +364,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async incrementLoginAttempts(id: number) {
-    await prisma.user.update({
+    await this.dbContext.client.user.update({
       where: { id },
       data: {
         loginAttempts: { increment: 1 },
@@ -368,7 +373,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async delete(id: number) {
-    await prisma.user.delete({
+    await this.dbContext.client.user.delete({
       where: { id },
     })
   }
@@ -466,7 +471,7 @@ export class PrismaUsersRepository implements UsersRepository {
         }
       : undefined
 
-    const user = await prisma.user.update({
+    const user = await this.dbContext.client.user.update({
       where: { id },
       data: {
         ...data.user,
@@ -487,14 +492,14 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async validateUserToken(recoveryPasswordTokenHash: string) {
-    const user = await prisma.user.findFirst({
+    const user = await this.dbContext.client.user.findFirst({
       where: { recoveryPasswordTokenHash },
     })
     return user
   }
 
   async changePassword({ id, passwordHash }: ChangeUserPasswordQuery) {
-    const user = await prisma.user.update({
+    const user = await this.dbContext.client.user.update({
       where: { id },
       data: {
         passwordHash,
@@ -506,7 +511,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async setPasswordToken({ id, tokenData }: SetPasswordTokenQuery) {
-    const user = await prisma.user.update({
+    const user = await this.dbContext.client.user.update({
       where: { id },
       data: tokenData,
     })
