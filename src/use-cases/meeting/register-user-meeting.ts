@@ -2,13 +2,13 @@ import type {
   RegisterUserMeetingUseCaseRequest,
   RegisterUserMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-user-meeting'
-import { logger } from '@lib/logger'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { REGISTER_USER_MEETING } from '@messages/loggings'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { REGISTER_USER_MEETING } from '@messages/loggings/meeting-loggings'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/user-already-registered-in-meeting-error'

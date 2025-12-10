@@ -1,8 +1,10 @@
-import type { AcademicPublicationRaw } from '@custom-types/adapter/input/academic-publication-raw-type'
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/adapter/output/custom-academic-publication-with-simplified-details-type'
+import type {
+  AcademicPublicationSimplifiedRaw,
+  CustomAcademicPublicationWithSimplifiedDetails,
+} from '@custom-types/adapter/academic-publication-simplified'
 
 export function academicPublicationAdapter(
-  rawPublication: AcademicPublicationRaw,
+  rawPublication: AcademicPublicationSimplifiedRaw,
 ): CustomAcademicPublicationWithSimplifiedDetails {
   return {
     id: rawPublication.id,

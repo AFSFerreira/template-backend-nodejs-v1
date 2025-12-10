@@ -1,5 +1,5 @@
-import { env } from '@env/index'
 import type { FastifyJWTOptions } from '@fastify/jwt'
+import { env } from '@env/index'
 
 export const jwtConfiguration = {
   secret: env.JWT_SECRET,

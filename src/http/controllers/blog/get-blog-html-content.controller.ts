@@ -1,7 +1,7 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
 import { getBlogHtmlContentParamsSchema } from '@schemas/blog/get-blog-html-content-params-schema'
 import { GetBlogHTMLContentUseCase } from '@use-cases/blogs/get-blog-html-content'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function getBlogHtmlContent(request: FastifyRequest, reply: FastifyReply) {

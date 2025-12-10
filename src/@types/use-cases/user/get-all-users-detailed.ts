@@ -1,4 +1,4 @@
-import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/output/custom-user-with-simplified-details-type'
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/user-simplified'
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { GetAllUsersDetailedQuerySchemaType } from '@custom-types/schemas/user/get-all-users-detailed-query-schema'
 

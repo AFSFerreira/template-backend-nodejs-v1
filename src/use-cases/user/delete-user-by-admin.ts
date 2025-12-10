@@ -2,14 +2,18 @@ import type {
   DeleteUserByAdminUseCaseRequest,
   DeleteUserByAdminUseCaseResponse,
 } from '@custom-types/use-cases/user/delete-user-by-admin'
-import { logger } from '@lib/logger'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { USER_DELETION_BY_ADMIN_SUCCESSFUL } from '@messages/loggings'
 import type { UsersRepository } from '@repositories/users-repository'
+import path from 'node:path'
+import { REGISTER_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
+import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
+import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { USER_DELETION_BY_ADMIN_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/guards/ensure'
-
 import { inject, injectable } from 'tsyringe'
+import { AdminCannotDeleteSelfError } from '../errors/user/admin-cannot-delete-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
 @injectable()
@@ -26,22 +30,36 @@ export class DeleteUserByAdminUseCase {
     adminPublicId,
     targetUserPublicId,
   }: DeleteUserByAdminUseCaseRequest): Promise<DeleteUserByAdminUseCaseResponse> {
-    const targetUser = await this.dbContext.runInTransaction(async () => {
+    const deletedUser = await this.dbContext.runInTransaction(async () => {
       const user = ensureExists({
         value: await this.usersRepository.findByPublicId(targetUserPublicId),
         error: new UserNotFoundError(),
       })
+
+      const _admin = ensureExists({
+        value: this.usersRepository.findByPublicId(adminPublicId),
+        error: new UserNotFoundError(),
+      })
+
+      if (adminPublicId === targetUserPublicId) {
+        throw new AdminCannotDeleteSelfError()
+      }
 
       await this.usersRepository.delete(user.id)
 
       return user
     })
 
+    // Removendo a antiga foto de perfil do usuário:
+    if (deletedUser.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
+      await deleteFile(path.resolve(REGISTER_PROFILE_IMAGES_PATH, deletedUser.profileImage))
+    }
+
     logger.info(
       {
         adminPublicId,
         targetUserPublicId,
-        targetUserEmail: targetUser.email,
+        targetUserEmail: deletedUser.email,
       },
       USER_DELETION_BY_ADMIN_SUCCESSFUL,
     )

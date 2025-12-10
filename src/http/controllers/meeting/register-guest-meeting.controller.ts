@@ -1,7 +1,7 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { registerGuestMeetingBodySchema } from '@schemas/meeting/register-guest-meeting-body-schema'
 import { registerGuestMeetingParamsSchema } from '@schemas/meeting/register-guest-meeting-params-schema'
 import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function registerGuestMeeting(request: FastifyRequest, reply: FastifyReply) {

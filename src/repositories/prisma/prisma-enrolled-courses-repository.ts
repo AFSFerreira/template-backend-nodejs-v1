@@ -1,8 +1,8 @@
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
-import { inject, injectable } from 'tsyringe'
 import type { EnrolledCoursesRepository } from '../enrolled-courses-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaEnrolledCoursesRepository implements EnrolledCoursesRepository {

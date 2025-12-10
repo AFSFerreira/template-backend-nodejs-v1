@@ -1,7 +1,6 @@
-import type { BlogRaw } from '@custom-types/adapter/input/blog-raw-type'
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/output/custom-blog-with-simplified-details-type'
+import type { BlogSimplifiedRaw, CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
 
-export function blogAdapter(customBlog: BlogRaw): CustomBlogWithSimplifiedDetails {
+export function blogAdapter(customBlog: BlogSimplifiedRaw): CustomBlogWithSimplifiedDetails {
   return {
     publicId: customBlog.public_id,
     title: customBlog.title,

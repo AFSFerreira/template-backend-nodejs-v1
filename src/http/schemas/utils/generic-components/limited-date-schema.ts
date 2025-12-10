@@ -1,5 +1,5 @@
 import { VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
-import { INVALID_BIRTHDATE_RANGE } from '@messages/validations'
+import { INVALID_BIRTHDATE_RANGE } from '@messages/validations/user-validations'
 import z from 'zod'
 
 export const birthdateSchema = z.coerce.date().refine((date) => {

@@ -1,8 +1,10 @@
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/user-simplified'
+import type { HTTPSimplifiedUserDetails } from '@custom-types/presenter/user/user-simplified'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
-import { UserPresenter } from '@presenters/user-presenter'
+import { UserPresenter } from '@presenters/variants/user-presenter'
 import { getAllUsersDetailedQuerySchema } from '@schemas/user/get-all-users-detailed-query-schema'
 import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function getAllUsersDetailed(request: FastifyRequest, reply: FastifyReply) {
@@ -12,5 +14,11 @@ export async function getAllUsersDetailed(request: FastifyRequest, reply: Fastif
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  return await reply.status(200).send({ data: UserPresenter.toHTTP(data, USER_SIMPLIFIED_PRESENTER_KEY), meta })
+  return await reply.status(200).send({
+    data: UserPresenter.toHTTP<CustomUserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(
+      data,
+      USER_SIMPLIFIED_PRESENTER_KEY,
+    ),
+    meta,
+  })
 }

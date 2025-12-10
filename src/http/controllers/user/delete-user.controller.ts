@@ -1,6 +1,6 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { DeleteUserUseCase } from '@use-cases/user/delete-user'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {

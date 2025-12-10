@@ -2,8 +2,8 @@ import type {
   GetAllStatesUseCaseRequest,
   GetAllStatesUseCaseResponse,
 } from '@custom-types/use-cases/address/get-all-states'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

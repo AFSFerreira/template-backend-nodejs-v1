@@ -14,10 +14,10 @@
  * compatibilidade de serialização e transmissão no Fastify.
  */
 
-import { Readable } from 'node:stream'
 import type { OptionalPipeObject } from '@custom-types/custom/optional-pipe-object'
-import { Prisma } from '@prisma/client'
 import type { DoneFuncWithErrOrRes, FastifyReply, FastifyRequest } from 'fastify'
+import { Readable } from 'node:stream'
+import { Prisma } from '@prisma/client'
 
 function hasPipe(value: unknown) {
   const isNotNull = value !== null

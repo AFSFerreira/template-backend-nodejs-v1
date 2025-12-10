@@ -1,6 +1,6 @@
+import type { LoggerOptions, StreamEntry } from 'pino'
 import { IS_DEV } from '@constants/env-constants'
 import { env } from '@env/index'
-import type { LoggerOptions, StreamEntry } from 'pino'
 import { multistream, pino, stdSerializers, stdTimeFunctions } from 'pino'
 import { getRequestId } from './helpers/get-request-id'
 import { getUserId } from './helpers/get-user-id'

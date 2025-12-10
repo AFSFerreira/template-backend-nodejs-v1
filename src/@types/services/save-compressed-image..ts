@@ -1,3 +1,5 @@
+import type { Readable } from 'node:stream'
+
 interface SaveCompressedImageOptions {
   dimensions: {
     width: number
@@ -7,7 +9,7 @@ interface SaveCompressedImageOptions {
 }
 
 export interface SaveCompressedImage {
-  imageBuffer: Buffer
+  imageStream: Readable
   folderPath: string
   options?: SaveCompressedImageOptions
 }

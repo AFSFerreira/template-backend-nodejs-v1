@@ -1,6 +1,6 @@
 import type { GetAllBlogsUseCaseRequest, GetAllBlogsUseCaseResponse } from '@custom-types/use-cases/blogs/get-all-blogs'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { BlogsRepository } from '@repositories/blogs-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

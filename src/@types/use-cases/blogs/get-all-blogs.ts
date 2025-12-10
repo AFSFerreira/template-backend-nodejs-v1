@@ -1,4 +1,4 @@
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/output/custom-blog-with-simplified-details-type'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { GetAllPostsQuerySchemaType } from '@custom-types/schemas/blog/get-all-posts-query-schema'
 

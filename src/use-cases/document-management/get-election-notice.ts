@@ -1,8 +1,7 @@
-import path from 'node:path'
-
-import { ELECTION_NOTICE_FILE_NAME_PATTERN } from '@constants/file-constants'
 import type { GetElectionNoticeUseCaseResponse } from '@custom-types/use-cases/document-management/get-election-notice'
-import { getFiles } from '@services/get-files'
+import path from 'node:path'
+import { ELECTION_NOTICE_FILE_NAME_PATTERN } from '@constants/dynamic-file-constants'
+import { getFiles } from '@services/files/get-files'
 import { MissingElectionNoticeFileError } from '@use-cases/errors/document-management/missing-election-notice-file-error'
 import fs from 'fs-extra'
 import { injectable } from 'tsyringe'

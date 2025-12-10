@@ -1,5 +1,5 @@
-import { ExportUsersDataUseCase } from '@use-cases/user/export-users-data'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { ExportUsersDataUseCase } from '@use-cases/user/export-users-data'
 import { container } from 'tsyringe'
 
 export async function exportUsersData(_request: FastifyRequest, reply: FastifyReply) {

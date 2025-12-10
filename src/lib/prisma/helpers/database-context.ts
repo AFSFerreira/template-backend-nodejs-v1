@@ -1,11 +1,9 @@
 import type { PrismaTransactionClient } from '@custom-types/libs/prisma/prisma-transaction-client'
+import type { PrismaClient } from '@prisma/client'
 import { asyncLocalStorage } from '@lib/async-local-storage'
-import { PrismaClient } from '@prisma/client'
 import { AsyncLocalStorageNotInitializedError } from '@use-cases/errors/generic/async-local-storage-not-initialized-error'
-import { singleton } from 'tsyringe'
 import { prisma } from '..'
 
-@singleton()
 export class DatabaseContext {
   private readonly prisma: PrismaClient
 
@@ -26,13 +24,13 @@ export class DatabaseContext {
       throw new AsyncLocalStorageNotInitializedError()
     }
 
-    return this.prisma.$transaction(async (tx) => {
+    return await this.prisma.$transaction(async (tx) => {
       const newContext = {
         ...store,
         prismaTransaction: tx,
       }
 
-      return asyncLocalStorage.run(newContext, callback)
+      return await asyncLocalStorage.run(newContext, callback)
     })
   }
 }

@@ -1,7 +1,7 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import path from 'node:path'
 import { GetStatuteUseCase } from '@use-cases/document-management/get-statute'
 import { mapExtensionToMimeType } from '@utils/mappers/map-mime-type'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function getStatute(_request: FastifyRequest, reply: FastifyReply) {

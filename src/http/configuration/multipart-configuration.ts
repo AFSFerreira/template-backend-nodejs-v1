@@ -1,5 +1,5 @@
-import { MB_IN_BYTES } from '@constants/file-constants'
 import type { FastifyMultipartOptions } from '@fastify/multipart'
+import { MB_IN_BYTES } from '@constants/size-constants'
 
 export const multipartConfiguration = {
   limits: {

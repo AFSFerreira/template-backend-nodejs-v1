@@ -1,14 +1,13 @@
-import path from 'node:path'
-
-import { MAX_IMAGE_FILE_SIZE_BYTES, REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/file-constants'
 import type {
   UploadRegisterProfileImageUseCaseRequest,
   UploadRegisterProfileImageUseCaseResponse,
 } from '@custom-types/use-cases/user/upload-register-profile-image'
-import { saveCompressedImage } from '@services/save-compressed-image'
+import path from 'node:path'
+import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
+import { saveCompressedImage } from '@services/files/save-compressed-image'
 import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
 import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
-import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
+import { deleteFile } from '@utils/files/delete-file'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -20,22 +19,22 @@ export class UploadRegisterProfileImageUseCase {
       throw new MissingMultipartContentFile()
     }
 
-    const buffer = await filePart.toBuffer()
-    const sizeInBytes = buffer.length
-
-    if (sizeInBytes > MAX_IMAGE_FILE_SIZE_BYTES) {
+    // Verificação preventiva:
+    if (filePart.file.truncated) {
       throw new ImageTooBigError()
     }
 
-    try {
-      const { finalImagePath } = await saveCompressedImage({
-        imageBuffer: buffer,
-        folderPath: REGISTER_TEMP_PROFILE_IMAGES_PATH,
-      })
+    const { finalImagePath, success } = await saveCompressedImage({
+      imageStream: filePart.file,
+      folderPath: REGISTER_TEMP_PROFILE_IMAGES_PATH,
+    })
 
-      return { fileName: path.basename(finalImagePath) }
-    } catch (_error: unknown) {
-      throw new UserImageStorageError()
+    // Deleta a imagem se ela estourar o buffer:
+    if (!success || filePart.file.truncated) {
+      await deleteFile(finalImagePath)
+      throw new ImageTooBigError()
     }
+
+    return { fileName: path.basename(finalImagePath) }
   }
 }

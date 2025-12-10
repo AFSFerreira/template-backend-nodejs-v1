@@ -1,5 +1,5 @@
-import { allowedImageMimeTypes } from '@constants/file-constants'
-import { ALLOWED_IMAGE_EXTENSIONS } from '@messages/validations'
+import { allowedImageMimeTypes } from '@constants/static-file-constants'
+import { ALLOWED_IMAGE_EXTENSIONS } from '@messages/validations/academic-publication-validations'
 import z from 'zod'
 import { limitedNonemptyTextSchema } from '../primitives/limited-nonempty-text-schema'
 

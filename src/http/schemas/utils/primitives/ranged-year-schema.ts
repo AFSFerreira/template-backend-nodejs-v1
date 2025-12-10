@@ -1,5 +1,5 @@
 import { VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
-import { INVALID_DATE_RANGE } from '@messages/validations'
+import { INVALID_DATE_RANGE } from '@messages/validations/common-validations'
 import z from 'zod'
 
 export const rangedYearSchema = z

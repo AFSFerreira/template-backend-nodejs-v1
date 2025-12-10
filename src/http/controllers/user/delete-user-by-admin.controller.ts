@@ -1,7 +1,7 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { deleteUserByAdminParamsSchema } from '@schemas/user/delete-user-by-admin-params-schema'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { DeleteUserByAdminUseCase } from '@use-cases/user/delete-user-by-admin'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function deleteUserByAdmin(request: FastifyRequest, reply: FastifyReply) {

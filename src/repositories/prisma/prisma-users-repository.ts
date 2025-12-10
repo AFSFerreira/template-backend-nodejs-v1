@@ -1,16 +1,20 @@
-import type { UserWithSimplifiedDetailsRaw } from '@custom-types/adapter/input/user-with-simplified-details-raw-type'
-import type { ChangeUserPasswordQuery } from '@custom-types/repositories/user/change-user-password-query'
-import type { CreateUserQuery } from '@custom-types/repositories/user/create-user-query'
-import type { FindByIdentityDocumentQuery } from '@custom-types/repositories/user/find-by-identity-document-query'
-import type { FindConflictingUserQuery } from '@custom-types/repositories/user/find-conflicting-user-query'
-import type { ListAllUsersDetailedQuery } from '@custom-types/repositories/user/list-all-users-detailed-query'
-import type { ListAllUsersSimplifiedQuery } from '@custom-types/repositories/user/list-all-users-simplified-query'
-import type { SetPasswordTokenQuery } from '@custom-types/repositories/user/set-password-token-query'
-import type { UpdateUserQuery } from '@custom-types/repositories/user/update-user-query'
-import { userWithDetails, type UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithSimplifiedDetailsRaw } from '@custom-types/adapter/user-simplified'
+import type { ChangeUserPasswordQuery } from '@custom-types/repository/user/change-user-password-query'
+import type { CreateUserQuery } from '@custom-types/repository/user/create-user-query'
+import type { FindByIdentityDocumentQuery } from '@custom-types/repository/user/find-by-identity-document-query'
+import type { FindConflictingUserQuery } from '@custom-types/repository/user/find-conflicting-user-query'
+import type { ListAllUsersDetailedQuery } from '@custom-types/repository/user/list-all-users-detailed-query'
+import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/user/list-all-users-simplified-query'
+import type { SetPasswordTokenQuery } from '@custom-types/repository/user/set-password-token-query'
+import type { UpdateProfileImageQuery } from '@custom-types/repository/user/update-profile-image-query'
+import type { UpdateRoleQuery } from '@custom-types/repository/user/update-role-query'
+import type { UpdateUserQuery } from '@custom-types/repository/user/update-user-query'
+import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
+import type { UsersRepository } from '../users-repository'
+import { userWithDetails } from '@custom-types/validator/user-with-details'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
@@ -20,7 +24,6 @@ import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-
 import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
-import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 @injectable()
@@ -373,6 +376,20 @@ export class PrismaUsersRepository implements UsersRepository {
   async delete(id: number) {
     await this.dbContext.client.user.delete({
       where: { id },
+    })
+  }
+
+  async updateRole({ id, role }: UpdateRoleQuery) {
+    await this.dbContext.client.user.update({
+      where: { id },
+      data: { role },
+    })
+  }
+
+  async updateProfileImage({ id, profileImage }: UpdateProfileImageQuery) {
+    await this.dbContext.client.user.update({
+      where: { id },
+      data: { profileImage },
     })
   }
 

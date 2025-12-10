@@ -1,6 +1,6 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { checkAvailabilityQuerySchema } from '@schemas/user/check-availability-query-schema'
 import { CheckAvailabilityUseCase } from '@use-cases/user/check-availability'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function checkAvailability(request: FastifyRequest, reply: FastifyReply) {

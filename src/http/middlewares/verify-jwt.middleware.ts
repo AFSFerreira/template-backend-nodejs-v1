@@ -1,9 +1,9 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { logger } from '@lib/logger'
 import { setUserId } from '@lib/logger/helpers/set-user-id'
 import { UNAUTHORIZED } from '@messages/responses/common-responses'
 import { INACTIVE_USER, PENDING_USER } from '@messages/responses/user-responses'
 import { MembershipStatusType } from '@prisma/client'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 
 export async function verifyJwt(request: FastifyRequest, reply: FastifyReply) {
   try {

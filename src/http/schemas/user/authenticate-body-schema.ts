@@ -1,4 +1,4 @@
-import { INVALID_AUTHENTICATION_INPUT } from '@messages/validations'
+import { INVALID_AUTHENTICATION_INPUT } from '@messages/validations/user-validations'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { z } from 'zod'
 

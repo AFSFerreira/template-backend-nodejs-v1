@@ -1,4 +1,4 @@
-import { INVALID_DOI_FORMAT } from '@messages/validations'
+import { INVALID_DOI_FORMAT } from '@messages/validations/academic-publication-validations'
 import { doi } from 'doi-utils'
 import { urlSchema } from '../primitives/url-schema'
 

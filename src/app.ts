@@ -1,13 +1,14 @@
+import 'reflect-metadata'
+import '@lib/tsyringe/index'
+import '@lib/zod/index'
+import '@presenters/load-presenters'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import { initSentry } from '@lib/sentry'
-import '@lib/tsyringe/index'
-import '@lib/zod/index'
-import '@presenters/import-index'
-import { fastifyErrorHandler } from '@services/fastify-error-handler'
+import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
 import fastify from 'fastify'
 import { corsConfiguration } from 'src/http/configuration/cors-configuration'
 import { fastifyConfiguration } from 'src/http/configuration/fastify-configuration'
@@ -16,6 +17,7 @@ import { multipartConfiguration } from './http/configuration/multipart-configura
 import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
+import { gracefulShutdown } from './http/plugins/shutdown'
 import { staticFileRoutes } from './http/plugins/static-files'
 import { appRoutes } from './http/routes'
 
@@ -32,6 +34,7 @@ app.register(fastifyJwt, jwtConfiguration)
 app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)
 app.addHook('preSerialization', preSerialization)
+app.addHook('onClose', gracefulShutdown)
 
 initSentry()
 

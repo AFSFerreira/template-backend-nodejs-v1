@@ -2,8 +2,8 @@ import type {
   GetAllInstitutionsWithUsersUseCaseRequest,
   GetAllInstitutionsWithUsersUseCaseResponse,
 } from '@custom-types/use-cases/institution/get-all-institutions-with-user'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

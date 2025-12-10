@@ -2,8 +2,8 @@ import type {
   GetAllActivityAreasUseCaseRequest,
   GetAllActivityAreasUseCaseResponse,
 } from '@custom-types/use-cases/activity-area/get-all-activity-areas-use-case'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

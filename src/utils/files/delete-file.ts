@@ -1,5 +1,5 @@
 import { logError } from '@lib/logger/helpers/log-error'
-import { FILE_DELETION_ERROR } from '@messages/loggings'
+import { FILE_DELETION_ERROR } from '@messages/loggings/file-loggings'
 import fs from 'fs-extra'
 
 export async function deleteFile(filePath: string) {
@@ -8,5 +8,6 @@ export async function deleteFile(filePath: string) {
     return true
   } catch (error) {
     logError({ error, context: { filePath }, message: FILE_DELETION_ERROR })
+    return false
   }
 }

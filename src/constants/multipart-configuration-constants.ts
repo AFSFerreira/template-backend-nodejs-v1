@@ -1,5 +1,5 @@
 import type { FastifyMultipartOptions } from '@fastify/multipart'
-import { MAX_DOCUMENT_FILE_SIZE_BYTES, MAX_IMAGE_FILE_SIZE_BYTES } from './file-constants'
+import { MAX_DOCUMENT_FILE_SIZE_BYTES, MAX_IMAGE_FILE_SIZE_BYTES } from './size-constants'
 
 export const statuteMultipartFileConfig = {
   limits: {

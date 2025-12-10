@@ -1,6 +1,10 @@
 import { glob } from 'node:fs/promises'
 import { logError } from '@lib/logger/helpers/log-error'
-import { FILE_DELETION_ERROR, FILES_SUCCESSFULLY_DELETED, NO_FILES_FOUND_TO_DELETE } from '@messages/loggings'
+import {
+  FILE_DELETION_ERROR,
+  FILES_SUCCESSFULLY_DELETED,
+  NO_FILES_FOUND_TO_DELETE,
+} from '@messages/loggings/file-loggings'
 import { logger } from '@sentry/node'
 import fs from 'fs-extra'
 

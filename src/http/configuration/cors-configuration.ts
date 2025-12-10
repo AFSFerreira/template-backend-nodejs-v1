@@ -1,6 +1,6 @@
+import type { FastifyCorsOptions } from '@fastify/cors'
 import { CORS_MAX_AGE } from '@constants/timing-constants'
 import { env } from '@env/index'
-import type { FastifyCorsOptions } from '@fastify/cors'
 
 export const corsConfiguration = {
   origin: env.FRONTEND_URL,

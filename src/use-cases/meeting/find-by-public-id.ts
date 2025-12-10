@@ -2,8 +2,8 @@ import type {
   FindMeetingByPublicIdUseCaseRequest,
   FindMeetingByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/meeting/find-by-public-id'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { ensureExists } from '@utils/guards/ensure'
 import { inject, injectable } from 'tsyringe'
 import { MeetingNotFoundError } from '../errors/meeting/meeting-not-found-error'

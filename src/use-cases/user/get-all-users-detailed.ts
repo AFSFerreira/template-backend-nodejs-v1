@@ -2,8 +2,8 @@ import type {
   GetAllUsersCaseResponse,
   GetAllUsersDetailedUseCaseRequest,
 } from '@custom-types/use-cases/user/get-all-users-detailed'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { UsersRepository } from '@repositories/users-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

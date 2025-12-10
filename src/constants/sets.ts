@@ -1,8 +1,10 @@
-import type { EducationLevelType } from '@prisma/client'
+import type { EducationLevelType, UserRoleType } from '@prisma/client'
 import {
+  ADMIN_PERMISSIONS_ARRAY,
   HIGH_LEVEL_EDUCATION_TYPE_ARRAY,
   HIGH_LEVEL_STUDENT_EDUCATION_TYPE_ARRAY,
   LOW_LEVEL_EDUCATION_TYPE_ARRAY,
+  MANAGER_PERMISSIONS_ARRAY,
 } from './arrays'
 
 export const LOW_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(LOW_LEVEL_EDUCATION_TYPE_ARRAY)
@@ -12,3 +14,7 @@ export const HIGH_LEVEL_EDUCATION_STUDENT_TYPE_SET = new Set<EducationLevelType>
 )
 
 export const HIGH_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(HIGH_LEVEL_EDUCATION_TYPE_ARRAY)
+
+export const ADMIN_PERMISSIONS = new Set<UserRoleType>(ADMIN_PERMISSIONS_ARRAY)
+
+export const MANAGER_PERMISSIONS = new Set<UserRoleType>(MANAGER_PERMISSIONS_ARRAY)

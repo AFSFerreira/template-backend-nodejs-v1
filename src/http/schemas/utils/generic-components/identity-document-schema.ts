@@ -4,7 +4,7 @@ import {
   INVALID_CPF_LENGTH,
   INVALID_PASSPORT_FORMAT,
   INVALID_RNE_FORMAT,
-} from '@messages/validations'
+} from '@messages/validations/user-validations'
 import { IdentityType } from '@prisma/client'
 import { cpf } from 'cpf-cnpj-validator'
 import z from 'zod'

@@ -1,10 +1,11 @@
-import type { listAllDirectorBoardMembers } from '@custom-types/repositories/director-board/list-all-director-board-members'
-import { directorBoardWithUser } from '@custom-types/validator/director-board-with-user'
+import type { CreateDirectorBoardQuery } from '@custom-types/repository/director-board/create-director-board-query'
+import type { listAllDirectorBoardMembers } from '@custom-types/repository/director-board/list-all-director-board-members'
 import type { OrderableType } from '@custom-types/validator/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
+import { directorBoardWithUser } from '@custom-types/validator/director-board-with-user'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -15,6 +16,24 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
     @inject(tokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
+
+  async create(data: CreateDirectorBoardQuery) {
+    return await this.dbContext.client.directorBoard.create({
+      data: {
+        User: { connect: { id: data.userId } },
+        DirectorPosition: { connect: { id: data.directorPositionId } },
+        aboutMe: '',
+        directorBoardProfileImage: data.directorBoardProfileImage,
+      },
+    })
+  }
+
+  async deleteByUserId(userId: number) {
+    await this.dbContext.client.directorBoard.deleteMany({
+      where: { userId },
+    })
+  }
+
   async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
     const orderBy: Prisma.DirectorBoardOrderByWithRelationInput[] = [
       ...(query?.orderBy?.precedenceOrder

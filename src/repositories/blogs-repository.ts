@@ -1,6 +1,6 @@
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/output/custom-blog-with-simplified-details-type'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { ListAllBlogsQuery } from '@custom-types/repositories/blog/list-all-blogs-query'
+import type { ListAllBlogsQuery } from '@custom-types/repository/blog/list-all-blogs-query'
 import type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
 import type { Blog, Prisma } from '@prisma/client'
 

@@ -3,9 +3,9 @@ import type {
   ReviewMembershipStatusUseCaseResponse,
 } from '@custom-types/use-cases/user/review-membership-status'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UsersRepository } from '@repositories/users-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/client'
-import type { UsersRepository } from '@repositories/users-repository'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/guards/ensure'

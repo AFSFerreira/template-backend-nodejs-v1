@@ -1,28 +1,30 @@
-import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/file-constants'
-import type { FindConflictingUserQuery } from '@custom-types/repositories/user/find-conflicting-user-query'
+import type { FindConflictingUserQuery } from '@custom-types/repository/user/find-conflicting-user-query'
 import type { RegisterUseCaseRequest, RegisterUseCaseResponse } from '@custom-types/use-cases/user/register'
-import { env } from '@env/index'
-import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
+import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { REMOVE_REGISTER_IMAGE_FALLBACK_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings'
-import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
+import { env } from '@env/index'
+import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { REMOVE_REGISTER_IMAGE_FALLBACK_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings/user-loggings'
+import { ActivityAreaType } from '@prisma/client'
+import { persistUserProfileImage } from '@services/files/persist-user-profile-image'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
-import { persistUserProfileImage } from '@services/persist-user-profile-image'
-import { validateActivityAreas } from '@services/validate-activity-areas'
-import { validateInstitutionName } from '@services/validate-institution-name'
+import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { deleteFile } from '@utils/files/delete-file'
+import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
@@ -51,9 +53,9 @@ export class RegisterUseCase {
   ) {}
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
-    const profileImagePersistSuccess = registerUseCaseInput.user.profileImage
+    const profileImagePersist = registerUseCaseInput.user.profileImage
       ? await persistUserProfileImage(registerUseCaseInput.user.profileImage)
-      : false
+      : DEFAULT_PROFILE_IMAGE_NAME
 
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
@@ -66,24 +68,29 @@ export class RegisterUseCase {
         })
 
         if (userAlreadyExists) {
-          if (userAlreadyExists.email === registerUseCaseInput.user.email) {
-            throw new UserWithSameEmail()
+          const apiError = getTrueMapping<ApiError>([
+            {
+              expression: userAlreadyExists.email === registerUseCaseInput.user.email,
+              value: new UserWithSameEmail(),
+            },
+            {
+              expression: userAlreadyExists.username === registerUseCaseInput.user.username,
+              value: new UserWithSameUsername(),
+            },
+            {
+              expression: objectDeepEqual(
+                { identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType },
+                registerUseCaseInput.user.identity,
+              ),
+              value: new UserWithSameIdentityDocument(),
+            },
+          ])
+
+          if (!apiError) {
+            throw new UserAlreadyExistsError()
           }
 
-          if (userAlreadyExists.username === registerUseCaseInput.user.username) {
-            throw new UserWithSameUsername()
-          }
-
-          if (
-            objectDeepEqual(
-              { identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType },
-              registerUseCaseInput.user.identity,
-            )
-          ) {
-            throw new UserWithSameIdentityDocument()
-          }
-
-          throw new UserAlreadyExistsError()
+          throw apiError
         }
 
         if (
@@ -138,10 +145,7 @@ export class RegisterUseCase {
             ...filteredUserInfo,
             identityType: identity.identityType,
             identityDocument: identity.identityDocument,
-            profileImage:
-              profileImagePersistSuccess && registerUseCaseInput.user.profileImage
-                ? registerUseCaseInput.user.profileImage
-                : DEFAULT_PROFILE_IMAGE_NAME,
+            profileImage: profileImagePersist ?? DEFAULT_PROFILE_IMAGE_NAME,
             passwordHash,
           },
           address: {
@@ -158,9 +162,9 @@ export class RegisterUseCase {
       return { user: createdUser }
     } catch (error) {
       // Removendo imagem incorretamente persistida:
-      if (profileImagePersistSuccess) {
+      if (profileImagePersist) {
         try {
-          await deleteFile(profileImagePersistSuccess)
+          await deleteFile(profileImagePersist)
         } catch (error) {
           logError({ error, message: REMOVE_REGISTER_IMAGE_FALLBACK_ERROR })
         }

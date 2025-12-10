@@ -1,8 +1,8 @@
+import type { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
 import { logger } from '@lib/logger'
 import { runWithRequestId } from '@lib/logger/helpers/run-with-request-id'
-import { INCOMING_REQUEST } from '@messages/loggings'
+import { INCOMING_REQUEST } from '@messages/loggings/common-loggings'
 import { getClientIp } from '@utils/http/get-client-ip'
-import type { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
 import { v7 as uuidv7 } from 'uuid'
 
 function logRequestDetails(request: FastifyRequest) {

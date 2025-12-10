@@ -1,10 +1,10 @@
-import type { CreateMeetingParticipationForGuestQuery } from '@custom-types/repositories/meeting-participants/create-meeting-participation-for-guest-query'
-import type { CreateMeetingParticipationForUserQuery } from '@custom-types/repositories/meeting-participants/create-meeting-participation-for-user-query'
-import type { FindByGuestEmailAndMeetingId } from '@custom-types/repositories/meeting-participants/find-by-guest-email-and-meeting-id'
-import type { FindByUserIdAndMeetingIdInput } from '@custom-types/repositories/meeting-participants/find-by-user-id-and-meeting-id-input'
+import type { CreateMeetingParticipationForGuestQuery } from '@custom-types/repository/meeting-participants/create-meeting-participation-for-guest-query'
+import type { CreateMeetingParticipationForUserQuery } from '@custom-types/repository/meeting-participants/create-meeting-participation-for-user-query'
+import type { FindByGuestEmailAndMeetingId } from '@custom-types/repository/meeting-participants/find-by-guest-email-and-meeting-id'
+import type { FindByUserIdAndMeetingIdInput } from '@custom-types/repository/meeting-participants/find-by-user-id-and-meeting-id-input'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

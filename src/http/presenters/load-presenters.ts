@@ -1,0 +1,25 @@
+//⚠️ ARQUIVO GERADO AUTOMATICAMENTE - NÃO EDITE MANUALMENTE
+//⚠️ AUTO-GENERATED FILE - DO NOT EDIT MANUALLY
+
+// Execute 'npm run generate:presenters' para atualizar
+// Run 'npm run generate:presenters' to update
+
+import './variants/academic-publication/academic-publication-default.presenter'
+import './variants/academic-publication/academic-publication-simplified.presenter'
+import './variants/activity-area/activity-area-default.presenter'
+import './variants/address/address-default.presenter'
+import './variants/address/address-with-users-count.presenter'
+import './variants/blog/blog-default.presenter'
+import './variants/blog/blog-detailed.presenter'
+import './variants/blog/blog-simplified.presenter'
+import './variants/director-board/director-board-default.presenter'
+import './variants/director-board/director-board-with-user.presenter'
+import './variants/director-position/director-position-default.presenter'
+import './variants/institution/institution-default.presenter'
+import './variants/institution/institution-with-users-count.presenter'
+import './variants/meeting/meeting-default.presenter'
+import './variants/meeting/meeting-detailed.presenter'
+import './variants/meeting-participation/meeting-participation-default.presenter'
+import './variants/user/user-default.presenter'
+import './variants/user/user-detailed.presenter'
+import './variants/user/user-simplified.presenter'

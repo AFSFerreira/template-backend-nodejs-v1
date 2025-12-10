@@ -1,10 +1,10 @@
 import js from "@eslint/js"
 import tseslint from "@typescript-eslint/eslint-plugin"
 import tsparser from "@typescript-eslint/parser"
-import importPlugin from "eslint-plugin-import"
 import promise from "eslint-plugin-promise"
 import n from "eslint-plugin-n"
 import unicorn from "eslint-plugin-unicorn"
+import simpleImportSort from "eslint-plugin-simple-import-sort"
 import prettier from "eslint-config-prettier"
 import globals from "globals"
 
@@ -30,7 +30,7 @@ export default [
     plugins: {
       ...js.configs.recommended.plugins,
       "@typescript-eslint": tseslint,
-      import: importPlugin,
+      "simple-import-sort": simpleImportSort,
       promise,
       n,
       unicorn
@@ -84,13 +84,24 @@ export default [
         }
       ],
 
-      "import/order": [
+      "simple-import-sort/imports": [
         "warn",
         {
-          groups: ["builtin", "external", "internal", ["parent", "sibling", "index"]],
-          alphabetize: { order: "asc", caseInsensitive: true }
+          "groups": [
+            [
+              "reflect-metadata",
+              "^\\u0000",
+              "^node:.*\\u0000$",
+              "^@?\\w.*\\u0000$",
+              "^\\..*\\u0000$",
+              "^node:",
+              "^@?\\w",
+              "^\\."
+            ]
+          ]
         }
-      ]
+      ],
+      "simple-import-sort/exports": "warn"
     }
   },
 ]

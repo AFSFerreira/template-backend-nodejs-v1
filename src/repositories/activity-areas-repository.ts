@@ -1,6 +1,6 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { ActivityAreaQuery } from '@custom-types/repositories/activity-area/activity-area-query'
-import type { ListAllActivityAreasQuery } from '@custom-types/repositories/activity-area/list-all-activity-areas-query'
+import type { ActivityAreaQuery } from '@custom-types/repository/activity-area/activity-area-query'
+import type { ListAllActivityAreasQuery } from '@custom-types/repository/activity-area/list-all-activity-areas-query'
 import type { ActivityArea, Prisma } from '@prisma/client'
 
 export interface ActivityAreasRepository {

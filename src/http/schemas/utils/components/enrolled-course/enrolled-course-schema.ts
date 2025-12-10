@@ -1,7 +1,7 @@
 import {
   COMPLETION_DATE_BEFORE_START_DATE,
   SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
-} from '@messages/validations'
+} from '@messages/validations/user-validations'
 import z from 'zod'
 import { monthYearSchema } from '../../generic-components/month-year-schema'
 import { booleanSchema } from '../../primitives/boolean-schema'

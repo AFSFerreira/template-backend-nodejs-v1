@@ -1,5 +1,6 @@
-import { allowedImageMimeTypes, MAX_IMAGE_FILE_SIZE_BYTES } from '@constants/file-constants'
 import type { IApiError } from '@custom-types/custom/api-error-type'
+import { MAX_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
+import { allowedImageMimeTypes } from '@constants/static-file-constants'
 
 // User-related responses
 export const NO_USERS_AVAILABLE: IApiError = {
@@ -39,6 +40,14 @@ export const USER_IMAGE_PROCESSING_ERROR: IApiError = {
   body: {
     code: 'USER_IMAGE_PROCESSING_ERROR',
     message: 'Erro ao tentar processar a foto de perfil do usuário',
+  },
+}
+
+export const PROFILE_IMAGE_UPDATE_ERROR: IApiError = {
+  status: 500,
+  body: {
+    code: 'PROFILE_IMAGE_UPDATE_ERROR',
+    message: 'Erro ao tentar atualizar a foto de perfil do usuário',
   },
 }
 
@@ -142,7 +151,7 @@ export const IMAGE_TOO_BIG: IApiError = {
   status: 413,
   body: {
     code: 'IMAGE_TOO_BIG',
-    message: `O arquivo de imagem é muito grande! Forneça uma imagem de no máximo ${MAX_IMAGE_FILE_SIZE_BYTES}mb`,
+    message: `O arquivo de imagem é muito grande! Forneça uma imagem de no máximo ${Math.floor(MAX_IMAGE_FILE_SIZE_BYTES / MB_IN_BYTES)}mb`,
   },
 }
 
@@ -183,5 +192,13 @@ export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiError = {
   body: {
     code: 'PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER',
     message: 'A recuperação de senha não foi solicitada pelo usuário',
+  },
+}
+
+export const ADMIN_CANNOT_DELETE_SELF: IApiError = {
+  status: 403,
+  body: {
+    code: 'ADMIN_CANNOT_DELETE_SELF',
+    message: 'Administradores não podem deletar a si mesmos',
   },
 }

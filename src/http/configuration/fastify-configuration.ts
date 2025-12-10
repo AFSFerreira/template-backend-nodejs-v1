@@ -1,5 +1,5 @@
-import { KB_IN_BYTES } from '@constants/file-constants'
 import type { FastifyServerOptions } from 'fastify'
+import { KB_IN_BYTES } from '@constants/size-constants'
 
 export const fastifyConfiguration = {
   logger: false,

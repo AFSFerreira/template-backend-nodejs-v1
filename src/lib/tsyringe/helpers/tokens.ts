@@ -8,6 +8,7 @@ export const tokens = {
     authenticationAudits: 'AuthenticationAuditsRepository',
     blogs: 'BlogsRepository',
     directorsBoard: 'DirectorsBoardRepository',
+    directorPositions: 'DirectorPositionsRepository',
     enrolledCourses: 'EnrolledCoursesRepository',
     institutions: 'InstitutionsRepository',
     keywords: 'KeywordsRepository',

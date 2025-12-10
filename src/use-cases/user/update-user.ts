@@ -1,25 +1,27 @@
-import type { UpdateUserQuery } from '@custom-types/repositories/user/update-user-query'
+import type { UpdateUserQuery } from '@custom-types/repository/user/update-user-query'
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
-import { env } from '@env/index'
-import { logger } from '@lib/logger'
+import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings'
-import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import { env } from '@env/index'
+import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { ActivityAreaType } from '@prisma/client'
 import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
 import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
-import { validateActivityAreas } from '@services/validate-activity-areas'
-import { validateInstitutionName } from '@services/validate-institution-name'
+import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { ensureExists } from '@utils/guards/ensure'
+import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
@@ -70,15 +72,22 @@ export class UpdateUserUseCase {
           })
 
           if (userConflictingUpdateInfo) {
-            if (userConflictingUpdateInfo.email === data.user.email) {
-              throw new UserWithSameEmail()
+            const apiError = getTrueMapping<ApiError>([
+              {
+                expression: userConflictingUpdateInfo.email === data.user.email,
+                value: new UserWithSameEmail(),
+              },
+              {
+                expression: userConflictingUpdateInfo.username === data.user.username,
+                value: new UserWithSameUsername(),
+              },
+            ])
+
+            if (!apiError) {
+              throw new UserAlreadyExistsError()
             }
 
-            if (userConflictingUpdateInfo.username === data.user.username) {
-              throw new UserWithSameUsername()
-            }
-
-            throw new UserAlreadyExistsError()
+            throw apiError
           }
         }
 

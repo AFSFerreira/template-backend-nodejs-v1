@@ -2,12 +2,12 @@ import type {
   RegisterGuestMeetingUseCaseRequest,
   RegisterGuestMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-guest-meeting'
-import { logger } from '@lib/logger'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { REGISTER_GUEST_MEETING } from '@messages/loggings'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { REGISTER_GUEST_MEETING } from '@messages/loggings/meeting-loggings'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'

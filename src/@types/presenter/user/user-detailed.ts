@@ -1,6 +1,6 @@
 import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
 
-export interface HTTPUserDetails {
+interface HTTPUserDetails {
   id: string
   fullName: string
   email: string
@@ -31,7 +31,7 @@ export interface HTTPUserDetails {
   academicPublications?: HTTPAcademicPublications[]
 }
 
-export interface HTTPAddress {
+interface HTTPAddress {
   zip: string | undefined
   number: string | undefined
   street: string | undefined

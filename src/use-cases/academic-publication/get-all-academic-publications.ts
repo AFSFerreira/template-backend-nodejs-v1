@@ -2,8 +2,8 @@ import type {
   GetAllAcademicPublicationsUseCaseRequest,
   GetAllAcademicPublicationsUseCaseResponse,
 } from '@custom-types/use-cases/academic-publications/get-all-academic-publications'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

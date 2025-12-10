@@ -225,6 +225,7 @@ model DirectorBoard {
 
 model DirectorPosition {
   id            Int            @id @default(autoincrement())
+  publicId      String         @unique @default(uuid(7)) @map("public_id")
   position      String         @unique
   precedence    Int
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)

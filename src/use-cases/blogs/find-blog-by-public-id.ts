@@ -2,10 +2,10 @@ import type {
   FindBlogByPublicIdUseCaseRequest,
   FindBlogByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/blogs/find-blog-by-public-id'
+import type { BlogsRepository } from '@repositories/blogs-repository'
 import { redis } from '@lib/redis'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import { registerBlogViews } from '@services/register-blog-views'
+import { registerBlogViews } from '@services/cache/register-blog-views'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/guards/ensure'
 import { inject, injectable } from 'tsyringe'

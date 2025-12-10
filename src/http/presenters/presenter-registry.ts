@@ -1,6 +1,6 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import { logger } from '@lib/logger'
-import { PRESENTER_STRATEGY_ALREADY_EXISTS, PRESENTER_STRATEGY_NOT_FOUND } from '@messages/global-errors'
+import { PRESENTER_STRATEGY_ALREADY_EXISTS, PRESENTER_STRATEGY_NOT_FOUND } from '@messages/errors/global-errors'
 
 class PresenterRegistry {
   private strategies = new Map<string, IPresenterStrategy<unknown, unknown>>()

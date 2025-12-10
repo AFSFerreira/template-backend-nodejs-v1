@@ -2,12 +2,12 @@ import type {
   ResetPasswordUseCaseRequest,
   ResetPasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/reset-password'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UsersRepository } from '@repositories/users-repository'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings'
-import type { UsersRepository } from '@repositories/users-repository'
+import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings/user-loggings'
 import { PasswordRecoveryNotRequestedByUserError } from '@use-cases/errors/user/password-recovery-not-requested-by-user-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/guards/ensure'

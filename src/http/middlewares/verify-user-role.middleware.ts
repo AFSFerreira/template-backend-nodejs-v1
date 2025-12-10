@@ -1,6 +1,6 @@
-import { FORBIDDEN, UNAUTHORIZED } from '@messages/responses/common-responses'
 import type { UserRoleType } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { FORBIDDEN, UNAUTHORIZED } from '@messages/responses/common-responses'
 
 export function verifyUserRole(allowedRoles: Set<UserRoleType>) {
   return async (request: FastifyRequest, reply: FastifyReply) => {

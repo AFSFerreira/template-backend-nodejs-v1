@@ -1,7 +1,7 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import path from 'node:path'
 import { GetElectionNoticeUseCase } from '@use-cases/document-management/get-election-notice'
 import { mapExtensionToMimeType } from '@utils/mappers/map-mime-type'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function getElectionNotice(_request: FastifyRequest, reply: FastifyReply) {

@@ -2,8 +2,8 @@ import type {
   GetAllMeetingsUseCaseRequest,
   GetAllMeetingsUseCaseResponse,
 } from '@custom-types/use-cases/meeting/get-all-meetings'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

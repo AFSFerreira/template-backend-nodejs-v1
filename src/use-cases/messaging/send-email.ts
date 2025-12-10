@@ -1,7 +1,7 @@
 import type { SendEmailUseCaseRequest } from '@custom-types/use-cases/messaging/send-email'
 import { logger } from '@lib/logger'
-import { SEND_EMAIL_MESSAGE } from '@messages/loggings'
-import { sendEmail } from '@services/send-email'
+import { SEND_EMAIL_MESSAGE } from '@messages/loggings/meeting-loggings'
+import { sendEmail } from '@services/external/send-email'
 import { injectable } from 'tsyringe'
 
 @injectable()

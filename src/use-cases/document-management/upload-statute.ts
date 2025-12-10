@@ -1,10 +1,12 @@
-import path from 'node:path'
-import { STATUTE_FILE_NAME } from '@constants/file-constants'
 import type {
   UploadDocumentUseCaseRequest,
   UploadDocumentUseCaseResponse,
 } from '@custom-types/use-cases/document-management/upload-document'
-import { swapMultipartFiles } from '@services/swap-multipart-files'
+import path from 'node:path'
+import { STATUTE_FILE_NAME } from '@constants/static-file-constants'
+import { logger } from '@lib/logger'
+import { STATUTE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/document-management-loggings'
+import { swapMultipartFiles } from '@services/files/swap-multipart-files'
 import { FileTooBigError } from '@use-cases/errors/document-management/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
 import { injectable } from 'tsyringe'
@@ -34,6 +36,8 @@ export class UploadStatuteUseCase {
     if (!persistImageIsSuccessful) {
       throw new FileTooBigError()
     }
+
+    logger.info({ filename }, STATUTE_UPLOADED_SUCCESSFULLY)
 
     return {}
   }

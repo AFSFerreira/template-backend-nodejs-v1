@@ -1,3 +1,4 @@
+import ms from 'ms'
 import { z } from 'zod'
 import { TOKEN_DURATION_REGEX } from '../constants/regex-constants'
 
@@ -20,6 +21,10 @@ const envSchema = z.object({
 
   // Database:
   DATABASE_URL: z.url().trim().nonempty(),
+  DB_POOL_MAX: z.coerce.number().int().positive().default(10),
+  DB_POOL_MIN: z.coerce.number().int().positive().default(2),
+  DB_CONNECTION_TIMEOUT: z.coerce.number().int().positive().default(ms('10s')),
+  DB_IDLE_TIMEOUT: z.coerce.number().int().positive().default(ms('30s')),
 
   // Redis:
   REDIS_HOST: z.string().trim().nonempty(),

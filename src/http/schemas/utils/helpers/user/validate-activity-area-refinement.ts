@@ -1,6 +1,6 @@
 import type { ActivityAreaValidationData } from '@custom-types/schemas/utils/activity-area-validation-data'
-import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations'
 import type { RefinementCtx } from 'zod'
+import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations/user-validations'
 
 export function validateActivityAreaRefinement(data: ActivityAreaValidationData, ctx: RefinementCtx) {
   if (data.activityArea.mainActivityArea === 'OUTRA' && !data.user.activityAreaDescription) {

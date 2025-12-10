@@ -1,8 +1,8 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { registerUserMeetingBodySchema } from '@schemas/meeting/register-user-meeting-body-schema'
 import { registerUserMeetingParamsSchema } from '@schemas/meeting/register-user-meeting-params-schema'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { RegisterUserMeetingUseCase } from '@use-cases/meeting/register-user-meeting'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function registerUserMeeting(request: FastifyRequest, reply: FastifyReply) {

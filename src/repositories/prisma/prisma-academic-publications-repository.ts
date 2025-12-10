@@ -1,10 +1,10 @@
-import type { AcademicPublicationRaw } from '@custom-types/adapter/input/academic-publication-raw-type'
-import type { ListAllAcademicPublicationsQuery } from '@custom-types/repositories/academic-publication/list-all-academic-publications-query'
+import type { AcademicPublicationSimplifiedRaw } from '@custom-types/adapter/academic-publication-simplified'
+import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/academic-publication/list-all-academic-publications-query'
 import type { OrderableType } from '@custom-types/validator/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
@@ -94,7 +94,7 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
     const [countResult, academicPublications] = await Promise.all([
       this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
-      this.dbContext.client.$queryRaw<AcademicPublicationRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<AcademicPublicationSimplifiedRaw[]>(searchQuery),
     ])
 
     const pageSize = query.limit

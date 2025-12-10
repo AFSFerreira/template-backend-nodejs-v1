@@ -3,7 +3,7 @@ import { env } from '@env/index'
 import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses'
 import * as Sentry from '@sentry/node'
 import { nodeProfilingIntegration } from '@sentry/profiling-node'
-import { getBusinessError } from '@services/get-business-error'
+import { getBusinessError } from '@services/error-handlers/get-business-error'
 
 export function initSentry() {
   if (!HAS_SENTRY) return

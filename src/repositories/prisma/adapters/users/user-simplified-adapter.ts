@@ -1,5 +1,7 @@
-import type { UserWithSimplifiedDetailsRaw } from '@custom-types/adapter/input/user-with-simplified-details-raw-type'
-import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/output/custom-user-with-simplified-details-type'
+import type {
+  CustomUserWithSimplifiedDetails,
+  UserWithSimplifiedDetailsRaw,
+} from '@custom-types/adapter/user-simplified'
 
 export function userSimplifiedAdapter(
   customSimplifiedUser: UserWithSimplifiedDetailsRaw,

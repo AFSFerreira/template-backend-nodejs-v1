@@ -2,8 +2,8 @@ import type {
   GetAllDirectorBoardUseCaseRequest,
   GetAllDirectorBoardUseCaseResponse,
 } from '@custom-types/use-cases/director-board/get-all-directors-board'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

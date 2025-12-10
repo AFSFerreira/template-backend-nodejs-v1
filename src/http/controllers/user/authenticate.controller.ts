@@ -1,8 +1,10 @@
+import type { HTTPUser } from '@custom-types/presenter/user/user-default'
+import type { User } from '@prisma/client'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'
-import { UserPresenter } from '@presenters/user-presenter'
+import { UserPresenter } from '@presenters/variants/user-presenter'
 import { authenticateBodySchema } from '@schemas/user/authenticate-body-schema'
 import { AuthenticateUseCase } from '@use-cases/user/authenticate'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
@@ -52,7 +54,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     .send({
       data: {
         accessToken,
-        user: UserPresenter.toHTTP(user),
+        user: UserPresenter.toHTTP<User, HTTPUser>(user),
       },
     })
 }

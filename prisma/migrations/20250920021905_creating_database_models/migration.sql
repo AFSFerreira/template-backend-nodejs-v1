@@ -86,13 +86,31 @@ CREATE TABLE "public"."addresses" (
     "street" TEXT NOT NULL,
     "district" TEXT NOT NULL,
     "city" TEXT NOT NULL,
-    "state" TEXT NOT NULL,
-    "country" TEXT NOT NULL,
     "complement" TEXT,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" INTEGER NOT NULL,
+    "state_id" INTEGER NOT NULL,
 
     CONSTRAINT "addresses_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "address_states" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "country_id" INTEGER NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "address_states_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "address_countries" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "address_countries_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -182,6 +200,7 @@ CREATE TABLE "public"."directors_board" (
 -- CreateTable
 CREATE TABLE "public"."director_positions" (
     "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
     "position" TEXT NOT NULL,
     "precedence" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -420,10 +439,19 @@ CREATE UNIQUE INDEX "users_secondary_email_key" ON "users"("secondary_email");
 CREATE UNIQUE INDEX "addresses_user_id_key" ON "public"."addresses"("user_id");
 
 -- CreateIndex
-CREATE INDEX "addresses_state_idx" ON "public"."addresses"("state");
+CREATE INDEX "addresses_user_id_idx" ON "public"."addresses"("user_id");
 
 -- CreateIndex
-CREATE INDEX "addresses_user_id_idx" ON "public"."addresses"("user_id");
+CREATE UNIQUE INDEX "address_states_name_country_id_key" ON "address_states"("name", "country_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "address_countries_name_key" ON "address_countries"("name");
+
+-- CreateIndex
+CREATE INDEX "address_countries_name_idx" ON "address_countries"("name");
+
+-- CreateIndex
+CREATE INDEX "addresses_state_id_idx" ON "addresses"("state_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses"("user_id");
@@ -463,6 +491,9 @@ CREATE UNIQUE INDEX "directors_board_director_position_id_key" ON "public"."dire
 
 -- CreateIndex
 CREATE UNIQUE INDEX "director_positions_position_key" ON "public"."director_positions"("position");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "director_positions_public_id_key" ON "director_positions"("public_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."meeting_payment_information"("meeting_id");
@@ -532,6 +563,12 @@ ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FO
 
 -- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "addresses" ADD CONSTRAINT "addresses_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "address_states"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "address_states" ADD CONSTRAINT "address_states_country_id_fkey" FOREIGN KEY ("country_id") REFERENCES "address_countries"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."enrolled_courses" ADD CONSTRAINT "enrolled_courses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

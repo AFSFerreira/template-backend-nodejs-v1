@@ -1,5 +1,5 @@
-import { env } from '@env/index'
 import type { RedisOptions } from 'ioredis'
+import { env } from '@env/index'
 
 export const redisConnection = {
   host: env.REDIS_HOST,

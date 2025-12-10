@@ -12,3 +12,5 @@ export const SMTP_GREETING_TIMEOUT = ms('5s')
 export const SMTP_SOCKET_TIMEOUT = ms('20s')
 
 export const TEMP_PROFILE_IMAGES_TTL_IN_MS = ms('1d')
+
+export const SENTRY_CLOSE_TIMEOUT = ms('2s')

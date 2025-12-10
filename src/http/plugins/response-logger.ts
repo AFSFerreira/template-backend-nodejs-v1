@@ -1,5 +1,5 @@
-import { logger } from '@lib/logger'
 import type { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
+import { logger } from '@lib/logger'
 
 export function logResponse(request: FastifyRequest, reply: FastifyReply, _done: HookHandlerDoneFunction) {
   logger.info({
