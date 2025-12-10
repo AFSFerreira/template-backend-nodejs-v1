@@ -1,5 +1,5 @@
 import type { AddressState, User } from '@prisma/client'
-import { adapter } from '@lib/prisma/helpers/configuration'
+import { adapter, pool } from '@lib/prisma/helpers/configuration'
 import { ActivityAreaType, PrismaClient } from '@prisma/client'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
@@ -48,9 +48,20 @@ async function main() {
   const addressStates: AddressState[] = []
 
   for (const addressStateInfo of addressStatesArray) {
-    const addressState = await prisma.addressState.create({
-      data: addressStateInfo,
+    let addressState = await prisma.addressState.findFirst({
+      where: {
+        name: addressStateInfo.name,
+        Country: {
+          name: addressStateInfo.Country.connectOrCreate?.where.name
+        }
+      }
     })
+
+    if (!addressState) {
+      addressState = await prisma.addressState.create({
+        data: addressStateInfo,
+      })
+    }
 
     addressStates.push(addressState)
   }
@@ -143,6 +154,7 @@ async function main() {
     })
   }
 
+
   // Criação das Informações de Corpo Diretivo:
   for (let i = 0; i < dummyDirectorBoardUsers.length; i++) {
     const dummyDirectorInfo = dummyDirectorBoardUsers[i]
@@ -183,6 +195,7 @@ async function main() {
     }
   }
 
+
   // Criando Informações Bancárias:
   await prisma.paymentInfo.upsert({
     where: { id: 1 },
@@ -203,12 +216,14 @@ async function main() {
     })
   }
 
+
   for (const finishedMeeting of alreadyFinishedMeetings) {
     const finishedMeetingAlreadyExists = await prisma.meeting.findFirst({
       where: {
         title: finishedMeeting.title,
       },
     })
+
 
     if (!finishedMeetingAlreadyExists) {
       await prisma.meeting.create({
@@ -221,6 +236,7 @@ async function main() {
 main()
   .then(async () => {
     await prisma.$disconnect()
+    await pool.end()
   })
   .catch(async (error) => {
     // eslint-disable-next-line no-console
