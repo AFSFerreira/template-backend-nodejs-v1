@@ -32,7 +32,7 @@
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "20.0.0",
+    "@commitlint/config-conventional": "20.2.0",
     "@eslint/js": "9.39.1",
     "@sentry/cli": "2.58.2",
     "@swc/core": "1.15.3",
