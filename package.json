@@ -27,7 +27,7 @@
     "db:migrate:dev:default": "prisma migrate dev --name creating_database_models",
     "db:migrate:reset": "prisma migrate reset --force",
     "db:seed": "prisma db seed",
-    "db:reset": "npm run db:migrate:reset && npm run db:seed",
+    "db:reset": "npm run db:generate && npm run db:migrate:reset && npm run db:seed",
     "db:deploy": "prisma migrate deploy && prisma generate && npm run db:seed",
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
   },
