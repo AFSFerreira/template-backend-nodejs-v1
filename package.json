@@ -11,7 +11,7 @@
     "start:dev": "npm run generate:presenters && tsx watch --env-file=.env --no-deprecation src/server.ts",
     "start:prod": "node --enable-source-maps --env-file=.env dist/server.js",
     "start:prod:docker": "node --enable-source-maps dist/server.js",
-    "ci:build": "rimraf dist && npm run generate:presenters && tsc && tsup",
+    "ci:build": "rimraf dist; npm run generate:presenters && tsc && tsup",
     "ci:lint": "npm run lint:fix:prisma && npm run lint:fix:src",
     "ci:format": "npm run format:prisma && npm run format:src",
     "lint:src": "eslint src/**/*.{js,ts,tsx,jsx}",
