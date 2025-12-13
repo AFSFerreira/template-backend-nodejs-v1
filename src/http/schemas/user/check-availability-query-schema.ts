@@ -13,7 +13,7 @@ const checkAvailabilityQueryRawSchema = z
   .partial()
 
 export const checkAvailabilityQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     ...(query.identityType || query.identityDocument
       ? {

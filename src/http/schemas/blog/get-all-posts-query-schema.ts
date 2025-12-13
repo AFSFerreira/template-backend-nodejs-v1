@@ -22,7 +22,7 @@ const getAllPostsQueryRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllPostsQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
       ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),

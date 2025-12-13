@@ -28,5 +28,3 @@ export const REGULAR_PERMISSIONS_ARRAY = [UserRoleType.CONTENT_LEADER, UserRoleT
 export const TRIVIAL_PERMISSIONS_ARRAY = [UserRoleType.DEFAULT] as const
 
 export const END_SIGNALS = ['SIGINT', 'SIGTERM']
-
-export const REDIS_STARTED_STATUS = ['ready', 'connecting']

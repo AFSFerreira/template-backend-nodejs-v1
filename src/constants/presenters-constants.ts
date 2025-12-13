@@ -4,6 +4,8 @@ export const USER_DEFAULT_PRESENTER_KEY = 'user:default'
 
 export const USER_DETAILED_PRESENTER_KEY = 'user:detailed'
 
+export const USER_DETAILED_FOR_ADMIN_PRESENTER_KEY = 'user:detailed-for-admin'
+
 // ----------------------------------------------------------------------------------------- //
 
 export const ACADEMIC_PUBLICATION_DEFAULT_PRESENTER_KEY = 'academic-publication:default'

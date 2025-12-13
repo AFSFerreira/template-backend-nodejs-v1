@@ -10,7 +10,7 @@ const getAllDirectorBoardRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllDirectorBoardSchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
       ...(query.precedenceOrder ? { precedenceOrder: query.precedenceOrder } : {}),

@@ -25,7 +25,7 @@ const getAllAcademicPublicationsQueryRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllAcademicPublicationsQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     publicationYear: query.publicationYear
       ? { year: query.publicationYear, publicationYearComparisonOrder: query.publicationYearComparisonOrder }

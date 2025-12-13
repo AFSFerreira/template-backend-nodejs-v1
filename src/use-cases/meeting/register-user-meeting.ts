@@ -36,7 +36,7 @@ export class RegisterUserMeetingUseCase {
   async execute(
     registerUserMeetingUseCaseInput: RegisterUserMeetingUseCaseRequest,
   ): Promise<RegisterUserMeetingUseCaseResponse> {
-    const { user, participation: meetingParticipation } = await this.dbContext.runInTransaction(async () => {
+    const { participation: meetingParticipation } = await this.dbContext.runInTransaction(async () => {
       const user = ensureExists({
         value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userPublicId),
         error: new UserNotFoundError(),
@@ -65,10 +65,10 @@ export class RegisterUserMeetingUseCase {
         userId: user.id,
       })
 
-      return { user, participation }
+      return { participation }
     })
 
-    logger.info({ meetingId: registerUserMeetingUseCaseInput.meetingId, userId: user.id }, REGISTER_USER_MEETING)
+    logger.info({ meetingId: registerUserMeetingUseCaseInput.meetingId }, REGISTER_USER_MEETING)
 
     return { meetingParticipation }
   }

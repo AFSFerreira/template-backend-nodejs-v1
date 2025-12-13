@@ -31,3 +31,5 @@ export const REMOVE_UPDATE_IMAGE_FALLBACK_ERROR =
 export const USER_PERMISSIONS_UPDATED_SUCCESSFULLY = 'Permissões do usuário atualizadas com sucesso'
 
 export const PROFILE_IMAGE_UPDATED_SUCCESSFULLY = 'Foto de perfil atualizada com sucesso'
+
+export const ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY = 'Role de administrador transferida com sucesso'

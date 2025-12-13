@@ -10,9 +10,11 @@ import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_DELETION_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { UserRoleType } from '@prisma/client'
 import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/guards/ensure'
 import { inject, injectable } from 'tsyringe'
+import { AdminCannotDeleteSelfError } from '../errors/user/admin-cannot-delete-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
 @injectable()
@@ -31,6 +33,10 @@ export class DeleteUserUseCase {
         value: await this.usersRepository.findByPublicId(publicId),
         error: new UserNotFoundError(),
       })
+
+      if (user.role === UserRoleType.ADMIN) {
+        throw new AdminCannotDeleteSelfError()
+      }
 
       await this.usersRepository.delete(user.id)
 

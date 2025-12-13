@@ -14,7 +14,7 @@ export const getAllInstitutionsWithUsersQueryRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllInstitutionsWithUsersQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
       ...(query.usersCount ? { usersCount: query.usersCount } : {}),

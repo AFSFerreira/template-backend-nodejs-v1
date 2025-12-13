@@ -1,18 +1,17 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
+import type { HTTPUserWithDetailsForAdmin } from '@custom-types/presenter/user/user-detailed-for-admin'
 import type { UserWithDetails } from '@custom-types/validator/user-with-details'
-import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { USER_DETAILED_FOR_ADMIN_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-@RegisterPresenter(USER_DETAILED_PRESENTER_KEY)
-export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetails> {
-  public toHTTP(input: UserWithDetails): HTTPUserWithDetails {
+@RegisterPresenter(USER_DETAILED_FOR_ADMIN_PRESENTER_KEY)
+export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetailsForAdmin> {
+  public toHTTP(input: UserWithDetails): HTTPUserWithDetailsForAdmin {
     const {
       id,
       passwordHash,
       publicId,
-      membershipStatus,
       loginAttempts,
       lastLogin,
       recoveryPasswordTokenHash,
@@ -23,7 +22,6 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails
       institutionId,
       subActivityAreaId,
       fullNameUnaccent,
-      interestDescription,
       Institution,
       ActivityArea,
       SubActivityArea,
@@ -38,6 +36,7 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails
     return {
       ...filteredUser,
       id: input.publicId,
+      interestDescription: input.interestDescription,
       birthdate: truncateDate(input.birthdate),
 
       institutionName: input.Institution?.name,

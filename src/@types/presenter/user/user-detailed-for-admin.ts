@@ -1,4 +1,10 @@
-import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
+import type {
+  EducationLevelType,
+  IdentityType,
+  MembershipStatusType,
+  OccupationType,
+  UserRoleType,
+} from '@prisma/client'
 
 interface HTTPUserDetails {
   id: string
@@ -13,6 +19,7 @@ interface HTTPUserDetails {
   orcidNumber: string | null
   institutionName?: string
   departmentName: string | null
+  membershipStatus: MembershipStatusType
   institutionComplement: string | null
   occupation: OccupationType | null
   educationLevel: EducationLevelType
@@ -20,6 +27,7 @@ interface HTTPUserDetails {
   identityDocument: string
   emailIsPublic: boolean
   astrobiologyOrRelatedStartYear: number | null
+  interestDescription: string
   receiveReports: boolean
   publicInformation: string | null
   keywords?: string[]
@@ -70,6 +78,6 @@ interface HTTPDirectorBoardInfo {
   linkLattes?: string | null
 }
 
-export interface HTTPUserWithDetails extends HTTPUserDetails {
+export interface HTTPUserWithDetailsForAdmin extends HTTPUserDetails {
   directorBoardInfo?: HTTPDirectorBoardInfo | null
 }

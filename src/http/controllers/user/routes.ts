@@ -19,6 +19,7 @@ import { refreshToken } from './refresh-token.controller'
 import { register } from './register.controller'
 import { resetPassword } from './reset-password.controller'
 import { reviewMembershipStatus } from './review-membership-status.controller'
+import { transferAdminRole } from './transfer-admin-role.controller'
 import { updateProfileImage } from './update-profile-image.controller'
 import { updateUser } from './update-user.controller'
 import { updateUserByPublicId } from './update-user-by-public-id.controller'
@@ -129,6 +130,13 @@ export async function userRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     updateUserPermissions,
+  )
+  app.patch(
+    '/transfer-admin',
+    {
+      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+    },
+    transferAdminRole,
   )
   app.patch(
     '/me/profile-image',

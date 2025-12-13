@@ -52,9 +52,9 @@ async function main() {
       where: {
         name: addressStateInfo.name,
         Country: {
-          name: addressStateInfo.Country.connectOrCreate?.where.name
-        }
-      }
+          name: addressStateInfo.Country.connectOrCreate?.where.name,
+        },
+      },
     })
 
     if (!addressState) {
@@ -154,7 +154,6 @@ async function main() {
     })
   }
 
-
   // Criação das Informações de Corpo Diretivo:
   for (let i = 0; i < dummyDirectorBoardUsers.length; i++) {
     const dummyDirectorInfo = dummyDirectorBoardUsers[i]
@@ -195,7 +194,6 @@ async function main() {
     }
   }
 
-
   // Criando Informações Bancárias:
   await prisma.paymentInfo.upsert({
     where: { id: 1 },
@@ -216,14 +214,12 @@ async function main() {
     })
   }
 
-
   for (const finishedMeeting of alreadyFinishedMeetings) {
     const finishedMeetingAlreadyExists = await prisma.meeting.findFirst({
       where: {
         title: finishedMeeting.title,
       },
     })
-
 
     if (!finishedMeetingAlreadyExists) {
       await prisma.meeting.create({

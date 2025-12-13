@@ -6,10 +6,12 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_PERMISSIONS_UPDATED_SUCCESSFULLY } from '@messages/loggings/user-loggings'
+import { UserRoleType } from '@prisma/client'
 import { isManagerPermissions } from '@services/guards/is-manager-permissions'
 import { ensureExists } from '@utils/guards/ensure'
 import { inject, injectable } from 'tsyringe'
 import { DirectorPositionNotFoundError } from '../errors/director-position/director-position-not-found-error'
+import { AdminRoleAlreadyAssignedError } from '../errors/user/admin-role-already-assigned-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
 @injectable()
@@ -30,6 +32,10 @@ export class UpdateUserPermissionsUseCase {
 
   async execute({ publicId, data }: UpdateUserPermissionsUseCaseRequest): Promise<void> {
     const user = await this.dbContext.runInTransaction(async () => {
+      if (data.role === UserRoleType.ADMIN) {
+        throw new AdminRoleAlreadyAssignedError()
+      }
+
       const foundUser = ensureExists({
         value: await this.usersRepository.findByPublicId(publicId),
         error: new UserNotFoundError(),

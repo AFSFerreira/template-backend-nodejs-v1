@@ -202,3 +202,19 @@ export const ADMIN_CANNOT_DELETE_SELF: IApiError = {
     message: 'Administradores não podem deletar a si mesmos',
   },
 }
+
+export const ADMIN_ROLE_ALREADY_ASSIGNED: IApiError = {
+  status: 409,
+  body: {
+    code: 'ADMIN_ROLE_ALREADY_ASSIGNED',
+    message: 'Já existe um administrador no sistema',
+  },
+}
+
+export const CANNOT_TRANSFER_ADMIN_TO_SELF: IApiError = {
+  status: 400,
+  body: {
+    code: 'CANNOT_TRANSFER_ADMIN_TO_SELF',
+    message: 'Não é possível transferir a role de administrador para si mesmo',
+  },
+}

@@ -16,7 +16,7 @@ export const getAllMeetingsQueryRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllMeetingsQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
       ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),

@@ -49,7 +49,7 @@ const getAllUsersDetailedQueryRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllUsersDetailedQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     birthdate: query.birthdate
       ? {

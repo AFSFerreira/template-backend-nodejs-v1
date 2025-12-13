@@ -90,7 +90,7 @@ export class AuthenticateUseCase {
       return user
     })
 
-    logger.info({ userId: authenticatedUser.id }, AUTHENTICATION_SUCCESSFUL)
+    logger.info(AUTHENTICATION_SUCCESSFUL)
 
     return { user: authenticatedUser }
   }

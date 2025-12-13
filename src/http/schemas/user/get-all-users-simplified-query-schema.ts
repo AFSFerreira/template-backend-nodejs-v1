@@ -18,7 +18,7 @@ export const getAllUsersSimplifiedQueryRawSchema = z
   .extend(paginatedSchema.shape)
 
 export const getAllUsersSimplifiedQuerySchema = z.preprocess(
-  (query: any) => ({
+  (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
       ...(query.fullNameOrder ? { fullNameOrder: query.fullNameOrder } : {}),

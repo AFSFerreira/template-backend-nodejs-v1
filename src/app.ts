@@ -9,6 +9,7 @@ import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import { initSentry } from '@lib/sentry'
 import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
+import { registerAppSignals } from '@services/system/register-app-signals'
 import fastify from 'fastify'
 import { corsConfiguration } from 'src/http/configuration/cors-configuration'
 import { fastifyConfiguration } from 'src/http/configuration/fastify-configuration'
@@ -37,5 +38,6 @@ app.addHook('preSerialization', preSerialization)
 app.addHook('onClose', gracefulShutdown)
 
 initSentry()
+registerAppSignals(app)
 
 app.setErrorHandler(fastifyErrorHandler)

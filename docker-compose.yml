@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - ${POSTGRES_PORT:-5432}:5432
+      - "${POSTGRES_HOST:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/postgresql
     # networks:
@@ -26,30 +26,13 @@ services:
     restart: on-failure:5
     env_file: .env
     ports:
-      - ${REDIS_PORT:-6379}:6379
+      - "${REDIS_HOST:-127.0.0.1}:${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/redis
-      # - ./redis.conf:/usr/local/etc/redis/redis.conf
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
     # networks:
     #   - app-network
-    command: >
-      sh -c "
-        redis-server
-        --requirepass ${REDIS_PASSWORD}
-        --maxmemory ${REDIS_MAXMEMORY:-256mb}
-        --maxmemory-policy ${REDIS_MAXMEMORY_POLICY:-noeviction}
-        --protected-mode ${REDIS_PROTECTED_MODE:-yes}
-        --appendonly ${REDIS_AOF_ENABLED:-no}
-        --databases ${REDIS_DATABASES:-16}
-        --bind ${REDIS_HOST:-localhost}
-        --port ${REDIS_PORT:-6379}
-        --rename-command FLUSHDB ''
-        --rename-command FLUSHALL ''
-        --save 900 1
-        --save 600 10
-        --save 300 100
-        --save 60 10000
-      "
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf", "--requirepass", "${REDIS_PASSWORD}", "--bind", "0.0.0.0", "--port", "${REDIS_PORT:-6379}"]
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
@@ -59,6 +42,8 @@ services:
 
   # backend:
   #   env_file: .env
+  #   environment:
+  #     - DATABASE_URL="postgresql://${POSTGRES_USERNAME:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/sbastrobiodb?schema=public"
   #   build:
   #     context: .
   #     dockerfile: Dockerfile
@@ -70,7 +55,7 @@ services:
   #     redis:
   #       condition: service_healthy
   #   ports:
-  #     - ${APP_PORT:-3000}:3000
+  #     - "127.0.0.1:${APP_PORT:-3000}:3000"
   #   volumes:
   #     - ./src:/app/src
   #     - ./prisma:/app/prisma
@@ -78,14 +63,20 @@ services:
   #     - backend_uploads:/usr/src/app/uploads
   #   networks:
   #     - app-network
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:${APP_PORT:-3000}/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 10s
 
 volumes:
   postgres_data:
     driver: local
   redis_data:
     driver: local
-  # backend_uploads:
-  #   driver: local
+#   backend_uploads:
+#     driver: local
 
 # networks:
 #   app-network:
