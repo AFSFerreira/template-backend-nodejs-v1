@@ -1,13 +1,12 @@
 import type { UpdateUserPermissionsBodySchemaType } from '@custom-types/schemas/user/update-user-permissions-body-schema'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { updateUserPermissionsBodySchema } from '@schemas/user/update-user-permissions-body-schema'
-import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
+import { updateUserPermissionsParamsSchema } from '@schemas/user/update-user-permissions-params-schema'
 import { UpdateUserPermissionsUseCase } from '@use-cases/user/update-user-permissions'
 import { container } from 'tsyringe'
-import z from 'zod'
 
 export async function updateUserPermissions(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = z.object({ publicId: modelPublicIdSchema }).parse(request.params)
+  const { publicId } = updateUserPermissionsParamsSchema.parse(request.params)
   const parsedBody = updateUserPermissionsBodySchema.parse(request.body) as UpdateUserPermissionsBodySchemaType
 
   const useCase = container.resolve(UpdateUserPermissionsUseCase)

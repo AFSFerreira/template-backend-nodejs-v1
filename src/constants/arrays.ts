@@ -21,9 +21,14 @@ export const HIGH_LEVEL_EDUCATION_TYPE_ARRAY = [
 
 export const ADMIN_PERMISSIONS_ARRAY = [UserRoleType.ADMIN] as const
 
-export const MANAGER_PERMISSIONS_ARRAY = [UserRoleType.ADMIN, UserRoleType.MANAGER] as const
+export const MANAGER_PERMISSIONS_ARRAY = [...ADMIN_PERMISSIONS_ARRAY, UserRoleType.MANAGER] as const
 
-export const REGULAR_PERMISSIONS_ARRAY = [UserRoleType.CONTENT_LEADER, UserRoleType.CONTENT_PRODUCER] as const
+export const CONTENT_LEADER_PERMISSIONS_ARRAY = [...MANAGER_PERMISSIONS_ARRAY, UserRoleType.CONTENT_LEADER] as const
+
+export const CONTENT_PRODUCERS_PERMISSIONS_ARRAY = [
+  ...CONTENT_LEADER_PERMISSIONS_ARRAY,
+  UserRoleType.CONTENT_PRODUCER,
+] as const
 
 export const TRIVIAL_PERMISSIONS_ARRAY = [UserRoleType.DEFAULT] as const
 

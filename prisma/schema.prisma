@@ -357,22 +357,24 @@ model MeetingDate {
 }
 
 model Blog {
-  id            Int                      @id @default(autoincrement())
-  publicId      String                   @unique @default(uuid(7)) @map("public_id")
-  title         String
-  bannerImage   String                   @map("banner_image")
-  authorName    String                   @map("author_name")
-  accessCount   Int                      @default(0) @map("access_count")
-  content       Json                     @db.Json
-  searchContent String                   @map("search_content")
-  createdAt     DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt     DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
-  userId        Int?                     @map("user_id")
-  searchTsvPt   Unsupported("tsvector")? @map("search_tsv_pt")
-  titleUnaccent String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent")
-  User          User?                    @relation(fields: [userId], references: [id])
-  Subcategories ActivityArea[]           @relation("blog_subcategories")
+  id              Int                      @id @default(autoincrement())
+  publicId        String                   @unique @default(uuid(7)) @map("public_id")
+  editorialStatus EditorialStatus          @map("editorial_status") @default(PENDING_APPROVAL)
+  title           String
+  bannerImage     String                   @map("banner_image")
+  authorName      String                   @map("author_name")
+  accessCount     Int                      @default(0) @map("access_count")
+  content         Json                     @db.Json // Prose mirror do blog
+  searchContent   String                   @map("search_content")
+  createdAt       DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
+  userId          Int?                     @map("user_id")
+  searchTsvPt     Unsupported("tsvector")? @map("search_tsv_pt")
+  titleUnaccent   String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent")
+  User            User?                    @relation(fields: [userId], references: [id])
+  Subcategories   ActivityArea[]           @relation("blog_subcategories")
 
+  @@index([editorialStatus])
   @@index([searchTsvPt], map: "idx_blogs_search_tsv_pt", type: Gin)
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_blogs_title_trgm_gin", type: Gin)
   @@map("blogs")
@@ -509,4 +511,13 @@ enum PresentationType {
 enum ActivityAreaType {
   AREA_OF_ACTIVITY
   SUB_AREA_OF_ACTIVITY
+}
+
+enum EditorialStatus {
+  PENDING_APPROVAL
+  PUBLISHED
+  // DRAFT
+  // APPROVED
+  // CHANGES_REQUESTED
+  // ARCHIVED
 }

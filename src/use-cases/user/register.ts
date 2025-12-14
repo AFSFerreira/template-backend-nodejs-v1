@@ -157,7 +157,7 @@ export class RegisterUseCase {
         return user
       })
 
-      logger.info(SUCCESSFUL_USER_CREATION)
+      logger.info({ userPublicId: createdUser.publicId, fullName: createdUser.fullName }, SUCCESSFUL_USER_CREATION)
 
       return { user: createdUser }
     } catch (error) {

@@ -1,9 +1,10 @@
-import type { CompressedImageInfo } from '@custom-types/services/compressed-image-info-type'
+import type { CompressedImageInfo } from '@custom-types/services/compressed-image-info'
 import type { SaveCompressedImage } from '@custom-types/services/save-compressed-image.'
 import crypto from 'node:crypto'
 import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { deleteFile } from '@utils/files/delete-file'
 import sharp from 'sharp'
 
 export async function saveCompressedImage({
@@ -29,9 +30,10 @@ export async function saveCompressedImage({
 
   try {
     await pipeline(imageStream, sharpStream, destinationStream)
-    return { finalImagePath, success: true }
+    return { finalImagePath, fileName: finalName, success: true }
   } catch (_error) {
-    return { finalImagePath, success: false }
+    await deleteFile(finalImagePath)
+    return { finalImagePath, fileName: finalName, success: false }
   } finally {
     destinationStream.close()
   }

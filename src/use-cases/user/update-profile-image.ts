@@ -43,18 +43,15 @@ export class UpdateProfileImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { finalImagePath, success } = await saveCompressedImage({
+    const { finalImagePath, fileName, success } = await saveCompressedImage({
       imageStream: filePart.file,
       folderPath: REGISTER_PROFILE_IMAGES_PATH,
     })
 
     // Deleta a imagem se ela estourar o buffer:
     if (!success || filePart.file.truncated) {
-      await deleteFile(finalImagePath)
       throw new ImageTooBigError()
     }
-
-    const fileName = path.basename(finalImagePath)
 
     try {
       await this.dbContext.runInTransaction(async () => {

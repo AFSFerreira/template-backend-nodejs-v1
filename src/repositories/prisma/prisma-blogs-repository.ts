@@ -1,4 +1,5 @@
 import type { BlogSimplifiedRaw } from '@custom-types/adapter/blog-simplified'
+import type { CreateBlogQuery } from '@custom-types/repository/blog/create-blog-query'
 import type { ListAllBlogsQuery } from '@custom-types/repository/blog/list-all-blogs-query'
 import type { OrderableType } from '@custom-types/validator/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
@@ -17,9 +18,23 @@ export class PrismaBlogsRepository implements BlogsRepository {
     @inject(tokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
-  async create(data: Prisma.BlogUncheckedCreateInput) {
+  async create(data: CreateBlogQuery) {
+    const { subcategoriesIds, userId, ...filteredBlogData } = data
+
     const blog = await this.dbContext.client.blog.create({
-      data,
+      data: {
+        ...filteredBlogData,
+        User: {
+          connect: {
+            id: userId,
+          },
+        },
+        Subcategories: {
+          connect: subcategoriesIds.map((subcategoryId) => ({
+            id: subcategoryId,
+          })),
+        },
+      },
       include: blogWithDetails.include,
     })
     return blog

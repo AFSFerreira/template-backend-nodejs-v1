@@ -22,6 +22,9 @@ CREATE TYPE "public"."PresentationType" AS ENUM ('ORAL', 'POSTER');
 -- CreateEnum
 CREATE TYPE "public"."ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_OF_ACTIVITY');
 
+-- CreateEnum
+CREATE TYPE "EditorialStatus" AS ENUM ('PENDING_APPROVAL', 'PUBLISHED');
+
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
     "id" SERIAL NOT NULL,
@@ -321,6 +324,7 @@ CREATE TABLE "public"."meeting_date" (
 CREATE TABLE "public"."blogs" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
+    "editorial_status" "EditorialStatus" NOT NULL DEFAULT 'PENDING_APPROVAL',
     "title" TEXT NOT NULL,
     "banner_image" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
@@ -521,6 +525,9 @@ CREATE INDEX "meeting_date_meeting_id_idx" ON "public"."meeting_date"("meeting_i
 
 -- CreateIndex
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "public"."blogs"("public_id");
+
+-- CreateIndex
+CREATE INDEX "blogs_editorial_status_idx" ON "blogs"("editorial_status");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("public_id");

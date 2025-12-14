@@ -4,6 +4,7 @@ import { logError } from '@lib/logger/helpers/log-error'
 import { PROFILE_IMAGE_PERSIST_ERROR } from '@messages/loggings/user-loggings'
 import fs from 'fs-extra'
 
+// Função para mover a imagem de perfil do usuário da pasta temporária para a pasta definitiva:
 export async function persistUserProfileImage(tempImageName: string) {
   try {
     const oldImagePath = path.resolve(REGISTER_TEMP_PROFILE_IMAGES_PATH, tempImageName)
@@ -14,7 +15,7 @@ export async function persistUserProfileImage(tempImageName: string) {
 
     await fs.move(oldImagePath, newImagePath, { overwrite: false })
 
-    return newImagePath
+    return path.basename(newImagePath)
   } catch (error) {
     logError({ error, message: PROFILE_IMAGE_PERSIST_ERROR })
 

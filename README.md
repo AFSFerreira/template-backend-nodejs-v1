@@ -206,7 +206,7 @@ npm run start:dev
 - **Pipefy do Projeto**: <a href="https://app.pipefy.com/pipes/306383839" target="_blank">Clique Aqui</a>
 - **Design Figma do Projeto**: <a href="https://www.figma.com/design/ULiwCqEx0UwiznBnox8JMO/Astrobiologia?node-id=0-1&p=f&t=S6I4CBTeWReB5J2u-0" target="_blank">Clique Aqui</a>
 - **Documentação da API**: <a href="https://documenter.getpostman.com/view/45717933/2sB3HgQigL">Clique Aqui</a>
-- **Diagrama ER do Banco de Dados** (senha: 362880): <a href="https://dbdocs.io/allber31415/SBAstrobio-DB?view=relationships">Clique Aqui</a>
+- **Diagrama ER do Banco de Dados** (senha: 362880): <a href="https://dbdocs.io/allber.ferreira/SBAstrobio-DB-Schema?view=relationships">Clique Aqui</a>
 
 ---
 
