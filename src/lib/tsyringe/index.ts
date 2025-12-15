@@ -13,6 +13,7 @@ import type { InstitutionsRepository } from '@repositories/institutions-reposito
 import type { KeywordsRepository } from '@repositories/keywords-repository'
 import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { PrismaAddressCountriesRepository } from '@repositories/prisma/address-countries-repository'
@@ -29,6 +30,7 @@ import { PrismaInstitutionsRepository } from '@repositories/prisma/prisma-instit
 import { PrismaKeywordsRepository } from '@repositories/prisma/prisma-keywords-repository'
 import { PrismaMeetingParticipantsRepository } from '@repositories/prisma/prisma-meeting-participants-repository'
 import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-repository'
+import { PrismaNewslettersRepository } from '@repositories/prisma/prisma-newsletters-repository'
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
 import { container } from 'tsyringe'
 import { tokens } from './helpers/tokens'
@@ -78,6 +80,8 @@ container.registerSingleton<MeetingParticipantsRepository>(
 )
 
 container.registerSingleton<MeetingsRepository>(tokens.repositories.meetings, PrismaMeetingsRepository)
+
+container.registerSingleton<NewslettersRepository>(tokens.repositories.newsletters, PrismaNewslettersRepository)
 
 container.registerSingleton<UsersRepository>(tokens.repositories.users, PrismaUsersRepository)
 

@@ -359,12 +359,12 @@ model MeetingDate {
 model Blog {
   id              Int                      @id @default(autoincrement())
   publicId        String                   @unique @default(uuid(7)) @map("public_id")
-  editorialStatus EditorialStatus          @map("editorial_status") @default(PENDING_APPROVAL)
+  editorialStatus EditorialStatus          @default(PENDING_APPROVAL) @map("editorial_status")
   title           String
   bannerImage     String                   @map("banner_image")
   authorName      String                   @map("author_name")
   accessCount     Int                      @default(0) @map("access_count")
-  content         Json                     @db.Json // Prose mirror do blog
+  content         Json                     @db.Json // Conteúdo em prose mirror do Blog
   searchContent   String                   @map("search_content")
   createdAt       DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -384,30 +384,18 @@ model Newsletter {
   id                Int                 @id @default(autoincrement())
   publicId          String              @unique @default(uuid(7)) @map("public_id")
   title             String
-  edition           String
-  number            String
+  sequenceNumber    String              @unique @map("sequence_number") // Número absoluto de sequência
+  editionNumber     String              @map("edition_number") // Número de edição do ano
+  volume            String // Ano de publicação
+  content           String              @db.Text // conteúdo em HTML da Newsletter
   commentsQuantity  Int                 @default(0) @map("comments_quantity")
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
   NewsletterComment NewsletterComment[]
-  NewsletterItem    NewsletterItem[]
 
-  @@unique([edition, number])
+  @@unique([volume, editionNumber])
+  @@index([editionNumber])
   @@map("newsletters")
-}
-
-model NewsletterItem {
-  id           Int        @id @default(autoincrement())
-  title        String
-  content      String
-  image        String
-  linkReport   String     @map("link_report")
-  createdAt    DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
-  newsletterId Int        @map("newsletter_id")
-  Newsletter   Newsletter @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
-
-  @@index([newsletterId])
-  @@map("newsletter_items")
 }
 
 model NewsletterComment {

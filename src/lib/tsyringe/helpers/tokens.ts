@@ -14,6 +14,7 @@ export const tokens = {
     keywords: 'KeywordsRepository',
     meetingParticipants: 'MeetingParticipantsRepository',
     meetings: 'MeetingsRepository',
+    newsletters: 'NewslettersRepository',
     users: 'UsersRepository',
   },
   infra: {

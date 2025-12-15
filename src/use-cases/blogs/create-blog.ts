@@ -13,12 +13,12 @@ import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { persistBlogBanner } from '@services/files/persist-blog-banner'
 import { persistBlogImage } from '@services/files/persist-blog-image'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { ensureExists } from '@utils/guards/ensure'
 import { inject, injectable } from 'tsyringe'
 import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 import { InvalidBlogContentError } from '../errors/blog/invalid-blog-content-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
-import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 
 @injectable()
 export class CreateBlogUseCase {

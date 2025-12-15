@@ -57,3 +57,6 @@ export const MEETING_DEFAULT_PRESENTER_KEY = 'meeting:default'
 export const MEETING_DETAILED_PRESENTER_KEY = 'meeting:detailed'
 
 export const MEETING_ONGOING_PRESENTER_KEY = 'meeting:ongoing'
+// ----------------------------------------------------------------------------------------- //
+
+export const NEWSLETTER_DEFAULT_PRESENTER_KEY = 'newsletter:default'

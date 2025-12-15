@@ -27,3 +27,5 @@ export const DOCUMENTS_PATH = path.join(BASE_PROJECT_PATH, 'uploads/documents')
 export const STATUTE_FILE_NAME_PATTERN = path.join(DOCUMENTS_PATH, STATUTE_FILE_NAME + '*')
 
 export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.join(DOCUMENTS_PATH, ELECTION_NOTICE_FILE_NAME + '*')
+
+export const NEWSLETTER_TEMP_HTML_PATH = path.join(BASE_PROJECT_PATH, 'uploads/temp/newsletter/html')

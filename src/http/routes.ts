@@ -9,6 +9,7 @@ import { documentManagementRoutes } from './controllers/document-management/rout
 import { healthCheck } from './controllers/health-check/health-check.controller'
 import { institutionRoutes } from './controllers/institution/routes'
 import { meetingRoutes } from './controllers/meeting/routes'
+import { newsletterRoutes } from './controllers/newsletter/routes'
 import { userRoutes } from './controllers/user/routes'
 
 export async function appRoutes(app: FastifyInstance) {
@@ -22,6 +23,7 @@ export async function appRoutes(app: FastifyInstance) {
   app.register(directorBoardRoutes, { prefix: '/directors-board' })
   app.register(directorPositionRoutes, { prefix: '/director-positions' })
   app.register(documentManagementRoutes, { prefix: '/document-management' })
+  app.register(newsletterRoutes, { prefix: '/newsletters' })
 
   app.get('/health', healthCheck)
 }

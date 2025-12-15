@@ -13,6 +13,8 @@ export const allowedDocumentMimeTypes: readonly string[] = [
 // Tipos de formato de imagens de perfil permitidas:
 export const allowedImageMimeTypes: readonly string[] = ['image/jpg', 'image/jpeg', 'image/png', 'image/webp']
 
+export const allowedHTMLMimeTypes: readonly string[] = ['text/html']
+
 export const PRESENTERS_VARIANTS_DIR = 'src/http/presenters/variants'
 export const PRESENTERS_GLOB_PATTERN = `${PRESENTERS_VARIANTS_DIR}/**/*.presenter.{ts,js}`
 export const PRESENTERS_OUTPUT_FILE = 'src/http/presenters/load-presenters.ts'

@@ -1,4 +1,3 @@
-import { logError } from '@lib/logger/helpers/log-error'
 import ms from 'ms'
 import { z } from 'zod'
 import { TOKEN_DURATION_REGEX } from '../constants/regex-constants'
@@ -47,7 +46,12 @@ const envSchema = z.object({
 const _env = envSchema.safeParse(process.env)
 
 if (!_env.success) {
-  logError({ error: _env.error, context: z.treeifyError(_env.error), message: '🚨 Invalid environment variables:' })
+  // eslint-disable-next-line no-console
+  console.error({
+    message: '🚨 Invalid environment variables:',
+    error: _env.error,
+    context: z.treeifyError(_env.error),
+  })
   throw new Error('Invalid environment variables! Please check your .env file or environment configuration.')
 }
 

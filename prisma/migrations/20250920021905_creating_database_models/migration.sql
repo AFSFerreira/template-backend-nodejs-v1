@@ -343,26 +343,15 @@ CREATE TABLE "public"."newsletters" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "edition" TEXT NOT NULL,
-    "number" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "sequence_number" TEXT NOT NULL,
+    "edition_number" TEXT NOT NULL,
+    "volume" TEXT NOT NULL,
     "comments_quantity" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "newsletters_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."newsletter_items" (
-    "id" SERIAL NOT NULL,
-    "title" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
-    "link_report" TEXT NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "newsletter_id" INTEGER NOT NULL,
-
-    CONSTRAINT "newsletter_items_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -533,10 +522,13 @@ CREATE INDEX "blogs_editorial_status_idx" ON "blogs"("editorial_status");
 CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("public_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "newsletters_edition_number_key" ON "public"."newsletters"("edition", "number");
+CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "newsletters"("sequence_number");
 
 -- CreateIndex
-CREATE INDEX "newsletter_items_newsletter_id_idx" ON "public"."newsletter_items"("newsletter_id");
+CREATE INDEX "newsletters_edition_number_idx" ON "newsletters"("edition_number");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "newsletters_volume_edition_number_key" ON "newsletters"("volume", "edition_number");
 
 -- CreateIndex
 CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id");
@@ -624,9 +616,6 @@ ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey
 
 -- AddForeignKey
 ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."newsletter_items" ADD CONSTRAINT "newsletter_items_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
