@@ -42,7 +42,7 @@
     "@types/multer": "2.0.0",
     "@types/node": "24.10.1",
     "@types/nodemailer": "7.0.3",
-    "@types/pg": "8.15.6",
+    "@types/pg": "8.16.0",
     "@typescript-eslint/eslint-plugin": "8.46.4",
     "@typescript-eslint/parser": "8.46.4",
     "@typescript-eslint/typescript-estree": "8.48.1",
