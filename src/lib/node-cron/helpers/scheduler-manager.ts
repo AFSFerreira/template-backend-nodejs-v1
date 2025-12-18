@@ -90,7 +90,7 @@ export class SchedulerManager {
   async startJob({ name, cronExpr, factory, options }: IStartJob) {
     if (this.tasks.has(name)) {
       if (this.logger) {
-        this.logger.warn(`Job ${name} já está rodando`)
+        this.logger.warn(`Job ${name} está inicializando`)
       }
       return
     }
