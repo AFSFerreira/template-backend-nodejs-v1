@@ -4,5 +4,6 @@ import type { GetAllAcademicPublicationsQuerySchemaType } from '@custom-types/sc
 
 export interface GetAllAcademicPublicationsUseCaseRequest extends GetAllAcademicPublicationsQuerySchemaType {}
 
-export interface GetAllAcademicPublicationsUseCaseResponse
-  extends PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]> {}
+export interface GetAllAcademicPublicationsUseCaseResponse extends PaginatedResult<
+  CustomAcademicPublicationWithSimplifiedDetails[]
+> {}

@@ -5,9 +5,10 @@ import { INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY } from '@constants/presenter
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY)
-export class InstitutionWithUsersCountPresenter
-  implements IPresenterStrategy<InstitutionsUsersCount, HTTPInstitutionWithUsersCount>
-{
+export class InstitutionWithUsersCountPresenter implements IPresenterStrategy<
+  InstitutionsUsersCount,
+  HTTPInstitutionWithUsersCount
+> {
   public toHTTP(input: InstitutionsUsersCount): HTTPInstitutionWithUsersCount {
     return {
       name: input.name,

@@ -14,3 +14,5 @@ export const SMTP_SOCKET_TIMEOUT = ms('20s')
 export const TEMP_PROFILE_IMAGES_TTL_IN_MS = ms('1d')
 
 export const SENTRY_CLOSE_TIMEOUT = ms('2s')
+
+export const AVERAGE_CRON_JOB_TIME_EXECUTION = ms('10m')

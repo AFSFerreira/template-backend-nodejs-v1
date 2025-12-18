@@ -5,9 +5,10 @@ import { DIRECTOR_BOARD_WITH_USER_PRESENTER_KEY } from '@constants/presenters-co
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(DIRECTOR_BOARD_WITH_USER_PRESENTER_KEY)
-export class DirectorBoardDefaultPresenter
-  implements IPresenterStrategy<DirectorBoardWithUser, HTTPDirectorBoardWithUser>
-{
+export class DirectorBoardDefaultPresenter implements IPresenterStrategy<
+  DirectorBoardWithUser,
+  HTTPDirectorBoardWithUser
+> {
   public toHTTP(input: DirectorBoardWithUser): HTTPDirectorBoardWithUser {
     return {
       id: input.User?.publicId,

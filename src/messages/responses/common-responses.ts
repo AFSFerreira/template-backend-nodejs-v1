@@ -1,6 +1,5 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 
-// Common/General responses
 export const MISSING_AUTHORIZATION_TOKEN: IApiError = {
   status: 401,
   body: {

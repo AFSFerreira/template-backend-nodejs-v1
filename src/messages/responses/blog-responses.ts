@@ -1,6 +1,5 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 
-// Blog-related responses
 export const BLOG_NOT_FOUND: IApiError = {
   status: 404,
   body: {

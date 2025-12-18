@@ -1,6 +1,5 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 
-// Meeting-related responses
 export const MEETING_NOT_FOUND: IApiError = {
   status: 404,
   body: {

@@ -1,6 +1,5 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 
-// Institution-related responses
 export const INVALID_INSTITUTION_NAME: IApiError = {
   status: 400,
   body: {

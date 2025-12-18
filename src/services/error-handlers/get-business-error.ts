@@ -1,11 +1,12 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 import { ApiError } from '@errors/api-error'
+import { SystemError } from '@errors/system-error'
 import { INTERNAL_SERVER_ERROR, SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses/common-responses'
 import { isFastifyError } from '@services/guards/is-fastify-error'
 import z, { ZodError } from 'zod'
 import { getFastifyError } from './get-fastify-error'
 
-export function getBusinessError(error: Error): IApiError {
+export function getBusinessError(error: Error): IApiError | SystemError {
   if (error instanceof ZodError) {
     const issues = z.treeifyError(error)
     return {
@@ -22,6 +23,10 @@ export function getBusinessError(error: Error): IApiError {
   }
 
   if (error instanceof ApiError) {
+    return error
+  }
+
+  if (error instanceof SystemError) {
     return error
   }
 

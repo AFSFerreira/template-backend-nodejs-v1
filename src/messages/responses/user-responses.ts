@@ -2,7 +2,6 @@ import type { IApiError } from '@custom-types/custom/api-error-type'
 import { MAX_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
 
-// User-related responses
 export const NO_USERS_AVAILABLE: IApiError = {
   status: 204,
   body: {
