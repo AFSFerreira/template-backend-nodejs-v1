@@ -34,7 +34,7 @@
     "@commitlint/types": "20.2.0",
     "@eslint/js": "9.39.1",
     "@sentry/cli": "2.58.4",
-    "@swc/core": "1.15.5",
+    "@swc/core": "1.15.6",
     "@types/eslint__js": "9.14.0",
     "@types/fs-extra": "11.0.4",
     "@types/json2csv": "5.0.7",
