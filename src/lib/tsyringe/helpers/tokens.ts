@@ -15,6 +15,7 @@ export const tokens = {
     meetingParticipants: 'MeetingParticipantsRepository',
     meetings: 'MeetingsRepository',
     newsletters: 'NewslettersRepository',
+    sliderImages: 'SliderImagesRepository',
     users: 'UsersRepository',
   },
   infra: {

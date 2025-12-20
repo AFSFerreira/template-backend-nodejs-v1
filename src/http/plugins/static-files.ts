@@ -38,6 +38,10 @@ export async function staticFileRoutes(app: FastifyInstance) {
       prefix: '/static/directors-board/profile-images/',
       root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'director-board', 'profile-images'),
     },
+    {
+      prefix: '/slider-banner/',
+      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-banner'),
+    },
   ]
 
   for (const fileRoute of fileRoutes) {
