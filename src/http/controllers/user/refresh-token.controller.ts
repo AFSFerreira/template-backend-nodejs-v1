@@ -2,6 +2,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
 import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses'
+import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
+import { getRequestUserRole } from '@services/http/get-request-user-role'
+import { getRequestUserStatus } from '@services/http/get-request-user-status'
 
 export async function refreshToken(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -12,20 +15,20 @@ export async function refreshToken(request: FastifyRequest, reply: FastifyReply)
   }
 
   const tokenPayload = {
-    role: request.user.role,
-    status: request.user.status,
+    role: getRequestUserRole(request),
+    status: getRequestUserStatus(request),
   }
 
   const accessToken = await reply.jwtSign(tokenPayload, {
     sign: {
-      sub: request.user.sub,
+      sub: getRequestUserPublicId(request),
       expiresIn: env.JWT_EXPIRATION,
     },
   })
 
   const refreshToken = await reply.jwtSign(tokenPayload, {
     sign: {
-      sub: request.user.sub,
+      sub: getRequestUserPublicId(request),
       expiresIn: env.JWT_REFRESH_EXPIRATION,
     },
   })

@@ -1,5 +1,5 @@
 export interface DeleteBlogImageUseCaseRequest {
-  fileName: string
+  filename: string
 }
 
 export interface DeleteBlogImageUseCaseResponse {}

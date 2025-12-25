@@ -2,6 +2,10 @@ import type { PrismaTransactionClient } from '../prisma/prisma-transaction-clien
 
 export interface IAsyncContext {
   requestId: string
+  requestInfo: {
+    host: string
+    protocol: string
+  }
   userId?: string
   prismaTransaction?: PrismaTransactionClient
 }

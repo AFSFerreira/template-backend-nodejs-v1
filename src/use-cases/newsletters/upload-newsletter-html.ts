@@ -6,7 +6,7 @@ import { NEWSLETTER_TEMP_HTML_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
 import { NEWSLETTER_HTML_UPLOADED_SUCCESSFULLY } from '@messages/loggings/newsletter-loggings'
 import { saveFile } from '@services/files/save-file'
-import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
+import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { FileTooBigError } from '@use-cases/errors/newsletter/file-too-big-error'
 import { injectable } from 'tsyringe'
 
@@ -24,7 +24,7 @@ export class UploadNewsletterHtmlUseCase {
       throw new FileTooBigError()
     }
 
-    const { fileName, success } = await saveFile({
+    const { filename, success } = await saveFile({
       originalFilename,
       fileStream: filePart.file,
       folderPath: NEWSLETTER_TEMP_HTML_PATH,
@@ -36,11 +36,11 @@ export class UploadNewsletterHtmlUseCase {
 
     logger.info(
       {
-        fileName,
+        filename,
       },
       NEWSLETTER_HTML_UPLOADED_SUCCESSFULLY,
     )
 
-    return { fileName }
+    return { filename }
   }
 }

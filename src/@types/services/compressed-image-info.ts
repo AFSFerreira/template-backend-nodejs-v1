@@ -1,5 +1,5 @@
 export interface CompressedImageInfo {
   finalImagePath: string
-  fileName: string
+  filename: string
   success: boolean
 }

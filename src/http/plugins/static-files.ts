@@ -1,46 +1,60 @@
 import type { FastifyInstance } from 'fastify'
-import path from 'node:path'
 import {
-  BASE_PROJECT_PATH,
-  PARTIAL_MEETING_BANNERS_IMAGE_PATH,
-  PARTIAL_REGISTER_PROFILE_IMAGES_PATH,
+  BLOG_BANNERS_PATH,
+  BLOG_IMAGES_PATH,
+  BLOG_TEMP_BANNERS_PATH,
+  BLOG_TEMP_IMAGES_PATH,
+  DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
+  MEETING_BANNERS_PATH,
+  REGISTER_PROFILE_IMAGES_PATH,
+  SLIDER_IMAGES_PATH,
 } from '@constants/dynamic-file-constants'
+import {
+  STATIC_BLOG_BANNERS_IMAGE_ROUTE,
+  STATIC_BLOG_IMAGE_ROUTE,
+  STATIC_DIRECTOR_BOARD_PROFILE_IMAGES_ROUTE,
+  STATIC_MEETING_BANNERS_IMAGE_ROUTE,
+  STATIC_SLIDER_IMAGE_ROUTE,
+  STATIC_TEMP_BLOG_BANNERS,
+  STATIC_TEMP_BLOG_IMAGES,
+  STATIC_USER_PROFILE_IMAGE_ROUTE,
+} from '@constants/static-routes-constants'
 import fastifyStatic from '@fastify/static'
 import { staticRouteConfigurations } from '../configuration/static-routes-configuration'
 
 export async function staticFileRoutes(app: FastifyInstance) {
   const fileRoutes = [
     {
-      prefix: '/static/users/profile-images/',
-      root: path.resolve(BASE_PROJECT_PATH, PARTIAL_REGISTER_PROFILE_IMAGES_PATH),
+      prefix: STATIC_USER_PROFILE_IMAGE_ROUTE,
+      root: REGISTER_PROFILE_IMAGES_PATH,
     },
     {
-      prefix: '/static/meetings/banners/',
-      root: path.resolve(BASE_PROJECT_PATH, PARTIAL_MEETING_BANNERS_IMAGE_PATH),
+      prefix: STATIC_MEETING_BANNERS_IMAGE_ROUTE,
+      root: MEETING_BANNERS_PATH,
     },
     {
-      prefix: '/static/blogs/banners/',
-      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'blog', 'banners'),
+      prefix: STATIC_BLOG_BANNERS_IMAGE_ROUTE,
+      root: BLOG_BANNERS_PATH,
     },
     {
-      prefix: '/static/blogs/images/',
-      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'blog', 'images'),
+      prefix: STATIC_BLOG_IMAGE_ROUTE,
+      root: BLOG_IMAGES_PATH,
     },
     {
-      prefix: '/static/blogs/temp-images/',
-      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'blog', 'images'),
+      prefix: STATIC_TEMP_BLOG_IMAGES,
+      root: BLOG_TEMP_IMAGES_PATH,
     },
     {
-      prefix: '/static/blogs/temp-banners/',
-      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'blog', 'banners'),
+      prefix: STATIC_TEMP_BLOG_BANNERS,
+      root: BLOG_TEMP_BANNERS_PATH,
     },
     {
-      prefix: '/static/directors-board/profile-images/',
-      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'director-board', 'profile-images'),
+      prefix: STATIC_DIRECTOR_BOARD_PROFILE_IMAGES_ROUTE,
+      root: DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
     },
     {
-      prefix: '/slider-banner/',
-      root: path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-banner'),
+      prefix: STATIC_SLIDER_IMAGE_ROUTE,
+      root: SLIDER_IMAGES_PATH,
     },
   ]
 

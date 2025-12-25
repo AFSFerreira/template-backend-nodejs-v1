@@ -6,15 +6,15 @@ import type Redis from 'ioredis'
 import type { ScheduledTask, TaskOptions } from 'node-cron'
 import type { Logger } from 'pino'
 import { AVERAGE_CRON_JOB_TIME_EXECUTION } from '@constants/timing-constants'
-import { SystemError } from '@errors/system-error'
 import {
   JOB_STARTED_SUCESSFUL,
   RUNNING_JOB_FAILED,
   RUNNING_SCHEDULED_JOB,
   UNHANDLED_JOB_ERROR,
 } from '@messages/loggings/scheduler-loggings'
-import { INVALID_CRON_ERROR, JOB_NAME_ALREADY_EXISTS } from '@messages/system/common-responses'
 import { cronSchema } from '@schemas/utils/generic-components/cron-schema'
+import { InvalidCronExpressionError } from '@services/errors/cron/invalid-cron-expression-error'
+import { JobNameAlreadyExistsError } from '@services/errors/jobs/job-name-already-exists-error'
 import cron from 'node-cron'
 import z from 'zod'
 import { BASIC_JOB_CONFIGURATION } from '../configuration/base-configuration'
@@ -62,17 +62,12 @@ export class SchedulerManager {
     const isValidCron = cronSchema.safeParse(cronExpr)
 
     if (!isValidCron.success) {
-      throw new SystemError({
-        ...INVALID_CRON_ERROR,
-        issues: z.treeifyError(isValidCron.error),
-      })
+      throw new InvalidCronExpressionError(z.treeifyError(isValidCron.error).errors)
     }
 
-    if (this.factories.has(jobName))
-      throw new SystemError({
-        ...JOB_NAME_ALREADY_EXISTS,
-        message: `O job ${jobName} registrado já existe`,
-      })
+    if (this.factories.has(jobName)) {
+      throw new JobNameAlreadyExistsError(jobName)
+    }
 
     this.factories.set(jobName, { cronExpr, factory, options })
 

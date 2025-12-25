@@ -1,6 +1,6 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
 import { MAX_DOCUMENT_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
-import { MAX_ACTIVE_SLIDER_IMAGES } from '@constants/slider-constants'
+import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 
 export const MISSING_STATUTE_FILE: IApiError = {
   status: 404,
@@ -22,7 +22,7 @@ export const SLIDER_ACTIVE_LIMIT_REACHED: IApiError = {
   status: 409,
   body: {
     code: 'SLIDER_ACTIVE_LIMIT_REACHED',
-    message: `Limite de ${MAX_ACTIVE_SLIDER_IMAGES} imagens ativas atingido. Desative uma imagem antes de adicionar ou ativar outra.`,
+    message: `Limite de ${MAX_SLIDER_IMAGES_QUANTITY} imagens ativas atingido. Desative uma imagem antes de adicionar ou ativar outra.`,
   },
 }
 

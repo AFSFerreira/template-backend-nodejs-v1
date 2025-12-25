@@ -6,5 +6,5 @@ export interface UploadNewsletterHtmlUseCaseRequest {
 }
 
 export interface UploadNewsletterHtmlUseCaseResponse {
-  fileName: string
+  filename: string
 }

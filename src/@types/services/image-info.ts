@@ -1,5 +1,5 @@
 export interface ImageInfo {
   finalImagePath: string
-  fileName: string
+  filename: string
   success: boolean
 }

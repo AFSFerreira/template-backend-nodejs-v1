@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
-import { getRequestUserId } from '@services/http/get-request-user-id'
+import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { rateLimit } from '@utils/http/rate-limit'
 import { findMeetingByPublicId } from './find-meeting-by-public-id.controller'
 import { getAllMeetings } from './get-all-meetings.controller'
@@ -17,7 +17,7 @@ export async function meetingRoutes(app: FastifyInstance) {
       ...rateLimit({
         max: 10,
         timeWindow: '1m',
-        keyGenerator: getRequestUserId,
+        keyGenerator: getRequestUserPublicId,
       }),
       preHandler: [verifyJwt],
     },

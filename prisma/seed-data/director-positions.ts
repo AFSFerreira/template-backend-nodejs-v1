@@ -40,7 +40,7 @@ export const directorPositionData8: Prisma.DirectorPositionCreateInput = {
   precedence: 5,
 }
 
-export const directorPositionsArray: Prisma.DirectorPositionCreateInput[] = [
+export const directorPositionsArray1: Prisma.DirectorPositionCreateInput[] = [
   directorPositionData1,
   directorPositionData2,
   directorPositionData3,

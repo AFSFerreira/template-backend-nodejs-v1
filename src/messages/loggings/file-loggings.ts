@@ -18,4 +18,8 @@ export const SWAP_FILE_LOOP_ERROR = 'Um erro ocorreu ao tentar trocar o conteúd
 
 export const FILE_RETRIEVAL_ERROR = 'Erro de recuperação de arquivos'
 
+export const INVALID_URL_FALLBACK = 'URL inválida, usando fallback'
+
 export const SAVE_MULTIPART_FILE_ERROR = 'Ocorreu um erro ao tentar persistir um arquivo'
+
+export const DIRECTORY_NOT_FOUND_ERROR = 'O diretório solicitado não foi encontrado'

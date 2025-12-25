@@ -64,14 +64,6 @@ export const INTERNAL_SERVER_ERROR: IApiError = {
   },
 }
 
-export const ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR: IApiError = {
-  status: 500,
-  body: {
-    code: 'ASYNC_LOCAL_STORAGE_NOT_INITIALIZED_ERROR',
-    message: 'Erro ao iniciar o local storage da requisição',
-  },
-}
-
 export const SYNTAX_ERROR: IApiError = {
   status: 400,
   body: {
@@ -174,5 +166,21 @@ export const MULTER_UNKNOWN_ERROR: IApiError = {
   body: {
     code: 'MULTER_UNKNOWN_ERROR',
     message: 'Ocorreu um erro desconhecido durante o upload do arquivo',
+  },
+}
+
+export const MISSING_USER_INFO: IApiError = {
+  status: 401,
+  body: {
+    code: 'MISSING_USER_INFO',
+    message: 'Informações do usuário não encontradas na requisição',
+  },
+}
+
+export const INVALID_PROSE_MIRROR_IMAGE_LINK: IApiError = {
+  status: 400,
+  body: {
+    code: 'INVALID_PROSE_MIRROR_IMAGE_LINK',
+    message: 'Um ou mais links de imagem no conteúdo são inválidos',
   },
 }

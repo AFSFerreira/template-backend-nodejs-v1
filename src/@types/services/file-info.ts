@@ -1,5 +1,5 @@
 export interface FileInfo {
   finalFilePath: string
-  fileName: string
+  filename: string
   success: boolean
 }

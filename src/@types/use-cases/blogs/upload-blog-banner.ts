@@ -6,5 +6,5 @@ export interface UploadBlogBannerUseCaseRequest {
 }
 
 export interface UploadBlogBannerUseCaseResponse {
-  fileName: string
+  filename: string
 }

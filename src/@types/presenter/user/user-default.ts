@@ -6,6 +6,7 @@ export interface HTTPUser {
   email: string
   username: string
   role: UserRoleType
+  profileImage: string
   birthdate: string | null | undefined
   linkLattes: string | null
   linkGoogleScholar: string | null

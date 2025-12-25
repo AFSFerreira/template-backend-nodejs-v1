@@ -5,5 +5,5 @@ export interface UploadRegisterProfileImageUseCaseRequest {
 }
 
 export interface UploadRegisterProfileImageUseCaseResponse {
-  fileName: string
+  filename: string
 }

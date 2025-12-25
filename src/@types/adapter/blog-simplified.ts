@@ -1,6 +1,9 @@
+import type { EditorialStatusType } from '@prisma/client'
+
 export interface BlogSimplifiedRaw {
   id: number
   public_id: string
+  editorial_status: EditorialStatusType
   title: string
   banner_image: string
   search_content: string
@@ -12,6 +15,7 @@ export interface BlogSimplifiedRaw {
 export interface CustomBlogWithSimplifiedDetails {
   publicId: string
   title: string
+  editorialStatus: EditorialStatusType
   bannerImage: string
   searchContent: string
   accessCount: number

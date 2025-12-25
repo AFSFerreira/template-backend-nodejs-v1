@@ -1,150 +1,85 @@
-import type { Prisma } from '@prisma/client'
+import { EditorialStatusType, type Prisma } from '@prisma/client'
 import {
-  activityAreaConnection1,
-  subActivityAreasConnection1,
-  subActivityAreasConnection3,
-  subActivityAreasConnection4,
-  subActivityAreasConnection5,
-  subActivityAreasConnection6,
-  subActivityAreasConnection7,
+  subActivityAreaData1,
+  subActivityAreaData4,
+  subActivityAreaData9,
+  subActivityAreaData11,
+  subActivityAreaData12,
+  subActivityAreaData15,
 } from './activity-areas'
 import { blogSearchContent1, blogSearchContent2, blogSearchContent3 } from './blog-contents'
-import { daniloInfo } from './users'
+import { contentLeaderUserData1 } from './users'
 
-export const dummyBlogDataArray: Prisma.BlogCreateInput[] = [
-  {
-    ...blogSearchContent1,
-    bannerImage: 'default.png',
-    title: 'Apresentação do blog da SBAstrobio',
-    authorName: daniloInfo.fullName,
-    Subcategories: {
-      connect: [subActivityAreasConnection1],
-    },
-    User: {
-      connect: {
-        email: daniloInfo.email,
+const blogData1: Prisma.BlogCreateInput = {
+  ...blogSearchContent1,
+  editorialStatus: EditorialStatusType.PUBLISHED,
+  bannerImage: 'default.png',
+  title: 'Apresentação do blog da SBAstrobio',
+  authorName: contentLeaderUserData1.fullName,
+  Subcategories: {
+    connect: [
+      {
+        type_area: subActivityAreaData1,
       },
+    ],
+  },
+  User: {
+    connect: {
+      email: contentLeaderUserData1.email,
     },
   },
-  {
-    ...blogSearchContent2,
-    title: 'Entrevista com um astrobiólogo: Dimas Zaia',
-    bannerImage: 'dimas-zaia.png',
-    authorName: daniloInfo.fullName,
-    User: {
-      connect: {
-        email: daniloInfo.email,
-      },
-    },
-    Subcategories: {
-      connect: [subActivityAreasConnection3, subActivityAreasConnection4],
-    },
-  },
-  {
-    ...blogSearchContent3,
-    title: 'Entrevista com um astrobiólogo — Eduardo Janot Pacheco',
-    bannerImage: 'eduardo-pacheco.png',
-    authorName: daniloInfo.fullName,
-    User: {
-      connect: {
-        email: daniloInfo.email,
-      },
-    },
-    Subcategories: {
-      connect: [
-        activityAreaConnection1,
-        subActivityAreasConnection5,
-        subActivityAreasConnection6,
-        subActivityAreasConnection7,
-      ],
+}
+
+const blogData2: Prisma.BlogCreateInput = {
+  ...blogSearchContent2,
+  editorialStatus: EditorialStatusType.PUBLISHED,
+  title: 'Entrevista com um astrobiólogo: Dimas Zaia',
+  bannerImage: 'dimas-zaia.png',
+  authorName: contentLeaderUserData1.fullName,
+  User: {
+    connect: {
+      email: contentLeaderUserData1.email,
     },
   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'VIDA EXTRATERRESTRE',
-  //     searchContent: 'Busca por vida alienígena, exobiologia e organismos extremófilos',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'EXOPLANETAS E ZONAS HABITÁVEIS',
-  //     searchContent: 'Planetas extrassolares, zona de Goldilocks e habitabilidade planetária',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'ORIGEM DA VIDA NA TERRA',
-  //     searchContent: 'Evolução química, primeiros organismos e teorias sobre origem da vida',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'MISSÕES ESPACIAIS ASTROBIOLÓGICAS',
-  //     searchContent: 'Mars Rover, Europa Clipper, exploração de Marte e luas de Júpiter',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'BIOSSINATURAS E DETECÇÃO DE VIDA',
-  //     searchContent: 'Marcadores biológicos, espectroscopia e métodos de detecção remota',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'EXTREMÓFILOS E AMBIENTES EXTREMOS',
-  //     searchContent: 'Organismos extremófilos, vida em condições adversas e analogos terrestres',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'QUÍMICA PREBIÓTICA',
-  //     searchContent: 'Moléculas orgânicas complexas, aminoácidos no espaço e meteoritos',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'ATMOSFERAS PLANETÁRIAS E CLIMA',
-  //     searchContent: 'Composição atmosférica, efeito estufa e evolução climática planetária',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'SETI E COMUNICAÇÃO EXTRATERRESTRE',
-  //     searchContent: 'Search for Extraterrestrial Intelligence, radiotelescópios e sinais do espaço',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'EVOLUÇÃO ESTELAR E HABITABILIDADE',
-  //     searchContent: 'Ciclo de vida das estrelas, anãs vermelhas e impacto na habitabilidade',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-  //   {
-  //     ...partialBlogData1,
-  //     title: 'PANSPERMIA E TRANSFERÊNCIA DE VIDA',
-  //     searchContent: 'Teoria da panspermia, meteoritos e transferência de vida entre planetas',
-  //     Subcategories: {
-  //       connect: [subActivityAreasConnection1],
-  //     },
-  //   },
-]
+  Subcategories: {
+    connect: [
+      {
+        type_area: subActivityAreaData9,
+      },
+      {
+        type_area: subActivityAreaData12,
+      },
+    ],
+  },
+}
+
+const blogData3: Prisma.BlogCreateInput = {
+  ...blogSearchContent3,
+  editorialStatus: EditorialStatusType.PUBLISHED,
+  title: 'Entrevista com um astrobiólogo — Eduardo Janot Pacheco',
+  bannerImage: 'eduardo-pacheco.png',
+  authorName: contentLeaderUserData1.fullName,
+  User: {
+    connect: {
+      email: contentLeaderUserData1.email,
+    },
+  },
+  Subcategories: {
+    connect: [
+      {
+        type_area: subActivityAreaData1,
+      },
+      {
+        type_area: subActivityAreaData4,
+      },
+      {
+        type_area: subActivityAreaData11,
+      },
+      {
+        type_area: subActivityAreaData15,
+      },
+    ],
+  },
+}
+
+export const blogDataArray1: Prisma.BlogCreateInput[] = [blogData1, blogData2, blogData3]

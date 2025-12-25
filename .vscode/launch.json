@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: Start Dev (Watch)",
+      "type": "node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/src/server.ts",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "tsx",
+        "watch",
+        "--env-file=.env",
+        "--no-deprecation"
+      ],
+      "restart": true,
+      "console": "integratedTerminal",
+      "preLaunchTask": "npm: generate:presenters",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "name": "Debug: Start Dev (Estável/Sem Watch)",
+      "type": "node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/dist/server.js",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--enable-source-maps",
+        "--env-file=.env",
+      ],
+      "console": "integratedTerminal",
+      "preLaunchTask": "npm: build",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    }
+  ]
+}

@@ -8,6 +8,8 @@ export const ALL_USERS_INFO_EXPORTED = 'Todas as informações do usuário foram
 
 export const SUCCESSFUL_USER_CREATION = 'Cadastro de um novo usuário bem sucedido'
 
+export const USER_CREATION_ERROR = 'Erro durante o cadastro de um novo usuário'
+
 export const CHANGE_PASSWORD_REQUEST_SUCCESSFUL = 'Pedido de alteração de senha bem sucedida'
 
 export const USER_UPDATE_SUCCESSFUL = 'Atualização de informações de usuário bem sucedida'

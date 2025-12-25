@@ -17,7 +17,7 @@ const Configuration: UserConfig = {
       'build',
       'ci',
       'chore',
-      'revert'
+      'revert',
     ]],
   },
 }

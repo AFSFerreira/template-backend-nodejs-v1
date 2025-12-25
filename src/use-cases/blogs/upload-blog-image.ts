@@ -6,8 +6,8 @@ import { BLOG_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
 import { BLOG_IMAGE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
 import { saveImage } from '@services/files/save-image'
-import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
-import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
+import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
+import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -24,7 +24,7 @@ export class UploadBlogImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { fileName, success } = await saveImage({
+    const { filename, success } = await saveImage({
       originalFilename,
       imageStream: filePart.file,
       folderPath: BLOG_TEMP_IMAGES_PATH,
@@ -36,11 +36,11 @@ export class UploadBlogImageUseCase {
 
     logger.info(
       {
-        fileName,
+        filename,
       },
       BLOG_IMAGE_UPLOADED_SUCCESSFULLY,
     )
 
-    return { fileName }
+    return { filename }
   }
 }

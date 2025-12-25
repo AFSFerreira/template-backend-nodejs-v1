@@ -23,7 +23,7 @@ CREATE TYPE "public"."PresentationType" AS ENUM ('ORAL', 'POSTER');
 CREATE TYPE "public"."ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_OF_ACTIVITY');
 
 -- CreateEnum
-CREATE TYPE "EditorialStatus" AS ENUM ('PENDING_APPROVAL', 'PUBLISHED');
+CREATE TYPE "public"."EditorialStatusType" AS ENUM ('PENDING_APPROVAL', 'DRAFT', 'PUBLISHED', 'CHANGES_REQUESTED');
 
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
@@ -324,7 +324,7 @@ CREATE TABLE "public"."meeting_date" (
 CREATE TABLE "public"."blogs" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "editorial_status" "EditorialStatus" NOT NULL DEFAULT 'PENDING_APPROVAL',
+    "editorial_status" "EditorialStatusType" NOT NULL DEFAULT 'PENDING_APPROVAL',
     "title" TEXT NOT NULL,
     "banner_image" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
@@ -380,15 +380,16 @@ CREATE TABLE "public"."comment_likes" (
 );
 
 -- CreateTable
-CREATE TABLE "carousel_banners" (
+CREATE TABLE "slider_images" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "image" TEXT NOT NULL,
+    "order" INTEGER NOT NULL,
     "link" TEXT,
-    "precedence" INTEGER NOT NULL DEFAULT 0,
+    "is_active" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "carousel_banners_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "slider_images_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -537,10 +538,10 @@ CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id"
 CREATE INDEX "comment_likes_newsletter_comment_id_idx" ON "public"."comment_likes"("newsletter_comment_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "carousel_banners_public_id_key" ON "carousel_banners"("public_id");
+CREATE UNIQUE INDEX "slider_images_public_id_key" ON "slider_images"("public_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "carousel_banners_precedence_key" ON "carousel_banners"("precedence");
+CREATE UNIQUE INDEX "slider_images_image_key" ON "slider_images"("image");
 
 -- CreateIndex
 CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");

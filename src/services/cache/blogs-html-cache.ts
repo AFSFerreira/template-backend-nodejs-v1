@@ -1,4 +1,8 @@
-import type { IGetBlogHTMLCached, ISetBlogHTMLCache } from '@custom-types/services/blogs-html-cache'
+import type {
+  IGetBlogHTMLCached,
+  IRemoveBlogHTMLCache,
+  ISetBlogHTMLCache,
+} from '@custom-types/services/blogs-html-cache'
 import { BLOG_HTML_CACHE_TTL } from '@constants/timing-constants'
 import { logger } from '@lib/logger'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/blog-loggings'
@@ -9,7 +13,7 @@ export async function getBlogHTMLCached({ blogId, redis }: IGetBlogHTMLCached) {
   const key = generateBlogHtmlKey(blogId)
   const htmlCached: string | null = await redis.get(key)
 
-  logger.info({ key, htmlCached }, GET_BLOG_HTML_CACHED_INFO)
+  logger.info({ key }, GET_BLOG_HTML_CACHED_INFO)
 
   return htmlCached
 }
@@ -26,4 +30,9 @@ export async function setBlogHTMLCache({ blogId, htmlContent, redis }: ISetBlogH
   logger.info({ key, wasCached }, SET_BLOG_CACHE_INFO)
 
   return wasCached
+}
+
+export async function removeBlogHTMLCache({ blogId, redis }: IRemoveBlogHTMLCache) {
+  const key = generateBlogHtmlKey(blogId)
+  await redis.del(key)
 }

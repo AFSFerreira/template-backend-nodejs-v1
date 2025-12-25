@@ -14,7 +14,7 @@ import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participa
 import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/user-already-registered-in-meeting-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { toDateOnly } from '@utils/formatters/to-date-only'
-import { ensureExists, ensureNotExists } from '@utils/guards/ensure'
+import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

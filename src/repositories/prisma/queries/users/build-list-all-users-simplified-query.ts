@@ -1,8 +1,8 @@
-import type { GetAllUsersSimplifiedQuerySchemaType } from '@custom-types/schemas/user/get-all-users-simplified-query-schema'
+import type { IBuildListAllUsersSimplifiedQuery } from '@custom-types/query/users/user-simplified'
 import { MembershipStatusType, Prisma, UserRoleType } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 
-export function buildListAllUsersSimplifiedQuery(query: GetAllUsersSimplifiedQuerySchemaType) {
+export function buildListAllUsersSimplifiedQuery(query: IBuildListAllUsersSimplifiedQuery) {
   const conditions: Prisma.Sql[] = [
     Prisma.sql`u.membership_status = ${MembershipStatusType.ACTIVE}::"MembershipStatusType"`,
     Prisma.sql`u.role != ${UserRoleType.ADMIN}::"UserRoleType"`,

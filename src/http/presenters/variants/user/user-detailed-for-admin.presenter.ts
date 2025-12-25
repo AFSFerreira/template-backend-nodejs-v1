@@ -2,8 +2,11 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type { HTTPUserWithDetailsForAdmin } from '@custom-types/presenter/user/user-detailed-for-admin'
 import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import { USER_DETAILED_FOR_ADMIN_PRESENTER_KEY } from '@constants/presenters-constants'
+import { STATIC_USER_PROFILE_IMAGE_ROUTE } from '@constants/static-routes-constants'
+import { getBackendBaseUrl } from '@lib/logger/helpers/get-backend-base-url'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { truncateDate } from '@utils/formatters/truncate-date'
+import urlJoin from 'url-join'
 
 @RegisterPresenter(USER_DETAILED_FOR_ADMIN_PRESENTER_KEY)
 export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetailsForAdmin> {
@@ -33,9 +36,12 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails
       ...filteredUser
     } = input
 
+    const backendBaseUrl = getBackendBaseUrl()
+
     return {
       ...filteredUser,
       id: input.publicId,
+      profileImage: urlJoin(backendBaseUrl, STATIC_USER_PROFILE_IMAGE_ROUTE, input.profileImage),
       interestDescription: input.interestDescription,
       birthdate: truncateDate(input.birthdate),
 

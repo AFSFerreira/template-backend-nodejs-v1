@@ -1,4 +1,5 @@
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { Prisma } from '@prisma/client'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
@@ -10,15 +11,11 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     private readonly dbContext: DatabaseContext,
   ) {}
 
-  async findAll(onlyActive = false) {
-    const sliderImages = await this.dbContext.client.sliderImage.findMany({
-      where: onlyActive ? { isActive: true } : undefined,
-      orderBy: [
-        { order: 'asc' },
-        { createdAt: 'desc' },
-      ],
+  async create(data: Prisma.SliderImageCreateInput) {
+    const sliderImage = await this.dbContext.client.sliderImage.create({
+      data,
     })
-    return sliderImages
+    return sliderImage
   }
 
   async findById(id: number) {
@@ -28,25 +25,19 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     return sliderImage
   }
 
-  async findByFilename(filename: string) {
+  async findByPublicId(publicId: string) {
     const sliderImage = await this.dbContext.client.sliderImage.findUnique({
-      where: { filename },
+      where: { publicId },
     })
     return sliderImage
   }
 
-  async create(filename: string, order: number) {
-    const sliderImage = await this.dbContext.client.sliderImage.create({
-      data: {
-        filename,
-        order,
-        isActive: true,
-      },
-    })
-    return sliderImage
+  async totalCount() {
+    const totalSliderImages = await this.dbContext.client.sliderImage.count()
+    return totalSliderImages
   }
 
-  async update(id: number, data: { order?: number | null; isActive?: boolean; link?: string | null }) {
+  async update(id: number, data: Prisma.SliderImageUpdateInput) {
     const sliderImage = await this.dbContext.client.sliderImage.update({
       where: { id },
       data,
@@ -58,14 +49,5 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     await this.dbContext.client.sliderImage.delete({
       where: { id },
     })
-  }
-
-  async getMaxOrder() {
-    const result = await this.dbContext.client.sliderImage.aggregate({
-      _max: {
-        order: true,
-      },
-    })
-    return result._max.order ?? 0
   }
 }

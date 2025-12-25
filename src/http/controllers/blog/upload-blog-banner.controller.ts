@@ -11,7 +11,7 @@ export async function uploadBlogBanner(request: FastifyRequest, reply: FastifyRe
 
   const useCase = container.resolve(UploadBlogBannerUseCase)
 
-  const { fileName } = await useCase.execute({ originalFilename, filePart })
+  const { filename } = await useCase.execute({ originalFilename, filePart })
 
-  return await reply.status(200).send({ data: { blogBanner: fileName } })
+  return await reply.status(200).send({ data: { blogBanner: filename } })
 }

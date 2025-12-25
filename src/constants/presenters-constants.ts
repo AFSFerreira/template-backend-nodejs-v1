@@ -26,6 +26,10 @@ export const ADDRESS_WITH_USERS_COUNT_PRESENTER_KEY = 'address:users-count'
 
 export const BLOG_DETAILED_PRESENTER_KEY = 'blog:detailed'
 
+export const BLOG_DETAILED_FOR_ADMIN = 'blog:detailed-for-admin'
+
+export const BLOG_DETAILED_WITH_CONTENT_PRESENTER_KEY = 'blog:detailed-with-content'
+
 export const BLOG_DEFAULT_PRESENTER_KEY = 'blog:default'
 
 export const BLOG_SIMPLIFIED_PRESENTER_KEY = 'blog:simplified'
@@ -57,6 +61,25 @@ export const MEETING_DEFAULT_PRESENTER_KEY = 'meeting:default'
 export const MEETING_DETAILED_PRESENTER_KEY = 'meeting:detailed'
 
 export const MEETING_ONGOING_PRESENTER_KEY = 'meeting:ongoing'
+
 // ----------------------------------------------------------------------------------------- //
 
 export const NEWSLETTER_DEFAULT_PRESENTER_KEY = 'newsletter:default'
+
+// ----------------------------------------------------------------------------------------- //
+
+export const SLIDER_IMAGE_DEFAULT_PRESENTER_KEY = 'slider-image:default'
+
+export const HOME_PAGE_SLIDER_IMAGE_PRESENTER_KEY = 'slider-image:home-page'
+
+// ----------------------------------------------------------------------------------------- //
+
+export const DASHBOARD_METRICS_DEFAULT_PRESENTER_KEY = 'dashboard-metrics:default'
+
+export const DASHBOARD_METRICS_BLOGS_PRESENTER_KEY = 'dashboard-metrics:blogs'
+
+export const DASHBOARD_METRICS_USERS_PRESENTER_KEY = 'dashboard-metrics:users'
+
+export const DASHBOARD_METRICS_NEWSLETTERS_PRESENTER_KEY = 'dashboard-metrics:newsletters'
+
+// ----------------------------------------------------------------------------------------- //

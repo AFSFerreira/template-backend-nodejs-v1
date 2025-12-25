@@ -12,7 +12,7 @@ import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-foun
 import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { toDateOnly } from '@utils/formatters/to-date-only'
-import { ensureExists, ensureNotExists } from '@utils/guards/ensure'
+import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

@@ -1,4 +1,6 @@
-export const proseMirrorData1 = {
+import type { JSONContent } from '@tiptap/core'
+
+export const proseMirrorData1: JSONContent = {
   type: 'doc',
   content: [
     {
@@ -80,7 +82,7 @@ export const proseMirrorData1 = {
   ],
 }
 
-export const proseMirrorData2 = {
+export const proseMirrorData2: JSONContent = {
   type: 'doc',
   content: [
     {
@@ -704,7 +706,7 @@ export const proseMirrorData2 = {
   ],
 }
 
-export const proseMirrorData3 = {
+export const proseMirrorData3: JSONContent = {
   type: 'doc',
   content: [
     {

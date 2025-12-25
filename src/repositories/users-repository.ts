@@ -31,6 +31,7 @@ export interface UsersRepository {
   listAllUsersSimplified: (
     query?: ListAllUsersSimplifiedQuery,
   ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
+  totalCount: (where?: Prisma.UserWhereInput) => Promise<number>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>

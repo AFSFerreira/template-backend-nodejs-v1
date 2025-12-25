@@ -2,5 +2,5 @@ import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-sche
 import z from 'zod'
 
 export const deleteBlogImageParamsSchema = z.object({
-  fileName: nonemptyTextSchema,
+  filename: nonemptyTextSchema,
 })

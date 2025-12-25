@@ -11,7 +11,7 @@ export async function uploadNewsletterHtml(request: FastifyRequest, reply: Fasti
 
   const useCase = container.resolve(UploadNewsletterHtmlUseCase)
 
-  const { fileName } = await useCase.execute({ originalFilename, filePart })
+  const { filename } = await useCase.execute({ originalFilename, filePart })
 
-  return await reply.status(200).send({ data: { htmlFileName: fileName } })
+  return await reply.status(200).send({ data: { htmlFileName: filename } })
 }

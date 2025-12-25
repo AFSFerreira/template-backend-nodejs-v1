@@ -32,6 +32,7 @@ export class PrismaUsersRepository implements UsersRepository {
     @inject(tokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
+
   async create(data: CreateUserQuery) {
     let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined = undefined
 
@@ -540,5 +541,10 @@ export class PrismaUsersRepository implements UsersRepository {
       data: tokenData,
     })
     return user
+  }
+
+  async totalCount(where?: Prisma.UserWhereInput) {
+    const totalUsers = await this.dbContext.client.user.count({ where })
+    return totalUsers
   }
 }

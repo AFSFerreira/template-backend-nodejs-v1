@@ -1,39 +1,38 @@
 import type { Prisma } from '@prisma/client'
-import {
-  ActivityAreaType,
-  EducationLevelType,
-  IdentityType,
-  MembershipStatusType,
-  OccupationType,
-  UserRoleType,
-} from '@prisma/client'
+import { EducationLevelType, IdentityType, MembershipStatusType, OccupationType, UserRoleType } from '@prisma/client'
 import { hashSync } from 'bcryptjs'
 import { env } from '../../src/env/index'
-import { academicPublicationsData1 } from './academic-publications'
-import { activityAreasData1, subActivityAreasData1 } from './activity-areas'
-import { directorPositionData1 } from './director-positions'
-import { directorBoardsArray } from './directors-board'
-import { enrolledCourseData1 } from './enrolled-courses'
-import { institutionData1, institutionData2 } from './institutions'
-import { keywordsData1 } from './keywords'
+import { academicPublicationsCreateUserDataArray1 } from './academic-publications'
+import { activityAreaData1, subActivityAreaData1 } from './activity-areas'
+import {
+  directorBoardCreateNestedUserData1,
+  directorBoardCreateNestedUserData2,
+  directorBoardCreateNestedUserData3,
+  directorBoardCreateNestedUserData4,
+  directorBoardCreateNestedUserData5,
+  directorBoardCreateNestedUserData6,
+  directorBoardCreateNestedUserData7,
+} from './directors-board'
+import { enrolledCourseNestedUserData1 } from './enrolled-courses'
+import { institutionData1 } from './institutions'
+import { keywordsConnectOrCreateUserData1 } from './keywords'
 
-type PartialUserCreateInput = Omit<Prisma.UserCreateInput, 'Address'>
+type PartialUserCreateInputInfo = Omit<
+  Prisma.UserCreateInput,
+  'fullName' | 'username' | 'email' | 'identityType' | 'identityDocument' | 'role' | 'DirectorBoard'
+>
 
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
 
-export const userData1: PartialUserCreateInput = {
-  fullName: 'ADMIN',
-  username: 'ADMIN.ADMIN',
-  email: 'admin@email.com',
+export const partialUserData1: PartialUserCreateInputInfo = {
   passwordHash,
   birthdate: new Date('2025-09-22'),
-  profileImage: 'default-profile-pic.png',
+  profileImage: 'default.png',
   linkLattes: 'http://lattes.cnpq.br/1234567890',
   linkGoogleScholar: 'https://scholar.google.com/admin.admin',
   linkResearcherId: null,
   orcidNumber: '0000-0001-2345-6789',
   membershipStatus: MembershipStatusType.ACTIVE,
-  role: UserRoleType.ADMIN,
   departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
   institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
   occupation: OccupationType.RESEARCHER,
@@ -43,235 +42,192 @@ export const userData1: PartialUserCreateInput = {
   interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
   receiveReports: true,
   loginAttempts: 0,
-  lastLogin: new Date(),
+  lastLogin: null,
+  publicInformation: 'ASTROBIÓLOGO',
+
+  EnrolledCourse: enrolledCourseNestedUserData1,
+
+  AcademicPublication: { create: academicPublicationsCreateUserDataArray1 },
+
+  Keyword: {
+    connectOrCreate: keywordsConnectOrCreateUserData1,
+  },
+
+  Institution: {
+    connect: {
+      name: institutionData1.name,
+    },
+  },
+
+  ActivityArea: {
+    connect: {
+      type_area: activityAreaData1,
+    },
+  },
+
+  SubActivityArea: {
+    connect: {
+      type_area: subActivityAreaData1,
+    },
+  },
+}
+
+const adminUserData1: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  fullName: 'admin',
+  email: 'admin@email.com',
+  username: 'ADMIN.ADMIN',
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-00',
-  publicInformation: 'ASTROBIÓLOGO',
-
-  EnrolledCourse: { create: enrolledCourseData1 },
-
-  // DirectorBoard: { create: directorBoardData1 },
-
-  AcademicPublication: { create: academicPublicationsData1 },
-
-  Keyword: {
-    connectOrCreate: keywordsData1.map((keyword) => ({
-      where: { value: keyword },
-      create: { value: keyword },
-    })),
-  },
-
-  Institution: {
-    connectOrCreate: {
-      where: institutionData2,
-      create: institutionData2,
-    },
-  },
-
-  ActivityArea: {
-    connect: {
-      type_area: {
-        area: activityAreasData1[1],
-        type: ActivityAreaType.AREA_OF_ACTIVITY,
-      },
-    },
-  },
-
-  SubActivityArea: {
-    connect: {
-      type_area: {
-        area: subActivityAreasData1[2],
-        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      },
-    },
-  },
+  role: UserRoleType.ADMIN,
 }
 
-export const userData2: PartialUserCreateInput = {
-  fullName: 'Douglas Galante',
-  username: 'USER.USER',
-  email: 'user@email.com',
-  passwordHash,
-  birthdate: new Date(),
-  profileImage: 'default-profile-pic.png',
-  linkLattes: 'http://lattes.cnpq.br/1234567890',
-  linkGoogleScholar: 'https://scholar.google.com/admin.admin',
-  linkResearcherId: null,
-  orcidNumber: '0000-0001-2345-6789',
-  membershipStatus: MembershipStatusType.ACTIVE,
+const managerUserData1: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/1918385364299862',
+  fullName: 'Gustavo Porto de Mello',
+  email: 'gustavo@email.com',
+  username: 'gustavo.porto',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-01',
   role: UserRoleType.MANAGER,
-  departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
-  institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
-  occupation: OccupationType.RESEARCHER,
-  educationLevel: EducationLevelType.DOCTORATE,
-  emailIsPublic: true,
-  astrobiologyOrRelatedStartYear: 2010,
-  interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
-  receiveReports: true,
-  loginAttempts: 0,
-  lastLogin: new Date(),
+
+  DirectorBoard: directorBoardCreateNestedUserData1,
+}
+
+const managerUserData2: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/9117662545474146',
+  fullName: 'Douglas Galante',
+  email: 'douglas@email.com',
+  username: 'douglas.galante',
   identityType: IdentityType.CPF,
-  identityDocument: '987.654.321-00',
-  publicInformation: 'ASTROBIÓLOGO',
+  identityDocument: '123.456.789-02',
+  role: UserRoleType.MANAGER,
 
-  EnrolledCourse: { create: enrolledCourseData1 },
-
-  AcademicPublication: { create: academicPublicationsData1 },
-
-  Institution: {
-    connectOrCreate: {
-      where: institutionData2,
-      create: institutionData2,
-    },
-  },
-
-  Keyword: {
-    connectOrCreate: keywordsData1.map((keyword) => ({
-      where: { value: keyword },
-      create: { value: keyword },
-    })),
-  },
-
-  ActivityArea: {
-    connect: {
-      type_area: {
-        area: activityAreasData1[0],
-        type: ActivityAreaType.AREA_OF_ACTIVITY,
-      },
-    },
-  },
-
-  SubActivityArea: {
-    connect: {
-      type_area: {
-        area: subActivityAreasData1[0],
-        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      },
-    },
-  },
+  DirectorBoard: directorBoardCreateNestedUserData2,
 }
 
-const partialDummyUserData = {
-  passwordHash,
-  birthdate: new Date(),
-  profileImage: 'default-profile-pic.png',
-  linkLattes: 'http://lattes.cnpq.br/1234567890',
-  linkGoogleScholar: 'https://scholar.google.com/admin.admin',
-  linkResearcherId: null,
-  orcidNumber: '0000-0001-2345-6789',
-  membershipStatus: MembershipStatusType.ACTIVE,
-  role: UserRoleType.DEFAULT,
-  departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
-  institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
-  occupation: OccupationType.RESEARCHER,
-  educationLevel: EducationLevelType.DOCTORATE,
-  emailIsPublic: true,
-  astrobiologyOrRelatedStartYear: 2010,
-  interestDescription: 'PARTICIPO DA COMUNIDADE POR INTERESSE EM ORIGENS DA VIDA E EXOPLANETAS.',
-  receiveReports: true,
-  loginAttempts: 0,
-  lastLogin: new Date(),
+const managerUserData3: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/5093103617210826',
+  fullName: 'Beatriz Siffert',
+  email: 'beatriz@email.com',
+  username: 'beatriz.siffert',
   identityType: IdentityType.CPF,
-  publicInformation: 'ASTROBIÓLOGO',
+  identityDocument: '123.456.789-03',
+  role: UserRoleType.MANAGER,
 
-  EnrolledCourse: { create: enrolledCourseData1 },
-
-  AcademicPublication: { create: academicPublicationsData1 },
-
-  Institution: {
-    connectOrCreate: {
-      where: institutionData1,
-      create: institutionData1,
-    },
-  },
-
-  Keyword: {
-    connectOrCreate: keywordsData1.map((keyword) => ({
-      where: { value: keyword },
-      create: { value: keyword },
-    })),
-  },
-
-  ActivityArea: {
-    connect: {
-      type_area: {
-        area: activityAreasData1[0],
-        type: ActivityAreaType.AREA_OF_ACTIVITY,
-      },
-    },
-  },
-
-  SubActivityArea: {
-    connect: {
-      type_area: {
-        area: subActivityAreasData1[0],
-        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      },
-    },
-  },
+  DirectorBoard: directorBoardCreateNestedUserData3,
 }
 
-export const daniloInfo = {
-  ...partialDummyUserData,
-  receiveReports: false,
-  identityDocument: `200.000.000-00`,
-  fullName: 'DANILO ALBERGARIA',
-  username: 'douglas.albergaria',
-  email: 'albergaria@gmail.com',
+const managerUserData4: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/7450204581620194',
+  fullName: 'Amanda Bendia',
+  email: 'amanda@email.com',
+  username: 'amanda.bendia',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-04',
+  role: UserRoleType.MANAGER,
+
+  DirectorBoard: directorBoardCreateNestedUserData4,
 }
 
-export const dummyUserInfoArray: PartialUserCreateInput[] = [
+const managerUserData5: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/5822376591265210',
+  fullName: 'Fábio Rodrigues',
+  email: 'fabio@email.com',
+  username: 'fabio.rodrigues',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-05',
+  role: UserRoleType.MANAGER,
+
+  DirectorBoard: directorBoardCreateNestedUserData5,
+}
+
+const managerUserData6: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/1704175571734114',
+  fullName: 'Flávia Callefo',
+  email: 'flavia@email.com',
+  username: 'flavia.callefo',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-06',
+  role: UserRoleType.MANAGER,
+
+  DirectorBoard: directorBoardCreateNestedUserData6,
+}
+
+const managerUserData7: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/4916914753471904',
+  fullName: 'Claudia Lage',
+  email: 'claudia@email.com',
+  username: 'claudia.lage',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-07',
+  role: UserRoleType.MANAGER,
+
+  DirectorBoard: directorBoardCreateNestedUserData7,
+}
+
+export const contentLeaderUserData1: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'https://lattes.cnpq.br/3390986971402979',
+  fullName: 'Danilo Albergaria',
+  email: 'danilo@gmail.com',
+  username: 'danilo.albergaria',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-08',
+  role: UserRoleType.CONTENT_LEADER,
+}
+
+export const contentProducerUserData1: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'https://lattes.cnpq.br/3390986971402979',
+  fullName: 'Allber Ferreira',
+  email: 'allber@gmail.com',
+  username: 'allber.ferreira',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-09',
+  role: UserRoleType.CONTENT_PRODUCER,
+}
+
+export const usersDataArray1: Prisma.UserCreateInput[] = [
+  adminUserData1,
+  managerUserData1,
+  managerUserData2,
+  managerUserData3,
+  managerUserData4,
+  managerUserData5,
+  managerUserData6,
+  managerUserData7,
+  contentLeaderUserData1,
+  contentProducerUserData1,
+]
+
+export const usersDataArray2: Prisma.UserCreateInput[] = [
   {
-    ...partialDummyUserData,
-    receiveReports: false,
-    identityDocument: `100.000.000-00`,
+    ...partialUserData1,
     fullName: 'ALÍCIA DOS SANTOS DA CONCEIÇÃO',
     username: 'alicia123',
     email: 'alicia@gmail.com',
+    identityType: IdentityType.CPF,
+    identityDocument: `100.000.000-00`,
+    receiveReports: false,
   },
-  daniloInfo,
 ]
-
-export const dummyUserDirectorBoardInfoArray: PartialUserCreateInput[] = []
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
 for (let i = 0; i <= 20; i++) {
-  dummyUserInfoArray.push({
-    ...partialDummyUserData,
+  usersDataArray2.push({
+    ...partialUserData1,
+    identityType: IdentityType.CPF,
     identityDocument: `000.000.000-${i.toString().padStart(2, '0')}`,
     fullName: `DUMMY USER ${i}`,
     username: `DUMMY USER ${i}`,
-    email: `dummy-user${i}@email.com`,
-
-    Keyword: {
-      connectOrCreate: keywordsData1.slice(0, 2).map((keyword) => ({
-        where: { value: keyword },
-        create: { value: keyword },
-      })),
-    },
+    email: `dummy-user-${i}@email.com`,
   })
 }
-
-// WARNING: Remover esse Trecho de Informações Posteriormente
-// Criando Usuários Dummy do Corpo Diretivo:
-directorBoardsArray.forEach((directorBoard, index) => {
-  dummyUserDirectorBoardInfoArray.push({
-    ...partialDummyUserData,
-    linkLattes: directorBoard.linkLattes,
-    role:
-      directorBoard.DirectorPosition.connect.position === directorPositionData1.position
-        ? UserRoleType.ADMIN
-        : UserRoleType.MANAGER,
-    identityDocument: `000.000.000-${(index + 50).toString().padStart(2, '0')}`,
-    fullName: directorBoard.fullName.toUpperCase(),
-    username: directorBoard.fullName.split(' ').join('.'),
-    email: `director-email-${index + 1}@email.com`,
-
-    Keyword: {
-      connectOrCreate: keywordsData1.slice(0, 2).map((keyword) => ({
-        where: { value: keyword },
-        create: { value: keyword },
-      })),
-    },
-  })
-})

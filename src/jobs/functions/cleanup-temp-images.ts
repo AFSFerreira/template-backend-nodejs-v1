@@ -46,8 +46,8 @@
 //     const deleteBatch = fileNames.slice(idx, idx + ERASE_FILES_CONCURRENCY)
 
 //     await Promise.all(
-//       deleteBatch.map(async (fileName) => {
-//         const fullFilePath = path.join(TEMP_PROFILE_IMAGES_DIRECTORY_ABSOLUTE_PATH, fileName)
+//       deleteBatch.map(async (filename) => {
+//         const fullFilePath = path.join(TEMP_PROFILE_IMAGES_DIRECTORY_ABSOLUTE_PATH, filename)
 
 //         let fileAgeMs: number | undefined
 //         try {

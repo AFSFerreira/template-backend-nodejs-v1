@@ -12,12 +12,12 @@ import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { PROFILE_IMAGE_UPDATED_SUCCESSFULLY, UPDATE_USER_IMAGE_ERROR } from '@messages/loggings/user-loggings'
 import { saveCompressedImage } from '@services/files/save-compressed-image'
-import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
-import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
+import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
+import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { ProfileImageUpdateError } from '@use-cases/errors/user/profile-image-update-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { deleteFile } from '@utils/files/delete-file'
-import { ensureExists } from '@utils/guards/ensure'
+import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -43,7 +43,7 @@ export class UpdateProfileImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { finalImagePath, fileName, success } = await saveCompressedImage({
+    const { finalImagePath, filename, success } = await saveCompressedImage({
       imageStream: filePart.file,
       folderPath: REGISTER_PROFILE_IMAGES_PATH,
     })
@@ -60,7 +60,7 @@ export class UpdateProfileImageUseCase {
           error: new UserNotFoundError(),
         })
 
-        await this.usersRepository.updateProfileImage({ id: user.id, profileImage: fileName })
+        await this.usersRepository.updateProfileImage({ id: user.id, profileImage: filename })
 
         // Remove a imagem antiga se não for a imagem padrão
         if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
@@ -79,11 +79,11 @@ export class UpdateProfileImageUseCase {
 
     logger.info(
       {
-        newImage: fileName,
+        newImage: filename,
       },
       PROFILE_IMAGE_UPDATED_SUCCESSFULLY,
     )
 
-    return { fileName }
+    return { filename }
   }
 }

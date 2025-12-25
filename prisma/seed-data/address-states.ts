@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import { addressCountry1 } from './address-country'
 
-export const addressState1: Prisma.AddressStateCreateInput = {
+export const addressStateData1: Prisma.AddressStateCreateInput = {
   name: 'RJ',
   Country: {
     connectOrCreate: {
@@ -11,7 +11,7 @@ export const addressState1: Prisma.AddressStateCreateInput = {
   },
 }
 
-export const addressState2: Prisma.AddressStateCreateInput = {
+export const addressStateData2: Prisma.AddressStateCreateInput = {
   name: 'SP',
   Country: {
     connectOrCreate: {
@@ -21,4 +21,4 @@ export const addressState2: Prisma.AddressStateCreateInput = {
   },
 }
 
-export const addressStatesArray: Prisma.AddressStateCreateInput[] = [addressState1, addressState2]
+export const addressStatesDataArray1: Prisma.AddressStateCreateInput[] = [addressStateData1, addressStateData2]

@@ -4,6 +4,7 @@ interface HTTPUserDetails {
   id: string
   fullName: string
   email: string
+  profileImage: string
   username: string
   role: UserRoleType | null
   birthdate: string | null | undefined

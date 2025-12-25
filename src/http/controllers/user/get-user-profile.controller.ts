@@ -4,11 +4,12 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/variants/user-presenter'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
+import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetUserProfileUseCase } from '@use-cases/user/get-user-profile'
 import { container } from 'tsyringe'
 
 export async function getUserProfile(request: FastifyRequest, reply: FastifyReply) {
-  const publicId = modelPublicIdSchema.parse(request.user.sub)
+  const publicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
 
   const useCase = container.resolve(GetUserProfileUseCase)
 

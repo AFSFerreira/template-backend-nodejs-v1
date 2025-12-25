@@ -3,6 +3,8 @@ import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import { SAVE_MULTIPART_FILE_ERROR } from '@messages/loggings/file-loggings'
+import { deleteFile } from '@utils/files/delete-file'
+import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import fs from 'fs-extra'
 
 export async function saveMultipartFile({
@@ -13,9 +15,9 @@ export async function saveMultipartFile({
   const baseFolderPath = path.resolve(baseFolder)
   const newFilePath = path.join(baseFolderPath, filename)
 
-  // Cria um arquivo temporário:
-  const tempFileName = `temp-${crypto.randomUUID()}-${filename}`
-  const tempFilePath = path.join(baseFolderPath, tempFileName)
+  // Cria um arquivo temporário auxiliar:
+  const tempFileName = `temp-${generateFileHash()}`
+  const tempFilePath = path.resolve(baseFolderPath, tempFileName)
 
   await fs.ensureDir(baseFolderPath)
 
@@ -33,9 +35,8 @@ export async function saveMultipartFile({
 
     return null
   } finally {
-    // Tenta remover o arquivo corrompido persistido:
-    writeStream.close()
-    await fs.unlink(tempFilePath).catch(() => {})
+    // Tenta remover o arquivo temporario persistido:
+    await deleteFile(tempFilePath)
   }
 
   return newFilePath

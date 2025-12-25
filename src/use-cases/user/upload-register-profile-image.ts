@@ -4,8 +4,8 @@ import type {
 } from '@custom-types/use-cases/user/upload-register-profile-image'
 import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { saveCompressedImage } from '@services/files/save-compressed-image'
-import { MissingMultipartContentFile } from '@use-cases/errors/document-management/missing-multipart-content-file'
-import { ImageTooBigError } from '@use-cases/errors/user/image-too-big-error'
+import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
+import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -22,16 +22,15 @@ export class UploadRegisterProfileImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { fileName, success } = await saveCompressedImage({
+    const { filename, success } = await saveCompressedImage({
       imageStream: filePart.file,
       folderPath: REGISTER_TEMP_PROFILE_IMAGES_PATH,
     })
 
-    // Deleta a imagem se ela estourar o buffer:
     if (!success || filePart.file.truncated) {
       throw new ImageTooBigError()
     }
 
-    return { fileName }
+    return { filename }
   }
 }

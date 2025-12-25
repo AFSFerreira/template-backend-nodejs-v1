@@ -3,6 +3,7 @@ import { academicPublicationRoutes } from './controllers/academic-publications/r
 import { activityAreaRoutes } from './controllers/activity-area/routes'
 import { addressRoutes } from './controllers/address-state/routes'
 import { blogRoutes } from './controllers/blog/routes'
+import { dashboardMetricsRoutes } from './controllers/dashboard-metrics/routes'
 import { directorBoardRoutes } from './controllers/director-board/routes'
 import { directorPositionRoutes } from './controllers/director-position/routes'
 import { documentManagementRoutes } from './controllers/document-management/routes'
@@ -10,6 +11,7 @@ import { healthCheck } from './controllers/health-check/health-check.controller'
 import { institutionRoutes } from './controllers/institution/routes'
 import { meetingRoutes } from './controllers/meeting/routes'
 import { newsletterRoutes } from './controllers/newsletter/routes'
+import { sliderImageRoutes } from './controllers/slider-image/routes'
 import { userRoutes } from './controllers/user/routes'
 
 export async function appRoutes(app: FastifyInstance) {
@@ -23,7 +25,9 @@ export async function appRoutes(app: FastifyInstance) {
   app.register(directorBoardRoutes, { prefix: '/directors-board' })
   app.register(directorPositionRoutes, { prefix: '/director-positions' })
   app.register(documentManagementRoutes, { prefix: '/document-management' })
+  app.register(sliderImageRoutes, { prefix: '/slider-images' })
   app.register(newsletterRoutes, { prefix: '/newsletters' })
+  app.register(dashboardMetricsRoutes, { prefix: '/dashboard-metrics' })
 
   app.get('/health', healthCheck)
 }

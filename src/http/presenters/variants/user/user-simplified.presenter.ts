@@ -1,15 +1,14 @@
-import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/user-simplified'
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPSimplifiedUserDetails } from '@custom-types/presenter/user/user-simplified'
+import type { HTTPSimplifiedUserDetails, UserWithSimplifiedDetails } from '@custom-types/presenter/user/user-simplified'
 import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(USER_SIMPLIFIED_PRESENTER_KEY)
 export class UserSimplifiedPresenter implements IPresenterStrategy<
-  CustomUserWithSimplifiedDetails,
+  UserWithSimplifiedDetails,
   HTTPSimplifiedUserDetails
 > {
-  public toHTTP(input: CustomUserWithSimplifiedDetails): HTTPSimplifiedUserDetails {
+  public toHTTP(input: UserWithSimplifiedDetails): HTTPSimplifiedUserDetails {
     return {
       id: input.publicId,
       fullName: input.fullName,

@@ -359,7 +359,7 @@ model MeetingDate {
 model Blog {
   id              Int                      @id @default(autoincrement())
   publicId        String                   @unique @default(uuid(7)) @map("public_id")
-  editorialStatus EditorialStatus          @default(PENDING_APPROVAL) @map("editorial_status")
+  editorialStatus EditorialStatusType      @default(PENDING_APPROVAL) @map("editorial_status")
   title           String
   bannerImage     String                   @map("banner_image")
   authorName      String                   @map("author_name")
@@ -431,12 +431,14 @@ model CommentLike {
 }
 
 model SliderImage {
-  id        Int      @id @default(autoincrement())
-  filename  String   @unique
+  id        Int            @id @default(autoincrement())
+  publicId  String         @unique @default(uuid(7)) @map("public_id")
+  image     String         @unique
+  // page      SliderPageType // Página em que o Slider aparece (home page, página de blogs, etc)
   link      String?
-  order     Int?
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  order     Int
+  isActive  Boolean        @default(false) @map("is_active")
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
 
   @@map("slider_images")
 }
@@ -501,11 +503,15 @@ enum ActivityAreaType {
   SUB_AREA_OF_ACTIVITY
 }
 
-enum EditorialStatus {
+enum EditorialStatusType {
   PENDING_APPROVAL
   PUBLISHED
-  // DRAFT
+  DRAFT
+  CHANGES_REQUESTED
   // APPROVED
-  // CHANGES_REQUESTED
   // ARCHIVED
 }
+
+// enum SliderPageType {
+//   HOME
+// }

@@ -6,5 +6,5 @@ export interface UpdateProfileImageUseCaseRequest {
 }
 
 export interface UpdateProfileImageUseCaseResponse {
-  fileName: string
+  filename: string
 }

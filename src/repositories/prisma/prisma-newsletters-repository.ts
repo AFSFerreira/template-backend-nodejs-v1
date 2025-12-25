@@ -1,6 +1,6 @@
 import type { CreateNewsletterQuery } from '@custom-types/repository/newsletter/create-newsletter-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Newsletter } from '@prisma/client'
+import type { Newsletter, Prisma } from '@prisma/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
@@ -17,5 +17,10 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
       data,
     })
     return newsletter
+  }
+
+  async totalCount(where?: Prisma.NewsletterWhereInput) {
+    const totalNewsletters = await this.dbContext.client.newsletter.count({ where })
+    return totalNewsletters
   }
 }

@@ -11,7 +11,7 @@ export async function uploadBlogImage(request: FastifyRequest, reply: FastifyRep
 
   const useCase = container.resolve(UploadBlogImageUseCase)
 
-  const { fileName } = await useCase.execute({ originalFilename, filePart })
+  const { filename } = await useCase.execute({ originalFilename, filePart })
 
-  return await reply.status(200).send({ data: { blogImage: fileName } })
+  return await reply.status(200).send({ data: { blogImage: filename } })
 }

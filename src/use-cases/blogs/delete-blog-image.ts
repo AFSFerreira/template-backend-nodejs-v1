@@ -11,14 +11,14 @@ import { injectable } from 'tsyringe'
 
 @injectable()
 export class DeleteBlogImageUseCase {
-  async execute({ fileName }: DeleteBlogImageUseCaseRequest): Promise<DeleteBlogImageUseCaseResponse> {
-    const imagePath = path.resolve(BLOG_TEMP_IMAGES_PATH, fileName)
+  async execute({ filename }: DeleteBlogImageUseCaseRequest): Promise<DeleteBlogImageUseCaseResponse> {
+    const imagePath = path.resolve(BLOG_TEMP_IMAGES_PATH, filename)
 
     await deleteFile(imagePath)
 
     logger.info(
       {
-        fileName,
+        filename,
         imagePath,
       },
       BLOG_IMAGE_DELETED_SUCCESSFULLY,

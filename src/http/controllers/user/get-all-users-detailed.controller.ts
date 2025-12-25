@@ -1,5 +1,4 @@
-import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/user-simplified'
-import type { HTTPSimplifiedUserDetails } from '@custom-types/presenter/user/user-simplified'
+import type { HTTPSimplifiedUserDetails, UserWithSimplifiedDetails } from '@custom-types/presenter/user/user-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { UserPresenter } from '@presenters/variants/user-presenter'
@@ -15,7 +14,7 @@ export async function getAllUsersDetailed(request: FastifyRequest, reply: Fastif
   const { data, meta } = await useCase.execute(parsedQuery)
 
   return await reply.status(200).send({
-    data: UserPresenter.toHTTP<CustomUserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(
+    data: UserPresenter.toHTTP<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(
       data,
       USER_SIMPLIFIED_PRESENTER_KEY,
     ),

@@ -1,11 +1,11 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { SystemError } from '@errors/system-error'
 import { logger } from '@lib/logger'
 import {
   PRESENTER_STRATEGY_ALREADY_EXISTS_LOG,
   PRESENTER_STRATEGY_NOT_FOUND_LOG,
 } from '@messages/loggings/system-loggings'
-import { PRESENTER_STRATEGY_ALREADY_EXISTS, PRESENTER_STRATEGY_NOT_FOUND } from '@messages/system/common-responses'
+import { PresenterStrategyAlreadyExistsError } from '@services/errors/presenters/presenter-strategy-already-exists-error'
+import { PresenterStrategyNotFoundError } from '@services/errors/presenters/presenter-strategy-not-found-error'
 
 class PresenterRegistry {
   private strategies = new Map<string, IPresenterStrategy<unknown, unknown>>()
@@ -13,7 +13,7 @@ class PresenterRegistry {
   public register(contextKey: string, strategy: IPresenterStrategy<unknown, unknown>): void {
     if (this.strategies.has(contextKey)) {
       logger.fatal({ contextKey }, PRESENTER_STRATEGY_ALREADY_EXISTS_LOG)
-      throw new SystemError(PRESENTER_STRATEGY_ALREADY_EXISTS)
+      throw new PresenterStrategyAlreadyExistsError()
     }
 
     this.strategies.set(contextKey, strategy)
@@ -24,7 +24,7 @@ class PresenterRegistry {
 
     if (!strategy) {
       logger.fatal({ contextKey }, PRESENTER_STRATEGY_NOT_FOUND_LOG)
-      throw new SystemError(PRESENTER_STRATEGY_NOT_FOUND)
+      throw new PresenterStrategyNotFoundError()
     }
 
     return strategy

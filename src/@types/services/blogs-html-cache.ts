@@ -10,3 +10,8 @@ export interface ISetBlogHTMLCache {
   htmlContent: string
   redis: Redis
 }
+
+export interface IRemoveBlogHTMLCache {
+  blogId: number
+  redis: Redis
+}

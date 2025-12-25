@@ -8,8 +8,13 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { RECOVERY_PASSWORD_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { CHANGE_PASSWORD_REQUEST_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { PASSWORD_RESET_SUBJECT } from '@messages/emails/user-emails'
+import { CHANGE_PASSWORD_REQUEST_SUCCESSFUL, PASSWORD_RESET_EMAIL_FAILED } from '@messages/loggings/user-loggings'
+import { sendEmail } from '@services/external/send-email'
+import { forgotPasswordHtmlTemplate } from '@templates/forgot-password/forgot-password-html'
+import { forgotPasswordTextTemplate } from '@templates/forgot-password/forgot-password-text'
 import { generateToken } from '@utils/tokens/generate-token'
 import { hashToken } from '@utils/tokens/hash-token'
 import { inject, injectable } from 'tsyringe'
@@ -49,6 +54,28 @@ export class ForgotPasswordUseCase {
 
       return updatedUser
     })
+
+    const emailInfo = {
+      email: user.email,
+      username: user.username,
+      fullName: user.fullName,
+      token: recoveryPasswordToken,
+    }
+
+    try {
+      await sendEmail({
+        to: login,
+        subject: PASSWORD_RESET_SUBJECT,
+        message: forgotPasswordTextTemplate(emailInfo),
+        html: forgotPasswordHtmlTemplate(emailInfo),
+      })
+    } catch (error) {
+      logError({
+        error,
+        context: { userPublicId: user.publicId, userEmail: user.email },
+        message: PASSWORD_RESET_EMAIL_FAILED,
+      })
+    }
 
     logger.info({ login }, CHANGE_PASSWORD_REQUEST_SUCCESSFUL)
 

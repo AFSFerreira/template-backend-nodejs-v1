@@ -9,6 +9,7 @@ import type {
 interface HTTPUserDetails {
   id: string
   fullName: string
+  profileImage: string
   email: string
   username: string
   role: UserRoleType | null

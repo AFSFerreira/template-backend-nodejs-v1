@@ -8,7 +8,7 @@ import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/client'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { ensureExists } from '@utils/guards/ensure'
+import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

@@ -12,7 +12,7 @@ import { env } from '@env/index'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { REMOVE_REGISTER_IMAGE_FALLBACK_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings/user-loggings'
+import { SUCCESSFUL_USER_CREATION, USER_CREATION_ERROR } from '@messages/loggings/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import { persistUserProfileImage } from '@services/files/persist-user-profile-image'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
@@ -54,7 +54,9 @@ export class RegisterUseCase {
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const profileImagePersist = registerUseCaseInput.user.profileImage
-      ? await persistUserProfileImage(registerUseCaseInput.user.profileImage)
+      ? await persistUserProfileImage({
+        filename: registerUseCaseInput.user.profileImage
+      })
       : DEFAULT_PROFILE_IMAGE_NAME
 
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
@@ -161,13 +163,11 @@ export class RegisterUseCase {
 
       return { user: createdUser }
     } catch (error) {
+      logError({ error, message: USER_CREATION_ERROR })
+
       // Removendo imagem incorretamente persistida:
       if (profileImagePersist) {
-        try {
-          await deleteFile(profileImagePersist)
-        } catch (error) {
-          logError({ error, message: REMOVE_REGISTER_IMAGE_FALLBACK_ERROR })
-        }
+        await deleteFile(profileImagePersist)
       }
 
       throw error

@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
+import { asyncLocalStorage } from '@lib/async-local-storage'
 import { logger } from '@lib/logger'
-import { runWithRequestId } from '@lib/logger/helpers/run-with-request-id'
 import { INCOMING_REQUEST } from '@messages/loggings/common-loggings'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { v7 as uuidv7 } from 'uuid'
@@ -21,9 +21,13 @@ function logRequestDetails(request: FastifyRequest) {
 }
 
 export function logRequest(request: FastifyRequest, _reply: FastifyReply, done: HookHandlerDoneFunction) {
-  const requestId: string = uuidv7()
+  const requestId = uuidv7()
+  const requestInfo = {
+    host: request.host,
+    protocol: request.protocol,
+  }
 
-  runWithRequestId(requestId, async () => {
+  asyncLocalStorage.run({ requestId, requestInfo }, async () => {
     logRequestDetails(request)
     done()
   })

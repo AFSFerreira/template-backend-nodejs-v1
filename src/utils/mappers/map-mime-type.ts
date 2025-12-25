@@ -1,4 +1,4 @@
-import { EXTENSION_TO_MIME_MAP, MIME_TO_EXTENSION_MAP } from '@constants/mappers'
+import { EXTENSION_TO_MIME_MAP, MIME_TO_EXTENSION_MAP } from '@constants/maps'
 
 export function mapMimeTypeToExtension(mimeType: string) {
   const cleanMime = mimeType.split(';')[0].trim().toLowerCase()

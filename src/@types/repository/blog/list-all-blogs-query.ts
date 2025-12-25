@@ -1,3 +1,3 @@
-import type { GetAllPostsQuerySchemaType } from '@custom-types/schemas/blog/get-all-posts-query-schema'
+import type { GetAllBlogsQuerySchemaType } from '@custom-types/schemas/blog/get-all-blogs-query-schema'
 
-export interface ListAllBlogsQuery extends GetAllPostsQuerySchemaType {}
+export interface ListAllBlogsQuery extends GetAllBlogsQuerySchemaType {}
