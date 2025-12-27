@@ -1,15 +1,15 @@
 import type { IPersistBlogBanner } from '@custom-types/services/persist-blog-banner'
-import path from 'node:path'
-import { BLOG_BANNERS_PATH, BLOG_TEMP_BANNERS_PATH } from '@constants/dynamic-file-constants'
 import { logError } from '@lib/logger/helpers/log-error'
 import { BLOG_BANNER_PERSIST_ERROR } from '@messages/loggings/blog-loggings'
+import { buildBlogBannerPath } from '@services/files/build-blog-banner-path'
+import { buildBlogTempBannerPath } from '@services/files/build-blog-temp-banner-path'
 import fs from 'fs-extra'
 
 // Função para mover o banner do blog da pasta temporária para a pasta definitiva:
 export async function persistBlogBanner({ filename }: IPersistBlogBanner) {
   try {
-    const oldBannerPath = path.resolve(BLOG_TEMP_BANNERS_PATH, filename)
-    const newBannerPath = path.resolve(BLOG_BANNERS_PATH, filename)
+    const oldBannerPath = buildBlogTempBannerPath(filename)
+    const newBannerPath = buildBlogBannerPath(filename)
 
     const fileAreadyExists = await fs.exists(newBannerPath)
 

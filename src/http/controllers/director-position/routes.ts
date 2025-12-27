@@ -6,6 +6,7 @@ import { createDirectorPosition } from './create-director-position.controller'
 import { getAllDirectorPositions } from './get-all-director-positions.controller'
 
 export async function directorPositionRoutes(app: FastifyInstance) {
+  // GET
   app.get(
     '/',
     {
@@ -14,6 +15,7 @@ export async function directorPositionRoutes(app: FastifyInstance) {
     getAllDirectorPositions,
   )
 
+  // POST
   app.post(
     '/',
     {

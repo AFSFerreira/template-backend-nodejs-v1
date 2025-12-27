@@ -1,10 +1,20 @@
+export const BLOG_SUBMITTED_PENDING_TO_REVIEW = 'Blog em análise enviado para revisão com sucesso'
+
+export const BLOG_SUBMITTED_REVIEW_TO_PENDING = 'Blog em revisão reenviado para análise com sucesso'
+
 export const BLOG_CREATED_SUCCESSFULLY = 'Blog criado com sucesso'
+
+export const BLOG_COPY_CREATED_SUCCESSFULLY = 'Cópia do blog criada com sucesso'
 
 export const BLOG_DELETION_SUCCESSFUL = 'Blog deletado com sucesso'
 
 export const BLOG_UPDATED_SUCCESSFULLY = 'Blog atualizado com sucesso'
 
 export const BLOG_SUBMITTED_FOR_REVIEW = 'Blog rascunho enviado para revisão com sucesso'
+
+export const BLOG_SUBMITTED_TO_PUBLISH = 'Blog aprovado e publicado com sucesso'
+
+export const BLOG_SUBMITTED_PUBLISHED_TO_REVIEW = 'Blog publicado reenviado para revisão com sucesso'
 
 export const GET_BLOG_HTML_CACHED_INFO = 'Página de blog recuperada do cache com sucesso'
 

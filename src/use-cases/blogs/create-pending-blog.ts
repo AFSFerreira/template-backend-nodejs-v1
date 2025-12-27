@@ -7,8 +7,6 @@ import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import path from 'node:path'
-import { BLOG_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
@@ -17,6 +15,7 @@ import { BLOG_CREATED_SUCCESSFULLY, BLOG_IMAGES_PERSIST_ERROR } from '@messages/
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { buildBlogImagePath } from '@services/files/build-blog-image-path'
 import { persistBlogBanner } from '@services/files/persist-blog-banner'
 import { persistBlogImage } from '@services/files/persist-blog-image'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -89,7 +88,7 @@ export class CreatePendingBlogUseCase {
 
         if (!filenameFromUrl) return
 
-        await deleteFile(path.resolve(BLOG_IMAGES_PATH, filenameFromUrl))
+        await deleteFile(buildBlogImagePath(filenameFromUrl))
       })
     }
 

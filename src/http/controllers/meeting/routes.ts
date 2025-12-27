@@ -8,9 +8,11 @@ import { registerGuestMeeting } from './register-guest-meeting.controller'
 import { registerUserMeeting } from './register-user-meeting.controller'
 
 export async function meetingRoutes(app: FastifyInstance) {
+  // GET
   app.get('/', getAllMeetings)
   app.get('/:publicId', findMeetingByPublicId)
 
+  // POST
   app.post(
     '/:meetingId/register-user',
     {

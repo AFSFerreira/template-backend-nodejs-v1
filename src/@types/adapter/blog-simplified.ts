@@ -10,6 +10,11 @@ export interface BlogSimplifiedRaw {
   access_count: number
   created_at: Date
   updated_at: Date
+  user_full_name: string | null
+  subcategories: {
+    id: number
+    area: string
+  }[]
 }
 
 export interface CustomBlogWithSimplifiedDetails {

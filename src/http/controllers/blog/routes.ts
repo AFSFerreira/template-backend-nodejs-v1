@@ -4,6 +4,7 @@ import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { createDraftBlog } from './create-draft-blog.controller'
+import { createDraftCopyBlog } from './create-draft-copy-blog.controller'
 import { createPendingBlog } from './create-pending-blog.controller'
 import { deleteBlog } from './delete-blog.controller'
 import { deleteBlogImage } from './delete-blog-image.controller'
@@ -16,11 +17,16 @@ import { getBlogHtmlContent } from './get-blog-html-content.controller'
 import { getRestrictBlogHtmlContent } from './get-restrict-blog-html-content.controller'
 import { publishBlog } from './publish-blog.controller'
 import { submitDraftForReview } from './submit-draft-for-review.controller'
+import { submitPendingToPublish } from './submit-pending-to-publish.controller'
+import { submitPendingToReview } from './submit-pending-to-review.controller'
+import { submitPublishedToPending } from './submit-published-to-pending.controller'
+import { submitReviewToPending } from './submit-review-to-pending.controller'
 import { updateBlog } from './update-blog.controller'
 import { uploadBlogBanner } from './upload-blog-banner.controller'
 import { uploadBlogImage } from './upload-blog-image.controller'
 
 export async function blogRoutes(app: FastifyInstance) {
+  // GET
   app.get('/', getAllBlogs)
   app.get(
     '/detailed',
@@ -51,6 +57,7 @@ export async function blogRoutes(app: FastifyInstance) {
   )
   app.get('/:publicId', findBlogByPublicId)
 
+  // POST
   app.post(
     '/create/pending',
     {
@@ -66,29 +73,19 @@ export async function blogRoutes(app: FastifyInstance) {
     createDraftBlog,
   )
   app.post(
+    '/:publicId/create-draft-copy',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
+    },
+    createDraftCopyBlog,
+  )
+  app.post(
     '/create/publish',
     {
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     publishBlog,
   )
-
-  app.patch(
-    '/:publicId/submit-draft-for-review',
-    {
-      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
-    },
-    submitDraftForReview,
-  )
-
-  app.patch(
-    '/:publicId',
-    {
-      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
-    },
-    updateBlog,
-  )
-
   app.post(
     '/uploads/image',
     {
@@ -104,6 +101,51 @@ export async function blogRoutes(app: FastifyInstance) {
     uploadBlogBanner,
   )
 
+  // PATCH
+  app.patch(
+    '/:publicId/submit-draft-for-review',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
+    },
+    submitDraftForReview,
+  )
+  app.patch(
+    '/:publicId/submit-review-to-pending',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
+    },
+    submitReviewToPending,
+  )
+  app.patch(
+    '/:publicId/submit-pending-to-publish',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
+    },
+    submitPendingToPublish,
+  )
+  app.patch(
+    '/:publicId/submit-published-to-pending',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
+    },
+    submitPublishedToPending,
+  )
+  app.patch(
+    '/:publicId',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
+    },
+    updateBlog,
+  )
+  app.patch(
+    '/:publicId/submit-pending-to-review',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
+    },
+    submitPendingToReview,
+  )
+
+  // DELETE
   app.delete(
     '/temp-images/:filename',
     {

@@ -3,11 +3,10 @@ import type {
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import path from 'node:path'
-import { NEWSLETTER_TEMP_HTML_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY } from '@messages/loggings/newsletter-loggings'
+import { buildNewsletterTempHtmlPath } from '@services/files/build-newsletter-temp-html-path'
 import { deleteFile } from '@utils/files/delete-file'
 import { readFile } from '@utils/files/read-file'
 import { inject, injectable } from 'tsyringe'
@@ -23,7 +22,7 @@ export class CreateNewsletterUseCase {
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
     const { contentFileName, ...filteredCreatedNewsletterInput } = createNewsletterInput
 
-    const tempFilePath = path.join(NEWSLETTER_TEMP_HTML_PATH, contentFileName)
+    const tempFilePath = buildNewsletterTempHtmlPath(contentFileName)
     const htmlContent = await readFile(tempFilePath)
 
     if (!htmlContent) {

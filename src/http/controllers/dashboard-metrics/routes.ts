@@ -7,6 +7,7 @@ import { getNewslettersMetrics } from './get-newsletters-metrics.controller'
 import { getUsersMetrics } from './get-users-metrics.controller'
 
 export async function dashboardMetricsRoutes(app: FastifyInstance) {
+  // GET
   app.get(
     '/blogs',
     {
@@ -14,7 +15,6 @@ export async function dashboardMetricsRoutes(app: FastifyInstance) {
     },
     getBlogsMetrics,
   )
-
   app.get(
     '/users',
     {
@@ -22,7 +22,6 @@ export async function dashboardMetricsRoutes(app: FastifyInstance) {
     },
     getUsersMetrics,
   )
-
   app.get(
     '/newsletters',
     {

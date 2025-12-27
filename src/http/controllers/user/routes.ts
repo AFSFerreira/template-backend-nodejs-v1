@@ -27,6 +27,7 @@ import { updateUserPermissions } from './update-user-permissions.controller'
 import { uploadRegisterProfileImage } from './upload-register-profile-image.controller'
 
 export async function userRoutes(app: FastifyInstance) {
+  // GET
   app.get(
     '/detailed',
     {
@@ -58,6 +59,7 @@ export async function userRoutes(app: FastifyInstance) {
     getUserByPublicId,
   )
 
+  // POST
   app.post(
     '/',
     {
@@ -95,6 +97,7 @@ export async function userRoutes(app: FastifyInstance) {
     forgotPassword,
   )
 
+  // PATCH
   app.patch('/reset-password', resetPassword)
   app.patch(
     '/me',
@@ -147,6 +150,7 @@ export async function userRoutes(app: FastifyInstance) {
     updateProfileImage,
   )
 
+  // DELETE
   app.delete(
     '/sessions',
     {

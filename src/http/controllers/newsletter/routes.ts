@@ -7,6 +7,7 @@ import { createNewsletter } from './create-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
 
 export async function newsletterRoutes(app: FastifyInstance) {
+  // POST
   app.post(
     '/uploads/html',
     {
@@ -14,7 +15,6 @@ export async function newsletterRoutes(app: FastifyInstance) {
     },
     uploadNewsletterHtml,
   )
-
   app.post(
     '/',
     {

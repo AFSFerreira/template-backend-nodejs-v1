@@ -6,9 +6,7 @@ import type { ActivityAreasRepository } from '@repositories/activity-areas-repos
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
-import path from 'node:path'
-import { BLOG_BANNERS_PATH, BLOG_IMAGES_PATH } from '@constants/dynamic-file-constants'
-import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_CHANGES_REQUESTED } from '@constants/sets'
+import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
 import { logger } from '@lib/logger'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
@@ -18,10 +16,13 @@ import { ActivityAreaType } from '@prisma/client'
 import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { buildBlogBannerPath } from '@services/files/build-blog-banner-path'
+import { buildBlogImagePath } from '@services/files/build-blog-image-path'
 import { persistBlogBanner } from '@services/files/persist-blog-banner'
 import { persistBlogImage } from '@services/files/persist-blog-image'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
+import { BlogEditorialStatusChangeForbiddenError } from '@use-cases/errors/blog/blog-editorial-status-change-forbidden-error'
 import { BlogInvalidBannerLinkError } from '@use-cases/errors/blog/blog-invalid-banner-link-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
@@ -68,7 +69,7 @@ export class UpdateBlogUseCase {
       const userIsContentProducerAndBlogIsUnavailable =
         !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
         blog.userId === user.id &&
-        !DRAFT_OR_CHANGES_REQUESTED.has(blog.editorialStatus)
+        !DRAFT_OR_PENDING_OR_CHANGES_REQUESTED.has(blog.editorialStatus)
 
       if (userIsContentProducerAndIsNotAuthor || userIsContentProducerAndBlogIsUnavailable) {
         throw new BlogAccessForbiddenError()
@@ -78,6 +79,14 @@ export class UpdateBlogUseCase {
 
       if (body.title) {
         updateData.title = body.title
+      }
+
+      if (body.editorialStatus) {
+        if (!CONTENT_LEADER_PERMISSIONS.has(user.role)) {
+          throw new BlogEditorialStatusChangeForbiddenError()
+        }
+
+        updateData.editorialStatus = body.editorialStatus
       }
 
       if (body.content) {
@@ -115,7 +124,7 @@ export class UpdateBlogUseCase {
               throw new BlogInvalidImageLinkError()
             }
 
-            await deleteFile(path.resolve(BLOG_IMAGES_PATH, filenameFromUrl))
+            await deleteFile(buildBlogImagePath(filenameFromUrl))
           }),
         )
 
@@ -131,7 +140,7 @@ export class UpdateBlogUseCase {
         }
 
         if (newBannerImage !== blog.bannerImage) {
-          await deleteFile(path.resolve(BLOG_BANNERS_PATH, blog.bannerImage))
+          await deleteFile(buildBlogBannerPath(blog.bannerImage))
 
           const persistedBanner = await persistBlogBanner({
             filename: newBannerImage,

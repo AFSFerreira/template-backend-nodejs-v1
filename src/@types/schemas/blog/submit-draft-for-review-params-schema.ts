@@ -1,8 +1,4 @@
-import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
-import { z } from 'zod'
-
-export const submitDraftForReviewParamsSchema = z.object({
-  publicId: modelPublicIdSchema,
-})
+import type { submitDraftForReviewParamsSchema } from '@schemas/blog/submit-draft-for-review-params-schema'
+import type { z } from 'zod'
 
 export type SubmitDraftForReviewParamsSchemaType = z.infer<typeof submitDraftForReviewParamsSchema>

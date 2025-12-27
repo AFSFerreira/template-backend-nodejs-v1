@@ -1,5 +1,5 @@
+import type { UpdateBlogBodySchemaType } from '@custom-types/schemas/blog/update-blog-body-schema'
 import type { Blog } from '@prisma/client'
-import type { UpdateBlogBodySchemaType } from '@schemas/blog/update-blog-body-schema'
 
 export interface UpdateBlogUseCaseRequest {
   publicId: string

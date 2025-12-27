@@ -7,6 +7,7 @@ import { createHomePageSliderImage } from './create-home-page-slider-image.contr
 import { uploadSliderImage } from './upload-slider-image.controller'
 
 export async function sliderImageRoutes(app: FastifyInstance) {
+  // POST
   app.post(
     '/home-page',
     {

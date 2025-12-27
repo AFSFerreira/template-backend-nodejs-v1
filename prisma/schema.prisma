@@ -361,7 +361,7 @@ model Blog {
   publicId        String                   @unique @default(uuid(7)) @map("public_id")
   editorialStatus EditorialStatusType      @default(PENDING_APPROVAL) @map("editorial_status")
   title           String
-  bannerImage     String                   @map("banner_image")
+  bannerImage     String                   @map("banner_image") // NOTE: Opcional somente quando o blog está no status DRAFT
   authorName      String                   @map("author_name")
   accessCount     Int                      @default(0) @map("access_count")
   content         Json                     @db.Json // Conteúdo em prose mirror do Blog
@@ -431,14 +431,14 @@ model CommentLike {
 }
 
 model SliderImage {
-  id        Int            @id @default(autoincrement())
-  publicId  String         @unique @default(uuid(7)) @map("public_id")
-  image     String         @unique
+  id        Int      @id @default(autoincrement())
+  publicId  String   @unique @default(uuid(7)) @map("public_id")
+  image     String   @unique
   // page      SliderPageType // Página em que o Slider aparece (home page, página de blogs, etc)
   link      String?
   order     Int
-  isActive  Boolean        @default(false) @map("is_active")
-  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  isActive  Boolean  @default(false) @map("is_active")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   @@map("slider_images")
 }

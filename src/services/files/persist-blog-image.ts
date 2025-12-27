@@ -1,15 +1,15 @@
 import type { IPersistBlogImage } from '@custom-types/services/persist-blog-image'
-import path from 'node:path'
-import { BLOG_IMAGES_PATH, BLOG_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { logError } from '@lib/logger/helpers/log-error'
 import { BLOG_IMAGE_PERSIST_ERROR } from '@messages/loggings/blog-loggings'
+import { buildBlogImagePath } from '@services/files/build-blog-image-path'
+import { buildBlogTempImagePath } from '@services/files/build-blog-temp-image-path'
 import fs from 'fs-extra'
 
 // Função para mover uma imagem do blog da pasta temporária para uma pasta definitiva de blogs:
 export async function persistBlogImage({ filename }: IPersistBlogImage) {
   try {
-    const oldImagePath = path.resolve(BLOG_TEMP_IMAGES_PATH, filename)
-    const newImagePath = path.resolve(BLOG_IMAGES_PATH, filename)
+    const oldImagePath = buildBlogTempImagePath(filename)
+    const newImagePath = buildBlogImagePath(filename)
 
     const fileAreadyExists = await fs.exists(newImagePath)
 

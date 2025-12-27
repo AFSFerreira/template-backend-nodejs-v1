@@ -1,0 +1,6 @@
+import path from 'node:path'
+import { TEMP_SLIDER_IMAGES_PATH } from '@constants/dynamic-file-constants'
+
+export function buildTempSliderImagePath(filename: string) {
+  return path.resolve(TEMP_SLIDER_IMAGES_PATH, filename)
+}

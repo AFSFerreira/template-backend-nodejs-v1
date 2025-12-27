@@ -144,6 +144,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
       const blogs = await this.dbContext.client.blog.findMany({
         select: {
           publicId: true,
+          authorName: true,
           title: true,
           bannerImage: true,
           editorialStatus: true,
@@ -151,6 +152,12 @@ export class PrismaBlogsRepository implements BlogsRepository {
           searchContent: true,
           createdAt: true,
           updatedAt: true,
+          Subcategories: true,
+          User: {
+            select: {
+              fullName: true,
+            },
+          },
         },
         orderBy,
       })
@@ -204,7 +211,14 @@ export class PrismaBlogsRepository implements BlogsRepository {
           accessCount: true,
           searchContent: true,
           createdAt: true,
+          authorName: true,
           updatedAt: true,
+          Subcategories: true,
+          User: {
+            select: {
+              fullName: true,
+            },
+          },
         },
         orderBy,
       })

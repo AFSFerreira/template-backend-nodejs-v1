@@ -1,0 +1,6 @@
+import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
+import { z } from 'zod'
+
+export const submitPublishedToPendingParamsSchema = z.object({
+  publicId: modelPublicIdSchema,
+})

@@ -55,8 +55,8 @@ export class RegisterUseCase {
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
     const profileImagePersist = registerUseCaseInput.user.profileImage
       ? await persistUserProfileImage({
-        filename: registerUseCaseInput.user.profileImage
-      })
+          filename: registerUseCaseInput.user.profileImage,
+        })
       : DEFAULT_PROFILE_IMAGE_NAME
 
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)

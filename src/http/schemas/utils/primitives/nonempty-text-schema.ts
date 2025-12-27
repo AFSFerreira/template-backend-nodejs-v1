@@ -1,3 +1,3 @@
-import { z } from 'zod'
+import { textSchema } from './text-schema'
 
-export const nonemptyTextSchema = z.string().trim().nonempty()
+export const nonemptyTextSchema = textSchema.nonempty()

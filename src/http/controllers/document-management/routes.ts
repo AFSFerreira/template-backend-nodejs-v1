@@ -9,9 +9,11 @@ import { uploadElectionNotice } from './upload-election-notice.controller'
 import { uploadStatute } from './upload-statute.controller'
 
 export async function documentManagementRoutes(app: FastifyInstance) {
+  // GET
   app.get('/statute', getStatute)
   app.get('/election-notice', getElectionNotice)
 
+  // POST
   app.post(
     '/statute',
     {

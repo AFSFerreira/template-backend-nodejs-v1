@@ -76,13 +76,23 @@ export function buildListAllUserBlogsDetailedQuery(query: IBuildGetAllUserBlogsD
       b.access_count,
       b.search_content,
       b.created_at,
-      b.updated_at
+      b.updated_at,
+      u.full_name as user_full_name,
+      COALESCE(
+        jsonb_agg(
+          jsonb_build_object(
+            'id', sc.id,
+            'area', sc.area
+          )
+        ) FILTER (WHERE sc.id IS NOT NULL),
+        '[]'
+      ) AS subcategories
     FROM blogs b
     LEFT JOIN users u ON u.id = b.user_id
     LEFT JOIN _blog_subcategories bs ON bs."B" = b.id
     LEFT JOIN area_of_activity sc ON sc.id = bs."A" AND sc.type = ${ActivityAreaType.SUB_AREA_OF_ACTIVITY}::"ActivityAreaType"
     ${whereClause}
-    GROUP BY b.id
+    GROUP BY b.id, u.full_name
     ${havingClause}
     ${orderByClause}
     LIMIT ${Prisma.sql`${limit}`} OFFSET ${Prisma.sql`${offset}`}

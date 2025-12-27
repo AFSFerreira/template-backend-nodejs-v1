@@ -4,13 +4,13 @@ import type {
 } from '@custom-types/use-cases/user/update-profile-image'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
-import path from 'node:path'
 import { REGISTER_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { PROFILE_IMAGE_UPDATED_SUCCESSFULLY, UPDATE_USER_IMAGE_ERROR } from '@messages/loggings/user-loggings'
+import { buildUserProfileImagePath } from '@services/files/build-user-profile-image-path'
 import { saveCompressedImage } from '@services/files/save-compressed-image'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
@@ -64,7 +64,7 @@ export class UpdateProfileImageUseCase {
 
         // Remove a imagem antiga se não for a imagem padrão
         if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
-          const oldImagePath = path.join(REGISTER_PROFILE_IMAGES_PATH, user.profileImage)
+          const oldImagePath = buildUserProfileImagePath(user.profileImage)
           await deleteFile(oldImagePath)
         }
       })
