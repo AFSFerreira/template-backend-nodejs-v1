@@ -9,7 +9,7 @@ import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import fs, { ensureDir } from 'fs-extra'
 
 export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMultipartFile): Promise<FileInfo> {
-  const filename = `${newFilename ?? generateFileHash()}${path.extname(filePart.filename)}`
+  const filename = `${newFilename ?? `${generateFileHash()}${path.extname(filePart.filename)}`}`
 
   const baseFolderPath = path.resolve(baseFolder)
   const finalFilePath = path.resolve(baseFolderPath, filename)
