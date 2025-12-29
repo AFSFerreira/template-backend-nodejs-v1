@@ -13,31 +13,23 @@
   },
   "scripts": {
     "build": "run-s ci:generate tsup",
-
     "presenters:generate": "tsx ./src/http/presenters/generate-imports.ts",
-
     "start:tsx:watch": "tsx watch --env-file=.env --no-deprecation src/server.ts",
     "start:dev": "run-s presenters:generate start:tsx:watch",
     "start:prod": "node --enable-source-maps --env-file=.env dist/server.js",
     "start:prod:docker": "node --enable-source-maps dist/server.js",
-
     "build:tsc": "tsc",
     "build:tsup": "tsup",
-
     "lint:src:eslint": "eslint --fix src/**/*.{js,ts,tsx,jsx}",
     "lint:prisma:eslint": "eslint --fix prisma/**/*.{js,ts,tsx,jsx}",
-
     "format:src:prettier": "prettier --config .prettierrc.json --ignore-path .prettierignore --write 'src/**/*.{js,ts,tsx,jsx}'",
     "format:prisma:prettier": "prettier --config .prettierrc.json --ignore-path .prettierignore --write 'prisma/**/*.{js,ts,tsx,jsx}'",
-
     "lint:src:biome": "biome lint --write src",
     "lint:prisma:biome": "biome lint --write prisma",
-
     "format:src:biome": "biome format --write src",
     "format:prisma:biome": "biome format --write prisma",
     "check:src:biome": "biome check --write src",
     "check:prisma:biome": "biome check --write prisma",
-
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:dev:default": "prisma migrate dev --name creating_database_models",
@@ -46,12 +38,10 @@
     "db:reset": "run-s db:generate db:migrate:reset db:seed",
     "db:migrate-deploy": "prisma migrate deploy",
     "db:deploy": "run-s db:migrate-deploy db:generate db:seed",
-
     "ci:generate": "run-p db:generate presenters:generate",
     "ci:lint": "run-s check:prisma:biome check:src:biome",
     "ci:format": "run-s check:prisma:biome check:src:biome",
     "ci:build": "run-s ci:generate build:tsc build:tsup",
-
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
   },
   "devDependencies": {
@@ -132,6 +122,7 @@
     "pino": "10.1.0",
     "reflect-metadata": "0.2.2",
     "sharp": "0.34.5",
+    "slash": "5.1.0",
     "tsyringe": "4.10.0",
     "url-join": "5.0.0",
     "uuid": "13.0.0",
