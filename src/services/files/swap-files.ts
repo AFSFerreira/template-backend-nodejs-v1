@@ -9,7 +9,10 @@ import { saveFile } from './save-file'
 export async function swapFiles(files: IswapFiles[]) {
   for (const file of files) {
     const { anyExtension, ...filteredFileInfo } = file
-    const { filename, finalFilePath, success } = await saveFile(filteredFileInfo)
+    const { filename, finalFilePath, success } = await saveFile({
+      ...filteredFileInfo,
+      newFilename: file.filename,
+    })
 
     const partialReturnData = { filename, finalFilePath }
 
