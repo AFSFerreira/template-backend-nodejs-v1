@@ -6,7 +6,7 @@ import path from 'node:path'
 import { ELECTION_NOTICE_FILE_NAME } from '@constants/static-file-constants'
 import { logger } from '@lib/logger'
 import { ELECTION_NOTICE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/document-management-loggings'
-import { swapMultipartFiles } from '@services/files/swap-multipart-files'
+import { swapFiles } from '@services/files/swap-files'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { injectable } from 'tsyringe'
@@ -29,7 +29,7 @@ export class UploadElectionNoticeUseCase {
 
     const filename = `${ELECTION_NOTICE_FILE_NAME}${path.extname(originalFilename)}`
 
-    const persistImageIsSuccessful = await swapMultipartFiles([
+    const persistImageIsSuccessful = await swapFiles([
       {
         filename,
         baseFolder,

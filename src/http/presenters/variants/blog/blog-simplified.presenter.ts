@@ -6,10 +6,9 @@ import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildBlogBannerUrl } from '@services/http/url/build-blog-banner-url'
 
 @RegisterPresenter(BLOG_SIMPLIFIED_PRESENTER_KEY)
-export class BlogSimplifiedPresenter implements IPresenterStrategy<
-  CustomBlogWithSimplifiedDetails,
-  HTTPSimplifiedBlog
-> {
+export class BlogSimplifiedPresenter
+  implements IPresenterStrategy<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>
+{
   public toHTTP(input: CustomBlogWithSimplifiedDetails): HTTPSimplifiedBlog {
     return {
       id: input.publicId,

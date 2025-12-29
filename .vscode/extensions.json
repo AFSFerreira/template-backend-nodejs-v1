@@ -13,5 +13,6 @@
     "rvest.vs-code-prettier-eslint",
     "mylesmurphy.prettify-ts",
     "yoavbls.pretty-ts-errors",
+    "inferrinizzard.prettier-sql-vscode",
   ]
 }

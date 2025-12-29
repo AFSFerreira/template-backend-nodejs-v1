@@ -5,10 +5,9 @@ import { ACADEMIC_PUBLICATION_SIMPLIFIED_PRESENTER_KEY } from '@constants/presen
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(ACADEMIC_PUBLICATION_SIMPLIFIED_PRESENTER_KEY)
-export class AcademicPublicationFilteredPresenter implements IPresenterStrategy<
-  CustomAcademicPublicationWithSimplifiedDetails,
-  HTTPAcademicPublication
-> {
+export class AcademicPublicationFilteredPresenter
+  implements IPresenterStrategy<CustomAcademicPublicationWithSimplifiedDetails, HTTPAcademicPublication>
+{
   toHTTP(input: CustomAcademicPublicationWithSimplifiedDetails): HTTPAcademicPublication {
     return {
       title: input.title,

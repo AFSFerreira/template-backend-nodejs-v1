@@ -1,8 +1,8 @@
 import { glob } from 'node:fs/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import {
-  FILE_DELETION_ERROR,
   FILES_SUCCESSFULLY_DELETED,
+  FILE_DELETION_ERROR,
   NO_FILES_FOUND_TO_DELETE,
 } from '@messages/loggings/file-loggings'
 import { logger } from '@sentry/node'

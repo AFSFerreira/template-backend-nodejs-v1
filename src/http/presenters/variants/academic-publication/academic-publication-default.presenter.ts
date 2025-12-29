@@ -6,10 +6,9 @@ import { ACADEMIC_PUBLICATION_DEFAULT_PRESENTER_KEY } from '@constants/presenter
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(ACADEMIC_PUBLICATION_DEFAULT_PRESENTER_KEY)
-export class AcademicPublicationDefaultPresenter implements IPresenterStrategy<
-  AcademicPublication,
-  HTTPAcademicPublication
-> {
+export class AcademicPublicationDefaultPresenter
+  implements IPresenterStrategy<AcademicPublication, HTTPAcademicPublication>
+{
   toHTTP(input: AcademicPublicationWithDetails): HTTPAcademicPublication {
     return {
       title: input.title,

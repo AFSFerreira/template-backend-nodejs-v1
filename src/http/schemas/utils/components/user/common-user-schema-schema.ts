@@ -16,6 +16,7 @@ export const commonUserSchema = z.object({
   password: passwordSchema,
   fullName: upperCaseTextSchema,
   username: usernameSchema,
+  wantsNewsletter: booleanSchema,
   identity: identityDocumentSchema,
   profileImage: limitedNonemptyTextSchema.optional(),
   birthdate: birthdateSchema,

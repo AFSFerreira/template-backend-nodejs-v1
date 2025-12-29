@@ -34,7 +34,7 @@ class PresenterRegistry {
 export const presenterRegistry = new PresenterRegistry()
 
 export function RegisterPresenter(contextKey: string) {
-  return function (target: new () => IPresenterStrategy<unknown, unknown>) {
+  return (target: new () => IPresenterStrategy<unknown, unknown>) => {
     presenterRegistry.register(contextKey, new target())
   }
 }

@@ -13,24 +13,27 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
 import { ActivityAreaType } from '@prisma/client'
+import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/build-blog-banner-path'
+import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/build-blog-image-path'
 import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
-import { buildBlogBannerPath } from '@services/files/build-blog-banner-path'
-import { buildBlogImagePath } from '@services/files/build-blog-image-path'
-import { persistBlogBanner } from '@services/files/persist-blog-banner'
-import { persistBlogImage } from '@services/files/persist-blog-image'
+import { persistFile } from '@services/files/persist-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogEditorialStatusChangeForbiddenError } from '@use-cases/errors/blog/blog-editorial-status-change-forbidden-error'
+import { BlogImageNotFoundError } from '@use-cases/errors/blog/blog-image-not-found-error'
+import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidBannerLinkError } from '@use-cases/errors/blog/blog-invalid-banner-link-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { InvalidBlogContentError } from '@use-cases/errors/blog/invalid-blog-content-error'
+import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
+import fs from 'fs-extra'
 import { inject, injectable } from 'tsyringe'
 import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 
@@ -111,7 +114,28 @@ export class UpdateBlogUseCase {
               throw new BlogInvalidImageLinkError()
             }
 
-            await persistBlogImage({ filename: imageName })
+            const oldFilePath = buildBlogTempImagePath(imageName)
+            const newFilePath = buildBlogImagePath(imageName)
+
+            const imagePersistResult = await persistFile({
+              oldFilePath,
+              newFilePath,
+              options: {
+                ignoreOldFileMissing: true,
+                ignoreNewFileAlreadyExists: true,
+              },
+            })
+
+            // Se a imagem não foi encontrada na pasta temporária,
+            // ela precisa estar na pasta definitiva:
+            if (imagePersistResult === oldFilePath && !fs.exists(newFilePath)) {
+              throw new BlogImageNotFoundError()
+            }
+
+            // Se ocorrer algum erro durante a persistência da imagem do blog:
+            if (!imagePersistResult) {
+              throw new BlogImagePersistError()
+            }
           }),
         )
 
@@ -140,15 +164,17 @@ export class UpdateBlogUseCase {
         }
 
         if (newBannerImage !== blog.bannerImage) {
-          await deleteFile(buildBlogBannerPath(blog.bannerImage))
-
-          const persistedBanner = await persistBlogBanner({
-            filename: newBannerImage,
+          const persistedBanner = await persistFile({
+            oldFilePath: buildBlogTempBannerPath(newBannerImage),
+            newFilePath: buildBlogBannerPath(newBannerImage),
           })
 
           if (!persistedBanner) {
             throw new BlogBannerPersistError()
           }
+
+          // Remove a imagem antiga somente após persistir a nova:
+          await deleteFile(buildBlogBannerPath(blog.bannerImage))
 
           updateData.bannerImage = persistedBanner
         }
@@ -161,10 +187,16 @@ export class UpdateBlogUseCase {
         }))
 
         // Valida as novas subcategorias:
-        await validateActivityAreas({
+        const { validatedActivityAreas, success } = await validateActivityAreas({
           activityAreas: formattedSubcategories,
           activityAreasRepository: this.activityAreasRepository,
         })
+
+        if (!success) {
+          throw new InvalidActivityArea(
+            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+          )
+        }
 
         updateData.Subcategories = {
           set: [],

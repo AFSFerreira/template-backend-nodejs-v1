@@ -8,7 +8,8 @@ import { partialAddressDataArray1 } from './seed-data/addresses'
 import { blogDataArray1 } from './seed-data/blogs'
 import { directorPositionsArray1 } from './seed-data/director-positions'
 import { institutionsDataArray1 } from './seed-data/institutions'
-import { meetingData1, meetingDataArray1 } from './seed-data/meeting'
+import { meetingDataArray1 } from './seed-data/meeting'
+import { meetingParticipantsDummyDataArray1 } from './seed-data/meeting-participants'
 import { paymentInfo1 } from './seed-data/payment-info'
 import { usersDataArray1, usersDataArray2 } from './seed-data/users'
 
@@ -90,18 +91,6 @@ async function main() {
   })
 
   // Criação de Reuniões:
-  const meetingAlreadyExists = await prisma.meeting.findFirst({
-    where: {
-      title: meetingData1.title,
-    },
-  })
-
-  if (!meetingAlreadyExists) {
-    await prisma.meeting.create({
-      data: meetingData1,
-    })
-  }
-
   for (const meeting of meetingDataArray1) {
     const { MeetingDate, MeetingParticipation, MeetingPaymentInfo, ...filteredMeetingInfo } = meeting
 
@@ -111,7 +100,10 @@ async function main() {
 
     if (!meetingAlreadyExists) {
       await prisma.meeting.create({
-        data: meeting,
+        data: {
+          ...meeting,
+          MeetingParticipation: { create: meetingParticipantsDummyDataArray1 },
+        },
       })
     }
   }
@@ -124,6 +116,7 @@ main()
   })
   .catch(async (error) => {
     // eslint-disable-next-line no-console
+    // biome-ignore lint/suspicious/noConsole: <Console necessário. Impossível utilizar pino aqui>
     console.error('Erro ao executar seed:', error)
     await prisma.$disconnect()
     process.exit(1)

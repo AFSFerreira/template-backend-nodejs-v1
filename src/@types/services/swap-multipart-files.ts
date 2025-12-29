@@ -1,6 +1,6 @@
 import type { MultipartFile } from '@fastify/multipart'
 
-export type ISwapMultipartFiles = {
+export type IswapFiles = {
   filePart: MultipartFile
   baseFolder: string
   filename: string

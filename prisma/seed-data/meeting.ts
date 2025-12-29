@@ -5,6 +5,7 @@ export const meetingData1: Prisma.MeetingCreateInput = {
   title: `I REUNIÃO ANUAL`,
   image: 'meeting-2018.png',
   description: '',
+  programFile: '',
   location: 'Universidade Cruzeiro do Sul - Campus Anália Franco',
   lastDate: new Date('2018-07-12'),
   MeetingDate: {
@@ -24,6 +25,7 @@ export const meetingData2: Prisma.MeetingCreateInput = {
   title: `II REUNIÃO ANUAL`,
   image: 'meeting-2019.png',
   description: '',
+  programFile: '',
   location: 'Instituto de Astronomia, Geofísica e Ciências Atmosféricas - Universidade de São Paulo',
   lastDate: new Date('2019-10-18'),
   MeetingDate: {
@@ -43,6 +45,7 @@ export const meetingData4: Prisma.MeetingCreateInput = {
   title: `IV REUNIÃO ANUAL`,
   image: 'meeting-2021.png',
   description: '',
+  programFile: '',
   location: 'Evento Online',
   lastDate: new Date('2021-11-26'),
   MeetingDate: {
@@ -62,6 +65,7 @@ export const meetingData5: Prisma.MeetingCreateInput = {
   title: `V REUNIÃO ANUAL`,
   image: 'meeting-2022.png',
   description: '',
+  programFile: '',
   location: 'Rio de Janeiro',
   lastDate: new Date('2022-11-18'),
   MeetingDate: {
@@ -84,6 +88,7 @@ export const meetingData6: Prisma.MeetingCreateInput = {
   title: `VI REUNIÃO ANUAL`,
   image: 'meeting-2023.png',
   description: '',
+  programFile: '',
   location: 'Campus Butantã, Cidade Universitária, USP - São Paulo',
   lastDate: new Date('2023-12-08'),
   MeetingDate: {
@@ -103,6 +108,7 @@ export const meetingData7: Prisma.MeetingCreateInput = {
   title: `VII REUNIÃO ANUAL`,
   image: 'meeting-2024.png',
   description: '',
+  programFile: '',
   location: 'Observatório Nacional, Rio de Janeiro',
   lastDate: new Date('2024-09-06'),
   MeetingDate: {
@@ -124,6 +130,7 @@ export const meetingData7: Prisma.MeetingCreateInput = {
 export const meetingData8: Prisma.MeetingCreateInput = {
   title: 'VIII REUNIÃO ANUAL',
   image: 'meeting-2025.png',
+  programFile: '',
   description:
     'A Sociedade Brasileira de Astrobiologia (SBA) tem o prazer de anunciar a realização da sua 8ª Reunião Anual. Este evento consolidado tornou-se o principal ponto de encontro para pesquisadores, estudantes e profissionais dedicados a compreender a origem, evolução, distribuição e o futuro da vida no universo. Nesta 8ª edição, buscaremos fortalecer ainda mais a colaboração interdisciplinar que define nossa área, unindo Astronomia, Biologia, Geologia, Química e Ciências Humanas. A reunião será um espaço vital para apresentar novas descobertas, discutir desafios metodológicos e fomentar novas parcerias no cenário científico brasileiro e internacional.',
   location: 'Instituto Oceanográfico - USP - São Paulo',

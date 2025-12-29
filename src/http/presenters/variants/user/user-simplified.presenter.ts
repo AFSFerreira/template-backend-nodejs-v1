@@ -4,10 +4,9 @@ import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(USER_SIMPLIFIED_PRESENTER_KEY)
-export class UserSimplifiedPresenter implements IPresenterStrategy<
-  UserWithSimplifiedDetails,
-  HTTPSimplifiedUserDetails
-> {
+export class UserSimplifiedPresenter
+  implements IPresenterStrategy<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>
+{
   public toHTTP(input: UserWithSimplifiedDetails): HTTPSimplifiedUserDetails {
     return {
       id: input.publicId,

@@ -12,10 +12,7 @@ import { injectable } from 'tsyringe'
 
 @injectable()
 export class UploadNewsletterHtmlUseCase {
-  async execute({
-    originalFilename,
-    filePart,
-  }: UploadNewsletterHtmlUseCaseRequest): Promise<UploadNewsletterHtmlUseCaseResponse> {
+  async execute({ filePart }: UploadNewsletterHtmlUseCaseRequest): Promise<UploadNewsletterHtmlUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
     }
@@ -25,9 +22,8 @@ export class UploadNewsletterHtmlUseCase {
     }
 
     const { filename, success } = await saveFile({
-      originalFilename,
-      fileStream: filePart.file,
-      folderPath: NEWSLETTER_TEMP_HTML_PATH,
+      filePart,
+      baseFolder: NEWSLETTER_TEMP_HTML_PATH,
     })
 
     if (!success || filePart.file.truncated) {

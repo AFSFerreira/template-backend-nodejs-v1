@@ -7,10 +7,9 @@ import { DASHBOARD_METRICS_NEWSLETTERS_PRESENTER_KEY } from '@constants/presente
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
 @RegisterPresenter(DASHBOARD_METRICS_NEWSLETTERS_PRESENTER_KEY)
-export class DashboardNewslettersMetricsPresenter implements IPresenterStrategy<
-  DashboardNewslettersMetrics,
-  HTTPDashboardNewslettersMetrics
-> {
+export class DashboardNewslettersMetricsPresenter
+  implements IPresenterStrategy<DashboardNewslettersMetrics, HTTPDashboardNewslettersMetrics>
+{
   public toHTTP(input: DashboardNewslettersMetrics): HTTPDashboardNewslettersMetrics {
     return {
       ...input,

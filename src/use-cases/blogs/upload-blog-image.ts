@@ -5,17 +5,14 @@ import type {
 import { BLOG_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
 import { BLOG_IMAGE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
-import { saveImage } from '@services/files/save-image'
+import { saveFile } from '@services/files/save-file'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { injectable } from 'tsyringe'
 
 @injectable()
 export class UploadBlogImageUseCase {
-  async execute({
-    originalFilename,
-    filePart,
-  }: UploadBlogImageUseCaseRequest): Promise<UploadBlogImageUseCaseResponse> {
+  async execute({ filePart }: UploadBlogImageUseCaseRequest): Promise<UploadBlogImageUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
     }
@@ -24,10 +21,9 @@ export class UploadBlogImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { filename, success } = await saveImage({
-      originalFilename,
-      imageStream: filePart.file,
-      folderPath: BLOG_TEMP_IMAGES_PATH,
+    const { filename, success } = await saveFile({
+      filePart: filePart,
+      baseFolder: BLOG_TEMP_IMAGES_PATH,
     })
 
     if (!success || filePart.file.truncated) {

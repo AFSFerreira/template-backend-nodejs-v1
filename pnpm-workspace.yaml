@@ -1,0 +1,8 @@
+onlyBuiltDependencies:
+  - '@prisma/engines'
+  - '@sentry-internal/node-cpu-profiler'
+  - '@sentry/cli'
+  - '@swc/core'
+  - esbuild
+  - prisma
+  - sharp

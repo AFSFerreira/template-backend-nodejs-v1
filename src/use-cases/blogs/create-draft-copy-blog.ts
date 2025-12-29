@@ -14,11 +14,11 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_COPY_CREATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
 import { EditorialStatusType } from '@prisma/client'
+import { buildBlogBannerPath } from '@services/builders/build-blog-banner-path'
+import { buildBlogImagePath } from '@services/builders/build-blog-image-path'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
-import { buildBlogBannerPath } from '@services/files/build-blog-banner-path'
-import { buildBlogImagePath } from '@services/files/build-blog-image-path'
 import { copyFile } from '@services/files/copy-file'
 import { buildBlogImageUrl } from '@services/http/url/build-blog-image-url'
 import { BlogContentCopyError } from '@use-cases/errors/blog/blog-content-copy-error'
@@ -115,7 +115,7 @@ export class CreateDraftCopyBlogUseCase {
 
       const createdBlog = await this.blogsRepository.create({
         editorialStatus: EditorialStatusType.DRAFT,
-        title: blog.title + ' - Cópia',
+        title: `${blog.title} - Cópia`,
         bannerImage: newBannerImage.filename,
         searchContent,
         subcategoriesIds: blog.Subcategories.map((subcategory) => subcategory.id),

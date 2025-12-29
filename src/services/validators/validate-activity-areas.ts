@@ -1,7 +1,9 @@
-import type { IValidateActivityAreas } from '@custom-types/custom/validate-activity-areas'
-import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
+import type { IValidateActivityAreas, IValidatedActivityAreas } from '@custom-types/custom/validate-activity-areas'
 
-export async function validateActivityAreas({ activityAreasRepository, activityAreas }: IValidateActivityAreas) {
+export async function validateActivityAreas({
+  activityAreasRepository,
+  activityAreas,
+}: IValidateActivityAreas): Promise<IValidatedActivityAreas> {
   const activityAreasFound = await activityAreasRepository.findManyBy(activityAreas)
 
   // NOTE: Se esta verificação provocar problemas eventualmente,
@@ -15,10 +17,8 @@ export async function validateActivityAreas({ activityAreasRepository, activityA
   })
 
   if (wrongActivityAreas.length !== 0) {
-    throw new InvalidActivityArea(
-      wrongActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-    )
+    return { validatedActivityAreas: wrongActivityAreas, success: false }
   }
 
-  return activityAreasFound
+  return { validatedActivityAreas: activityAreasFound, success: true }
 }

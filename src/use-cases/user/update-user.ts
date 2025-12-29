@@ -16,6 +16,7 @@ import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-
 import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
+import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
@@ -57,9 +58,9 @@ export class UpdateUserUseCase {
         error: new UserNotFoundError(),
       })
 
-      let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined = undefined
+      let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined
 
-      let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined = undefined
+      let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
 
       if (data.user) {
         if (
@@ -138,10 +139,16 @@ export class UpdateUserUseCase {
               : []),
           ]
 
-          await validateActivityAreas({
+          const { validatedActivityAreas, success } = await validateActivityAreas({
             activityAreas,
             activityAreasRepository: this.activityAreasRepository,
           })
+
+          if (!success) {
+            throw new InvalidActivityArea(
+              validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+            )
+          }
         }
 
         if (data.institution) {

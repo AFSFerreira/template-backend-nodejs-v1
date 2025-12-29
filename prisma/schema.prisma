@@ -6,6 +6,20 @@ datasource db {
   provider = "postgresql"
 }
 
+model InstitutionalInfo {
+  id                 Int       @id @default(autoincrement())
+  aboutDescription   Json      @map("about_description") @db.Json
+  aboutImage         String    @map("about_image")
+  statuteFile        String?   @default("estatuto.pdf") @map("statute_file")
+  electionNoticeFile String?   @default("edital-eleição.pdf") @map("election_notice_file")
+  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+  lastUpdatedById    Int?      @map("last_updated_by_id")
+  LastUpdatedBy      User?     @relation(fields: [lastUpdatedById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@map("institutional_info")
+}
+
 model AuthenticationAudit {
   id         Int                      @id @default(autoincrement())
   ipAddress  String?                  @map("ip_address") @db.Inet
@@ -45,6 +59,7 @@ model User {
   publicInformation              String?                  @map("public_information")
   activityAreaDescription        String?                  @map("activity_area_description")
   subActivityAreaDescription     String?                  @map("sub_activity_area_description")
+  wantsNewsletter                Boolean                  @map("wants_newsletter")
   email                          String                   @unique
   secondaryEmail                 String?                  @unique @map("secondary_email")
   passwordHash                   String                   @map("password_hash")
@@ -72,6 +87,7 @@ model User {
   Institution                    Institution?             @relation(fields: [institutionId], references: [id], onDelete: NoAction)
   SubActivityArea                ActivityArea?            @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
   Keyword                        Keyword[]                @relation("KeywordToUser")
+  institutionalInfo              InstitutionalInfo[]
 
   @@unique([identityType, identityDocument])
   @@index([membershipStatus])
@@ -235,7 +251,7 @@ model DirectorPosition {
 }
 
 model PaymentInfo {
-  id                 Int                  @id @default(1) @db.SmallInt
+  id                 Int                  @id @default(autoincrement()) @db.SmallInt
   pixKey             String               @map("pix_key")
   bank               String
   code               String
@@ -331,6 +347,7 @@ model Meeting {
   publicId             String                 @unique @default(uuid(7)) @map("public_id")
   title                String
   image                String
+  programFile          String                 @map("program_file")
   description          String
   location             String
   lastDate             DateTime               @map("last_date") @db.Date

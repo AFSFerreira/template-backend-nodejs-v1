@@ -9,7 +9,7 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
 
   // NOTE: Feito com listas porque o uso de conjuntos
   // não permitiria uma paginação sob o array de maneira determinística:
-  const allInstitutions = new Array<string>()
+  const allInstitutions: string[] = []
 
   const institutionsRequestUrl = universityName
     ? `${UNIVERSITIES_API}?name_contains=${universityName}`

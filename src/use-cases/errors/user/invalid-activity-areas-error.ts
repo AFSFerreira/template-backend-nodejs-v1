@@ -8,7 +8,7 @@ export class InvalidActivityArea extends ApiError {
       body: area
         ? {
             ...INVALID_AREA_OF_ACTIVITY.body,
-            message: INVALID_AREA_OF_ACTIVITY.body.message + `: ${area}`,
+            message: `${INVALID_AREA_OF_ACTIVITY.body.message}: ${area}`,
           }
         : INVALID_AREA_OF_ACTIVITY.body,
     })

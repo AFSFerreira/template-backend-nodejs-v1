@@ -996,3 +996,36 @@ export const proseMirrorData3: JSONContent = {
     },
   ],
 }
+
+export const proseMirrorData4: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'Fundada em 2017, a Sociedade Brasileira de Astrobiologia (SBAstrobio) é uma associação científica sem fins lucrativos com foco na pesquisa, ensino e divulgação da astrobiologia e áreas afins.',
+        },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'Seus objetivos principais são fomentar a pesquisa em astrobiologia, promovendo a interação entre pesquisadores e colaborações nacionais e internacionais, difundir a divulgação da astrobiologia e da ciência em geral na sociedade brasileira e fortalecer o ensino das ciências no nosso país.',
+        },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'Desde sua fundação, a SBAstrobio promove reuniões anuais, conforme estipulado em seu estatuto.',
+        },
+      ],
+    },
+  ],
+}

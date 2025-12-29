@@ -1,5 +1,6 @@
 import type { Prisma } from '@prisma/client'
 import { EducationLevelType, IdentityType, MembershipStatusType, OccupationType, UserRoleType } from '@prisma/client'
+import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { hashSync } from 'bcryptjs'
 import { env } from '../../src/env/index'
 import { academicPublicationsCreateUserDataArray1 } from './academic-publications'
@@ -44,6 +45,7 @@ export const partialUserData1: PartialUserCreateInputInfo = {
   loginAttempts: 0,
   lastLogin: null,
   publicInformation: 'ASTROBIÓLOGO',
+  wantsNewsletter: true,
 
   EnrolledCourse: enrolledCourseNestedUserData1,
 
@@ -221,7 +223,7 @@ export const usersDataArray2: Prisma.UserCreateInput[] = [
 ]
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
-for (let i = 0; i <= 20; i++) {
+for (let i = 0; i <= 50; i++) {
   usersDataArray2.push({
     ...partialUserData1,
     identityType: IdentityType.CPF,
@@ -229,5 +231,6 @@ for (let i = 0; i <= 20; i++) {
     fullName: `DUMMY USER ${i}`,
     username: `DUMMY USER ${i}`,
     email: `dummy-user-${i}@email.com`,
+    wantsNewsletter: getRandomArrayElement([true, false]),
   })
 }

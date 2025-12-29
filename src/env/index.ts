@@ -47,6 +47,7 @@ const _env = envSchema.safeParse(process.env)
 
 if (!_env.success) {
   // eslint-disable-next-line no-console
+  // biome-ignore lint/suspicious/noConsole: <Console necessário. Impossível utilizar pino aqui>
   console.error({
     message: '🚨 Invalid environment variables:',
     error: _env.error,

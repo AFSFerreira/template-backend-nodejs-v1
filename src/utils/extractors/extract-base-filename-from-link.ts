@@ -1,6 +1,6 @@
+import path from 'node:path'
 import { logError } from '@lib/logger/helpers/log-error'
 import { INVALID_URL_FALLBACK } from '@messages/loggings/file-loggings'
-import path from 'path'
 
 export function extractBaseFilenameFromLink(link: string): string | null {
   try {

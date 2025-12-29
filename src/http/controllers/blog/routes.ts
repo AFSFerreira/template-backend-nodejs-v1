@@ -15,7 +15,7 @@ import { getAllBlogsDetailed } from './get-all-blogs-detailed.controller'
 import { getAllUserBlogsDetailed } from './get-all-user-blogs-detailed.controller'
 import { getBlogHtmlContent } from './get-blog-html-content.controller'
 import { getRestrictBlogHtmlContent } from './get-restrict-blog-html-content.controller'
-import { publishBlog } from './publish-blog.controller'
+import { createAndPublishBlog } from './publish-blog.controller'
 import { submitDraftForReview } from './submit-draft-for-review.controller'
 import { submitPendingToPublish } from './submit-pending-to-publish.controller'
 import { submitPendingToReview } from './submit-pending-to-review.controller'
@@ -84,7 +84,7 @@ export async function blogRoutes(app: FastifyInstance) {
     {
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
-    publishBlog,
+    createAndPublishBlog,
   )
   app.post(
     '/uploads/image',

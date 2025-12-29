@@ -8,7 +8,8 @@ import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { SLIDER_IMAGE_CREATION_ERROR } from '@messages/loggings/slider-image-loggings'
-import { persistSliderImage } from '@services/files/persist-slider-image'
+import { buildSliderImagePath, buildTempSliderImagePath } from '@services/builders/build-slider-image-path'
+import { persistFile } from '@services/files/persist-file'
 import { HomePageSliderImagePersistError } from '@use-cases/errors/slider-image/home-page-slider-image-persist-error'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
 import { deleteFile } from '@utils/files/delete-file'
@@ -27,9 +28,9 @@ export class CreateHomePageSliderImageUseCase {
   async execute(
     createHomePageSliderImageUseCaseInput: CreateHomePageSliderImageUseCaseRequest,
   ): Promise<CreateHomePageSliderImageUseCaseResponse> {
-    const persistHomePageSliderImage = await persistSliderImage({
-      filename: createHomePageSliderImageUseCaseInput.image,
-      sliderSubfolder: 'home',
+    const persistHomePageSliderImage = await persistFile({
+      oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+      newFilePath: buildSliderImagePath(createHomePageSliderImageUseCaseInput.image),
     })
 
     if (!persistHomePageSliderImage) {

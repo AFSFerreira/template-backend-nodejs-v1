@@ -174,7 +174,7 @@ export const INVALID_IMAGE_FORMAT: IApiError = {
   status: 401,
   body: {
     code: 'INVALID_IMAGE_FORMAT',
-    message: `Apenas arquivos com formato de imagem são válidos: ${allowedImageMimeTypes.reduce((prev, curr) => prev + ', ' + curr, '')}`,
+    message: `Apenas arquivos com formato de imagem são válidos: ${allowedImageMimeTypes.join(', ')}`,
   },
 }
 

@@ -1,11 +1,12 @@
-import { EditorialStatusType, type Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
+import { EditorialStatusType } from '@prisma/client'
 import {
   subActivityAreaData1,
-  subActivityAreaData4,
-  subActivityAreaData9,
   subActivityAreaData11,
   subActivityAreaData12,
   subActivityAreaData15,
+  subActivityAreaData4,
+  subActivityAreaData9,
 } from './activity-areas'
 import { blogSearchContent1, blogSearchContent2, blogSearchContent3 } from './blog-contents'
 import { contentLeaderUserData1 } from './users'

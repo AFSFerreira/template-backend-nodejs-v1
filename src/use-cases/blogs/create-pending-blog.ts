@@ -13,13 +13,15 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_CREATED_SUCCESSFULLY, BLOG_IMAGES_PERSIST_ERROR } from '@messages/loggings/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
+import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/build-blog-banner-path'
+import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/build-blog-image-path'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
-import { buildBlogImagePath } from '@services/files/build-blog-image-path'
-import { persistBlogBanner } from '@services/files/persist-blog-banner'
-import { persistBlogImage } from '@services/files/persist-blog-image'
+import { persistFile } from '@services/files/persist-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
+import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
@@ -56,9 +58,10 @@ export class CreatePendingBlogUseCase {
       throw new InvalidBlogContentError()
     }
 
-    // Persistir banner e imagens da pasta temporária para a pasta definitiva
-    const persistedBanner = await persistBlogBanner({
-      filename: createPendingBlogUseCaseInput.bannerImage,
+    // Persistindo banner e imagens da pasta temporária para a pasta definitiva:
+    const persistedBanner = await persistFile({
+      oldFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
+      newFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
     })
 
     if (!persistedBanner) {
@@ -71,13 +74,23 @@ export class CreatePendingBlogUseCase {
       // Persistindo as novas imagens do blog:
       await Promise.all(
         Array.from(newBlogImages).map(async (image) => {
-          const filenameFromUrl = sanitizeUrlFilename(image)
+          const imageName = sanitizeUrlFilename(image)
 
-          if (!filenameFromUrl) {
+          if (!imageName) {
             throw new BlogInvalidImageLinkError()
           }
 
-          await persistBlogImage({ filename: filenameFromUrl })
+          const oldFilePath = buildBlogTempImagePath(imageName)
+          const newFilePath = buildBlogImagePath(imageName)
+
+          const imagePersistResult = await persistFile({
+            oldFilePath,
+            newFilePath,
+          })
+
+          if (!imagePersistResult) {
+            throw new BlogImagePersistError()
+          }
         }),
       )
     } catch (error) {
@@ -98,7 +111,7 @@ export class CreatePendingBlogUseCase {
         error: new UserNotFoundError(),
       })
 
-      const validatedSubactegories = await validateActivityAreas({
+      const { validatedActivityAreas, success } = await validateActivityAreas({
         activityAreasRepository: this.activityAreasRepository,
         activityAreas: createPendingBlogUseCaseInput.subcategories.map((subcategory) => ({
           area: subcategory,
@@ -106,7 +119,13 @@ export class CreatePendingBlogUseCase {
         })),
       })
 
-      const subcategoriesIds = validatedSubactegories.map((subcategory) => subcategory.id)
+      if (!success) {
+        throw new InvalidActivityArea(
+          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+        )
+      }
+
+      const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
 
       const createdBlog = await this.blogsRepository.create({
         editorialStatus: EditorialStatusType.PENDING_APPROVAL,

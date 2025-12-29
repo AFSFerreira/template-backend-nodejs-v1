@@ -120,6 +120,14 @@ export const BLOG_IMAGE_PERSIST_FAILED: IApiError = {
   },
 }
 
+export const BLOG_IMAGE_NOT_FOUND: IApiError = {
+  status: 404,
+  body: {
+    code: 'BLOG_IMAGE_NOT_FOUND',
+    message: 'Uma das imagens do blog não foi encontrada',
+  },
+}
+
 export const BLOG_INVALID_IMAGE_LINK: IApiError = {
   status: 400,
   body: {

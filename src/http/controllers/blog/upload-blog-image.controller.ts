@@ -7,11 +7,11 @@ import { container } from 'tsyringe'
 export async function uploadBlogImage(request: FastifyRequest, reply: FastifyReply) {
   const filePart = await request.file(profilePictureFileConfig)
 
-  const { filename: originalFilename } = imageSchema.parse(filePart)
+  imageSchema.parse(filePart)
 
   const useCase = container.resolve(UploadBlogImageUseCase)
 
-  const { filename } = await useCase.execute({ originalFilename, filePart })
+  const { filename } = await useCase.execute({ filePart })
 
   return await reply.status(200).send({ data: { blogImage: filename } })
 }

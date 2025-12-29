@@ -1,5 +1,5 @@
-import path from 'path'
-import { fileURLToPath } from 'url'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { IS_PROD } from './env-constants'
 import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-constants'
 
@@ -51,7 +51,7 @@ export const SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'sl
 export const NEWSLETTER_TEMP_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'newsletter', 'html')
 
 // Padrão glob para identificar todos os arquivos de estatuto independentemente da extensão:
-export const STATUTE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, STATUTE_FILE_NAME + '*')
+export const STATUTE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, `${STATUTE_FILE_NAME}*`)
 
 // Padrão glob para identificar todos os arquivos de edital de eleição independentemente da extensão:
-export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, ELECTION_NOTICE_FILE_NAME + '*')
+export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, `${ELECTION_NOTICE_FILE_NAME}*`)

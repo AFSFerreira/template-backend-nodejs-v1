@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/blogs/delete-blog-image'
 import { logger } from '@lib/logger'
 import { BLOG_IMAGE_DELETED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
-import { buildBlogTempImagePath } from '@services/files/build-blog-temp-image-path'
+import { buildBlogTempImagePath } from '@services/builders/build-blog-image-path'
 import { deleteFile } from '@utils/files/delete-file'
 import { injectable } from 'tsyringe'
 

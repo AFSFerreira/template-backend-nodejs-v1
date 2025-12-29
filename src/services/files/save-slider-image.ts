@@ -8,13 +8,8 @@ import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dim
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import sharp from 'sharp'
 
-export async function saveSliderImage({
-  imageStream,
-  folderPath,
-  newFilename,
-  options,
-}: ISaveSliderImage): Promise<ImageInfo> {
-  const finalName = (newFilename ?? generateFileHash()) + '.avif'
+export async function saveSliderImage({ imageStream, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
+  const finalName = `${generateFileHash()}.avif`
   const finalImagePath = path.resolve(folderPath, finalName)
 
   const { width, height } = mapQualityToDimensions(options)
@@ -27,8 +22,10 @@ export async function saveSliderImage({
       kernel: 'lanczos3',
     })
     .avif({
-      effort: 2,
-      // quality: 85,
+      effort: 6,
+      quality: 80,
+      chromaSubsampling: '4:4:4',
+      lossless: false,
     })
 
   const destinationStream = createWriteStream(finalImagePath)

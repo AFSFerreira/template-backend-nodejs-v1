@@ -4,14 +4,14 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/variants/blog-presenter'
 import { createBlogBodySchema } from '@schemas/blog/create-blog-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
-import { PublishBlogUseCase } from '@use-cases/blogs/publish-blog'
+import { CreateAndPublishBlogUseCase } from '@use-cases/blogs/create-and-publish-blog'
 import { container } from 'tsyringe'
 
-export async function publishBlog(request: FastifyRequest, reply: FastifyReply) {
+export async function createAndPublishBlog(request: FastifyRequest, reply: FastifyReply) {
   const authorPublicId = getRequestUserPublicId(request)
   const parsedBody = createBlogBodySchema.parse(request.body)
 
-  const useCase = container.resolve(PublishBlogUseCase)
+  const useCase = container.resolve(CreateAndPublishBlogUseCase)
 
   const { blog } = await useCase.execute({
     ...parsedBody,

@@ -34,17 +34,17 @@ export class PrismaUsersRepository implements UsersRepository {
   ) {}
 
   async create(data: CreateUserQuery) {
-    let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined = undefined
+    let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined
 
-    let academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] | undefined = undefined
+    let academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] | undefined
 
-    let enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] | undefined = undefined
+    let enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] | undefined
 
-    let institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] | undefined = undefined
+    let institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] | undefined
 
-    let activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] | undefined = undefined
+    let activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] | undefined
 
-    let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined = undefined
+    let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined
 
     if (isRegisterUserHighLevelEducation(data)) {
       if (isRegisterUserHighLevelStudentEducation(data)) {
@@ -224,7 +224,7 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async *streamAllUsers(batchSize = 500) {
-    let cursor: number | undefined = undefined
+    let cursor: number | undefined
 
     while (true) {
       const batch: UserWithDetails[] = await this.dbContext.client.user.findMany({
@@ -395,17 +395,17 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async update({ id, data }: UpdateUserQuery) {
-    let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined = undefined
+    let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined
 
-    let academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] | undefined = undefined
+    let academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] | undefined
 
-    let enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] | undefined = undefined
+    let enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] | undefined
 
-    let institutionConnectData: Prisma.UserUpdateInput['Institution'] | undefined = undefined
+    let institutionConnectData: Prisma.UserUpdateInput['Institution'] | undefined
 
-    let activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] | undefined = undefined
+    let activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] | undefined
 
-    let subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] | undefined = undefined
+    let subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] | undefined
 
     if (isUpdateUserHighLevelStudentEducation(data)) {
       if (isUpdateUserHighLevelEducation(data)) {

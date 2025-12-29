@@ -1,5 +1,5 @@
 import type { CompressedImageInfo } from '@custom-types/services/compressed-image-info'
-import type { SaveCompressedImage } from '@custom-types/services/save-compressed-image.'
+import type { SaveCompressedImage } from '@custom-types/services/save-compressed-image'
 import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'

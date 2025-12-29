@@ -7,6 +7,7 @@ import type { AddressCountryRepository } from '@repositories/address-countries-r
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import path from 'node:path'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
@@ -14,13 +15,19 @@ import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { SUCCESSFUL_USER_CREATION, USER_CREATION_ERROR } from '@messages/loggings/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
-import { persistUserProfileImage } from '@services/files/persist-user-profile-image'
+import {
+  buildUserProfileImagePath,
+  buildUserTempProfileImagePath,
+} from '@services/builders/build-user-profile-image-path'
+import { persistFile } from '@services/files/persist-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
+import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
+import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { deleteFile } from '@utils/files/delete-file'
@@ -53,11 +60,20 @@ export class RegisterUseCase {
   ) {}
 
   async execute(registerUseCaseInput: RegisterUseCaseRequest): Promise<RegisterUseCaseResponse> {
-    const profileImagePersist = registerUseCaseInput.user.profileImage
-      ? await persistUserProfileImage({
-          filename: registerUseCaseInput.user.profileImage,
-        })
-      : DEFAULT_PROFILE_IMAGE_NAME
+    let profileImage = DEFAULT_PROFILE_IMAGE_NAME
+
+    if (registerUseCaseInput.user.profileImage) {
+      const profileImagePersistSucessful = await persistFile({
+        oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+        newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+      })
+
+      if (!profileImagePersistSucessful) {
+        throw new UserImageStorageError()
+      }
+
+      profileImage = path.basename(profileImagePersistSucessful)
+    }
 
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
@@ -116,10 +132,16 @@ export class RegisterUseCase {
             },
           ]
 
-          await validateActivityAreas({
+          const { validatedActivityAreas, success } = await validateActivityAreas({
             activityAreas,
             activityAreasRepository: this.activityAreasRepository,
           })
+
+          if (!success) {
+            throw new InvalidActivityArea(
+              validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+            )
+          }
 
           const isValidInstitution = await validateInstitutionName({
             institution: registerUseCaseInput.institution.name,
@@ -147,7 +169,7 @@ export class RegisterUseCase {
             ...filteredUserInfo,
             identityType: identity.identityType,
             identityDocument: identity.identityDocument,
-            profileImage: profileImagePersist ?? DEFAULT_PROFILE_IMAGE_NAME,
+            profileImage,
             passwordHash,
           },
           address: {
@@ -166,8 +188,8 @@ export class RegisterUseCase {
       logError({ error, message: USER_CREATION_ERROR })
 
       // Removendo imagem incorretamente persistida:
-      if (profileImagePersist) {
-        await deleteFile(profileImagePersist)
+      if (registerUseCaseInput.user.profileImage) {
+        await deleteFile(buildUserProfileImagePath(registerUseCaseInput.user.profileImage))
       }
 
       throw error
