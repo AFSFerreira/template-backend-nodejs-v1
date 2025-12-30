@@ -25,3 +25,5 @@ export const SAVE_MULTIPART_FILE_ERROR = 'Ocorreu um erro ao tentar persistir um
 export const DIRECTORY_NOT_FOUND_ERROR = 'O diretório solicitado não foi encontrado'
 
 export const FILE_PERSIST_ERROR = 'Ocorreu um erro ao persistir um arquivo'
+
+export const INVALID_FILESYSTEM_PATHS = 'Um ou mais caminhos configurados são inválidos ou não puderam ser criados'

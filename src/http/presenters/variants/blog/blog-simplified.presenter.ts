@@ -3,7 +3,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type { HTTPSimplifiedBlog } from '@custom-types/presenter/blog/blog-simplified'
 import { BLOG_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildBlogBannerUrl } from '@services/http/url/build-blog-banner-url'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 @RegisterPresenter(BLOG_SIMPLIFIED_PRESENTER_KEY)
 export class BlogSimplifiedPresenter

@@ -3,7 +3,7 @@ import type { HTTPUser } from '@custom-types/presenter/user/user-default'
 import type { User } from '@prisma/client'
 import { USER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildUserProfileImageUrl } from '@services/http/url/build-user-profile-image-url'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(USER_DEFAULT_PRESENTER_KEY)

@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Dependencies
         # run: npm ci
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --prefer-offline --verify-store-integrity=false
 
       - name: Run Linter
         run: |

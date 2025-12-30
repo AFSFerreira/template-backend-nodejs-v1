@@ -7,7 +7,6 @@ import { createDraftBlog } from './create-draft-blog.controller'
 import { createDraftCopyBlog } from './create-draft-copy-blog.controller'
 import { createPendingBlog } from './create-pending-blog.controller'
 import { deleteBlog } from './delete-blog.controller'
-import { deleteBlogImage } from './delete-blog-image.controller'
 import { findBlogByPublicId } from './find-blog-by-public-id.controller'
 import { findBlogByPublicIdRestricted } from './find-blog-by-public-id-detailed.controller'
 import { getAllBlogs } from './get-all-blogs.controller'
@@ -146,13 +145,6 @@ export async function blogRoutes(app: FastifyInstance) {
   )
 
   // DELETE
-  app.delete(
-    '/temp-images/:filename',
-    {
-      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
-    },
-    deleteBlogImage,
-  )
   app.delete(
     '/:publicId',
     {

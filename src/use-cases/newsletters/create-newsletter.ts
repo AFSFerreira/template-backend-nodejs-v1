@@ -6,7 +6,7 @@ import type { NewslettersRepository } from '@repositories/newsletters-repository
 import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY } from '@messages/loggings/newsletter-loggings'
-import { buildNewsletterTempHtmlPath } from '@services/builders/build-newsletter-html-path'
+import { buildNewsletterTempHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
 import { deleteFile } from '@utils/files/delete-file'
 import { readFile } from '@utils/files/read-file'
 import { inject, injectable } from 'tsyringe'

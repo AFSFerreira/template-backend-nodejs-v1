@@ -3,7 +3,7 @@ import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/mee
 import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
 import { MEETING_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildMeetingBannerUrl } from '@services/http/url/build-meeting-banner-url'
+import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
 @RegisterPresenter(MEETING_DETAILED_PRESENTER_KEY)
 export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithDetails, HTTPMeetingWithDetails> {

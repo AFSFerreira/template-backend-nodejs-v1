@@ -7,27 +7,8 @@
     "defaultBranch": "dev"
   },
   "files": {
-    "ignoreUnknown": true
-  },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": {
-          "level": "on",
-          "options": {
-            "identifierOrder": "lexicographic",
-            "groups": [
-              ["reflect-metadata"],
-              { "type": true },
-              ["@custom-types/**"],
-              [":NODE:", ":PACKAGE:"],
-              [":ALIAS:"],
-              [":PATH:"]
-            ]
-          }
-        }
-      }
-    }
+    "ignoreUnknown": true,
+    "includes": ["**/", "!dist"]
   },
   "formatter": {
     "enabled": true,
@@ -41,6 +22,7 @@
     "rules": {
       "recommended": true,
       "style": {
+        "recommended": true,
         "noNonNullAssertion": "error",
         "useImportType": {
           "level": "error",
@@ -60,15 +42,22 @@
         }
       },
       "suspicious": {
+        "recommended": true,
         "noConsole": "error",
         "noEmptyInterface": "off"
       },
       "complexity": {
+        "recommended": true,
         "noExtraBooleanCast": "off",
         "noStaticOnlyClass": "off"
       },
       "correctness": {
-        "noUnusedVariables": "error"
+        "recommended": true,
+        "noUnusedVariables": "error",
+        "noUnusedFunctionParameters": "error",
+        "noUnusedImports": "error",
+        "noUnreachable": "error",
+        "useIsNan": "error"
       }
     }
   },
@@ -80,6 +69,26 @@
       "quoteStyle": "single",
       "semicolons": "asNeeded",
       "arrowParentheses": "always"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "identifierOrder": "lexicographic",
+            "groups": [
+              ["reflect-metadata"],
+              { "type": true },
+              ["@custom-types/**"],
+              [":NODE:", ":PACKAGE:"],
+              [":ALIAS:"],
+              [":PATH:"]
+            ]
+          }
+        }
+      }
     }
   }
 }

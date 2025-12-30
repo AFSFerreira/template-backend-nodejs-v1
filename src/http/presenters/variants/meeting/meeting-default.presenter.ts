@@ -3,7 +3,7 @@ import type { HTTPMeeting } from '@custom-types/presenter/meeting/meeting-defaul
 import type { Meeting } from '@prisma/client'
 import { MEETING_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildMeetingBannerUrl } from '@services/http/url/build-meeting-banner-url'
+import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
 @RegisterPresenter(MEETING_DEFAULT_PRESENTER_KEY)
 export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTPMeeting> {

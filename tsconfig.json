@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist",
     "module": "esnext",
     "target": "es2022",
@@ -32,7 +31,7 @@
       "@uploads/*": ["./src/uploads/*"],
       "@use-cases/*": ["./src/use-cases/*"],
       "@repositories/*": ["./src/repositories/*"],
-      "@custom-types/*": ["src/@types/*"],
+      "@custom-types/*": ["./src/@types/*"],
       "@utils/*": ["./src/utils/*"],
       "@services/*": ["./src/services/*"],
       "@constants/*": ["./src/constants/*"],

@@ -18,7 +18,7 @@ import { ActivityAreaType } from '@prisma/client'
 import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
-} from '@services/builders/build-user-profile-image-path'
+} from '@services/builders/paths/build-user-profile-image-path'
 import { persistFile } from '@services/files/persist-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'

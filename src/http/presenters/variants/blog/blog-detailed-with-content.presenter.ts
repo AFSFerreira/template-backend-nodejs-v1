@@ -3,7 +3,7 @@ import type { HTTPBlogDetailedWithContent } from '@custom-types/presenter/blog/b
 import type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
 import { BLOG_DETAILED_WITH_CONTENT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildBlogBannerUrl } from '@services/http/url/build-blog-banner-url'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 @RegisterPresenter(BLOG_DETAILED_WITH_CONTENT_PRESENTER_KEY)
 export class BlogDetailedWithContentPresenter

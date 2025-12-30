@@ -19,12 +19,12 @@ export const electionNoticeMultipartFileConfig = {
 
 export const profilePictureFileConfig = {
   limits: {
-    fileSize: MAX_IMAGE_FILE_SIZE_BYTES, // 10mb
+    fileSize: MAX_IMAGE_FILE_SIZE_BYTES, // 15mb
   },
 } satisfies FastifyMultipartOptions
 
 export const sliderImageMultipartFileConfig = {
   limits: {
-    fileSize: MAX_BANNER_IMAGE_FILE_SIZE_BYTES, // 15mb
+    fileSize: MAX_BANNER_IMAGE_FILE_SIZE_BYTES, // 30mb
   },
 } satisfies FastifyMultipartOptions

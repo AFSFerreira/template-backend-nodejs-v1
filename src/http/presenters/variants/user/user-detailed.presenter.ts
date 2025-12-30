@@ -3,7 +3,7 @@ import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-deta
 import type { UserWithDetails } from '@custom-types/validator/user-with-details'
 import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildUserProfileImageUrl } from '@services/http/url/build-user-profile-image-url'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(USER_DETAILED_PRESENTER_KEY)

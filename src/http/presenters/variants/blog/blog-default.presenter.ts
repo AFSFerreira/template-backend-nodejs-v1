@@ -3,7 +3,7 @@ import type { HTTPBlog } from '@custom-types/presenter/blog/blog-default'
 import type { Blog } from '@prisma/client'
 import { BLOG_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildBlogBannerUrl } from '@services/http/url/build-blog-banner-url'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 @RegisterPresenter(BLOG_DEFAULT_PRESENTER_KEY)
 export class BlogDefaultPresenter implements IPresenterStrategy<Blog, HTTPBlog> {

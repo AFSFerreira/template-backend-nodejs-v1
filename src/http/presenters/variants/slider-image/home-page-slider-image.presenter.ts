@@ -3,7 +3,7 @@ import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slide
 import type { SliderImage } from '@prisma/client'
 import { HOME_PAGE_SLIDER_IMAGE_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildSliderImageUrl } from '@services/http/url/build-slider-image-url'
+import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 
 @RegisterPresenter(HOME_PAGE_SLIDER_IMAGE_PRESENTER_KEY)
 export class HomePageSliderImagePresenter implements IPresenterStrategy<SliderImage, HTTPSliderImage> {

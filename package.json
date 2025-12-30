@@ -19,6 +19,7 @@
     "start:prod": "node --enable-source-maps --env-file=.env dist/server.js",
     "start:prod:docker": "node --enable-source-maps dist/server.js",
     "build:tsc": "tsc",
+    "build:tsgo": "tsgo",
     "build:tsup": "tsup",
     "lint:src:eslint": "eslint --fix src/**/*.{js,ts,tsx,jsx}",
     "lint:prisma:eslint": "eslint --fix prisma/**/*.{js,ts,tsx,jsx}",
@@ -41,7 +42,7 @@
     "ci:generate": "run-p db:generate presenters:generate",
     "ci:lint": "run-s check:prisma:biome check:src:biome",
     "ci:format": "run-s check:prisma:biome check:src:biome",
-    "ci:build": "run-s ci:generate build:tsc build:tsup",
+    "ci:build": "run-s ci:generate build:tsgo build:tsup",
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
   },
   "devDependencies": {
@@ -63,6 +64,7 @@
     "@typescript-eslint/eslint-plugin": "8.46.4",
     "@typescript-eslint/parser": "8.46.4",
     "@typescript-eslint/typescript-estree": "8.50.1",
+    "@typescript/native-preview": "7.0.0-dev.20251229.1",
     "commitlint": "20.2.0",
     "es-errors": "1.3.0",
     "eslint": "9.39.2",

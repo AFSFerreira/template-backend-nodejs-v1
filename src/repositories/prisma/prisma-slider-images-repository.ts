@@ -1,7 +1,10 @@
+import type { ListAllSliderImagesQuery } from '@custom-types/repository/slider-image/list-all-slider-images-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { evalOffset } from '@utils/generics/eval-offset'
+import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -35,6 +38,96 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
   async totalCount() {
     const totalSliderImages = await this.dbContext.client.sliderImage.count()
     return totalSliderImages
+  }
+
+  async listAll(query?: ListAllSliderImagesQuery) {
+    const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [{ order: 'asc' }, { id: 'asc' }]
+
+    if (!query) {
+      const sliderImages = await this.dbContext.client.sliderImage.findMany({ orderBy })
+
+      return {
+        data: sliderImages,
+        meta: {
+          totalItems: sliderImages.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: sliderImages.length,
+        },
+      }
+    }
+
+    const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
+
+    const [countResult, sliderImages] = await Promise.all([
+      this.dbContext.client.sliderImage.count(),
+      this.dbContext.client.sliderImage.findMany({
+        skip,
+        take,
+        orderBy,
+      }),
+    ])
+
+    const pageSize = query.limit
+    const totalItems = countResult
+
+    const totalPages = evalTotalPages({ pageSize, totalItems })
+
+    return {
+      data: sliderImages,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize,
+      },
+    }
+  }
+
+  async listActive(query?: ListAllSliderImagesQuery) {
+    const where: Prisma.SliderImageWhereInput = { isActive: true }
+    const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [{ order: 'asc' }, { id: 'asc' }]
+
+    if (!query) {
+      const sliderImages = await this.dbContext.client.sliderImage.findMany({ where, orderBy })
+
+      return {
+        data: sliderImages,
+        meta: {
+          totalItems: sliderImages.length,
+          totalPages: 1,
+          currentPage: 1,
+          pageSize: sliderImages.length,
+        },
+      }
+    }
+
+    const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
+
+    const [countResult, sliderImages] = await Promise.all([
+      this.dbContext.client.sliderImage.count({ where }),
+      this.dbContext.client.sliderImage.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+      }),
+    ])
+
+    const pageSize = query.limit
+    const totalItems = countResult
+
+    const totalPages = evalTotalPages({ pageSize, totalItems })
+
+    return {
+      data: sliderImages,
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize,
+      },
+    }
   }
 
   async update(id: number, data: Prisma.SliderImageUpdateInput) {

@@ -6,7 +6,7 @@ import type {
 } from '@custom-types/presenter/blog/blog-detailed-for-admin'
 import { BLOG_DETAILED_FOR_ADMIN } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildBlogBannerUrl } from '@services/http/url/build-blog-banner-url'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 @RegisterPresenter(BLOG_DETAILED_FOR_ADMIN)
 export class BlogDetailedForAdminPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailedForAdmin> {

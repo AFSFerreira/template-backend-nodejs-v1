@@ -11,6 +11,7 @@ import { institutionsDataArray1 } from './seed-data/institutions'
 import { meetingDataArray1 } from './seed-data/meeting'
 import { meetingParticipantsDummyDataArray1 } from './seed-data/meeting-participants'
 import { paymentInfo1 } from './seed-data/payment-info'
+import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2 } from './seed-data/users'
 
 const prisma = new PrismaClient({ adapter })
@@ -107,6 +108,12 @@ async function main() {
       })
     }
   }
+
+  // Criação de Imagens do Carrossel:
+  await prisma.sliderImage.createMany({
+    data: sliderImageDataArray1,
+    skipDuplicates: true,
+  })
 }
 
 main()

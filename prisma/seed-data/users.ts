@@ -223,7 +223,7 @@ export const usersDataArray2: Prisma.UserCreateInput[] = [
 ]
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
-for (let i = 0; i <= 50; i++) {
+for (let i = 0; i <= 90; i++) {
   usersDataArray2.push({
     ...partialUserData1,
     identityType: IdentityType.CPF,

@@ -1,5 +1,9 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { logError } from '@lib/logger/helpers/log-error'
+import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/file-loggings'
+import { InvalidFilesystemPathsError } from '@services/errors/files/invalid-filesystem-paths-error'
+import fs from 'fs-extra'
 import { IS_PROD } from './env-constants'
 import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-constants'
 
@@ -33,7 +37,8 @@ export const MEETING_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', '
 export const DOCUMENTS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'documents')
 
 // Caminhos relativos de sliders:
-export const HOME_PAGE_SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-image', 'home')
+export const SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-image')
+export const HOME_PAGE_SLIDER_IMAGES_PATH = path.resolve(SLIDER_IMAGES_PATH, 'home-page')
 export const TEMP_SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'slider-image')
 
 // Caminhos relativos de imagens de perfil do corpo diretivo:
@@ -44,10 +49,8 @@ export const DIRECTOR_BOARD_PROFILE_IMAGES_PATH = path.resolve(
   'profile-images',
 )
 
-// Caminhos relativos para imagens de carousel:
-export const SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-banner')
-
 // Caminhos relativos de newsletters:
+export const NEWSLETTER_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'newsletter', 'html')
 export const NEWSLETTER_TEMP_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'newsletter', 'html')
 
 // Padrão glob para identificar todos os arquivos de estatuto independentemente da extensão:
@@ -55,3 +58,35 @@ export const STATUTE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, `${STATUTE
 
 // Padrão glob para identificar todos os arquivos de edital de eleição independentemente da extensão:
 export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, `${ELECTION_NOTICE_FILE_NAME}*`)
+
+// Verificação para assegurar que todos os caminhos
+// listados acima existem antes da execução do código:
+// (WARNING: MANTENHA A LISTA ATUALIZADA!)
+const verifiedPaths = [
+  REGISTER_PROFILE_IMAGES_PATH,
+  REGISTER_TEMP_PROFILE_IMAGES_PATH,
+  BLOG_BANNERS_PATH,
+  BLOG_TEMP_IMAGES_PATH,
+  MEETING_BANNERS_PATH,
+  DOCUMENTS_PATH,
+  SLIDER_IMAGES_PATH,
+  HOME_PAGE_SLIDER_IMAGES_PATH,
+  TEMP_SLIDER_IMAGES_PATH,
+  DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
+  NEWSLETTER_HTML_PATH,
+  NEWSLETTER_TEMP_HTML_PATH,
+].map((path) => ({ path, exists: fs.existsSync(path) }))
+
+const failedVerifiedPaths = verifiedPaths.filter((pathStatus) => !pathStatus.exists)
+
+if (failedVerifiedPaths.length !== 0) {
+  const failedPaths = failedVerifiedPaths.map((failedPath) => failedPath.path)
+
+  logError({
+    error: new InvalidFilesystemPathsError(failedPaths),
+    context: { failedPaths, failedVerifiedPaths },
+    message: INVALID_FILESYSTEM_PATHS,
+  })
+
+  process.exit(1)
+}

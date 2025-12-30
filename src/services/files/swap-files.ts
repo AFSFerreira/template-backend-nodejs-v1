@@ -22,7 +22,7 @@ export async function swapFiles(files: IswapFiles[]) {
 
     // Remove todos os demais arquivos com o mesmo nome, mas com uma extensão diferente:
     try {
-      const filePattern = path.join(file.baseFolder, `${path.parse(file.filename).name}*`)
+      const filePattern = path.resolve(file.baseFolder, `${path.parse(file.filename).name}*`)
 
       const files = await Array.fromAsync(glob(filePattern))
 

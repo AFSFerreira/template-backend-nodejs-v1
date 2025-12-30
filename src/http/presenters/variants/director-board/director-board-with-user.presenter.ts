@@ -3,7 +3,7 @@ import type { HTTPDirectorBoardWithUser } from '@custom-types/presenter/director
 import type { DirectorBoardWithUser } from '@custom-types/validator/director-board-with-user'
 import { DIRECTOR_BOARD_WITH_USER_PRESENTER_KEY } from '@constants/presenters-constants'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildDirectorBoardProfileImageUrl } from '@services/http/url/build-director-board-profile-image-url'
+import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 
 @RegisterPresenter(DIRECTOR_BOARD_WITH_USER_PRESENTER_KEY)
 export class DirectorBoardDefaultPresenter
