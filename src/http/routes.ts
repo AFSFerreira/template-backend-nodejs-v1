@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { academicPublicationRoutes } from './controllers/academic-publications/routes'
+import { academicPublicationRoutes } from './controllers/academic-publication/routes'
 import { activityAreaRoutes } from './controllers/activity-area/routes'
 import { addressRoutes } from './controllers/address-state/routes'
 import { blogRoutes } from './controllers/blog/routes'
