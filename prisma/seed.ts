@@ -14,7 +14,7 @@ import { meetingDataArray1 } from './seed-data/meetings'
 import { newsletterDataArray1 } from './seed-data/newsletter'
 import { paymentInfo1 } from './seed-data/payments-info'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
-import { usersDataArray1, usersDataArray2 } from './seed-data/users'
+import { usersDataArray1, usersDataArray2, usersDataArray3 } from './seed-data/users'
 
 const prisma = new PrismaClient({ adapter })
 
@@ -58,7 +58,7 @@ async function main() {
   const createdUsers: User[] = []
 
   // Criação de Usuários:
-  for (const user of [...usersDataArray1, ...usersDataArray2]) {
+  for (const user of [...usersDataArray1, ...usersDataArray2, ...usersDataArray3]) {
     const createdUser = await prisma.user.upsert({
       where: { email: user.email },
       update: {},

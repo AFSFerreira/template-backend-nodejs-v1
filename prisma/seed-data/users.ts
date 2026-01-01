@@ -223,14 +223,29 @@ export const usersDataArray2: Prisma.UserCreateInput[] = [
 ]
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
-for (let i = 0; i <= 90; i++) {
+for (let idx = 0; idx <= 90; idx++) {
   usersDataArray2.push({
     ...partialUserData1,
     identityType: IdentityType.CPF,
-    identityDocument: `000.000.000-${i.toString().padStart(2, '0')}`,
-    fullName: `DUMMY USER ${i}`,
-    username: `DUMMY USER ${i}`,
-    email: `random-normal-dummy-user-${i}@email.com`,
+    identityDocument: `000.000.000-${idx.toString().padStart(2, '0')}`,
+    fullName: `DUMMY USER ${idx}`,
+    username: `DUMMY USER ${idx}`,
+    email: `random-normal-dummy-user-${idx}@email.com`,
+    wantsNewsletter: getRandomArrayElement([true, false]),
+  })
+}
+
+// Criando Usuário Dummy com Pedidos de Associação Pendentes para Testar Paginação no Frontend:
+export const usersDataArray3: Prisma.UserCreateInput[] = []
+
+for (let idx = 0; idx <= 90; idx++) {
+  usersDataArray3.push({
+    ...partialUserData1,
+    identityType: IdentityType.CPF,
+    identityDocument: `200.000.000-${idx.toString().padStart(2, '0')}`,
+    fullName: `DUMMY USER PENDING ${idx}`,
+    username: `DUMMY USER PENDING ${idx}`,
+    email: `random-normal-pending-dummy-user-${idx}@email.com`,
     wantsNewsletter: getRandomArrayElement([true, false]),
   })
 }
