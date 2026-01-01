@@ -4,6 +4,7 @@ import { UserPresenter } from '@presenters/variants/user-presenter'
 import { getAllUsersSimplifiedQuerySchema } from '@schemas/user/get-all-users-simplified-query-schema'
 import { GetAllUsersSimplifiedUseCase } from '@use-cases/user/get-all-users-simplified'
 import { container } from 'tsyringe'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 
 export async function getAllUsersSimplified(request: FastifyRequest, reply: FastifyReply) {
   const parsedQuery = getAllUsersSimplifiedQuerySchema.parse(request.query)
@@ -12,7 +13,7 @@ export async function getAllUsersSimplified(request: FastifyRequest, reply: Fast
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = UserPresenter.toHTTP<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(data)
+  const formattedReply = UserPresenter.toHTTP<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(data, tokens.presenters.userSimplified)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

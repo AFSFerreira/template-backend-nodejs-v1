@@ -241,6 +241,7 @@ export const usersDataArray3: Prisma.UserCreateInput[] = []
 for (let idx = 0; idx <= 90; idx++) {
   usersDataArray3.push({
     ...partialUserData1,
+    membershipStatus: MembershipStatusType.PENDING,
     identityType: IdentityType.CPF,
     identityDocument: `200.000.000-${idx.toString().padStart(2, '0')}`,
     fullName: `DUMMY USER PENDING ${idx}`,
