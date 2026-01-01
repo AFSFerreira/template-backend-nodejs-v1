@@ -11,18 +11,20 @@ import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_CREATED_SUCCESSFULLY, BLOG_IMAGES_PERSIST_ERROR } from '@messages/loggings/blog-loggings'
+import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
+import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { persistFile } from '@services/files/persist-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
-import { deleteFile } from '@utils/files/delete-file'
+import { deleteFiles } from '@utils/files/delete-files'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -55,98 +57,108 @@ export class CreateAndPublishBlogUseCase {
       throw new InvalidBlogContentError()
     }
 
+    const oldBannerImagePath = buildBlogTempBannerPath(publishBlogUseCaseInput.bannerImage)
+    const newBannerImagePath = buildBlogBannerPath(publishBlogUseCaseInput.bannerImage)
+
     // Persistir banner e imagens da pasta temporária para a pasta definitiva
     const persistedBanner = await persistFile({
-      oldFilePath: buildBlogTempBannerPath(publishBlogUseCaseInput.bannerImage),
-      newFilePath: buildBlogBannerPath(publishBlogUseCaseInput.bannerImage),
+      oldFilePath: oldBannerImagePath,
+      newFilePath: newBannerImagePath,
     })
 
     if (!persistedBanner) {
       throw new BlogBannerPersistError()
     }
 
-    const newBlogImages = extractProseMirrorImages(publishBlogUseCaseInput.content)
+    const oldToNewImagesLinkMap = new Map<string, string>()
+
+    const formatedBlogImages = Array.from(extractProseMirrorImages(publishBlogUseCaseInput.content)).map(
+      (imageLink) => {
+        const imageName = sanitizeUrlFilename(imageLink)
+
+        if (!imageName) {
+          throw new BlogInvalidImageLinkError()
+        }
+
+        oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
+
+        return {
+          oldFilePath: buildBlogTempImagePath(imageName),
+          newFilePath: buildBlogImagePath(imageName),
+        }
+      },
+    )
+
+    const newProseMirror = replaceProseMirrorImages({
+      proseMirror: publishBlogUseCaseInput.content,
+      oldToNewImagesMap: oldToNewImagesLinkMap,
+    })
 
     try {
       // Persistindo as novas imagens do blog:
       await Promise.all(
-        Array.from(newBlogImages).map(async (image) => {
-          const imageName = sanitizeUrlFilename(image)
-
-          if (!imageName) {
-            throw new BlogInvalidImageLinkError()
-          }
-
-          const oldFilePath = buildBlogTempImagePath(imageName)
-          const newFilePath = buildBlogImagePath(imageName)
-
-          const imagePersistResult = await persistFile({
-            oldFilePath,
-            newFilePath,
-          })
+        formatedBlogImages.map(async (imageInfo) => {
+          const imagePersistResult = await persistFile(imageInfo)
 
           if (!imagePersistResult) {
             throw new BlogImagePersistError()
           }
         }),
       )
+
+      const { author, blog } = await this.dbContext.runInTransaction(async () => {
+        const author = ensureExists({
+          value: await this.usersRepository.findByPublicId(publishBlogUseCaseInput.authorPublicId),
+          error: new UserNotFoundError(),
+        })
+
+        const { validatedActivityAreas, success } = await validateActivityAreas({
+          activityAreasRepository: this.activityAreasRepository,
+          activityAreas: publishBlogUseCaseInput.subcategories.map((subcategory) => ({
+            area: subcategory,
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          })),
+        })
+
+        if (!success) {
+          throw new InvalidActivityArea(
+            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+          )
+        }
+
+        const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
+
+        const createdBlog = await this.blogsRepository.create({
+          title: publishBlogUseCaseInput.title,
+          bannerImage: publishBlogUseCaseInput.bannerImage,
+          editorialStatus: EditorialStatusType.PUBLISHED,
+          searchContent,
+          subcategoriesIds,
+          content: newProseMirror as InputJsonValue,
+          authorName: author.fullName,
+          userId: author.id,
+        })
+
+        return { author, blog: createdBlog }
+      })
+
+      logger.info(
+        {
+          blogPublicId: blog.publicId,
+          title: blog.title,
+          authorPublicId: author.publicId,
+        },
+        BLOG_CREATED_SUCCESSFULLY,
+      )
+
+      return { blog }
     } catch (error) {
-      logError({ error, message: BLOG_IMAGES_PERSIST_ERROR })
+      logError({ error, message: BLOG_CREATION_ERROR })
 
-      newBlogImages.forEach(async (image) => {
-        const filenameFromUrl = sanitizeUrlFilename(image)
+      // Remove as imagens de blog e a imagem de banner previamente persistida:
+      await deleteFiles([...formatedBlogImages.map((imageInfo) => imageInfo.newFilePath), newBannerImagePath])
 
-        if (!filenameFromUrl) return
-
-        await deleteFile(buildBlogImagePath(filenameFromUrl))
-      })
+      throw error
     }
-
-    const { author, blog } = await this.dbContext.runInTransaction(async () => {
-      const author = ensureExists({
-        value: await this.usersRepository.findByPublicId(publishBlogUseCaseInput.authorPublicId),
-        error: new UserNotFoundError(),
-      })
-
-      const { validatedActivityAreas, success } = await validateActivityAreas({
-        activityAreasRepository: this.activityAreasRepository,
-        activityAreas: publishBlogUseCaseInput.subcategories.map((subcategory) => ({
-          area: subcategory,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        })),
-      })
-
-      if (!success) {
-        throw new InvalidActivityArea(
-          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-        )
-      }
-
-      const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
-
-      const createdBlog = await this.blogsRepository.create({
-        title: publishBlogUseCaseInput.title,
-        bannerImage: publishBlogUseCaseInput.bannerImage,
-        editorialStatus: EditorialStatusType.PUBLISHED,
-        searchContent,
-        subcategoriesIds,
-        content: publishBlogUseCaseInput.content as InputJsonValue,
-        authorName: author.fullName,
-        userId: author.id,
-      })
-
-      return { author, blog: createdBlog }
-    })
-
-    logger.info(
-      {
-        blogPublicId: blog.publicId,
-        title: blog.title,
-        authorPublicId: author.publicId,
-      },
-      BLOG_CREATED_SUCCESSFULLY,
-    )
-
-    return { blog }
   }
 }

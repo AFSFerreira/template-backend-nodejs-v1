@@ -1,4 +1,4 @@
-import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
+import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 
 export interface FindMeetingByPublicIdUseCaseRequest {
   publicId: string

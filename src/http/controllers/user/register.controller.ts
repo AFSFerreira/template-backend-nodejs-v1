@@ -1,8 +1,8 @@
 import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
 import type { RegisterUserBodySchemaType } from '@custom-types/schemas/user/register-body-schema'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/variants/user-presenter'
 import { registerBodySchema } from '@schemas/user/register-body-schema'
 import { RegisterUseCase } from '@use-cases/user/register'
@@ -15,7 +15,10 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   const { user } = await useCase.execute(parsedBody)
 
-  return await reply
-    .status(201)
-    .send({ data: UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(user, USER_DETAILED_PRESENTER_KEY) })
+  const formattedReply = UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(
+    user,
+    tokens.presenters.userDetailed,
+  )
+
+  return await reply.status(201).send({ data: formattedReply })
 }

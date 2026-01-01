@@ -6,7 +6,7 @@ import type { ListAllBlogsDetailedQuery } from '@custom-types/repository/blog/li
 import type { ListAllBlogsQuery } from '@custom-types/repository/blog/list-all-blogs-query'
 import type { UpdateBlogQuery } from '@custom-types/repository/blog/update-blog-query'
 import type { UpdateBlogStatusQuery } from '@custom-types/repository/blog/update-blog-status-query'
-import type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
+import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 import type { Blog, Prisma } from '@prisma/client'
 
 export interface BlogsRepository {

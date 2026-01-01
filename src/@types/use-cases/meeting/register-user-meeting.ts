@@ -1,5 +1,5 @@
 import type { RegisterUserMeetingBodySchemaType } from '@custom-types/schemas/meeting/register-user-meeting-body-schema'
-import type { MeetingParticipation } from '@prisma/client'
+import type { MeetingEnrollment } from '@prisma/client'
 
 export interface RegisterUserMeetingUseCaseRequest extends RegisterUserMeetingBodySchemaType {
   userPublicId: string
@@ -7,5 +7,5 @@ export interface RegisterUserMeetingUseCaseRequest extends RegisterUserMeetingBo
 }
 
 export interface RegisterUserMeetingUseCaseResponse {
-  meetingParticipation: MeetingParticipation
+  meetingEnrollment: MeetingEnrollment
 }

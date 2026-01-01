@@ -1,15 +1,16 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPNewsletter } from '@custom-types/presenter/newsletter/newsletter-default'
 import type { Newsletter } from '@prisma/client'
-import { NEWSLETTER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
+import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 
-@RegisterPresenter(NEWSLETTER_DEFAULT_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.newsletterDefault)
 export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter, HTTPNewsletter> {
   public toHTTP(input: Newsletter): HTTPNewsletter {
     return {
-      publicId: input.publicId,
-      title: input.title,
+      id: input.publicId,
+      content: buildNewsletterHtmlUrl(input.content),
       sequenceNumber: input.sequenceNumber,
       editionNumber: input.editionNumber,
       volume: input.volume,

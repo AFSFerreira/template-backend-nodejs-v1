@@ -1,5 +1,5 @@
 import type { FlattenedUser } from '@custom-types/services/flatten-user'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { Keyword } from '@prisma/client'
 
 export function flattenUser(user: UserWithDetails): FlattenedUser {

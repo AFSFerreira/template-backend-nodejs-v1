@@ -9,11 +9,11 @@ import type { SetPasswordTokenQuery } from '@custom-types/repository/user/set-pa
 import type { UpdateProfileImageQuery } from '@custom-types/repository/user/update-profile-image-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/user/update-user-query'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { UsersRepository } from '../users-repository'
-import { userWithDetails } from '@custom-types/validator/user-with-details'
+import { userWithDetails } from '@custom-types/validators/user-with-details'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { ActivityAreaType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
@@ -216,7 +216,7 @@ export class PrismaUsersRepository implements UsersRepository {
   async findConflictingUser({ email, username, identity }: FindConflictingUserQuery) {
     const user = await this.dbContext.client.user.findFirst({
       where: {
-        OR: [...(email ? [{ email }] : []), ...(username ? [{ username }] : []), ...(identity ? [identity] : [])],
+        OR: [{ email }, { username }, ...(identity ? [identity] : [])],
       },
     })
 

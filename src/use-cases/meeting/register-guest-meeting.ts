@@ -3,7 +3,7 @@ import type {
   RegisterGuestMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-guest-meeting'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
+import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
@@ -21,8 +21,8 @@ export class RegisterGuestMeetingUseCase {
     @inject(tokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.repositories.meetingParticipants)
-    private readonly meetingParticipantsRepository: MeetingParticipantsRepository,
+    @inject(tokens.repositories.meetingEnrollments)
+    private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
 
     @inject(tokens.infra.database)
     private readonly dbContext: DatabaseContext,
@@ -31,7 +31,7 @@ export class RegisterGuestMeetingUseCase {
   async execute(
     registerGuestMeetingUseCaseInput: RegisterGuestMeetingUseCaseRequest,
   ): Promise<RegisterGuestMeetingUseCaseResponse> {
-    const meetingParticipation = await this.dbContext.runInTransaction(async () => {
+    const meetingEnrollment = await this.dbContext.runInTransaction(async () => {
       const meeting = ensureExists({
         value: await this.meetingsRepository.findByPublicId(registerGuestMeetingUseCaseInput.meetingId),
         error: new MeetingNotFoundError(),
@@ -42,19 +42,19 @@ export class RegisterGuestMeetingUseCase {
       }
 
       ensureNotExists({
-        value: await this.meetingParticipantsRepository.findByGuestEmailAndMeetingId({
+        value: await this.meetingEnrollmentsRepository.findByGuestEmailAndMeetingId({
           email: registerGuestMeetingUseCaseInput.email,
           meetingId: meeting.id,
         }),
         error: new GuestAlreadyRegisteredInMeetingError(),
       })
 
-      const participation = await this.meetingParticipantsRepository.createForGuest({
+      const enrollment = await this.meetingEnrollmentsRepository.createForGuest({
         ...registerGuestMeetingUseCaseInput,
         meetingId: meeting.id,
       })
 
-      return participation
+      return enrollment
     })
 
     logger.info(
@@ -65,6 +65,6 @@ export class RegisterGuestMeetingUseCase {
       REGISTER_GUEST_MEETING,
     )
 
-    return { meetingParticipation }
+    return { meetingEnrollment }
   }
 }

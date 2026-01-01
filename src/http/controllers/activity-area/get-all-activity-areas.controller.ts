@@ -13,8 +13,7 @@ export async function getAllActivityAreas(request: FastifyRequest, reply: Fastif
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  return await reply.status(200).send({
-    data: ActivityAreaPresenter.toHTTP<ActivityArea, HTTPActivityArea>(data),
-    meta,
-  })
+  const formattedReply = ActivityAreaPresenter.toHTTP<ActivityArea, HTTPActivityArea>(data)
+
+  return await reply.status(200).send({ data: formattedReply, meta })
 }

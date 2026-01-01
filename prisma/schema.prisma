@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
 }
 
 datasource db {
@@ -8,14 +9,14 @@ datasource db {
 
 model InstitutionalInfo {
   id                 Int       @id @default(autoincrement())
-  aboutDescription   Json      @map("about_description") @db.Json
+  aboutDescription   Json      @map("about_description") @db.Json // Descrição da página Sobre em formato prose mirror
   aboutImage         String    @map("about_image")
   statuteFile        String?   @default("estatuto.pdf") @map("statute_file")
   electionNoticeFile String?   @default("edital-eleição.pdf") @map("election_notice_file")
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
   lastUpdatedById    Int?      @map("last_updated_by_id")
-  LastUpdatedBy      User?     @relation(fields: [lastUpdatedById], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  LastUpdatedBy      User?     @relation(fields: [lastUpdatedById], references: [id])
 
   @@map("institutional_info")
 }
@@ -47,6 +48,7 @@ model User {
   membershipStatus               MembershipStatusType     @default(PENDING) @map("membership_status")
   role                           UserRoleType             @default(DEFAULT)
   departmentName                 String?                  @map("department_name")
+  wantsNewsletter                Boolean                  @map("wants_newsletter")
   institutionComplement          String?                  @map("institution_complement")
   occupation                     OccupationType?
   educationLevel                 EducationLevelType       @map("education_level")
@@ -59,7 +61,6 @@ model User {
   publicInformation              String?                  @map("public_information")
   activityAreaDescription        String?                  @map("activity_area_description")
   subActivityAreaDescription     String?                  @map("sub_activity_area_description")
-  wantsNewsletter                Boolean                  @map("wants_newsletter")
   email                          String                   @unique
   secondaryEmail                 String?                  @unique @map("secondary_email")
   passwordHash                   String                   @map("password_hash")
@@ -82,12 +83,12 @@ model User {
   NewsletterComment              NewsletterComment[]
   DirectorBoard                  DirectorBoard?
   EnrolledCourse                 EnrolledCourse?
-  MeetingParticipation           MeetingParticipation[]
+  institutionalInfo              InstitutionalInfo[]
   ActivityArea                   ActivityArea?            @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
   Institution                    Institution?             @relation(fields: [institutionId], references: [id], onDelete: NoAction)
   SubActivityArea                ActivityArea?            @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
+  UserMeetingEnrollment          UserMeetingEnrollment[]  @relation()
   Keyword                        Keyword[]                @relation("KeywordToUser")
-  institutionalInfo              InstitutionalInfo[]
 
   @@unique([identityType, identityDocument])
   @@index([membershipStatus])
@@ -103,11 +104,11 @@ model Address {
   street     String
   district   String
   city       String
-  stateId    Int          @map("state_id")
-  State      AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   complement String?
   createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
   userId     Int          @unique @map("user_id")
+  stateId    Int          @map("state_id")
+  State      AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction)
   User       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([stateId])
@@ -116,25 +117,22 @@ model Address {
 }
 
 model AddressState {
-  id        Int    @id @default(autoincrement())
+  id        Int            @id @default(autoincrement())
   name      String
-  countryId Int    @map("country_id")
-
-  Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  countryId Int            @map("country_id")
   createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  Address Address[]
+  Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction)
+  Address   Address[]
 
   @@unique([name, countryId])
   @@map("address_states")
 }
 
 model AddressCountry {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  State AddressState[] @relation()
+  id        Int            @id @default(autoincrement())
+  name      String         @unique
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  State     AddressState[]
 
   @@index([name])
   @@map("address_countries")
@@ -251,7 +249,7 @@ model DirectorPosition {
 }
 
 model PaymentInfo {
-  id                 Int                  @id @default(autoincrement()) @db.SmallInt
+  id                 Int                  @id @default(autoincrement())
   pixKey             String               @map("pix_key")
   bank               String
   code               String
@@ -270,7 +268,7 @@ model MeetingPaymentInfo {
   limitDate     DateTime    @map("limit_date") @db.Date
   createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
-  paymentInfoId Int         @map("payment_info_id")
+  paymentInfoId Int         @map("payment_info_id") @default(1)
   meetingId     Int         @unique @map("meeting_id")
   Meeting       Meeting     @relation(fields: [meetingId], references: [id], onDelete: Cascade)
   PaymentInfo   PaymentInfo @relation(fields: [paymentInfoId], references: [id])
@@ -279,47 +277,57 @@ model MeetingPaymentInfo {
   @@map("meeting_payment_information")
 }
 
-model MeetingGuest {
-  id                   Int                    @id @default(autoincrement())
-  fullName             String                 @map("full_name")
-  email                String
-  institutionName      String                 @map("institution_name")
-  departmentName       String                 @map("department_name")
-  occupation           OccupationType
-  educationLevel       EducationLevelType     @map("education_level")
-  wantsNewsletter      Boolean                @map("wants_newsletter")
-  createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
-  MeetingParticipation MeetingParticipation[]
+model MeetingEnrollment {
+  id                  Int                     @id @default(autoincrement())
+  publicId            String                  @unique @default(uuid(7)) @map("public_id")
+  createdAt           DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  meetingId           Int                     @map("meeting_id")
+  Meeting             Meeting                 @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  MeetingPresentation MeetingPresentation?
+  UserDetails         UserMeetingEnrollment?
+  GuestDetails        GuestMeetingEnrollment?
 
-  @@map("meeting_guest")
+  @@map("meeting_enrollments")
 }
 
-model MeetingParticipation {
-  id           Int                  @id @default(autoincrement())
-  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId       Int?                 @map("user_id")
-  guestId      Int?                 @map("guest_id")
-  meetingId    Int                  @map("meeting_id")
-  Guest        MeetingGuest?        @relation(fields: [guestId], references: [id], onDelete: Cascade)
-  Meeting      Meeting              @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-  User         User?                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Presentation MeetingPresentation?
+model UserMeetingEnrollment {
+  id                  Int               @id @default(autoincrement())
+  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  userId              Int               @map("user_id")
+  User                User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  meetingEnrollmentId Int               @unique @map("meeting_enrollment_id")
+  MeetingEnrollment   MeetingEnrollment @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@unique([meetingId, userId])
-  @@unique([meetingId, guestId])
-  @@map("meeting_participants")
+  @@unique([meetingEnrollmentId, userId])
+  @@map("user_meeting_enrollments")
+}
+
+model GuestMeetingEnrollment {
+  id                  Int                @id @default(autoincrement())
+  fullName            String             @map("full_name")
+  email               String
+  institutionName     String             @map("institution_name")
+  departmentName      String             @map("department_name")
+  occupation          OccupationType
+  educationLevel      EducationLevelType @map("education_level")
+  wantsNewsletter     Boolean            @map("wants_newsletter")
+  createdAt           DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+  meetingEnrollmentId Int                @unique @map("meeting_enrollment_id")
+  MeetingEnrollment   MeetingEnrollment  @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@map("guest_meeting_enrollments")
 }
 
 model MeetingPresentation {
-  id                   Int                              @id @default(autoincrement())
-  presentationType     PresentationType                 @map("presentation_type")
-  title                String
-  description          String
-  createdAt            DateTime                         @default(now()) @map("created_at") @db.Timestamptz(3)
-  participationId      Int                              @unique @map("participation_id")
-  Affiliations         MeetingPresentationAffiliation[]
-  Authors              MeetingPresentationAuthor[]
-  MeetingParticipation MeetingParticipation             @relation(fields: [participationId], references: [id], onDelete: Cascade)
+  id                  Int                              @id @default(autoincrement())
+  presentationType    PresentationType                 @map("presentation_type")
+  title               String
+  description         String
+  createdAt           DateTime                         @default(now()) @map("created_at") @db.Timestamptz(3)
+  meetingEnrollmentId Int                              @unique @map("meeting_enrollment_id")
+  MeetingEnrollment   MeetingEnrollment                @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Affiliations        MeetingPresentationAffiliation[]
+  Authors             MeetingPresentationAuthor[]
 
   @@map("meeting_presentations")
 }
@@ -343,20 +351,20 @@ model MeetingPresentationAffiliation {
 }
 
 model Meeting {
-  id                   Int                    @id @default(autoincrement())
-  publicId             String                 @unique @default(uuid(7)) @map("public_id")
-  title                String
-  image                String
-  programFile          String                 @map("program_file")
-  description          String
-  location             String
-  lastDate             DateTime               @map("last_date") @db.Date
-  participantsCount    Int                    @default(0) @map("participants_count")
-  createdAt            DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt            DateTime               @updatedAt @map("updated_at") @db.Timestamptz(3)
-  MeetingDate          MeetingDate[]
-  MeetingParticipation MeetingParticipation[]
-  MeetingPaymentInfo   MeetingPaymentInfo?
+  id                 Int                 @id @default(autoincrement())
+  publicId           String              @unique @default(uuid(7)) @map("public_id")
+  title              String
+  bannerImage        String              @map("banner_image")
+  agenda             String // Nome do arquivo de programa da reunião
+  description        String
+  location           String
+  lastDate           DateTime            @map("last_date") @db.Date
+  participantsCount  Int                 @default(0) @map("participants_count")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  MeetingDate        MeetingDate[]
+  MeetingPaymentInfo MeetingPaymentInfo?
+  MeetingEnrollment  MeetingEnrollment[]
 
   @@index([lastDate])
   @@map("meetings")
@@ -378,7 +386,7 @@ model Blog {
   publicId        String                   @unique @default(uuid(7)) @map("public_id")
   editorialStatus EditorialStatusType      @default(PENDING_APPROVAL) @map("editorial_status")
   title           String
-  bannerImage     String                   @map("banner_image") // NOTE: Opcional somente quando o blog está no status DRAFT
+  bannerImage     String                   @map("banner_image")
   authorName      String                   @map("author_name")
   accessCount     Int                      @default(0) @map("access_count")
   content         Json                     @db.Json // Conteúdo em prose mirror do Blog
@@ -386,8 +394,8 @@ model Blog {
   createdAt       DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt       DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
   userId          Int?                     @map("user_id")
-  searchTsvPt     Unsupported("tsvector")? @map("search_tsv_pt")
-  titleUnaccent   String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent")
+  searchTsvPt     Unsupported("tsvector")? @map("search_tsv_pt") // TSVector com <title> + <primeiros 600 caracteres de content>
+  titleUnaccent   String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent") // Conteúdo da coluna title sem acentos de pontuação
   User            User?                    @relation(fields: [userId], references: [id])
   Subcategories   ActivityArea[]           @relation("blog_subcategories")
 
@@ -400,11 +408,10 @@ model Blog {
 model Newsletter {
   id                Int                 @id @default(autoincrement())
   publicId          String              @unique @default(uuid(7)) @map("public_id")
-  title             String
+  content           String // Arquivo contendo o conteúdo em HTML da Newsletter
   sequenceNumber    String              @unique @map("sequence_number") // Número absoluto de sequência
   editionNumber     String              @map("edition_number") // Número de edição do ano
   volume            String // Ano de publicação
-  content           String              @db.Text // conteúdo em HTML da Newsletter
   commentsQuantity  Int                 @default(0) @map("comments_quantity")
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
@@ -451,13 +458,23 @@ model SliderImage {
   id        Int      @id @default(autoincrement())
   publicId  String   @unique @default(uuid(7)) @map("public_id")
   image     String   @unique
-  // page      SliderPageType // Página em que o Slider aparece (home page, página de blogs, etc)
-  link      String?
   order     Int
+  // type      SliderImageType
+  link      String?
   isActive  Boolean  @default(false) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   @@map("slider_images")
+}
+
+view meeting_attendee {
+  id          String            @unique
+  meetingId   Int
+  name        String
+  email       String
+  institution String?
+  type        MeetingMemberType
+  createdAt   DateTime          @db.Timestamptz(3)
 }
 
 enum UserRoleType {
@@ -522,8 +539,8 @@ enum ActivityAreaType {
 
 enum EditorialStatusType {
   PENDING_APPROVAL
-  PUBLISHED
   DRAFT
+  PUBLISHED
   CHANGES_REQUESTED
   // APPROVED
   // ARCHIVED
@@ -532,3 +549,8 @@ enum EditorialStatusType {
 // enum SliderPageType {
 //   HOME
 // }
+
+enum MeetingMemberType {
+  GUEST
+  MEMBER
+}

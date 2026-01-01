@@ -1,9 +1,10 @@
+import type { CreateMeetingQuery } from '@custom-types/repository/meeting/create-meeting-query'
 import type { ListAllMeetingsQuery } from '@custom-types/repository/meeting/list-all-meetings-query'
-import type { OrderableType } from '@custom-types/validator/orderable'
+import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { meetingWithDetails } from '@custom-types/validator/meeting-with-details'
+import { meetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -16,6 +17,31 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     @inject(tokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
+
+  async create(data: CreateMeetingQuery) {
+    const { dates, paymentInfo, ...meetingData } = data
+
+    const meeting = await this.dbContext.client.meeting.create({
+      data: {
+        ...meetingData,
+        MeetingDate: {
+          create: dates.map((date) => ({ date })),
+        },
+        MeetingPaymentInfo: paymentInfo
+          ? {
+              create: {
+                value: paymentInfo.value,
+                limitDate: paymentInfo.limitDate,
+              },
+            }
+          : undefined,
+      },
+      include: meetingWithDetails.include,
+    })
+
+    return meeting
+  }
+
   async findByPublicId(publicId: string) {
     const meeting = await this.dbContext.client.meeting.findUnique({
       where: { publicId },

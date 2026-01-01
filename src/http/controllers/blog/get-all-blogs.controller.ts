@@ -1,7 +1,7 @@
 import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
 import type { HTTPSimplifiedBlog } from '@custom-types/presenter/blog/blog-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { BLOG_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/variants/blog-presenter'
 import { getAllBlogsQuerySchema } from '@schemas/blog/get-all-blogs-query-schema'
 import { GetAllBlogsUseCase } from '@use-cases/blogs/get-all-blogs'
@@ -14,11 +14,10 @@ export async function getAllBlogs(request: FastifyRequest, reply: FastifyReply) 
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  return await reply.status(200).send({
-    data: BlogPresenter.toHTTP<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>(
-      data,
-      BLOG_SIMPLIFIED_PRESENTER_KEY,
-    ),
-    meta,
-  })
+  const formattedReply = BlogPresenter.toHTTP<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>(
+    data,
+    tokens.presenters.blogSimplified,
+  )
+
+  return await reply.status(200).send({ data: formattedReply, meta })
 }

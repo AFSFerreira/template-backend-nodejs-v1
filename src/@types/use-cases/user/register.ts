@@ -1,5 +1,5 @@
 import type { RegisterUserBodySchemaType } from '@custom-types/schemas/user/register-body-schema'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 
 export type RegisterUseCaseRequest = RegisterUserBodySchemaType
 

@@ -1,7 +1,9 @@
-import type { CustomBlogDetailed } from '@custom-types/adapter/blog-detailed'
-import type { HTTPBlogDetailedForAdmin } from '@custom-types/presenter/blog/blog-detailed-for-admin'
+import type {
+  HTTPBlogDetailedForAdmin,
+  IBlogDetailedForAdmin,
+} from '@custom-types/presenter/blog/blog-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { BLOG_DETAILED_FOR_ADMIN } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/variants/blog-presenter'
 import { getAllBlogsDetailedQuerySchema } from '@schemas/blog/get-all-blogs-detailed-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
@@ -19,8 +21,10 @@ export async function getAllBlogsDetailed(request: FastifyRequest, reply: Fastif
     userPublicId,
   })
 
-  return await reply.status(200).send({
-    data: BlogPresenter.toHTTP<CustomBlogDetailed, HTTPBlogDetailedForAdmin>(data, BLOG_DETAILED_FOR_ADMIN),
-    meta,
-  })
+  const formattedReply = BlogPresenter.toHTTP<IBlogDetailedForAdmin, HTTPBlogDetailedForAdmin>(
+    data,
+    tokens.presenters.blogDetailedForAdmin,
+  )
+
+  return await reply.status(200).send({ data: formattedReply, meta })
 }

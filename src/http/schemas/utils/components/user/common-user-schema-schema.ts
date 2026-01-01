@@ -1,8 +1,8 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
+import { rangedDateSchema } from '@schemas/utils/primitives/ranged-date-schema'
 import z from 'zod'
 import { emailSchema } from '../../generic-components/email-schema'
 import { identityDocumentSchema } from '../../generic-components/identity-document-schema'
-import { birthdateSchema } from '../../generic-components/limited-date-schema'
 import { passwordSchema } from '../../generic-components/password-schema'
 import { usernameSchema } from '../../generic-components/username-schema'
 import { booleanSchema } from '../../primitives/boolean-schema'
@@ -19,7 +19,7 @@ export const commonUserSchema = z.object({
   wantsNewsletter: booleanSchema,
   identity: identityDocumentSchema,
   profileImage: limitedNonemptyTextSchema.optional(),
-  birthdate: birthdateSchema,
+  birthdate: rangedDateSchema,
   emailIsPublic: booleanSchema,
   receiveReports: booleanSchema,
   interestDescription: nonemptyTextSchema.max(MAX_INTEREST_DESCRIPTION_SIZE),

@@ -1,17 +1,14 @@
 import { VALID_DATE_RANGE_YEARS } from '@constants/validation-constants'
 import { INVALID_DATE_RANGE } from '@messages/validations/common-validations'
-import z from 'zod'
+import { positiveIntegerSchema } from './positive-integer-schema'
 
-export const rangedYearSchema = z
-  .number()
-  .int()
-  .refine(
-    (data) => {
-      const currentYear = new Date().getFullYear()
+export const rangedYearSchema = positiveIntegerSchema.refine(
+  (data) => {
+    const currentYear = new Date().getFullYear()
 
-      return data <= currentYear && data >= currentYear - VALID_DATE_RANGE_YEARS
-    },
-    {
-      error: INVALID_DATE_RANGE,
-    },
-  )
+    return data >= currentYear - VALID_DATE_RANGE_YEARS && data <= currentYear
+  },
+  {
+    error: INVALID_DATE_RANGE,
+  },
+)

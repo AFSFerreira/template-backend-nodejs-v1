@@ -1,10 +1,10 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPInstitution } from '@custom-types/presenter/institution/institution-default'
 import type { Institution } from '@prisma/client'
-import { INSTITUTION_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(INSTITUTION_DEFAULT_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.institutionDefault)
 export class InstitutionDefaultPresenter implements IPresenterStrategy<Institution, HTTPInstitution> {
   public toHTTP(input: Institution): HTTPInstitution {
     return {

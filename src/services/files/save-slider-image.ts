@@ -1,11 +1,11 @@
 import type { ImageInfo } from '@custom-types/services/image-info'
 import type { ISaveSliderImage } from '@custom-types/services/save-slider-image'
-import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { deleteFile } from '@utils/files/delete-file'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
+import { createWriteStream } from 'fs-extra'
 import sharp from 'sharp'
 
 export async function saveSliderImage({ imageStream, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {

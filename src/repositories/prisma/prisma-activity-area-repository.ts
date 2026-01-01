@@ -1,7 +1,7 @@
 import type { QueryMode } from '@custom-types/custom/query-mode'
 import type { ActivityAreaQuery } from '@custom-types/repository/activity-area/activity-area-query'
 import type { ListAllActivityAreasQuery } from '@custom-types/repository/activity-area/list-all-activity-areas-query'
-import type { OrderableType } from '@custom-types/validator/orderable'
+import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
@@ -57,7 +57,9 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
       }
     }
 
-    const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
+    const { page, limit } = query
+
+    const { limit: take, offset: skip } = evalOffset({ page, limit })
 
     const where: Prisma.ActivityAreaWhereInput = {
       area: PrismaActivityAreasRepository.buildStartsWithFilter(query.name),
@@ -84,7 +86,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
       meta: {
         totalItems,
         totalPages,
-        currentPage: query.page,
+        currentPage: page,
         pageSize,
       },
     }

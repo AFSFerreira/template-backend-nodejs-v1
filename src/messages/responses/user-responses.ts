@@ -1,5 +1,5 @@
 import type { IApiError } from '@custom-types/custom/api-error-type'
-import { MAX_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
+import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
 
 export const NO_USERS_AVAILABLE: IApiError = {
@@ -150,7 +150,7 @@ export const IMAGE_TOO_BIG: IApiError = {
   status: 413,
   body: {
     code: 'IMAGE_TOO_BIG',
-    message: `O arquivo de imagem é muito grande! Forneça uma imagem de no máximo ${Math.floor(MAX_IMAGE_FILE_SIZE_BYTES / MB_IN_BYTES)}mb`,
+    message: `O arquivo de imagem é muito grande! Forneça uma imagem de no máximo ${Math.floor(MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES / MB_IN_BYTES)}mb`,
   },
 }
 

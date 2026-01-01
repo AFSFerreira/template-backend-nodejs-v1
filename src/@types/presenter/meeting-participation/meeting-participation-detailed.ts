@@ -1,7 +1,7 @@
-import type { MeetingParticipationWithDetails } from '@custom-types/validator/meeting-participation-with-details'
-import type { EducationLevelType } from '@prisma/client'
+import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
+import type { EducationLevelType, OccupationType } from '@prisma/client'
 
-export interface MeetingParticipationPresenterInput extends MeetingParticipationWithDetails {}
+export interface MeetingEnrollmentPresenterInput extends MeetingEnrollmentWithDetails {}
 
 export interface UserParticipantInfo {
   id: string
@@ -9,7 +9,7 @@ export interface UserParticipantInfo {
   email: string
   profileImage: string
   educationLevel: EducationLevelType
-  occupation?: string | null
+  occupation?: OccupationType | null
   wantsNewsletter: boolean
 }
 
@@ -18,12 +18,12 @@ export interface GuestParticipantInfo {
   email: string
   institutionName: string
   departmentName: string
-  occupation: string
+  occupation: OccupationType
   educationLevel: EducationLevelType
   wantsNewsletter: boolean
 }
 
-export interface HTTPMeetingParticipationDetailed {
+export interface HTTPMeetingEnrollmentDetailed {
   createdAt: Date
   user: UserParticipantInfo | null
   guest: GuestParticipantInfo | null

@@ -13,7 +13,7 @@ export function buildListAllUsersDetailedQuery(query: IBuildListAllUsersDetailed
 
     const unaccentedSearchContent = Prisma.sql`unaccent(${searchContent})`
 
-    const tsQuery = Prisma.sql`plainto_tsquery('portuguese', ${unaccentedSearchContent})`
+    const tsQuery = Prisma.sql`websearch_to_tsquery('portuguese', ${unaccentedSearchContent})`
 
     conditions.push(
       Prisma.sql`(

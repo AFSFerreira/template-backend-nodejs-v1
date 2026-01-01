@@ -1,11 +1,11 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPMeeting } from '@custom-types/presenter/meeting/meeting-default'
 import type { Meeting } from '@prisma/client'
-import { MEETING_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
-@RegisterPresenter(MEETING_DEFAULT_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.meetingDefault)
 export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTPMeeting> {
   public toHTTP(input: Meeting): HTTPMeeting {
     const { id, publicId, createdAt, updatedAt, location, participantsCount, ...filteredInfo } = input
@@ -14,7 +14,7 @@ export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTP
       ...filteredInfo,
       id: publicId,
       title: input.title,
-      image: buildMeetingBannerUrl(input.image),
+      bannerImage: buildMeetingBannerUrl(input.bannerImage),
       description: input.description,
       lastDate: input.lastDate,
     }

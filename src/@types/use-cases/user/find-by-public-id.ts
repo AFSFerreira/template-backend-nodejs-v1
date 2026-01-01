@@ -1,4 +1,4 @@
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 
 export interface FindUserByPublicIdUseCaseRequest {
   publicId: string

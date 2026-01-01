@@ -1,7 +1,7 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { CreateDirectorBoardQuery } from '@custom-types/repository/director-board/create-director-board-query'
 import type { listAllDirectorBoardMembers } from '@custom-types/repository/director-board/list-all-director-board-members'
-import type { DirectorBoardWithUser } from '@custom-types/validator/director-board-with-user'
+import type { DirectorBoardWithUser } from '@custom-types/validators/director-board-with-user'
 import type { DirectorBoard } from '@prisma/client'
 
 export interface DirectorBoardRepository {

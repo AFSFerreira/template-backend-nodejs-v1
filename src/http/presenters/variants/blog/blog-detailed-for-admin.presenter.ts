@@ -4,11 +4,11 @@ import type {
   HTTPBlogDetailedForAdmin,
   IBlogDetailedForAdmin,
 } from '@custom-types/presenter/blog/blog-detailed-for-admin'
-import { BLOG_DETAILED_FOR_ADMIN } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-@RegisterPresenter(BLOG_DETAILED_FOR_ADMIN)
+@RegisterPresenter(tokens.presenters.blogDetailedForAdmin)
 export class BlogDetailedForAdminPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailedForAdmin> {
   public toHTTP(input: IBlogDetailedForAdmin): HTTPBlogDetailedForAdmin {
     return {

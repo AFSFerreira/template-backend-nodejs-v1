@@ -1,8 +1,8 @@
 import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
 import type { UpdateUserBodySchemaType } from '@custom-types/schemas/user/update-user-body-schema'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { USER_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/variants/user-presenter'
 import { updateUserByPublicIdBodySchema } from '@schemas/user/update-user-by-public-id-body-schema'
 import { updateUserByPublicIdParamsSchema } from '@schemas/user/update-user-by-public-id-params-schema'
@@ -20,7 +20,10 @@ export async function updateUserByPublicId(request: FastifyRequest, reply: Fasti
     data: parsedBody,
   })
 
-  return await reply
-    .status(200)
-    .send({ data: UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(user, USER_DETAILED_PRESENTER_KEY) })
+  const formattedReply = UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(
+    user,
+    tokens.presenters.userDetailed,
+  )
+
+  return await reply.status(200).send({ data: formattedReply })
 }

@@ -1,10 +1,8 @@
-import type { IdentityType } from '@prisma/client'
+import type { IdentityType, Prisma } from '@prisma/client'
 
-export interface FindConflictingUserQuery {
-  email?: string
-  username?: string
+export type FindConflictingUserQuery = Prisma.UserWhereUniqueInput & {
   identity?: {
-    identityDocument: string
     identityType: IdentityType
+    identityDocument: string
   }
 }

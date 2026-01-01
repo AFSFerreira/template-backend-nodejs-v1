@@ -13,8 +13,7 @@ export async function getAllDirectorPositions(request: FastifyRequest, reply: Fa
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  return await reply.status(200).send({
-    data: DirectorPositionPresenter.toHTTP<DirectorPosition, HTTPDirectorPosition>(data),
-    meta,
-  })
+  const formattedReply = DirectorPositionPresenter.toHTTP<DirectorPosition, HTTPDirectorPosition>(data)
+
+  return await reply.status(200).send({ data: formattedReply, meta })
 }

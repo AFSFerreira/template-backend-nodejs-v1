@@ -1,10 +1,10 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPInstitutionWithUsersCount } from '@custom-types/presenter/institution/institution-with-users-count'
 import type { InstitutionsUsersCount } from '@custom-types/repository/institution/institutions-users-count'
-import { INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.institutionWithUsersCount)
 export class InstitutionWithUsersCountPresenter
   implements IPresenterStrategy<InstitutionsUsersCount, HTTPInstitutionWithUsersCount>
 {

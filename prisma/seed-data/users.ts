@@ -230,7 +230,7 @@ for (let i = 0; i <= 90; i++) {
     identityDocument: `000.000.000-${i.toString().padStart(2, '0')}`,
     fullName: `DUMMY USER ${i}`,
     username: `DUMMY USER ${i}`,
-    email: `dummy-user-${i}@email.com`,
+    email: `random-normal-dummy-user-${i}@email.com`,
     wantsNewsletter: getRandomArrayElement([true, false]),
   })
 }

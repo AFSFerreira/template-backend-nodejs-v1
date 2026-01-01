@@ -15,9 +15,11 @@ import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
+import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { persistFile } from '@services/files/persist-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
@@ -31,9 +33,9 @@ import { InvalidBlogContentError } from '@use-cases/errors/blog/invalid-blog-con
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { deleteFile } from '@utils/files/delete-file'
+import { fileExists } from '@utils/files/file-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
-import fs from 'fs-extra'
 import { inject, injectable } from 'tsyringe'
 import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 
@@ -105,14 +107,18 @@ export class UpdateBlogUseCase {
         const newImages = newBlogImages.difference(oldBlogImages)
         const removedImages = oldBlogImages.difference(newBlogImages)
 
+        const oldToNewImagesLinkMap = new Map<string, string>()
+
         // Persistindo as novas imagens do blog:
         await Promise.all(
-          Array.from(newImages).map(async (image) => {
-            const imageName = sanitizeUrlFilename(image)
+          Array.from(newImages).map(async (imageLink) => {
+            const imageName = sanitizeUrlFilename(imageLink)
 
             if (!imageName) {
               throw new BlogInvalidImageLinkError()
             }
+
+            oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
 
             const oldFilePath = buildBlogTempImagePath(imageName)
             const newFilePath = buildBlogImagePath(imageName)
@@ -122,13 +128,14 @@ export class UpdateBlogUseCase {
               newFilePath,
               options: {
                 ignoreOldFileMissing: true,
-                ignoreNewFileAlreadyExists: true,
               },
             })
 
             // Se a imagem não foi encontrada na pasta temporária,
             // ela precisa estar na pasta definitiva:
-            if (imagePersistResult === oldFilePath && !fs.exists(newFilePath)) {
+            const fileAlreadyExists = await fileExists(newFilePath)
+
+            if (imagePersistResult === oldFilePath && !fileAlreadyExists) {
               throw new BlogImageNotFoundError()
             }
 
@@ -152,7 +159,12 @@ export class UpdateBlogUseCase {
           }),
         )
 
-        updateData.content = body.content as InputJsonValue
+        const newProseMirror = replaceProseMirrorImages({
+          proseMirror: body.content,
+          oldToNewImagesMap: oldToNewImagesLinkMap,
+        })
+
+        updateData.content = newProseMirror as InputJsonValue
         updateData.searchContent = searchContent
       }
 

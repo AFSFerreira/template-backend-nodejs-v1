@@ -3,7 +3,6 @@ export interface IPersistFile {
   newFilePath: string
   options?: {
     ignoreOldFileMissing?: boolean
-    ignoreNewFileAlreadyExists?: boolean
     overwrite?: boolean
   }
 }

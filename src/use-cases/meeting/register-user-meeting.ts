@@ -3,7 +3,7 @@ import type {
   RegisterUserMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-user-meeting'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
+import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
@@ -26,8 +26,8 @@ export class RegisterUserMeetingUseCase {
     @inject(tokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.repositories.meetingParticipants)
-    private readonly meetingParticipantsRepository: MeetingParticipantsRepository,
+    @inject(tokens.repositories.meetingEnrollments)
+    private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
 
     @inject(tokens.infra.database)
     private readonly dbContext: DatabaseContext,
@@ -36,7 +36,7 @@ export class RegisterUserMeetingUseCase {
   async execute(
     registerUserMeetingUseCaseInput: RegisterUserMeetingUseCaseRequest,
   ): Promise<RegisterUserMeetingUseCaseResponse> {
-    const { participation: meetingParticipation } = await this.dbContext.runInTransaction(async () => {
+    const { enrollment: meetingEnrollment } = await this.dbContext.runInTransaction(async () => {
       const user = ensureExists({
         value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userPublicId),
         error: new UserNotFoundError(),
@@ -52,24 +52,24 @@ export class RegisterUserMeetingUseCase {
       }
 
       ensureNotExists({
-        value: await this.meetingParticipantsRepository.findByUserIdAndMeetingId({
+        value: await this.meetingEnrollmentsRepository.findByUserIdAndMeetingId({
           meetingId: meeting.id,
           userId: user.id,
         }),
         error: new UserAlreadyRegisteredInMeetingError(),
       })
 
-      const participation = await this.meetingParticipantsRepository.createForUser({
+      const enrollment = await this.meetingEnrollmentsRepository.createForUser({
         ...registerUserMeetingUseCaseInput,
         meetingId: meeting.id,
         userId: user.id,
       })
 
-      return { participation }
+      return { enrollment }
     })
 
     logger.info({ meetingId: registerUserMeetingUseCaseInput.meetingId }, REGISTER_USER_MEETING)
 
-    return { meetingParticipation }
+    return { meetingEnrollment }
   }
 }

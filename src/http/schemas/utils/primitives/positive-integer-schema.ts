@@ -1,3 +1,3 @@
-import z from 'zod'
+import { positiveNumberSchema } from './positive-number-schema'
 
-export const positiveIntegerSchema = z.coerce.number().int().positive()
+export const positiveIntegerSchema = positiveNumberSchema.int()

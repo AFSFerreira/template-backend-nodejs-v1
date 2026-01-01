@@ -11,7 +11,7 @@ export function buildListAllAcademicPublicationsQuery(query: IBuildListAllAcadem
   if (query.title) {
     const title = query.title.toUpperCase()
     const unaccentedSearchContent = Prisma.sql`unaccent(${title})`
-    const tsQuery = Prisma.sql`plainto_tsquery('portuguese', ${unaccentedSearchContent})`
+    const tsQuery = Prisma.sql`websearch_to_tsquery('portuguese', ${unaccentedSearchContent})`
 
     conditions.push(
       Prisma.sql`(

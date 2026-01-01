@@ -1,20 +1,22 @@
-import { NEWSLETTER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
-import { presenterRegistry } from '../presenter-registry'
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { container } from 'tsyringe'
 
 export class NewsletterPresenter {
   static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
 
   static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
 
-  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
+  static toHTTP<TInput, TOutput>(
+    input: TInput | TInput[],
+    contextKey: string = tokens.presenters.newsletterDefault,
+  ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => NewsletterPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    const strategy = presenterRegistry.get(contextKey ?? NEWSLETTER_DEFAULT_PRESENTER_KEY)
+    const strategy = container.resolve<IPresenterStrategy<TInput, TOutput>>(contextKey)
 
-    const result = strategy.toHTTP(input)
-
-    return result as TOutput
+    return strategy.toHTTP(input)
   }
 }

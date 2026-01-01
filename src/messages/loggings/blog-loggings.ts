@@ -33,3 +33,5 @@ export const BLOG_BANNER_PERSIST_ERROR = 'Erro durante a persistência do banner
 export const BLOG_IMAGES_PERSIST_ERROR = 'Erro ao persistir as imagens do blog'
 
 export const BLOG_IMAGE_DELETED_SUCCESSFULLY = 'Imagem de blog deletada com sucesso'
+
+export const BLOG_CREATION_ERROR = 'Erro durante a criação do blog'

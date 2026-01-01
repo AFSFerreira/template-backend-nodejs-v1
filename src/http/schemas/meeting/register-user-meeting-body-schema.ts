@@ -1,6 +1,6 @@
-import { presentationSchema } from '@schemas/utils/generic-components/presentation-schema'
+import { meetingPresentationSchema } from '@schemas/utils/generic-components/meeting-presentation-schema'
 import z from 'zod'
 
 export const registerUserMeetingBodySchema = z.object({
-  meetingPresentationData: presentationSchema.optional(),
+  meetingPresentationData: meetingPresentationSchema.optional(),
 })

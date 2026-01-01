@@ -10,7 +10,7 @@ import type { SetPasswordTokenQuery } from '@custom-types/repository/user/set-pa
 import type { UpdateProfileImageQuery } from '@custom-types/repository/user/update-profile-image-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/user/update-user-query'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { Prisma, User } from '@prisma/client'
 
 export interface UsersRepository {

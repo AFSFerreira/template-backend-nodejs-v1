@@ -8,7 +8,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**/", "!dist"]
+    "includes": ["**/", "!dist", "!uploads"]
   },
   "formatter": {
     "enabled": true,
@@ -56,6 +56,8 @@
         "noUnusedVariables": "error",
         "noUnusedFunctionParameters": "error",
         "noUnusedImports": "error",
+        "noUnusedPrivateClassMembers": "error",
+        "noUnusedLabels": "error",
         "noUnreachable": "error",
         "useIsNan": "error"
       }

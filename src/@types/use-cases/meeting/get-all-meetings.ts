@@ -1,6 +1,6 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { GetAllMeetingsQuerySchemaType } from '@custom-types/schemas/meeting/get-all-meetings-query-schema'
-import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
+import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 
 export interface GetAllMeetingsUseCaseRequest extends GetAllMeetingsQuerySchemaType {}
 

@@ -1,11 +1,11 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slider-image-default'
 import type { SliderImage } from '@prisma/client'
-import { HOME_PAGE_SLIDER_IMAGE_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 
-@RegisterPresenter(HOME_PAGE_SLIDER_IMAGE_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.sliderImageHomePage)
 export class HomePageSliderImagePresenter implements IPresenterStrategy<SliderImage, HTTPSliderImage> {
   public toHTTP(input: SliderImage): HTTPSliderImage {
     return {

@@ -1,11 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { profilePictureFileConfig } from '@constants/multipart-configuration-constants'
+import { blogBannerMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import { imageSchema } from '@schemas/utils/generic-components/image-schema'
 import { UploadBlogBannerUseCase } from '@use-cases/blogs/upload-blog-banner'
 import { container } from 'tsyringe'
 
 export async function uploadBlogBanner(request: FastifyRequest, reply: FastifyReply) {
-  const filePart = await request.file(profilePictureFileConfig)
+  const filePart = await request.file(blogBannerMultipartFileConfig)
 
   imageSchema.parse(filePart)
 

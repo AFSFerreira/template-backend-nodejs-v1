@@ -1,4 +1,4 @@
-import type { AddressState } from '@prisma/client'
+import type { AddressState, Meeting, User } from '@prisma/client'
 import { adapter, pool } from '@lib/prisma/helpers/configuration'
 import { PrismaClient } from '@prisma/client'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
@@ -8,9 +8,11 @@ import { partialAddressDataArray1 } from './seed-data/addresses'
 import { blogDataArray1 } from './seed-data/blogs'
 import { directorPositionsArray1 } from './seed-data/director-positions'
 import { institutionsDataArray1 } from './seed-data/institutions'
-import { meetingDataArray1 } from './seed-data/meeting'
-import { meetingParticipantsDummyDataArray1 } from './seed-data/meeting-participants'
-import { paymentInfo1 } from './seed-data/payment-info'
+import { meetingEnrollmentDataArray1 } from './seed-data/meeting-enrollments'
+import { meetingPresentationNestedMeetingEnrollmentDataArray1 } from './seed-data/meeting-presentations'
+import { meetingDataArray1 } from './seed-data/meetings'
+import { newsletterDataArray1 } from './seed-data/newsletter'
+import { paymentInfo1 } from './seed-data/payments-info'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2 } from './seed-data/users'
 
@@ -52,9 +54,12 @@ async function main() {
     addressStatesArray.push(addressState)
   }
 
+  // Lista de Usuários Criados para Utilizar Posteriormente:
+  const createdUsers: User[] = []
+
   // Criação de Usuários:
   for (const user of [...usersDataArray1, ...usersDataArray2]) {
-    await prisma.user.upsert({
+    const createdUser = await prisma.user.upsert({
       where: { email: user.email },
       update: {},
       create: {
@@ -69,6 +74,8 @@ async function main() {
         },
       },
     })
+
+    createdUsers.push(createdUser)
   }
 
   // Criação de Blogs Dummy:
@@ -91,19 +98,59 @@ async function main() {
     create: paymentInfo1,
   })
 
-  // Criação de Reuniões:
-  for (const meeting of meetingDataArray1) {
-    const { MeetingDate, MeetingParticipation, MeetingPaymentInfo, ...filteredMeetingInfo } = meeting
+  const createdMeetings: Meeting[] = []
 
-    const meetingAlreadyExists = await prisma.meeting.findFirst({
+  // Criação de Reuniões:
+  for (const meetingInfo of meetingDataArray1) {
+    const { MeetingDate, MeetingPaymentInfo, MeetingEnrollment, ...filteredMeetingInfo } = meetingInfo
+
+    let meeting = await prisma.meeting.findFirst({
       where: filteredMeetingInfo,
     })
 
-    if (!meetingAlreadyExists) {
-      await prisma.meeting.create({
+    if (!meeting) {
+      meeting = await prisma.meeting.create({ data: meetingInfo })
+    }
+
+    createdMeetings.push(meeting)
+  }
+
+  // Criação de Inscrições de Convidados em Reuniões:
+  for (const createdMeetingInfo of createdMeetings) {
+    for (const meetingEnrollmentInfo of meetingEnrollmentDataArray1) {
+      await prisma.meetingEnrollment.create({
         data: {
-          ...meeting,
-          MeetingParticipation: { create: meetingParticipantsDummyDataArray1 },
+          ...meetingEnrollmentInfo,
+          Meeting: {
+            connect: {
+              id: createdMeetingInfo.id,
+            },
+          },
+        },
+      })
+    }
+  }
+
+  // Criação de Inscrições de Convidados em Reuniões:
+  for (const createdMeetingInfo of createdMeetings) {
+    for (const createdUserInfo of createdUsers) {
+      await prisma.meetingEnrollment.create({
+        data: {
+          Meeting: {
+            connect: {
+              id: createdMeetingInfo.id,
+            },
+          },
+          UserDetails: {
+            create: {
+              User: {
+                connect: {
+                  id: createdUserInfo.id,
+                },
+              },
+            },
+          },
+          MeetingPresentation: getRandomArrayElement(meetingPresentationNestedMeetingEnrollmentDataArray1),
         },
       })
     }
@@ -112,6 +159,12 @@ async function main() {
   // Criação de Imagens do Carrossel:
   await prisma.sliderImage.createMany({
     data: sliderImageDataArray1,
+    skipDuplicates: true,
+  })
+
+  // Criação de Newsletters:
+  await prisma.newsletter.createMany({
+    data: newsletterDataArray1,
     skipDuplicates: true,
   })
 }

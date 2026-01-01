@@ -25,12 +25,13 @@ export class DatabaseContext {
     }
 
     return await this.prisma.$transaction(async (tx) => {
-      const newContext = {
-        ...store,
-        prismaTransaction: tx,
-      }
-
-      return await asyncLocalStorage.run(newContext, callback)
+      return await asyncLocalStorage.run(
+        {
+          ...store,
+          prismaTransaction: tx,
+        },
+        callback,
+      )
     })
   }
 }

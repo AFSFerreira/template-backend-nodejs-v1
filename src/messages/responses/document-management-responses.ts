@@ -57,3 +57,19 @@ export const SLIDER_IMAGE_INVALID_FORMAT: IApiError = {
     message: 'Formato de imagem inválido. Use JPEG, PNG ou WebP',
   },
 }
+
+export const ELECTION_NOTICE_FILE_READ_ERROR: IApiError = {
+  status: 500,
+  body: {
+    code: 'ELECTION_NOTICE_FILE_READ_ERROR',
+    message: 'Ocorreu um erro ao tentar ler o arquivo de edital de eleição',
+  },
+}
+
+export const STATUTE_FILE_READ_ERROR: IApiError = {
+  status: 500,
+  body: {
+    code: 'STATUTE_FILE_READ_ERROR',
+    message: 'Ocorreu um erro ao tentar ler o arquivo de estatuto',
+  },
+}

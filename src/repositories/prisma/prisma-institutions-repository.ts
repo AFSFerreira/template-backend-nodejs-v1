@@ -1,6 +1,6 @@
 import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/institution/list-all-institutions-names-query'
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/institution/list-all-institutions-with-users-query'
-import type { OrderableType } from '@custom-types/validator/orderable'
+import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { InstitutionsRepository } from '../institutions-repository'

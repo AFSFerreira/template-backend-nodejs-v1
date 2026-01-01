@@ -1,12 +1,6 @@
-export interface UserWithSimplifiedDetails {
-  id: number
-  publicId: string
-  fullName: string
-  email: string
-  emailIsPublic: boolean
-  state?: string
-  institutionName?: string
-}
+import type { CustomUserWithSimplifiedDetails } from '@custom-types/adapter/user-simplified'
+
+export interface UserWithSimplifiedDetails extends CustomUserWithSimplifiedDetails {}
 
 export interface HTTPSimplifiedUserDetails {
   id: string

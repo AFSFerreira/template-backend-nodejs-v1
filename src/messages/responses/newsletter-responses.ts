@@ -31,3 +31,11 @@ export const NEWSLETTER_ALREADY_EXISTS: IApiError = {
     message: 'Já existe uma newsletter com esse volume e número de edição',
   },
 }
+
+export const NEWSLETTER_HTML_PERSIST_ERROR: IApiError = {
+  status: 500,
+  body: {
+    code: 'NEWSLETTER_HTML_PERSIST_ERROR',
+    message: 'Erro ao persistir o arquivo HTML da newsletter',
+  },
+}

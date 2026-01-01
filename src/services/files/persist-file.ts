@@ -15,15 +15,11 @@ export async function persistFile({ oldFilePath, newFilePath, options }: IPersis
     const newBaseFolderExists = fs.exists(newBaseFolder)
     if (!newBaseFolderExists) return null
 
-    // Verifica se arquivo já foi persistido anteriormente:
-    const fileAreadyExists = await fs.exists(newFilePath)
-    if (fileAreadyExists) return options?.ignoreNewFileAlreadyExists ? newFilePath : null
-
     await fs.move(oldFilePath, newFilePath, { overwrite: options?.overwrite ?? false })
 
     return newFilePath
   } catch (error) {
-    logError({ error, message: FILE_PERSIST_ERROR })
+    logError({ error, context: { oldFilePath, newFilePath, options }, message: FILE_PERSIST_ERROR })
 
     return null
   }

@@ -1,5 +1,5 @@
 import type { ReviewMembershipStatusBodySchemaType } from '@custom-types/schemas/user/review-membership-status-body-schema'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 
 export interface ReviewMembershipStatusUseCaseRequest extends ReviewMembershipStatusBodySchemaType {
   publicId: string

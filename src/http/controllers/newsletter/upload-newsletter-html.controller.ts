@@ -1,11 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { profilePictureFileConfig } from '@constants/multipart-configuration-constants'
+import { newsletterHtmlMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import { fileSchema } from '@schemas/utils/generic-components/file-schema'
 import { UploadNewsletterHtmlUseCase } from '@use-cases/newsletters/upload-newsletter-html'
 import { container } from 'tsyringe'
 
 export async function uploadNewsletterHtml(request: FastifyRequest, reply: FastifyReply) {
-  const filePart = await request.file(profilePictureFileConfig)
+  const filePart = await request.file(newsletterHtmlMultipartFileConfig)
 
   fileSchema.parse(filePart)
 
@@ -13,5 +13,5 @@ export async function uploadNewsletterHtml(request: FastifyRequest, reply: Fasti
 
   const { filename } = await useCase.execute({ filePart })
 
-  return await reply.status(200).send({ data: { htmlFileName: filename } })
+  return await reply.status(200).send({ data: { htmlFilename: filename } })
 }

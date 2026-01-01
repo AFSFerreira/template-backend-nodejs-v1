@@ -1,9 +1,9 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPSimplifiedUserDetails, UserWithSimplifiedDetails } from '@custom-types/presenter/user/user-simplified'
-import { USER_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(USER_SIMPLIFIED_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.userSimplified)
 export class UserSimplifiedPresenter
   implements IPresenterStrategy<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>
 {

@@ -1,4 +1,4 @@
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { UpdateUserUseCaseRequestBody } from './update-user-use-case-request-body'
 
 export interface UpdateUserUseCaseRequest {

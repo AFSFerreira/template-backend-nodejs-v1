@@ -1,20 +1,22 @@
-import { MEETING_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
-import { presenterRegistry } from '../presenter-registry'
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { container } from 'tsyringe'
 
 export class MeetingPresenter {
   static toHTTP<TInput, TOutput>(input: TInput, contextKey?: string): TOutput
 
   static toHTTP<TInput, TOutput>(input: TInput[], contextKey?: string): TOutput[]
 
-  static toHTTP<TInput, TOutput>(input: TInput | TInput[], contextKey?: string): TOutput | TOutput[] {
+  static toHTTP<TInput, TOutput>(
+    input: TInput | TInput[],
+    contextKey: string = tokens.presenters.meetingDefault,
+  ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => MeetingPresenter.toHTTP<TInput, TOutput>(item, contextKey))
     }
 
-    const strategy = presenterRegistry.get(contextKey ?? MEETING_DEFAULT_PRESENTER_KEY)
+    const strategy = container.resolve<IPresenterStrategy<TInput, TOutput>>(contextKey)
 
-    const result = strategy.toHTTP(input)
-
-    return result as TOutput
+    return strategy.toHTTP(input)
   }
 }

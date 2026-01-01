@@ -1,11 +1,11 @@
 import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPSimplifiedBlog } from '@custom-types/presenter/blog/blog-simplified'
-import { BLOG_SIMPLIFIED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-@RegisterPresenter(BLOG_SIMPLIFIED_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.blogSimplified)
 export class BlogSimplifiedPresenter
   implements IPresenterStrategy<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>
 {

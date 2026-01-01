@@ -1,17 +1,17 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/meeting-detailed'
-import type { MeetingWithDetails } from '@custom-types/validator/meeting-with-details'
-import { MEETING_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
+import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
-@RegisterPresenter(MEETING_DETAILED_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.meetingDetailed)
 export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithDetails, HTTPMeetingWithDetails> {
   public toHTTP(input: MeetingWithDetails): HTTPMeetingWithDetails {
     return {
       id: input.publicId,
       title: input.title,
-      image: buildMeetingBannerUrl(input.image),
+      bannerImage: buildMeetingBannerUrl(input.bannerImage),
       description: input.description,
       location: input.location,
       lastDate: input.lastDate,

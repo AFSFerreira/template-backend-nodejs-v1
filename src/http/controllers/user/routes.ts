@@ -9,10 +9,10 @@ import { checkAvailability } from './check-availability.controller'
 import { deleteUser } from './delete-user.controller'
 import { deleteUserByAdmin } from './delete-user-by-admin.controller'
 import { exportUsersData } from './export-users-data.controller'
+import { findUserByPublicId } from './find-user-by-public-id.controller'
 import { forgotPassword } from './forgot-password.controller'
 import { getAllUsersDetailed } from './get-all-users-detailed.controller'
 import { getAllUsersSimplified } from './get-all-users-simplified.controller'
-import { getUserByPublicId } from './get-user-by-public-id.controller'
 import { getUserProfile } from './get-user-profile.controller'
 import { logout } from './logout.controller'
 import { refreshToken } from './refresh-token.controller'
@@ -56,7 +56,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
-    getUserByPublicId,
+    findUserByPublicId,
   )
 
   // POST

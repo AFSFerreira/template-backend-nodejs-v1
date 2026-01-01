@@ -54,4 +54,4 @@ export const INVALID_EDUCATION_LEVEL_TYPE = 'Valor inválido para educationLevel
 
 export const INVALID_USER_ROLE_TYPE = 'Valor inválido para role'
 
-export const INVALID_BIRTHDATE_RANGE = 'Data de nascimento inválida'
+export const INVALID_DATE_RANGE = 'Data inválida (intervalo muito grande)'

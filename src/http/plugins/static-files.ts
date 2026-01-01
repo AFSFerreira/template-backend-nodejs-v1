@@ -6,6 +6,7 @@ import {
   BLOG_TEMP_IMAGES_PATH,
   DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
   MEETING_BANNERS_PATH,
+  NEWSLETTER_HTML_PATH,
   REGISTER_PROFILE_IMAGES_PATH,
   SLIDER_IMAGES_PATH,
 } from '@constants/dynamic-file-constants'
@@ -14,16 +15,17 @@ import {
   STATIC_BLOG_IMAGE_ROUTE,
   STATIC_DIRECTOR_BOARD_PROFILE_IMAGES_ROUTE,
   STATIC_MEETING_BANNERS_IMAGE_ROUTE,
-  STATIC_SLIDER_IMAGE_ROUTE,
-  STATIC_TEMP_BLOG_BANNERS,
-  STATIC_TEMP_BLOG_IMAGES,
+  STATIC_NEWSLETTER_HTML_ROUTE,
+  STATIC_SLIDER_IMAGES_ROUTE,
+  STATIC_TEMP_BLOG_BANNERS_ROUTE,
+  STATIC_TEMP_BLOG_IMAGES_ROUTE,
   STATIC_USER_PROFILE_IMAGE_ROUTE,
 } from '@constants/static-routes-constants'
 import fastifyStatic from '@fastify/static'
 import { staticRouteConfigurations } from '../configuration/static-routes-configuration'
 
 export async function staticFileRoutes(app: FastifyInstance) {
-  const fileRoutes = [
+  const fileRoutes: Array<{ prefix: string; root: string }> = [
     {
       prefix: STATIC_USER_PROFILE_IMAGE_ROUTE,
       root: REGISTER_PROFILE_IMAGES_PATH,
@@ -41,11 +43,11 @@ export async function staticFileRoutes(app: FastifyInstance) {
       root: BLOG_IMAGES_PATH,
     },
     {
-      prefix: STATIC_TEMP_BLOG_IMAGES,
+      prefix: STATIC_TEMP_BLOG_IMAGES_ROUTE,
       root: BLOG_TEMP_IMAGES_PATH,
     },
     {
-      prefix: STATIC_TEMP_BLOG_BANNERS,
+      prefix: STATIC_TEMP_BLOG_BANNERS_ROUTE,
       root: BLOG_TEMP_BANNERS_PATH,
     },
     {
@@ -53,8 +55,12 @@ export async function staticFileRoutes(app: FastifyInstance) {
       root: DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
     },
     {
-      prefix: STATIC_SLIDER_IMAGE_ROUTE,
+      prefix: STATIC_SLIDER_IMAGES_ROUTE,
       root: SLIDER_IMAGES_PATH,
+    },
+    {
+      prefix: STATIC_NEWSLETTER_HTML_ROUTE,
+      root: NEWSLETTER_HTML_PATH,
     },
   ]
 

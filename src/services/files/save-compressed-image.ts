@@ -1,11 +1,11 @@
 import type { CompressedImageInfo } from '@custom-types/services/compressed-image-info'
 import type { SaveCompressedImage } from '@custom-types/services/save-compressed-image'
-import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
+import { fileExists } from '@utils/files/file-exists'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import fs from 'fs-extra'
 import sharp from 'sharp'
 
 export async function saveCompressedImage({
@@ -22,10 +22,9 @@ export async function saveCompressedImage({
   const finalName = `${generateFileHash()}.webp`
 
   const finalImagePath = path.resolve(folderPath, finalName)
-
-  const fileAreadyExists = await fs.exists(finalImagePath)
-
   const returnValue = { finalImagePath, filename: finalName }
+
+  const fileAreadyExists = await fileExists(finalImagePath)
 
   // O arquivo já foi persistido anteriormente:
   if (fileAreadyExists) {
@@ -34,7 +33,11 @@ export async function saveCompressedImage({
 
   const sharpStream = sharp().resize(options.dimensions).webp({ quality: options.quality })
 
-  const destinationStream = createWriteStream(finalImagePath)
+  const destinationStream = await CreateFileWriteSteam(finalImagePath)
+
+  if (!destinationStream) {
+    return { ...returnValue, success: false }
+  }
 
   try {
     await pipeline(imageStream, sharpStream, destinationStream)

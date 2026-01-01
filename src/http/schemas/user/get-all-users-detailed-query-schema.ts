@@ -3,11 +3,11 @@ import { educationLevelSchema } from '@schemas/utils/enums/education-level-enum-
 import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schema'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { userRoleEnumSchema } from '@schemas/utils/enums/user-role-enum-schema'
-import { birthdateSchema } from '@schemas/utils/generic-components/limited-date-schema'
 import { membershipStatusArraySchema } from '@schemas/utils/generic-components/membership-status-array-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
+import { rangedDateSchema } from '@schemas/utils/primitives/ranged-date-schema'
 import { z } from 'zod'
 import { keywordSchema } from '../utils/components/keyword/keyword-schema'
 import { emailSchema } from '../utils/generic-components/email-schema'
@@ -31,7 +31,7 @@ const getAllUsersDetailedQueryRawSchema = z
     occupation: occupationEnumSchema,
     educationLevel: educationLevelSchema,
     birthdate: z.object({
-      date: birthdateSchema,
+      date: rangedDateSchema,
       birthdateComparison: comparableEnumSchema.default('equals'),
     }),
     astrobiologyOrRelatedStartYear: z.object({

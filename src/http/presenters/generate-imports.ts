@@ -1,4 +1,3 @@
-import fs from 'node:fs'
 import path from 'node:path'
 import {
   PRESENTERS_AUTO_GENERATED_WARNING,
@@ -7,6 +6,7 @@ import {
   PRESENTERS_REGENERATE_COMMAND,
 } from '@constants/static-file-constants'
 import glob from 'fast-glob'
+import fs from 'fs-extra'
 import slash from 'slash'
 
 const files = glob.globSync(slash(PRESENTERS_GLOB_PATTERN))

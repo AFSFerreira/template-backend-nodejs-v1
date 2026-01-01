@@ -1,10 +1,10 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { BlogWithDetails, HTTPBlogDetailed } from '@custom-types/presenter/blog/blog-detailed'
-import { BLOG_DETAILED_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-@RegisterPresenter(BLOG_DETAILED_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.blogDetailed)
 export class BlogDetailedPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailed> {
   public toHTTP(input: BlogWithDetails): HTTPBlogDetailed {
     const {

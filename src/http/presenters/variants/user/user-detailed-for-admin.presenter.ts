@@ -1,13 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUserWithDetailsForAdmin } from '@custom-types/presenter/user/user-detailed-for-admin'
-import type { UserWithDetails } from '@custom-types/validator/user-with-details'
-import { USER_DETAILED_FOR_ADMIN_PRESENTER_KEY } from '@constants/presenters-constants'
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-@RegisterPresenter(USER_DETAILED_FOR_ADMIN_PRESENTER_KEY)
-export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetailsForAdmin> {
+@RegisterPresenter(tokens.presenters.userDetailedForAdmin)
+export class UserDetailedPresenterForAdmin implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetailsForAdmin> {
   public toHTTP(input: UserWithDetails): HTTPUserWithDetailsForAdmin {
     const {
       id,

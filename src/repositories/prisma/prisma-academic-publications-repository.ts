@@ -1,6 +1,6 @@
 import type { AcademicPublicationSimplifiedRaw } from '@custom-types/adapter/academic-publication-simplified'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/academic-publication/list-all-academic-publications-query'
-import type { OrderableType } from '@custom-types/validator/orderable'
+import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'

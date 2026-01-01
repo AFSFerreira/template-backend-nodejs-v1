@@ -2,7 +2,7 @@ import type {
   GetMeetingParticipantsUseCaseRequest,
   GetMeetingParticipantsUseCaseResponse,
 } from '@custom-types/use-cases/meeting/get-meeting-participants'
-import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
+import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
@@ -15,8 +15,8 @@ export class GetMeetingParticipantsUseCase {
     @inject(tokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.repositories.meetingParticipants)
-    private readonly meetingParticipantsRepository: MeetingParticipantsRepository,
+    @inject(tokens.repositories.meetingEnrollments)
+    private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
   ) {}
 
   async execute({
@@ -29,12 +29,12 @@ export class GetMeetingParticipantsUseCase {
       error: new MeetingNotFoundError(),
     })
 
-    const participantsInfo = await this.meetingParticipantsRepository.listMeetingParticipants({
+    const enrollmentsInfo = await this.meetingEnrollmentsRepository.listMeetingEnrollments({
       meetingId: meeting.id,
       page,
       limit,
     })
 
-    return participantsInfo
+    return enrollmentsInfo
   }
 }

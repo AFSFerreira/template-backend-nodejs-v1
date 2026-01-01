@@ -3,10 +3,10 @@ import type {
   DashboardBlogsMetrics,
   HTTPDashboardBlogsMetrics,
 } from '@custom-types/presenter/dashboard-metrics/dashboard-blogs-metrics'
-import { DASHBOARD_METRICS_BLOGS_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(DASHBOARD_METRICS_BLOGS_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.dashboardMetricsBlogs)
 export class DashboardBlogsMetricsPresenter
   implements IPresenterStrategy<DashboardBlogsMetrics, HTTPDashboardBlogsMetrics>
 {

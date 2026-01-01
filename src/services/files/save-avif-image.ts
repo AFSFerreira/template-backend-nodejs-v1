@@ -8,7 +8,7 @@ import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/file-loggings'
 import { deleteFile } from '@utils/files/delete-file'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import { ensureDir } from 'fs-extra'
+import fs from 'fs-extra'
 import sharp from 'sharp'
 
 export async function saveAvifImage({
@@ -23,7 +23,7 @@ export async function saveAvifImage({
   const partialReturnData = { finalImagePath, filename }
 
   try {
-    await ensureDir(folderPath)
+    await fs.ensureDir(folderPath)
   } catch (error) {
     logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
 

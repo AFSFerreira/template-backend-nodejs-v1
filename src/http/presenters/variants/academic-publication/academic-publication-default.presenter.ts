@@ -1,11 +1,11 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPAcademicPublication } from '@custom-types/presenter/academic-publication/academic-publication-default'
-import type { AcademicPublicationWithDetails } from '@custom-types/validator/academic-publication-with-details'
+import type { AcademicPublicationWithDetails } from '@custom-types/validators/academic-publication-with-details'
 import type { AcademicPublication } from '@prisma/client'
-import { ACADEMIC_PUBLICATION_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(ACADEMIC_PUBLICATION_DEFAULT_PRESENTER_KEY)
+@RegisterPresenter(tokens.presenters.academicPublicationDefault)
 export class AcademicPublicationDefaultPresenter
   implements IPresenterStrategy<AcademicPublication, HTTPAcademicPublication>
 {

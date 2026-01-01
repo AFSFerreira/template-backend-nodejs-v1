@@ -1,7 +1,7 @@
 import type { HTTPBlogDetailedWithContent } from '@custom-types/presenter/blog/blog-detailed-with-content'
-import type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
+import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { BLOG_DETAILED_WITH_CONTENT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/variants/blog-presenter'
 import { findBlogByPublicIdParamsSchema } from '@schemas/blog/find-blog-by-public-id-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
@@ -16,10 +16,10 @@ export async function findBlogByPublicIdRestricted(request: FastifyRequest, repl
 
   const { blog } = await useCase.execute({ publicId, userPublicId })
 
-  return await reply.status(200).send({
-    data: BlogPresenter.toHTTP<BlogWithDetails, HTTPBlogDetailedWithContent>(
-      blog,
-      BLOG_DETAILED_WITH_CONTENT_PRESENTER_KEY,
-    ),
-  })
+  const formattedReply = BlogPresenter.toHTTP<BlogWithDetails, HTTPBlogDetailedWithContent>(
+    blog,
+    tokens.presenters.blogDetailedWithContent,
+  )
+
+  return await reply.status(200).send({ data: formattedReply })
 }

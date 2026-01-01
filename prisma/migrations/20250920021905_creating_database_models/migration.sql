@@ -25,6 +25,9 @@ CREATE TYPE "public"."ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_O
 -- CreateEnum
 CREATE TYPE "public"."EditorialStatusType" AS ENUM ('PENDING_APPROVAL', 'DRAFT', 'PUBLISHED', 'CHANGES_REQUESTED');
 
+-- CreateEnum
+CREATE TYPE "public"."MeetingMemberType" AS ENUM ('GUEST', 'MEMBER');
+
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
     "id" SERIAL NOT NULL,
@@ -99,7 +102,7 @@ CREATE TABLE "public"."addresses" (
 );
 
 -- CreateTable
-CREATE TABLE "address_states" (
+CREATE TABLE "public"."address_states" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "country_id" INTEGER NOT NULL,
@@ -109,7 +112,7 @@ CREATE TABLE "address_states" (
 );
 
 -- CreateTable
-CREATE TABLE "address_countries" (
+CREATE TABLE "public"."address_countries" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -214,7 +217,7 @@ CREATE TABLE "public"."director_positions" (
 
 -- CreateTable
 CREATE TABLE "public"."payment_info" (
-    "id" SMALLINT NOT NULL DEFAULT 1,
+    "id" SERIAL NOT NULL,
     "pix_key" TEXT NOT NULL,
     "bank" TEXT NOT NULL,
     "code" TEXT NOT NULL,
@@ -233,46 +236,20 @@ CREATE TABLE "public"."meeting_payment_information" (
     "limit_date" DATE NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
-    "payment_info_id" INTEGER NOT NULL,
+    "payment_info_id" INTEGER NOT NULL DEFAULT 1,
     "meeting_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_payment_information_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "public"."meeting_guest" (
-    "id" SERIAL NOT NULL,
-    "full_name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "institution_name" TEXT NOT NULL,
-    "department_name" TEXT NOT NULL,
-    "occupation" "public"."OccupationType" NOT NULL,
-    "education_level" "public"."EducationLevelType" NOT NULL,
-    "wants_newsletter" BOOLEAN NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "meeting_guest_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."meeting_participants" (
-    "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER,
-    "guest_id" INTEGER,
-    "meeting_id" INTEGER NOT NULL,
-
-    CONSTRAINT "meeting_participants_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "public"."meeting_presentations" (
     "id" SERIAL NOT NULL,
     "presentation_type" "public"."PresentationType" NOT NULL,
+    "meeting_enrollment_id" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "participation_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_presentations_pkey" PRIMARY KEY ("id")
 );
@@ -300,9 +277,9 @@ CREATE TABLE "public"."meetings" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
-    "program_file" TEXT NOT NULL,
+    "banner_image" TEXT NOT NULL,
     "description" TEXT NOT NULL,
+    "agenda" TEXT NOT NULL,
     "location" TEXT NOT NULL,
     "last_date" DATE NOT NULL,
     "participants_count" INTEGER NOT NULL DEFAULT 0,
@@ -344,7 +321,6 @@ CREATE TABLE "public"."blogs" (
 CREATE TABLE "public"."newsletters" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "sequence_number" TEXT NOT NULL,
     "edition_number" TEXT NOT NULL,
@@ -382,7 +358,7 @@ CREATE TABLE "public"."comment_likes" (
 );
 
 -- CreateTable
-CREATE TABLE "slider_images" (
+CREATE TABLE "public"."slider_images" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
     "image" TEXT NOT NULL,
@@ -392,6 +368,56 @@ CREATE TABLE "slider_images" (
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "slider_images_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."institutional_info" (
+    "id" SERIAL NOT NULL,
+    "about_description" JSON NOT NULL,
+    "about_image" TEXT NOT NULL,
+    "statute_file" TEXT DEFAULT 'estatuto.pdf',
+    "election_notice_file" TEXT DEFAULT 'edital-eleição.pdf',
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3),
+    "last_updated_by_id" INTEGER,
+
+    CONSTRAINT "institutional_info_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."user_meeting_enrollments" (
+    "id" SERIAL NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "user_id" INTEGER NOT NULL,
+    "meeting_enrollment_id" INTEGER NOT NULL,
+
+    CONSTRAINT "user_meeting_enrollments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."guest_meeting_enrollments" (
+    "id" SERIAL NOT NULL,
+    "full_name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "institution_name" TEXT NOT NULL,
+    "department_name" TEXT NOT NULL,
+    "occupation" "OccupationType" NOT NULL,
+    "education_level" "EducationLevelType" NOT NULL,
+    "wants_newsletter" BOOLEAN NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "meeting_enrollment_id" INTEGER NOT NULL,
+
+    CONSTRAINT "guest_meeting_enrollments_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."meeting_enrollments" (
+    "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "meeting_id" INTEGER NOT NULL,
+
+    CONSTRAINT "meeting_enrollments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -498,15 +524,6 @@ CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."me
 CREATE INDEX "meeting_payment_information_meeting_id_idx" ON "public"."meeting_payment_information"("meeting_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "meeting_participants_meeting_id_user_id_key" ON "public"."meeting_participants"("meeting_id", "user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "meeting_participants_meeting_id_guest_id_key" ON "public"."meeting_participants"("meeting_id", "guest_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "meeting_presentations_participation_id_key" ON "public"."meeting_presentations"("participation_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "meetings_public_id_key" ON "public"."meetings"("public_id");
 
 -- CreateIndex
@@ -544,6 +561,21 @@ CREATE UNIQUE INDEX "slider_images_public_id_key" ON "slider_images"("public_id"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "slider_images_image_key" ON "slider_images"("image");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_key" ON "user_meeting_enrollments"("meeting_enrollment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_user_id_key" ON "user_meeting_enrollments"("meeting_enrollment_id", "user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "guest_meeting_enrollments_meeting_enrollment_id_key" ON "guest_meeting_enrollments"("meeting_enrollment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_presentations_meeting_enrollment_id_key" ON "meeting_presentations"("meeting_enrollment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_enrollments_public_id_key" ON "meeting_enrollments"("public_id");
 
 -- CreateIndex
 CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");
@@ -597,18 +629,6 @@ ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payme
 ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_payment_info_id_fkey" FOREIGN KEY ("payment_info_id") REFERENCES "public"."payment_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."meeting_participants" ADD CONSTRAINT "meeting_participants_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."meeting_participants" ADD CONSTRAINT "meeting_participants_guest_id_fkey" FOREIGN KEY ("guest_id") REFERENCES "public"."meeting_guest"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."meeting_participants" ADD CONSTRAINT "meeting_participants_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_participation_id_fkey" FOREIGN KEY ("participation_id") REFERENCES "public"."meeting_participants"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "public"."meeting_presentation_authors" ADD CONSTRAINT "meeting_presentation_authors_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -634,6 +654,24 @@ ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_co
 
 -- AddForeignKey
 ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "institutional_info" ADD CONSTRAINT "institutional_info_last_updated_by_id_fkey" FOREIGN KEY ("last_updated_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "meeting_enrollments" ADD CONSTRAINT "meeting_enrollments_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_meeting_enrollments" ADD CONSTRAINT "user_meeting_enrollments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_meeting_enrollments" ADD CONSTRAINT "user_meeting_enrollments_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "guest_meeting_enrollments" ADD CONSTRAINT "guest_meeting_enrollments_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;

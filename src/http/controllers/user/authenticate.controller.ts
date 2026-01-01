@@ -43,6 +43,8 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     },
   })
 
+  const formattedUser = UserPresenter.toHTTP<User, HTTPUser>(user)
+
   return await reply
     .setCookie('refreshToken', refreshToken, {
       path: '/',
@@ -54,7 +56,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     .send({
       data: {
         accessToken,
-        user: UserPresenter.toHTTP<User, HTTPUser>(user),
+        user: formattedUser,
       },
     })
 }

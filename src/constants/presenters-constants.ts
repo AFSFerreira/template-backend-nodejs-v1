@@ -52,9 +52,12 @@ export const INSTITUTION_WITH_USERS_COUNT_PRESENTER_KEY = 'institution:with-user
 
 // ----------------------------------------------------------------------------------------- //
 
-export const MEETING_PARTICIPATION_DEFAULT_PRESENTER_KEY = 'meeting-participation:default'
+export const MEETING_ENROLLMENT_DEFAULT_PRESENTER_KEY = 'meeting-enrollment:default'
 
-export const MEETING_PARTICIPATION_DETAILED_PRESENTER_KEY = 'meeting-participation:detailed'
+export const MEETING_ENROLLMENT_DETAILED_PRESENTER_KEY = 'meeting-enrollment:detailed'
+
+export const MEETING_ENROLLMENT_DETAILED_WITH_PRESENTATION_PRESENTER_KEY =
+  'meeting-enrollment:detailed-with-presentation'
 
 // ----------------------------------------------------------------------------------------- //
 

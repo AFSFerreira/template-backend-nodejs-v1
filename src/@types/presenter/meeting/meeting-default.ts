@@ -1,7 +1,7 @@
 export interface HTTPMeeting {
   id: string
   title: string
-  image: string
+  bannerImage: string
   description: string
   lastDate: Date
 }

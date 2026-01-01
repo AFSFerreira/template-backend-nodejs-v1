@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { logError } from '@lib/logger/helpers/log-error'
 import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/file-loggings'
 import { InvalidFilesystemPathsError } from '@services/errors/files/invalid-filesystem-paths-error'
-import fs from 'fs-extra'
+import { fileExistsSync } from '@utils/files/file-exists-sync'
 import { IS_PROD } from './env-constants'
 import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-constants'
 
@@ -31,10 +31,14 @@ export const BLOG_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'blo
 export const BLOG_TEMP_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'blog', 'banners')
 
 // Caminhos relativos de banners de reuniões:
+export const MEETING_TEMP_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'meeting', 'banners')
 export const MEETING_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'meeting', 'banners')
 
+export const MEETING_TEMP_AGENDAS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'meeting', 'agendas')
+export const MEETING_AGENDAS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'meeting', 'agendas')
+
 // Caminhos relativos de documentos:
-export const DOCUMENTS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'documents')
+export const PUBLIC_DOCUMENTS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'documents', 'public')
 
 // Caminhos relativos de sliders:
 export const SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-image')
@@ -54,10 +58,10 @@ export const NEWSLETTER_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', '
 export const NEWSLETTER_TEMP_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'newsletter', 'html')
 
 // Padrão glob para identificar todos os arquivos de estatuto independentemente da extensão:
-export const STATUTE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, `${STATUTE_FILE_NAME}*`)
+export const STATUTE_FILE_NAME_PATTERN = path.resolve(PUBLIC_DOCUMENTS_PATH, `${STATUTE_FILE_NAME}*`)
 
 // Padrão glob para identificar todos os arquivos de edital de eleição independentemente da extensão:
-export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.resolve(DOCUMENTS_PATH, `${ELECTION_NOTICE_FILE_NAME}*`)
+export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.resolve(PUBLIC_DOCUMENTS_PATH, `${ELECTION_NOTICE_FILE_NAME}*`)
 
 // Verificação para assegurar que todos os caminhos
 // listados acima existem antes da execução do código:
@@ -68,14 +72,17 @@ const verifiedPaths = [
   BLOG_BANNERS_PATH,
   BLOG_TEMP_IMAGES_PATH,
   MEETING_BANNERS_PATH,
-  DOCUMENTS_PATH,
+  MEETING_TEMP_BANNERS_PATH,
+  MEETING_AGENDAS_PATH,
+  MEETING_TEMP_AGENDAS_PATH,
+  PUBLIC_DOCUMENTS_PATH,
   SLIDER_IMAGES_PATH,
   HOME_PAGE_SLIDER_IMAGES_PATH,
   TEMP_SLIDER_IMAGES_PATH,
   DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
   NEWSLETTER_HTML_PATH,
   NEWSLETTER_TEMP_HTML_PATH,
-].map((path) => ({ path, exists: fs.existsSync(path) }))
+].map((path) => ({ path, exists: fileExistsSync(path) }))
 
 const failedVerifiedPaths = verifiedPaths.filter((pathStatus) => !pathStatus.exists)
 

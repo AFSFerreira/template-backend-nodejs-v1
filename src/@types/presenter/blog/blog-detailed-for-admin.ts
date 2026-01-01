@@ -1,7 +1,7 @@
 import type { CustomBlogDetailed } from '@custom-types/adapter/blog-detailed'
 import type { EditorialStatusType } from '@prisma/client'
 
-export type { BlogWithDetails } from '@custom-types/validator/blog-with-details'
+export type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 
 export interface IBlogDetailedForAdmin extends CustomBlogDetailed {}
 

@@ -1,4 +1,3 @@
-import 'reflect-metadata'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
@@ -11,7 +10,7 @@ import type { DirectorBoardRepository } from '@repositories/directors-board-repo
 import type { EnrolledCoursesRepository } from '@repositories/enrolled-courses-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { KeywordsRepository } from '@repositories/keywords-repository'
-import type { MeetingParticipantsRepository } from '@repositories/meeting-participants-repository'
+import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
@@ -29,11 +28,12 @@ import { PrismaDirectorPositionsRepository } from '@repositories/prisma/prisma-d
 import { PrismaEnrolledCoursesRepository } from '@repositories/prisma/prisma-enrolled-courses-repository'
 import { PrismaInstitutionsRepository } from '@repositories/prisma/prisma-institutions-repository'
 import { PrismaKeywordsRepository } from '@repositories/prisma/prisma-keywords-repository'
-import { PrismaMeetingParticipantsRepository } from '@repositories/prisma/prisma-meeting-participants-repository'
+import { PrismaMeetingEnrollmentsRepository } from '@repositories/prisma/prisma-meeting-enrollments-repository'
 import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-repository'
 import { PrismaNewslettersRepository } from '@repositories/prisma/prisma-newsletters-repository'
 import { PrismaSliderImagesRepository } from '@repositories/prisma/prisma-slider-images-repository'
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
+import 'reflect-metadata'
 import { container } from 'tsyringe'
 import { tokens } from './helpers/tokens'
 
@@ -72,14 +72,14 @@ container.registerSingleton<EnrolledCoursesRepository>(
   PrismaEnrolledCoursesRepository,
 )
 
+container.registerSingleton<MeetingEnrollmentsRepository>(
+  tokens.repositories.meetingEnrollments,
+  PrismaMeetingEnrollmentsRepository,
+)
+
 container.registerSingleton<InstitutionsRepository>(tokens.repositories.institutions, PrismaInstitutionsRepository)
 
 container.registerSingleton<KeywordsRepository>(tokens.repositories.keywords, PrismaKeywordsRepository)
-
-container.registerSingleton<MeetingParticipantsRepository>(
-  tokens.repositories.meetingParticipants,
-  PrismaMeetingParticipantsRepository,
-)
 
 container.registerSingleton<MeetingsRepository>(tokens.repositories.meetings, PrismaMeetingsRepository)
 
