@@ -3,14 +3,13 @@ import type { HTTPNewsletter } from '@custom-types/presenter/newsletter/newslett
 import type { Newsletter } from '@prisma/client'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 
 @RegisterPresenter(tokens.presenters.newsletterDefault)
 export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter, HTTPNewsletter> {
   public toHTTP(input: Newsletter): HTTPNewsletter {
     return {
       id: input.publicId,
-      content: buildNewsletterHtmlUrl(input.content),
+      content: input.content,
       sequenceNumber: input.sequenceNumber,
       editionNumber: input.editionNumber,
       volume: input.volume,

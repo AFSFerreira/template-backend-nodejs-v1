@@ -11,6 +11,7 @@ export class UserSimplifiedPresenter
     return {
       id: input.publicId,
       fullName: input.fullName,
+      profileImage: input.profileImage,
       institutionName: input.institutionName,
       state: input.state,
       email: input.emailIsPublic ? input.email : null,

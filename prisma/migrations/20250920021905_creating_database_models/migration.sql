@@ -25,9 +25,6 @@ CREATE TYPE "public"."ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_O
 -- CreateEnum
 CREATE TYPE "public"."EditorialStatusType" AS ENUM ('PENDING_APPROVAL', 'DRAFT', 'PUBLISHED', 'CHANGES_REQUESTED');
 
--- CreateEnum
-CREATE TYPE "public"."MeetingMemberType" AS ENUM ('GUEST', 'MEMBER');
-
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
     "id" SERIAL NOT NULL,
@@ -194,9 +191,11 @@ CREATE TABLE "public"."keywords" (
 -- CreateTable
 CREATE TABLE "public"."directors_board" (
     "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "public_name" TEXT NOT NULL,
     "director_position_id" INTEGER NOT NULL,
-    "director_board_profile_image" TEXT NOT NULL,
-    "about_me" TEXT NOT NULL,
+    "profile_image" TEXT NOT NULL,
+    "about_me" JSON NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
     "user_id" INTEGER NOT NULL,
@@ -208,6 +207,7 @@ CREATE TABLE "public"."directors_board" (
 CREATE TABLE "public"."director_positions" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
+    "description" TEXT,
     "position" TEXT NOT NULL,
     "precedence" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -510,6 +510,9 @@ CREATE INDEX "directors_board_user_id_idx" ON "public"."directors_board"("user_i
 
 -- CreateIndex
 CREATE UNIQUE INDEX "directors_board_director_position_id_key" ON "public"."directors_board"("director_position_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "directors_board_public_id_key" ON "directors_board"("public_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "director_positions_position_key" ON "public"."director_positions"("position");

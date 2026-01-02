@@ -1029,3 +1029,27 @@ export const proseMirrorData4: JSONContent = {
     },
   ],
 }
+
+export const proseMirrorData5: JSONContent = {
+  type: 'doc',
+  content: [
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'Olá a todos que estão lendo isso!',
+        },
+      ],
+    },
+    {
+      type: 'paragraph',
+      content: [
+        {
+          type: 'text',
+          text: 'Isso é um exemplo de descrição de membro do corpo diretivo.',
+        },
+      ],
+    },
+  ],
+}

@@ -4,6 +4,7 @@ import type {
 } from '@custom-types/use-cases/meeting/find-by-public-id'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { MeetingNotFoundError } from '../errors/meeting/meeting-not-found-error'
@@ -21,6 +22,11 @@ export class FindMeetingByPublicIdUseCase {
       error: new MeetingNotFoundError(),
     })
 
-    return { meeting }
+    return {
+      meeting: {
+        ...meeting,
+        bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
+      },
+    }
   }
 }

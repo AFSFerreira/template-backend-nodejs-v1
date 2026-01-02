@@ -19,6 +19,7 @@ import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
 } from '@services/builders/paths/build-user-profile-image-path'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { persistFile } from '@services/files/persist-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
@@ -183,7 +184,12 @@ export class RegisterUseCase {
 
       logger.info({ userPublicId: createdUser.publicId, fullName: createdUser.fullName }, SUCCESSFUL_USER_CREATION)
 
-      return { user: createdUser }
+      return {
+        user: {
+          ...createdUser,
+          profileImage: buildUserProfileImageUrl(createdUser.profileImage),
+        },
+      }
     } catch (error) {
       logError({ error, message: USER_CREATION_ERROR })
 

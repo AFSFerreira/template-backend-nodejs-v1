@@ -3,7 +3,6 @@ import type { HTTPBlogDetailedWithContent } from '@custom-types/presenter/blog/b
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 @RegisterPresenter(tokens.presenters.blogDetailedWithContent)
 export class BlogDetailedWithContentPresenter
@@ -26,7 +25,7 @@ export class BlogDetailedWithContentPresenter
       ...filteredBlog,
       id: input.publicId,
       editorialStatus: input.editorialStatus,
-      bannerImage: buildBlogBannerUrl(input.bannerImage),
+      bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,
       subCategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       content: input.content,

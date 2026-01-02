@@ -4,6 +4,7 @@ import type {
 } from '@custom-types/use-cases/user/get-all-users-detailed'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -16,6 +17,12 @@ export class GetAllUsersDetailedUseCase {
   async execute(getAllUsersUseCaseInput: GetAllUsersDetailedUseCaseRequest): Promise<GetAllUsersCaseResponse> {
     const usersInfo = await this.usersRepository.listAllUsersDetailed(getAllUsersUseCaseInput)
 
-    return usersInfo as GetAllUsersCaseResponse
+    return {
+      ...usersInfo,
+      data: usersInfo.data.map((user) => ({
+        ...user,
+        profileImage: buildUserProfileImageUrl(user.profileImage),
+      })),
+    }
   }
 }

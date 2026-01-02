@@ -2,6 +2,7 @@ import type { FastifyMultipartOptions } from '@fastify/multipart'
 import {
   MAX_BLOG_BANNER_FILE_SIZE_BYTES,
   MAX_BLOG_IMAGE_FILE_SIZE_BYTES,
+  MAX_DIRECTOR_BOARD_PROFILE_IMAGE_FILE_SIZE_BYTES,
   MAX_DOCUMENT_FILE_SIZE_BYTES,
   MAX_MEETING_AGENDA_FILE_SIZE_BYTES,
   MAX_MEETING_BANNER_IMAGE_FILE_SIZE_BYTES,
@@ -22,9 +23,15 @@ export const electionNoticeMultipartFileConfig = {
   },
 } satisfies FastifyMultipartOptions
 
-export const profilePictureFileConfig = {
+export const userProfilePictureFileConfig = {
   limits: {
-    fileSize: MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, // 15mb
+    fileSize: MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, // 5mb
+  },
+} satisfies FastifyMultipartOptions
+
+export const directorBoardProfilePictureFileConfig = {
+  limits: {
+    fileSize: MAX_DIRECTOR_BOARD_PROFILE_IMAGE_FILE_SIZE_BYTES, // 15mb
   },
 } satisfies FastifyMultipartOptions
 

@@ -12,6 +12,7 @@ import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
 import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -177,6 +178,11 @@ export class UpdateUserUseCase {
 
     logger.info({ publicId }, USER_UPDATE_SUCCESSFUL)
 
-    return { user: updatedUser }
+    return {
+      user: {
+        ...updatedUser,
+        profileImage: buildUserProfileImageUrl(updatedUser.profileImage),
+      },
+    }
   }
 }

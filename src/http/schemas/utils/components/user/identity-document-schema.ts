@@ -8,8 +8,8 @@ import {
 import { IdentityType } from '@prisma/client'
 import { cpf } from 'cpf-cnpj-validator'
 import z from 'zod'
-import { upperCaseTextSchema } from '../primitives/uppercase-text-schema'
-import { uppercaseTextWithoutInnerSpacesSchema } from '../primitives/uppercase-text-without-inner-spaces-schema'
+import { upperCaseTextSchema } from '../../primitives/uppercase-text-schema'
+import { uppercaseTextWithoutInnerSpacesSchema } from '../../primitives/uppercase-text-without-inner-spaces-schema'
 
 const cpfIdentityDocumentSchema = z.preprocess(
   (data) => (typeof data === 'string' ? cpf.strip(data) : data),

@@ -1,5 +1,6 @@
 import type { AcademicPublicationSimplifiedRaw } from '@custom-types/adapter/academic-publication-simplified'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/academic-publication/list-all-academic-publications-query'
+import type { UpdateAcademicPublicationQuery } from '@custom-types/repository/academic-publication/update-academic-publication-query'
 import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
@@ -117,7 +118,7 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
     await this.dbContext.client.academicPublication.delete({ where: { id } })
   }
 
-  async update(id: number, data: Prisma.AcademicPublicationUpdateInput) {
+  async update({ id, data }: UpdateAcademicPublicationQuery) {
     const academicPublication = await this.dbContext.client.academicPublication.update({
       where: { id },
       data,

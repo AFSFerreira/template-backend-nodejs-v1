@@ -4,6 +4,7 @@ import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schem
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { userRoleEnumSchema } from '@schemas/utils/enums/user-role-enum-schema'
 import { membershipStatusArraySchema } from '@schemas/utils/generic-components/membership-status-array-schema'
+import { userRoleArraySchema } from '@schemas/utils/generic-components/user-role-array-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
@@ -23,7 +24,7 @@ const getAllUsersDetailedQueryRawSchema = z
     username: usernameSchema,
     membershipStatus: membershipStatusArraySchema,
     departmentName: upperCaseTextSchema,
-    role: userRoleEnumSchema,
+    role: z.union([userRoleEnumSchema.transform((data) => [data]), userRoleArraySchema]),
     receiveReports: booleanSchema,
     mainActivityArea: upperCaseTextSchema,
     subActivityArea: upperCaseTextSchema,
@@ -51,6 +52,7 @@ const getAllUsersDetailedQueryRawSchema = z
 export const getAllUsersDetailedQuerySchema = z.preprocess(
   (query: Record<string, unknown>) => ({
     ...query,
+    role: query.role ?? undefined,
     birthdate: query.birthdate
       ? {
           date: query.birthdate,

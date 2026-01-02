@@ -3,7 +3,6 @@ import type { HTTPMeeting } from '@custom-types/presenter/meeting/meeting-defaul
 import type { Meeting } from '@prisma/client'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
 @RegisterPresenter(tokens.presenters.meetingDefault)
 export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTPMeeting> {
@@ -14,7 +13,7 @@ export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTP
       ...filteredInfo,
       id: publicId,
       title: input.title,
-      bannerImage: buildMeetingBannerUrl(input.bannerImage),
+      bannerImage: input.bannerImage,
       description: input.description,
       lastDate: input.lastDate,
     }

@@ -4,4 +4,5 @@ import type { DirectorBoardWithUser } from '@custom-types/validators/director-bo
 
 export interface GetAllDirectorBoardUseCaseRequest extends GetAllDirectorBoardSchemaType {}
 
-export interface GetAllDirectorBoardUseCaseResponse extends PaginatedResult<DirectorBoardWithUser[]> {}
+export interface GetAllDirectorBoardUseCaseResponse
+  extends PaginatedResult<Array<Omit<DirectorBoardWithUser, 'aboutMe'> & { aboutMe: string }>> {}

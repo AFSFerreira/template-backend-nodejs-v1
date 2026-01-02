@@ -1,3 +1,4 @@
+import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type {
   EducationLevelType,
   IdentityType,
@@ -5,6 +6,12 @@ import type {
   OccupationType,
   UserRoleType,
 } from '@prisma/client'
+
+export interface UserDetailedPresenterForAdminInput extends Omit<UserWithDetails, 'DirectorBoard'> {
+  DirectorBoard?: Omit<NonNullable<UserWithDetails['DirectorBoard']>, 'aboutMe'> & {
+    aboutMe: string
+  }
+}
 
 interface HTTPUserDetails {
   id: string

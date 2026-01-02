@@ -1,4 +1,5 @@
 import type { ListAllSliderImagesQuery } from '@custom-types/repository/slider-image/list-all-slider-images-query'
+import type { UpdateSliderImageQuery } from '@custom-types/repository/slider-image/update-slider-image-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
@@ -130,7 +131,7 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     }
   }
 
-  async update(id: number, data: Prisma.SliderImageUpdateInput) {
+  async update({ id, data }: UpdateSliderImageQuery) {
     const sliderImage = await this.dbContext.client.sliderImage.update({
       where: { id },
       data,

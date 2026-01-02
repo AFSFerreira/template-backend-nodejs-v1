@@ -12,6 +12,7 @@ import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,
 } from '@services/builders/paths/build-newsletter-html-path'
+import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { persistFile } from '@services/files/persist-file'
 import { deleteFile } from '@utils/files/delete-file'
 import { ensureNotExists } from '@utils/validators/ensure'
@@ -68,7 +69,12 @@ export class CreateNewsletterUseCase {
         NEWSLETTER_CREATED_SUCCESSFULLY,
       )
 
-      return { newsletter }
+      return {
+        newsletter: {
+          ...newsletter,
+          content: buildNewsletterHtmlUrl(newsletter.content),
+        },
+      }
     } catch (error) {
       logError({ error, message: NEWSLETTER_CREATION_ERROR })
 

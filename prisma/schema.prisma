@@ -223,15 +223,17 @@ model Keyword {
 }
 
 model DirectorBoard {
-  id                        Int              @id @default(autoincrement())
-  directorPositionId        Int              @unique @map("director_position_id")
-  directorBoardProfileImage String           @map("director_board_profile_image")
-  aboutMe                   String           @map("about_me")
-  createdAt                 DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt                 DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  userId                    Int              @unique @map("user_id")
-  DirectorPosition          DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction)
-  User                      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                 Int              @id @default(autoincrement())
+  publicId           String           @unique @default(uuid(7)) @map("public_id")
+  directorPositionId Int              @unique @map("director_position_id")
+  publicName         String           @map("public_name")
+  profileImage       String           @map("profile_image")
+  aboutMe            Json             @map("about_me") @db.Json
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
+  userId             Int              @unique @map("user_id")
+  DirectorPosition   DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction)
+  User               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("directors_board")
@@ -242,6 +244,7 @@ model DirectorPosition {
   publicId      String         @unique @default(uuid(7)) @map("public_id")
   position      String         @unique
   precedence    Int
+  description   String?
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   DirectorBoard DirectorBoard?
 
@@ -268,7 +271,7 @@ model MeetingPaymentInfo {
   limitDate     DateTime    @map("limit_date") @db.Date
   createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
-  paymentInfoId Int         @map("payment_info_id") @default(1)
+  paymentInfoId Int         @default(1) @map("payment_info_id")
   meetingId     Int         @unique @map("meeting_id")
   Meeting       Meeting     @relation(fields: [meetingId], references: [id], onDelete: Cascade)
   PaymentInfo   PaymentInfo @relation(fields: [paymentInfoId], references: [id])
@@ -467,16 +470,6 @@ model SliderImage {
   @@map("slider_images")
 }
 
-view meeting_attendee {
-  id          String            @unique
-  meetingId   Int
-  name        String
-  email       String
-  institution String?
-  type        MeetingMemberType
-  createdAt   DateTime          @db.Timestamptz(3)
-}
-
 enum UserRoleType {
   ADMIN
   MANAGER
@@ -549,8 +542,3 @@ enum EditorialStatusType {
 // enum SliderPageType {
 //   HOME
 // }
-
-enum MeetingMemberType {
-  GUEST
-  MEMBER
-}

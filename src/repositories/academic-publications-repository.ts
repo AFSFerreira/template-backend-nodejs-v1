@@ -1,6 +1,7 @@
 import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/adapter/academic-publication-simplified'
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/academic-publication/list-all-academic-publications-query'
+import type { UpdateAcademicPublicationQuery } from '@custom-types/repository/academic-publication/update-academic-publication-query'
 import type { AcademicPublication, Prisma } from '@prisma/client'
 
 export interface AcademicPublicationsRepository {
@@ -12,5 +13,5 @@ export interface AcademicPublicationsRepository {
     query?: ListAllAcademicPublicationsQuery,
   ) => Promise<PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]>>
   delete: (id: number) => Promise<void>
-  update: (id: number, data: Prisma.AcademicPublicationUpdateInput) => Promise<AcademicPublication>
+  update: (query: UpdateAcademicPublicationQuery) => Promise<AcademicPublication>
 }

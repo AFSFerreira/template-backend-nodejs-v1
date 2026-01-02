@@ -1,3 +1,4 @@
+import type { UpdateAddressQuery } from '@custom-types/repository/address/update-address-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { AddressesRepository } from '../addresses-repository'
@@ -26,7 +27,7 @@ export class PrismaAddressesRepository implements AddressesRepository {
     })
   }
 
-  async update(id: number, data: Prisma.AddressUpdateInput) {
+  async update({ id, data }: UpdateAddressQuery) {
     const address = await this.dbContext.client.address.update({
       where: { id },
       data,

@@ -8,6 +8,7 @@ import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_POSITION_CREATED_SUCCESSFULLY } from '@messages/loggings/director-position-loggings'
 import { DirectorPositionAlreadyExistsError } from '@use-cases/errors/director-position/director-position-already-exists-error'
+import { ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -20,26 +21,23 @@ export class CreateDirectorPositionUseCase {
     private readonly dbContext: DatabaseContext,
   ) {}
 
-  async execute({
-    position,
-    precedence,
-  }: CreateDirectorPositionUseCaseRequest): Promise<CreateDirectorPositionUseCaseResponse> {
-    const directorPosition = await this.dbContext.runInTransaction(async () => {
-      const existingPosition = await this.directorPositionsRepository.findUniqueBy({ position })
-
-      if (existingPosition) {
-        throw new DirectorPositionAlreadyExistsError()
-      }
-
-      const createdPosition = await this.directorPositionsRepository.create({
-        position,
-        precedence,
+  async execute(
+    createDirectorPositionUsecaseInput: CreateDirectorPositionUseCaseRequest,
+  ): Promise<CreateDirectorPositionUseCaseResponse> {
+    const { directorPosition } = await this.dbContext.runInTransaction(async () => {
+      ensureNotExists({
+        value: await this.directorPositionsRepository.findUniqueBy({
+          position: createDirectorPositionUsecaseInput.position,
+        }),
+        error: new DirectorPositionAlreadyExistsError(),
       })
 
-      return createdPosition
+      const createdPosition = await this.directorPositionsRepository.create(createDirectorPositionUsecaseInput)
+
+      return { directorPosition: createdPosition }
     })
 
-    logger.info({ position, precedence }, DIRECTOR_POSITION_CREATED_SUCCESSFULLY)
+    logger.info(createDirectorPositionUsecaseInput, DIRECTOR_POSITION_CREATED_SUCCESSFULLY)
 
     return { directorPosition }
   }

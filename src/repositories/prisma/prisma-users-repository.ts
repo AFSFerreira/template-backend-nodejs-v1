@@ -249,6 +249,7 @@ export class PrismaUsersRepository implements UsersRepository {
         select: {
           id: true,
           publicId: true,
+          profileImage: true,
           fullName: true,
           email: true,
           emailIsPublic: true,
@@ -262,6 +263,7 @@ export class PrismaUsersRepository implements UsersRepository {
         id: userInfo.id,
         publicId: userInfo.publicId,
         fullName: userInfo.fullName,
+        profileImage: userInfo.profileImage,
         email: userInfo.email,
         emailIsPublic: userInfo.emailIsPublic,
         institutionName: userInfo.Institution?.name,
@@ -310,6 +312,7 @@ export class PrismaUsersRepository implements UsersRepository {
           publicId: true,
           fullName: true,
           email: true,
+          profileImage: true,
           emailIsPublic: true,
           Address: {
             select: { State: { select: { name: true } } },
@@ -325,6 +328,7 @@ export class PrismaUsersRepository implements UsersRepository {
         id: userInfo.id,
         publicId: userInfo.publicId,
         fullName: userInfo.fullName,
+        profileImage: userInfo.profileImage,
         email: userInfo.email,
         emailIsPublic: userInfo.emailIsPublic,
         institutionName: userInfo.Institution?.name,

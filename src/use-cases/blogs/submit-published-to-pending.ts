@@ -9,6 +9,7 @@ import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_SUBMITTED_PUBLISHED_TO_REVIEW } from '@messages/loggings/blog-loggings'
 import { EditorialStatusType } from '@prisma/client'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { BlogNotInPublishedStatusError } from '@use-cases/errors/blog/blog-not-in-published-status-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -64,6 +65,11 @@ export class SubmitPublishedToPendingUseCase {
       BLOG_SUBMITTED_PUBLISHED_TO_REVIEW,
     )
 
-    return { blog }
+    return {
+      blog: {
+        ...blog,
+        bannerImage: buildBlogBannerUrl(blog.bannerImage),
+      },
+    }
   }
 }

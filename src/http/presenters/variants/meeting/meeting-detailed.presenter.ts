@@ -3,7 +3,6 @@ import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/mee
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
 @RegisterPresenter(tokens.presenters.meetingDetailed)
 export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithDetails, HTTPMeetingWithDetails> {
@@ -11,7 +10,7 @@ export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithD
     return {
       id: input.publicId,
       title: input.title,
-      bannerImage: buildMeetingBannerUrl(input.bannerImage),
+      bannerImage: input.bannerImage,
       description: input.description,
       location: input.location,
       lastDate: input.lastDate,

@@ -13,7 +13,9 @@ export async function createDirectorPosition(request: FastifyRequest, reply: Fas
 
   const { directorPosition } = await useCase.execute(parsedBody)
 
+  const formattedReply = DirectorPositionPresenter.toHTTP<DirectorPosition, HTTPDirectorPosition>(directorPosition)
+
   return await reply.status(201).send({
-    directorPosition: DirectorPositionPresenter.toHTTP<DirectorPosition, HTTPDirectorPosition>(directorPosition),
+    directorPosition: formattedReply,
   })
 }

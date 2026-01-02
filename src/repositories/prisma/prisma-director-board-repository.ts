@@ -18,14 +18,48 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   ) {}
 
   async create(data: CreateDirectorBoardQuery) {
-    return await this.dbContext.client.directorBoard.create({
+    const { userId, directorPositionId, ...filteredInfo } = data
+
+    const directorBoard = await this.dbContext.client.directorBoard.create({
       data: {
-        User: { connect: { id: data.userId } },
-        DirectorPosition: { connect: { id: data.directorPositionId } },
-        aboutMe: '',
-        directorBoardProfileImage: data.directorBoardProfileImage,
+        ...filteredInfo,
+        DirectorPosition: {
+          connect: {
+            id: directorPositionId,
+          },
+        },
+        User: {
+          connect: {
+            id: userId,
+          },
+        },
       },
+      include: directorBoardWithUser.include,
     })
+
+    return directorBoard
+  }
+
+  async findByUserId(userId: number) {
+    const directorPosition = await this.dbContext.client.directorBoard.findUnique({
+      where: { userId },
+    })
+    return directorPosition
+  }
+
+  async findByDirectorPositionId(directorPositionId: number) {
+    const directorPosition = await this.dbContext.client.directorBoard.findUnique({
+      where: { directorPositionId },
+    })
+    return directorPosition
+  }
+
+  async findByPublicId(publicId: string) {
+    const directorBoard = await this.dbContext.client.directorBoard.findUnique({
+      where: { publicId },
+      include: directorBoardWithUser.include,
+    })
+    return directorBoard
   }
 
   async deleteByUserId(userId: number) {

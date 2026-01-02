@@ -1,14 +1,12 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
-import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/presenter/user/user-detailed'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(tokens.presenters.userDetailed)
-export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetails> {
-  public toHTTP(input: UserWithDetails): HTTPUserWithDetails {
+export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPresenterInput, HTTPUserWithDetails> {
+  public toHTTP(input: UserDetailedPresenterInput): HTTPUserWithDetails {
     const {
       id,
       passwordHash,
@@ -39,7 +37,7 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails
     return {
       ...filteredUser,
       id: input.publicId,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: input.profileImage,
       birthdate: truncateDate(input.birthdate),
 
       institutionName: input.Institution?.name,
@@ -92,7 +90,7 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserWithDetails
         ? {
             linkLattes: input.linkLattes,
             name: input.fullName,
-            directorBoardProfileImage: input.DirectorBoard.directorBoardProfileImage,
+            profileImage: input.DirectorBoard.profileImage,
             aboutMe: input.DirectorBoard.aboutMe,
             position: input.DirectorBoard.DirectorPosition.position,
           }

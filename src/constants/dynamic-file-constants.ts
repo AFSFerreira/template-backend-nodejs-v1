@@ -23,19 +23,19 @@ export const REGISTER_TEMP_PROFILE_IMAGES_PATH = path.resolve(
 )
 
 // Caminhos relativos de imagens de blogs:
-export const BLOG_TEMP_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'blog', 'images')
 export const BLOG_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'blog', 'images')
+export const BLOG_TEMP_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'blog', 'images')
 
 // Caminhos relativos de banners de blogs:
 export const BLOG_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'blog', 'banners')
 export const BLOG_TEMP_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'blog', 'banners')
 
 // Caminhos relativos de banners de reuniões:
-export const MEETING_TEMP_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'meeting', 'banners')
 export const MEETING_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'meeting', 'banners')
+export const MEETING_TEMP_BANNERS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'meeting', 'banners')
 
-export const MEETING_TEMP_AGENDAS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'meeting', 'agendas')
 export const MEETING_AGENDAS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'meeting', 'agendas')
+export const MEETING_TEMP_AGENDAS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'meeting', 'agendas')
 
 // Caminhos relativos de documentos:
 export const PUBLIC_DOCUMENTS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'documents', 'public')
@@ -43,12 +43,19 @@ export const PUBLIC_DOCUMENTS_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 
 // Caminhos relativos de sliders:
 export const SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'slider-image')
 export const HOME_PAGE_SLIDER_IMAGES_PATH = path.resolve(SLIDER_IMAGES_PATH, 'home-page')
-export const TEMP_SLIDER_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'slider-image')
+export const SLIDER_TEMP_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'slider-image')
 
 // Caminhos relativos de imagens de perfil do corpo diretivo:
 export const DIRECTOR_BOARD_PROFILE_IMAGES_PATH = path.resolve(
   BASE_PROJECT_PATH,
   'uploads',
+  'director-board',
+  'profile-images',
+)
+export const DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH = path.resolve(
+  BASE_PROJECT_PATH,
+  'uploads',
+  'temp',
   'director-board',
   'profile-images',
 )
@@ -78,8 +85,9 @@ const verifiedPaths = [
   PUBLIC_DOCUMENTS_PATH,
   SLIDER_IMAGES_PATH,
   HOME_PAGE_SLIDER_IMAGES_PATH,
-  TEMP_SLIDER_IMAGES_PATH,
+  SLIDER_TEMP_IMAGES_PATH,
   DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
+  DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH,
   NEWSLETTER_HTML_PATH,
   NEWSLETTER_TEMP_HTML_PATH,
 ].map((path) => ({ path, exists: fileExistsSync(path) }))

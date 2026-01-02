@@ -15,6 +15,7 @@ import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
@@ -240,6 +241,11 @@ export class UpdateBlogUseCase {
       BLOG_UPDATED_SUCCESSFULLY,
     )
 
-    return { blog }
+    return {
+      blog: {
+        ...blog,
+        bannerImage: buildBlogBannerUrl(blog.bannerImage),
+      },
+    }
   }
 }

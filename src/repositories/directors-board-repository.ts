@@ -6,6 +6,9 @@ import type { DirectorBoard } from '@prisma/client'
 
 export interface DirectorBoardRepository {
   create: (data: CreateDirectorBoardQuery) => Promise<DirectorBoard>
+  findByUserId: (userId: number) => Promise<DirectorBoard | null>
+  findByDirectorPositionId: (directorPositionId: number) => Promise<DirectorBoard | null>
+  findByPublicId: (publicId: string) => Promise<DirectorBoardWithUser | null>
   deleteByUserId: (userId: number) => Promise<void>
   listAllDirectorBoardMembers: (
     query?: listAllDirectorBoardMembers,

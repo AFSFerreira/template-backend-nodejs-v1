@@ -3,7 +3,6 @@ import type { HTTPUser } from '@custom-types/presenter/user/user-default'
 import type { User } from '@prisma/client'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(tokens.presenters.userDefault)
@@ -25,7 +24,7 @@ export class UserDefaultPresenter implements IPresenterStrategy<User, HTTPUser> 
     return {
       ...filteredUser,
       id: input.publicId,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: input.profileImage,
       birthdate: truncateDate(input.birthdate),
     }
   }

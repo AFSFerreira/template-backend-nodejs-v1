@@ -1,3 +1,4 @@
+import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/enrolled-course/update-enrolled-course-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { EnrolledCoursesRepository } from '../enrolled-courses-repository'
@@ -26,7 +27,7 @@ export class PrismaEnrolledCoursesRepository implements EnrolledCoursesRepositor
     await this.dbContext.client.enrolledCourse.delete({ where: { id } })
   }
 
-  async update(id: number, data: Prisma.EnrolledCourseUpdateInput) {
+  async update({ id, data }: UpdateEnrolledCourseQuery) {
     const enrolledCourse = await this.dbContext.client.enrolledCourse.update({
       where: { id },
       data,

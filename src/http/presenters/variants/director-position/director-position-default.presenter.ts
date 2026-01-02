@@ -8,8 +8,9 @@ import { RegisterPresenter } from '@presenters/presenter-registry'
 export class DirectorPositionDefaultPresenter implements IPresenterStrategy<DirectorPosition, HTTPDirectorPosition> {
   public toHTTP(input: DirectorPosition): HTTPDirectorPosition {
     return {
-      publicId: input.publicId,
+      id: input.publicId,
       position: input.position,
+      description: input.description,
       precedence: input.precedence,
     }
   }

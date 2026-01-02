@@ -6,6 +6,7 @@ import { logger } from '@lib/logger'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/user-loggings'
 import { MembershipStatusType } from '@prisma/client'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
 import { compare } from 'bcryptjs'
@@ -92,6 +93,11 @@ export class AuthenticateUseCase {
 
     logger.info(AUTHENTICATION_SUCCESSFUL)
 
-    return { user: authenticatedUser }
+    return {
+      user: {
+        ...authenticatedUser,
+        profileImage: buildUserProfileImageUrl(authenticatedUser.profileImage),
+      },
+    }
   }
 }

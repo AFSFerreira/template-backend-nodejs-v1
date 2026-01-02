@@ -1,5 +1,6 @@
 export interface HTTPDirectorPosition {
-  publicId: string
+  id: string
   position: string
   precedence: number
+  description: string | null
 }

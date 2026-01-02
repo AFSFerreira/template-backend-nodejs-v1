@@ -4,6 +4,7 @@ import type {
 } from '@custom-types/use-cases/slider-image/get-all-home-page-sliders-restrict'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -18,6 +19,12 @@ export class GetAllHomePageSlidersRestrictUseCase {
   ): Promise<GetAllHomePageSlidersRestrictUseCaseResponse> {
     const sliderImagesInfo = await this.sliderImagesRepository.listAll(query)
 
-    return sliderImagesInfo
+    return {
+      ...sliderImagesInfo,
+      data: sliderImagesInfo.data.map((slider) => ({
+        ...slider,
+        image: buildSliderImageUrl(slider.image, 'home-page'),
+      })),
+    }
   }
 }

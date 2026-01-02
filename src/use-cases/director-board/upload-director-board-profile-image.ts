@@ -1,0 +1,39 @@
+import type {
+  UploadDirectorBoardProfileImageUseCaseRequest,
+  UploadDirectorBoardProfileImageUseCaseResponse,
+} from '@custom-types/use-cases/director-board/upload-director-board-profile-image'
+import { DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
+import { buildTempDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
+import { saveAvifImage } from '@services/files/save-avif-image'
+import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
+import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
+import { injectable } from 'tsyringe'
+
+@injectable()
+export class UploadDirectorBoardProfileImageUseCase {
+  async execute({
+    filePart,
+  }: UploadDirectorBoardProfileImageUseCaseRequest): Promise<UploadDirectorBoardProfileImageUseCaseResponse> {
+    if (!filePart) {
+      throw new MissingMultipartContentFile()
+    }
+
+    // Verificação preventiva:
+    if (filePart.file.truncated) {
+      throw new ImageTooBigError()
+    }
+
+    const { filename, success } = await saveAvifImage({
+      filePart: filePart,
+      folderPath: DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH,
+    })
+
+    if (!success || filePart.file.truncated) {
+      throw new ImageTooBigError()
+    }
+
+    const publicUrl = buildTempDirectorBoardProfileImageUrl(filename)
+
+    return { filename, publicUrl }
+  }
+}

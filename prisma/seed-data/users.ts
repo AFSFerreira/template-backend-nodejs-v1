@@ -5,15 +5,6 @@ import { hashSync } from 'bcryptjs'
 import { env } from '../../src/env/index'
 import { academicPublicationsCreateUserDataArray1 } from './academic-publications'
 import { activityAreaData1, subActivityAreaData1 } from './activity-areas'
-import {
-  directorBoardCreateNestedUserData1,
-  directorBoardCreateNestedUserData2,
-  directorBoardCreateNestedUserData3,
-  directorBoardCreateNestedUserData4,
-  directorBoardCreateNestedUserData5,
-  directorBoardCreateNestedUserData6,
-  directorBoardCreateNestedUserData7,
-} from './directors-board'
 import { enrolledCourseNestedUserData1 } from './enrolled-courses'
 import { institutionData1 } from './institutions'
 import { keywordsConnectOrCreateUserData1 } from './keywords'
@@ -84,7 +75,7 @@ const adminUserData1: Prisma.UserCreateInput = {
   role: UserRoleType.ADMIN,
 }
 
-const managerUserData1: Prisma.UserCreateInput = {
+export const managerUserData1: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/1918385364299862',
   fullName: 'Gustavo Porto de Mello',
@@ -93,11 +84,9 @@ const managerUserData1: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-01',
   role: UserRoleType.MANAGER,
-
-  DirectorBoard: directorBoardCreateNestedUserData1,
 }
 
-const managerUserData2: Prisma.UserCreateInput = {
+export const managerUserData2: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/9117662545474146',
   fullName: 'Douglas Galante',
@@ -106,11 +95,9 @@ const managerUserData2: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-02',
   role: UserRoleType.MANAGER,
-
-  DirectorBoard: directorBoardCreateNestedUserData2,
 }
 
-const managerUserData3: Prisma.UserCreateInput = {
+export const managerUserData3: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/5093103617210826',
   fullName: 'Beatriz Siffert',
@@ -119,11 +106,9 @@ const managerUserData3: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-03',
   role: UserRoleType.MANAGER,
-
-  DirectorBoard: directorBoardCreateNestedUserData3,
 }
 
-const managerUserData4: Prisma.UserCreateInput = {
+export const managerUserData4: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/7450204581620194',
   fullName: 'Amanda Bendia',
@@ -132,11 +117,9 @@ const managerUserData4: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-04',
   role: UserRoleType.MANAGER,
-
-  DirectorBoard: directorBoardCreateNestedUserData4,
 }
 
-const managerUserData5: Prisma.UserCreateInput = {
+export const managerUserData5: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/5822376591265210',
   fullName: 'Fábio Rodrigues',
@@ -145,11 +128,9 @@ const managerUserData5: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-05',
   role: UserRoleType.MANAGER,
-
-  DirectorBoard: directorBoardCreateNestedUserData5,
 }
 
-const managerUserData6: Prisma.UserCreateInput = {
+export const managerUserData6: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/1704175571734114',
   fullName: 'Flávia Callefo',
@@ -158,11 +139,9 @@ const managerUserData6: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-06',
   role: UserRoleType.MANAGER,
-
-  DirectorBoard: directorBoardCreateNestedUserData6,
 }
 
-const managerUserData7: Prisma.UserCreateInput = {
+export const managerUserData7: Prisma.UserCreateInput = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/4916914753471904',
   fullName: 'Claudia Lage',
@@ -171,8 +150,17 @@ const managerUserData7: Prisma.UserCreateInput = {
   identityType: IdentityType.CPF,
   identityDocument: '123.456.789-07',
   role: UserRoleType.MANAGER,
+}
 
-  DirectorBoard: directorBoardCreateNestedUserData7,
+export const managerUserData8: Prisma.UserCreateInput = {
+  ...partialUserData1,
+  linkLattes: 'http://lattes.cnpq.br/123456789',
+  fullName: 'Dummy Manager',
+  email: 'dummy-manager@email.com',
+  username: 'dummy.manager',
+  identityType: IdentityType.CPF,
+  identityDocument: '123.456.789-08',
+  role: UserRoleType.MANAGER,
 }
 
 export const contentLeaderUserData1: Prisma.UserCreateInput = {
@@ -182,7 +170,7 @@ export const contentLeaderUserData1: Prisma.UserCreateInput = {
   email: 'danilo@gmail.com',
   username: 'danilo.albergaria',
   identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-08',
+  identityDocument: '123.456.789-09',
   role: UserRoleType.CONTENT_LEADER,
 }
 
@@ -193,7 +181,7 @@ export const contentProducerUserData1: Prisma.UserCreateInput = {
   email: 'allber@gmail.com',
   username: 'allber.ferreira',
   identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-09',
+  identityDocument: '123.456.789-10',
   role: UserRoleType.CONTENT_PRODUCER,
 }
 
@@ -206,6 +194,7 @@ export const usersDataArray1: Prisma.UserCreateInput[] = [
   managerUserData5,
   managerUserData6,
   managerUserData7,
+  managerUserData8,
   contentLeaderUserData1,
   contentProducerUserData1,
 ]

@@ -15,6 +15,7 @@ import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggin
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
@@ -149,7 +150,12 @@ export class CreateDraftBlogUseCase {
         BLOG_CREATED_SUCCESSFULLY,
       )
 
-      return { blog }
+      return {
+        blog: {
+          ...blog,
+          bannerImage: buildBlogBannerUrl(blog.bannerImage),
+        },
+      }
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 

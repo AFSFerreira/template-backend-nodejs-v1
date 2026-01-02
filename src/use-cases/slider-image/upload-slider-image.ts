@@ -2,7 +2,7 @@ import type {
   UploadSliderImageUseCaseRequest,
   UploadSliderImageUseCaseResponse,
 } from '@custom-types/use-cases/slider-image/upload-slider-image'
-import { TEMP_SLIDER_IMAGES_PATH } from '@constants/dynamic-file-constants'
+import { SLIDER_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { saveAvifImage } from '@services/files/save-avif-image'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
@@ -22,7 +22,7 @@ export class UploadSliderImageUseCase {
 
     const { filename, success } = await saveAvifImage({
       filePart: filePart,
-      folderPath: TEMP_SLIDER_IMAGES_PATH,
+      folderPath: SLIDER_TEMP_IMAGES_PATH,
       options: {
         dimensions: {
           aspectRatio: '21:9',

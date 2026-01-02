@@ -1,6 +1,9 @@
 import type { FlattenedUser } from '@custom-types/services/flatten-user'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { Keyword } from '@prisma/client'
+import type { JSONContent } from '@tiptap/core'
+import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
+import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 
 export function flattenUser(user: UserWithDetails): FlattenedUser {
   const flattenedUser: FlattenedUser = {
@@ -53,8 +56,13 @@ export function flattenUser(user: UserWithDetails): FlattenedUser {
     publications:
       user.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(' | ') ?? '',
 
-    directorBoardProfileImage: user.DirectorBoard?.directorBoardProfileImage ?? '',
-    aboutMe: user.DirectorBoard?.aboutMe ?? '',
+    directorBoardProfileImage: user.DirectorBoard?.profileImage ?? '',
+    aboutMe: user.DirectorBoard
+      ? (getProseMirrorText({
+          proseMirror: user.DirectorBoard.aboutMe as JSONContent,
+          tiptapConfiguration,
+        }) ?? '')
+      : '',
     directorPosition: user.DirectorBoard?.DirectorPosition?.position ?? '',
   }
 

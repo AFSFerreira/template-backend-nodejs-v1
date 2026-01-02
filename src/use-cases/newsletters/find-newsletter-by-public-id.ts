@@ -4,6 +4,7 @@ import type {
 } from '@custom-types/use-cases/newsletters/find-newsletter-by-public-id'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
@@ -23,6 +24,11 @@ export class FindNewsletterByPublicIdUseCase {
       error: new NewsletterNotFoundError(),
     })
 
-    return { newsletter }
+    return {
+      newsletter: {
+        ...newsletter,
+        content: buildNewsletterHtmlUrl(newsletter.content),
+      },
+    }
   }
 }

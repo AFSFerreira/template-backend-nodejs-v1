@@ -40,7 +40,8 @@ export function buildListAllUsersDetailedQuery(query: IBuildListAllUsersDetailed
   }
 
   if (query.role) {
-    conditions.push(Prisma.sql`u.role = ${query.role}::"UserRoleType"`)
+    const rolesSql = query.role.map((role) => Prisma.sql`u.role = ${role}::"UserRoleType"`)
+    conditions.push(Prisma.sql`(${Prisma.join(rolesSql, ' OR ')})`)
   }
 
   if (query.occupation) {
@@ -132,6 +133,7 @@ export function buildListAllUsersDetailedQuery(query: IBuildListAllUsersDetailed
       u.id,
       u.public_id,
       u.full_name,
+      u.profile_image,
       u.email,
       u.email_is_public,
       ast.name as state,

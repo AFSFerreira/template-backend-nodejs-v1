@@ -1,11 +1,11 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { profilePictureFileConfig } from '@constants/multipart-configuration-constants'
+import { userProfilePictureFileConfig } from '@constants/multipart-configuration-constants'
 import { imageSchema } from '@schemas/utils/generic-components/image-schema'
 import { UploadRegisterProfileImageUseCase } from '@use-cases/user/upload-register-profile-image'
 import { container } from 'tsyringe'
 
 export async function uploadRegisterProfileImage(request: FastifyRequest, reply: FastifyReply) {
-  const filePart = await request.file(profilePictureFileConfig)
+  const filePart = await request.file(userProfilePictureFileConfig)
 
   imageSchema.parse(filePart)
 

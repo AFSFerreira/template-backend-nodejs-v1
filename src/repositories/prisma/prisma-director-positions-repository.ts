@@ -1,4 +1,5 @@
 import type { ListAllDirectorPositionsQuery } from '@custom-types/repository/director-position/list-all-director-positions-query'
+import type { UpdateDirectorPositionQuery } from '@custom-types/repository/director-position/update-director-position-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
@@ -25,10 +26,20 @@ export class PrismaDirectorPositionsRepository implements DirectorPositionsRepos
   }
 
   async listAll(query?: ListAllDirectorPositionsQuery) {
+    const where: Prisma.DirectorPositionWhereInput = {
+      ...(query?.position
+        ? {
+            position: {
+              contains: query.position,
+              mode: 'insensitive',
+            },
+          }
+        : {}),
+    }
     const orderBy: Prisma.DirectorPositionOrderByWithRelationInput[] = [{ precedence: 'asc' }, { id: 'asc' }]
 
     if (!query) {
-      const directorPositions = await this.dbContext.client.directorPosition.findMany({ orderBy })
+      const directorPositions = await this.dbContext.client.directorPosition.findMany({ where, orderBy })
 
       return {
         data: directorPositions,
@@ -44,8 +55,9 @@ export class PrismaDirectorPositionsRepository implements DirectorPositionsRepos
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, directorPositions] = await Promise.all([
-      this.dbContext.client.directorPosition.count(),
+      this.dbContext.client.directorPosition.count({ where }),
       this.dbContext.client.directorPosition.findMany({
+        where,
         skip,
         take,
         orderBy,
@@ -72,5 +84,13 @@ export class PrismaDirectorPositionsRepository implements DirectorPositionsRepos
     await this.dbContext.client.directorPosition.delete({
       where: { id },
     })
+  }
+
+  async update({ id, data }: UpdateDirectorPositionQuery) {
+    const directorPosition = await this.dbContext.client.directorPosition.update({
+      where: { id },
+      data,
+    })
+    return directorPosition
   }
 }

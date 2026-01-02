@@ -1,14 +1,17 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPUserWithDetailsForAdmin } from '@custom-types/presenter/user/user-detailed-for-admin'
-import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import type {
+  HTTPUserWithDetailsForAdmin,
+  UserDetailedPresenterForAdminInput,
+} from '@custom-types/presenter/user/user-detailed-for-admin'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 @RegisterPresenter(tokens.presenters.userDetailedForAdmin)
-export class UserDetailedPresenterForAdmin implements IPresenterStrategy<UserWithDetails, HTTPUserWithDetailsForAdmin> {
-  public toHTTP(input: UserWithDetails): HTTPUserWithDetailsForAdmin {
+export class UserDetailedPresenterForAdmin
+  implements IPresenterStrategy<UserDetailedPresenterForAdminInput, HTTPUserWithDetailsForAdmin>
+{
+  public toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
     const {
       id,
       passwordHash,
@@ -37,7 +40,7 @@ export class UserDetailedPresenterForAdmin implements IPresenterStrategy<UserWit
     return {
       ...filteredUser,
       id: input.publicId,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: input.profileImage,
       interestDescription: input.interestDescription,
       birthdate: truncateDate(input.birthdate),
 
@@ -91,7 +94,7 @@ export class UserDetailedPresenterForAdmin implements IPresenterStrategy<UserWit
         ? {
             linkLattes: input.linkLattes,
             name: input.fullName,
-            directorBoardProfileImage: input.DirectorBoard.directorBoardProfileImage,
+            directorBoardProfileImage: input.DirectorBoard.profileImage,
             aboutMe: input.DirectorBoard.aboutMe,
             position: input.DirectorBoard.DirectorPosition.position,
           }

@@ -1,5 +1,6 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { ListAllSliderImagesQuery } from '@custom-types/repository/slider-image/list-all-slider-images-query'
+import type { UpdateSliderImageQuery } from '@custom-types/repository/slider-image/update-slider-image-query'
 import type { Prisma, SliderImage } from '@prisma/client'
 
 export interface SliderImagesRepository {
@@ -7,7 +8,7 @@ export interface SliderImagesRepository {
   findById: (id: number) => Promise<SliderImage | null>
   findByPublicId: (publicId: string) => Promise<SliderImage | null>
   totalCount: () => Promise<number>
-  update: (id: number, data: Prisma.SliderImageUpdateInput) => Promise<SliderImage>
+  update: (query: UpdateSliderImageQuery) => Promise<SliderImage>
   delete: (id: number) => Promise<void>
   listAll: (query?: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
   listActive: (query?: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>

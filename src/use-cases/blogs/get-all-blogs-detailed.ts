@@ -6,6 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -40,6 +41,12 @@ export class GetAllBlogsDetailedUseCase {
       return { blogsInfo }
     })
 
-    return blogsInfo
+    return {
+      ...blogsInfo,
+      data: blogsInfo.data.map((blog) => ({
+        ...blog,
+        bannerImage: buildBlogBannerUrl(blog.bannerImage),
+      })),
+    }
   }
 }

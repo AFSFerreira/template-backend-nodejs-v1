@@ -7,6 +7,7 @@ import { addressStatesDataArray1 } from './seed-data/address-states'
 import { partialAddressDataArray1 } from './seed-data/addresses'
 import { blogDataArray1 } from './seed-data/blogs'
 import { directorPositionsArray1 } from './seed-data/director-positions'
+import { directorBoardWithoutUserDataArray1 } from './seed-data/directors-board'
 import { institutionsDataArray1 } from './seed-data/institutions'
 import { meetingEnrollmentDataArray1 } from './seed-data/meeting-enrollments'
 import { meetingPresentationNestedMeetingEnrollmentDataArray1 } from './seed-data/meeting-presentations'
@@ -64,6 +65,11 @@ async function main() {
       update: {},
       create: {
         ...user,
+        DirectorBoard: {
+          create: directorBoardWithoutUserDataArray1.find(
+            (directorBoard) => directorBoard.publicName === user.fullName,
+          ),
+        },
         Address: {
           create: {
             ...getRandomArrayElement(partialAddressDataArray1),

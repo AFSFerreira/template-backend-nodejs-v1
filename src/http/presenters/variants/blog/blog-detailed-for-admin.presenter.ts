@@ -6,7 +6,6 @@ import type {
 } from '@custom-types/presenter/blog/blog-detailed-for-admin'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { RegisterPresenter } from '@presenters/presenter-registry'
-import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 @RegisterPresenter(tokens.presenters.blogDetailedForAdmin)
 export class BlogDetailedForAdminPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailedForAdmin> {
@@ -16,7 +15,7 @@ export class BlogDetailedForAdminPresenter implements IPresenterStrategy<BlogWit
       editorialStatus: input.editorialStatus,
       title: input.title,
       accessCount: input.accessCount,
-      bannerImage: buildBlogBannerUrl(input.bannerImage),
+      bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,
       subCategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       createdAt: input.createdAt,

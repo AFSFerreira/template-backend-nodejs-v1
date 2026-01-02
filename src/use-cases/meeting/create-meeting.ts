@@ -10,6 +10,7 @@ import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
+import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { persistFile } from '@services/files/persist-file'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
@@ -64,7 +65,12 @@ export class CreateMeetingUseCase {
 
       logger.info({ meetingId: meeting.publicId }, MEETING_CREATION_SUCCESSFUL)
 
-      return { meeting }
+      return {
+        meeting: {
+          ...meeting,
+          bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
+        },
+      }
     } catch (error) {
       logError({ error, message: MEETING_CREATION_ERROR })
 

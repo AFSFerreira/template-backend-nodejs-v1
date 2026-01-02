@@ -12,7 +12,7 @@
     "npm": "use-pnpm-please"
   },
   "scripts": {
-    "build": "run-s ci:generate tsup",
+    "build": "run-s ci:generate build:tsup",
     "presenters:generate": "tsx ./src/http/presenters/generate-imports.ts",
     "start:tsx:watch": "tsx watch --env-file=.env --no-deprecation src/server.ts",
     "start:dev": "run-s presenters:generate start:tsx:watch",

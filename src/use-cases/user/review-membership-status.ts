@@ -6,6 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/client'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
@@ -39,7 +40,7 @@ export class ReviewMembershipStatusUseCase {
         // TODO: Verificar se enviamos um email?
         await this.usersRepository.delete(user.id)
 
-        return null
+        return user
       }
 
       const updatedUser = await this.usersRepository.update({
@@ -52,6 +53,11 @@ export class ReviewMembershipStatusUseCase {
       return updatedUser
     })
 
-    return { user }
+    return {
+      user: {
+        ...user,
+        profileImage: buildUserProfileImageUrl(user.profileImage),
+      },
+    }
   }
 }

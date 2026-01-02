@@ -2,6 +2,7 @@ export interface UserWithSimplifiedDetailsRaw {
   id: number
   public_id: string
   full_name: string
+  profile_image: string
   email: string
   email_is_public: boolean
   state: string
@@ -13,6 +14,7 @@ export interface CustomUserWithSimplifiedDetails {
   publicId: string
   fullName: string
   email: string
+  profileImage: string
   emailIsPublic: boolean
   state?: string
   institutionName?: string

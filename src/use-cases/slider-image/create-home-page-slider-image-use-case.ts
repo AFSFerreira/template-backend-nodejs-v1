@@ -12,6 +12,7 @@ import {
   buildHomePageSliderImagePath,
   buildTempSliderImagePath,
 } from '@services/builders/paths/build-slider-image-path'
+import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 import { persistFile } from '@services/files/persist-file'
 import { HomePageSliderImagePersistError } from '@use-cases/errors/slider-image/home-page-slider-image-persist-error'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
@@ -57,7 +58,12 @@ export class CreateHomePageSliderImageUseCase {
         return { createdSliderImage }
       })
 
-      return { sliderImage: createdSliderImage }
+      return {
+        sliderImage: {
+          ...createdSliderImage,
+          image: buildSliderImageUrl(createdSliderImage.image, 'home-page'),
+        },
+      }
     } catch (error) {
       logError({ error, message: SLIDER_IMAGE_CREATION_ERROR })
 
