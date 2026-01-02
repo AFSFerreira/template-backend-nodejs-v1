@@ -79,7 +79,7 @@ interface HTTPAcademicPublications {
 }
 
 interface HTTPDirectorBoardInfo {
-  directorBoardProfileImage: string
+  profileImage: string
   name: string
   aboutMe: string
   position: string

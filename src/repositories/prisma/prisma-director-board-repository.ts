@@ -1,5 +1,6 @@
 import type { CreateDirectorBoardQuery } from '@custom-types/repository/director-board/create-director-board-query'
 import type { listAllDirectorBoardMembers } from '@custom-types/repository/director-board/list-all-director-board-members'
+import type { UpdateDirectorBoardQuery } from '@custom-types/repository/director-board/update-director-board-query'
 import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
@@ -40,6 +41,16 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
     return directorBoard
   }
 
+  async update({ id, data }: UpdateDirectorBoardQuery) {
+    const directorBoard = await this.dbContext.client.directorBoard.update({
+      where: { id },
+      data,
+      include: directorBoardWithUser.include,
+    })
+
+    return directorBoard
+  }
+
   async findByUserId(userId: number) {
     const directorPosition = await this.dbContext.client.directorBoard.findUnique({
       where: { userId },
@@ -60,6 +71,12 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
       include: directorBoardWithUser.include,
     })
     return directorBoard
+  }
+
+  async delete(id: number) {
+    await this.dbContext.client.directorBoard.delete({
+      where: { id },
+    })
   }
 
   async deleteByUserId(userId: number) {

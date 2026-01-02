@@ -1,8 +1,8 @@
+import type { DirectorBoardWithUserRefactored } from '@custom-types/custom/director-board-with-user-refactored'
 import type { CreateDirectorBoardBodySchemaType } from '@custom-types/schemas/director-board/create-director-board-body-schema'
-import type { DirectorBoard } from '@prisma/client'
 
 export interface CreateDirectorBoardUseCaseRequest extends CreateDirectorBoardBodySchemaType {}
 
 export interface CreateDirectorBoardUseCaseResponse {
-  directorBoard: DirectorBoard
+  directorBoard: DirectorBoardWithUserRefactored
 }

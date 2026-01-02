@@ -49,6 +49,7 @@ export const tokens = {
     // Director Board
     directorBoardDefault: 'director-board:default',
     directorBoardWithUser: 'director-board:with-user',
+    directorBoardWithUserForAdmin: 'director-board:with-user-admin',
 
     // Director Position
     directorPositionDefault: 'director-position:default',

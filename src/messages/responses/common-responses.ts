@@ -184,3 +184,11 @@ export const INVALID_PROSE_MIRROR_IMAGE_LINK: IApiError = {
     message: 'Um ou mais links de imagem no conteúdo são inválidos',
   },
 }
+
+export const INVALID_PROSE_MIRROR_CONTENT: IApiError = {
+  status: 400,
+  body: {
+    code: 'INVALID_PROSE_MIRROR_CONTENT',
+    message: 'O conteúdo fornecido não é um Prose Mirror válido',
+  },
+}

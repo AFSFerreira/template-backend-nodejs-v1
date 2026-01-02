@@ -194,7 +194,7 @@ CREATE TABLE "public"."directors_board" (
     "public_id" TEXT NOT NULL,
     "public_name" TEXT NOT NULL,
     "director_position_id" INTEGER NOT NULL,
-    "profile_image" TEXT NOT NULL,
+    "profile_image" TEXT,
     "about_me" JSON NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,

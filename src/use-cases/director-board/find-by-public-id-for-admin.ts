@@ -1,7 +1,7 @@
 import type {
-  FindDirectorBoardByPublicIdUseCaseRequest,
-  FindDirectorBoardByPublicIdUseCaseResponse,
-} from '@custom-types/use-cases/director-board/find-by-public-id'
+  FindDirectorBoardByPublicIdForAdminUseCaseRequest,
+  FindDirectorBoardByPublicIdForAdminUseCaseResponse,
+} from '@custom-types/use-cases/director-board/find-by-public-id-for-admin'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe'
 import { DirectorBoardNotFoundError } from '../errors/director-board/director-board-not-found-error'
 
 @injectable()
-export class FindDirectorBoardByPublicIdUseCase {
+export class FindDirectorBoardByPublicIdForAdminUseCase {
   constructor(
     @inject(tokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
@@ -19,7 +19,7 @@ export class FindDirectorBoardByPublicIdUseCase {
 
   async execute({
     publicId,
-  }: FindDirectorBoardByPublicIdUseCaseRequest): Promise<FindDirectorBoardByPublicIdUseCaseResponse> {
+  }: FindDirectorBoardByPublicIdForAdminUseCaseRequest): Promise<FindDirectorBoardByPublicIdForAdminUseCaseResponse> {
     const directorBoard = ensureExists({
       value: await this.directorBoardRepository.findByPublicId(publicId),
       error: new DirectorBoardNotFoundError(),

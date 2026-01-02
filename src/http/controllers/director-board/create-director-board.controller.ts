@@ -1,3 +1,7 @@
+import type {
+  DirectorBoardDefaultPresenterInput,
+  HTTPDirectorBoard,
+} from '@custom-types/presenter/director-board/director-board-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DirectorBoardPresenter } from '@presenters/variants/director-board-presenter'
 import { createDirectorBoardBodySchema } from '@schemas/director-board/create-director-board-body-schema'
@@ -11,7 +15,9 @@ export async function createDirectorBoard(request: FastifyRequest, reply: Fastif
 
   const { directorBoard } = await useCase.execute(parsedBody)
 
-  const formattedReply = DirectorBoardPresenter.toHTTP(directorBoard)
+  const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>(
+    directorBoard,
+  )
 
   return await reply.status(201).send({ data: formattedReply })
 }

@@ -227,7 +227,7 @@ model DirectorBoard {
   publicId           String           @unique @default(uuid(7)) @map("public_id")
   directorPositionId Int              @unique @map("director_position_id")
   publicName         String           @map("public_name")
-  profileImage       String           @map("profile_image")
+  profileImage       String?          @map("profile_image")
   aboutMe            Json             @map("about_me") @db.Json
   createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)

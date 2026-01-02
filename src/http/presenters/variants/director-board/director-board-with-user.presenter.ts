@@ -17,7 +17,6 @@ export class DirectorBoardWithUserPresenter
       profileImage: input.profileImage,
       position: input.DirectorPosition.position,
       linkLattes: input.User.linkLattes,
-      aboutMe: input.aboutMe,
     }
   }
 }

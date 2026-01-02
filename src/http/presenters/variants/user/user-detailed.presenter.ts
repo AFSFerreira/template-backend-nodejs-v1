@@ -90,7 +90,7 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPre
         ? {
             linkLattes: input.linkLattes,
             name: input.fullName,
-            profileImage: input.DirectorBoard.profileImage,
+            profileImage: input.DirectorBoard.profileImage ?? input.profileImage,
             aboutMe: input.DirectorBoard.aboutMe,
             position: input.DirectorBoard.DirectorPosition.position,
           }

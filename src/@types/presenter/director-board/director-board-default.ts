@@ -1,8 +1,6 @@
-import type { DirectorBoardWithUser } from '@custom-types/validators/director-board-with-user'
+import type { DirectorBoardWithUserRefactored } from '@custom-types/custom/director-board-with-user-refactored'
 
-export interface DirectorBoardDefaultPresenterInput extends Omit<DirectorBoardWithUser, 'aboutMe'> {
-  aboutMe: string
-}
+export interface DirectorBoardDefaultPresenterInput extends DirectorBoardWithUserRefactored {}
 
 export interface HTTPDirectorBoard {
   id: string
