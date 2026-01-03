@@ -23,7 +23,7 @@ export async function institutionalInfoRoutes(app: FastifyInstance) {
 
   // POST
   app.post(
-    '/uploads/temp-about-image',
+    '/uploads/about-image',
     {
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
     },
