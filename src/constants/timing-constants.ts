@@ -7,6 +7,8 @@ export const BLOG_HTML_CACHE_TTL = ms('3m')
 
 export const DIRECTOR_BOARD_HTML_CACHE_TTL = ms('3m')
 
+export const INSTITUTIONAL_INFO_HTML_CACHE_TTL = ms('3m')
+
 export const CORS_MAX_AGE = ms('2h') / 1000
 
 export const SMTP_CONNECTION_TIMEOUT = ms('10s')
