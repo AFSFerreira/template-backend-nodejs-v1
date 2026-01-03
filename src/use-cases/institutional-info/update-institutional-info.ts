@@ -23,6 +23,8 @@ import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-
 import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
+import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
+import { redis } from '@lib/redis'
 
 @injectable()
 export class UpdateInstitutionalInfoUseCase {
@@ -36,6 +38,17 @@ export class UpdateInstitutionalInfoUseCase {
 
   async execute({ data }: UpdateInstitutionalInfoUseCaseRequest): Promise<UpdateInstitutionalInfoUseCaseResponse> {
     const updateData: Prisma.InstitutionalInfoUpdateInput = {}
+
+    if (data.aboutDescription) {
+      // Tenta compilar o prose mirror para validar o formato:
+      try {
+        generateText(data.aboutDescription as JSONContent, tiptapConfiguration)
+      } catch (_error) {
+        throw new InvalidProseMirrorError()
+      }
+
+      updateData.aboutDescription = data.aboutDescription as Prisma.InputJsonValue
+    }
 
     try {
       if (data.aboutImage) {
@@ -56,17 +69,6 @@ export class UpdateInstitutionalInfoUseCase {
           error: new InstitutionalInfoNotFoundError(),
         })
 
-        if (data.aboutDescription) {
-          // Tenta compilar o prose mirror para validar o formato:
-          try {
-            generateText(data.aboutDescription as JSONContent, tiptapConfiguration)
-          } catch (_error) {
-            throw new InvalidProseMirrorError()
-          }
-
-          updateData.aboutDescription = data.aboutDescription as Prisma.InputJsonValue
-        }
-
         const shouldUpdate = Object.keys(updateData).length > 0
 
         const updatedInstitutionalInfo = shouldUpdate
@@ -78,6 +80,11 @@ export class UpdateInstitutionalInfoUseCase {
 
         return { institutionalInfo: updatedInstitutionalInfo }
       })
+
+      if (data.aboutDescription) {
+        // Remove a chave do cache:
+        await removeInstitutionalInfoHTMLCache({ institutionalInfoId: institutionalInfo.id, redis })
+      }
 
       return {
         institutionalInfo: {

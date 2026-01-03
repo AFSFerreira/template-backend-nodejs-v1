@@ -25,6 +25,12 @@ export class UploadInstitutionalAboutImageUseCase {
     const { filename, success } = await saveAvifImage({
       filePart,
       folderPath: INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
+      options: {
+        specs: {
+          chromaSubsampling: '4:4:4',
+          quality: 80,
+        }
+      }
     })
 
     if (!success || filePart.file.truncated) {
