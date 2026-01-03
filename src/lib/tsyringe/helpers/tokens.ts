@@ -54,6 +54,7 @@ export const tokens = {
 
     // Institutional Info
     institutionalInfoDefault: 'institutional-info:default',
+    institutionalInfoForAdmin: 'institutional-info:for-admin',
 
     // Director Position
     directorPositionDefault: 'director-position:default',
