@@ -7,6 +7,7 @@ export const tokens = {
     addresses: 'AddressesRepository',
     authenticationAudits: 'AuthenticationAuditsRepository',
     blogs: 'BlogsRepository',
+    institutionalInfo: 'InstitutionalInfoRepository',
     directorsBoard: 'DirectorsBoardRepository',
     directorPositions: 'DirectorPositionsRepository',
     enrolledCourses: 'EnrolledCoursesRepository',
@@ -50,6 +51,9 @@ export const tokens = {
     directorBoardDefault: 'director-board:default',
     directorBoardWithUser: 'director-board:with-user',
     directorBoardWithUserForAdmin: 'director-board:with-user-admin',
+
+    // Institutional Info
+    institutionalInfoDefault: 'institutional-info:default',
 
     // Director Position
     directorPositionDefault: 'director-position:default',

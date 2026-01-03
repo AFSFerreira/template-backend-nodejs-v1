@@ -375,11 +375,10 @@ CREATE TABLE "public"."institutional_info" (
     "id" SERIAL NOT NULL,
     "about_description" JSON NOT NULL,
     "about_image" TEXT NOT NULL,
-    "statute_file" TEXT DEFAULT 'estatuto.pdf',
-    "election_notice_file" TEXT DEFAULT 'edital-eleição.pdf',
+    "statute_file" TEXT NOT NULL DEFAULT 'estatuto.pdf',
+    "election_notice_file" TEXT NOT NULL DEFAULT 'edital-eleição.pdf',
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3),
-    "last_updated_by_id" INTEGER,
 
     CONSTRAINT "institutional_info_pkey" PRIMARY KEY ("id")
 );
@@ -657,9 +656,6 @@ ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_co
 
 -- AddForeignKey
 ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "institutional_info" ADD CONSTRAINT "institutional_info_last_updated_by_id_fkey" FOREIGN KEY ("last_updated_by_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "meeting_enrollments" ADD CONSTRAINT "meeting_enrollments_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

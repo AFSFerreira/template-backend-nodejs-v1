@@ -8,6 +8,7 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import type { EnrolledCoursesRepository } from '@repositories/enrolled-courses-repository'
+import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { KeywordsRepository } from '@repositories/keywords-repository'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
@@ -26,6 +27,7 @@ import { PrismaBlogsRepository } from '@repositories/prisma/prisma-blogs-reposit
 import { PrismaDirectorBoardRepository } from '@repositories/prisma/prisma-director-board-repository'
 import { PrismaDirectorPositionsRepository } from '@repositories/prisma/prisma-director-positions-repository'
 import { PrismaEnrolledCoursesRepository } from '@repositories/prisma/prisma-enrolled-courses-repository'
+import { PrismaInstitutionalInfoRepository } from '@repositories/prisma/prisma-institutional-info-repository'
 import { PrismaInstitutionsRepository } from '@repositories/prisma/prisma-institutions-repository'
 import { PrismaKeywordsRepository } from '@repositories/prisma/prisma-keywords-repository'
 import { PrismaMeetingEnrollmentsRepository } from '@repositories/prisma/prisma-meeting-enrollments-repository'
@@ -59,6 +61,11 @@ container.registerSingleton<AuthenticationAuditsRepository>(
 )
 
 container.registerSingleton<BlogsRepository>(tokens.repositories.blogs, PrismaBlogsRepository)
+
+container.registerSingleton<InstitutionalInfoRepository>(
+  tokens.repositories.institutionalInfo,
+  PrismaInstitutionalInfoRepository,
+)
 
 container.registerSingleton<DirectorBoardRepository>(tokens.repositories.directorsBoard, PrismaDirectorBoardRepository)
 

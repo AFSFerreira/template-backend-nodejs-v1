@@ -5,6 +5,8 @@ export const MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES = 5 * MB_IN_BYTES // Tamanho
 
 export const MAX_DIRECTOR_BOARD_PROFILE_IMAGE_FILE_SIZE_BYTES = 15 * MB_IN_BYTES // Tamanho limite de 15mb para as imagens de perfil dos membros do corpo diretivo
 
+export const MAX_INSTITUTIONAL_ABOUT_IMAGE_FILE_SIZE_BYTES = 30 * MB_IN_BYTES // Tamanho limite de 30mb para a imagem da página institucional
+
 export const MAX_SLIDER_IMAGE_FILE_SIZE_BYTES = 30 * MB_IN_BYTES // Tamanho limite de 30mb para imagens de slider
 
 export const MAX_MEETING_BANNER_IMAGE_FILE_SIZE_BYTES = 15 * MB_IN_BYTES // Tamanho limite de 15mb para imagens de banner de reuniões

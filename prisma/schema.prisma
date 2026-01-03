@@ -11,12 +11,10 @@ model InstitutionalInfo {
   id                 Int       @id @default(autoincrement())
   aboutDescription   Json      @map("about_description") @db.Json // Descrição da página Sobre em formato prose mirror
   aboutImage         String    @map("about_image")
-  statuteFile        String?   @default("estatuto.pdf") @map("statute_file")
-  electionNoticeFile String?   @default("edital-eleição.pdf") @map("election_notice_file")
+  statuteFile        String    @default("estatuto.pdf") @map("statute_file")
+  electionNoticeFile String    @default("edital-eleição.pdf") @map("election_notice_file")
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-  lastUpdatedById    Int?      @map("last_updated_by_id")
-  LastUpdatedBy      User?     @relation(fields: [lastUpdatedById], references: [id])
 
   @@map("institutional_info")
 }
@@ -83,7 +81,6 @@ model User {
   NewsletterComment              NewsletterComment[]
   DirectorBoard                  DirectorBoard?
   EnrolledCourse                 EnrolledCourse?
-  institutionalInfo              InstitutionalInfo[]
   ActivityArea                   ActivityArea?            @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
   Institution                    Institution?             @relation(fields: [institutionId], references: [id], onDelete: NoAction)
   SubActivityArea                ActivityArea?            @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)

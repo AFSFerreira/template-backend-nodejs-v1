@@ -60,6 +60,15 @@ export const DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH = path.resolve(
   'profile-images',
 )
 
+// Caminhos relativos das imagens da página institucional:
+export const INSTITUTIONAL_ABOUT_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'institutional-info')
+export const INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH = path.resolve(
+  BASE_PROJECT_PATH,
+  'uploads',
+  'temp',
+  'institutional-info',
+)
+
 // Caminhos relativos de newsletters:
 export const NEWSLETTER_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'newsletter', 'html')
 export const NEWSLETTER_TEMP_HTML_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'temp', 'newsletter', 'html')
@@ -88,6 +97,8 @@ const verifiedPaths = [
   SLIDER_TEMP_IMAGES_PATH,
   DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
   DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH,
+  INSTITUTIONAL_ABOUT_IMAGES_PATH,
+  INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
   NEWSLETTER_HTML_PATH,
   NEWSLETTER_TEMP_HTML_PATH,
 ].map((path) => ({ path, exists: fileExistsSync(path) }))

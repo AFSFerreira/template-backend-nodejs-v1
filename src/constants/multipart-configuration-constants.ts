@@ -4,6 +4,7 @@ import {
   MAX_BLOG_IMAGE_FILE_SIZE_BYTES,
   MAX_DIRECTOR_BOARD_PROFILE_IMAGE_FILE_SIZE_BYTES,
   MAX_DOCUMENT_FILE_SIZE_BYTES,
+  MAX_INSTITUTIONAL_ABOUT_IMAGE_FILE_SIZE_BYTES,
   MAX_MEETING_AGENDA_FILE_SIZE_BYTES,
   MAX_MEETING_BANNER_IMAGE_FILE_SIZE_BYTES,
   MAX_NEWSLETTER_HTML_FILE_SIZE_BYTES,
@@ -32,6 +33,12 @@ export const userProfilePictureFileConfig = {
 export const directorBoardProfilePictureFileConfig = {
   limits: {
     fileSize: MAX_DIRECTOR_BOARD_PROFILE_IMAGE_FILE_SIZE_BYTES, // 15mb
+  },
+} satisfies FastifyMultipartOptions
+
+export const institutionalAboutImageFileConfig = {
+  limits: {
+    fileSize: MAX_INSTITUTIONAL_ABOUT_IMAGE_FILE_SIZE_BYTES, // 30mb
   },
 } satisfies FastifyMultipartOptions
 
