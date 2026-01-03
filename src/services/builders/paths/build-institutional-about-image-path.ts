@@ -1,6 +1,6 @@
 import path from 'node:path'
 import {
-  INSTITUTIONAL_ABOUT_IMAGES_PATH,
+  INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH,
   INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
 } from '@constants/dynamic-file-constants'
 
@@ -9,5 +9,5 @@ export function buildInstitutionalTempAboutImagePath(filename: string) {
 }
 
 export function buildInstitutionalAboutImagePath(filename: string) {
-  return path.resolve(INSTITUTIONAL_ABOUT_IMAGES_PATH, filename)
+  return path.resolve(INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH, filename)
 }

@@ -16,6 +16,7 @@ import { newsletterDataArray1 } from './seed-data/newsletter'
 import { paymentInfo1 } from './seed-data/payments-info'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2, usersDataArray3 } from './seed-data/users'
+import { institutionalInfoData1 } from './seed-data/institutional-info'
 
 const prisma = new PrismaClient({ adapter })
 
@@ -171,6 +172,12 @@ async function main() {
   // Criação de Newsletters:
   await prisma.newsletter.createMany({
     data: newsletterDataArray1,
+    skipDuplicates: true,
+  })
+
+  // Criação das Informações Institucionais:
+  await prisma.institutionalInfo.createMany({
+    data: institutionalInfoData1,
     skipDuplicates: true,
   })
 }
