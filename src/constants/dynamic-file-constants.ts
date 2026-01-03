@@ -1,9 +1,9 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { logError } from '@lib/logger/helpers/log-error'
 import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/file-loggings'
 import { InvalidFilesystemPathsError } from '@services/errors/files/invalid-filesystem-paths-error'
 import { fileExistsSync } from '@utils/files/file-exists-sync'
-import path from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { IS_PROD } from './env-constants'
 import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-constants'
 

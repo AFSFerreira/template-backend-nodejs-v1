@@ -8,6 +8,7 @@ import { partialAddressDataArray1 } from './seed-data/addresses'
 import { blogDataArray1 } from './seed-data/blogs'
 import { directorPositionsArray1 } from './seed-data/director-positions'
 import { directorBoardWithoutUserDataArray1 } from './seed-data/directors-board'
+import { institutionalInfoData1 } from './seed-data/institutional-info'
 import { institutionsDataArray1 } from './seed-data/institutions'
 import { meetingEnrollmentDataArray1 } from './seed-data/meeting-enrollments'
 import { meetingPresentationNestedMeetingEnrollmentDataArray1 } from './seed-data/meeting-presentations'
@@ -16,7 +17,6 @@ import { newsletterDataArray1 } from './seed-data/newsletter'
 import { paymentInfo1 } from './seed-data/payments-info'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2, usersDataArray3 } from './seed-data/users'
-import { institutionalInfoData1 } from './seed-data/institutional-info'
 
 const prisma = new PrismaClient({ adapter })
 
