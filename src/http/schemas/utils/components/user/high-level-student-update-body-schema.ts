@@ -20,5 +20,5 @@ export const highLevelStudentUpdateBodySchema = z
       .partial()
       .extend({ educationLevel: highLevelStudentEnumSchema }),
   })
-  .superRefine(validateActivityAreaRefinement)
   .partial()
+  .superRefine(validateActivityAreaRefinement)
