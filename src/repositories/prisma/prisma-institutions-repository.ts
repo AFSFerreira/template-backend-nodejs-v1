@@ -2,12 +2,13 @@ import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/ins
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/institution/list-all-institutions-with-users-query'
 import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/client'
-import type { InstitutionsRepository } from '../institutions-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import type { Prisma } from '@prisma/client'
+import { MembershipStatusType, UserRoleType } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
+import type { InstitutionsRepository } from '../institutions-repository'
 
 @injectable()
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
@@ -93,7 +94,12 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
   async listAllInstitutionsWithUsersCount(query?: ListAllInstitutionsWithUsersQuery) {
     const where: Prisma.InstitutionWhereInput = {
       User: {
-        some: {},
+        some: {
+          role: {
+            notIn: [UserRoleType.ADMIN, UserRoleType.MANAGER],
+          },
+          membershipStatus: MembershipStatusType.ACTIVE,
+        },
       },
     }
 
