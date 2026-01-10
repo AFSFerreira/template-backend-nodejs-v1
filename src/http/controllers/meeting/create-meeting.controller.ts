@@ -2,7 +2,7 @@ import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/mee
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingPresenter } from '@presenters/variants/meeting-presenter'
+import { MeetingPresenter } from '@presenters/meeting-presenter'
 import { createMeetingBodySchema } from '@schemas/meeting/create-meeting-body-schema'
 import { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
 import { container } from 'tsyringe'

@@ -1,4 +1,4 @@
-import type { MeetingEnrollmentDetailedWithPresentationPresenter } from '@presenters/variants/meeting-enrollment/meeting-enrollment-detailed-with-presentation.presenter'
+import type { MeetingEnrollmentDetailedWithPresentationPresenter } from '@presenters/meeting-enrollment/meeting-enrollment-detailed-with-presentation.presenter'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { getMeetingEnrollmentParamsSchema } from '@schemas/meeting-enrollment/get-meeting-enrollment-params-schema'

@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/blog/blog-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BlogPresenter } from '@presenters/variants/blog-presenter'
+import { BlogPresenter } from '@presenters/blog-presenter'
 import { getAllBlogsDetailedQuerySchema } from '@schemas/blog/get-all-blogs-detailed-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetAllBlogsDetailedUseCase } from '@use-cases/blogs/get-all-blogs-detailed'

@@ -2,7 +2,7 @@ import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slide
 import type { SliderImage } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { SliderImagePresenter } from '@presenters/variants/slider-image-presenter'
+import { SliderImagePresenter } from '@presenters/slider-image-presenter'
 import { getAllHomePageSlidersRestrictSchema } from '@schemas/slider-image/get-all-home-page-sliders-restrict-schema'
 import { GetAllHomePageSlidersRestrictUseCase } from '@use-cases/slider-image/get-all-home-page-sliders-restrict'
 import { container } from 'tsyringe'

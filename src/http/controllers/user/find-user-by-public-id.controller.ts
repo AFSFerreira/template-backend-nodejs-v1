@@ -2,7 +2,7 @@ import type { HTTPUserWithDetailsForAdmin } from '@custom-types/presenter/user/u
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { UserPresenter } from '@presenters/variants/user-presenter'
+import { UserPresenter } from '@presenters/user-presenter'
 import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-params-schema'
 import { FindUserByPublicIdUseCase } from '@use-cases/user/find-by-public-id'
 import { container } from 'tsyringe'

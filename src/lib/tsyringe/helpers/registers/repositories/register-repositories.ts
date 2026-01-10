@@ -1,5 +1,7 @@
+import type { DependencyContainer } from 'tsyringe'
 import { PrismaAddressCountriesRepository } from '@repositories/prisma/address-countries-repository'
 import { PrismaAcademicPublicationsRepository } from '@repositories/prisma/prisma-academic-publications-repository'
+import { PrismaActivityAreasRepository } from '@repositories/prisma/prisma-activity-area-repository'
 import { PrismaAddressStatesRepository } from '@repositories/prisma/prisma-address-states-repository'
 import { PrismaAddressesRepository } from '@repositories/prisma/prisma-addresses-repository'
 import { PrismaAuthenticationAuditsRepository } from '@repositories/prisma/prisma-authentication-audits-repository'
@@ -15,10 +17,8 @@ import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-r
 import { PrismaNewslettersRepository } from '@repositories/prisma/prisma-newsletters-repository'
 import { PrismaSliderImagesRepository } from '@repositories/prisma/prisma-slider-images-repository'
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
-import type { DependencyContainer } from 'tsyringe'
 import { registerRepository } from '../../register-repository'
 import { tokens } from '../../tokens'
-import { PrismaActivityAreasRepository } from '@repositories/prisma/prisma-activity-area-repository'
 
 export function registerRepositories(container: DependencyContainer) {
   registerRepository({

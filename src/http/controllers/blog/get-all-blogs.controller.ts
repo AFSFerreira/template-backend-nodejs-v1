@@ -2,7 +2,7 @@ import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog
 import type { HTTPSimplifiedBlog } from '@custom-types/presenter/blog/blog-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BlogPresenter } from '@presenters/variants/blog-presenter'
+import { BlogPresenter } from '@presenters/blog-presenter'
 import { getAllBlogsQuerySchema } from '@schemas/blog/get-all-blogs-query-schema'
 import { GetAllBlogsUseCase } from '@use-cases/blogs/get-all-blogs'
 import { container } from 'tsyringe'

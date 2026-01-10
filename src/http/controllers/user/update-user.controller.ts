@@ -3,7 +3,7 @@ import type { UpdateUserBodySchemaType } from '@custom-types/schemas/user/update
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { UserPresenter } from '@presenters/variants/user-presenter'
+import { UserPresenter } from '@presenters/user-presenter'
 import { updateBodySchema } from '@schemas/user/update-user-body-schema'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'

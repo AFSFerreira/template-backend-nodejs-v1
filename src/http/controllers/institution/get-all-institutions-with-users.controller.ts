@@ -2,7 +2,7 @@ import type { HTTPInstitutionWithUsersCount } from '@custom-types/presenter/inst
 import type { InstitutionsUsersCount } from '@custom-types/repository/institution/institutions-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { InstitutionPresenter } from '@presenters/variants/institution-presenter'
+import { InstitutionPresenter } from '@presenters/institution-presenter'
 import { getAllInstitutionsWithUsersQuerySchema } from '@schemas/institution/get-all-institutions-with-users-query-schema'
 import { GetAllInstitutionsWithUsersUseCase } from '@use-cases/institution/get-all-institutions-with-user'
 import { container } from 'tsyringe'

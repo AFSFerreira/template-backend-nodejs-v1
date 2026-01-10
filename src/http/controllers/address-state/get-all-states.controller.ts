@@ -2,7 +2,7 @@ import type { HTTPAddressStates } from '@custom-types/presenter/address/address-
 import type { AddressStates } from '@custom-types/repository/address-state/address-states'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { AddressPresenter } from '@presenters/variants/address-presenter'
+import { AddressPresenter } from '@presenters/address-presenter'
 import { getAllStatesQuerySchema } from '@schemas/address/get-all-states-query-schema'
 import { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
 import { container } from 'tsyringe'

@@ -1,7 +1,7 @@
 import type { HTTPNewsletter } from '@custom-types/presenter/newsletter/newsletter-default'
 import type { Newsletter } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { NewsletterPresenter } from '@presenters/variants/newsletter-presenter'
+import { NewsletterPresenter } from '@presenters/newsletter-presenter'
 import { getAllNewslettersQuerySchema } from '@schemas/newsletter/get-all-newsletters-query-schema'
 import { GetAllNewslettersUseCase } from '@use-cases/newsletters/get-all-newsletters'
 import { container } from 'tsyringe'

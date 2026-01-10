@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingEnrollmentPresenter } from '@presenters/variants/meeting-enrollment-presenter'
+import { MeetingEnrollmentPresenter } from '@presenters/meeting-enrollment-presenter'
 import { getMeetingParticipantsParamsSchema } from '@schemas/meeting/get-meeting-participants-params-schema'
 import { getMeetingParticipantsQuerySchema } from '@schemas/meeting/get-meeting-participants-query-schema'
 import { GetMeetingParticipantsUseCase } from '@use-cases/meeting/get-meeting-participants'

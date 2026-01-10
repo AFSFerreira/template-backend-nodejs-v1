@@ -2,7 +2,7 @@ import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-deta
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { UserPresenter } from '@presenters/variants/user-presenter'
+import { UserPresenter } from '@presenters/user-presenter'
 import { reviewMembershipStatusBodySchema } from '@schemas/user/review-membership-status-body-schema'
 import { reviewMembershipStatusParamsSchema } from '@schemas/user/review-membership-status-params-schema'
 import { ReviewMembershipStatusUseCase } from '@use-cases/user/review-membership-status'

@@ -2,7 +2,7 @@ import type { HTTPBlogDetailedWithContent } from '@custom-types/presenter/blog/b
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BlogPresenter } from '@presenters/variants/blog-presenter'
+import { BlogPresenter } from '@presenters/blog-presenter'
 import { findBlogByPublicIdParamsSchema } from '@schemas/blog/find-blog-by-public-id-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blogs/find-blog-by-public-id-detailed'

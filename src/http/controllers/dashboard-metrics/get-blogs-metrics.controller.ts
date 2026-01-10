@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/dashboard-metrics/dashboard-blogs-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DashboardPresenter } from '@presenters/variants/dashboard-presenter'
+import { DashboardPresenter } from '@presenters/dashboard-presenter'
 import { GetBlogsMetricsUseCase } from '@use-cases/dashboard-metrics/get-blogs-metrics'
 import { container } from 'tsyringe'
 

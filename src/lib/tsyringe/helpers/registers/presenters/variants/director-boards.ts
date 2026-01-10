@@ -1,9 +1,9 @@
 import type { DependencyContainer } from 'tsyringe'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DirectorBoardDefaultPresenter } from '@presenters/variants/director-board/director-board-default.presenter'
-import { DirectorBoardWithUserPresenter } from '@presenters/variants/director-board/director-board-with-user.presenter'
-import { DirectorBoardWithUserForAdminPresenter } from '@presenters/variants/director-board/director-board-with-user-for-admin.presenter'
+import { DirectorBoardDefaultPresenter } from '@presenters/director-board/director-board-default.presenter'
+import { DirectorBoardWithUserPresenter } from '@presenters/director-board/director-board-with-user.presenter'
+import { DirectorBoardWithUserForAdminPresenter } from '@presenters/director-board/director-board-with-user-for-admin.presenter'
 
 export function registerDirectorBoardPresenters(container: DependencyContainer) {
   registerPresenter({

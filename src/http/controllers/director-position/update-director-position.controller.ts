@@ -1,7 +1,7 @@
 import type { HTTPDirectorPosition } from '@custom-types/presenter/director-position/director-position-default'
 import type { DirectorPosition } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DirectorPositionPresenter } from '@presenters/variants/director-position-presenter'
+import { DirectorPositionPresenter } from '@presenters/director-position-presenter'
 import { updateDirectorPositionBodySchema } from '@schemas/director-position/update-director-position-body-schema'
 import { updateDirectorPositionParamsSchema } from '@schemas/director-position/update-director-position-params-schema'
 import { UpdateDirectorPositionUseCase } from '@use-cases/director-position/update-director-position'

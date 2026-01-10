@@ -1,4 +1,4 @@
-import type { DashboardNewslettersMetricsPresenter } from '@presenters/variants/dashboard-metrics/dashboard-newsletters-metrics.presenter'
+import type { DashboardNewslettersMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-newsletters-metrics.presenter'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { GetNewslettersMetricsUseCase } from '@use-cases/dashboard-metrics/get-newsletters-metrics'
