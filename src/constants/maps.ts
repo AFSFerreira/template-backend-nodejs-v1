@@ -23,14 +23,3 @@ export const OPERATION_TO_SYMBOL_MAP = new Map<string, string>([
   ['gt', '>'],
   ['gte', '>='],
 ])
-
-export function getStatusFilterMap() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0) // Set to start of day for consistent filtering
-
-  return new Map<string, Record<string, Date> | undefined>([
-    ['ALL', undefined],
-    ['PENDING', { gte: today }],
-    ['FINISHED', { lt: today }], // Use 'lt' instead of 'lte' to only get truly finished meetings
-  ])
-}
