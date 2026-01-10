@@ -3,7 +3,6 @@ import type {
   ForgotPasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/forgot-password'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { User } from '@prisma/client'
 import type { UsersRepository } from '@repositories/users-repository'
 import { RECOVERY_PASSWORD_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
@@ -17,6 +16,7 @@ import { forgotPasswordHtmlTemplate } from '@templates/forgot-password/forgot-pa
 import { forgotPasswordTextTemplate } from '@templates/forgot-password/forgot-password-text'
 import { generateToken } from '@utils/tokens/generate-token'
 import { hashToken } from '@utils/tokens/hash-token'
+import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
@@ -36,11 +36,10 @@ export class ForgotPasswordUseCase {
     const recoveryPasswordTokenExpiresAt = new Date(Date.now() + RECOVERY_PASSWORD_EXPIRATION_TIME)
 
     const user = await this.dbContext.runInTransaction(async () => {
-      const userAlreadyExists: User | null = await this.usersRepository.findByEmails(login)
-
-      if (!userAlreadyExists) {
-        throw new UserNotFoundForPasswordResetError()
-      }
+      const userAlreadyExists = ensureExists({
+        value: await this.usersRepository.findByEmails(login),
+        error: new UserNotFoundForPasswordResetError(),
+      })
 
       const tokenData = {
         recoveryPasswordTokenHash,

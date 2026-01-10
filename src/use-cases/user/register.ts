@@ -31,7 +31,6 @@ import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exis
 import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hash } from 'bcryptjs'
@@ -193,9 +192,12 @@ export class RegisterUseCase {
     } catch (error) {
       logError({ error, message: USER_CREATION_ERROR })
 
-      // Removendo imagem incorretamente persistida:
+      // Restaurando a imagem incorretamente persistida:
       if (registerUseCaseInput.user.profileImage) {
-        await deleteFile(buildUserProfileImagePath(registerUseCaseInput.user.profileImage))
+        await moveFile({
+          oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+          newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+        })
       }
 
       throw error

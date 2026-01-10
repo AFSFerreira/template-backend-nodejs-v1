@@ -21,11 +21,11 @@ import { extractProseMirrorImages } from '@services/extractors/extract-prose-mir
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { moveFile } from '@services/files/move-file'
+import { moveFiles } from '@services/files/move-files'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
-import { deleteFiles } from '@utils/files/delete-files'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -52,36 +52,31 @@ export class CreatePendingBlogUseCase {
   async execute(
     createPendingBlogUseCaseInput: CreatePendingBlogUseCaseRequest,
   ): Promise<CreatePendingBlogUseCaseResponse> {
-    const searchContent = getProseMirrorText({
-      proseMirror: createPendingBlogUseCaseInput.content,
-      tiptapConfiguration,
+    const searchContent = ensureExists({
+      value: getProseMirrorText({
+        proseMirror: createPendingBlogUseCaseInput.content,
+        tiptapConfiguration,
+      }),
+      error: new InvalidBlogContentError(),
     })
-
-    if (!searchContent) {
-      throw new InvalidBlogContentError()
-    }
 
     // Persistindo banner e imagens da pasta temporária para a pasta definitiva:
-    const persistedBanner = await moveFile({
-      oldFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
-      newFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
+    ensureExists({
+      value: await moveFile({
+        oldFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
+        newFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
+      }),
+      error: new BlogBannerPersistError(),
     })
-
-    if (!persistedBanner) {
-      throw new BlogBannerPersistError()
-    }
-
-    const newBannerImagePath = buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage)
 
     const oldToNewImagesLinkMap = new Map<string, string>()
 
     const formatedBlogImages = Array.from(extractProseMirrorImages(createPendingBlogUseCaseInput.content)).map(
       (imageLink) => {
-        const imageName = sanitizeUrlFilename(imageLink)
-
-        if (!imageName) {
-          throw new BlogInvalidImageLinkError()
-        }
+        const imageName = ensureExists({
+          value: sanitizeUrlFilename(imageLink),
+          error: new BlogInvalidImageLinkError(),
+        })
 
         oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
 
@@ -101,11 +96,10 @@ export class CreatePendingBlogUseCase {
       // Persistindo as novas imagens do blog:
       await Promise.all(
         formatedBlogImages.map(async (imageInfo) => {
-          const imagePersistResult = await moveFile(imageInfo)
-
-          if (!imagePersistResult) {
-            throw new BlogImagePersistError()
-          }
+          ensureExists({
+            value: await moveFile(imageInfo),
+            error: new BlogImagePersistError(),
+          })
         }),
       )
 
@@ -163,8 +157,17 @@ export class CreatePendingBlogUseCase {
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 
-      // Remove as imagens de blog e a imagem de banner previamente persistida:
-      await deleteFiles([...formatedBlogImages.map((imageInfo) => imageInfo.newFilePath), newBannerImagePath])
+      // Restaurando as imagens de blog e a imagem de banner previamente persistida:
+      await moveFiles([
+        ...formatedBlogImages.map((imageInfo) => ({
+          oldFilePath: imageInfo.newFilePath,
+          newFilePath: imageInfo.oldFilePath,
+        })),
+        {
+          oldFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
+          newFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
+        },
+      ])
 
       throw error
     }

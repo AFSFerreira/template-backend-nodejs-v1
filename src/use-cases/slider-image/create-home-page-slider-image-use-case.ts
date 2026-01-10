@@ -16,7 +16,7 @@ import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-
 import { moveFile } from '@services/files/move-file'
 import { HomePageSliderImagePersistError } from '@use-cases/errors/slider-image/home-page-slider-image-persist-error'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
-import { deleteFile } from '@utils/files/delete-file'
+import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -32,14 +32,13 @@ export class CreateHomePageSliderImageUseCase {
   async execute(
     createHomePageSliderImageUseCaseInput: CreateHomePageSliderImageUseCaseRequest,
   ): Promise<CreateHomePageSliderImageUseCaseResponse> {
-    const persistHomePageSliderImage = await moveFile({
-      oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-      newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+    const persistHomePageSliderImage = ensureExists({
+      value: await moveFile({
+        oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+        newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+      }),
+      error: new HomePageSliderImagePersistError(),
     })
-
-    if (!persistHomePageSliderImage) {
-      throw new HomePageSliderImagePersistError()
-    }
 
     try {
       const { createdSliderImage } = await this.dbContext.runInTransaction(async () => {
@@ -67,8 +66,12 @@ export class CreateHomePageSliderImageUseCase {
     } catch (error) {
       logError({ error, message: SLIDER_IMAGE_CREATION_ERROR })
 
+      // Restaurando a imagem incorretamente persistida:
       if (persistHomePageSliderImage) {
-        await deleteFile(persistHomePageSliderImage)
+        await moveFile({
+          oldFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+          newFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+        })
       }
 
       throw error

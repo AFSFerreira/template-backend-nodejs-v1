@@ -12,10 +12,11 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { moveFile } from '@services/files/move-file'
+import { moveFiles } from '@services/files/move-files'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
-import { deleteFiles } from '@utils/files/delete-files'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
+import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -29,24 +30,22 @@ export class CreateMeetingUseCase {
   ) {}
 
   async execute(data: CreateMeetingUseCaseRequest): Promise<CreateMeetingUseCaseResponse> {
-    const persistedBannerPath = await moveFile({
-      oldFilePath: buildTempMeetingBannerPath(data.bannerImage),
-      newFilePath: buildMeetingBannerPath(data.bannerImage),
-    })
-
-    const persistedAgendaPath = await moveFile({
-      oldFilePath: buildTempMeetingAgendaPath(data.agenda),
-      newFilePath: buildMeetingAgendaPath(data.agenda),
-    })
-
     try {
-      if (!persistedBannerPath) {
-        throw new MeetingBannerPersistError()
-      }
+      ensureExists({
+        value: await moveFile({
+          oldFilePath: buildTempMeetingBannerPath(data.bannerImage),
+          newFilePath: buildMeetingBannerPath(data.bannerImage),
+        }),
+        error: new MeetingBannerPersistError(),
+      })
 
-      if (!persistedAgendaPath) {
-        throw new MeetingAgendaPersistError()
-      }
+      ensureExists({
+        value: await moveFile({
+          oldFilePath: buildTempMeetingAgendaPath(data.agenda),
+          newFilePath: buildMeetingAgendaPath(data.agenda),
+        }),
+        error: new MeetingAgendaPersistError(),
+      })
 
       const { meeting } = await this.dbContext.runInTransaction(async () => {
         const meeting = await this.meetingsRepository.create({
@@ -74,7 +73,17 @@ export class CreateMeetingUseCase {
     } catch (error) {
       logError({ error, message: MEETING_CREATION_ERROR })
 
-      await deleteFiles([persistedBannerPath ?? '', persistedAgendaPath ?? ''])
+      // Restaurando os arquivos incorretamente persistidos:
+      await moveFiles([
+        {
+          oldFilePath: buildMeetingBannerPath(data.bannerImage),
+          newFilePath: buildTempMeetingBannerPath(data.bannerImage),
+        },
+        {
+          oldFilePath: buildMeetingAgendaPath(data.agenda),
+          newFilePath: buildTempMeetingAgendaPath(data.agenda),
+        },
+      ])
 
       throw error
     }

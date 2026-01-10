@@ -22,7 +22,6 @@ import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoImageStorageError } from '@use-cases/errors/institutional-info/institutional-info-image-storage-error'
 import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-info/institutional-info-not-found-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -95,8 +94,12 @@ export class UpdateInstitutionalInfoUseCase {
         },
       }
     } catch (error) {
+      // Restaurando a imagem incorretamente persistida:
       if (data.aboutImage) {
-        await deleteFile(buildInstitutionalAboutImagePath(data.aboutImage))
+        await moveFile({
+          oldFilePath: buildInstitutionalAboutImagePath(data.aboutImage),
+          newFilePath: buildInstitutionalTempAboutImagePath(data.aboutImage),
+        })
       }
 
       throw error

@@ -22,7 +22,6 @@ import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/dir
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -116,8 +115,12 @@ export class UpdateDirectorBoardUseCase {
         },
       }
     } catch (error) {
+      // Restaurando a imagem incorretamente persistida:
       if (persistedProfileImage) {
-        await deleteFile(buildDirectorBoardProfileImagePath(persistedProfileImage))
+        await moveFile({
+          oldFilePath: buildDirectorBoardProfileImagePath(persistedProfileImage),
+          newFilePath: buildDirectorBoardTempProfileImagePath(persistedProfileImage),
+        })
       }
 
       throw error

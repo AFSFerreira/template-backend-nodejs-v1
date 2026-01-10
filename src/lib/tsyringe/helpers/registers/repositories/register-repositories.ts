@@ -1,7 +1,7 @@
 import type { DependencyContainer } from 'tsyringe'
-import { PrismaAddressCountriesRepository } from '@repositories/prisma/prisma-address-countries-repository'
 import { PrismaAcademicPublicationsRepository } from '@repositories/prisma/prisma-academic-publications-repository'
 import { PrismaActivityAreasRepository } from '@repositories/prisma/prisma-activity-area-repository'
+import { PrismaAddressCountriesRepository } from '@repositories/prisma/prisma-address-countries-repository'
 import { PrismaAddressStatesRepository } from '@repositories/prisma/prisma-address-states-repository'
 import { PrismaAddressesRepository } from '@repositories/prisma/prisma-addresses-repository'
 import { PrismaAuthenticationAuditsRepository } from '@repositories/prisma/prisma-authentication-audits-repository'

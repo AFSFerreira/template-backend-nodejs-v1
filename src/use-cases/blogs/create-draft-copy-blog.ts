@@ -69,11 +69,10 @@ export class CreateDraftCopyBlogUseCase {
       // Cria um map para transformar cada link de imagem antigo para o novo:
       await Promise.all(
         Array.from(blogImages).map(async (imageLink) => {
-          const imageName = sanitizeUrlFilename(imageLink)
-
-          if (!imageName) {
-            throw new BlogContentCopyError()
-          }
+          const imageName = ensureExists({
+            value: sanitizeUrlFilename(imageLink),
+            error: new BlogContentCopyError(),
+          })
 
           const imageCopyInfo = await copyFile({
             sourceFilePath: buildBlogImagePath(imageName),
@@ -97,11 +96,10 @@ export class CreateDraftCopyBlogUseCase {
       })
 
       // Cria um novo searchContent por segurança:
-      const searchContent = getProseMirrorText({ proseMirror: newProseMirror as JSONContent, tiptapConfiguration })
-
-      if (!searchContent) {
-        throw new BlogContentCopyError()
-      }
+      const searchContent = ensureExists({
+        value: getProseMirrorText({ proseMirror: newProseMirror as JSONContent, tiptapConfiguration }),
+        error: new BlogContentCopyError(),
+      })
 
       // Cria uma nova cópia da imagem do banner:
       const newBannerImage = await copyFile({

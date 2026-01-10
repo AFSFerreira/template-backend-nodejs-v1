@@ -5,6 +5,7 @@ import { getFiles } from '@services/files/get-files'
 import { MissingStatuteFileError } from '@use-cases/errors/document-management/missing-statute-file-error'
 import { StatuteFileReadError } from '@use-cases/errors/document-management/statute-file-read-error'
 import { createFileReadStream } from '@utils/files/create-file-read-stream'
+import { ensureExists } from '@utils/validators/ensure'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -18,11 +19,10 @@ export class GetStatuteUseCase {
 
     const filePath = files[0]
     const filename = path.basename(filePath)
-    const stream = await createFileReadStream(filePath)
-
-    if (!stream) {
-      throw new StatuteFileReadError()
-    }
+    const stream = ensureExists({
+      value: await createFileReadStream(filePath),
+      error: new StatuteFileReadError(),
+    })
 
     return { filename, stream }
   }

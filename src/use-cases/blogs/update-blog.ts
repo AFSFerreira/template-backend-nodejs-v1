@@ -96,11 +96,10 @@ export class UpdateBlogUseCase {
       }
 
       if (body.content) {
-        const searchContent = getProseMirrorText({ proseMirror: body.content, tiptapConfiguration })
-
-        if (!searchContent) {
-          throw new InvalidBlogContentError()
-        }
+        const searchContent = ensureExists({
+          value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
+          error: new InvalidBlogContentError(),
+        })
 
         const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
         const newBlogImages = extractProseMirrorImages(body.content)
@@ -113,11 +112,10 @@ export class UpdateBlogUseCase {
         // Persistindo as novas imagens do blog:
         await Promise.all(
           Array.from(newImages).map(async (imageLink) => {
-            const imageName = sanitizeUrlFilename(imageLink)
-
-            if (!imageName) {
-              throw new BlogInvalidImageLinkError()
-            }
+            const imageName = ensureExists({
+              value: sanitizeUrlFilename(imageLink),
+              error: new BlogInvalidImageLinkError(),
+            })
 
             oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
 
@@ -150,11 +148,10 @@ export class UpdateBlogUseCase {
         // Apagando as imagens removidas do blog:
         await Promise.all(
           Array.from(removedImages).map(async (image) => {
-            const filenameFromUrl = sanitizeUrlFilename(image)
-
-            if (!filenameFromUrl) {
-              throw new BlogInvalidImageLinkError()
-            }
+            const filenameFromUrl = ensureExists({
+              value: sanitizeUrlFilename(image),
+              error: new BlogInvalidImageLinkError(),
+            })
 
             await deleteFile(buildBlogImagePath(filenameFromUrl))
           }),
@@ -170,11 +167,10 @@ export class UpdateBlogUseCase {
       }
 
       if (body.bannerImage) {
-        const newBannerImage = sanitizeUrlFilename(body.bannerImage)
-
-        if (!newBannerImage) {
-          throw new BlogInvalidBannerLinkError()
-        }
+        const newBannerImage = ensureExists({
+          value: sanitizeUrlFilename(body.bannerImage),
+          error: new BlogInvalidBannerLinkError(),
+        })
 
         if (newBannerImage !== blog.bannerImage) {
           const persistedBanner = await moveFile({

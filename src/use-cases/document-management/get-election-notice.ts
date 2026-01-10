@@ -5,6 +5,7 @@ import { getFiles } from '@services/files/get-files'
 import { ElectionNoticeFileReadError } from '@use-cases/errors/document-management/election-notice-file-read-error'
 import { MissingElectionNoticeFileError } from '@use-cases/errors/document-management/missing-election-notice-file-error'
 import { createFileReadStream } from '@utils/files/create-file-read-stream'
+import { ensureExists } from '@utils/validators/ensure'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -18,11 +19,10 @@ export class GetElectionNoticeUseCase {
 
     const filePath = files[0]
     const filename = path.basename(filePath)
-    const stream = await createFileReadStream(filePath)
-
-    if (!stream) {
-      throw new ElectionNoticeFileReadError()
-    }
+    const stream = ensureExists({
+      value: await createFileReadStream(filePath),
+      error: new ElectionNoticeFileReadError(),
+    })
 
     return { filename, stream }
   }
