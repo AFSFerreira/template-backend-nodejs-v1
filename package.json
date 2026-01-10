@@ -39,8 +39,8 @@
     "db:migrate-deploy": "prisma migrate deploy",
     "db:deploy": "run-s db:migrate-deploy db:generate db:seed",
     "ci:generate": "run-p db:generate",
-    "ci:lint": "run-s check:prisma:biome check:src:biome",
-    "ci:format": "run-s check:prisma:biome check:src:biome",
+    "ci:lint": "run-p check:prisma:biome check:src:biome",
+    "ci:format": "run-p check:prisma:biome check:src:biome",
     "ci:build": "run-s ci:generate build:tsgo build:tsup",
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
   },
