@@ -1,26 +1,25 @@
+import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import type { FindConflictingUserQuery } from '@custom-types/repository/user/find-conflicting-user-query'
 import type { RegisterUseCaseRequest, RegisterUseCaseResponse } from '@custom-types/use-cases/user/register'
+import { env } from '@env/index'
 import type { ApiError } from '@errors/api-error'
+import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { SUCCESSFUL_USER_CREATION, USER_CREATION_ERROR } from '@messages/loggings/user-loggings'
+import { ActivityAreaType } from '@prisma/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import path from 'node:path'
-import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
-import { env } from '@env/index'
-import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { SUCCESSFUL_USER_CREATION, USER_CREATION_ERROR } from '@messages/loggings/user-loggings'
-import { ActivityAreaType } from '@prisma/client'
 import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
 } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -35,6 +34,7 @@ import { deleteFile } from '@utils/files/delete-file'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hash } from 'bcryptjs'
+import path from 'node:path'
 import { inject, injectable } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 
@@ -64,7 +64,7 @@ export class RegisterUseCase {
     let profileImage = DEFAULT_PROFILE_IMAGE_NAME
 
     if (registerUseCaseInput.user.profileImage) {
-      const profileImagePersistSucessful = await persistFile({
+      const profileImagePersistSucessful = await moveFile({
         oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
         newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
       })

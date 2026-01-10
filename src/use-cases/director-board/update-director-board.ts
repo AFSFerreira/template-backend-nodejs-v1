@@ -3,19 +3,19 @@ import type {
   UpdateDirectorBoardUseCaseResponse,
 } from '@custom-types/use-cases/director-board/update-director-board'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import type { JSONContent } from '@tiptap/core'
-import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
 import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
+import type { JSONContent } from '@tiptap/core'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -49,7 +49,7 @@ export class UpdateDirectorBoardUseCase {
     try {
       if (data.profileImage) {
         ensureExists({
-          value: await persistFile({
+          value: await moveFile({
             oldFilePath: buildDirectorBoardTempProfileImagePath(data.profileImage),
             newFilePath: buildDirectorBoardProfileImagePath(data.profileImage),
           }),

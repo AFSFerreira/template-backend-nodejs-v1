@@ -2,18 +2,18 @@ import type {
   CreateNewsletterUseCaseRequest,
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY, NEWSLETTER_CREATION_ERROR } from '@messages/loggings/newsletter-loggings'
+import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,
 } from '@services/builders/paths/build-newsletter-html-path'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { deleteFile } from '@utils/files/delete-file'
 import { ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -33,7 +33,7 @@ export class CreateNewsletterUseCase {
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
     const { contentFilename, ...filteredCreatedNewsletterInput } = createNewsletterInput
 
-    const content = await persistFile({
+    const content = await moveFile({
       oldFilePath: buildNewsletterTempHtmlPath(contentFilename),
       newFilePath: buildNewsletterHtmlPath(contentFilename),
     })

@@ -3,12 +3,11 @@ import type {
   UpdateInstitutionalInfoUseCaseResponse,
 } from '@custom-types/use-cases/institutional-info/update-institutional-info'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/client'
-import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
-import type { JSONContent } from '@tiptap/core'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import type { Prisma } from '@prisma/client'
+import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import {
   buildInstitutionalAboutImagePath,
   buildInstitutionalTempAboutImagePath,
@@ -17,7 +16,8 @@ import { buildElectionNoticeUrl } from '@services/builders/urls/build-election-n
 import { buildInstitutionalAboutImageUrl } from '@services/builders/urls/build-institutional-about-image-url'
 import { buildStatuteUrl } from '@services/builders/urls/build-statute-url'
 import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
+import type { JSONContent } from '@tiptap/core'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoImageStorageError } from '@use-cases/errors/institutional-info/institutional-info-image-storage-error'
@@ -53,7 +53,7 @@ export class UpdateInstitutionalInfoUseCase {
     try {
       if (data.aboutImage) {
         ensureExists({
-          value: await persistFile({
+          value: await moveFile({
             oldFilePath: buildInstitutionalTempAboutImagePath(data.aboutImage),
             newFilePath: buildInstitutionalAboutImagePath(data.aboutImage),
           }),

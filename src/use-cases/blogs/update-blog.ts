@@ -1,18 +1,17 @@
-import type { UpdateBlogUseCaseRequest, UpdateBlogUseCaseResponse } from '@custom-types/use-cases/blogs/update-blog'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/client'
-import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { UsersRepository } from '@repositories/users-repository'
-import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
+import type { UpdateBlogUseCaseRequest, UpdateBlogUseCaseResponse } from '@custom-types/use-cases/blogs/update-blog'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
+import type { Prisma } from '@prisma/client'
 import { ActivityAreaType } from '@prisma/client'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
@@ -21,8 +20,9 @@ import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import type { JSONContent } from '@tiptap/core'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogEditorialStatusChangeForbiddenError } from '@use-cases/errors/blog/blog-editorial-status-change-forbidden-error'
 import { BlogImageNotFoundError } from '@use-cases/errors/blog/blog-image-not-found-error'
@@ -124,7 +124,7 @@ export class UpdateBlogUseCase {
             const oldFilePath = buildBlogTempImagePath(imageName)
             const newFilePath = buildBlogImagePath(imageName)
 
-            const imagePersistResult = await persistFile({
+            const imagePersistResult = await moveFile({
               oldFilePath,
               newFilePath,
               options: {
@@ -177,7 +177,7 @@ export class UpdateBlogUseCase {
         }
 
         if (newBannerImage !== blog.bannerImage) {
-          const persistedBanner = await persistFile({
+          const persistedBanner = await moveFile({
             oldFilePath: buildBlogTempBannerPath(newBannerImage),
             newFilePath: buildBlogBannerPath(newBannerImage),
           })

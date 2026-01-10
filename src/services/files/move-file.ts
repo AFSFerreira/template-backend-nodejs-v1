@@ -1,10 +1,10 @@
-import type { IPersistFile } from '@custom-types/services/persist-file'
-import path from 'node:path'
+import type { IMoveFile } from '@custom-types/services/move-file'
 import { logError } from '@lib/logger/helpers/log-error'
 import { FILE_PERSIST_ERROR } from '@messages/loggings/file-loggings'
 import fs from 'fs-extra'
+import path from 'node:path'
 
-export async function persistFile({ oldFilePath, newFilePath, options }: IPersistFile) {
+export async function moveFile({ oldFilePath, newFilePath, options }: IMoveFile) {
   try {
     // Verifica se o arquivo antigo existe:
     const oldFilePathExists = fs.exists(oldFilePath)

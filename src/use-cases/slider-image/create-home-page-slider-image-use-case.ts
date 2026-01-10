@@ -1,19 +1,19 @@
+import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import type {
   CreateHomePageSliderImageUseCaseRequest,
   CreateHomePageSliderImageUseCaseResponse,
 } from '@custom-types/use-cases/slider-image/create-home-page-slider-image'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { SliderImagesRepository } from '@repositories/slider-images-repository'
-import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { SLIDER_IMAGE_CREATION_ERROR } from '@messages/loggings/slider-image-loggings'
+import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import {
   buildHomePageSliderImagePath,
   buildTempSliderImagePath,
 } from '@services/builders/paths/build-slider-image-path'
 import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { HomePageSliderImagePersistError } from '@use-cases/errors/slider-image/home-page-slider-image-persist-error'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
 import { deleteFile } from '@utils/files/delete-file'
@@ -32,7 +32,7 @@ export class CreateHomePageSliderImageUseCase {
   async execute(
     createHomePageSliderImageUseCaseInput: CreateHomePageSliderImageUseCaseRequest,
   ): Promise<CreateHomePageSliderImageUseCaseResponse> {
-    const persistHomePageSliderImage = await persistFile({
+    const persistHomePageSliderImage = await moveFile({
       oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
       newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
     })

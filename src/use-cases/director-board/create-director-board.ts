@@ -1,25 +1,25 @@
+import { MANAGER_PERMISSIONS } from '@constants/sets'
 import type {
   CreateDirectorBoardUseCaseRequest,
   CreateDirectorBoardUseCaseResponse,
 } from '@custom-types/use-cases/director-board/create-director-board'
+import { logError } from '@lib/logger/helpers/log-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { DIRECTOR_BOARD_CREATION_ERROR } from '@messages/loggings/director-board-loggings'
 import type { Prisma } from '@prisma/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { JSONContent } from '@tiptap/core'
-import { MANAGER_PERMISSIONS } from '@constants/sets'
-import { logError } from '@lib/logger/helpers/log-error'
-import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DIRECTOR_BOARD_CREATION_ERROR } from '@messages/loggings/director-board-loggings'
 import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
+import type { JSONContent } from '@tiptap/core'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
@@ -89,7 +89,7 @@ export class CreateDirectorBoardUseCase {
 
         if (profileImage) {
           ensureExists({
-            value: await persistFile({
+            value: await moveFile({
               oldFilePath: buildDirectorBoardTempProfileImagePath(profileImage),
               newFilePath: buildDirectorBoardProfileImagePath(profileImage),
             }),

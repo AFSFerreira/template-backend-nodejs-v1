@@ -2,17 +2,17 @@ import type {
   CreatePendingBlogUseCaseRequest,
   CreatePendingBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-blog'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
@@ -20,7 +20,7 @@ import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
@@ -62,7 +62,7 @@ export class CreatePendingBlogUseCase {
     }
 
     // Persistindo banner e imagens da pasta temporária para a pasta definitiva:
-    const persistedBanner = await persistFile({
+    const persistedBanner = await moveFile({
       oldFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
       newFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
     })
@@ -101,7 +101,7 @@ export class CreatePendingBlogUseCase {
       // Persistindo as novas imagens do blog:
       await Promise.all(
         formatedBlogImages.map(async (imageInfo) => {
-          const imagePersistResult = await persistFile(imageInfo)
+          const imagePersistResult = await moveFile(imageInfo)
 
           if (!imagePersistResult) {
             throw new BlogImagePersistError()

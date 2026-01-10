@@ -1,4 +1,4 @@
-export interface IPersistFile {
+export interface IMoveFile {
   oldFilePath: string
   newFilePath: string
   options?: {
