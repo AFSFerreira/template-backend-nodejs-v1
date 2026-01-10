@@ -11,6 +11,7 @@ import { getAllMeetings } from './get-all-meetings.controller'
 import { getMeetingParticipants } from './get-meeting-participants.controller'
 import { registerGuestMeeting } from './register-guest-meeting.controller'
 import { registerUserMeeting } from './register-user-meeting.controller'
+import { updateMeeting } from './update-meeting.controller'
 import { uploadMeetingAgenda } from './upload-meeting-agenda.controller'
 import { uploadMeetingBanner } from './upload-meeting-banner.controller'
 
@@ -66,5 +67,14 @@ export async function meetingRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadMeetingAgenda,
+  )
+
+  // PATCH
+  app.patch(
+    '/:publicId',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    updateMeeting,
   )
 }
