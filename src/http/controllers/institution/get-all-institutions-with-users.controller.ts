@@ -16,7 +16,7 @@ export async function getAllInstitutionsWithUsers(request: FastifyRequest, reply
 
   const formattedReply = InstitutionPresenter.toHTTP<InstitutionsUsersCount, HTTPInstitutionWithUsersCount>(
     data,
-    tokens.presenters.institutionWithUsersCount,
+    tokens.presenters.institution.institutionWithUsersCount,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

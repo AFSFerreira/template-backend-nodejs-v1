@@ -20,7 +20,7 @@ export async function reviewMembershipStatus(request: FastifyRequest, reply: Fas
   })
 
   const formattedReply = user
-    ? UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(user, tokens.presenters.userDetailed)
+    ? UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(user, tokens.presenters.user.userDetailed)
     : undefined
 
   return await reply.status(200).send({ data: formattedReply })

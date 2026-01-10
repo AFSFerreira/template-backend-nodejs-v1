@@ -3,11 +3,8 @@ import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
 } from '@custom-types/presenter/user/user-detailed-for-admin'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-@RegisterPresenter(tokens.presenters.userDetailedForAdmin)
 export class UserDetailedPresenterForAdmin
   implements IPresenterStrategy<UserDetailedPresenterForAdminInput, HTTPUserWithDetailsForAdmin>
 {

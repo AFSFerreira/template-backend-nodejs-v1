@@ -16,7 +16,7 @@ export async function getAllMeetings(request: FastifyRequest, reply: FastifyRepl
 
   const formattedReply = MeetingPresenter.toHTTP<MeetingWithDetails, HTTPMeetingWithDetails>(
     data,
-    tokens.presenters.meetingDetailed,
+    tokens.presenters.meeting.meetingDetailed,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

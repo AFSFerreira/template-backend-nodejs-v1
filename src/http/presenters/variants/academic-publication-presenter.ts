@@ -9,7 +9,7 @@ export class AcademicPublicationPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.academicPublicationDefault,
+    contextKey: string = tokens.presenters.academicPublication.academicPublicationDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => AcademicPublicationPresenter.toHTTP<TInput, TOutput>(item, contextKey))

@@ -16,7 +16,7 @@ export async function getAllStates(request: FastifyRequest, reply: FastifyReply)
 
   const formattedReply = AddressPresenter.toHTTP<AddressStates, HTTPAddressStates>(
     data,
-    tokens.presenters.addressWithUsersCount,
+    tokens.presenters.address.addressWithUsersCount,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

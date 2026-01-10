@@ -3,10 +3,7 @@ import type {
   HTTPMeetingEnrollmentDetailed,
   MeetingEnrollmentPresenterInput,
 } from '@custom-types/presenter/meeting-enrollment/meeting-enrollment-detailed'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.meetingEnrollmentDetailed)
 export class MeetingEnrollmentDetailedPresenter
   implements IPresenterStrategy<MeetingEnrollmentPresenterInput, HTTPMeetingEnrollmentDetailed>
 {

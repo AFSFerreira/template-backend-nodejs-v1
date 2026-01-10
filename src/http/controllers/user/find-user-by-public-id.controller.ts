@@ -16,7 +16,7 @@ export async function findUserByPublicId(request: FastifyRequest, reply: Fastify
 
   const formattedReply = UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetailsForAdmin>(
     user,
-    tokens.presenters.userDetailedForAdmin,
+    tokens.presenters.user.userDetailedForAdmin,
   )
 
   return await reply.status(200).send({ data: formattedReply })

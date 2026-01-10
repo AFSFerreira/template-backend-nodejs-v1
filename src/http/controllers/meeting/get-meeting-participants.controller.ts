@@ -24,7 +24,7 @@ export async function getMeetingParticipants(request: FastifyRequest, reply: Fas
   const formattedReply = MeetingEnrollmentPresenter.toHTTP<
     MeetingEnrollmentPresenterInput,
     HTTPMeetingEnrollmentDetailed
-  >(data, tokens.presenters.meetingEnrollmentDetailed)
+  >(data, tokens.presenters.meetingEnrollment.meetingEnrollmentDetailed)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

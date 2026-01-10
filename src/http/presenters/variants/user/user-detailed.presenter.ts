@@ -1,10 +1,7 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/presenter/user/user-detailed'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-@RegisterPresenter(tokens.presenters.userDetailed)
 export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPresenterInput, HTTPUserWithDetails> {
   public toHTTP(input: UserDetailedPresenterInput): HTTPUserWithDetails {
     const {

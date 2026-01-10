@@ -16,7 +16,7 @@ export async function findMeetingByPublicId(request: FastifyRequest, reply: Fast
 
   const formattedReply = MeetingPresenter.toHTTP<MeetingWithDetails, HTTPMeetingWithDetails>(
     meeting,
-    tokens.presenters.meetingDetailed,
+    tokens.presenters.meeting.meetingDetailed,
   )
 
   return await reply.status(200).send({ data: formattedReply })

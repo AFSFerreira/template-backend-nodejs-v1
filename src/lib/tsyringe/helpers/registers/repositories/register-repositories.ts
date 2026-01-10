@@ -1,0 +1,131 @@
+import { PrismaAddressCountriesRepository } from '@repositories/prisma/address-countries-repository'
+import { PrismaAcademicPublicationsRepository } from '@repositories/prisma/prisma-academic-publications-repository'
+import { PrismaAddressStatesRepository } from '@repositories/prisma/prisma-address-states-repository'
+import { PrismaAddressesRepository } from '@repositories/prisma/prisma-addresses-repository'
+import { PrismaAuthenticationAuditsRepository } from '@repositories/prisma/prisma-authentication-audits-repository'
+import { PrismaBlogsRepository } from '@repositories/prisma/prisma-blogs-repository'
+import { PrismaDirectorBoardRepository } from '@repositories/prisma/prisma-director-board-repository'
+import { PrismaDirectorPositionsRepository } from '@repositories/prisma/prisma-director-positions-repository'
+import { PrismaEnrolledCoursesRepository } from '@repositories/prisma/prisma-enrolled-courses-repository'
+import { PrismaInstitutionalInfoRepository } from '@repositories/prisma/prisma-institutional-info-repository'
+import { PrismaInstitutionsRepository } from '@repositories/prisma/prisma-institutions-repository'
+import { PrismaKeywordsRepository } from '@repositories/prisma/prisma-keywords-repository'
+import { PrismaMeetingEnrollmentsRepository } from '@repositories/prisma/prisma-meeting-enrollments-repository'
+import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-repository'
+import { PrismaNewslettersRepository } from '@repositories/prisma/prisma-newsletters-repository'
+import { PrismaSliderImagesRepository } from '@repositories/prisma/prisma-slider-images-repository'
+import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
+import type { DependencyContainer } from 'tsyringe'
+import { registerRepository } from '../../register-repository'
+import { tokens } from '../../tokens'
+import { PrismaActivityAreasRepository } from '@repositories/prisma/prisma-activity-area-repository'
+
+export function registerRepositories(container: DependencyContainer) {
+  registerRepository({
+    contextKey: tokens.repositories.academicPublications,
+    container,
+    target: PrismaAcademicPublicationsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.activityAreas,
+    container,
+    target: PrismaActivityAreasRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.addressCountries,
+    container,
+    target: PrismaAddressCountriesRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.addressStates,
+    container,
+    target: PrismaAddressStatesRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.addresses,
+    container,
+    target: PrismaAddressesRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.authenticationAudits,
+    container,
+    target: PrismaAuthenticationAuditsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.blogs,
+    container,
+    target: PrismaBlogsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.directorsBoard,
+    container,
+    target: PrismaDirectorBoardRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.directorPositions,
+    container,
+    target: PrismaDirectorPositionsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.enrolledCourses,
+    container,
+    target: PrismaEnrolledCoursesRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.institutionalInfo,
+    container,
+    target: PrismaInstitutionalInfoRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.institutions,
+    container,
+    target: PrismaInstitutionsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.keywords,
+    container,
+    target: PrismaKeywordsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.meetingEnrollments,
+    container,
+    target: PrismaMeetingEnrollmentsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.meetings,
+    container,
+    target: PrismaMeetingsRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.newsletters,
+    container,
+    target: PrismaNewslettersRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.sliderImages,
+    container,
+    target: PrismaSliderImagesRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.users,
+    container,
+    target: PrismaUsersRepository,
+  })
+}

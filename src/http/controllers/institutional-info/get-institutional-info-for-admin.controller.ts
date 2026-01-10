@@ -16,7 +16,7 @@ export async function getInstitutionalInfoForAdmin(_request: FastifyRequest, rep
   const formattedReply = InstitutionalInfoPresenter.toHTTP<
     InstitutionalInfoForAdminPresenterInput,
     HTTPInstitutionalInfoForAdmin
-  >(institutionalInfo, tokens.presenters.institutionalInfoForAdmin)
+  >(institutionalInfo, tokens.presenters.institutionalInfo.institutionalInfoForAdmin)
 
   return await reply.status(200).send({ data: formattedReply })
 }

@@ -9,7 +9,7 @@ export class MeetingPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.meetingDefault,
+    contextKey: string = tokens.presenters.meeting.meetingDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => MeetingPresenter.toHTTP<TInput, TOutput>(item, contextKey))

@@ -18,7 +18,7 @@ export async function updateInstitutionalInfo(request: FastifyRequest, reply: Fa
 
   const formattedReply = InstitutionalInfoPresenter.toHTTP<InstitutionalInfoPresenterInput, HTTPInstitutionalInfo>(
     institutionalInfo,
-    tokens.presenters.institutionalInfoDefault,
+    tokens.presenters.institutionalInfo.institutionalInfoDefault,
   )
 
   return await reply.status(200).send({ data: formattedReply })

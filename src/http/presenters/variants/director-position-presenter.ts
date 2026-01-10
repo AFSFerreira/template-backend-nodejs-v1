@@ -9,7 +9,7 @@ export class DirectorPositionPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.directorPositionDefault,
+    contextKey: string = tokens.presenters.directorPosition.directorPositionDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => DirectorPositionPresenter.toHTTP<TInput, TOutput>(item, contextKey))

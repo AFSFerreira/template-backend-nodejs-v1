@@ -3,10 +3,7 @@ import type {
   DirectorBoardWithUserPresenterInput,
   HTTPDirectorBoardWithUser,
 } from '@custom-types/presenter/director-board/director-board-with-user'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.directorBoardWithUser)
 export class DirectorBoardWithUserPresenter
   implements IPresenterStrategy<DirectorBoardWithUserPresenterInput, HTTPDirectorBoardWithUser>
 {

@@ -4,10 +4,7 @@ import type {
   HTTPDirectorBoardWithUserForAdmin,
 } from '@custom-types/presenter/director-board/director-board-with-user-for-admin'
 import type { JSONContent } from '@tiptap/core'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.directorBoardWithUserForAdmin)
 export class DirectorBoardWithUserForAdminPresenter
   implements IPresenterStrategy<DirectorBoardWithUserForAdminPresenterInput, HTTPDirectorBoardWithUserForAdmin>
 {

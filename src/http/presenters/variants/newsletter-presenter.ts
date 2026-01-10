@@ -9,7 +9,7 @@ export class NewsletterPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.newsletterDefault,
+    contextKey: string = tokens.presenters.newsletter.newsletterDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => NewsletterPresenter.toHTTP<TInput, TOutput>(item, contextKey))

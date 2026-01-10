@@ -16,7 +16,7 @@ export async function getUsersMetrics(_request: FastifyRequest, reply: FastifyRe
   return await reply.status(200).send({
     data: DashboardPresenter.toHTTP<DashboardUsersMetrics, HTTPDashboardUsersMetrics>(
       metrics,
-      tokens.presenters.dashboardMetricsUsers,
+      tokens.presenters.dashboardMetrics.dashboardMetricsUsers,
     ),
   })
 }

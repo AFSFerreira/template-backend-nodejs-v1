@@ -17,7 +17,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
 
   const formattedReply = UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(
     user,
-    tokens.presenters.userDetailed,
+    tokens.presenters.user.userDetailed,
   )
 
   return await reply.status(201).send({ data: formattedReply })

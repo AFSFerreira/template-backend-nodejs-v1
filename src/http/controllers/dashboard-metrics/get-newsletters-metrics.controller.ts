@@ -7,7 +7,7 @@ import { container } from 'tsyringe'
 export async function getNewslettersMetrics(_request: FastifyRequest, reply: FastifyReply) {
   const useCase = container.resolve(GetNewslettersMetricsUseCase)
   const presenter = container.resolve<DashboardNewslettersMetricsPresenter>(
-    tokens.presenters.dashboardMetricsNewsletters,
+    tokens.presenters.dashboardMetrics.dashboardMetricsNewsletters,
   )
 
   const metrics = await useCase.execute()

@@ -9,7 +9,7 @@ export class ActivityAreaPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.activityAreaDefault,
+    contextKey: string = tokens.presenters.activityArea.activityAreaDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => ActivityAreaPresenter.toHTTP<TInput, TOutput>(item, contextKey))

@@ -20,7 +20,7 @@ export async function updateDirectorBoard(request: FastifyRequest, reply: Fastif
 
   const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardWithUserPresenterInput, HTTPDirectorBoardWithUser>(
     directorBoard,
-    tokens.presenters.directorBoardWithUser,
+    tokens.presenters.directorBoard.directorBoardWithUser,
   )
 
   return await reply.status(200).send({ data: formattedReply })

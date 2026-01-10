@@ -17,7 +17,7 @@ export async function getAllAcademicPublicationsController(request: FastifyReque
   const formattedReply = AcademicPublicationPresenter.toHTTP<
     CustomAcademicPublicationWithSimplifiedDetails,
     HTTPAcademicPublication
-  >(data, tokens.presenters.academicPublicationSimplified)
+  >(data, tokens.presenters.academicPublication.academicPublicationSimplified)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

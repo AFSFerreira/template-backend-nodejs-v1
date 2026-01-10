@@ -10,7 +10,7 @@ export async function getMeetingEnrollment(request: FastifyRequest, reply: Fasti
 
   const useCase = container.resolve(GetMeetingEnrollmentUseCase)
   const presenter = container.resolve<MeetingEnrollmentDetailedWithPresentationPresenter>(
-    tokens.presenters.meetingEnrollmentDetailedWithPresentation,
+    tokens.presenters.meetingEnrollment.meetingEnrollmentDetailedWithPresentation,
   )
 
   const { enrollment } = await useCase.execute({ publicId })

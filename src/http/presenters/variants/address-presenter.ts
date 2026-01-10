@@ -9,7 +9,7 @@ export class AddressPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.addressDefault,
+    contextKey: string = tokens.presenters.address.addressDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => AddressPresenter.toHTTP<TInput, TOutput>(item, contextKey))

@@ -1,11 +1,8 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUser } from '@custom-types/presenter/user/user-default'
 import type { User } from '@prisma/client'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-@RegisterPresenter(tokens.presenters.userDefault)
 export class UserDefaultPresenter implements IPresenterStrategy<User, HTTPUser> {
   public toHTTP(input: User): HTTPUser {
     const {

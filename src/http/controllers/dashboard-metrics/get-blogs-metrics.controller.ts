@@ -16,7 +16,7 @@ export async function getBlogsMetrics(_request: FastifyRequest, reply: FastifyRe
   return await reply.status(200).send({
     data: DashboardPresenter.toHTTP<DashboardBlogsMetrics, HTTPDashboardBlogsMetrics>(
       metrics,
-      tokens.presenters.dashboardMetricsBlogs,
+      tokens.presenters.dashboardMetrics.dashboardMetricsBlogs,
     ),
   })
 }

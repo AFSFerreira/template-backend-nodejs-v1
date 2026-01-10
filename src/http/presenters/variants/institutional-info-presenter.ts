@@ -9,7 +9,7 @@ export class InstitutionalInfoPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.institutionalInfoDefault,
+    contextKey: string = tokens.presenters.institutionalInfo.institutionalInfoDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => InstitutionalInfoPresenter.toHTTP<TInput, TOutput>(item, contextKey))

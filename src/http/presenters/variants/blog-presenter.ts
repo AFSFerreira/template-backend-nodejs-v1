@@ -9,7 +9,7 @@ export class BlogPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.blogDefault,
+    contextKey: string = tokens.presenters.blog.blogDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => BlogPresenter.toHTTP<TInput, TOutput>(item, contextKey))

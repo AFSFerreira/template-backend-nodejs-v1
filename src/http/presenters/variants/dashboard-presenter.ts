@@ -9,7 +9,7 @@ export class DashboardPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.dashboardMetricsDefault,
+    contextKey: string = tokens.presenters.dashboardMetrics.dashboardMetricsDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => DashboardPresenter.toHTTP<TInput, TOutput>(item, contextKey))

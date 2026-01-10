@@ -6,6 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import type { JSONContent } from '@tiptap/core'
+import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import {
@@ -15,6 +16,7 @@ import {
 import { buildElectionNoticeUrl } from '@services/builders/urls/build-election-notice-url'
 import { buildInstitutionalAboutImageUrl } from '@services/builders/urls/build-institutional-about-image-url'
 import { buildStatuteUrl } from '@services/builders/urls/build-statute-url'
+import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
 import { persistFile } from '@services/files/persist-file'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
@@ -23,8 +25,6 @@ import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-
 import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
-import { redis } from '@lib/redis'
 
 @injectable()
 export class UpdateInstitutionalInfoUseCase {

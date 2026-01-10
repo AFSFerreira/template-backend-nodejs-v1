@@ -3,10 +3,7 @@ import type {
   HTTPInstitutionalInfo,
   InstitutionalInfoPresenterInput,
 } from '@custom-types/presenter/institutional-info/institutional-info'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.institutionalInfoDefault)
 export class InstitutionalInfoDefaultPresenter
   implements IPresenterStrategy<InstitutionalInfoPresenterInput, HTTPInstitutionalInfo>
 {

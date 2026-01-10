@@ -4,10 +4,7 @@ import type {
   HTTPBlogDetailedForAdmin,
   IBlogDetailedForAdmin,
 } from '@custom-types/presenter/blog/blog-detailed-for-admin'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.blogDetailedForAdmin)
 export class BlogDetailedForAdminPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailedForAdmin> {
   public toHTTP(input: IBlogDetailedForAdmin): HTTPBlogDetailedForAdmin {
     return {

@@ -16,7 +16,7 @@ export async function createHomePageSliderImage(request: FastifyRequest, reply: 
 
   const formattedReply = SliderImagePresenter.toHTTP<SliderImage, HTTPSliderImage>(
     sliderImage,
-    tokens.presenters.sliderImageHomePage,
+    tokens.presenters.sliderImage.sliderImageHomePage,
   )
 
   return await reply.status(201).send({ data: { sliderImage: formattedReply } })

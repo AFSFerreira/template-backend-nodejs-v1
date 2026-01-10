@@ -16,7 +16,7 @@ export async function getAllBlogs(request: FastifyRequest, reply: FastifyReply) 
 
   const formattedReply = BlogPresenter.toHTTP<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>(
     data,
-    tokens.presenters.blogSimplified,
+    tokens.presenters.blog.blogSimplified,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

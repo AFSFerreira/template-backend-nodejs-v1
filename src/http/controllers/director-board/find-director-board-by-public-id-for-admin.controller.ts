@@ -19,7 +19,7 @@ export async function findDirectorBoardByPublicIdForAdmin(request: FastifyReques
   const formattedReply = DirectorBoardPresenter.toHTTP<
     DirectorBoardWithUserForAdminPresenterInput,
     HTTPDirectorBoardWithUserForAdmin
-  >(directorBoard, tokens.presenters.directorBoardWithUserForAdmin)
+  >(directorBoard, tokens.presenters.directorBoard.directorBoardWithUserForAdmin)
 
   return await reply.status(200).send({ data: formattedReply })
 }

@@ -1,10 +1,7 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/meeting-detailed'
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.meetingDetailed)
 export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithDetails, HTTPMeetingWithDetails> {
   public toHTTP(input: MeetingWithDetails): HTTPMeetingWithDetails {
     return {

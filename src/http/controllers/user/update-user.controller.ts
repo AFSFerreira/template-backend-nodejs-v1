@@ -23,7 +23,7 @@ export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
 
   const formattedReply = UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetails>(
     user,
-    tokens.presenters.userDetailed,
+    tokens.presenters.user.userDetailed,
   )
 
   return await reply.status(200).send({ data: formattedReply })

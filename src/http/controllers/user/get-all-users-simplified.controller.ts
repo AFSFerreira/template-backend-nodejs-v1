@@ -15,7 +15,7 @@ export async function getAllUsersSimplified(request: FastifyRequest, reply: Fast
 
   const formattedReply = UserPresenter.toHTTP<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(
     data,
-    tokens.presenters.userSimplified,
+    tokens.presenters.user.userSimplified,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

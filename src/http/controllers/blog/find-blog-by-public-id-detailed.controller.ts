@@ -18,7 +18,7 @@ export async function findBlogByPublicIdRestricted(request: FastifyRequest, repl
 
   const formattedReply = BlogPresenter.toHTTP<BlogWithDetails, HTTPBlogDetailedWithContent>(
     blog,
-    tokens.presenters.blogDetailedWithContent,
+    tokens.presenters.blog.blogDetailedWithContent,
   )
 
   return await reply.status(200).send({ data: formattedReply })

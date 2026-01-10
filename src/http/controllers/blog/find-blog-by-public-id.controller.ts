@@ -16,7 +16,10 @@ export async function findBlogByPublicId(request: FastifyRequest, reply: Fastify
 
   const { blog } = await useCase.execute({ publicId: parsedParams.publicId, ip })
 
-  const formattedReply = BlogPresenter.toHTTP<BlogWithDetails, HTTPBlogDetailed>(blog, tokens.presenters.blogDetailed)
+  const formattedReply = BlogPresenter.toHTTP<BlogWithDetails, HTTPBlogDetailed>(
+    blog,
+    tokens.presenters.blog.blogDetailed,
+  )
 
   return await reply.status(200).send({ data: formattedReply })
 }

@@ -9,7 +9,7 @@ export class SliderImagePresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.sliderImageDefault,
+    contextKey: string = tokens.presenters.sliderImage.sliderImageDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => SliderImagePresenter.toHTTP<TInput, TOutput>(item, contextKey))

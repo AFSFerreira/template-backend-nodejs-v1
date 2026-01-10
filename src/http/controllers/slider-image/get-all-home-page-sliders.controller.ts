@@ -16,7 +16,7 @@ export async function getAllHomePageSliders(request: FastifyRequest, reply: Fast
 
   const formattedReply = SliderImagePresenter.toHTTP<SliderImage, HTTPSliderImage>(
     data,
-    tokens.presenters.sliderImageHomePage,
+    tokens.presenters.sliderImage.sliderImageHomePage,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

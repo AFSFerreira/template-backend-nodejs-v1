@@ -9,7 +9,7 @@ export class MeetingEnrollmentPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.meetingEnrollmentDefault,
+    contextKey: string = tokens.presenters.meetingEnrollment.meetingEnrollmentDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => MeetingEnrollmentPresenter.toHTTP<TInput, TOutput>(item, contextKey))

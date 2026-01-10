@@ -16,7 +16,7 @@ export async function createMeeting(request: FastifyRequest, reply: FastifyReply
 
   const formattedReply = MeetingPresenter.toHTTP<MeetingWithDetails, HTTPMeetingWithDetails>(
     meeting,
-    tokens.presenters.meetingDetailed,
+    tokens.presenters.meeting.meetingDetailed,
   )
 
   return await reply.status(201).send({ data: formattedReply })

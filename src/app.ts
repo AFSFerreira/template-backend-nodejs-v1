@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 import '@lib/tsyringe/index'
 import '@lib/zod/index'
-import '@presenters/load-presenters'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'

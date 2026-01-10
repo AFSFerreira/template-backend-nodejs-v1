@@ -1,10 +1,7 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPBlogDetailedWithContent } from '@custom-types/presenter/blog/blog-detailed-with-content'
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RegisterPresenter } from '@presenters/presenter-registry'
 
-@RegisterPresenter(tokens.presenters.blogDetailedWithContent)
 export class BlogDetailedWithContentPresenter
   implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailedWithContent>
 {
