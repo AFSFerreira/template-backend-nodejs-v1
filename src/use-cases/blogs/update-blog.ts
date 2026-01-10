@@ -182,9 +182,6 @@ export class UpdateBlogUseCase {
             throw new BlogBannerPersistError()
           }
 
-          // Remove a imagem antiga somente após persistir a nova:
-          await deleteFile(buildBlogBannerPath(blog.bannerImage))
-
           updateData.bannerImage = persistedBanner
         }
       }
@@ -220,6 +217,11 @@ export class UpdateBlogUseCase {
         id: blog.id,
         data: updateData,
       })
+
+      // Remove a imagem antiga somente após update bem-sucedido:
+      if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
+        await deleteFile(buildBlogBannerPath(blog.bannerImage))
+      }
 
       // Remover cache HTML do blog para forçar regeneração
       await removeBlogHTMLCache({ blogId: blog.id, redis })

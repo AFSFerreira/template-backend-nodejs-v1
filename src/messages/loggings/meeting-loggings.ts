@@ -11,3 +11,7 @@ export const MEETING_AGENDA_UPLOADED_SUCCESSFULLY = 'Programa de reunião carreg
 export const MEETING_CREATION_SUCCESSFUL = 'Reunião criada com sucesso'
 
 export const MEETING_CREATION_ERROR = 'Erro ao criar reunião'
+
+export const MEETING_UPDATED_SUCCESSFULLY = 'Reunião atualizada com sucesso'
+
+export const MEETING_UPDATE_ERROR = 'Erro ao atualizar reunião'

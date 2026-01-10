@@ -1,0 +1,124 @@
+import type {
+  UpdateNewsletterUseCaseRequest,
+  UpdateNewsletterUseCaseResponse,
+} from '@custom-types/use-cases/newsletters/update-newsletter'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { Prisma } from '@prisma/client'
+import type { NewslettersRepository } from '@repositories/newsletters-repository'
+import { logger } from '@lib/logger'
+import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/newsletter-loggings'
+import {
+  buildNewsletterHtmlPath,
+  buildNewsletterTempHtmlPath,
+} from '@services/builders/paths/build-newsletter-html-path'
+import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
+import { moveFile } from '@services/files/move-file'
+import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsletter-already-exists-error'
+import { NewsletterHtmlPersistError } from '@use-cases/errors/newsletter/newsletter-html-persist-error'
+import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
+import { deleteFile } from '@utils/files/delete-file'
+import { ensureExists } from '@utils/validators/ensure'
+import { inject, injectable } from 'tsyringe'
+
+@injectable()
+export class UpdateNewsletterUseCase {
+  constructor(
+    @inject(tokens.repositories.newsletters)
+    private readonly newslettersRepository: NewslettersRepository,
+
+    @inject(tokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
+
+  async execute({ publicId, body }: UpdateNewsletterUseCaseRequest): Promise<UpdateNewsletterUseCaseResponse> {
+    const { newsletter } = await this.dbContext.runInTransaction(async () => {
+      try {
+        const newsletter = ensureExists({
+          value: await this.newslettersRepository.findByPublicId(publicId),
+          error: new NewsletterNotFoundError(),
+        })
+
+        const updateData: Prisma.NewsletterUpdateInput = {}
+
+        if (body.sequenceNumber || body.editionNumber || body.volume) {
+          const sequenceNumber = body.sequenceNumber ?? newsletter.sequenceNumber
+          const editionNumber = body.editionNumber ?? newsletter.editionNumber
+          const volume = body.volume ?? newsletter.volume
+
+          // Verifica se já existe uma newsletter com os mesmos dados (exceto a atual):
+          const conflictingNewsletter = await this.newslettersRepository.findConflictingNewsletter({
+            sequenceNumber,
+            editionNumber,
+            volume,
+          })
+
+          if (conflictingNewsletter && conflictingNewsletter.id !== newsletter.id) {
+            throw new NewsletterAlreadyExistsError()
+          }
+
+          if (body.sequenceNumber) {
+            updateData.sequenceNumber = body.sequenceNumber
+          }
+
+          if (body.editionNumber) {
+            updateData.editionNumber = body.editionNumber
+          }
+
+          if (body.volume) {
+            updateData.volume = body.volume
+          }
+        }
+
+        if (body.contentFilename && body.contentFilename !== newsletter.content) {
+          ensureExists({
+            value: await moveFile({
+              oldFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
+              newFilePath: buildNewsletterHtmlPath(body.contentFilename),
+            }),
+            error: new NewsletterHtmlPersistError(),
+          })
+
+          updateData.content = body.contentFilename
+        }
+
+        const updatedNewsletter = await this.newslettersRepository.update({
+          id: newsletter.id,
+          data: updateData,
+        })
+
+        // Remove o arquivo antigo somente após update bem-sucedido:
+        if (body.contentFilename && body.contentFilename !== newsletter.content) {
+          await deleteFile(buildNewsletterHtmlPath(newsletter.content))
+        }
+
+        return { newsletter: updatedNewsletter }
+      } catch (error) {
+        // Restaurando o arquivo incorretamente persistido:
+        if (body.contentFilename) {
+          await moveFile({
+            oldFilePath: buildNewsletterHtmlPath(body.contentFilename),
+            newFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
+          })
+        }
+
+        throw error
+      }
+    })
+
+    logger.info(
+      {
+        newsletterPublicId: newsletter.publicId,
+        sequenceNumber: newsletter.sequenceNumber,
+      },
+      NEWSLETTER_UPDATED_SUCCESSFULLY,
+    )
+
+    return {
+      newsletter: {
+        ...newsletter,
+        content: buildNewsletterHtmlUrl(newsletter.content),
+      },
+    }
+  }
+}

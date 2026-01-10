@@ -1,5 +1,6 @@
 import type { CreateMeetingQuery } from '@custom-types/repository/meeting/create-meeting-query'
 import type { ListAllMeetingsQuery } from '@custom-types/repository/meeting/list-all-meetings-query'
+import type { UpdateMeetingQuery } from '@custom-types/repository/meeting/update-meeting-query'
 import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
@@ -45,6 +46,15 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
   async findByPublicId(publicId: string) {
     const meeting = await this.dbContext.client.meeting.findUnique({
       where: { publicId },
+      include: meetingWithDetails.include,
+    })
+    return meeting
+  }
+
+  async update(query: UpdateMeetingQuery) {
+    const meeting = await this.dbContext.client.meeting.update({
+      where: { id: query.id },
+      data: query.data,
       include: meetingWithDetails.include,
     })
     return meeting

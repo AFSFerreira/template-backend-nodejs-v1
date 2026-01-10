@@ -5,12 +5,14 @@ import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-li
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import z from 'zod'
 
-export const createMeetingBodySchema = z.object({
-  title: limitedNonemptyTextSchema,
-  bannerImage: longLimitedNonemptyTextSchema,
-  agenda: longLimitedNonemptyTextSchema,
-  description: nonemptyTextSchema,
-  location: limitedNonemptyTextSchema,
-  dates: rangedDateArraySchema.min(1),
-  paymentInfo: meetingPaymentInfo,
-})
+export const updateMeetingBodySchema = z
+  .object({
+    title: limitedNonemptyTextSchema,
+    bannerImage: longLimitedNonemptyTextSchema,
+    agenda: longLimitedNonemptyTextSchema,
+    description: nonemptyTextSchema,
+    location: limitedNonemptyTextSchema,
+    dates: rangedDateArraySchema.min(1),
+    paymentInfo: meetingPaymentInfo,
+  })
+  .partial()
