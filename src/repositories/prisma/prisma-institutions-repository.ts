@@ -91,11 +91,17 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
   }
 
   async listAllInstitutionsWithUsersCount(query?: ListAllInstitutionsWithUsersQuery) {
+    const where: Prisma.InstitutionWhereInput = {
+      User: {
+        some: {},
+      },
+    }
+
     const orderBy: Prisma.InstitutionOrderByWithRelationInput[] = [
-      ...(query?.orderBy?.usersCount
+      ...(query?.orderBy?.usersCountOrder
         ? [
             {
-              User: { _count: query.orderBy.usersCount },
+              User: { _count: query.orderBy.usersCountOrder },
             },
           ]
         : []),
@@ -110,6 +116,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
 
     if (!query) {
       const institutions = await this.dbContext.client.institution.findMany({
+        where,
         orderBy: [{ User: { _count: 'desc' } }, { id: 'asc' }],
         include,
       })
@@ -133,8 +140,9 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 
     const [countResult, institutions] = await Promise.all([
-      this.dbContext.client.institution.count(),
+      this.dbContext.client.institution.count({ where }),
       this.dbContext.client.institution.findMany({
+        where,
         skip,
         take,
         orderBy,

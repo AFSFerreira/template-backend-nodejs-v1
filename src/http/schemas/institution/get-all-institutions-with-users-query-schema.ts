@@ -6,7 +6,7 @@ export const getAllInstitutionsWithUsersQueryRawSchema = z
   .object({
     orderBy: z
       .object({
-        usersCount: orderDirectionsEnumSchema.default('desc'),
+        usersCountOrder: orderDirectionsEnumSchema.default('desc'),
       })
       .partial(),
   })
@@ -17,7 +17,7 @@ export const getAllInstitutionsWithUsersQuerySchema = z.preprocess(
   (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
-      ...(query.usersCount ? { usersCount: query.usersCount } : {}),
+      ...(query.usersCountOrder ? { usersCountOrder: query.usersCountOrder } : {}),
     },
   }),
   getAllInstitutionsWithUsersQueryRawSchema,

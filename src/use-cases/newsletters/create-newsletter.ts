@@ -2,12 +2,12 @@ import type {
   CreateNewsletterUseCaseRequest,
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY, NEWSLETTER_CREATION_ERROR } from '@messages/loggings/newsletter-loggings'
-import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,

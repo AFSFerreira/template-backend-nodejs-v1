@@ -4,7 +4,7 @@ import { evalOffset } from '@utils/generics/eval-offset'
 
 export function buildListAllBlogsDetailedQuery(query: IBuildGetAllBlogsDetailedQuerySchemaType) {
   const conditions: Prisma.Sql[] = [
-    Prisma.sql`(b.editorial_status != ${EditorialStatusType.DRAFT}::"EditorialStatusType" OR (b.editorial_status = ${EditorialStatusType.DRAFT}::"EditorialStatusType" AND b.user_id = ${query.userId}))`,
+    Prisma.sql`b.editorial_status != ${EditorialStatusType.DRAFT}::"EditorialStatusType"`,
   ]
 
   const scores: Prisma.Sql[] = []

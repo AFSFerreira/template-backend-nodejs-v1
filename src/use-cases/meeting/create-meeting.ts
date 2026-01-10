@@ -2,12 +2,12 @@ import type {
   CreateMeetingUseCaseRequest,
   CreateMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/create-meeting'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/meeting-loggings'
-import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
