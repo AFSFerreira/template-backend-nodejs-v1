@@ -10,6 +10,7 @@ import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_UPDATED_SUCCESSFULLY } from '@messages/loggings/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
+import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { moveFile } from '@services/files/move-file'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
@@ -146,6 +147,7 @@ export class UpdateMeetingUseCase {
     return {
       meeting: {
         ...meeting,
+        agenda: buildMeetingAgendaUrl(meeting.agenda),
         bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
       },
     }

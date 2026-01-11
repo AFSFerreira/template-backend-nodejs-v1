@@ -4,6 +4,7 @@ import type {
 } from '@custom-types/use-cases/meeting/find-by-public-id'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -25,6 +26,7 @@ export class FindMeetingByPublicIdUseCase {
     return {
       meeting: {
         ...meeting,
+        agenda: buildMeetingAgendaUrl(meeting.agenda),
         bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
       },
     }

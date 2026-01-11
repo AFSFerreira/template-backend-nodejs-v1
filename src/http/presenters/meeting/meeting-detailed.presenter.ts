@@ -7,6 +7,7 @@ export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithD
     return {
       id: input.publicId,
       title: input.title,
+      agenda: input.agenda,
       bannerImage: input.bannerImage,
       description: input.description,
       location: input.location,

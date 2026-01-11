@@ -10,6 +10,7 @@ import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
+import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { moveFile } from '@services/files/move-file'
 import { moveFiles } from '@services/files/move-files'
@@ -67,6 +68,7 @@ export class CreateMeetingUseCase {
       return {
         meeting: {
           ...meeting,
+          agenda: buildMeetingAgendaUrl(meeting.agenda),
           bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
         },
       }
