@@ -1,5 +1,7 @@
+import type { FileInput, HTTPFile } from '@custom-types/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { meetingAgendaMultipartFileConfig } from '@constants/multipart-configuration-constants'
+import { FilePresenter } from '@presenters/file-presenter'
 import { documentSchema } from '@schemas/utils/generic-components/document-schema'
 import { UploadMeetingAgendaUseCase } from '@use-cases/meeting/upload-meeting-agenda'
 import { container } from 'tsyringe'
@@ -11,7 +13,9 @@ export async function uploadMeetingAgenda(request: FastifyRequest, reply: Fastif
 
   const useCase = container.resolve(UploadMeetingAgendaUseCase)
 
-  const { filename: savedFilename } = await useCase.execute({ filePart })
+  const uploadedFile = await useCase.execute({ filePart })
 
-  return await reply.status(200).send({ data: { meetingAgenda: savedFilename } })
+  const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
+
+  return await reply.status(200).send({ data: formattedReply })
 }

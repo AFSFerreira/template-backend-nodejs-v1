@@ -98,5 +98,9 @@ export const tokens = {
       dashboardMetricsUsers: 'dashboard-metrics:users',
       dashboardMetricsNewsletters: 'dashboard-metrics:newsletters',
     },
+
+    file: {
+      fileDefault: 'file:default',
+    },
   },
 }

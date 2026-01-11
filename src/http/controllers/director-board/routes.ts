@@ -45,7 +45,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
 
   // POST
   app.post(
-    '/uploads/temp-profile-image',
+    '/uploads/profile-image',
     {
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
     },

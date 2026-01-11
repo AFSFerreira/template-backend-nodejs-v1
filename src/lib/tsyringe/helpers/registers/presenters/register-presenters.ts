@@ -6,6 +6,7 @@ import { registerBlogPresenters } from './variants/blogs'
 import { registerDashboardMetricsPresenters } from './variants/dashboard-metrics'
 import { registerDirectorBoardPresenters } from './variants/director-boards'
 import { registerDirectorPositionPresenters } from './variants/director-positions'
+import { registerFilePresenters } from './variants/files'
 import { registerInstitutionalInfoPresenters } from './variants/institutional-info'
 import { registerInstitutionPresenters } from './variants/institutions'
 import { registerMeetingEnrollmentPresenters } from './variants/meeting-enrollments'
@@ -23,6 +24,7 @@ export function registerPresenterServices(container: DependencyContainer) {
   registerDashboardMetricsPresenters(container)
   registerDirectorBoardPresenters(container)
   registerDirectorPositionPresenters(container)
+  registerFilePresenters(container)
   registerInstitutionalInfoPresenters(container)
   registerInstitutionPresenters(container)
   registerMeetingEnrollmentPresenters(container)
