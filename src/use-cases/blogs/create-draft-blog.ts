@@ -20,12 +20,12 @@ import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
+import { moveFiles } from '@services/files/move-files'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
-import { deleteFiles } from '@utils/files/delete-files'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -50,34 +50,29 @@ export class CreateDraftBlogUseCase {
   ) {}
 
   async execute(createDraftBlogUseCaseInput: CreateDraftBlogUseCaseRequest): Promise<CreateDraftBlogUseCaseResponse> {
-    const searchContent = getProseMirrorText({ proseMirror: createDraftBlogUseCaseInput.content, tiptapConfiguration })
-
-    if (!searchContent) {
-      throw new InvalidBlogContentError()
-    }
-
-    // Persistir banner do blog da pasta temporária para a pasta definitiva:
-    const persistedBanner = await persistFile({
-      oldFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
-      newFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
+    const searchContent = ensureExists({
+      value: getProseMirrorText({ proseMirror: createDraftBlogUseCaseInput.content, tiptapConfiguration }),
+      error: new InvalidBlogContentError(),
     })
 
-    if (!persistedBanner) {
-      throw new BlogBannerPersistError()
-    }
+    // Persistir banner do blog da pasta temporária para a pasta definitiva:
+    ensureExists({
+      value: await moveFile({
+        oldFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
+        newFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
+      }),
+      error: new BlogBannerPersistError(),
+    })
 
     // Persistir imagens do blog da pasta temporária para a pasta definitiva:
-    const newBannerImagePath = buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage)
-
     const oldToNewImagesLinkMap = new Map<string, string>()
 
     const formatedBlogImages = Array.from(extractProseMirrorImages(createDraftBlogUseCaseInput.content)).map(
       (imageLink) => {
-        const imageName = sanitizeUrlFilename(imageLink)
-
-        if (!imageName) {
-          throw new BlogInvalidImageLinkError()
-        }
+        const imageName = ensureExists({
+          value: sanitizeUrlFilename(imageLink),
+          error: new BlogInvalidImageLinkError(),
+        })
 
         oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
 
@@ -97,11 +92,10 @@ export class CreateDraftBlogUseCase {
       // Persistindo as novas imagens do blog:
       await Promise.all(
         formatedBlogImages.map(async (imageInfo) => {
-          const imagePersistResult = await persistFile(imageInfo)
-
-          if (!imagePersistResult) {
-            throw new BlogImagePersistError()
-          }
+          ensureExists({
+            value: await moveFile(imageInfo),
+            error: new BlogImagePersistError(),
+          })
         }),
       )
 
@@ -159,8 +153,17 @@ export class CreateDraftBlogUseCase {
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 
-      // Remove as imagens de blog e a imagem de banner previamente persistida:
-      await deleteFiles([...formatedBlogImages.map((imageInfo) => imageInfo.newFilePath), newBannerImagePath])
+      // Restaurando as imagens de blog e a imagem de banner previamente persistida:
+      await moveFiles([
+        ...formatedBlogImages.map((imageInfo) => ({
+          oldFilePath: imageInfo.newFilePath,
+          newFilePath: imageInfo.oldFilePath,
+        })),
+        {
+          oldFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
+          newFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
+        },
+      ])
 
       throw error
     }

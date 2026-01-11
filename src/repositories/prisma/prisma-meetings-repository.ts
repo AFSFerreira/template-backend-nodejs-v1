@@ -1,5 +1,6 @@
 import type { CreateMeetingQuery } from '@custom-types/repository/meeting/create-meeting-query'
 import type { ListAllMeetingsQuery } from '@custom-types/repository/meeting/list-all-meetings-query'
+import type { UpdateMeetingQuery } from '@custom-types/repository/meeting/update-meeting-query'
 import type { OrderableType } from '@custom-types/validators/orderable'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
@@ -50,6 +51,15 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     return meeting
   }
 
+  async update(query: UpdateMeetingQuery) {
+    const meeting = await this.dbContext.client.meeting.update({
+      where: { id: query.id },
+      data: query.data,
+      include: meetingWithDetails.include,
+    })
+    return meeting
+  }
+
   async listAllMeetings(query?: ListAllMeetingsQuery) {
     const orderBy: Prisma.MeetingOrderByWithRelationInput[] = [
       { lastDate: 'desc' as OrderableType },
@@ -77,6 +87,10 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     const lastDateConstraint = mapMeetingStatusToDateFilter(query.status)
 
     const where: Prisma.MeetingWhereInput = {
+      title: {
+        contains: query.title,
+        mode: 'insensitive',
+      },
       lastDate: lastDateConstraint,
     }
 

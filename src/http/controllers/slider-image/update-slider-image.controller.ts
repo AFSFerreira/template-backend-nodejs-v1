@@ -1,7 +1,7 @@
 import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slider-image-default'
 import type { SliderImage } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { SliderImagePresenter } from '@presenters/variants/slider-image-presenter'
+import { SliderImagePresenter } from '@presenters/slider-image-presenter'
 import { updateSliderImageBodySchema } from '@schemas/slider-image/update-slider-image-body-schema'
 import { updateSliderImageParamsSchema } from '@schemas/slider-image/update-slider-image-params-schema'
 import { UpdateSliderImageUseCase } from '@use-cases/slider-image/update-slider-image'

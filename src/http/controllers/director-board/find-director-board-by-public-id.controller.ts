@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/director-board/director-board-with-user'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DirectorBoardPresenter } from '@presenters/variants/director-board-presenter'
+import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { findDirectorBoardByPublicIdParamsSchema } from '@schemas/director-board/find-director-board-by-public-id-params-schema'
 import { FindDirectorBoardByPublicIdUseCase } from '@use-cases/director-board/find-by-public-id'
 import { container } from 'tsyringe'
@@ -18,7 +18,7 @@ export async function findDirectorBoardByPublicId(request: FastifyRequest, reply
 
   const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardWithUserPresenterInput, HTTPDirectorBoardWithUser>(
     directorBoard,
-    tokens.presenters.directorBoardWithUser,
+    tokens.presenters.directorBoard.directorBoardWithUser,
   )
 
   return await reply.status(200).send({ data: formattedReply })

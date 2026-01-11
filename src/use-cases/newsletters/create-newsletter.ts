@@ -13,9 +13,8 @@ import {
   buildNewsletterTempHtmlPath,
 } from '@services/builders/paths/build-newsletter-html-path'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
-import { persistFile } from '@services/files/persist-file'
-import { deleteFile } from '@utils/files/delete-file'
-import { ensureNotExists } from '@utils/validators/ensure'
+import { moveFile } from '@services/files/move-file'
+import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { NewsletterAlreadyExistsError } from '../errors/newsletter/newsletter-already-exists-error'
 import { NewsletterHtmlPersistError } from '../errors/newsletter/newsletter-html-persist-error'
@@ -33,14 +32,13 @@ export class CreateNewsletterUseCase {
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
     const { contentFilename, ...filteredCreatedNewsletterInput } = createNewsletterInput
 
-    const content = await persistFile({
-      oldFilePath: buildNewsletterTempHtmlPath(contentFilename),
-      newFilePath: buildNewsletterHtmlPath(contentFilename),
+    ensureExists({
+      value: await moveFile({
+        oldFilePath: buildNewsletterTempHtmlPath(contentFilename),
+        newFilePath: buildNewsletterHtmlPath(contentFilename),
+      }),
+      error: new NewsletterHtmlPersistError(),
     })
-
-    if (!content) {
-      throw new NewsletterHtmlPersistError()
-    }
 
     try {
       const { newsletter } = await this.dbContext.runInTransaction(async () => {
@@ -78,7 +76,11 @@ export class CreateNewsletterUseCase {
     } catch (error) {
       logError({ error, message: NEWSLETTER_CREATION_ERROR })
 
-      await deleteFile(content)
+      // Restaurando o arquivo incorretamente persistido:
+      await moveFile({
+        oldFilePath: buildNewsletterHtmlPath(contentFilename),
+        newFilePath: buildNewsletterTempHtmlPath(contentFilename),
+      })
 
       throw error
     }

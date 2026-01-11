@@ -19,7 +19,7 @@ import {
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
@@ -28,7 +28,6 @@ import { DirectorBoardUserRoleForbiddenError } from '@use-cases/errors/director-
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -89,7 +88,7 @@ export class CreateDirectorBoardUseCase {
 
         if (profileImage) {
           ensureExists({
-            value: await persistFile({
+            value: await moveFile({
               oldFilePath: buildDirectorBoardTempProfileImagePath(profileImage),
               newFilePath: buildDirectorBoardProfileImagePath(profileImage),
             }),
@@ -120,9 +119,12 @@ export class CreateDirectorBoardUseCase {
     } catch (error) {
       logError({ error, message: DIRECTOR_BOARD_CREATION_ERROR })
 
+      // Restaurando a imagem incorretamente persistida:
       if (profileImage) {
-        // Remover a imagem incorretamente persistida em caso de erro:
-        await deleteFile(buildDirectorBoardProfileImagePath(profileImage))
+        await moveFile({
+          oldFilePath: buildDirectorBoardProfileImagePath(profileImage),
+          newFilePath: buildDirectorBoardTempProfileImagePath(profileImage),
+        })
       }
 
       throw error

@@ -135,6 +135,7 @@ export function buildListAllUsersDetailedQuery(query: IBuildListAllUsersDetailed
       u.full_name,
       u.profile_image,
       u.email,
+      u.role,
       u.email_is_public,
       ast.name as state,
       i.name as institution_name

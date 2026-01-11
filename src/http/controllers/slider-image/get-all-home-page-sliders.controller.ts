@@ -2,7 +2,7 @@ import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slide
 import type { SliderImage } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { SliderImagePresenter } from '@presenters/variants/slider-image-presenter'
+import { SliderImagePresenter } from '@presenters/slider-image-presenter'
 import { getAllHomePageSlidersSchema } from '@schemas/slider-image/get-all-home-page-sliders-schema'
 import { GetAllHomePageSlidersUseCase } from '@use-cases/slider-image/get-all-home-page-sliders'
 import { container } from 'tsyringe'
@@ -16,7 +16,7 @@ export async function getAllHomePageSliders(request: FastifyRequest, reply: Fast
 
   const formattedReply = SliderImagePresenter.toHTTP<SliderImage, HTTPSliderImage>(
     data,
-    tokens.presenters.sliderImageHomePage,
+    tokens.presenters.sliderImage.sliderImageHomePage,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

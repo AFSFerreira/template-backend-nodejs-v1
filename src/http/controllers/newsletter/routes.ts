@@ -7,6 +7,7 @@ import { createNewsletter } from './create-newsletter.controller'
 import { deleteNewsletter } from './delete-newsletter.controller'
 import { findNewsletterByPublicId } from './find-newsletter-by-public-id.controller'
 import { getAllNewsletters } from './get-all-newsletters.controller'
+import { updateNewsletter } from './update-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
 
 export async function newsletterRoutes(app: FastifyInstance) {
@@ -28,6 +29,15 @@ export async function newsletterRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     createNewsletter,
+  )
+
+  // PATCH
+  app.patch(
+    '/:publicId',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    updateNewsletter,
   )
 
   // DELETE

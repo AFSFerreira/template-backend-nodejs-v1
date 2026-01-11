@@ -1,7 +1,7 @@
 import type { HTTPBlog } from '@custom-types/presenter/blog/blog-default'
 import type { Blog } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { BlogPresenter } from '@presenters/variants/blog-presenter'
+import { BlogPresenter } from '@presenters/blog-presenter'
 import { submitPendingToPublishParamsSchema } from '@schemas/blog/submit-review-to-publish-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { SubmitPendingToPublishUseCase } from '@use-cases/blogs/submit-pending-to-publish'

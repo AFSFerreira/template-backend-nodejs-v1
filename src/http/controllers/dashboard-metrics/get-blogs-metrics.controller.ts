@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/dashboard-metrics/dashboard-blogs-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DashboardPresenter } from '@presenters/variants/dashboard-presenter'
+import { DashboardPresenter } from '@presenters/dashboard-presenter'
 import { GetBlogsMetricsUseCase } from '@use-cases/dashboard-metrics/get-blogs-metrics'
 import { container } from 'tsyringe'
 
@@ -16,7 +16,7 @@ export async function getBlogsMetrics(_request: FastifyRequest, reply: FastifyRe
   return await reply.status(200).send({
     data: DashboardPresenter.toHTTP<DashboardBlogsMetrics, HTTPDashboardBlogsMetrics>(
       metrics,
-      tokens.presenters.dashboardMetricsBlogs,
+      tokens.presenters.dashboardMetrics.dashboardMetricsBlogs,
     ),
   })
 }

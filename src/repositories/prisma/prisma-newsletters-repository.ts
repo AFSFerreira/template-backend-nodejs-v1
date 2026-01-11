@@ -1,6 +1,7 @@
 import type { CreateNewsletterQuery } from '@custom-types/repository/newsletter/create-newsletter-query'
 import type { FindConflictingNewsletterQuery } from '@custom-types/repository/newsletter/find-conflicting-newsletter-query'
 import type { ListAllNewslettersQuery } from '@custom-types/repository/newsletter/list-all-newsletters-query'
+import type { UpdateNewsletterQuery } from '@custom-types/repository/newsletter/update-newsletter-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Newsletter, Prisma } from '@prisma/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
@@ -31,6 +32,14 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
       where: {
         OR: [{ sequenceNumber }, { editionNumber, volume }],
       },
+    })
+    return newsletter
+  }
+
+  async update(query: UpdateNewsletterQuery) {
+    const newsletter = await this.dbContext.client.newsletter.update({
+      where: { id: query.id },
+      data: query.data,
     })
     return newsletter
   }
@@ -66,9 +75,18 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
     }
 
     const where: Prisma.NewsletterWhereInput = {
-      editionNumber: query.editionNumber,
-      sequenceNumber: query.sequenceNumber,
-      volume: query.volume,
+      editionNumber: {
+        contains: query.editionNumber,
+        mode: 'insensitive',
+      },
+      sequenceNumber: {
+        contains: query.sequenceNumber,
+        mode: 'insensitive',
+      },
+      volume: {
+        contains: query.volume,
+        mode: 'insensitive',
+      },
     }
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })

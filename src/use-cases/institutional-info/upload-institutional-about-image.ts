@@ -29,8 +29,8 @@ export class UploadInstitutionalAboutImageUseCase {
         specs: {
           chromaSubsampling: '4:4:4',
           quality: 80,
-        }
-      }
+        },
+      },
     })
 
     if (!success || filePart.file.truncated) {

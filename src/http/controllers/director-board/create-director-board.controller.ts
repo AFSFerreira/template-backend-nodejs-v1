@@ -3,7 +3,7 @@ import type {
   HTTPDirectorBoard,
 } from '@custom-types/presenter/director-board/director-board-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DirectorBoardPresenter } from '@presenters/variants/director-board-presenter'
+import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { createDirectorBoardBodySchema } from '@schemas/director-board/create-director-board-body-schema'
 import { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
 import { container } from 'tsyringe'

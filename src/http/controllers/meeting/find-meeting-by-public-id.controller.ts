@@ -2,7 +2,7 @@ import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/mee
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingPresenter } from '@presenters/variants/meeting-presenter'
+import { MeetingPresenter } from '@presenters/meeting-presenter'
 import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-params-schema'
 import { FindMeetingByPublicIdUseCase } from '@use-cases/meeting/find-by-public-id'
 import { container } from 'tsyringe'
@@ -16,7 +16,7 @@ export async function findMeetingByPublicId(request: FastifyRequest, reply: Fast
 
   const formattedReply = MeetingPresenter.toHTTP<MeetingWithDetails, HTTPMeetingWithDetails>(
     meeting,
-    tokens.presenters.meetingDetailed,
+    tokens.presenters.meeting.meetingDetailed,
   )
 
   return await reply.status(200).send({ data: formattedReply })

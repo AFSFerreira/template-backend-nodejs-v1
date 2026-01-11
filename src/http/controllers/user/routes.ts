@@ -82,7 +82,7 @@ export async function userRoutes(app: FastifyInstance) {
     refreshToken,
   )
   app.post(
-    '/uploads/temp-profile-image',
+    '/uploads/profile-image',
     {
       ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyMultipart],

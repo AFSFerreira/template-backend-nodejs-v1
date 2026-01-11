@@ -2,6 +2,8 @@ export const STATIC_USER_PROFILE_IMAGE_ROUTE = '/static/users/profile-images/'
 
 export const STATIC_MEETING_BANNERS_IMAGE_ROUTE = '/static/meetings/banners/'
 
+export const STATIC_MEETING_AGENDAS_ROUTE = '/static/meetings/agendas/'
+
 export const STATIC_BLOG_BANNERS_IMAGE_ROUTE = '/static/blogs/banners/'
 export const STATIC_TEMP_BLOG_BANNERS_IMAGE_ROUTE = '/static/blogs/temp-banners/'
 

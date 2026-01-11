@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/institutional-info/institutional-info'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { InstitutionalInfoPresenter } from '@presenters/variants/institutional-info-presenter'
+import { InstitutionalInfoPresenter } from '@presenters/institutional-info-presenter'
 import { updateInstitutionalInfoBodySchema } from '@schemas/institutional-info/update-institutional-info-body-schema'
 import { UpdateInstitutionalInfoUseCase } from '@use-cases/institutional-info/update-institutional-info'
 import { container } from 'tsyringe'
@@ -18,7 +18,7 @@ export async function updateInstitutionalInfo(request: FastifyRequest, reply: Fa
 
   const formattedReply = InstitutionalInfoPresenter.toHTTP<InstitutionalInfoPresenterInput, HTTPInstitutionalInfo>(
     institutionalInfo,
-    tokens.presenters.institutionalInfoDefault,
+    tokens.presenters.institutionalInfo.institutionalInfoDefault,
   )
 
   return await reply.status(200).send({ data: formattedReply })

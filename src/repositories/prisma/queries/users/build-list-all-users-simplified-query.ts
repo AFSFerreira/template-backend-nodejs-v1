@@ -65,6 +65,7 @@ export function buildListAllUsersSimplifiedQuery(query: IBuildListAllUsersSimpli
       u.public_id,
       u.full_name,
       u.email,
+      u.role,
       u.email_is_public,
       ast.name as state,
       i.name as institution_name

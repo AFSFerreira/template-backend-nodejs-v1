@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/presenter/director-board/director-board-with-user'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DirectorBoardPresenter } from '@presenters/variants/director-board-presenter'
+import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { updateDirectorBoardBodySchema } from '@schemas/director-board/update-director-board-body-schema'
 import { updateDirectorBoardParamsSchema } from '@schemas/director-board/update-director-board-params-schema'
 import { UpdateDirectorBoardUseCase } from '@use-cases/director-board/update-director-board'
@@ -20,7 +20,7 @@ export async function updateDirectorBoard(request: FastifyRequest, reply: Fastif
 
   const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardWithUserPresenterInput, HTTPDirectorBoardWithUser>(
     directorBoard,
-    tokens.presenters.directorBoardWithUser,
+    tokens.presenters.directorBoard.directorBoardWithUser,
   )
 
   return await reply.status(200).send({ data: formattedReply })

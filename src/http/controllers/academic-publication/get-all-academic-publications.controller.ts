@@ -2,7 +2,7 @@ import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-typ
 import type { HTTPAcademicPublication } from '@custom-types/presenter/academic-publication/academic-publication-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { AcademicPublicationPresenter } from '@presenters/variants/academic-publication-presenter'
+import { AcademicPublicationPresenter } from '@presenters/academic-publication-presenter'
 import { getAllAcademicPublicationsQuerySchema } from '@schemas/academic-publication/get-all-academic-publications-query-schema'
 import { GetAllAcademicPublicationsUseCase } from '@use-cases/academic-publication/get-all-academic-publications'
 import { container } from 'tsyringe'
@@ -17,7 +17,7 @@ export async function getAllAcademicPublicationsController(request: FastifyReque
   const formattedReply = AcademicPublicationPresenter.toHTTP<
     CustomAcademicPublicationWithSimplifiedDetails,
     HTTPAcademicPublication
-  >(data, tokens.presenters.academicPublicationSimplified)
+  >(data, tokens.presenters.academicPublication.academicPublicationSimplified)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

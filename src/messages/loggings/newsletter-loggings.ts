@@ -5,3 +5,7 @@ export const NEWSLETTER_HTML_UPLOADED_SUCCESSFULLY = 'HTML da newsletter carrega
 export const NEWSLETTER_CREATION_ERROR = 'Erro durante a criação da newsletter'
 
 export const NEWSLETTER_DELETION_SUCCESSFUL = 'Newsletter deletada com sucesso'
+
+export const NEWSLETTER_UPDATED_SUCCESSFULLY = 'Newsletter atualizada com sucesso'
+
+export const NEWSLETTER_UPDATE_ERROR = 'Erro ao atualizar newsletter'

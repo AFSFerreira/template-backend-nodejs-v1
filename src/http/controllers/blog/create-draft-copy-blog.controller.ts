@@ -1,7 +1,7 @@
 import type { HTTPBlog } from '@custom-types/presenter/blog/blog-default'
 import type { Blog } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { BlogPresenter } from '@presenters/variants/blog-presenter'
+import { BlogPresenter } from '@presenters/blog-presenter'
 import { createDraftCopyBlogParamsSchema } from '@schemas/blog/create-draft-copy-blog-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDraftCopyBlogUseCase } from '@use-cases/blogs/create-draft-copy-blog'

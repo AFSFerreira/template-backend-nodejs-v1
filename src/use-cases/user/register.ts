@@ -20,7 +20,7 @@ import {
   buildUserTempProfileImagePath,
 } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -31,7 +31,6 @@ import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exis
 import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hash } from 'bcryptjs'
@@ -64,7 +63,7 @@ export class RegisterUseCase {
     let profileImage = DEFAULT_PROFILE_IMAGE_NAME
 
     if (registerUseCaseInput.user.profileImage) {
-      const profileImagePersistSucessful = await persistFile({
+      const profileImagePersistSucessful = await moveFile({
         oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
         newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
       })
@@ -193,9 +192,12 @@ export class RegisterUseCase {
     } catch (error) {
       logError({ error, message: USER_CREATION_ERROR })
 
-      // Removendo imagem incorretamente persistida:
+      // Restaurando a imagem incorretamente persistida:
       if (registerUseCaseInput.user.profileImage) {
-        await deleteFile(buildUserProfileImagePath(registerUseCaseInput.user.profileImage))
+        await moveFile({
+          oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+          newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+        })
       }
 
       throw error

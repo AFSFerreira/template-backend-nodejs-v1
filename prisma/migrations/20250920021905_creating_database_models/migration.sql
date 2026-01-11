@@ -547,9 +547,6 @@ CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("publi
 CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "newsletters"("sequence_number");
 
 -- CreateIndex
-CREATE INDEX "newsletters_edition_number_idx" ON "newsletters"("edition_number");
-
--- CreateIndex
 CREATE UNIQUE INDEX "newsletters_volume_edition_number_key" ON "newsletters"("volume", "edition_number");
 
 -- CreateIndex

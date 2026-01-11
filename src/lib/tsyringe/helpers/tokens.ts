@@ -23,66 +23,85 @@ export const tokens = {
     database: 'DatabaseContext',
   },
   presenters: {
-    // User
-    userDefault: 'user:default',
-    userDetailed: 'user:detailed',
-    userDetailedForAdmin: 'user:detailed-for-admin',
-    userSimplified: 'user:simplified',
+    user: {
+      userDefault: 'user:default',
+      userDetailed: 'user:detailed',
+      userDetailedForAdmin: 'user:detailed-for-admin',
+      userSimplified: 'user:simplified',
+      userSimplifiedForAdmin: 'user:simplified-for-admin',
+    },
 
-    // Academic Publication
-    academicPublicationDefault: 'academic-publication:default',
-    academicPublicationSimplified: 'academic-publication:simplified',
+    academicPublication: {
+      academicPublicationDefault: 'academic-publication:default',
+      academicPublicationSimplified: 'academic-publication:simplified',
+    },
 
-    // Activity Area
-    activityAreaDefault: 'activity-area:default',
+    activityArea: {
+      activityAreaDefault: 'activity-area:default',
+    },
 
-    // Address
-    addressDefault: 'address:default',
-    addressWithUsersCount: 'address:users-count',
+    address: {
+      addressDefault: 'address:default',
+      addressWithUsersCount: 'address:users-count',
+    },
 
-    // Blog
-    blogDefault: 'blog:default',
-    blogSimplified: 'blog:simplified',
-    blogDetailed: 'blog:detailed',
-    blogDetailedForAdmin: 'blog:detailed-for-admin',
-    blogDetailedWithContent: 'blog:detailed-with-content',
+    blog: {
+      blogDefault: 'blog:default',
+      blogSimplified: 'blog:simplified',
+      blogDetailed: 'blog:detailed',
+      blogDetailedForAdmin: 'blog:detailed-for-admin',
+      blogDetailedWithContent: 'blog:detailed-with-content',
+    },
 
-    // Director Board
-    directorBoardDefault: 'director-board:default',
-    directorBoardWithUser: 'director-board:with-user',
-    directorBoardWithUserForAdmin: 'director-board:with-user-admin',
+    directorBoard: {
+      directorBoardDefault: 'director-board:default',
+      directorBoardWithUser: 'director-board:with-user',
+      directorBoardWithUserForAdmin: 'director-board:with-user-admin',
+    },
 
-    // Institutional Info
-    institutionalInfoDefault: 'institutional-info:default',
-    institutionalInfoForAdmin: 'institutional-info:for-admin',
+    institutionalInfo: {
+      institutionalInfoDefault: 'institutional-info:default',
+      institutionalInfoForAdmin: 'institutional-info:for-admin',
+    },
 
-    // Director Position
-    directorPositionDefault: 'director-position:default',
+    directorPosition: {
+      directorPositionDefault: 'director-position:default',
+    },
 
-    // Institution
-    institutionDefault: 'institution:default',
-    institutionWithUsersCount: 'institution:with-users-count',
+    institution: {
+      institutionDefault: 'institution:default',
+      institutionWithUsersCount: 'institution:with-users-count',
+    },
 
-    // Meeting
-    meetingDefault: 'meeting:default',
-    meetingDetailed: 'meeting:detailed',
+    meeting: {
+      meetingDefault: 'meeting:default',
+      meetingDetailed: 'meeting:detailed',
+    },
 
-    // Meeting Enrollment
-    meetingEnrollmentDefault: 'meeting-enrollment:default',
-    meetingEnrollmentDetailed: 'meeting-enrollment:detailed',
-    meetingEnrollmentDetailedWithPresentation: 'meeting-enrollment:detailed-with-presentation',
+    meetingEnrollment: {
+      meetingEnrollmentDefault: 'meeting-enrollment:default',
+      meetingEnrollmentDetailed: 'meeting-enrollment:detailed',
+      meetingEnrollmentDetailedWithPresentation: 'meeting-enrollment:detailed-with-presentation',
+    },
 
-    // Newsletter
-    newsletterDefault: 'newsletter:default',
+    newsletter: {
+      newsletterDefault: 'newsletter:default',
+    },
 
-    // Slider Image
-    sliderImageDefault: 'slider-image:default',
-    sliderImageHomePage: 'slider-image:home-page',
+    sliderImage: {
+      sliderImageDefault: 'slider-image:default',
+      sliderImageHomePage: 'slider-image:home-page',
+    },
 
-    // Dashboard Metrics
-    dashboardMetricsDefault: 'dashboard-metrics:default',
-    dashboardMetricsBlogs: 'dashboard-metrics:blogs',
-    dashboardMetricsUsers: 'dashboard-metrics:users',
-    dashboardMetricsNewsletters: 'dashboard-metrics:newsletters',
+    dashboardMetrics: {
+      dashboardMetricsDefault: 'dashboard-metrics:default',
+      dashboardMetricsBlogs: 'dashboard-metrics:blogs',
+      dashboardMetricsUsers: 'dashboard-metrics:users',
+      dashboardMetricsNewsletters: 'dashboard-metrics:newsletters',
+    },
+
+    file: {
+      fileDefault: 'file:default',
+    },
   },
 }

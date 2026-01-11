@@ -21,7 +21,7 @@ import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogEditorialStatusChangeForbiddenError } from '@use-cases/errors/blog/blog-editorial-status-change-forbidden-error'
@@ -96,11 +96,10 @@ export class UpdateBlogUseCase {
       }
 
       if (body.content) {
-        const searchContent = getProseMirrorText({ proseMirror: body.content, tiptapConfiguration })
-
-        if (!searchContent) {
-          throw new InvalidBlogContentError()
-        }
+        const searchContent = ensureExists({
+          value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
+          error: new InvalidBlogContentError(),
+        })
 
         const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
         const newBlogImages = extractProseMirrorImages(body.content)
@@ -113,18 +112,17 @@ export class UpdateBlogUseCase {
         // Persistindo as novas imagens do blog:
         await Promise.all(
           Array.from(newImages).map(async (imageLink) => {
-            const imageName = sanitizeUrlFilename(imageLink)
-
-            if (!imageName) {
-              throw new BlogInvalidImageLinkError()
-            }
+            const imageName = ensureExists({
+              value: sanitizeUrlFilename(imageLink),
+              error: new BlogInvalidImageLinkError(),
+            })
 
             oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
 
             const oldFilePath = buildBlogTempImagePath(imageName)
             const newFilePath = buildBlogImagePath(imageName)
 
-            const imagePersistResult = await persistFile({
+            const imagePersistResult = await moveFile({
               oldFilePath,
               newFilePath,
               options: {
@@ -150,11 +148,10 @@ export class UpdateBlogUseCase {
         // Apagando as imagens removidas do blog:
         await Promise.all(
           Array.from(removedImages).map(async (image) => {
-            const filenameFromUrl = sanitizeUrlFilename(image)
-
-            if (!filenameFromUrl) {
-              throw new BlogInvalidImageLinkError()
-            }
+            const filenameFromUrl = ensureExists({
+              value: sanitizeUrlFilename(image),
+              error: new BlogInvalidImageLinkError(),
+            })
 
             await deleteFile(buildBlogImagePath(filenameFromUrl))
           }),
@@ -170,14 +167,13 @@ export class UpdateBlogUseCase {
       }
 
       if (body.bannerImage) {
-        const newBannerImage = sanitizeUrlFilename(body.bannerImage)
-
-        if (!newBannerImage) {
-          throw new BlogInvalidBannerLinkError()
-        }
+        const newBannerImage = ensureExists({
+          value: sanitizeUrlFilename(body.bannerImage),
+          error: new BlogInvalidBannerLinkError(),
+        })
 
         if (newBannerImage !== blog.bannerImage) {
-          const persistedBanner = await persistFile({
+          const persistedBanner = await moveFile({
             oldFilePath: buildBlogTempBannerPath(newBannerImage),
             newFilePath: buildBlogBannerPath(newBannerImage),
           })
@@ -185,9 +181,6 @@ export class UpdateBlogUseCase {
           if (!persistedBanner) {
             throw new BlogBannerPersistError()
           }
-
-          // Remove a imagem antiga somente após persistir a nova:
-          await deleteFile(buildBlogBannerPath(blog.bannerImage))
 
           updateData.bannerImage = persistedBanner
         }
@@ -224,6 +217,11 @@ export class UpdateBlogUseCase {
         id: blog.id,
         data: updateData,
       })
+
+      // Remove a imagem antiga somente após update bem-sucedido:
+      if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
+        await deleteFile(buildBlogBannerPath(blog.bannerImage))
+      }
 
       // Remover cache HTML do blog para forçar regeneração
       await removeBlogHTMLCache({ blogId: blog.id, redis })

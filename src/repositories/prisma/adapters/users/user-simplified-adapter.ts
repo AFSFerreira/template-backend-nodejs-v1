@@ -9,6 +9,7 @@ export function userSimplifiedAdapter(
   return {
     id: customSimplifiedUser.id,
     publicId: customSimplifiedUser.public_id,
+    role: customSimplifiedUser.role,
     fullName: customSimplifiedUser.full_name,
     profileImage: customSimplifiedUser.profile_image,
     email: customSimplifiedUser.email,

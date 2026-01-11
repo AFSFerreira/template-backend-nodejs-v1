@@ -1,4 +1,4 @@
-import { getStatusFilterMap } from '@constants/maps'
+import { getStatusFilterMap } from './get-status-filter-map'
 
 export function mapMeetingStatusToDateFilter(status: string | undefined) {
   const STATUS_FILTER_MAP = getStatusFilterMap()

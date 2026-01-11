@@ -15,14 +15,13 @@ import {
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { persistFile } from '@services/files/persist-file'
+import { moveFile } from '@services/files/move-file'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -49,7 +48,7 @@ export class UpdateDirectorBoardUseCase {
     try {
       if (data.profileImage) {
         ensureExists({
-          value: await persistFile({
+          value: await moveFile({
             oldFilePath: buildDirectorBoardTempProfileImagePath(data.profileImage),
             newFilePath: buildDirectorBoardProfileImagePath(data.profileImage),
           }),
@@ -116,8 +115,12 @@ export class UpdateDirectorBoardUseCase {
         },
       }
     } catch (error) {
+      // Restaurando a imagem incorretamente persistida:
       if (persistedProfileImage) {
-        await deleteFile(buildDirectorBoardProfileImagePath(persistedProfileImage))
+        await moveFile({
+          oldFilePath: buildDirectorBoardProfileImagePath(persistedProfileImage),
+          newFilePath: buildDirectorBoardTempProfileImagePath(persistedProfileImage),
+        })
       }
 
       throw error
