@@ -1,10 +1,12 @@
 import { meetingStatusEnumSchema } from '@schemas/utils/enums/meeting-status-enum-schema'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
+import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
 
 export const getAllMeetingsQueryRawSchema = z
   .object({
+    title: limitedNonemptyTextSchema,
     status: meetingStatusEnumSchema.default('ALL'),
     orderBy: z
       .object({

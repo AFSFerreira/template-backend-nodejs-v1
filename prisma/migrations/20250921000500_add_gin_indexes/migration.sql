@@ -58,3 +58,10 @@ CREATE INDEX IF NOT EXISTS idx_newsletters_volume_trgm_gin
 ON public.newsletters USING GIN (volume gin_trgm_ops);
 
 REINDEX INDEX idx_newsletters_volume_trgm_gin;
+
+--------------------------------------------------------
+
+CREATE INDEX IF NOT EXISTS idx_meeting_title_trgm_gin
+ON public.meetings USING GIN (title gin_trgm_ops);
+
+REINDEX INDEX idx_meeting_title_trgm_gin;

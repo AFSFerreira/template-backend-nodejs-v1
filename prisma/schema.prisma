@@ -367,6 +367,7 @@ model Meeting {
   MeetingEnrollment  MeetingEnrollment[]
 
   @@index([lastDate])
+  @@index([title(ops: raw("gin_trgm_ops"))], map: "idx_meeting_title_trgm_gin", type: Gin)
   @@map("meetings")
 }
 

@@ -87,6 +87,10 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     const lastDateConstraint = mapMeetingStatusToDateFilter(query.status)
 
     const where: Prisma.MeetingWhereInput = {
+      title: {
+        contains: query.title,
+        mode: 'insensitive',
+      },
       lastDate: lastDateConstraint,
     }
 
