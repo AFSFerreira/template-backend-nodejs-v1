@@ -6,7 +6,7 @@ export const meetingData1: Prisma.MeetingCreateInput = {
   bannerImage: 'meeting-2018.png',
   description:
     'Incididunt velit id enim ullamco reprehenderit fugiat fugiat consectetur. Consectetur amet dolore excepteur voluptate ex mollit. Minim magna Lorem anim ex nostrud velit. Commodo est dolor adipisicing aliqua adipisicing Lorem officia proident duis eu. Sunt fugiat adipisicing ullamco aliqua consequat dolore. Est non amet laboris eu magna.',
-  agenda: '2021',
+  agenda: '2021.pdf',
   location: 'Universidade Cruzeiro do Sul - Campus Anália Franco',
   lastDate: new Date('2018-07-12'),
   MeetingDate: {
@@ -27,7 +27,7 @@ export const meetingData2: Prisma.MeetingCreateInput = {
   bannerImage: 'meeting-2019.png',
   description:
     'Incididunt velit id enim ullamco reprehenderit fugiat fugiat consectetur. Consectetur amet dolore excepteur voluptate ex mollit. Minim magna Lorem anim ex nostrud velit. Commodo est dolor adipisicing aliqua adipisicing Lorem officia proident duis eu. Sunt fugiat adipisicing ullamco aliqua consequat dolore. Est non amet laboris eu magna.',
-  agenda: '2021',
+  agenda: '2021.pdf',
   location: 'Instituto de Astronomia, Geofísica e Ciências Atmosféricas - Universidade de São Paulo',
   lastDate: new Date('2019-10-18'),
   MeetingDate: {
@@ -48,7 +48,7 @@ export const meetingData4: Prisma.MeetingCreateInput = {
   bannerImage: 'meeting-2021.png',
   description:
     'Incididunt velit id enim ullamco reprehenderit fugiat fugiat consectetur. Consectetur amet dolore excepteur voluptate ex mollit. Minim magna Lorem anim ex nostrud velit. Commodo est dolor adipisicing aliqua adipisicing Lorem officia proident duis eu. Sunt fugiat adipisicing ullamco aliqua consequat dolore. Est non amet laboris eu magna.',
-  agenda: '2021',
+  agenda: '2021.pdf',
   location: 'Evento Online',
   lastDate: new Date('2021-11-26'),
   MeetingDate: {
@@ -69,7 +69,7 @@ export const meetingData5: Prisma.MeetingCreateInput = {
   bannerImage: 'meeting-2022.png',
   description:
     'Incididunt velit id enim ullamco reprehenderit fugiat fugiat consectetur. Consectetur amet dolore excepteur voluptate ex mollit. Minim magna Lorem anim ex nostrud velit. Commodo est dolor adipisicing aliqua adipisicing Lorem officia proident duis eu. Sunt fugiat adipisicing ullamco aliqua consequat dolore. Est non amet laboris eu magna.',
-  agenda: '2022',
+  agenda: '2022.pdf',
   location: 'Rio de Janeiro',
   lastDate: new Date('2022-11-18'),
   MeetingDate: {
@@ -93,7 +93,7 @@ export const meetingData6: Prisma.MeetingCreateInput = {
   bannerImage: 'meeting-2023.png',
   description:
     'Incididunt velit id enim ullamco reprehenderit fugiat fugiat consectetur. Consectetur amet dolore excepteur voluptate ex mollit. Minim magna Lorem anim ex nostrud velit. Commodo est dolor adipisicing aliqua adipisicing Lorem officia proident duis eu. Sunt fugiat adipisicing ullamco aliqua consequat dolore. Est non amet laboris eu magna.',
-  agenda: '2023',
+  agenda: '2023.pdf',
   location: 'Campus Butantã, Cidade Universitária, USP - São Paulo',
   lastDate: new Date('2023-12-08'),
   MeetingDate: {
@@ -114,7 +114,7 @@ export const meetingData7: Prisma.MeetingCreateInput = {
   bannerImage: 'meeting-2024.png',
   description:
     'Incididunt velit id enim ullamco reprehenderit fugiat fugiat consectetur. Consectetur amet dolore excepteur voluptate ex mollit. Minim magna Lorem anim ex nostrud velit. Commodo est dolor adipisicing aliqua adipisicing Lorem officia proident duis eu. Sunt fugiat adipisicing ullamco aliqua consequat dolore. Est non amet laboris eu magna.',
-  agenda: '2024',
+  agenda: '2024.pdf',
   location: 'Observatório Nacional, Rio de Janeiro',
   lastDate: new Date('2024-09-06'),
   MeetingDate: {
@@ -136,7 +136,7 @@ export const meetingData7: Prisma.MeetingCreateInput = {
 export const meetingData8: Prisma.MeetingCreateInput = {
   title: 'VIII REUNIÃO ANUAL',
   bannerImage: 'meeting-2025.png',
-  agenda: '2025',
+  agenda: '2025.pdf',
   description:
     'A Sociedade Brasileira de Astrobiologia (SBA) tem o prazer de anunciar a realização da sua 8ª Reunião Anual. Este evento consolidado tornou-se o principal ponto de encontro para pesquisadores, estudantes e profissionais dedicados a compreender a origem, evolução, distribuição e o futuro da vida no universo. Nesta 8ª edição, buscaremos fortalecer ainda mais a colaboração interdisciplinar que define nossa área, unindo Astronomia, Biologia, Geologia, Química e Ciências Humanas. A reunião será um espaço vital para apresentar novas descobertas, discutir desafios metodológicos e fomentar novas parcerias no cenário científico brasileiro e internacional.',
   location: 'Instituto Oceanográfico - USP - São Paulo',
