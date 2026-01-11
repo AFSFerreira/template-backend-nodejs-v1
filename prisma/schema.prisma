@@ -419,6 +419,9 @@ model Newsletter {
 
   @@unique([volume, editionNumber])
   @@index([editionNumber])
+  @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
+  @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
+  @@index([volume(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_volume_trgm_gin", type: Gin)
   @@map("newsletters")
 }
 

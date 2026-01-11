@@ -75,9 +75,18 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
     }
 
     const where: Prisma.NewsletterWhereInput = {
-      editionNumber: query.editionNumber,
-      sequenceNumber: query.sequenceNumber,
-      volume: query.volume,
+      editionNumber: {
+        contains: query.editionNumber,
+        mode: 'insensitive',
+      },
+      sequenceNumber: {
+        contains: query.sequenceNumber,
+        mode: 'insensitive',
+      },
+      volume: {
+        contains: query.volume,
+        mode: 'insensitive',
+      },
     }
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
