@@ -28,6 +28,7 @@ export const tokens = {
       userDetailed: 'user:detailed',
       userDetailedForAdmin: 'user:detailed-for-admin',
       userSimplified: 'user:simplified',
+      userSimplifiedForAdmin: 'user:simplified-for-admin',
     },
 
     academicPublication: {
