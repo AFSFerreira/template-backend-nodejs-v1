@@ -1,4 +1,4 @@
-import type { IApiError } from '@custom-types/custom/api-error-type'
+import type { IApiError } from '@custom-types/errors/api-error'
 
 export const DIRECTOR_POSITION_ALREADY_EXISTS: IApiError = {
   status: 409,

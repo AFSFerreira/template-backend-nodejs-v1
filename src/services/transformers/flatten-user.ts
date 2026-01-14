@@ -1,4 +1,4 @@
-import type { FlattenedUser } from '@custom-types/services/flatten-user'
+import type { FlattenedUser } from '@custom-types/services/transformers/flatten-user'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { Keyword } from '@prisma/client'
 import type { JSONContent } from '@tiptap/core'

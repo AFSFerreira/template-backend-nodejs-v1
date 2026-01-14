@@ -1,4 +1,4 @@
-import type { IRegisterBlogViews } from '@custom-types/services/register-blog-views'
+import type { IRegisterBlogViews } from '@custom-types/services/cache/register-blog-views'
 import { BLOG_IP_VIEW_TTL } from '@constants/timing-constants'
 import { logger } from '@lib/logger'
 import { BLOG_VISUALIZATION_CACHED } from '@messages/loggings/blog-loggings'

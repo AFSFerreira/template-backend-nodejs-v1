@@ -1,4 +1,4 @@
-import type { IMoveFile } from '@custom-types/services/move-file'
+import type { IMoveFile } from '@custom-types/services/files/move-file'
 import path from 'node:path'
 import { logError } from '@lib/logger/helpers/log-error'
 import { FILE_PERSIST_ERROR } from '@messages/loggings/file-loggings'

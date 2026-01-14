@@ -1,5 +1,5 @@
 import type { UpdateUserLowLevelEducationType } from '@custom-types/schemas/utils/update-user-low-level-education-type'
-import type { HasOptionalEducationLevel } from '@custom-types/services/has-education-level'
+import type { HasOptionalEducationLevel } from '@custom-types/services/guards/has-education-level'
 import { LOW_LEVEL_EDUCATION_TYPE_SET } from '@constants/sets'
 
 export function isUpdateUserLowLevelEducation<T extends HasOptionalEducationLevel>(

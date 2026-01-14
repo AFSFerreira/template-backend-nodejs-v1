@@ -1,4 +1,4 @@
-import type { EducationLevelTransformData } from '@custom-types/custom/education-level-transform-data'
+import type { EducationLevelTransformData } from '@custom-types/http/schemas/education-level-transform-data'
 import type { RefinementCtx, ZodType } from 'zod'
 import { INVALID_EDUCATION_LEVEL_TYPE } from '@messages/validations/user-validations'
 import { EducationLevelType } from '@prisma/client'

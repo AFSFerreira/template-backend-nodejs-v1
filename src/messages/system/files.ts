@@ -1,4 +1,4 @@
-import type { ISystemError } from '@custom-types/custom/system-error-types'
+import type { ISystemError } from '@custom-types/errors/system-error'
 
 export const INVALID_FILESYSTEM_PATHS: ISystemError = {
   code: 'INVALID_FILESYSTEM_PATHS',

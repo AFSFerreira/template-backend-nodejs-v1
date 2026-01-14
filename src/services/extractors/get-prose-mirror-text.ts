@@ -1,4 +1,4 @@
-import type { IGetProseMirrorText } from '@custom-types/services/get-prose-mirror-text'
+import type { IGetProseMirrorText } from '@custom-types/services/extractors/get-prose-mirror-text'
 import { SEARCH_CONTENT_TEXT_LIMIT } from '@constants/size-constants'
 import { generateText } from '@tiptap/core'
 

@@ -1,4 +1,4 @@
-import type { ISystemError } from '@custom-types/custom/system-error-types'
+import type { ISystemError } from '@custom-types/errors/system-error'
 
 export const PRESENTER_STRATEGY_NOT_FOUND: ISystemError = {
   code: 'PRESENTER_STRATEGY_NOT_FOUND',

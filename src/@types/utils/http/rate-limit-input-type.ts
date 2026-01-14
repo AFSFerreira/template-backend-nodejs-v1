@@ -1,5 +1,5 @@
 import type { FastifyRequest } from 'fastify'
-import type { DurationString } from './duration-string-type'
+import type { DurationString } from '../../custom/duration-string-type'
 
 export interface RateLimitInput {
   max?: number

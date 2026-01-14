@@ -1,4 +1,4 @@
-import type { IMoveFile } from '@custom-types/services/move-file'
+import type { IMoveFile } from '@custom-types/services/files/move-file'
 import { moveFile } from './move-file'
 
 export async function moveFiles(files: IMoveFile[]) {

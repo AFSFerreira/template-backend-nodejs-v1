@@ -2,7 +2,7 @@ import type {
   IGetDirectorBoardHTMLCached,
   IRemoveDirectorBoardHTMLCache,
   ISetDirectorBoardHTMLCache,
-} from '@custom-types/services/director-board-html-cache'
+} from '@custom-types/services/cache/director-board-html-cache'
 import { DIRECTOR_BOARD_HTML_CACHE_TTL } from '@constants/timing-constants'
 import { logger } from '@lib/logger'
 import {

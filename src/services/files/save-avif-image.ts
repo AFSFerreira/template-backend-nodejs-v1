@@ -1,5 +1,5 @@
-import type { ImageInfo } from '@custom-types/services/image-info'
-import type { ISaveAvifImage } from '@custom-types/services/save-avif-image'
+import type { ImageInfo } from '@custom-types/services/files/image-info'
+import type { ISaveAvifImage } from '@custom-types/services/files/save-avif-image'
 import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'

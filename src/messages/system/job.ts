@@ -1,4 +1,4 @@
-import type { ISystemError } from '@custom-types/custom/system-error-types'
+import type { ISystemError } from '@custom-types/errors/system-error'
 
 export const JOB_NAME_ALREADY_EXISTS: ISystemError = {
   code: 'JOB_NAME_ALREADY_EXISTS',

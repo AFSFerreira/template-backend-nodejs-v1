@@ -1,5 +1,5 @@
-import type { ImageInfo } from '@custom-types/services/image-info'
-import type { ISaveSliderImage } from '@custom-types/services/save-slider-image'
+import type { ImageInfo } from '@custom-types/services/files/image-info'
+import type { ISaveSliderImage } from '@custom-types/services/files/save-slider-image'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { deleteFile } from '@utils/files/delete-file'

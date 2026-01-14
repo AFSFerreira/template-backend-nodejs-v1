@@ -1,4 +1,4 @@
-import type { IApiError } from '@custom-types/custom/api-error-type'
+import type { IApiError } from '@custom-types/errors/api-error'
 import { MAX_DOCUMENT_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 

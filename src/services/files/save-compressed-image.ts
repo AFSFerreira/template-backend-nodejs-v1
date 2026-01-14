@@ -1,5 +1,5 @@
-import type { CompressedImageInfo } from '@custom-types/services/compressed-image-info'
-import type { SaveCompressedImage } from '@custom-types/services/save-compressed-image'
+import type { CompressedImageInfo } from '@custom-types/services/files/compressed-image-info'
+import type { SaveCompressedImage } from '@custom-types/services/files/save-compressed-image'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'

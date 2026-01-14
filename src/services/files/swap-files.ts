@@ -1,4 +1,4 @@
-import type { IswapFiles } from '@custom-types/services/swap-multipart-files'
+import type { IswapFiles } from '@custom-types/services/files/swap-multipart-files'
 import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { logError } from '@lib/logger/helpers/log-error'

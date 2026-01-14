@@ -2,7 +2,7 @@ import type {
   IGetBlogHTMLCached,
   IRemoveBlogHTMLCache,
   ISetBlogHTMLCache,
-} from '@custom-types/services/blogs-html-cache'
+} from '@custom-types/services/cache/blogs-html-cache'
 import { BLOG_HTML_CACHE_TTL } from '@constants/timing-constants'
 import { logger } from '@lib/logger'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/blog-loggings'
