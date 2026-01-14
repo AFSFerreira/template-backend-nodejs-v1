@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   HTTPInstitutionalInfo,
   InstitutionalInfoPresenterInput,
-} from '@custom-types/presenter/institutional-info/institutional-info'
+} from '@custom-types/http/presenter/institutional-info/institutional-info'
 
 export class InstitutionalInfoDefaultPresenter
   implements IPresenterStrategy<InstitutionalInfoPresenterInput, HTTPInstitutionalInfo>

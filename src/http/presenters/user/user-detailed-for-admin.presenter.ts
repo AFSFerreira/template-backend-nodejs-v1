@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
-} from '@custom-types/presenter/user/user-detailed-for-admin'
+} from '@custom-types/http/presenter/user/user-detailed-for-admin'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 export class UserDetailedPresenterForAdmin

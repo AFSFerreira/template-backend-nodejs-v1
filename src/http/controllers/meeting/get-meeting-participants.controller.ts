@@ -1,7 +1,7 @@
 import type {
   HTTPMeetingEnrollmentDetailed,
   MeetingEnrollmentPresenterInput,
-} from '@custom-types/presenter/meeting-enrollment/meeting-enrollment-detailed'
+} from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingEnrollmentPresenter } from '@presenters/meeting-enrollment-presenter'

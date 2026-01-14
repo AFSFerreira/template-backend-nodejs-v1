@@ -1,4 +1,4 @@
-import type { UpdateUserLowLevelEducationType } from '@custom-types/schemas/utils/update-user-low-level-education-type'
+import type { UpdateUserLowLevelEducationType } from '@custom-types/http/schemas/user/update-user-low-level-education-type'
 import type { HasOptionalEducationLevel } from '@custom-types/services/guards/has-education-level'
 import { LOW_LEVEL_EDUCATION_TYPE_SET } from '@constants/sets'
 

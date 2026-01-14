@@ -1,5 +1,5 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { GetAllDirectorPositionsSchemaType } from '@custom-types/schemas/director-position/get-all-director-positions-schema'
+import type { GetAllDirectorPositionsSchemaType } from '@custom-types/http/schemas/director-position/get-all-director-positions-schema'
 import type { DirectorPosition } from '@prisma/client'
 
 export interface GetAllDirectorPositionsUseCaseRequest extends GetAllDirectorPositionsSchemaType {}

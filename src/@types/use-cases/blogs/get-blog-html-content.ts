@@ -1,4 +1,4 @@
-import type { GetBlogHtmlContentParamsSchemaType } from '@custom-types/schemas/blog/get-blog-html-content-params-schema'
+import type { GetBlogHtmlContentParamsSchemaType } from '@custom-types/http/schemas/blog/get-blog-html-content-params-schema'
 
 export interface GetBlogHTMLContentUseCaseRequest extends GetBlogHtmlContentParamsSchemaType {}
 

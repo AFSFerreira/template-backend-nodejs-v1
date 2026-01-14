@@ -1,4 +1,4 @@
-import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/enrolled-course/update-enrolled-course-query'
+import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/prisma/enrolled-course/update-enrolled-course-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { EnrolledCoursesRepository } from '../enrolled-courses-repository'

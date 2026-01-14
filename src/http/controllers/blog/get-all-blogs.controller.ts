@@ -1,5 +1,5 @@
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
-import type { HTTPSimplifiedBlog } from '@custom-types/presenter/blog/blog-simplified'
+import type { HTTPSimplifiedBlog } from '@custom-types/http/presenter/blog/blog-simplified'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/blog-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'

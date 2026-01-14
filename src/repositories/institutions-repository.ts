@@ -1,7 +1,7 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { InstitutionsUsersCount } from '@custom-types/repository/institution/institutions-users-count'
-import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/institution/list-all-institutions-names-query'
-import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/institution/list-all-institutions-with-users-query'
+import type { InstitutionsUsersCount } from '@custom-types/repository/prisma/institution/institutions-users-count'
+import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-names-query'
+import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-with-users-query'
 import type { Institution, Prisma } from '@prisma/client'
 
 export interface InstitutionsRepository {

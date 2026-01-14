@@ -1,7 +1,7 @@
 import type {
   CustomUserWithSimplifiedDetails,
   UserWithSimplifiedDetailsRaw,
-} from '@custom-types/adapter/user-simplified'
+} from '@custom-types/repository/prisma/adapter/user-simplified'
 
 export function userSimplifiedAdapter(
   customSimplifiedUser: UserWithSimplifiedDetailsRaw,

@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPMeeting } from '@custom-types/presenter/meeting/meeting-default'
+import type { HTTPMeeting } from '@custom-types/http/presenter/meeting/meeting-default'
 import type { Meeting } from '@prisma/client'
 
 export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTPMeeting> {

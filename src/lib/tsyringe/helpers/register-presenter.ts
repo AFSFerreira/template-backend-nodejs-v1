@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { IRegisterPresenter } from '@custom-types/libs/tsyringe/register-presenter'
+import type { IRegisterPresenter } from '@custom-types/lib/tsyringe/register-presenter'
 import { logger } from '@lib/logger'
 import { PresenterStrategyAlreadyExistsError } from '@lib/tsyringe/errors/presenters/presenter-strategy-already-exists-error'
 import { PRESENTER_STRATEGY_ALREADY_EXISTS_LOG } from '@messages/loggings/system-loggings'

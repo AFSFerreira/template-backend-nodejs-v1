@@ -1,4 +1,4 @@
-import type { UpdateUserHighLevelStudentEducationType } from '@custom-types/schemas/utils/update-user-high-level-student-education-type'
+import type { UpdateUserHighLevelStudentEducationType } from '@custom-types/http/schemas/user/update-user-high-level-student-education-type'
 import type { HasOptionalEducationLevel } from '@custom-types/services/guards/has-education-level'
 import { HIGH_LEVEL_EDUCATION_STUDENT_TYPE_SET } from '@constants/sets'
 

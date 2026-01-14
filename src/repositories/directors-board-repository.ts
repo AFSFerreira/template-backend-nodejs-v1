@@ -1,7 +1,7 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { CreateDirectorBoardQuery } from '@custom-types/repository/director-board/create-director-board-query'
-import type { listAllDirectorBoardMembers } from '@custom-types/repository/director-board/list-all-director-board-members'
-import type { UpdateDirectorBoardQuery } from '@custom-types/repository/director-board/update-director-board-query'
+import type { CreateDirectorBoardQuery } from '@custom-types/repository/prisma/director-board/create-director-board-query'
+import type { listAllDirectorBoardMembers } from '@custom-types/repository/prisma/director-board/list-all-director-board-members'
+import type { UpdateDirectorBoardQuery } from '@custom-types/repository/prisma/director-board/update-director-board-query'
 import type { DirectorBoardWithUser } from '@custom-types/validators/director-board-with-user'
 import type { DirectorBoard } from '@prisma/client'
 

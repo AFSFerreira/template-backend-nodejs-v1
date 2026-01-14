@@ -1,6 +1,6 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { ListAllDirectorPositionsQuery } from '@custom-types/repository/director-position/list-all-director-positions-query'
-import type { UpdateDirectorPositionQuery } from '@custom-types/repository/director-position/update-director-position-query'
+import type { ListAllDirectorPositionsQuery } from '@custom-types/repository/prisma/director-position/list-all-director-positions-query'
+import type { UpdateDirectorPositionQuery } from '@custom-types/repository/prisma/director-position/update-director-position-query'
 import type { DirectorPosition, Prisma } from '@prisma/client'
 
 export interface DirectorPositionsRepository {

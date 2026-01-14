@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPDirectorPosition } from '@custom-types/presenter/director-position/director-position-default'
+import type { HTTPDirectorPosition } from '@custom-types/http/presenter/director-position/director-position-default'
 import type { DirectorPosition } from '@prisma/client'
 
 export class DirectorPositionDefaultPresenter implements IPresenterStrategy<DirectorPosition, HTTPDirectorPosition> {

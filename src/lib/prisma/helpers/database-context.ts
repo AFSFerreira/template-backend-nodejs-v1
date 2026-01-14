@@ -1,4 +1,4 @@
-import type { PrismaTransactionClient } from '@custom-types/libs/prisma/prisma-transaction-client'
+import type { PrismaTransactionClient } from '@custom-types/lib/prisma/prisma-transaction-client'
 import type { PrismaClient } from '@prisma/client'
 import { asyncLocalStorage } from '@lib/async-local-storage'
 import { AsyncLocalStorageNotInitializedError } from '@services/errors/async-local-storage/async-local-storage-not-initialized-error'

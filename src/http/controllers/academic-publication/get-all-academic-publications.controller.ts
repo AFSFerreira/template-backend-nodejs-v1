@@ -1,5 +1,5 @@
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/adapter/academic-publication-simplified'
-import type { HTTPAcademicPublication } from '@custom-types/presenter/academic-publication/academic-publication-default'
+import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
+import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { AcademicPublicationPresenter } from '@presenters/academic-publication-presenter'

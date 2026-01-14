@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slider-image-default'
+import type { HTTPSliderImage } from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { SliderImage } from '@prisma/client'
 
 export class HomePageSliderImagePresenter implements IPresenterStrategy<SliderImage, HTTPSliderImage> {

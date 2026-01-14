@@ -1,4 +1,4 @@
-import type { IRegisterRepository } from '@custom-types/libs/tsyringe/register-repository'
+import type { IRegisterRepository } from '@custom-types/lib/tsyringe/register-repository'
 import { logger } from '@lib/logger'
 import { RepositoryAlreadyExistsError } from '@lib/tsyringe/errors/repositories/repository-already-exists-error'
 import { PRESENTER_STRATEGY_ALREADY_EXISTS_LOG } from '@messages/loggings/system-loggings'

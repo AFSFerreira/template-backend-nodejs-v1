@@ -1,7 +1,7 @@
 import type {
   DirectorBoardWithUserPresenterInput,
   HTTPDirectorBoardWithUser,
-} from '@custom-types/presenter/director-board/director-board-with-user'
+} from '@custom-types/http/presenter/director-board/director-board-with-user'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { DirectorBoardPresenter } from '@presenters/director-board-presenter'

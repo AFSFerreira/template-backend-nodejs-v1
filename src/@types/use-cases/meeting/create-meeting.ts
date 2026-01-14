@@ -1,4 +1,4 @@
-import type { CreateMeetingBodySchemaType } from '@custom-types/schemas/meeting/create-meeting-body-schema'
+import type { CreateMeetingBodySchemaType } from '@custom-types/http/schemas/meeting/create-meeting-body-schema'
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 
 export interface CreateMeetingUseCaseRequest extends CreateMeetingBodySchemaType {}

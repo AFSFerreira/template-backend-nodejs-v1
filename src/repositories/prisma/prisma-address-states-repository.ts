@@ -1,5 +1,5 @@
-import type { AddressStateFindOrCreateQuery } from '@custom-types/repository/address-state/address-state-find-or-create-query'
-import type { ListAllAddressStateQuery } from '@custom-types/repository/address-state/list-all-address-state-query'
+import type { AddressStateFindOrCreateQuery } from '@custom-types/repository/prisma/address-state/address-state-find-or-create-query'
+import type { ListAllAddressStateQuery } from '@custom-types/repository/prisma/address-state/list-all-address-state-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'

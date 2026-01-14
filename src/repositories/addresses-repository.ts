@@ -1,4 +1,4 @@
-import type { UpdateAddressQuery } from '@custom-types/repository/address/update-address-query'
+import type { UpdateAddressQuery } from '@custom-types/repository/prisma/address/update-address-query'
 import type { Address, Prisma } from '@prisma/client'
 
 export interface AddressesRepository {

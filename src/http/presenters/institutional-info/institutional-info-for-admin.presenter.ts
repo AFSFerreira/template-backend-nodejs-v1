@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   HTTPInstitutionalInfoForAdmin,
   InstitutionalInfoForAdminPresenterInput,
-} from '@custom-types/presenter/institutional-info/institutional-info-for-admin'
+} from '@custom-types/http/presenter/institutional-info/institutional-info-for-admin'
 import type { JSONContent } from '@tiptap/core'
 
 export class InstitutionalInfoForAdminPresenter

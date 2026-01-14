@@ -1,7 +1,7 @@
 import type {
   HTTPInstitutionalInfoForAdmin,
   InstitutionalInfoForAdminPresenterInput,
-} from '@custom-types/presenter/institutional-info/institutional-info-for-admin'
+} from '@custom-types/http/presenter/institutional-info/institutional-info-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { InstitutionalInfoPresenter } from '@presenters/institutional-info-presenter'

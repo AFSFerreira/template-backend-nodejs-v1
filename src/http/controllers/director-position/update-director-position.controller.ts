@@ -1,4 +1,4 @@
-import type { HTTPDirectorPosition } from '@custom-types/presenter/director-position/director-position-default'
+import type { HTTPDirectorPosition } from '@custom-types/http/presenter/director-position/director-position-default'
 import type { DirectorPosition } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DirectorPositionPresenter } from '@presenters/director-position-presenter'

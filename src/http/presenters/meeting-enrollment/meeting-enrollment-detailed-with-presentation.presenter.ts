@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   HTTPMeetingEnrollmentDetailedWithPresentation,
   MeetingEnrollmentWithPresentationPresenterInput,
-} from '@custom-types/presenter/meeting-enrollment/meeting-enrollment-detailed-with-presentation'
+} from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed-with-presentation'
 
 export class MeetingEnrollmentDetailedWithPresentationPresenter
   implements

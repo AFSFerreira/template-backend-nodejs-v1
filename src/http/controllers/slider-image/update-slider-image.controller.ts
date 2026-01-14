@@ -1,4 +1,4 @@
-import type { HTTPSliderImage } from '@custom-types/presenter/slider-image/slider-image-default'
+import type { HTTPSliderImage } from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { SliderImage } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { SliderImagePresenter } from '@presenters/slider-image-presenter'

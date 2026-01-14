@@ -1,5 +1,5 @@
-import type { HTTPAddressStates } from '@custom-types/presenter/address/address-with-user-count'
-import type { AddressStates } from '@custom-types/repository/address-state/address-states'
+import type { HTTPAddressStates } from '@custom-types/http/presenter/address/address-with-user-count'
+import type { AddressStates } from '@custom-types/repository/prisma/address-state/address-states'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { AddressPresenter } from '@presenters/address-presenter'
