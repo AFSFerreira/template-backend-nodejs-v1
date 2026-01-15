@@ -1,4 +1,4 @@
-import type { IApiError } from '@custom-types/custom/api-error-type'
+import type { IApiError } from '@custom-types/errors/api-error'
 import type { FastifyError } from 'fastify'
 import {
   BODY_REQUIRED,

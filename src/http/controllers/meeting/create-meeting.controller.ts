@@ -1,4 +1,4 @@
-import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/meeting-detailed'
+import type { HTTPMeetingWithDetails } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'

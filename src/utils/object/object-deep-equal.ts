@@ -1,4 +1,4 @@
-import type { UnknownRecord } from '@custom-types/custom/unknown-record'
+import type { UnknownRecord } from '@custom-types/utils/object/unknown-record'
 
 export function objectDeepEqual(a: unknown, b: unknown): boolean {
   if (a === b) {

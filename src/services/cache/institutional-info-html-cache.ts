@@ -2,7 +2,7 @@ import type {
   IGetInstitutionalInfoHTMLCached,
   IRemoveInstitutionalInfoHTMLCache,
   ISetInstitutionalInfoHTMLCache,
-} from '@custom-types/services/institutional-info-html-cache'
+} from '@custom-types/services/cache/institutional-info-html-cache'
 import { INSTITUTIONAL_INFO_HTML_CACHE_TTL } from '@constants/timing-constants'
 import { logger } from '@lib/logger'
 import {

@@ -1,5 +1,5 @@
-import type { ISaveMultipartFile } from '@custom-types/custom/save-document'
-import type { FileInfo } from '@custom-types/services/file-info'
+import type { FileInfo } from '@custom-types/services/files/file-info'
+import type { ISaveMultipartFile } from '@custom-types/services/files/save-document'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'

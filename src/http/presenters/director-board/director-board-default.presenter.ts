@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   DirectorBoardDefaultPresenterInput,
   HTTPDirectorBoard,
-} from '@custom-types/presenter/director-board/director-board-default'
+} from '@custom-types/http/presenter/director-board/director-board-default'
 
 export class DirectorBoardDefaultPresenter
   implements IPresenterStrategy<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>

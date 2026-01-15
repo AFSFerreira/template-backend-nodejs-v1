@@ -1,5 +1,5 @@
-import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
-import type { UpdateUserBodySchemaType } from '@custom-types/schemas/user/update-user-body-schema'
+import type { HTTPUserWithDetails } from '@custom-types/http/presenter/user/user-detailed'
+import type { UpdateUserBodySchemaType } from '@custom-types/http/schemas/user/update-user-body-schema'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'

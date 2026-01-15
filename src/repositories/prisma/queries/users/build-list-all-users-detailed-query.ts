@@ -1,4 +1,4 @@
-import type { IBuildListAllUsersDetailedQuery } from '@custom-types/query/users/user-detailed'
+import type { IBuildListAllUsersDetailedQuery } from '@custom-types/repository/prisma/query/users/user-detailed'
 import { ActivityAreaType, Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { mapComparisonOperation } from '@utils/mappers/map-comparison-operation'

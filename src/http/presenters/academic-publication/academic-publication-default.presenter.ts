@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPAcademicPublication } from '@custom-types/presenter/academic-publication/academic-publication-default'
+import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
 import type { AcademicPublicationWithDetails } from '@custom-types/validators/academic-publication-with-details'
 import type { AcademicPublication } from '@prisma/client'
 

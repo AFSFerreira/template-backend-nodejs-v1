@@ -1,4 +1,4 @@
-import type { IValidateInstitutionName } from '@custom-types/services/validate-institution-name'
+import type { IValidateInstitutionName } from '@custom-types/services/validators/validate-institution-name'
 import { getAllInstitutions } from '../external/get-all-institutions'
 
 export async function validateInstitutionName({ institutionsRepository, institution }: IValidateInstitutionName) {

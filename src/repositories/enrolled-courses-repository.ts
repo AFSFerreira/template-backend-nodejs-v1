@@ -1,4 +1,4 @@
-import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/enrolled-course/update-enrolled-course-query'
+import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/prisma/enrolled-course/update-enrolled-course-query'
 import type { EnrolledCourse, Prisma } from '@prisma/client'
 
 export interface EnrolledCoursesRepository {

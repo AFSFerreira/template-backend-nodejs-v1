@@ -1,4 +1,4 @@
-import type { SubmitReviewToPublishParamsSchemaType } from '@custom-types/schemas/blog/submit-review-to-publish-params-schema'
+import type { SubmitReviewToPublishParamsSchemaType } from '@custom-types/http/schemas/blog/submit-review-to-publish-params-schema'
 import type { Blog } from '@prisma/client'
 
 export interface SubmitPendingToPublishUseCaseRequest extends SubmitReviewToPublishParamsSchemaType {

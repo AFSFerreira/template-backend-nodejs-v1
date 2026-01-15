@@ -1,4 +1,4 @@
-import type { FileInput, HTTPFile } from '@custom-types/presenter/file/file-default'
+import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { newsletterHtmlMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import { FilePresenter } from '@presenters/file-presenter'

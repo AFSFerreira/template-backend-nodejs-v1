@@ -1,4 +1,4 @@
-import type { HTTPBlog } from '@custom-types/presenter/blog/blog-default'
+import type { HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { Blog } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/blog-presenter'

@@ -1,4 +1,4 @@
-import type { SendEmailRequest } from '@custom-types/libs/node-mailer/send-email-request-type'
+import type { SendEmailRequest } from '@custom-types/lib/node-mailer/send-email-request-type'
 import type { SentMessageInfo } from 'nodemailer'
 import { transporterOptions } from '@constants/email-configuration-constants'
 import { env } from '@env/index'

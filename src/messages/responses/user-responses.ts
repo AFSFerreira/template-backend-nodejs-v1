@@ -1,4 +1,4 @@
-import type { IApiError } from '@custom-types/custom/api-error-type'
+import type { IApiError } from '@custom-types/errors/api-error'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
 

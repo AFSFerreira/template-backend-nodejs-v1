@@ -1,4 +1,4 @@
-import type { IReplaceProseMirrorImages } from '@custom-types/services/replace-prose-mirror-images'
+import type { IReplaceProseMirrorImages } from '@custom-types/services/extractors/replace-prose-mirror-images'
 import type { JSONContent } from '@tiptap/core'
 
 export function replaceProseMirrorImages({ proseMirror, oldToNewImagesMap }: IReplaceProseMirrorImages): JSONContent {

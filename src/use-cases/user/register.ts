@@ -1,4 +1,4 @@
-import type { FindConflictingUserQuery } from '@custom-types/repository/user/find-conflicting-user-query'
+import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
 import type { RegisterUseCaseRequest, RegisterUseCaseResponse } from '@custom-types/use-cases/user/register'
 import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'

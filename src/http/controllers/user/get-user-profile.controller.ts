@@ -1,4 +1,4 @@
-import type { HTTPUserWithDetails } from '@custom-types/presenter/user/user-detailed'
+import type { HTTPUserWithDetails } from '@custom-types/http/presenter/user/user-detailed'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'

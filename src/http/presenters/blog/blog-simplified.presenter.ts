@@ -1,6 +1,6 @@
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPSimplifiedBlog } from '@custom-types/presenter/blog/blog-simplified'
+import type { HTTPSimplifiedBlog } from '@custom-types/http/presenter/blog/blog-simplified'
+import type { CustomBlogWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/blog-simplified'
 
 export class BlogSimplifiedPresenter
   implements IPresenterStrategy<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>

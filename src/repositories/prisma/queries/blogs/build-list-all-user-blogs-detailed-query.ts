@@ -1,4 +1,4 @@
-import type { IBuildGetAllUserBlogsDetailedQuerySchemaType } from '@custom-types/query/blogs/user-blog-detailed'
+import type { IBuildGetAllUserBlogsDetailedQuerySchemaType } from '@custom-types/repository/prisma/query/blogs/user-blog-detailed'
 import { ActivityAreaType, Prisma } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 

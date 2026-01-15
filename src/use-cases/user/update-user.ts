@@ -1,4 +1,4 @@
-import type { UpdateUserQuery } from '@custom-types/repository/user/update-user-query'
+import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
 import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'

@@ -1,5 +1,5 @@
-import type { ListAllSliderImagesQuery } from '@custom-types/repository/slider-image/list-all-slider-images-query'
-import type { UpdateSliderImageQuery } from '@custom-types/repository/slider-image/update-slider-image-query'
+import type { ListAllSliderImagesQuery } from '@custom-types/repository/prisma/slider-image/list-all-slider-images-query'
+import type { UpdateSliderImageQuery } from '@custom-types/repository/prisma/slider-image/update-slider-image-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'

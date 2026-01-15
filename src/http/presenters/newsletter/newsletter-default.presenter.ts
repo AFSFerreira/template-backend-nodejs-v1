@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPNewsletter } from '@custom-types/presenter/newsletter/newsletter-default'
+import type { HTTPNewsletter } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { Newsletter } from '@prisma/client'
 
 export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter, HTTPNewsletter> {

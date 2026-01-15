@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPInstitution } from '@custom-types/presenter/institution/institution-default'
+import type { HTTPInstitution } from '@custom-types/http/presenter/institution/institution-default'
 import type { Institution } from '@prisma/client'
 
 export class InstitutionDefaultPresenter implements IPresenterStrategy<Institution, HTTPInstitution> {

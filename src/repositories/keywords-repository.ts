@@ -1,4 +1,4 @@
-import type { UpdateKeywordsQuery } from '@custom-types/repository/keyword/update-keywords-query'
+import type { UpdateKeywordsQuery } from '@custom-types/repository/prisma/keyword/update-keywords-query'
 import type { Keyword, Prisma } from '@prisma/client'
 
 export interface KeywordsRepository {

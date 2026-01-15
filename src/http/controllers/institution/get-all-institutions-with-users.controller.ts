@@ -1,5 +1,5 @@
-import type { HTTPInstitutionWithUsersCount } from '@custom-types/presenter/institution/institution-with-users-count'
-import type { InstitutionsUsersCount } from '@custom-types/repository/institution/institutions-users-count'
+import type { HTTPInstitutionWithUsersCount } from '@custom-types/http/presenter/institution/institution-with-users-count'
+import type { InstitutionsUsersCount } from '@custom-types/repository/prisma/institution/institutions-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { InstitutionPresenter } from '@presenters/institution-presenter'

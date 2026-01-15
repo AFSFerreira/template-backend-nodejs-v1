@@ -1,5 +1,8 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPSimplifiedUserDetails, UserWithSimplifiedDetails } from '@custom-types/presenter/user/user-simplified'
+import type {
+  HTTPSimplifiedUserDetails,
+  UserWithSimplifiedDetails,
+} from '@custom-types/http/presenter/user/user-simplified'
 
 export class UserSimplifiedPresenter
   implements IPresenterStrategy<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>

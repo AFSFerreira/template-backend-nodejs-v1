@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/presenter/user/user-detailed'
+import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPresenterInput, HTTPUserWithDetails> {

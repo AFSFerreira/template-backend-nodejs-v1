@@ -1,7 +1,7 @@
 import type {
   AcademicPublicationSimplifiedRaw,
   CustomAcademicPublicationWithSimplifiedDetails,
-} from '@custom-types/adapter/academic-publication-simplified'
+} from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
 
 export function academicPublicationAdapter(
   rawPublication: AcademicPublicationSimplifiedRaw,

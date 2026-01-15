@@ -14,7 +14,7 @@
  * compatibilidade de serialização e transmissão no Fastify.
  */
 
-import type { OptionalPipeObject } from '@custom-types/custom/optional-pipe-object'
+import type { OptionalPipeObject } from '@custom-types/http/plugins/optional-pipe-object'
 import type { DoneFuncWithErrOrRes, FastifyReply, FastifyRequest } from 'fastify'
 import { Readable } from 'node:stream'
 import { Prisma } from '@prisma/client'

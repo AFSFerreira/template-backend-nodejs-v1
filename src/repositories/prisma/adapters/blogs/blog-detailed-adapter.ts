@@ -1,4 +1,4 @@
-import type { BlogDetailedRaw, CustomBlogDetailed } from '@custom-types/adapter/blog-detailed'
+import type { BlogDetailedRaw, CustomBlogDetailed } from '@custom-types/repository/prisma/adapter/blog-detailed'
 
 export function blogDetailedAdapter(customBlog: BlogDetailedRaw): CustomBlogDetailed {
   return {

@@ -1,7 +1,7 @@
 import type {
   DashboardBlogsMetrics,
   HTTPDashboardBlogsMetrics,
-} from '@custom-types/presenter/dashboard-metrics/dashboard-blogs-metrics'
+} from '@custom-types/http/presenter/dashboard-metrics/dashboard-blogs-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { DashboardPresenter } from '@presenters/dashboard-presenter'

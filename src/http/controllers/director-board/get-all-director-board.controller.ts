@@ -1,7 +1,7 @@
 import type {
   DirectorBoardDefaultPresenterInput,
   HTTPDirectorBoard,
-} from '@custom-types/presenter/director-board/director-board-default'
+} from '@custom-types/http/presenter/director-board/director-board-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { getAllDirectorBoardSchema } from '@schemas/director-board/get-all-director-board-query-schema'

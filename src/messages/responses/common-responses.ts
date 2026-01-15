@@ -1,4 +1,4 @@
-import type { IApiError } from '@custom-types/custom/api-error-type'
+import type { IApiError } from '@custom-types/errors/api-error'
 
 export const MISSING_AUTHORIZATION_TOKEN: IApiError = {
   status: 401,

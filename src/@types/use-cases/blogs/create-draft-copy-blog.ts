@@ -1,4 +1,4 @@
-import type { CreateDraftCopyBlogParamsSchemaType } from '@custom-types/schemas/blog/create-draft-copy-blog-params-schema'
+import type { CreateDraftCopyBlogParamsSchemaType } from '@custom-types/http/schemas/blog/create-draft-copy-blog-params-schema'
 import type { Blog } from '@prisma/client'
 
 export interface CreateDraftCopyBlogUseCaseRequest extends CreateDraftCopyBlogParamsSchemaType {

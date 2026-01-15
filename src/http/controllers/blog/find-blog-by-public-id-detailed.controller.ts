@@ -1,4 +1,4 @@
-import type { HTTPBlogDetailedWithContent } from '@custom-types/presenter/blog/blog-detailed-with-content'
+import type { HTTPBlogDetailedWithContent } from '@custom-types/http/presenter/blog/blog-detailed-with-content'
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'

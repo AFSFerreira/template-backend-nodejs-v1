@@ -1,4 +1,7 @@
-import type { BlogSimplifiedRaw, CustomBlogWithSimplifiedDetails } from '@custom-types/adapter/blog-simplified'
+import type {
+  BlogSimplifiedRaw,
+  CustomBlogWithSimplifiedDetails,
+} from '@custom-types/repository/prisma/adapter/blog-simplified'
 
 export function blogSimplifiedAdapter(customBlog: BlogSimplifiedRaw): CustomBlogWithSimplifiedDetails {
   return {

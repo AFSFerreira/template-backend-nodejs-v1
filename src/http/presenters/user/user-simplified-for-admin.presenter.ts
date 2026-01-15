@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   HTTPSimplifiedUserDetailsForAdmin,
   UserWithSimplifiedDetailsForAdmin,
-} from '@custom-types/presenter/user/user-simplified-for-admin'
+} from '@custom-types/http/presenter/user/user-simplified-for-admin'
 
 export class UserSimplifiedPresenterForAdmin
   implements IPresenterStrategy<UserWithSimplifiedDetailsForAdmin, HTTPSimplifiedUserDetailsForAdmin>

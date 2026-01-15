@@ -1,4 +1,4 @@
-import type { UpdateInstitutionalInfoQuery } from '@custom-types/repository/institutional-info/update-institutional-info-query'
+import type { UpdateInstitutionalInfoQuery } from '@custom-types/repository/prisma/institutional-info/update-institutional-info-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InstitutionalInfo } from '@prisma/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'

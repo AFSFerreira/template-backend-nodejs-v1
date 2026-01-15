@@ -1,4 +1,4 @@
-import type { HTTPNewsletter } from '@custom-types/presenter/newsletter/newsletter-default'
+import type { HTTPNewsletter } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { Newsletter } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { NewsletterPresenter } from '@presenters/newsletter-presenter'

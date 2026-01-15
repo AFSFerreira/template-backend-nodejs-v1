@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPMeetingWithDetails } from '@custom-types/presenter/meeting/meeting-detailed'
+import type { HTTPMeetingWithDetails } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 
 export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithDetails, HTTPMeetingWithDetails> {

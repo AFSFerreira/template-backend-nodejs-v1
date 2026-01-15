@@ -1,4 +1,4 @@
-import type { ISystemError } from '@custom-types/custom/system-error-types'
+import type { ISystemError } from '@custom-types/errors/system-error'
 
 export class SystemError extends Error {
   public body: ISystemError

@@ -1,4 +1,7 @@
-import type { IValidateActivityAreas, IValidatedActivityAreas } from '@custom-types/custom/validate-activity-areas'
+import type {
+  IValidateActivityAreas,
+  IValidatedActivityAreas,
+} from '@custom-types/services/validators/validate-activity-areas'
 
 export async function validateActivityAreas({
   activityAreasRepository,

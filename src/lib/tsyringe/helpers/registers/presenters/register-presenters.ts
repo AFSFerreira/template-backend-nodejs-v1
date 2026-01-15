@@ -1,21 +1,21 @@
 import type { DependencyContainer } from 'tsyringe'
-import { registerAcademicPublicationPresenters } from './variants/academic-publications'
-import { registerActivityAreaPresenters } from './variants/activity-areas'
-import { registerAddressPresenters } from './variants/addresses'
-import { registerBlogPresenters } from './variants/blogs'
-import { registerDashboardMetricsPresenters } from './variants/dashboard-metrics'
-import { registerDirectorBoardPresenters } from './variants/director-boards'
-import { registerDirectorPositionPresenters } from './variants/director-positions'
-import { registerFilePresenters } from './variants/files'
-import { registerInstitutionalInfoPresenters } from './variants/institutional-info'
-import { registerInstitutionPresenters } from './variants/institutions'
-import { registerMeetingEnrollmentPresenters } from './variants/meeting-enrollments'
-import { registerMeetingPresenters } from './variants/meetings'
-import { registerNewsletterPresenters } from './variants/newsletters'
-import { registerSliderImagePresenters } from './variants/slider-images'
-import { registerUserPresenters } from './variants/users'
+import { registerAcademicPublicationPresenters } from './variants/register-academic-publication-presenters'
+import { registerAddressPresenters } from './variants/register-address-presenters'
+import { registerBlogPresenters } from './variants/register-blog-presenters'
+import { registerDashboardMetricsPresenters } from './variants/register-dashboard-metric-presenters'
+import { registerDirectorBoardPresenters } from './variants/register-director-board-presenters'
+import { registerDirectorPositionPresenters } from './variants/register-director-position-presenters'
+import { registerFilePresenters } from './variants/register-file-presenters'
+import { registerInstitutionPresenters } from './variants/register-institution-presenters'
+import { registerInstitutionalInfoPresenters } from './variants/register-institutional-info-presenters'
+import { registerMeetingEnrollmentPresenters } from './variants/register-meeting-enrollment-presenters'
+import { registerMeetingPresenters } from './variants/register-meeting-presenters'
+import { registerNewsletterPresenters } from './variants/register-newsletter-presenters'
+import { registerSliderImagePresenters } from './variants/register-slider-image-presenters'
+import { registerUserPresenters } from './variants/register-user-presenters'
+import { registerActivityAreaPresenters } from './variants/registeractivity-area-presenters'
 
-export function registerPresenterServices(container: DependencyContainer) {
+export function registerPresenters(container: DependencyContainer) {
   registerUserPresenters(container)
   registerAcademicPublicationPresenters(container)
   registerActivityAreaPresenters(container)

@@ -1,5 +1,5 @@
-import type { UniversitiesApiResponse } from '@custom-types/custom/universities-api-response-type'
-import type { IGetAllInstitutions } from '@custom-types/services/get-all-institutions'
+import type { IGetAllInstitutions } from '@custom-types/services/external/get-all-institutions'
+import type { UniversitiesApiResponse } from '@custom-types/services/external/universities-api-response'
 import { ALL_UNIVERSITIES_LIST, UNIVERSITIES_API } from '@constants/url-constants'
 
 export async function getAllInstitutions({ institutionsRepository, query }: IGetAllInstitutions) {

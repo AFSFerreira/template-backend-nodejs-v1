@@ -1,4 +1,4 @@
-import type { UpdateUserPermissionsBodySchemaType } from '@custom-types/schemas/user/update-user-permissions-body-schema'
+import type { UpdateUserPermissionsBodySchemaType } from '@custom-types/http/schemas/user/update-user-permissions-body-schema'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { updateUserPermissionsBodySchema } from '@schemas/user/update-user-permissions-body-schema'
 import { updateUserPermissionsParamsSchema } from '@schemas/user/update-user-permissions-params-schema'

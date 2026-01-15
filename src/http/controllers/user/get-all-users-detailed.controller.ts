@@ -1,3 +1,7 @@
+import type {
+  HTTPSimplifiedUserDetailsForAdmin,
+  UserWithSimplifiedDetailsForAdmin,
+} from '@custom-types/http/presenter/user/user-simplified-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/user-presenter'

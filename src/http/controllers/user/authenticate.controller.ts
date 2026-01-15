@@ -1,4 +1,4 @@
-import type { HTTPUser } from '@custom-types/presenter/user/user-default'
+import type { HTTPUser } from '@custom-types/http/presenter/user/user-default'
 import type { User } from '@prisma/client'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'

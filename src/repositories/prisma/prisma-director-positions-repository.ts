@@ -1,5 +1,5 @@
-import type { ListAllDirectorPositionsQuery } from '@custom-types/repository/director-position/list-all-director-positions-query'
-import type { UpdateDirectorPositionQuery } from '@custom-types/repository/director-position/update-director-position-query'
+import type { ListAllDirectorPositionsQuery } from '@custom-types/repository/prisma/director-position/list-all-director-positions-query'
+import type { UpdateDirectorPositionQuery } from '@custom-types/repository/prisma/director-position/update-director-position-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'

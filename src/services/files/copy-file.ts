@@ -1,5 +1,5 @@
-import type { ICopyFile } from '@custom-types/services/copy-file'
-import type { FileInfo } from '@custom-types/services/file-info'
+import type { ICopyFile } from '@custom-types/services/files/copy-file'
+import type { FileInfo } from '@custom-types/services/files/file-info'
 import path from 'node:path'
 import { deleteFile } from '@utils/files/delete-file'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'

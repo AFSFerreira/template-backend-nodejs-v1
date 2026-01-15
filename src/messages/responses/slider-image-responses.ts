@@ -1,4 +1,4 @@
-import type { IApiError } from '@custom-types/custom/api-error-type'
+import type { IApiError } from '@custom-types/errors/api-error'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 
 export const HOME_PAGE_SLIDER_IMAGE_PERSIST_FAILED: IApiError = {

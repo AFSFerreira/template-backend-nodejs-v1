@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   DashboardBlogsMetrics,
   HTTPDashboardBlogsMetrics,
-} from '@custom-types/presenter/dashboard-metrics/dashboard-blogs-metrics'
+} from '@custom-types/http/presenter/dashboard-metrics/dashboard-blogs-metrics'
 
 export class DashboardBlogsMetricsPresenter
   implements IPresenterStrategy<DashboardBlogsMetrics, HTTPDashboardBlogsMetrics>
