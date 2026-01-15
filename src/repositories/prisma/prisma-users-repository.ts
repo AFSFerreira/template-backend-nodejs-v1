@@ -46,8 +46,11 @@ export class PrismaUsersRepository implements UsersRepository {
 
     let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined
 
-    if (isRegisterUserHighLevelEducation(data)) {
-      if (isRegisterUserHighLevelStudentEducation(data)) {
+    const isHighLevelEducation = isRegisterUserHighLevelEducation(data)
+    const isUserHighLevelStudentEducation = isRegisterUserHighLevelStudentEducation(data)
+
+    if (isHighLevelEducation || isUserHighLevelStudentEducation) {
+      if (isUserHighLevelStudentEducation) {
         enrolledCourseCreateData = {
           create: {
             ...data.enrolledCourse,
