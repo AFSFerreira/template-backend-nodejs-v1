@@ -70,7 +70,7 @@
     "eslint-compat-utils": "0.6.5",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-n": "17.23.1",
-    "eslint-plugin-prettier": "5.5.4",
+    "eslint-plugin-prettier": "5.5.5",
     "eslint-plugin-promise": "7.2.1",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-unicorn": "51.0.1",
