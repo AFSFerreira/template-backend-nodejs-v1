@@ -46,21 +46,21 @@ export class PrismaUsersRepository implements UsersRepository {
 
     let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined
 
-    const isHighLevelEducation = isRegisterUserHighLevelEducation(data)
+    const isUserHighLevelEducation = isRegisterUserHighLevelEducation(data)
     const isUserHighLevelStudentEducation = isRegisterUserHighLevelStudentEducation(data)
 
-    if (isHighLevelEducation || isUserHighLevelStudentEducation) {
-      if (isUserHighLevelStudentEducation) {
-        enrolledCourseCreateData = {
-          create: {
-            ...data.enrolledCourse,
-            startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
-            expectedGraduationDate: new Date(data.enrolledCourse.expectedGraduationDate),
-            scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-          },
-        }
+    if (isUserHighLevelStudentEducation) {
+      enrolledCourseCreateData = {
+        create: {
+          ...data.enrolledCourse,
+          startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
+          expectedGraduationDate: new Date(data.enrolledCourse.expectedGraduationDate),
+          scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+        },
       }
+    }
 
+    if (isUserHighLevelEducation) {
       keywordsConnectOrCreateData = {
         connectOrCreate: data.keyword.map((value: string) => ({
           where: { value },
@@ -418,24 +418,27 @@ export class PrismaUsersRepository implements UsersRepository {
 
     let subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] | undefined
 
-    if (isUpdateUserHighLevelStudentEducation(data)) {
-      if (isUpdateUserHighLevelEducation(data)) {
-        enrolledCourseUpsertData = data.enrolledCourse
-          ? {
-              upsert: {
-                create: {
-                  ...data.enrolledCourse,
-                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-                },
-                update: {
-                  ...data.enrolledCourse,
-                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-                },
-              },
-            }
-          : undefined
-      }
+    const isUserHighLevelEducation = isUpdateUserHighLevelEducation(data)
+    const isUserHighLevelStudentEducation = isUpdateUserHighLevelStudentEducation(data)
 
+    if (isUserHighLevelStudentEducation) {
+      enrolledCourseUpsertData = data.enrolledCourse
+        ? {
+            upsert: {
+              create: {
+                ...data.enrolledCourse,
+                scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+              },
+              update: {
+                ...data.enrolledCourse,
+                scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+              },
+            },
+          }
+        : undefined
+    }
+
+    if (isUserHighLevelEducation) {
       keywordsConnectOrCreateData = data.keyword
         ? {
             set: [],
