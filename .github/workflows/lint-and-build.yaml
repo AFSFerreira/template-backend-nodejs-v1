@@ -9,6 +9,9 @@ on:
 
 env:
   NODE_VERSION: 22.x
+  # Necerrário para geração de tipos:
+  DUMMY_DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+
 
 jobs:
   lint-test-build:
