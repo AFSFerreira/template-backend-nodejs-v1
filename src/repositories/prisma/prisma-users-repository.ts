@@ -49,18 +49,19 @@ export class PrismaUsersRepository implements UsersRepository {
     const isUserHighLevelEducation = isRegisterUserHighLevelEducation(data)
     const isUserHighLevelStudentEducation = isRegisterUserHighLevelStudentEducation(data)
 
-    if (isUserHighLevelStudentEducation) {
-      enrolledCourseCreateData = {
-        create: {
-          ...data.enrolledCourse,
-          startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
-          expectedGraduationDate: new Date(data.enrolledCourse.expectedGraduationDate),
-          scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-        },
-      }
-    }
 
-    if (isUserHighLevelEducation) {
+    if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
+      if (isUserHighLevelStudentEducation) {
+        enrolledCourseCreateData = {
+          create: {
+            ...data.enrolledCourse,
+            startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
+            expectedGraduationDate: new Date(data.enrolledCourse.expectedGraduationDate),
+            scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+          },
+        }
+      }
+      
       keywordsConnectOrCreateData = {
         connectOrCreate: data.keyword.map((value: string) => ({
           where: { value },
@@ -421,24 +422,24 @@ export class PrismaUsersRepository implements UsersRepository {
     const isUserHighLevelEducation = isUpdateUserHighLevelEducation(data)
     const isUserHighLevelStudentEducation = isUpdateUserHighLevelStudentEducation(data)
 
-    if (isUserHighLevelStudentEducation) {
-      enrolledCourseUpsertData = data.enrolledCourse
-        ? {
-            upsert: {
-              create: {
-                ...data.enrolledCourse,
-                scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+    if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
+      if (isUserHighLevelStudentEducation) {
+        enrolledCourseUpsertData = data.enrolledCourse
+          ? {
+              upsert: {
+                create: {
+                  ...data.enrolledCourse,
+                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+                },
+                update: {
+                  ...data.enrolledCourse,
+                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
+                },
               },
-              update: {
-                ...data.enrolledCourse,
-                scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-              },
-            },
-          }
-        : undefined
-    }
+            }
+          : undefined
+      }
 
-    if (isUserHighLevelEducation) {
       keywordsConnectOrCreateData = data.keyword
         ? {
             set: [],
