@@ -9,6 +9,9 @@ on:
 
 env:
   NODE_VERSION: 22.x
+  # Necerrário para geração de tipos:
+  DUMMY_DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+
 
 jobs:
   lint-test-build:
@@ -20,17 +23,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
       - name: Setup Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           # cache: 'npm'
           cache: 'pnpm'
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          run_install: false
 
       - name: Install Dependencies
         # run: npm ci
