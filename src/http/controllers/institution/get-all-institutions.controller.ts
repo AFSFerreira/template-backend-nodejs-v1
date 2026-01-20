@@ -1,10 +1,10 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { getAllInstitutionsSchema } from '@schemas/institution/get-all-institutions-query-schema'
+import { getAllInstitutionsQuerySchema } from '@schemas/institution/get-all-institutions-query-schema'
 import { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function getAllInstitutionsNames(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllInstitutionsSchema.parse(request.query)
+  const parsedQuery = getAllInstitutionsQuerySchema.parse(request.query)
 
   const useCase = container.resolve(GetAllInstitutionsNamesUseCase)
 
