@@ -1,6 +1,5 @@
-import { ALL_UNIVERSITIES_API, UNIVERSITIES_API } from '@constants/url-constants'
 import type { IGetAllInstitutions } from '@custom-types/services/external/get-all-institutions'
-import type { UniversitiesApiResponse } from '@custom-types/services/external/universities-api-response'
+import { getExternalInstitutions } from './get-external-institutions'
 
 export async function getAllInstitutions({ institutionsRepository, query }: IGetAllInstitutions) {
   const universityName = query.name
@@ -11,25 +10,13 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
   // não permitiria uma paginação sob o array de maneira determinística:
   const allInstitutions: string[] = []
 
-  const institutionsRequestUrl = universityName
-    ? `${UNIVERSITIES_API}?name_contains=${universityName}`
-    : ALL_UNIVERSITIES_API
-  const allInstitutionsApiResponse = await fetch(institutionsRequestUrl)
+  const externalInstitutions = await getExternalInstitutions(universityName)
 
-  if (allInstitutionsApiResponse.ok) {
-    const allApiInstitutions = (await allInstitutionsApiResponse.json()) as UniversitiesApiResponse[]
+  externalInstitutions.forEach((externalInstitution) => {
+    if (allInstitutions.includes(externalInstitution)) return
 
-    const filteredInstitutions = universityName
-      ? allApiInstitutions.filter((institution) => institution.name.toUpperCase().trim().includes(universityName))
-      : allApiInstitutions
-
-    filteredInstitutions.forEach((institution) => {
-      const formattedName = institution.name.trim().toUpperCase()
-      if (allInstitutions.includes(formattedName)) return
-
-      allInstitutions.push(formattedName)
-    })
-  }
+    allInstitutions.push(externalInstitution)
+  })
 
   const allSystemInstitutions = await institutionsRepository.listAllInstitutionsNames({
     name: universityName,
@@ -39,6 +26,7 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
 
   allSystemInstitutions.data.forEach((institution) => {
     const formattedName = institution.trim().toUpperCase()
+
     if (allInstitutions.includes(formattedName)) return
 
     allInstitutions.push(formattedName)

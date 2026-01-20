@@ -8,6 +8,8 @@ import { getAllInstitutions } from '@services/external/get-all-institutions'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { paginateArray } from '@utils/generics/paginate-array'
 import { inject, injectable } from 'tsyringe'
+import { getExternalInstitutions } from '@services/external/get-external-institutions'
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 
 @injectable()
 export class GetAllInstitutionsNamesUseCase {
@@ -20,21 +22,37 @@ export class GetAllInstitutionsNamesUseCase {
     getAllInstitutionsUseCaseInput: GetAllInstitutionsNamesUseCaseRequest,
   ): Promise<GetAllInstitutionsNamesUseCaseResponse> {
     const { limit, page } = getAllInstitutionsUseCaseInput
-    const allInstitutionsArray = await getAllInstitutions({
+
+    const pageSize = limit
+
+    let institutions: string[] | PaginatedResult<string[]> = await getAllInstitutions({
       institutionsRepository: this.institutionsRepository,
       query: getAllInstitutionsUseCaseInput,
     })
 
-    const pageSize = limit
-    const totalItems = allInstitutionsArray.length
+    if (getAllInstitutionsUseCaseInput.source) {
+      if (getAllInstitutionsUseCaseInput.source === 'internal') {
+        const internalInstitutions = await this.institutionsRepository.listAllInstitutionsNames(getAllInstitutionsUseCaseInput)
+
+        institutions = internalInstitutions
+      }
+
+      if (getAllInstitutionsUseCaseInput.source === 'external') {
+        institutions = await getExternalInstitutions(getAllInstitutionsUseCaseInput.name)
+      }
+    }
+
+    const allInstitutions = Array.isArray(institutions) ? institutions : institutions.data
+
+    const totalItems = Array.isArray(institutions) ? institutions.length : institutions.meta.totalItems
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const paginatedInstitutions = paginateArray({
-      array: allInstitutionsArray,
+    const paginatedInstitutions = Array.isArray(institutions) ? paginateArray({
+      array: allInstitutions,
       limit,
       page,
-    })
+    }) : institutions.data
 
     return {
       data: paginatedInstitutions,
