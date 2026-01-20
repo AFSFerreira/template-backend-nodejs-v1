@@ -13,7 +13,7 @@ import type { AddressCountryRepository } from '@repositories/address-countries-r
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { buildUserTempProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
+import { buildUserProfileImagePath, buildUserTempProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { moveFile } from '@services/files/move-file'
 import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
@@ -61,7 +61,7 @@ export class UpdateUserUseCase {
       ensureExists({
         value: await moveFile({
           oldFilePath: buildUserTempProfileImagePath(data.user.profileImage),
-          newFilePath: buildUserProfileImageUrl(data.user.profileImage),
+          newFilePath: buildUserProfileImagePath(data.user.profileImage),
         }),
         error: new UserProfileImagePersistenceError(),
       })
@@ -205,7 +205,7 @@ export class UpdateUserUseCase {
       // Restaurando a imagem de perfil previamente persistida:
       if (data.user?.profileImage) {
         await moveFile({
-          oldFilePath: buildUserProfileImageUrl(data.user.profileImage),
+          oldFilePath: buildUserProfileImagePath(data.user.profileImage),
           newFilePath: buildUserTempProfileImagePath(data.user.profileImage),
         })
       }
