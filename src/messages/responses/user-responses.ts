@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
+import type { IApiError } from '@custom-types/errors/api-error'
 
 export const NO_USERS_AVAILABLE: IApiError = {
   status: 204,
@@ -47,6 +47,14 @@ export const PROFILE_IMAGE_UPDATE_ERROR: IApiError = {
   body: {
     code: 'PROFILE_IMAGE_UPDATE_ERROR',
     message: 'Erro ao tentar atualizar a foto de perfil do usuário',
+  },
+}
+
+export const USER_PROFILE_IMAGE_PERSISTENCE_ERROR: IApiError = {
+  status: 500,
+  body: {
+    code: 'USER_PROFILE_IMAGE_PERSISTENCE_ERROR',
+    message: 'Erro ao tentar persistir a nova foto de perfil do usuário',
   },
 }
 
