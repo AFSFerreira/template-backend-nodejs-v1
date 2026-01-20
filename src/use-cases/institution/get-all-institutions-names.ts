@@ -1,3 +1,4 @@
+import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type {
   GetAllInstitutionsNamesUseCaseRequest,
   GetAllInstitutionsNamesUseCaseResponse,
@@ -5,11 +6,10 @@ import type {
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { getAllInstitutions } from '@services/external/get-all-institutions'
+import { getExternalInstitutions } from '@services/external/get-external-institutions'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { paginateArray } from '@utils/generics/paginate-array'
 import { inject, injectable } from 'tsyringe'
-import { getExternalInstitutions } from '@services/external/get-external-institutions'
-import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 
 @injectable()
 export class GetAllInstitutionsNamesUseCase {
@@ -32,7 +32,8 @@ export class GetAllInstitutionsNamesUseCase {
 
     if (getAllInstitutionsUseCaseInput.source) {
       if (getAllInstitutionsUseCaseInput.source === 'internal') {
-        const internalInstitutions = await this.institutionsRepository.listAllInstitutionsNames(getAllInstitutionsUseCaseInput)
+        const internalInstitutions =
+          await this.institutionsRepository.listAllInstitutionsNames(getAllInstitutionsUseCaseInput)
 
         institutions = internalInstitutions
       }
@@ -48,11 +49,13 @@ export class GetAllInstitutionsNamesUseCase {
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const paginatedInstitutions = Array.isArray(institutions) ? paginateArray({
-      array: allInstitutions,
-      limit,
-      page,
-    }) : institutions.data
+    const paginatedInstitutions = Array.isArray(institutions)
+      ? paginateArray({
+          array: allInstitutions,
+          limit,
+          page,
+        })
+      : institutions.data
 
     return {
       data: paginatedInstitutions,

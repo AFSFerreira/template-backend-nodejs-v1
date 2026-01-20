@@ -1,12 +1,12 @@
-import { ALL_UNIVERSITIES_API, UNIVERSITIES_API } from "@constants/url-constants"
-import type { UniversitiesApiResponse } from "@custom-types/services/external/universities-api-response"
+import type { UniversitiesApiResponse } from '@custom-types/services/external/universities-api-response'
+import { ALL_UNIVERSITIES_API, UNIVERSITIES_API } from '@constants/url-constants'
 
 export async function getExternalInstitutions(universityName?: string) {
   const institutionsRequestUrl = universityName
     ? `${UNIVERSITIES_API}?name_contains=${universityName}`
     : ALL_UNIVERSITIES_API
 
-    const allInstitutionsApiResponse = await fetch(institutionsRequestUrl)
+  const allInstitutionsApiResponse = await fetch(institutionsRequestUrl)
 
   if (!allInstitutionsApiResponse.ok) return []
 

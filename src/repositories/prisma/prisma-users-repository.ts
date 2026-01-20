@@ -49,7 +49,6 @@ export class PrismaUsersRepository implements UsersRepository {
     const isUserHighLevelEducation = isRegisterUserHighLevelEducation(data)
     const isUserHighLevelStudentEducation = isRegisterUserHighLevelStudentEducation(data)
 
-
     if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
       if (isUserHighLevelStudentEducation) {
         enrolledCourseCreateData = {
@@ -61,7 +60,7 @@ export class PrismaUsersRepository implements UsersRepository {
           },
         }
       }
-      
+
       keywordsConnectOrCreateData = {
         connectOrCreate: data.keyword.map((value: string) => ({
           where: { value },
