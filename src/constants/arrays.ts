@@ -1,5 +1,4 @@
 import { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/client'
-import { MANAGER_PERMISSIONS } from './sets'
 
 export const LOW_LEVEL_EDUCATION_TYPE_ARRAY = [
   EducationLevelType.ELEMENTARY_SCHOOL,
