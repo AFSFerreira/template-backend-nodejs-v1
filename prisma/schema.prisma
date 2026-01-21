@@ -77,8 +77,6 @@ model User {
   Address                        Address?
   AuthenticationAudit            AuthenticationAudit[]
   Blog                           Blog[]
-  CommentLike                    CommentLike[]
-  NewsletterComment              NewsletterComment[]
   DirectorBoard                  DirectorBoard?
   EnrolledCourse                 EnrolledCourse?
   ActivityArea                   ActivityArea?            @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
@@ -416,45 +414,12 @@ model Newsletter {
   commentsQuantity  Int                 @default(0) @map("comments_quantity")
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
-  NewsletterComment NewsletterComment[]
 
   @@unique([volume, editionNumber])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
   @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
   @@index([volume(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_volume_trgm_gin", type: Gin)
   @@map("newsletters")
-}
-
-model NewsletterComment {
-  id              Int                 @id @default(autoincrement())
-  content         String
-  authorName      String              @map("author_name")
-  likesQuantity   Int                 @default(0) @map("likes_quantity")
-  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
-  newsletterId    Int                 @map("newsletter_id")
-  userId          Int?                @map("user_id")
-  parentCommentId Int?                @map("parent_comment_id")
-  CommentLike     CommentLike[]
-  Newsletter      Newsletter          @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
-  ParentComment   NewsletterComment?  @relation("parent_comment", fields: [parentCommentId], references: [id], onDelete: Cascade)
-  ChildComments   NewsletterComment[] @relation("parent_comment")
-  User            User?               @relation(fields: [userId], references: [id])
-
-  @@index([newsletterId])
-  @@map("comments")
-}
-
-model CommentLike {
-  id                  Int               @id @default(autoincrement())
-  createdAt           DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId              Int?              @map("user_id")
-  newsletterCommentId Int               @map("newsletter_comment_id")
-  NewsletterComment   NewsletterComment @relation(fields: [newsletterCommentId], references: [id], onDelete: Cascade)
-  User                User?             @relation(fields: [userId], references: [id])
-
-  @@index([newsletterCommentId])
-  @@map("comment_likes")
 }
 
 model SliderImage {

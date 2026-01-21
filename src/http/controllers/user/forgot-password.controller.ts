@@ -1,8 +1,8 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { PASSWORD_RESET_IF_USER_EXISTS } from '@messages/responses/user-responses'
 import { forgotPasswordBodySchema } from '@schemas/user/forgot-password-body-schema'
 import { ForgotPasswordUseCase } from '@use-cases/user/forgot-password'
 import { container } from 'tsyringe'
+import { PASSWORD_RESET_IF_USER_EXISTS } from '@messages/responses/user-responses.ts/2xx'
 
 export async function forgotPassword(request: FastifyRequest, reply: FastifyReply) {
   const { login } = forgotPasswordBodySchema.parse(request.body)

@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { USER_NOT_FOUND } from '@messages/responses/user-responses'
+import { USER_NOT_FOUND } from '@messages/responses/user-responses.ts/4xx'
 
 export class UserNotFoundError extends ApiError {
   constructor() {

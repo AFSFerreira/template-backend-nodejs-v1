@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { ADMIN_CANNOT_DELETE_SELF } from '@messages/responses/user-responses'
+import { ADMIN_CANNOT_DELETE_SELF } from '@messages/responses/user-responses.ts/4xx'
 
 export class AdminCannotDeleteSelfError extends ApiError {
   constructor() {

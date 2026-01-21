@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { INVALID_CREDENTIALS } from '@messages/responses/user-responses'
+import { INVALID_CREDENTIALS } from '@messages/responses/user-responses.ts/4xx'
 
 export class InvalidCredentialsError extends ApiError {
   constructor() {
