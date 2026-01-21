@@ -411,7 +411,6 @@ model Newsletter {
   sequenceNumber    String              @unique @map("sequence_number") // Número absoluto de sequência
   editionNumber     String              @map("edition_number") // Número de edição do ano
   volume            String // Ano de publicação
-  commentsQuantity  Int                 @default(0) @map("comments_quantity")
   createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
 
@@ -438,6 +437,7 @@ model SliderImage {
 enum UserRoleType {
   ADMIN
   MANAGER
+  NEWSLETTER_LEADER
   CONTENT_LEADER
   CONTENT_PRODUCER
   DEFAULT
