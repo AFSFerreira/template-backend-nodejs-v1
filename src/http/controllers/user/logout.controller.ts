@@ -1,7 +1,8 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { INVALID_OR_EXPIRED_TOKEN, LOGOUT } from '@messages/responses/user-responses'
+import { LOGOUT } from '@messages/responses/user-responses.ts/2xx'
+import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses.ts/4xx'
 
 export async function logout(request: FastifyRequest, reply: FastifyReply) {
   try {

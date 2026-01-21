@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { PASSWORD_RESET_SUCCESSFUL } from '@messages/responses/user-responses'
+import { PASSWORD_RESET_SUCCESSFUL } from '@messages/responses/user-responses.ts/2xx'
 import { resetPasswordBodySchema } from '@schemas/user/reset-password-body-schema'
 import { ResetPasswordUseCase } from '@use-cases/user/reset-password'
 import { container } from 'tsyringe'

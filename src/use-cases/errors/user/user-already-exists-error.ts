@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { USER_ALREADY_EXISTS } from '@messages/responses/user-responses'
+import { USER_ALREADY_EXISTS } from '@messages/responses/user-responses.ts/4xx'
 
 export class UserAlreadyExistsError extends ApiError {
   constructor() {

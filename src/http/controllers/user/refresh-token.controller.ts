@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses'
+import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses.ts/4xx'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { getRequestUserRole } from '@services/http/get-request-user-role'
 import { getRequestUserStatus } from '@services/http/get-request-user-status'

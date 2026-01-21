@@ -3,7 +3,7 @@ import { HAS_SENTRY } from '@constants/env-constants'
 import { SystemError } from '@errors/system-error'
 import { logError } from '@lib/logger/helpers/log-error'
 import { UNHANDLED_ERROR } from '@messages/loggings/common-loggings'
-import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses'
+import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses.ts/5xx'
 import * as Sentry from '@sentry/node'
 import { getBusinessError } from './get-business-error'
 

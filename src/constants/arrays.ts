@@ -1,4 +1,5 @@
 import { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/client'
+import { MANAGER_PERMISSIONS } from './sets'
 
 export const LOW_LEVEL_EDUCATION_TYPE_ARRAY = [
   EducationLevelType.ELEMENTARY_SCHOOL,
@@ -45,6 +46,8 @@ export const ADMIN_PERMISSIONS_ARRAY = [UserRoleType.ADMIN] as const
 export const MANAGER_PERMISSIONS_ARRAY = [...ADMIN_PERMISSIONS_ARRAY, UserRoleType.MANAGER] as const
 
 export const CONTENT_LEADER_PERMISSIONS_ARRAY = [...MANAGER_PERMISSIONS_ARRAY, UserRoleType.CONTENT_LEADER] as const
+
+export const MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS_ARRAY = [...MANAGER_PERMISSIONS, UserRoleType.NEWSLETTER_LEADER] as const
 
 export const CONTENT_PRODUCERS_PERMISSIONS_ARRAY = [
   ...CONTENT_LEADER_PERMISSIONS_ARRAY,

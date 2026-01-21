@@ -10,7 +10,6 @@ export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter
       sequenceNumber: input.sequenceNumber,
       editionNumber: input.editionNumber,
       volume: input.volume,
-      commentsQuantity: input.commentsQuantity,
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }

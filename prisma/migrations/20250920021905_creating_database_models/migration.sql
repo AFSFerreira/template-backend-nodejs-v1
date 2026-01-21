@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "public"."UserRoleType" AS ENUM ('ADMIN', 'MANAGER', 'CONTENT_LEADER', 'CONTENT_PRODUCER', 'DEFAULT');
+CREATE TYPE "public"."UserRoleType" AS ENUM ('ADMIN', 'MANAGER', 'NEWSLETTER_LEADER', 'CONTENT_LEADER', 'CONTENT_PRODUCER', 'DEFAULT');
 
 -- CreateEnum
 CREATE TYPE "public"."AuthenticationStatusType" AS ENUM ('SUCCESS', 'USER_NOT_EXISTS', 'INCORRECT_PASSWORD', 'BLOCKED');
@@ -325,36 +325,10 @@ CREATE TABLE "public"."newsletters" (
     "sequence_number" TEXT NOT NULL,
     "edition_number" TEXT NOT NULL,
     "volume" TEXT NOT NULL,
-    "comments_quantity" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "newsletters_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."comments" (
-    "id" SERIAL NOT NULL,
-    "content" TEXT NOT NULL,
-    "author_name" TEXT NOT NULL,
-    "likes_quantity" INTEGER NOT NULL DEFAULT 0,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(3) NOT NULL,
-    "newsletter_id" INTEGER NOT NULL,
-    "user_id" INTEGER,
-    "parent_comment_id" INTEGER,
-
-    CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "public"."comment_likes" (
-    "id" SERIAL NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user_id" INTEGER,
-    "newsletter_comment_id" INTEGER NOT NULL,
-
-    CONSTRAINT "comment_likes_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -550,12 +524,6 @@ CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "newsletters"("sequence
 CREATE UNIQUE INDEX "newsletters_volume_edition_number_key" ON "newsletters"("volume", "edition_number");
 
 -- CreateIndex
-CREATE INDEX "comments_newsletter_id_idx" ON "public"."comments"("newsletter_id");
-
--- CreateIndex
-CREATE INDEX "comment_likes_newsletter_comment_id_idx" ON "public"."comment_likes"("newsletter_comment_id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "slider_images_public_id_key" ON "slider_images"("public_id");
 
 -- CreateIndex
@@ -589,10 +557,10 @@ ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audi
 ALTER TABLE "public"."users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -638,21 +606,6 @@ ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey
 
 -- AddForeignKey
 ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_newsletter_id_fkey" FOREIGN KEY ("newsletter_id") REFERENCES "public"."newsletters"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_parent_comment_id_fkey" FOREIGN KEY ("parent_comment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."comments" ADD CONSTRAINT "comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_newsletter_comment_id_fkey" FOREIGN KEY ("newsletter_comment_id") REFERENCES "public"."comments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."comment_likes" ADD CONSTRAINT "comment_likes_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "meeting_enrollments" ADD CONSTRAINT "meeting_enrollments_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;

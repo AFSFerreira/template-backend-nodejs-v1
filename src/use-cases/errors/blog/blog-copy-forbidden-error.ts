@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { BLOG_COPY_FORBIDDEN } from '@messages/responses/blog-responses'
+import { BLOG_COPY_FORBIDDEN } from '@messages/responses/blog-responses.ts/4xx'
 
 export class BlogCopyForbiddenError extends ApiError {
   constructor() {

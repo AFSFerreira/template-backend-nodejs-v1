@@ -1,6 +1,6 @@
 import { HAS_SENTRY } from '@constants/env-constants'
 import { env } from '@env/index'
-import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses'
+import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses.ts/5xx'
 import * as Sentry from '@sentry/node'
 import { nodeProfilingIntegration } from '@sentry/profiling-node'
 import { getBusinessError } from '@services/error-handlers/get-business-error'

@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { BLOG_NOT_IN_PUBLISHED_STATUS } from '@messages/responses/blog-responses'
+import { BLOG_NOT_IN_PUBLISHED_STATUS } from '@messages/responses/blog-responses.ts/4xx'
 
 export class BlogNotInPublishedStatusError extends ApiError {
   constructor() {

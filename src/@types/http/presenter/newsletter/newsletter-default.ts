@@ -4,7 +4,6 @@ export interface HTTPNewsletter {
   sequenceNumber: string
   content: string
   volume: string
-  commentsQuantity: number
   createdAt: Date
   updatedAt: Date
 }
