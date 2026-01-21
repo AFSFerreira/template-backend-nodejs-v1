@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
+import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
