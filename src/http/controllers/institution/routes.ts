@@ -4,6 +4,7 @@ import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { createInstitution } from './create-institution.controller'
 import { deleteInstitution } from './delete-institution.controller'
+import { deleteInstitutionByName } from './delete-institution-by-name.controller'
 import { getAllInstitutionsNames } from './get-all-institutions.controller'
 import { getAllInstitutionsWithUsers } from './get-all-institutions-with-users.controller'
 import { updateInstitution } from './update-institution.controller'
@@ -38,5 +39,13 @@ export async function institutionRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     deleteInstitution,
+  )
+
+  app.delete(
+    '/name/:name',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    deleteInstitutionByName,
   )
 }
