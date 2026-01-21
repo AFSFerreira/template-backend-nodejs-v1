@@ -1,4 +1,4 @@
-import type { getAllInstitutionsSchema } from '@schemas/institution/get-all-institutions-query-schema'
+import type { getAllInstitutionsQuerySchema } from '@schemas/institution/get-all-institutions-query-schema'
 import type z from 'zod'
 
-export type GetAllInstitutionsSchemaType = z.infer<typeof getAllInstitutionsSchema>
+export type GetAllInstitutionsQuerySchemaType = z.infer<typeof getAllInstitutionsQuerySchema>

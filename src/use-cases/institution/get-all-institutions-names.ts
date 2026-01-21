@@ -20,6 +20,7 @@ export class GetAllInstitutionsNamesUseCase {
     getAllInstitutionsUseCaseInput: GetAllInstitutionsNamesUseCaseRequest,
   ): Promise<GetAllInstitutionsNamesUseCaseResponse> {
     const { limit, page } = getAllInstitutionsUseCaseInput
+
     const allInstitutionsArray = await getAllInstitutions({
       institutionsRepository: this.institutionsRepository,
       query: getAllInstitutionsUseCaseInput,

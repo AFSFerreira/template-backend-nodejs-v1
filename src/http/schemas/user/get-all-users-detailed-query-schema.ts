@@ -2,7 +2,6 @@ import { comparableEnumSchema } from '@schemas/utils/enums/comparable-enum-schem
 import { educationLevelSchema } from '@schemas/utils/enums/education-level-enum-schema'
 import { occupationEnumSchema } from '@schemas/utils/enums/occupation-enum-schema'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
-import { userRoleEnumSchema } from '@schemas/utils/enums/user-role-enum-schema'
 import { membershipStatusArraySchema } from '@schemas/utils/generic-components/membership-status-array-schema'
 import { userRoleArraySchema } from '@schemas/utils/generic-components/user-role-array-schema'
 import { booleanSchema } from '@schemas/utils/primitives/boolean-schema'
@@ -24,7 +23,7 @@ const getAllUsersDetailedQueryRawSchema = z
     username: usernameSchema,
     membershipStatus: membershipStatusArraySchema,
     departmentName: upperCaseTextSchema,
-    role: z.union([userRoleEnumSchema.transform((data) => [data]), userRoleArraySchema]),
+    role: userRoleArraySchema,
     receiveReports: booleanSchema,
     mainActivityArea: upperCaseTextSchema,
     subActivityArea: upperCaseTextSchema,

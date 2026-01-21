@@ -9,10 +9,16 @@ import type { InstitutionsRepository } from '@repositories/institutions-reposito
 import type { UsersRepository } from '@repositories/users-repository'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
+import {
+  buildUserProfileImagePath,
+  buildUserTempProfileImagePath,
+} from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { moveFile } from '@services/files/move-file'
 import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
 import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -20,6 +26,7 @@ import { validateInstitutionName } from '@services/validators/validate-instituti
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
+import { UserProfileImagePersistenceError } from '@use-cases/errors/user/user-profile-image-persistence-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
@@ -53,136 +60,160 @@ export class UpdateUserUseCase {
   async execute({ publicId, data }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
     const passwordHash = data.user?.password ? await hash(data.user.password, env.HASH_SALT_ROUNDS) : undefined
 
-    const updatedUser = await this.dbContext.runInTransaction(async () => {
-      const userExists = ensureExists({
-        value: await this.usersRepository.findByPublicId(publicId),
-        error: new UserNotFoundError(),
+    if (data.user?.profileImage) {
+      ensureExists({
+        value: await moveFile({
+          oldFilePath: buildUserTempProfileImagePath(data.user.profileImage),
+          newFilePath: buildUserProfileImagePath(data.user.profileImage),
+        }),
+        error: new UserProfileImagePersistenceError(),
       })
+    }
 
-      let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined
-
-      let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
-
-      if (data.user) {
-        if (
-          (data.user.email || data.user.username) &&
-          (data.user.email !== userExists.email || data.user.username !== userExists.username)
-        ) {
-          const userConflictingUpdateInfo = await this.usersRepository.findConflictingUser({
-            email: data.user.email,
-            username: data.user.username,
-          })
-
-          if (userConflictingUpdateInfo) {
-            const apiError = getTrueMapping<ApiError>([
-              {
-                expression: userConflictingUpdateInfo.email === data.user.email,
-                value: new UserWithSameEmail(),
-              },
-              {
-                expression: userConflictingUpdateInfo.username === data.user.username,
-                value: new UserWithSameUsername(),
-              },
-            ])
-
-            if (!apiError) {
-              throw new UserAlreadyExistsError()
-            }
-
-            throw apiError
-          }
-        }
-
-        const { password, ...filteredUserUpdateData } = data.user
-
-        userUpdateInfo = {
-          ...filteredUserUpdateData,
-          passwordHash: passwordHash ?? userExists.passwordHash,
-        }
-      }
-
-      if (data.address) {
-        const addressCountry = await this.addressCountriesRepository.findOrCreate(data.address.country)
-
-        const addressState = await this.addressStatesRepository.findOrCreate({
-          state: data.address.state,
-          countryId: addressCountry.id,
+    try {
+      const updatedUser = await this.dbContext.runInTransaction(async () => {
+        const userExists = ensureExists({
+          value: await this.usersRepository.findByPublicId(publicId),
+          error: new UserNotFoundError(),
         })
 
-        const { state, country, ...filteredAddressUpdateData } = data.address
+        let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined
 
-        addressUpdateInfo = {
-          ...filteredAddressUpdateData,
-          stateId: addressState.id,
-        }
-      }
+        let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
 
-      if (isUpdateUserHighLevelStudentEducation(data) || isUpdateUserHighLevelEducation(data)) {
-        if (data.academicPublication) {
-          const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
-            area: academicPub.area,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          }))
+        if (data.user) {
+          if (
+            (data.user.email || data.user.username) &&
+            (data.user.email !== userExists.email || data.user.username !== userExists.username)
+          ) {
+            const userConflictingUpdateInfo = await this.usersRepository.findConflictingUser({
+              email: data.user.email,
+              username: data.user.username,
+            })
 
-          const activityAreas = [
-            ...academicPublicationsActivityAreas,
-            ...(data.activityArea
-              ? [
-                  {
-                    area: data.activityArea.mainActivityArea,
-                    type: ActivityAreaType.AREA_OF_ACTIVITY,
-                  },
-                  {
-                    area: data.activityArea.subActivityArea,
-                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                  },
-                ]
-              : []),
-          ]
+            if (userConflictingUpdateInfo) {
+              const apiError = getTrueMapping<ApiError>([
+                {
+                  expression: userConflictingUpdateInfo.email === data.user.email,
+                  value: new UserWithSameEmail(),
+                },
+                {
+                  expression: userConflictingUpdateInfo.username === data.user.username,
+                  value: new UserWithSameUsername(),
+                },
+              ])
 
-          const { validatedActivityAreas, success } = await validateActivityAreas({
-            activityAreas,
-            activityAreasRepository: this.activityAreasRepository,
-          })
+              if (!apiError) {
+                throw new UserAlreadyExistsError()
+              }
 
-          if (!success) {
-            throw new InvalidActivityArea(
-              validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-            )
+              throw apiError
+            }
+          }
+
+          const { password, ...filteredUserUpdateData } = data.user
+
+          userUpdateInfo = {
+            ...filteredUserUpdateData,
+            passwordHash: passwordHash ?? userExists.passwordHash,
           }
         }
 
-        if (data.institution) {
-          const isValidInstitution = await validateInstitutionName({
-            institution: data.institution.name,
-            institutionsRepository: this.institutionsRepository,
+        if (data.address) {
+          const addressCountry = await this.addressCountriesRepository.findOrCreate(data.address.country)
+
+          const addressState = await this.addressStatesRepository.findOrCreate({
+            state: data.address.state,
+            countryId: addressCountry.id,
           })
 
-          if (!isValidInstitution) {
-            throw new InvalidInstitutionName()
+          const { state, country, ...filteredAddressUpdateData } = data.address
+
+          addressUpdateInfo = {
+            ...filteredAddressUpdateData,
+            stateId: addressState.id,
           }
         }
-      }
 
-      const user = await this.usersRepository.update({
-        id: userExists.id,
-        data: {
-          ...data,
-          address: addressUpdateInfo,
-          user: userUpdateInfo,
-        },
+        if (isUpdateUserHighLevelStudentEducation(data) || isUpdateUserHighLevelEducation(data)) {
+          if (data.academicPublication) {
+            const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
+              area: academicPub.area,
+              type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+            }))
+
+            const activityAreas = [
+              ...academicPublicationsActivityAreas,
+              ...(data.activityArea
+                ? [
+                    {
+                      area: data.activityArea.mainActivityArea,
+                      type: ActivityAreaType.AREA_OF_ACTIVITY,
+                    },
+                    {
+                      area: data.activityArea.subActivityArea,
+                      type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                    },
+                  ]
+                : []),
+            ]
+
+            const { validatedActivityAreas, success } = await validateActivityAreas({
+              activityAreas,
+              activityAreasRepository: this.activityAreasRepository,
+            })
+
+            if (!success) {
+              throw new InvalidActivityArea(
+                validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+              )
+            }
+          }
+
+          if (data.institution) {
+            const isValidInstitution = await validateInstitutionName({
+              institution: data.institution.name,
+              institutionsRepository: this.institutionsRepository,
+            })
+
+            if (!isValidInstitution) {
+              throw new InvalidInstitutionName()
+            }
+          }
+        }
+
+        const user = await this.usersRepository.update({
+          id: userExists.id,
+          data: {
+            ...data,
+            address: addressUpdateInfo,
+            user: userUpdateInfo,
+          },
+        })
+
+        return user
       })
 
-      return user
-    })
+      logger.info({ publicId }, USER_UPDATE_SUCCESSFUL)
 
-    logger.info({ publicId }, USER_UPDATE_SUCCESSFUL)
+      return {
+        user: {
+          ...updatedUser,
+          profileImage: buildUserProfileImageUrl(updatedUser.profileImage),
+        },
+      }
+    } catch (error) {
+      logError({ error, message: USER_UPDATE_ERROR })
 
-    return {
-      user: {
-        ...updatedUser,
-        profileImage: buildUserProfileImageUrl(updatedUser.profileImage),
-      },
+      // Restaurando a imagem de perfil previamente persistida:
+      if (data.user?.profileImage) {
+        await moveFile({
+          oldFilePath: buildUserProfileImagePath(data.user.profileImage),
+          newFilePath: buildUserTempProfileImagePath(data.user.profileImage),
+        })
+      }
+
+      throw error
     }
   }
 }

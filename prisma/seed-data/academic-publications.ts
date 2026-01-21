@@ -5,7 +5,7 @@ import { subActivityAreaData1 } from './activity-areas'
 const academicPublicationsCreateUserData1: Prisma.AcademicPublicationCreateWithoutUserInput = {
   publicationYear: 2023,
   title: 'A ASCENSÃO DA ASTROBIOLOGIA - PARTE 1',
-  linkDoi: 'https://example.com',
+  linkDoi: 'https://link.springer.com/article/10.1186/s12872-016-0426-9',
   editionNumber: '12',
   journalName: 'ASTROBIO',
   startPage: '20',
@@ -21,7 +21,7 @@ const academicPublicationsCreateUserData1: Prisma.AcademicPublicationCreateWitho
 const academicPublicationsCreateUserData2: Prisma.AcademicPublicationCreateWithoutUserInput = {
   publicationYear: 2024,
   title: 'A ASCENSÃO DA ASTROBIOLOGIA - PARTE 2',
-  linkDoi: 'https://example.com',
+  linkDoi: 'https://link.springer.com/article/10.1186/s12872-016-0426-9',
   editionNumber: '12',
   journalName: 'ASTROBIO',
   startPage: '5',

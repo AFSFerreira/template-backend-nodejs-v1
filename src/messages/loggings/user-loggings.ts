@@ -14,6 +14,8 @@ export const CHANGE_PASSWORD_REQUEST_SUCCESSFUL = 'Pedido de alteração de senh
 
 export const USER_UPDATE_SUCCESSFUL = 'Atualização de informações de usuário bem sucedida'
 
+export const USER_UPDATE_ERROR = 'Erro ao atualizar as informações do usuário'
+
 export const USER_DELETION_SUCCESSFUL = 'Conta de usuário deletada com sucesso'
 
 export const USER_DELETION_BY_ADMIN_SUCCESSFUL = 'Conta de usuário deletada por administrador com sucesso'

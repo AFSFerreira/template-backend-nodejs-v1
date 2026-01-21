@@ -20,7 +20,7 @@ export const partialUserData1: PartialUserCreateInputInfo = {
   passwordHash,
   birthdate: new Date('2025-09-22'),
   profileImage: 'default.png',
-  linkLattes: 'http://lattes.cnpq.br/1234567890',
+  linkLattes: 'http://lattes.cnpq.br/1918385364299862',
   linkGoogleScholar: 'https://scholar.google.com/admin.admin',
   linkResearcherId: null,
   orcidNumber: '0000-0001-2345-6789',

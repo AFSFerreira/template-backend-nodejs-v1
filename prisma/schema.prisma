@@ -82,7 +82,7 @@ model User {
   DirectorBoard                  DirectorBoard?
   EnrolledCourse                 EnrolledCourse?
   ActivityArea                   ActivityArea?            @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
-  Institution                    Institution?             @relation(fields: [institutionId], references: [id], onDelete: NoAction)
+  Institution                    Institution?             @relation(fields: [institutionId], references: [id], onDelete: SetNull)
   SubActivityArea                ActivityArea?            @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
   UserMeetingEnrollment          UserMeetingEnrollment[]  @relation()
   Keyword                        Keyword[]                @relation("KeywordToUser")
