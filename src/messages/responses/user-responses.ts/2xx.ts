@@ -1,4 +1,4 @@
-import type { IApiError } from "@custom-types/errors/api-error"
+import type { IApiError } from '@custom-types/errors/api-error'
 
 export const PASSWORD_RESET_IF_USER_EXISTS: IApiError = {
   status: 200,

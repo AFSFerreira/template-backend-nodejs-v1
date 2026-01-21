@@ -1,4 +1,4 @@
-import type { IApiError } from "@custom-types/errors/api-error"
+import type { IApiError } from '@custom-types/errors/api-error'
 
 export const USER_IMAGE_PROCESSING_ERROR: IApiError = {
   status: 500,
