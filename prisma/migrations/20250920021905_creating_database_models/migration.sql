@@ -338,7 +338,7 @@ CREATE TABLE "public"."slider_images" (
     "image" TEXT NOT NULL,
     "order" INTEGER NOT NULL,
     "link" TEXT,
-    "is_active" BOOLEAN NOT NULL DEFAULT false,
+    "is_active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "slider_images_pkey" PRIMARY KEY ("id")
