@@ -1,11 +1,11 @@
 import type { IApiError } from '@custom-types/errors/api-error'
-import type { FastifyError } from 'fastify'
 import {
   BODY_REQUIRED,
-  INTERNAL_SERVER_ERROR,
   INVALID_BODY_FORMAT_JSON,
   MAX_MULTIPART_FILE_SIZE_LIMIT,
-} from '@messages/responses/common-responses'
+} from '@messages/responses/common-responses.ts/4xx'
+import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses.ts/5xx'
+import type { FastifyError } from 'fastify'
 
 export function getFastifyError(error: FastifyError): IApiError {
   if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {

@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { INVALID_BLOG_CONTENT } from '@messages/responses/blog-responses'
+import { INVALID_BLOG_CONTENT } from '@messages/responses/blog-responses.ts/4xx'
 
 export class InvalidBlogContentError extends ApiError {
   constructor() {

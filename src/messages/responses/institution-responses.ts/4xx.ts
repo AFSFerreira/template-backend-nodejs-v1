@@ -23,11 +23,3 @@ export const INSTITUTION_ALREADY_EXISTS: IApiError = {
     message: 'Já existe uma instituição com esse nome',
   },
 }
-
-export const RETRIEVE_INSTITUTIONS_ERROR: IApiError = {
-  status: 503,
-  body: {
-    code: 'RETRIEVE_INSTITUTIONS_ERROR',
-    message: 'Falha ao tentar recuperar as informações das universidades',
-  },
-}

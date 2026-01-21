@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { DIRECTOR_BOARD_LIST_ERROR } from '@messages/responses/director-board-responses'
+import { DIRECTOR_BOARD_LIST_ERROR } from '@messages/responses/director-board-responses.ts/5xx'
 
 export class DirectorBoardListError extends ApiError {
   constructor() {

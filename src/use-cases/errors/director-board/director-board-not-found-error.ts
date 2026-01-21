@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { DIRECTOR_BOARD_NOT_FOUND } from '@messages/responses/director-board-responses'
+import { DIRECTOR_BOARD_NOT_FOUND } from '@messages/responses/director-board-responses.ts/4xx'
 
 export class DirectorBoardNotFoundError extends ApiError {
   constructor() {

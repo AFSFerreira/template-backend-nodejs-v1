@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { NEWSLETTER_HTML_PERSIST_ERROR } from '@messages/responses/newsletter-responses'
+import { NEWSLETTER_HTML_PERSIST_ERROR } from '@messages/responses/newsletter-responses.ts/5xx'
 
 export class NewsletterHtmlPersistError extends ApiError {
   constructor() {
