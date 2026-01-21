@@ -68,10 +68,8 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     if (!query) {
       const institutions = await this.dbContext.client.institution.findMany({ orderBy })
 
-      const formattedInstitutions = institutions.map((institution) => institution.name)
-
       return {
-        data: formattedInstitutions,
+        data: institutions,
         meta: {
           totalItems: institutions.length,
           totalPages: 1,
@@ -103,7 +101,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
     return {
-      data: institutions.map((institution) => institution.name),
+      data: institutions,
       meta: {
         totalItems,
         totalPages,

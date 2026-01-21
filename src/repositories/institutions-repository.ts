@@ -12,7 +12,7 @@ export interface InstitutionsRepository {
   findByPublicId: (publicId: string) => Promise<Institution | null>
   update: (query: UpdateInstitutionQuery) => Promise<Institution>
   delete: (id: number) => Promise<void>
-  listAllInstitutionsNames: (query?: ListAllInstitutionsNamesQuery) => Promise<PaginatedResult<string[]>>
+  listAllInstitutionsNames: (query?: ListAllInstitutionsNamesQuery) => Promise<PaginatedResult<Institution[]>>
   listAllInstitutionsWithUsersCount: (
     query?: ListAllInstitutionsWithUsersQuery,
   ) => Promise<PaginatedResult<InstitutionsUsersCount[]>>

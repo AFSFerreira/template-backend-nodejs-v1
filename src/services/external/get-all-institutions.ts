@@ -25,7 +25,7 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
   })
 
   allSystemInstitutions.data.forEach((institution) => {
-    const formattedName = institution.trim().toUpperCase()
+    const formattedName = institution.name.trim().toUpperCase()
 
     if (allInstitutions.includes(formattedName)) return
 
