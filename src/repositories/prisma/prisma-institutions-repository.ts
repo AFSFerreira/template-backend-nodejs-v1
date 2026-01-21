@@ -1,6 +1,7 @@
 import type { OrderableType } from '@custom-types/custom/orderable'
 import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-names-query'
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-with-users-query'
+import type { UpdateInstitutionQuery } from '@custom-types/repository/prisma/institution/update-institution-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { InstitutionsRepository } from '../institutions-repository'
@@ -35,6 +36,27 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
       where: { name },
     })
     return institution
+  }
+
+  async findByPublicId(publicId: string) {
+    const institution = await this.dbContext.client.institution.findUnique({
+      where: { publicId },
+    })
+    return institution
+  }
+
+  async update({ id, data }: UpdateInstitutionQuery) {
+    const institution = await this.dbContext.client.institution.update({
+      where: { id },
+      data,
+    })
+    return institution
+  }
+
+  async delete(id: number) {
+    await this.dbContext.client.institution.delete({
+      where: { id },
+    })
   }
 
   async listAllInstitutionsNames(query?: ListAllInstitutionsNamesQuery) {

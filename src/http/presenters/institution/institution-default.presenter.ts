@@ -5,6 +5,7 @@ import type { Institution } from '@prisma/client'
 export class InstitutionDefaultPresenter implements IPresenterStrategy<Institution, HTTPInstitution> {
   public toHTTP(input: Institution): HTTPInstitution {
     return {
+      id: input.publicId,
       name: input.name,
     }
   }
