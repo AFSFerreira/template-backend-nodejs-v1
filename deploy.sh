@@ -11,7 +11,7 @@ npm ci
 
 npm run build
 
-# npm run sentry:upload
+npm run sentry:upload
 
 npm run db:deploy
 
