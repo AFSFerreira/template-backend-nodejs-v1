@@ -1,5 +1,7 @@
-import type { HTTPNewsletter } from '@custom-types/http/presenter/newsletter/newsletter-default'
-import type { Newsletter } from '@prisma/client'
+import type {
+  HTTPNewsletter,
+  NewsletterDefaultPresenterInput,
+} from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { NewsletterPresenter } from '@presenters/newsletter-presenter'
 import { updateNewsletterBodySchema } from '@schemas/newsletter/update-newsletter-body-schema'
@@ -19,6 +21,6 @@ export async function updateNewsletter(request: FastifyRequest, reply: FastifyRe
   })
 
   return await reply.status(200).send({
-    data: NewsletterPresenter.toHTTP<Newsletter, HTTPNewsletter>(newsletter),
+    data: NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter),
   })
 }

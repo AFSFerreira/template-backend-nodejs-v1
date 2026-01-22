@@ -1,10 +1,10 @@
-import type { IApiError, IApiErrorBody } from '@custom-types/errors/api-error'
+import type { IApiResponse, IApiResponseBody } from '@custom-types/responses/api-response'
 
 export class ApiError extends Error {
   public status: number
-  public body: IApiErrorBody
+  public body: IApiResponseBody
 
-  constructor(error: IApiError) {
+  constructor(error: IApiResponse) {
     super(error.body.message)
 
     this.name = this.constructor.name

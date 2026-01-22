@@ -1,9 +1,9 @@
 import type { MultipartFile } from '@fastify/multipart'
 
-export interface UploadRegisterProfileImageUseCaseRequest {
+export interface UploadUserProfileImageUseCaseRequest {
   filePart?: MultipartFile
 }
 
-export interface UploadRegisterProfileImageUseCaseResponse {
+export interface UploadUserProfileImageUseCaseResponse {
   filename: string
 }

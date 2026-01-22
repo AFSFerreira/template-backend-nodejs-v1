@@ -1,5 +1,7 @@
-import type { HTTPSliderImage } from '@custom-types/http/presenter/slider-image/slider-image-default'
-import type { SliderImage } from '@prisma/client'
+import type {
+  HTTPSliderImage,
+  SliderImageDefaultPresenterInput,
+} from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { SliderImagePresenter } from '@presenters/slider-image-presenter'
@@ -14,7 +16,7 @@ export async function createHomePageSliderImage(request: FastifyRequest, reply: 
 
   const { sliderImage } = await useCase.execute(parsedBody)
 
-  const formattedReply = SliderImagePresenter.toHTTP<SliderImage, HTTPSliderImage>(
+  const formattedReply = SliderImagePresenter.toHTTP<SliderImageDefaultPresenterInput, HTTPSliderImage>(
     sliderImage,
     tokens.presenters.sliderImage.sliderImageHomePage,
   )

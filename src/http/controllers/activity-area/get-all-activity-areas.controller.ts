@@ -1,5 +1,7 @@
-import type { HTTPActivityArea } from '@custom-types/http/presenter/activity-area/activity-area-default'
-import type { ActivityArea } from '@prisma/client'
+import type {
+  ActivityAreaDefaultPresenterInput,
+  HTTPActivityArea,
+} from '@custom-types/http/presenter/activity-area/activity-area-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { ActivityAreaPresenter } from '@presenters/activity-area-presenter'
 import { getAllActivityAreasSchema } from '@schemas/activity-area/get-all-activity-areas-schema'
@@ -13,7 +15,7 @@ export async function getAllActivityAreas(request: FastifyRequest, reply: Fastif
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = ActivityAreaPresenter.toHTTP<ActivityArea, HTTPActivityArea>(data)
+  const formattedReply = ActivityAreaPresenter.toHTTP<ActivityAreaDefaultPresenterInput, HTTPActivityArea>(data)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

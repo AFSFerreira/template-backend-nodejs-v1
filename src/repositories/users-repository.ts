@@ -7,7 +7,6 @@ import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/u
 import type { ListAllUsersDetailedQuery } from '@custom-types/repository/prisma/user/list-all-users-detailed-query'
 import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
-import type { UpdateProfileImageQuery } from '@custom-types/repository/prisma/user/update-profile-image-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
@@ -37,8 +36,9 @@ export interface UsersRepository {
   delete: (id: number) => Promise<void>
   update: (query: UpdateUserQuery) => Promise<UserWithDetails>
   updateRole: (query: UpdateRoleQuery) => Promise<void>
-  updateProfileImage: (query: UpdateProfileImageQuery) => Promise<void>
   validateUserToken: (recoveryPasswordTokenHash: string) => Promise<User | null>
+  validateEmailVerificationToken: (emailVerificationTokenHash: string) => Promise<User | null>
+  confirmEmailVerification: (id: number) => Promise<User>
   changePassword: (query: ChangeUserPasswordQuery) => Promise<User>
   setPasswordToken: (query: SetPasswordTokenQuery) => Promise<User>
 }

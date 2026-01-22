@@ -92,7 +92,6 @@ export class UserDetailedPresenterForAdmin
             linkLattes: input.linkLattes,
             name: input.fullName,
             profileImage: input.DirectorBoard.profileImage ?? input.profileImage,
-            aboutMe: input.DirectorBoard.aboutMe,
             position: input.DirectorBoard.DirectorPosition.position,
           }
         : undefined,

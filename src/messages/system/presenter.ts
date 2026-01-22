@@ -1,11 +1,11 @@
-import type { ISystemError } from '@custom-types/errors/system-error'
+import type { ISystemResponse } from '@custom-types/responses/system-response'
 
-export const PRESENTER_STRATEGY_NOT_FOUND: ISystemError = {
+export const PRESENTER_STRATEGY_NOT_FOUND: ISystemResponse = {
   code: 'PRESENTER_STRATEGY_NOT_FOUND',
   message: 'Estratégia de presenter não encontrada',
 }
 
-export const PRESENTER_STRATEGY_ALREADY_EXISTS: ISystemError = {
+export const PRESENTER_STRATEGY_ALREADY_EXISTS: ISystemResponse = {
   code: 'PRESENTER_STRATEGY_ALREADY_EXISTS',
   message: 'Chave de estratégia já existente',
 }

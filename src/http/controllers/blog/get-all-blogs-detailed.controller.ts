@@ -1,6 +1,6 @@
 import type {
+  BlogDetailedForAdminPresenterInput,
   HTTPBlogDetailedForAdmin,
-  IBlogDetailedForAdmin,
 } from '@custom-types/http/presenter/blog/blog-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
@@ -21,7 +21,7 @@ export async function getAllBlogsDetailed(request: FastifyRequest, reply: Fastif
     userPublicId,
   })
 
-  const formattedReply = BlogPresenter.toHTTP<IBlogDetailedForAdmin, HTTPBlogDetailedForAdmin>(
+  const formattedReply = BlogPresenter.toHTTP<BlogDetailedForAdminPresenterInput, HTTPBlogDetailedForAdmin>(
     data,
     tokens.presenters.blog.blogDetailedForAdmin,
   )

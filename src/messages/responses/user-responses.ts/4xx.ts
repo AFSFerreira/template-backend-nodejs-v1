@@ -1,8 +1,8 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
 
-export const IDENTITY_INFO_MISSING: IApiError = {
+export const IDENTITY_INFO_MISSING: IApiResponse = {
   status: 400,
   body: {
     code: 'IDENTITY_INFO_MISSING',
@@ -10,7 +10,7 @@ export const IDENTITY_INFO_MISSING: IApiError = {
   },
 }
 
-export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiError = {
+export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiResponse = {
   status: 400,
   body: {
     code: 'MISSING_CHECK_AVAILABILITIES_INPUT',
@@ -18,7 +18,7 @@ export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiError = {
   },
 }
 
-export const INVALID_AREA_OF_ACTIVITY: IApiError = {
+export const INVALID_AREA_OF_ACTIVITY: IApiResponse = {
   status: 400,
   body: {
     code: 'INVALID_AREA_OF_ACTIVITY',
@@ -26,7 +26,7 @@ export const INVALID_AREA_OF_ACTIVITY: IApiError = {
   },
 }
 
-export const CANNOT_TRANSFER_ADMIN_TO_SELF: IApiError = {
+export const CANNOT_TRANSFER_ADMIN_TO_SELF: IApiResponse = {
   status: 400,
   body: {
     code: 'CANNOT_TRANSFER_ADMIN_TO_SELF',
@@ -34,7 +34,7 @@ export const CANNOT_TRANSFER_ADMIN_TO_SELF: IApiError = {
   },
 }
 
-export const INVALID_CREDENTIALS: IApiError = {
+export const INVALID_CREDENTIALS: IApiResponse = {
   status: 401,
   body: {
     code: 'INVALID_CREDENTIALS',
@@ -42,7 +42,7 @@ export const INVALID_CREDENTIALS: IApiError = {
   },
 }
 
-export const INVALID_OR_EXPIRED_TOKEN: IApiError = {
+export const INVALID_OR_EXPIRED_TOKEN: IApiResponse = {
   status: 401,
   body: {
     code: 'INVALID_OR_EXPIRED_TOKEN',
@@ -50,7 +50,15 @@ export const INVALID_OR_EXPIRED_TOKEN: IApiError = {
   },
 }
 
-export const INVALID_IMAGE_FORMAT: IApiError = {
+export const EMAIL_VERIFICATION_NOT_REQUESTED: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'EMAIL_VERIFICATION_NOT_REQUESTED',
+    message: 'Verificação de e-mail não foi solicitada para este usuário',
+  },
+}
+
+export const INVALID_IMAGE_FORMAT: IApiResponse = {
   status: 401,
   body: {
     code: 'INVALID_IMAGE_FORMAT',
@@ -58,7 +66,7 @@ export const INVALID_IMAGE_FORMAT: IApiError = {
   },
 }
 
-export const MEMBERSHIP_STATUS_NOT_PENDING: IApiError = {
+export const MEMBERSHIP_STATUS_NOT_PENDING: IApiResponse = {
   status: 401,
   body: {
     code: 'MEMBERSHIP_STATUS_NOT_PENDING',
@@ -66,7 +74,7 @@ export const MEMBERSHIP_STATUS_NOT_PENDING: IApiError = {
   },
 }
 
-export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiError = {
+export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiResponse = {
   status: 401,
   body: {
     code: 'PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER',
@@ -74,7 +82,7 @@ export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiError = {
   },
 }
 
-export const INACTIVE_USER: IApiError = {
+export const INACTIVE_USER: IApiResponse = {
   status: 403,
   body: {
     code: 'INACTIVE_USER',
@@ -82,7 +90,7 @@ export const INACTIVE_USER: IApiError = {
   },
 }
 
-export const PENDING_USER: IApiError = {
+export const PENDING_USER: IApiResponse = {
   status: 403,
   body: {
     code: 'PENDING_USER',
@@ -90,7 +98,15 @@ export const PENDING_USER: IApiError = {
   },
 }
 
-export const ADMIN_CANNOT_DELETE_SELF: IApiError = {
+export const UNVERIFIED_EMAIL: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'UNVERIFIED_EMAIL',
+    message: 'E-mail ainda não verificado. Por favor, verifique sua caixa de entrada e confirme seu e-mail',
+  },
+}
+
+export const ADMIN_CANNOT_DELETE_SELF: IApiResponse = {
   status: 403,
   body: {
     code: 'ADMIN_CANNOT_DELETE_SELF',
@@ -98,7 +114,7 @@ export const ADMIN_CANNOT_DELETE_SELF: IApiError = {
   },
 }
 
-export const USER_NOT_FOUND: IApiError = {
+export const USER_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'USER_NOT_FOUND',
@@ -106,7 +122,7 @@ export const USER_NOT_FOUND: IApiError = {
   },
 }
 
-export const USER_ALREADY_EXISTS: IApiError = {
+export const USER_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'USER_ALREADY_EXISTS',
@@ -114,7 +130,7 @@ export const USER_ALREADY_EXISTS: IApiError = {
   },
 }
 
-export const USER_ALREADY_HAS_ADDRESS: IApiError = {
+export const USER_ALREADY_HAS_ADDRESS: IApiResponse = {
   status: 409,
   body: {
     code: 'USER_ALREADY_HAS_ADDRESS',
@@ -122,7 +138,7 @@ export const USER_ALREADY_HAS_ADDRESS: IApiError = {
   },
 }
 
-export const USER_WITH_SAME_EMAIL: IApiError = {
+export const USER_WITH_SAME_EMAIL: IApiResponse = {
   status: 409,
   body: {
     code: 'USER_WITH_SAME_EMAIL',
@@ -130,7 +146,7 @@ export const USER_WITH_SAME_EMAIL: IApiError = {
   },
 }
 
-export const USER_WITH_SAME_USERNAME: IApiError = {
+export const USER_WITH_SAME_USERNAME: IApiResponse = {
   status: 409,
   body: {
     code: 'USER_WITH_SAME_USERNAME',
@@ -138,7 +154,7 @@ export const USER_WITH_SAME_USERNAME: IApiError = {
   },
 }
 
-export const USER_WITH_SAME_IDENTITY_DOCUMENT: IApiError = {
+export const USER_WITH_SAME_IDENTITY_DOCUMENT: IApiResponse = {
   status: 409,
   body: {
     code: 'USER_WITH_SAME_IDENTITY_DOCUMENT',
@@ -146,7 +162,7 @@ export const USER_WITH_SAME_IDENTITY_DOCUMENT: IApiError = {
   },
 }
 
-export const IDENTITY_DOCUMENT_ALREADY_USED: IApiError = {
+export const IDENTITY_DOCUMENT_ALREADY_USED: IApiResponse = {
   status: 409,
   body: {
     code: 'IDENTITY_DOCUMENT_ALREADY_USED',
@@ -154,7 +170,7 @@ export const IDENTITY_DOCUMENT_ALREADY_USED: IApiError = {
   },
 }
 
-export const ADMIN_ROLE_ALREADY_ASSIGNED: IApiError = {
+export const ADMIN_ROLE_ALREADY_ASSIGNED: IApiResponse = {
   status: 409,
   body: {
     code: 'ADMIN_ROLE_ALREADY_ASSIGNED',
@@ -162,7 +178,7 @@ export const ADMIN_ROLE_ALREADY_ASSIGNED: IApiError = {
   },
 }
 
-export const IMAGE_TOO_BIG: IApiError = {
+export const IMAGE_TOO_BIG: IApiResponse = {
   status: 413,
   body: {
     code: 'IMAGE_TOO_BIG',

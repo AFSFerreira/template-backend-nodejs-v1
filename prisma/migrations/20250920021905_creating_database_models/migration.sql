@@ -11,7 +11,7 @@ CREATE TYPE "public"."OccupationType" AS ENUM ('RESEARCHER', 'PROFESSOR', 'STUDE
 CREATE TYPE "public"."EducationLevelType" AS ENUM ('ELEMENTARY_SCHOOL', 'HIGH_SCHOOL', 'UNDERGRADUATE_STUDENT', 'BACHELOR', 'MASTER_STUDENT', 'MASTER', 'DOCTORATE_STUDENT', 'DOCTORATE', 'POST_DOCTORATE_STUDENT', 'POST_DOCTORATE', 'OTHER');
 
 -- CreateEnum
-CREATE TYPE "public"."MembershipStatusType" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING');
+CREATE TYPE "public"."MembershipStatusType" AS ENUM ('ACTIVE', 'INACTIVE', 'PENDING', 'VERIFYING');
 
 -- CreateEnum
 CREATE TYPE "public"."IdentityType" AS ENUM ('CPF', 'RNE', 'PASSPORT');
@@ -50,7 +50,7 @@ CREATE TABLE "public"."users" (
     "link_google_scholar" TEXT,
     "link_researcher_id" TEXT,
     "orcid_number" TEXT,
-    "membership_status" "public"."MembershipStatusType" NOT NULL DEFAULT 'PENDING',
+    "membership_status" "public"."MembershipStatusType" NOT NULL DEFAULT 'VERIFYING',
     "role" "public"."UserRoleType" NOT NULL DEFAULT 'DEFAULT',
     "department_name" TEXT,
     "wants_newsletter" BOOLEAN NOT NULL,
@@ -78,6 +78,9 @@ CREATE TABLE "public"."users" (
     "activity_area_id" INTEGER,
     "sub_activity_area_id" INTEGER,
     "institution_id" INTEGER,
+    "email_verification_token" TEXT,
+    "email_verification_token_expires_at" TIMESTAMPTZ(3),
+    "email_verified_at" TIMESTAMPTZ(3),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -534,6 +537,9 @@ CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_key" ON "use
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_user_id_key" ON "user_meeting_enrollments"("meeting_enrollment_id", "user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_verification_token_key" ON "users"("email_verification_token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "guest_meeting_enrollments_meeting_enrollment_id_key" ON "guest_meeting_enrollments"("meeting_enrollment_id");

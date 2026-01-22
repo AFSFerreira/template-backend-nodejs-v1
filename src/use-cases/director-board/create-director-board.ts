@@ -13,6 +13,7 @@ import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_BOARD_CREATION_ERROR } from '@messages/loggings/director-board-loggings'
+import { UserRoleType } from '@prisma/client'
 import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
@@ -24,7 +25,6 @@ import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorBoardUserAlreadyExistsError } from '@use-cases/errors/director-board/director-board-user-already-exists-error'
-import { DirectorBoardUserRoleForbiddenError } from '@use-cases/errors/director-board/director-board-user-role-forbidden-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -68,7 +68,8 @@ export class CreateDirectorBoardUseCase {
         })
 
         if (!MANAGER_PERMISSIONS.has(user.role)) {
-          throw new DirectorBoardUserRoleForbiddenError()
+          // Atribui permissão de gestor do sistema automaticamente:
+          await this.usersRepository.updateRole({ id: user.id, role: UserRoleType.MANAGER })
         }
 
         ensureNotExists({

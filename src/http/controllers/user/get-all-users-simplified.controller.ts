@@ -1,6 +1,6 @@
 import type {
   HTTPSimplifiedUserDetails,
-  UserWithSimplifiedDetails,
+  UserSimplifiedPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
@@ -16,7 +16,7 @@ export async function getAllUsersSimplified(request: FastifyRequest, reply: Fast
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = UserPresenter.toHTTP<UserWithSimplifiedDetails, HTTPSimplifiedUserDetails>(
+  const formattedReply = UserPresenter.toHTTP<UserSimplifiedPresenterInput, HTTPSimplifiedUserDetails>(
     data,
     tokens.presenters.user.userSimplified,
   )

@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const PASSWORD_RESET_IF_USER_EXISTS: IApiError = {
+export const PASSWORD_RESET_IF_USER_EXISTS: IApiResponse = {
   status: 200,
   body: {
     code: 'PASSWORD_RESET_IF_USER_EXISTS',
@@ -8,7 +8,7 @@ export const PASSWORD_RESET_IF_USER_EXISTS: IApiError = {
   },
 }
 
-export const LOGOUT: IApiError = {
+export const LOGOUT: IApiResponse = {
   status: 200,
   body: {
     code: 'SUCCESSFUL_LOGOUT',
@@ -16,7 +16,7 @@ export const LOGOUT: IApiError = {
   },
 }
 
-export const PASSWORD_RESET_SUCCESSFUL: IApiError = {
+export const PASSWORD_RESET_SUCCESSFUL: IApiResponse = {
   status: 200,
   body: {
     code: 'PASSWORD_RESET_SUCCESSFUL',
@@ -24,7 +24,15 @@ export const PASSWORD_RESET_SUCCESSFUL: IApiError = {
   },
 }
 
-export const NO_USERS_AVAILABLE: IApiError = {
+export const EMAIL_VERIFICATION_SUCCESSFUL: IApiResponse = {
+  status: 200,
+  body: {
+    code: 'EMAIL_VERIFICATION_SUCCESSFUL',
+    message: 'E-mail verificado com sucesso! Seu cadastro será avaliado pela equipe de moderação.',
+  },
+}
+
+export const NO_USERS_AVAILABLE: IApiResponse = {
   status: 204,
   body: {
     code: 'NO_USERS_AVAILABLE',

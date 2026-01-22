@@ -1,9 +1,8 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
-import type { Blog } from '@prisma/client'
+import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 
-export class BlogDefaultPresenter implements IPresenterStrategy<Blog, HTTPBlog> {
-  public toHTTP(input: Blog): HTTPBlog {
+export class BlogDefaultPresenter implements IPresenterStrategy<BlogDefaultPresenterInput, HTTPBlog> {
+  public toHTTP(input: BlogDefaultPresenterInput): HTTPBlog {
     return {
       id: input.publicId,
       authorName: input.authorName,

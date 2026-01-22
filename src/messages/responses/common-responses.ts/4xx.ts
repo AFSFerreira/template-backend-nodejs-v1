@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const BODY_REQUIRED: IApiError = {
+export const BODY_REQUIRED: IApiResponse = {
   status: 400,
   body: {
     code: 'BODY_REQUIRED',
@@ -8,7 +8,7 @@ export const BODY_REQUIRED: IApiError = {
   },
 }
 
-export const INVALID_PROSE_MIRROR_CONTENT: IApiError = {
+export const INVALID_PROSE_MIRROR_CONTENT: IApiResponse = {
   status: 400,
   body: {
     code: 'INVALID_PROSE_MIRROR_CONTENT',
@@ -16,7 +16,7 @@ export const INVALID_PROSE_MIRROR_CONTENT: IApiError = {
   },
 }
 
-export const INVALID_PROSE_MIRROR_IMAGE_LINK: IApiError = {
+export const INVALID_PROSE_MIRROR_IMAGE_LINK: IApiResponse = {
   status: 400,
   body: {
     code: 'INVALID_PROSE_MIRROR_IMAGE_LINK',
@@ -24,7 +24,7 @@ export const INVALID_PROSE_MIRROR_IMAGE_LINK: IApiError = {
   },
 }
 
-export const MISSING_MULTIPART_CONTENT_TYPE: IApiError = {
+export const MISSING_MULTIPART_CONTENT_TYPE: IApiResponse = {
   status: 400,
   body: {
     code: 'MISSING_MULTIPART_CONTENT_TYPE',
@@ -32,7 +32,7 @@ export const MISSING_MULTIPART_CONTENT_TYPE: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_FIELD_COUNT: IApiError = {
+export const MULTER_LIMIT_FIELD_COUNT: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_LIMIT_FIELD_COUNT',
@@ -40,7 +40,7 @@ export const MULTER_LIMIT_FIELD_COUNT: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_FIELD_KEY: IApiError = {
+export const MULTER_LIMIT_FIELD_KEY: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_LIMIT_FIELD_KEY',
@@ -48,7 +48,7 @@ export const MULTER_LIMIT_FIELD_KEY: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_FIELD_VALUE: IApiError = {
+export const MULTER_LIMIT_FIELD_VALUE: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_LIMIT_FIELD_VALUE',
@@ -56,7 +56,7 @@ export const MULTER_LIMIT_FIELD_VALUE: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_FILE_COUNT: IApiError = {
+export const MULTER_LIMIT_FILE_COUNT: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_LIMIT_FILE_COUNT',
@@ -64,7 +64,7 @@ export const MULTER_LIMIT_FILE_COUNT: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_PART_COUNT: IApiError = {
+export const MULTER_LIMIT_PART_COUNT: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_LIMIT_PART_COUNT',
@@ -72,7 +72,7 @@ export const MULTER_LIMIT_PART_COUNT: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_UNEXPECTED_FILE: IApiError = {
+export const MULTER_LIMIT_UNEXPECTED_FILE: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_LIMIT_UNEXPECTED_FILE',
@@ -80,7 +80,7 @@ export const MULTER_LIMIT_UNEXPECTED_FILE: IApiError = {
   },
 }
 
-export const MULTER_MISSING_FIELD_NAME: IApiError = {
+export const MULTER_MISSING_FIELD_NAME: IApiResponse = {
   status: 400,
   body: {
     code: 'MULTER_MISSING_FIELD_NAME',
@@ -88,7 +88,7 @@ export const MULTER_MISSING_FIELD_NAME: IApiError = {
   },
 }
 
-export const SYNTAX_ERROR: IApiError = {
+export const SYNTAX_ERROR: IApiResponse = {
   status: 400,
   body: {
     code: 'SYNTAX_ERROR',
@@ -96,7 +96,7 @@ export const SYNTAX_ERROR: IApiError = {
   },
 }
 
-export const VALIDATION_ERROR: IApiError = {
+export const VALIDATION_ERROR: IApiResponse = {
   status: 400,
   body: {
     code: 'VALIDATION_ERROR',
@@ -104,7 +104,7 @@ export const VALIDATION_ERROR: IApiError = {
   },
 }
 
-export const INVALID_BODY_FORMAT_JSON: IApiError = {
+export const INVALID_BODY_FORMAT_JSON: IApiResponse = {
   status: 401,
   body: {
     code: 'INVALID_BODY_FORMAT_JSON',
@@ -112,7 +112,7 @@ export const INVALID_BODY_FORMAT_JSON: IApiError = {
   },
 }
 
-export const MISSING_AUTHORIZATION_TOKEN: IApiError = {
+export const MISSING_AUTHORIZATION_TOKEN: IApiResponse = {
   status: 401,
   body: {
     code: 'MISSING_AUTHORIZATION_TOKEN',
@@ -120,7 +120,7 @@ export const MISSING_AUTHORIZATION_TOKEN: IApiError = {
   },
 }
 
-export const MISSING_USER_INFO: IApiError = {
+export const MISSING_USER_INFO: IApiResponse = {
   status: 401,
   body: {
     code: 'MISSING_USER_INFO',
@@ -128,7 +128,7 @@ export const MISSING_USER_INFO: IApiError = {
   },
 }
 
-export const UNAUTHORIZED: IApiError = {
+export const UNAUTHORIZED: IApiResponse = {
   status: 401,
   body: {
     code: 'UNAUTHORIZED',
@@ -136,7 +136,7 @@ export const UNAUTHORIZED: IApiError = {
   },
 }
 
-export const FORBIDDEN: IApiError = {
+export const FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
     code: 'FORBIDDEN',
@@ -144,7 +144,7 @@ export const FORBIDDEN: IApiError = {
   },
 }
 
-export const RESOURCE_NOT_FOUND: IApiError = {
+export const RESOURCE_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'RESOURCE_NOT_FOUND',
@@ -152,7 +152,7 @@ export const RESOURCE_NOT_FOUND: IApiError = {
   },
 }
 
-export const MAX_MULTIPART_FILE_SIZE_LIMIT: IApiError = {
+export const MAX_MULTIPART_FILE_SIZE_LIMIT: IApiResponse = {
   status: 413,
   body: {
     code: 'MAX_MULTIPART_FILE_SIZE_LIMIT',
@@ -160,7 +160,7 @@ export const MAX_MULTIPART_FILE_SIZE_LIMIT: IApiError = {
   },
 }
 
-export const MULTER_LIMIT_FILE_SIZE: IApiError = {
+export const MULTER_LIMIT_FILE_SIZE: IApiResponse = {
   status: 413,
   body: {
     code: 'MULTER_LIMIT_FILE_SIZE',
@@ -168,7 +168,7 @@ export const MULTER_LIMIT_FILE_SIZE: IApiError = {
   },
 }
 
-export const TOO_MANY_REQUESTS: IApiError = {
+export const TOO_MANY_REQUESTS: IApiResponse = {
   status: 429,
   body: {
     code: 'TOO_MANY_REQUESTS',

@@ -1,5 +1,7 @@
-import type { HTTPNewsletter } from '@custom-types/http/presenter/newsletter/newsletter-default'
-import type { Newsletter } from '@prisma/client'
+import type {
+  HTTPNewsletter,
+  NewsletterDefaultPresenterInput,
+} from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { NewsletterPresenter } from '@presenters/newsletter-presenter'
 import { getAllNewslettersQuerySchema } from '@schemas/newsletter/get-all-newsletters-query-schema'
@@ -13,7 +15,7 @@ export async function getAllNewsletters(request: FastifyRequest, reply: FastifyR
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = NewsletterPresenter.toHTTP<Newsletter, HTTPNewsletter>(data)
+  const formattedReply = NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(data)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

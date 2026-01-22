@@ -1,4 +1,4 @@
-import type { Readable } from 'node:stream'
+import type { MultipartFile } from '@fastify/multipart'
 
 interface SaveCompressedImageOptions {
   dimensions: {
@@ -9,7 +9,7 @@ interface SaveCompressedImageOptions {
 }
 
 export interface SaveCompressedImage {
-  imageStream: Readable
+  filePart: MultipartFile
   folderPath: string
   options?: SaveCompressedImageOptions
 }

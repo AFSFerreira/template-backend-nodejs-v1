@@ -1,13 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPSimplifiedUserDetailsForAdmin,
-  UserWithSimplifiedDetailsForAdmin,
+  UserSimplifiedForAdminPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified-for-admin'
 
 export class UserSimplifiedPresenterForAdmin
-  implements IPresenterStrategy<UserWithSimplifiedDetailsForAdmin, HTTPSimplifiedUserDetailsForAdmin>
+  implements IPresenterStrategy<UserSimplifiedForAdminPresenterInput, HTTPSimplifiedUserDetailsForAdmin>
 {
-  public toHTTP(input: UserWithSimplifiedDetailsForAdmin): HTTPSimplifiedUserDetailsForAdmin {
+  public toHTTP(input: UserSimplifiedForAdminPresenterInput): HTTPSimplifiedUserDetailsForAdmin {
     return {
       id: input.publicId,
       fullName: input.fullName,

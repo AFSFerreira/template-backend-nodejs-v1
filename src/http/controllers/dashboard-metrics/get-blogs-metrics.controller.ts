@@ -1,5 +1,5 @@
 import type {
-  DashboardBlogsMetrics,
+  DashboardBlogsMetricsPresenterInput,
   HTTPDashboardBlogsMetrics,
 } from '@custom-types/http/presenter/dashboard-metrics/dashboard-blogs-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
@@ -14,7 +14,7 @@ export async function getBlogsMetrics(_request: FastifyRequest, reply: FastifyRe
   const metrics = await useCase.execute()
 
   return await reply.status(200).send({
-    data: DashboardPresenter.toHTTP<DashboardBlogsMetrics, HTTPDashboardBlogsMetrics>(
+    data: DashboardPresenter.toHTTP<DashboardBlogsMetricsPresenterInput, HTTPDashboardBlogsMetrics>(
       metrics,
       tokens.presenters.dashboardMetrics.dashboardMetricsBlogs,
     ),

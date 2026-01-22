@@ -1,9 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPDirectorPosition } from '@custom-types/http/presenter/director-position/director-position-default'
-import type { DirectorPosition } from '@prisma/client'
+import type {
+  DirectorPositionDefaultPresenterInput,
+  HTTPDirectorPosition,
+} from '@custom-types/http/presenter/director-position/director-position-default'
 
-export class DirectorPositionDefaultPresenter implements IPresenterStrategy<DirectorPosition, HTTPDirectorPosition> {
-  public toHTTP(input: DirectorPosition): HTTPDirectorPosition {
+export class DirectorPositionDefaultPresenter
+  implements IPresenterStrategy<DirectorPositionDefaultPresenterInput, HTTPDirectorPosition>
+{
+  public toHTTP(input: DirectorPositionDefaultPresenterInput): HTTPDirectorPosition {
     return {
       id: input.publicId,
       position: input.position,

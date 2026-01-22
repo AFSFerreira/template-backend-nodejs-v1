@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const NEWSLETTER_HTML_PERSIST_ERROR: IApiError = {
+export const NEWSLETTER_HTML_PERSIST_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'NEWSLETTER_HTML_PERSIST_ERROR',
@@ -8,7 +8,7 @@ export const NEWSLETTER_HTML_PERSIST_ERROR: IApiError = {
   },
 }
 
-export const NEWSLETTER_HTML_READ_ERROR: IApiError = {
+export const NEWSLETTER_HTML_READ_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'NEWSLETTER_HTML_READ_ERROR',

@@ -1,5 +1,4 @@
-import type { HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
-import type { Blog } from '@prisma/client'
+import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { createDraftCopyBlogParamsSchema } from '@schemas/blog/create-draft-copy-blog-params-schema'
@@ -19,6 +18,6 @@ export async function createDraftCopyBlog(request: FastifyRequest, reply: Fastif
   })
 
   return await reply.status(201).send({
-    data: BlogPresenter.toHTTP<Blog, HTTPBlog>(blog),
+    data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
   })
 }

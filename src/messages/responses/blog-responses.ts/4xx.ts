@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const BLOG_INVALID_BANNER_LINK: IApiError = {
+export const BLOG_INVALID_BANNER_LINK: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_INVALID_BANNER_LINK',
@@ -8,7 +8,7 @@ export const BLOG_INVALID_BANNER_LINK: IApiError = {
   },
 }
 
-export const BLOG_INVALID_IMAGE_LINK: IApiError = {
+export const BLOG_INVALID_IMAGE_LINK: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_INVALID_IMAGE_LINK',
@@ -16,7 +16,7 @@ export const BLOG_INVALID_IMAGE_LINK: IApiError = {
   },
 }
 
-export const BLOG_INVALID_IMAGE_LINK_ON_COPY: IApiError = {
+export const BLOG_INVALID_IMAGE_LINK_ON_COPY: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_INVALID_IMAGE_LINK_ON_COPY',
@@ -24,7 +24,7 @@ export const BLOG_INVALID_IMAGE_LINK_ON_COPY: IApiError = {
   },
 }
 
-export const BLOG_NOT_IN_CHANGES_REQUESTED_STATUS: IApiError = {
+export const BLOG_NOT_IN_CHANGES_REQUESTED_STATUS: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_NOT_IN_CHANGES_REQUESTED_STATUS',
@@ -32,7 +32,7 @@ export const BLOG_NOT_IN_CHANGES_REQUESTED_STATUS: IApiError = {
   },
 }
 
-export const BLOG_NOT_IN_DRAFT_STATUS: IApiError = {
+export const BLOG_NOT_IN_DRAFT_STATUS: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_NOT_IN_DRAFT_STATUS',
@@ -40,7 +40,7 @@ export const BLOG_NOT_IN_DRAFT_STATUS: IApiError = {
   },
 }
 
-export const BLOG_NOT_IN_PENDING_APPROVAL_STATUS: IApiError = {
+export const BLOG_NOT_IN_PENDING_APPROVAL_STATUS: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_NOT_IN_PENDING_APPROVAL_STATUS',
@@ -48,7 +48,7 @@ export const BLOG_NOT_IN_PENDING_APPROVAL_STATUS: IApiError = {
   },
 }
 
-export const BLOG_NOT_IN_PUBLISHED_STATUS: IApiError = {
+export const BLOG_NOT_IN_PUBLISHED_STATUS: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_NOT_IN_PUBLISHED_STATUS',
@@ -56,7 +56,7 @@ export const BLOG_NOT_IN_PUBLISHED_STATUS: IApiError = {
   },
 }
 
-export const INVALID_BLOG_CONTENT: IApiError = {
+export const INVALID_BLOG_CONTENT: IApiResponse = {
   status: 400,
   body: {
     code: 'INVALID_BLOG_CONTENT',
@@ -64,7 +64,7 @@ export const INVALID_BLOG_CONTENT: IApiError = {
   },
 }
 
-export const BLOG_BANNER_REQUIRED_FOR_NON_DRAFT: IApiError = {
+export const BLOG_BANNER_REQUIRED_FOR_NON_DRAFT: IApiResponse = {
   status: 400,
   body: {
     code: 'BLOG_BANNER_REQUIRED_FOR_NON_DRAFT',
@@ -72,7 +72,7 @@ export const BLOG_BANNER_REQUIRED_FOR_NON_DRAFT: IApiError = {
   },
 }
 
-export const BLOG_ACCESS_FORBIDDEN: IApiError = {
+export const BLOG_ACCESS_FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
     code: 'BLOG_ACCESS_FORBIDDEN',
@@ -80,7 +80,7 @@ export const BLOG_ACCESS_FORBIDDEN: IApiError = {
   },
 }
 
-export const BLOG_COPY_FORBIDDEN: IApiError = {
+export const BLOG_COPY_FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
     code: 'BLOG_COPY_FORBIDDEN',
@@ -88,7 +88,7 @@ export const BLOG_COPY_FORBIDDEN: IApiError = {
   },
 }
 
-export const BLOG_DELETION_FORBIDDEN: IApiError = {
+export const BLOG_DELETION_FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
     code: 'BLOG_DELETION_FORBIDDEN',
@@ -96,7 +96,7 @@ export const BLOG_DELETION_FORBIDDEN: IApiError = {
   },
 }
 
-export const BLOG_EDITORIAL_STATUS_CHANGE_FORBIDDEN: IApiError = {
+export const BLOG_EDITORIAL_STATUS_CHANGE_FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
     code: 'BLOG_EDITORIAL_STATUS_CHANGE_FORBIDDEN',
@@ -104,7 +104,7 @@ export const BLOG_EDITORIAL_STATUS_CHANGE_FORBIDDEN: IApiError = {
   },
 }
 
-export const BLOG_IMAGE_NOT_FOUND: IApiError = {
+export const BLOG_IMAGE_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'BLOG_IMAGE_NOT_FOUND',
@@ -112,7 +112,7 @@ export const BLOG_IMAGE_NOT_FOUND: IApiError = {
   },
 }
 
-export const BLOG_NOT_FOUND: IApiError = {
+export const BLOG_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'BLOG_NOT_FOUND',

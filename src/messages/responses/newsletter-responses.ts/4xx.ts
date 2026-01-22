@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const NEWSLETTER_NOT_FOUND: IApiError = {
+export const NEWSLETTER_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'NEWSLETTER_NOT_FOUND',
@@ -8,7 +8,7 @@ export const NEWSLETTER_NOT_FOUND: IApiError = {
   },
 }
 
-export const NEWSLETTER_ALREADY_EXISTS: IApiError = {
+export const NEWSLETTER_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'NEWSLETTER_ALREADY_EXISTS',
@@ -16,7 +16,7 @@ export const NEWSLETTER_ALREADY_EXISTS: IApiError = {
   },
 }
 
-export const FILE_TOO_BIG: IApiError = {
+export const FILE_TOO_BIG: IApiResponse = {
   status: 413,
   body: {
     code: 'FILE_TOO_BIG',

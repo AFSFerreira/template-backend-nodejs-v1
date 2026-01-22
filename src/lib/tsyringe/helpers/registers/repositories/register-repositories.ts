@@ -15,6 +15,7 @@ import { PrismaKeywordsRepository } from '@repositories/prisma/prisma-keywords-r
 import { PrismaMeetingEnrollmentsRepository } from '@repositories/prisma/prisma-meeting-enrollments-repository'
 import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-repository'
 import { PrismaNewslettersRepository } from '@repositories/prisma/prisma-newsletters-repository'
+import { PrismaPaymentInfoRepository } from '@repositories/prisma/prisma-payment-info-repository'
 import { PrismaSliderImagesRepository } from '@repositories/prisma/prisma-slider-images-repository'
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
 import { registerRepository } from '../../register-repository'
@@ -115,6 +116,12 @@ export function registerRepositories(container: DependencyContainer) {
     contextKey: tokens.repositories.newsletters,
     container,
     target: PrismaNewslettersRepository,
+  })
+
+  registerRepository({
+    contextKey: tokens.repositories.paymentInfo,
+    container,
+    target: PrismaPaymentInfoRepository,
   })
 
   registerRepository({

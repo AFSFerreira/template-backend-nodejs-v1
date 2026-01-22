@@ -1,3 +1,4 @@
+import type { MeetingEnrollmentPresenterInput as MEPresenterInput } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
 import type { EducationLevelType, OccupationType } from '@prisma/client'
 
@@ -30,3 +31,5 @@ export interface HTTPMeetingEnrollmentDetailed {
   user: UserParticipantInfo | null
   guest: GuestParticipantInfo | null
 }
+
+export interface MeetingEnrollmentDetailedPresenterInput extends MEPresenterInput {}

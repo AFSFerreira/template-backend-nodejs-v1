@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const INSTITUTIONAL_INFO_IMAGE_STORAGE_ERROR: IApiError = {
+export const INSTITUTIONAL_INFO_IMAGE_STORAGE_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'INSTITUTIONAL_INFO_IMAGE_STORAGE_ERROR',

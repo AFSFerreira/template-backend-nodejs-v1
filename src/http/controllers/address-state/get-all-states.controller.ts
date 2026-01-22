@@ -1,5 +1,7 @@
-import type { HTTPAddressStates } from '@custom-types/http/presenter/address/address-with-user-count'
-import type { AddressStates } from '@custom-types/repository/prisma/address-state/address-states'
+import type {
+  AddressWithUsersCountPresenterInput,
+  HTTPAddressStates,
+} from '@custom-types/http/presenter/address/address-with-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { AddressPresenter } from '@presenters/address-presenter'
@@ -14,7 +16,7 @@ export async function getAllStates(request: FastifyRequest, reply: FastifyReply)
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = AddressPresenter.toHTTP<AddressStates, HTTPAddressStates>(
+  const formattedReply = AddressPresenter.toHTTP<AddressWithUsersCountPresenterInput, HTTPAddressStates>(
     data,
     tokens.presenters.address.addressWithUsersCount,
   )

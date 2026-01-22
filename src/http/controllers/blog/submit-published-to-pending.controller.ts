@@ -1,5 +1,4 @@
-import type { HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
-import type { Blog } from '@prisma/client'
+import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { submitPublishedToPendingParamsSchema } from '@schemas/blog/submit-published-to-review-params-schema'
@@ -19,6 +18,6 @@ export async function submitPublishedToPending(request: FastifyRequest, reply: F
   })
 
   return await reply.status(200).send({
-    data: BlogPresenter.toHTTP<Blog, HTTPBlog>(blog),
+    data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
   })
 }

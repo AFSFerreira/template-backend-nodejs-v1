@@ -16,12 +16,15 @@ export const tokens = {
     meetings: 'MeetingsRepository',
     meetingEnrollments: 'MeetingEnrollmentsRepository',
     newsletters: 'NewslettersRepository',
+    paymentInfo: 'PaymentInfoRepository',
     sliderImages: 'SliderImagesRepository',
     users: 'UsersRepository',
   },
+
   infra: {
     database: 'DatabaseContext',
   },
+
   presenters: {
     user: {
       userDefault: 'user:default',
@@ -64,6 +67,10 @@ export const tokens = {
       institutionalInfoForAdmin: 'institutional-info:for-admin',
     },
 
+    paymentInfo: {
+      paymentInfoDefault: 'payment-info:default',
+    },
+
     directorPosition: {
       directorPositionDefault: 'director-position:default',
     },
@@ -104,4 +111,4 @@ export const tokens = {
       fileDefault: 'file:default',
     },
   },
-}
+} as const

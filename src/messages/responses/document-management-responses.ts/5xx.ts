@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const ELECTION_NOTICE_FILE_READ_ERROR: IApiError = {
+export const ELECTION_NOTICE_FILE_READ_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'ELECTION_NOTICE_FILE_READ_ERROR',
@@ -8,7 +8,7 @@ export const ELECTION_NOTICE_FILE_READ_ERROR: IApiError = {
   },
 }
 
-export const STATUTE_FILE_READ_ERROR: IApiError = {
+export const STATUTE_FILE_READ_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'STATUTE_FILE_READ_ERROR',

@@ -1,5 +1,5 @@
 import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
+import type { AcademicPublicationSimplifiedPresenterInput } from '@custom-types/http/presenter/academic-publication/academic-publication-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { AcademicPublicationPresenter } from '@presenters/academic-publication-presenter'
@@ -15,7 +15,7 @@ export async function getAllAcademicPublicationsController(request: FastifyReque
   const { data, meta } = await useCase.execute(parsedQuery)
 
   const formattedReply = AcademicPublicationPresenter.toHTTP<
-    CustomAcademicPublicationWithSimplifiedDetails,
+    AcademicPublicationSimplifiedPresenterInput,
     HTTPAcademicPublication
   >(data, tokens.presenters.academicPublication.academicPublicationSimplified)
 

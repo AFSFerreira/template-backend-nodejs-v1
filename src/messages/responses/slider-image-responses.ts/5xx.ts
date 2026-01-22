@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const HOME_PAGE_SLIDER_IMAGE_PERSIST_FAILED: IApiError = {
+export const HOME_PAGE_SLIDER_IMAGE_PERSIST_FAILED: IApiResponse = {
   status: 500,
   body: {
     code: 'HOME_PAGE_SLIDER_IMAGE_PERSIST_FAILED',

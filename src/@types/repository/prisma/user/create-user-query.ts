@@ -9,6 +9,8 @@ export type CreateUserQuery = Omit<RegisterUserBodySchemaType, 'user' | 'address
     occupation?: OccupationType
     identityType: IdentityType
     identityDocument: string
+    emailVerificationTokenHash: string
+    emailVerificationTokenExpiresAt: Date
   }
   address: Omit<RegisterUserBodySchemaType['address'], 'state' | 'country'> & { stateId: number }
 }

@@ -2,14 +2,16 @@ import type { CompressedImageInfo } from '@custom-types/services/files/compresse
 import type { SaveCompressedImage } from '@custom-types/services/files/save-compressed-image'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
+import { folderExists } from '@utils/files/folder-exists'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import sharp from 'sharp'
 
 export async function saveCompressedImage({
-  imageStream,
+  filePart,
   folderPath,
   options = {
     dimensions: {
@@ -22,30 +24,36 @@ export async function saveCompressedImage({
   const finalName = `${generateFileHash()}.webp`
 
   const finalImagePath = path.resolve(folderPath, finalName)
-  const returnValue = { finalImagePath, filename: finalName }
+
+  const partialReturnData = { finalImagePath, filename: finalName }
 
   const fileAreadyExists = await fileExists(finalImagePath)
 
   // O arquivo já foi persistido anteriormente:
   if (fileAreadyExists) {
-    return { ...returnValue, success: true }
+    return { ...partialReturnData, success: true }
+  }
+
+  const baseFolderExists = await folderExists(folderPath)
+  if (!baseFolderExists) {
+    return { ...partialReturnData, success: false }
   }
 
   const sharpStream = sharp().resize(options.dimensions).webp({ quality: options.quality })
 
-  const destinationStream = await CreateFileWriteSteam(finalImagePath)
-
-  if (!destinationStream) {
-    return { ...returnValue, success: false }
-  }
-
   try {
-    await pipeline(imageStream, sharpStream, destinationStream)
+    const destinationStream = await CreateFileWriteSteam(finalImagePath)
 
-    return { ...returnValue, success: true }
+    await pipeline(filePart.file, sharpStream, destinationStream)
+
+    if (filePart.file.truncated) {
+      throw new FileSaveError()
+    }
+
+    return { ...partialReturnData, success: true }
   } catch (_error) {
     await deleteFile(finalImagePath)
 
-    return { ...returnValue, success: false }
+    return { ...partialReturnData, success: false }
   }
 }

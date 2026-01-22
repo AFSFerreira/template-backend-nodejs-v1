@@ -1,3 +1,7 @@
+import type { SliderImage } from '@prisma/client'
+
+export interface SliderImageDefaultPresenterInput extends SliderImage {}
+
 export interface HTTPSliderImage {
   id: string
   image: string

@@ -1,12 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { BlogWithDetails } from '@custom-types/http/presenter/blog/blog-detailed'
 import type {
+  BlogDetailedForAdminPresenterInput,
   HTTPBlogDetailedForAdmin,
-  IBlogDetailedForAdmin,
 } from '@custom-types/http/presenter/blog/blog-detailed-for-admin'
 
-export class BlogDetailedForAdminPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailedForAdmin> {
-  public toHTTP(input: IBlogDetailedForAdmin): HTTPBlogDetailedForAdmin {
+export class BlogDetailedForAdminPresenter
+  implements IPresenterStrategy<BlogDetailedForAdminPresenterInput, HTTPBlogDetailedForAdmin>
+{
+  public toHTTP(input: BlogDetailedForAdminPresenterInput): HTTPBlogDetailedForAdmin {
     return {
       id: input.publicId,
       editorialStatus: input.editorialStatus,

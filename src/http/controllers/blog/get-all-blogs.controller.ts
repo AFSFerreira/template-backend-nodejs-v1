@@ -1,5 +1,7 @@
-import type { HTTPSimplifiedBlog } from '@custom-types/http/presenter/blog/blog-simplified'
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/blog-simplified'
+import type {
+  BlogSimplifiedPresenterInput,
+  HTTPSimplifiedBlog,
+} from '@custom-types/http/presenter/blog/blog-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'
@@ -14,7 +16,7 @@ export async function getAllBlogs(request: FastifyRequest, reply: FastifyReply) 
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = BlogPresenter.toHTTP<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>(
+  const formattedReply = BlogPresenter.toHTTP<BlogSimplifiedPresenterInput, HTTPSimplifiedBlog>(
     data,
     tokens.presenters.blog.blogSimplified,
   )

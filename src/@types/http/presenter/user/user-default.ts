@@ -1,4 +1,6 @@
-import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
+import type { EducationLevelType, IdentityType, OccupationType, User, UserRoleType } from '@prisma/client'
+
+export interface UserDefaultPresenterInput extends User {}
 
 export interface HTTPUser {
   id: string

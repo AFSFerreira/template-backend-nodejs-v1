@@ -13,6 +13,7 @@ import { identityDocumentSchema } from './identity-document-schema'
 
 export const commonUserSchema = z.object({
   email: emailSchema,
+  secondaryEmail: emailSchema.optional(),
   password: passwordSchema,
   fullName: upperCaseTextSchema,
   username: usernameSchema,

@@ -2,15 +2,32 @@ import type { ImageInfo } from '@custom-types/services/files/image-info'
 import type { ISaveSliderImage } from '@custom-types/services/files/save-slider-image'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
+import { fileExists } from '@utils/files/file-exists'
+import { folderExists } from '@utils/files/folder-exists'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import { createWriteStream } from 'fs-extra'
 import sharp from 'sharp'
 
-export async function saveSliderImage({ imageStream, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
+export async function saveSliderImage({ filePart, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
   const finalName = `${generateFileHash()}.avif`
   const finalImagePath = path.resolve(folderPath, finalName)
+
+  const partialReturnData = { finalImagePath, filename: finalName }
+
+  const fileAreadyExists = await fileExists(finalImagePath)
+
+  const baseFolderExists = await folderExists(folderPath)
+  if (!baseFolderExists) {
+    return { ...partialReturnData, success: false }
+  }
+
+  // O arquivo já foi persistido anteriormente:
+  if (fileAreadyExists) {
+    return { ...partialReturnData, success: true }
+  }
 
   const { width, height } = mapQualityToDimensions(options)
 
@@ -28,17 +45,19 @@ export async function saveSliderImage({ imageStream, folderPath, options }: ISav
       lossless: false,
     })
 
-  const destinationStream = createWriteStream(finalImagePath)
-
-  const returnValue = { finalImagePath, filename: finalName }
-
   try {
-    await pipeline(imageStream, sharpStream, destinationStream)
+    const destinationStream = createWriteStream(finalImagePath)
 
-    return { ...returnValue, success: true }
+    await pipeline(filePart.file, sharpStream, destinationStream)
+
+    if (filePart.file.truncated) {
+      throw new FileSaveError()
+    }
+
+    return { ...partialReturnData, success: true }
   } catch (_error) {
     await deleteFile(finalImagePath)
 
-    return { ...returnValue, success: false }
+    return { ...partialReturnData, success: false }
   }
 }

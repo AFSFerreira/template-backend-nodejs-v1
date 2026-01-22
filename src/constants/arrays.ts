@@ -46,7 +46,10 @@ export const MANAGER_PERMISSIONS_ARRAY = [...ADMIN_PERMISSIONS_ARRAY, UserRoleTy
 
 export const CONTENT_LEADER_PERMISSIONS_ARRAY = [...MANAGER_PERMISSIONS_ARRAY, UserRoleType.CONTENT_LEADER] as const
 
-export const MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS_ARRAY = [...MANAGER_PERMISSIONS_ARRAY, UserRoleType.NEWSLETTER_LEADER] as const
+export const MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS_ARRAY = [
+  ...MANAGER_PERMISSIONS_ARRAY,
+  UserRoleType.NEWSLETTER_LEADER,
+] as const
 
 export const CONTENT_PRODUCERS_PERMISSIONS_ARRAY = [
   ...CONTENT_LEADER_PERMISSIONS_ARRAY,
@@ -60,3 +63,25 @@ export const END_SIGNALS = ['SIGINT', 'SIGTERM']
 export const ASPECT_RATIOS = ['1:1', '3:2', '4:3', '21:9', '9:16', '16:9'] as const
 
 export const QUALITY_VALUES = ['nHD', 'HD', 'FULL_HD', 'QUAD_HD', 'UHD', '8K_UHD'] as const
+
+export const TITLE_CASE_PORTUGUESE_EXCEPTIONS = [
+  'a',
+  'as',
+  'o',
+  'os',
+  'da',
+  'das',
+  'de',
+  'do',
+  'dos',
+  'na',
+  'nas',
+  'no',
+  'nos',
+  'em',
+  'com',
+  'por',
+  'para',
+  'e',
+  'do',
+]

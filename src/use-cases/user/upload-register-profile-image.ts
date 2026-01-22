@@ -1,6 +1,6 @@
 import type {
-  UploadRegisterProfileImageUseCaseRequest,
-  UploadRegisterProfileImageUseCaseResponse,
+  UploadUserProfileImageUseCaseRequest,
+  UploadUserProfileImageUseCaseResponse,
 } from '@custom-types/use-cases/user/upload-register-profile-image'
 import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { saveCompressedImage } from '@services/files/save-compressed-image'
@@ -9,10 +9,8 @@ import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-m
 import { injectable } from 'tsyringe'
 
 @injectable()
-export class UploadRegisterProfileImageUseCase {
-  async execute({
-    filePart,
-  }: UploadRegisterProfileImageUseCaseRequest): Promise<UploadRegisterProfileImageUseCaseResponse> {
+export class UploadUserProfileImageUseCase {
+  async execute({ filePart }: UploadUserProfileImageUseCaseRequest): Promise<UploadUserProfileImageUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
     }
@@ -23,7 +21,7 @@ export class UploadRegisterProfileImageUseCase {
     }
 
     const { filename, success } = await saveCompressedImage({
-      imageStream: filePart.file,
+      filePart,
       folderPath: REGISTER_TEMP_PROFILE_IMAGES_PATH,
     })
 

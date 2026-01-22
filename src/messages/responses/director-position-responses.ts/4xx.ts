@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const DIRECTOR_POSITION_NOT_FOUND: IApiError = {
+export const DIRECTOR_POSITION_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'DIRECTOR_POSITION_NOT_FOUND',
@@ -8,7 +8,7 @@ export const DIRECTOR_POSITION_NOT_FOUND: IApiError = {
   },
 }
 
-export const DIRECTOR_POSITION_ALREADY_EXISTS: IApiError = {
+export const DIRECTOR_POSITION_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'DIRECTOR_POSITION_ALREADY_EXISTS',

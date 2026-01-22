@@ -48,6 +48,8 @@ export class CreateMeetingUseCase {
         error: new MeetingAgendaPersistError(),
       })
 
+      const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
+
       const { meeting } = await this.dbContext.runInTransaction(async () => {
         const meeting = await this.meetingsRepository.create({
           title: data.title,
@@ -55,8 +57,8 @@ export class CreateMeetingUseCase {
           agenda: data.agenda,
           description: data.description,
           location: data.location,
-          lastDate: getArrayMaxDate(data.dates),
-          dates: data.dates,
+          lastDate: getArrayMaxDate(nonRepeatingDates),
+          dates: nonRepeatingDates,
           paymentInfo: data.paymentInfo,
         })
 

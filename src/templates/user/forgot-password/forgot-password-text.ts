@@ -1,0 +1,27 @@
+import type { IForgotPasswordTextTemplate } from '@custom-types/templates/user/forgot-password'
+import { APP_NAME } from '@constants/env-constants'
+import { env } from '@env/index'
+
+export function forgotPasswordTextTemplate({ fullName, username, token, email }: IForgotPasswordTextTemplate) {
+  const url = `${env.FRONTEND_URL}/reset-password?token=${token}`
+
+  return `
+Olá, ${fullName}!
+
+Recebemos uma solicitação para redefinir a sua senha.
+Para continuar, clique no link abaixo:
+
+${url}
+
+Informações de Login:
+• email: ${email}
+• username: ${username}
+
+Se preferir, copie e cole este link no seu navegador.
+
+Se você não solicitou a recuperação de senha, por favor, ignore este e-mail e a sua senha não será alterada.
+
+Atenciosamente,
+Equipe ${APP_NAME}
+  `.trim()
+}

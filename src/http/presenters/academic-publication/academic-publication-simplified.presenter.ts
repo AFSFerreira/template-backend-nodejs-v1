@@ -1,11 +1,11 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
-import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
+import type { AcademicPublicationSimplifiedPresenterInput } from '@custom-types/http/presenter/academic-publication/academic-publication-simplified'
 
 export class AcademicPublicationFilteredPresenter
-  implements IPresenterStrategy<CustomAcademicPublicationWithSimplifiedDetails, HTTPAcademicPublication>
+  implements IPresenterStrategy<AcademicPublicationSimplifiedPresenterInput, HTTPAcademicPublication>
 {
-  toHTTP(input: CustomAcademicPublicationWithSimplifiedDetails): HTTPAcademicPublication {
+  toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication {
     return {
       title: input.title,
       authorsName: input.authorsName,

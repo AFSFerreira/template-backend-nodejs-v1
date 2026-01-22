@@ -1,8 +1,8 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_DOCUMENT_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 
-export const SLIDER_IMAGE_INVALID_ASPECT_RATIO: IApiError = {
+export const SLIDER_IMAGE_INVALID_ASPECT_RATIO: IApiResponse = {
   status: 400,
   body: {
     code: 'SLIDER_IMAGE_INVALID_ASPECT_RATIO',
@@ -10,7 +10,7 @@ export const SLIDER_IMAGE_INVALID_ASPECT_RATIO: IApiError = {
   },
 }
 
-export const SLIDER_IMAGE_INVALID_FORMAT: IApiError = {
+export const SLIDER_IMAGE_INVALID_FORMAT: IApiResponse = {
   status: 400,
   body: {
     code: 'SLIDER_IMAGE_INVALID_FORMAT',
@@ -18,7 +18,7 @@ export const SLIDER_IMAGE_INVALID_FORMAT: IApiError = {
   },
 }
 
-export const SLIDER_IMAGE_TOO_SMALL: IApiError = {
+export const SLIDER_IMAGE_TOO_SMALL: IApiResponse = {
   status: 400,
   body: {
     code: 'SLIDER_IMAGE_TOO_SMALL',
@@ -26,7 +26,7 @@ export const SLIDER_IMAGE_TOO_SMALL: IApiError = {
   },
 }
 
-export const MISSING_STATUTE_FILE: IApiError = {
+export const MISSING_STATUTE_FILE: IApiResponse = {
   status: 404,
   body: {
     code: 'MISSING_STATUTE_FILE',
@@ -34,7 +34,7 @@ export const MISSING_STATUTE_FILE: IApiError = {
   },
 }
 
-export const SLIDER_ACTIVE_LIMIT_REACHED: IApiError = {
+export const SLIDER_ACTIVE_LIMIT_REACHED: IApiResponse = {
   status: 409,
   body: {
     code: 'SLIDER_ACTIVE_LIMIT_REACHED',
@@ -42,7 +42,7 @@ export const SLIDER_ACTIVE_LIMIT_REACHED: IApiError = {
   },
 }
 
-export const DOCUMENT_TOO_BIG: IApiError = {
+export const DOCUMENT_TOO_BIG: IApiResponse = {
   status: 413,
   body: {
     code: 'DOCUMENT_TOO_BIG',
@@ -50,7 +50,7 @@ export const DOCUMENT_TOO_BIG: IApiError = {
   },
 }
 
-export const SLIDER_IMAGE_TOO_LARGE: IApiError = {
+export const SLIDER_IMAGE_TOO_LARGE: IApiResponse = {
   status: 413,
   body: {
     code: 'SLIDER_IMAGE_TOO_LARGE',

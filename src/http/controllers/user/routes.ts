@@ -6,6 +6,7 @@ import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { rateLimit } from '@utils/http/rate-limit'
 import { authenticate } from './authenticate.controller'
 import { checkAvailability } from './check-availability.controller'
+import { createUser } from './create-user.controller'
 import { deleteUser } from './delete-user.controller'
 import { deleteUserByAdmin } from './delete-user-by-admin.controller'
 import { exportUsersData } from './export-users-data.controller'
@@ -16,15 +17,14 @@ import { getAllUsersSimplified } from './get-all-users-simplified.controller'
 import { getUserProfile } from './get-user-profile.controller'
 import { logout } from './logout.controller'
 import { refreshToken } from './refresh-token.controller'
-import { register } from './register.controller'
 import { resetPassword } from './reset-password.controller'
 import { reviewMembershipStatus } from './review-membership-status.controller'
 import { transferAdminRole } from './transfer-admin-role.controller'
-import { updateProfileImage } from './update-profile-image.controller'
 import { updateUser } from './update-user.controller'
 import { updateUserByPublicId } from './update-user-by-public-id.controller'
 import { updateUserPermissions } from './update-user-permissions.controller'
-import { uploadRegisterProfileImage } from './upload-register-profile-image.controller'
+import { uploadProfileImage } from './upload-profile-image.controller'
+import { verifyEmail } from './verify-email.controller'
 
 export async function userRoutes(app: FastifyInstance) {
   // GET
@@ -65,7 +65,7 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit({ max: 50, timeWindow: '1h' }),
     },
-    register,
+    createUser,
   )
   app.post(
     '/sessions',
@@ -87,7 +87,7 @@ export async function userRoutes(app: FastifyInstance) {
       ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyMultipart],
     },
-    uploadRegisterProfileImage,
+    uploadProfileImage,
   )
   app.post(
     '/forgot-password',
@@ -95,6 +95,13 @@ export async function userRoutes(app: FastifyInstance) {
       ...rateLimit({ max: 100, timeWindow: '1h' }),
     },
     forgotPassword,
+  )
+  app.post(
+    '/verify-email',
+    {
+      ...rateLimit({ max: 150, timeWindow: '1h' }),
+    },
+    verifyEmail,
   )
 
   // PATCH
@@ -140,14 +147,6 @@ export async function userRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     transferAdminRole,
-  )
-  app.patch(
-    '/me/profile-image',
-    {
-      ...rateLimit({ max: 10, timeWindow: '1h' }),
-      preHandler: [verifyJwt, verifyMultipart],
-    },
-    updateProfileImage,
   )
 
   // DELETE

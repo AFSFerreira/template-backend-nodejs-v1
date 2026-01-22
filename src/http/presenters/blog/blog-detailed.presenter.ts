@@ -1,8 +1,8 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { BlogWithDetails, HTTPBlogDetailed } from '@custom-types/http/presenter/blog/blog-detailed'
+import type { BlogDetailedPresenterInput, HTTPBlogDetailed } from '@custom-types/http/presenter/blog/blog-detailed'
 
-export class BlogDetailedPresenter implements IPresenterStrategy<BlogWithDetails, HTTPBlogDetailed> {
-  public toHTTP(input: BlogWithDetails): HTTPBlogDetailed {
+export class BlogDetailedPresenter implements IPresenterStrategy<BlogDetailedPresenterInput, HTTPBlogDetailed> {
+  public toHTTP(input: BlogDetailedPresenterInput): HTTPBlogDetailed {
     const {
       id,
       publicId,

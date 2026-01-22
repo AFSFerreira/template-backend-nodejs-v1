@@ -3,12 +3,12 @@ import type { ISaveAvifImage } from '@custom-types/services/files/save-avif-imag
 import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import { logError } from '@lib/logger/helpers/log-error'
-import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/file-loggings'
+import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
+import { fileExists } from '@utils/files/file-exists'
+import { folderExists } from '@utils/files/folder-exists'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import fs from 'fs-extra'
 import sharp from 'sharp'
 
 export async function saveAvifImage({
@@ -22,11 +22,15 @@ export async function saveAvifImage({
 
   const partialReturnData = { finalImagePath, filename }
 
-  try {
-    await fs.ensureDir(folderPath)
-  } catch (error) {
-    logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
+  const fileAreadyExists = await fileExists(finalImagePath)
 
+  // O arquivo já foi persistido anteriormente:
+  if (fileAreadyExists) {
+    return { ...partialReturnData, success: true }
+  }
+
+  const baseFolderExists = await folderExists(folderPath)
+  if (!baseFolderExists) {
     return { ...partialReturnData, success: false }
   }
 
@@ -43,17 +47,19 @@ export async function saveAvifImage({
       lossless: false,
     })
 
-  const destinationStream = createWriteStream(finalImagePath)
-
-  const returnValue = { finalImagePath, filename }
-
   try {
+    const destinationStream = createWriteStream(finalImagePath)
+
     await pipeline(filePart.file, sharpStream, destinationStream)
 
-    return { ...returnValue, success: true }
+    if (filePart.file.truncated) {
+      throw new FileSaveError()
+    }
+
+    return { ...partialReturnData, success: true }
   } catch (_error) {
     await deleteFile(finalImagePath)
 
-    return { ...returnValue, success: false }
+    return { ...partialReturnData, success: false }
   }
 }

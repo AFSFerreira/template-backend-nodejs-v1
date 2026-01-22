@@ -1,11 +1,11 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPSimplifiedBlog } from '@custom-types/http/presenter/blog/blog-simplified'
-import type { CustomBlogWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/blog-simplified'
+import type {
+  BlogSimplifiedPresenterInput,
+  HTTPSimplifiedBlog,
+} from '@custom-types/http/presenter/blog/blog-simplified'
 
-export class BlogSimplifiedPresenter
-  implements IPresenterStrategy<CustomBlogWithSimplifiedDetails, HTTPSimplifiedBlog>
-{
-  public toHTTP(input: CustomBlogWithSimplifiedDetails): HTTPSimplifiedBlog {
+export class BlogSimplifiedPresenter implements IPresenterStrategy<BlogSimplifiedPresenterInput, HTTPSimplifiedBlog> {
+  public toHTTP(input: BlogSimplifiedPresenterInput): HTTPSimplifiedBlog {
     return {
       id: input.publicId,
       title: input.title,

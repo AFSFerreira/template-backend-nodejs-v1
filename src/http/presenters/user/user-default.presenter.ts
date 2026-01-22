@@ -1,10 +1,9 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPUser } from '@custom-types/http/presenter/user/user-default'
-import type { User } from '@prisma/client'
+import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-export class UserDefaultPresenter implements IPresenterStrategy<User, HTTPUser> {
-  public toHTTP(input: User): HTTPUser {
+export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPresenterInput, HTTPUser> {
+  public toHTTP(input: UserDefaultPresenterInput): HTTPUser {
     const {
       id,
       passwordHash,

@@ -1,9 +1,9 @@
-import type { ISystemError } from '@custom-types/errors/system-error'
+import type { ISystemResponse } from '@custom-types/responses/system-response'
 
 export class SystemError extends Error {
-  public body: ISystemError
+  public body: ISystemResponse
 
-  constructor(error: ISystemError) {
+  constructor(error: ISystemResponse) {
     super(error.message)
 
     this.name = this.constructor.name

@@ -1,7 +1,7 @@
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
 import type { EducationLevelType, OccupationType, PresentationType } from '@prisma/client'
 
-export interface MeetingEnrollmentWithPresentationPresenterInput extends MeetingEnrollmentWithDetails {}
+export interface MeetingEnrollmentDetailedWithPresentationPresenterInput extends MeetingEnrollmentWithDetails {}
 
 export interface UserParticipantInfo {
   id: string

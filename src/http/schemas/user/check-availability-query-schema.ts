@@ -7,7 +7,6 @@ const checkAvailabilityQueryRawSchema = z
   .object({
     username: usernameSchema,
     email: emailSchema,
-    secondaryEmail: emailSchema,
     identity: identityDocumentSchema,
   })
   .partial()

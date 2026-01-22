@@ -1,5 +1,7 @@
-import type { HTTPSliderImage } from '@custom-types/http/presenter/slider-image/slider-image-default'
-import type { SliderImage } from '@prisma/client'
+import type {
+  HTTPSliderImage,
+  SliderImageDefaultPresenterInput,
+} from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { SliderImagePresenter } from '@presenters/slider-image-presenter'
 import { updateSliderImageBodySchema } from '@schemas/slider-image/update-slider-image-body-schema'
@@ -15,7 +17,7 @@ export async function updateSliderImage(request: FastifyRequest, reply: FastifyR
 
   const { sliderImage } = await useCase.execute({ publicId, data: parsedBody })
 
-  const formattedReply = SliderImagePresenter.toHTTP<SliderImage, HTTPSliderImage>(sliderImage)
+  const formattedReply = SliderImagePresenter.toHTTP<SliderImageDefaultPresenterInput, HTTPSliderImage>(sliderImage)
 
   return await reply.status(200).send({ data: formattedReply })
 }

@@ -2,6 +2,7 @@ import type { ICopyFile } from '@custom-types/services/files/copy-file'
 import type { FileInfo } from '@custom-types/services/files/file-info'
 import path from 'node:path'
 import { deleteFile } from '@utils/files/delete-file'
+import { folderExists } from '@utils/files/folder-exists'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import fs from 'fs-extra'
 
@@ -10,6 +11,11 @@ export async function copyFile({ sourceFilePath, newFilename, destinationFolderP
   const finalFilePath = path.resolve(destinationFolderPath, filename)
 
   const partialReturnData = { finalFilePath, filename }
+
+  const baseFolderExists = await folderExists(destinationFolderPath)
+  if (!baseFolderExists) {
+    return { ...partialReturnData, success: false }
+  }
 
   try {
     await fs.copyFile(sourceFilePath, finalFilePath)

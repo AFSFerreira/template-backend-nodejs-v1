@@ -1,3 +1,4 @@
+import type { StaticFileRoute } from '@custom-types/http/plugins/static-routes'
 import type { FastifyInstance } from 'fastify'
 import {
   BLOG_BANNERS_PATH,
@@ -33,7 +34,7 @@ import fastifyStatic from '@fastify/static'
 import { staticRouteConfigurations } from '../configuration/static-routes-configuration'
 
 export async function staticFileRoutes(app: FastifyInstance) {
-  const fileRoutes: Array<{ prefix: string; root: string }> = [
+  const fileRoutes: StaticFileRoute[] = [
     {
       prefix: STATIC_USER_PROFILE_IMAGE_ROUTE,
       root: REGISTER_PROFILE_IMAGES_PATH,

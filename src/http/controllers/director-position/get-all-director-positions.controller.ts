@@ -1,5 +1,7 @@
-import type { HTTPDirectorPosition } from '@custom-types/http/presenter/director-position/director-position-default'
-import type { DirectorPosition } from '@prisma/client'
+import type {
+  DirectorPositionDefaultPresenterInput,
+  HTTPDirectorPosition,
+} from '@custom-types/http/presenter/director-position/director-position-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DirectorPositionPresenter } from '@presenters/director-position-presenter'
 import { getAllDirectorPositionsSchema } from '@schemas/director-position/get-all-director-positions-schema'
@@ -13,7 +15,9 @@ export async function getAllDirectorPositions(request: FastifyRequest, reply: Fa
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = DirectorPositionPresenter.toHTTP<DirectorPosition, HTTPDirectorPosition>(data)
+  const formattedReply = DirectorPositionPresenter.toHTTP<DirectorPositionDefaultPresenterInput, HTTPDirectorPosition>(
+    data,
+  )
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

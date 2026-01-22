@@ -2,6 +2,13 @@ import path from 'node:path'
 
 export const DEFAULT_PROFILE_IMAGE_NAME = 'default.png'
 
+// NOTE: Apenas para centralizar o nome da logo utilizada no attachment dos emails,
+// isto não é um arquivo presente fisicamente no backend:
+export const EMAIL_LOGO_NAME = 'logo-header.png'
+
+// NOTE: CID único pra identificar a logo nos emails enviados pelo backend:
+export const EMAIL_LOGO_CID = 'logoheader'
+
 export const STATUTE_FILE_NAME = 'estatuto'
 
 export const ELECTION_NOTICE_FILE_NAME = 'edital-eleição'

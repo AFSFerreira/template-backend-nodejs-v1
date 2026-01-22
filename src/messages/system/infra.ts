@@ -1,6 +1,6 @@
-import type { ISystemError } from '@custom-types/errors/system-error'
+import type { ISystemResponse } from '@custom-types/responses/system-response'
 
-export const INFRA_ALREADY_EXISTS: ISystemError = {
+export const INFRA_ALREADY_EXISTS: ISystemResponse = {
   code: 'INFRA_ALREADY_EXISTS',
   message: 'Serviço de infraestrutura já registrado',
 }

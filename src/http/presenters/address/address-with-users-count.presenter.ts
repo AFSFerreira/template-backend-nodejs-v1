@@ -1,9 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPAddressStates } from '@custom-types/http/presenter/address/address-with-user-count'
-import type { AddressStates } from '@custom-types/repository/prisma/address-state/address-states'
+import type {
+  AddressWithUsersCountPresenterInput,
+  HTTPAddressStates,
+} from '@custom-types/http/presenter/address/address-with-users-count'
 
-export class AddressWithUsersCountPresenter implements IPresenterStrategy<AddressStates, HTTPAddressStates> {
-  toHTTP(input: AddressStates): HTTPAddressStates {
+export class AddressWithUsersCountPresenter
+  implements IPresenterStrategy<AddressWithUsersCountPresenterInput, HTTPAddressStates>
+{
+  public toHTTP(input: AddressWithUsersCountPresenterInput): HTTPAddressStates {
     return {
       state: input.state,
       usersCount: input.usersCount,

@@ -1,9 +1,8 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPMeeting } from '@custom-types/http/presenter/meeting/meeting-default'
-import type { Meeting } from '@prisma/client'
+import type { HTTPMeeting, MeetingDefaultPresenterInput } from '@custom-types/http/presenter/meeting/meeting-default'
 
-export class MeetingDefaultPresenter implements IPresenterStrategy<Meeting, HTTPMeeting> {
-  public toHTTP(input: Meeting): HTTPMeeting {
+export class MeetingDefaultPresenter implements IPresenterStrategy<MeetingDefaultPresenterInput, HTTPMeeting> {
+  public toHTTP(input: MeetingDefaultPresenterInput): HTTPMeeting {
     const { id, publicId, createdAt, updatedAt, location, participantsCount, ...filteredInfo } = input
 
     return {

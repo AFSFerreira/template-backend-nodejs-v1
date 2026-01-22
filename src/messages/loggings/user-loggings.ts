@@ -18,9 +18,17 @@ export const USER_UPDATE_ERROR = 'Erro ao atualizar as informações do usuário
 
 export const USER_DELETION_SUCCESSFUL = 'Conta de usuário deletada com sucesso'
 
+export const USER_DELETION_EMAIL_SEND_ERROR = 'Falha ao enviar e-mail de confirmação de exclusão de conta'
+
+export const MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR = 'Falha ao enviar e-mail de rejeição de pedido de associação'
+
 export const USER_DELETION_BY_ADMIN_SUCCESSFUL = 'Conta de usuário deletada por administrador com sucesso'
 
 export const RESET_PASSWORD_SUCCESSFUL = 'Pedido de restauração de senha bem sucedida'
+
+export const EMAIL_VERIFICATION_SUCCESSFUL = 'Verificação de e-mail realizada com sucesso'
+
+export const EMAIL_VERIFICATION_SEND_ERROR = 'Falha ao enviar e-mail de confirmação de conta'
 
 export const AUTHENTICATION_SUCCESSFUL = 'Autenticação bem sucedida'
 

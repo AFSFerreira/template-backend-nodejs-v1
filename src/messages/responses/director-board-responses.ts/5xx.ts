@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const DIRECTOR_BOARD_IMAGE_STORAGE_ERROR: IApiError = {
+export const DIRECTOR_BOARD_IMAGE_STORAGE_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'DIRECTOR_BOARD_IMAGE_STORAGE_ERROR',
@@ -8,7 +8,7 @@ export const DIRECTOR_BOARD_IMAGE_STORAGE_ERROR: IApiError = {
   },
 }
 
-export const DIRECTOR_BOARD_LIST_ERROR: IApiError = {
+export const DIRECTOR_BOARD_LIST_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'DIRECTOR_BOARD_LIST_ERROR',

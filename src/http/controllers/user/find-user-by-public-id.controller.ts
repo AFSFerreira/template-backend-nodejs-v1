@@ -1,5 +1,7 @@
-import type { HTTPUserWithDetailsForAdmin } from '@custom-types/http/presenter/user/user-detailed-for-admin'
-import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import type {
+  HTTPUserWithDetailsForAdmin,
+  UserDetailedPresenterForAdminInput,
+} from '@custom-types/http/presenter/user/user-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/user-presenter'
@@ -14,7 +16,7 @@ export async function findUserByPublicId(request: FastifyRequest, reply: Fastify
 
   const { user } = await useCase.execute({ publicId })
 
-  const formattedReply = UserPresenter.toHTTP<UserWithDetails, HTTPUserWithDetailsForAdmin>(
+  const formattedReply = UserPresenter.toHTTP<UserDetailedPresenterForAdminInput, HTTPUserWithDetailsForAdmin>(
     user,
     tokens.presenters.user.userDetailedForAdmin,
   )

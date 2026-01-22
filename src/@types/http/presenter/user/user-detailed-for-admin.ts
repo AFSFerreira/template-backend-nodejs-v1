@@ -7,11 +7,7 @@ import type {
   UserRoleType,
 } from '@prisma/client'
 
-export interface UserDetailedPresenterForAdminInput extends Omit<UserWithDetails, 'DirectorBoard'> {
-  DirectorBoard?: Omit<NonNullable<UserWithDetails['DirectorBoard']>, 'aboutMe'> & {
-    aboutMe: string
-  }
-}
+export interface UserDetailedPresenterForAdminInput extends UserWithDetails {}
 
 interface HTTPUserDetails {
   id: string
@@ -81,7 +77,6 @@ interface HTTPAcademicPublications {
 interface HTTPDirectorBoardInfo {
   profileImage: string
   name: string
-  aboutMe: string
   position: string
   linkLattes?: string | null
 }

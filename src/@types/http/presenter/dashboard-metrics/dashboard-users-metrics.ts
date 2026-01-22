@@ -11,3 +11,5 @@ export interface HTTPDashboardUsersMetrics {
   totalInactiveUsers: number
   totalUsers: number
 }
+
+export interface DashboardUsersMetricsPresenterInput extends DashboardUsersMetrics {}

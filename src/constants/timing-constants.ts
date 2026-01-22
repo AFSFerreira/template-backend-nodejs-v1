@@ -1,6 +1,7 @@
 import ms from 'ms'
 
 export const RECOVERY_PASSWORD_EXPIRATION_TIME = ms('15m')
+export const EMAIL_VALIDATION_EXPIRATION_TIME = ms('3d')
 
 export const BLOG_IP_VIEW_TTL = ms('10m')
 export const BLOG_HTML_CACHE_TTL = ms('3m')

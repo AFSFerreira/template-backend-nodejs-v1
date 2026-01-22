@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const INSTITUTIONAL_INFO_NOT_FOUND: IApiError = {
+export const INSTITUTIONAL_INFO_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'INSTITUTIONAL_INFO_NOT_FOUND',

@@ -43,7 +43,7 @@ model User {
   linkGoogleScholar              String?                  @map("link_google_scholar")
   linkResearcherId               String?                  @map("link_researcher_id")
   orcidNumber                    String?                  @map("orcid_number")
-  membershipStatus               MembershipStatusType     @default(PENDING) @map("membership_status")
+  membershipStatus               MembershipStatusType     @default(VERIFYING) @map("membership_status")
   role                           UserRoleType             @default(DEFAULT)
   departmentName                 String?                  @map("department_name")
   wantsNewsletter                Boolean                  @map("wants_newsletter")
@@ -73,17 +73,22 @@ model User {
   institutionId                  Int?                     @map("institution_id")
   fullNameTsvPt                  Unsupported("tsvector")? @map("full_name_tsv_pt")
   fullNameUnaccent               String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(full_name, ''::text) FROM 1 FOR 255))")) @map("full_name_unaccent")
-  AcademicPublication            AcademicPublication[]
-  Address                        Address?
-  AuthenticationAudit            AuthenticationAudit[]
-  Blog                           Blog[]
-  DirectorBoard                  DirectorBoard?
-  EnrolledCourse                 EnrolledCourse?
-  ActivityArea                   ActivityArea?            @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
-  Institution                    Institution?             @relation(fields: [institutionId], references: [id], onDelete: SetNull)
-  SubActivityArea                ActivityArea?            @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
-  UserMeetingEnrollment          UserMeetingEnrollment[]  @relation()
-  Keyword                        Keyword[]                @relation("KeywordToUser")
+
+  emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
+  emailVerificationTokenHash      String?   @unique @map("email_verification_token")
+  emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at") @db.Timestamptz(3)
+
+  AcademicPublication   AcademicPublication[]
+  Address               Address?
+  AuthenticationAudit   AuthenticationAudit[]
+  Blog                  Blog[]
+  DirectorBoard         DirectorBoard?
+  EnrolledCourse        EnrolledCourse?
+  ActivityArea          ActivityArea?           @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
+  Institution           Institution?            @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  SubActivityArea       ActivityArea?           @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
+  UserMeetingEnrollment UserMeetingEnrollment[] @relation()
+  Keyword               Keyword[]               @relation("KeywordToUser")
 
   @@unique([identityType, identityDocument])
   @@index([membershipStatus])
@@ -191,6 +196,7 @@ model Institution {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   User      User[]
 
+  @@index([name(ops: raw("gin_trgm_ops"))], map: "idx_institutions_name_trgm_gin", type: Gin)
   @@map("institutions")
 }
 
@@ -243,6 +249,7 @@ model DirectorPosition {
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   DirectorBoard DirectorBoard?
 
+  @@index([position(ops: raw("gin_trgm_ops"))], map: "idx_director_positions_position_trgm_gin", type: Gin)
   @@map("director_positions")
 }
 
@@ -365,7 +372,7 @@ model Meeting {
   MeetingEnrollment  MeetingEnrollment[]
 
   @@index([lastDate])
-  @@index([title(ops: raw("gin_trgm_ops"))], map: "idx_meeting_title_trgm_gin", type: Gin)
+  @@index([title(ops: raw("gin_trgm_ops"))], map: "idx_meetings_title_trgm_gin", type: Gin)
   @@map("meetings")
 }
 
@@ -405,14 +412,14 @@ model Blog {
 }
 
 model Newsletter {
-  id                Int                 @id @default(autoincrement())
-  publicId          String              @unique @default(uuid(7)) @map("public_id")
-  content           String // Arquivo contendo o conteúdo em HTML da Newsletter
-  sequenceNumber    String              @unique @map("sequence_number") // Número absoluto de sequência
-  editionNumber     String              @map("edition_number") // Número de edição do ano
-  volume            String // Ano de publicação
-  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id             Int      @id @default(autoincrement())
+  publicId       String   @unique @default(uuid(7)) @map("public_id")
+  content        String // Arquivo contendo o conteúdo em HTML da Newsletter
+  sequenceNumber String   @unique @map("sequence_number") // Número absoluto de sequência
+  editionNumber  String   @map("edition_number") // Número de edição do ano
+  volume         String // Ano de publicação
+  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@unique([volume, editionNumber])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
@@ -477,6 +484,7 @@ enum MembershipStatusType {
   ACTIVE
   INACTIVE
   PENDING
+  VERIFYING
 }
 
 enum IdentityType {

@@ -12,8 +12,8 @@ import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_RESET_SUBJECT } from '@messages/emails/user-emails'
 import { CHANGE_PASSWORD_REQUEST_SUCCESSFUL, PASSWORD_RESET_EMAIL_FAILED } from '@messages/loggings/user-loggings'
 import { sendEmail } from '@services/external/send-email'
-import { forgotPasswordHtmlTemplate } from '@templates/forgot-password/forgot-password-html'
-import { forgotPasswordTextTemplate } from '@templates/forgot-password/forgot-password-text'
+import { forgotPasswordHtmlTemplate } from '@templates/user/forgot-password/forgot-password-html'
+import { forgotPasswordTextTemplate } from '@templates/user/forgot-password/forgot-password-text'
 import { generateToken } from '@utils/tokens/generate-token'
 import { hashToken } from '@utils/tokens/hash-token'
 import { ensureExists } from '@utils/validators/ensure'
@@ -61,17 +61,23 @@ export class ForgotPasswordUseCase {
       token: recoveryPasswordToken,
     }
 
+    // Recuperação de senha enviada para o email escolhido pelo usuário
+    const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
+
     try {
+      const { html, attachments } = forgotPasswordHtmlTemplate(emailInfo)
+
       await sendEmail({
-        to: login,
+        to: userChosenEmail,
         subject: PASSWORD_RESET_SUBJECT,
         message: forgotPasswordTextTemplate(emailInfo),
-        html: forgotPasswordHtmlTemplate(emailInfo),
+        html,
+        attachments,
       })
     } catch (error) {
       logError({
         error,
-        context: { userPublicId: user.publicId, userEmail: user.email },
+        context: { userPublicId: user.publicId, userEmail: userChosenEmail },
         message: PASSWORD_RESET_EMAIL_FAILED,
       })
     }

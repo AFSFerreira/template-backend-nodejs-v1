@@ -6,7 +6,6 @@ import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/u
 import type { ListAllUsersDetailedQuery } from '@custom-types/repository/prisma/user/list-all-users-detailed-query'
 import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
-import type { UpdateProfileImageQuery } from '@custom-types/repository/prisma/user/update-profile-image-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
@@ -15,7 +14,7 @@ import type { Prisma } from '@prisma/client'
 import type { UsersRepository } from '../users-repository'
 import { userWithDetails } from '@custom-types/validators/user-with-details'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { ActivityAreaType } from '@prisma/client'
+import { ActivityAreaType, MembershipStatusType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
@@ -216,10 +215,17 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async findConflictingUser({ email, username, identity }: FindConflictingUserQuery) {
+  async findConflictingUser({ email, secondaryEmail, username, identity }: FindConflictingUserQuery) {
     const user = await this.dbContext.client.user.findFirst({
       where: {
-        OR: [{ email }, { username }, ...(identity ? [identity] : [])],
+        OR: [
+          { email },
+          { email: secondaryEmail },
+          { secondaryEmail },
+          { secondaryEmail: email },
+          { username },
+          ...(identity ? [identity] : []),
+        ],
       },
     })
 
@@ -398,13 +404,6 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
-  async updateProfileImage({ id, profileImage }: UpdateProfileImageQuery) {
-    await this.dbContext.client.user.update({
-      where: { id },
-      data: { profileImage },
-    })
-  }
-
   async update({ id, data }: UpdateUserQuery) {
     let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined
 
@@ -533,6 +532,26 @@ export class PrismaUsersRepository implements UsersRepository {
   async validateUserToken(recoveryPasswordTokenHash: string) {
     const user = await this.dbContext.client.user.findFirst({
       where: { recoveryPasswordTokenHash },
+    })
+    return user
+  }
+
+  async validateEmailVerificationToken(emailVerificationTokenHash: string) {
+    const user = await this.dbContext.client.user.findFirst({
+      where: { emailVerificationTokenHash },
+    })
+    return user
+  }
+
+  async confirmEmailVerification(id: number) {
+    const user = await this.dbContext.client.user.update({
+      where: { id },
+      data: {
+        membershipStatus: MembershipStatusType.PENDING,
+        emailVerifiedAt: new Date(),
+        emailVerificationTokenHash: null,
+        emailVerificationTokenExpiresAt: null,
+      },
     })
     return user
   }

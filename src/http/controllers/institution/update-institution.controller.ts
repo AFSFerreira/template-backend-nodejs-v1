@@ -1,5 +1,7 @@
-import type { HTTPInstitution } from '@custom-types/http/presenter/institution/institution-default'
-import type { Institution } from '@prisma/client'
+import type {
+  HTTPInstitution,
+  InstitutionDefaultPresenterInput,
+} from '@custom-types/http/presenter/institution/institution-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { InstitutionPresenter } from '@presenters/institution-presenter'
 import { updateInstitutionBodySchema } from '@schemas/institution/update-institution-body-schema'
@@ -15,7 +17,7 @@ export async function updateInstitution(request: FastifyRequest, reply: FastifyR
 
   const { institution } = await useCase.execute({ publicId, data: parsedBody })
 
-  const formattedReply = InstitutionPresenter.toHTTP<Institution, HTTPInstitution>(institution)
+  const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(institution)
 
   return await reply.status(200).send({
     data: formattedReply,

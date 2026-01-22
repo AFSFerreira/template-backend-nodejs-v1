@@ -1,9 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPSliderImage } from '@custom-types/http/presenter/slider-image/slider-image-default'
-import type { SliderImage } from '@prisma/client'
+import type {
+  HTTPSliderImage,
+  SliderImageDefaultPresenterInput,
+} from '@custom-types/http/presenter/slider-image/slider-image-default'
 
-export class SliderImageDefaultPresenter implements IPresenterStrategy<SliderImage, HTTPSliderImage> {
-  public toHTTP(input: SliderImage): HTTPSliderImage {
+export class SliderImageDefaultPresenter
+  implements IPresenterStrategy<SliderImageDefaultPresenterInput, HTTPSliderImage>
+{
+  public toHTTP(input: SliderImageDefaultPresenterInput): HTTPSliderImage {
     return {
       id: input.publicId,
       image: input.image,

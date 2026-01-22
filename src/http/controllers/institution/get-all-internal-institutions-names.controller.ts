@@ -1,5 +1,7 @@
-import type { HTTPInstitution } from '@custom-types/http/presenter/institution/institution-default'
-import type { Institution } from '@prisma/client'
+import type {
+  HTTPInstitution,
+  InstitutionDefaultPresenterInput,
+} from '@custom-types/http/presenter/institution/institution-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { InstitutionPresenter } from '@presenters/institution-presenter'
 import { getAllInternalInstitutionsNamesQuerySchema } from '@schemas/institution/get-all-internal-institutions-names-query-schema'
@@ -13,7 +15,7 @@ export async function getAllInternalInstitutionsNames(request: FastifyRequest, r
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = InstitutionPresenter.toHTTP<Institution, HTTPInstitution>(data)
+  const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(data)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

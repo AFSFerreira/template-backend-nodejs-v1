@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { logger } from '@lib/logger'
 import { setUserId } from '@lib/logger/helpers/set-user-id'
 import { UNAUTHORIZED } from '@messages/responses/common-responses.ts/4xx'
-import { INACTIVE_USER, PENDING_USER } from '@messages/responses/user-responses.ts/4xx'
+import { INACTIVE_USER, PENDING_USER, UNVERIFIED_EMAIL } from '@messages/responses/user-responses.ts/4xx'
 import { MembershipStatusType } from '@prisma/client'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { getRequestUserStatus } from '@services/http/get-request-user-status'
@@ -24,5 +24,9 @@ export async function verifyJwt(request: FastifyRequest, reply: FastifyReply) {
 
   if (status === MembershipStatusType.PENDING) {
     return await reply.status(PENDING_USER.status).send(PENDING_USER.body)
+  }
+
+  if (status === MembershipStatusType.VERIFYING) {
+    return await reply.status(UNVERIFIED_EMAIL.status).send(UNVERIFIED_EMAIL.body)
   }
 }

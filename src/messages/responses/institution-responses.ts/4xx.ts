@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const INVALID_INSTITUTION_NAME: IApiError = {
+export const INVALID_INSTITUTION_NAME: IApiResponse = {
   status: 400,
   body: {
     code: 'INVALID_INSTITUTION_NAME',
@@ -8,7 +8,7 @@ export const INVALID_INSTITUTION_NAME: IApiError = {
   },
 }
 
-export const INSTITUTION_NOT_FOUND: IApiError = {
+export const INSTITUTION_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'INSTITUTION_NOT_FOUND',
@@ -16,7 +16,7 @@ export const INSTITUTION_NOT_FOUND: IApiError = {
   },
 }
 
-export const INSTITUTION_ALREADY_EXISTS: IApiError = {
+export const INSTITUTION_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'INSTITUTION_ALREADY_EXISTS',

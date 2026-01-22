@@ -1,9 +1,8 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPAddress } from '@custom-types/http/presenter/address/addres-default'
-import type { Address } from '@prisma/client'
+import type { AddressDefaultPresenterInput, HTTPAddress } from '@custom-types/http/presenter/address/address-default'
 
-export class AddressDefaultPresenter implements IPresenterStrategy<Address, HTTPAddress> {
-  toHTTP(input: Address): HTTPAddress {
+export class AddressDefaultPresenter implements IPresenterStrategy<AddressDefaultPresenterInput, HTTPAddress> {
+  public toHTTP(input: AddressDefaultPresenterInput): HTTPAddress {
     const { id, userId, createdAt, ...filteredInfo } = input
 
     return filteredInfo

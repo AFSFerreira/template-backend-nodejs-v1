@@ -7,5 +7,3 @@ export interface SendEmailUseCaseRequest {
   html: string
   attachments?: Attachment[]
 }
-
-// No explicit response interface (returns void/undefined)

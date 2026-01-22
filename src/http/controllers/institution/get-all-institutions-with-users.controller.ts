@@ -1,5 +1,7 @@
-import type { HTTPInstitutionWithUsersCount } from '@custom-types/http/presenter/institution/institution-with-users-count'
-import type { InstitutionsUsersCount } from '@custom-types/repository/prisma/institution/institutions-users-count'
+import type {
+  HTTPInstitutionWithUsersCount,
+  InstitutionWithUsersCountPresenterInput,
+} from '@custom-types/http/presenter/institution/institution-with-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { InstitutionPresenter } from '@presenters/institution-presenter'
@@ -14,10 +16,10 @@ export async function getAllInstitutionsWithUsers(request: FastifyRequest, reply
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  const formattedReply = InstitutionPresenter.toHTTP<InstitutionsUsersCount, HTTPInstitutionWithUsersCount>(
-    data,
-    tokens.presenters.institution.institutionWithUsersCount,
-  )
+  const formattedReply = InstitutionPresenter.toHTTP<
+    InstitutionWithUsersCountPresenterInput,
+    HTTPInstitutionWithUsersCount
+  >(data, tokens.presenters.institution.institutionWithUsersCount)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

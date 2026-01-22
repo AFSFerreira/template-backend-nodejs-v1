@@ -1,9 +1,13 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPMeetingWithDetails } from '@custom-types/http/presenter/meeting/meeting-detailed'
-import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
+import type {
+  HTTPMeetingWithDetails,
+  MeetingDetailedPresenterInput,
+} from '@custom-types/http/presenter/meeting/meeting-detailed'
 
-export class MeetingDetailedPresenter implements IPresenterStrategy<MeetingWithDetails, HTTPMeetingWithDetails> {
-  public toHTTP(input: MeetingWithDetails): HTTPMeetingWithDetails {
+export class MeetingDetailedPresenter
+  implements IPresenterStrategy<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>
+{
+  public toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails {
     return {
       id: input.publicId,
       title: input.title,

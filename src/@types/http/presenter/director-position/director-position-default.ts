@@ -1,3 +1,7 @@
+import type { DirectorPosition } from '@prisma/client'
+
+export interface DirectorPositionDefaultPresenterInput extends DirectorPosition {}
+
 export interface HTTPDirectorPosition {
   id: string
   position: string

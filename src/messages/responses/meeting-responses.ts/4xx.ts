@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const MEETING_NOT_FOUND: IApiError = {
+export const MEETING_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'MEETING_NOT_FOUND',
@@ -8,7 +8,7 @@ export const MEETING_NOT_FOUND: IApiError = {
   },
 }
 
-export const GUEST_ALREADY_REGISTERED_IN_MEETING: IApiError = {
+export const GUEST_ALREADY_REGISTERED_IN_MEETING: IApiResponse = {
   status: 409,
   body: {
     code: 'GUEST_ALREADY_REGISTERED_IN_MEETING',
@@ -16,7 +16,7 @@ export const GUEST_ALREADY_REGISTERED_IN_MEETING: IApiError = {
   },
 }
 
-export const MEETING_ALREADY_FINISHED: IApiError = {
+export const MEETING_ALREADY_FINISHED: IApiResponse = {
   status: 409,
   body: {
     code: 'MEETING_ALREADY_FINISHED',
@@ -24,7 +24,7 @@ export const MEETING_ALREADY_FINISHED: IApiError = {
   },
 }
 
-export const USER_ALREADY_REGISTERED_IN_MEETING: IApiError = {
+export const USER_ALREADY_REGISTERED_IN_MEETING: IApiResponse = {
   status: 409,
   body: {
     code: 'USER_ALREADY_REGISTERED_IN_MEETING',

@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const DIRECTOR_BOARD_USER_ROLE_FORBIDDEN: IApiError = {
+export const DIRECTOR_BOARD_USER_ROLE_FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
     code: 'DIRECTOR_BOARD_USER_ROLE_FORBIDDEN',
@@ -8,7 +8,7 @@ export const DIRECTOR_BOARD_USER_ROLE_FORBIDDEN: IApiError = {
   },
 }
 
-export const DIRECTOR_BOARD_NOT_FOUND: IApiError = {
+export const DIRECTOR_BOARD_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'DIRECTOR_BOARD_NOT_FOUND',
@@ -16,7 +16,7 @@ export const DIRECTOR_BOARD_NOT_FOUND: IApiError = {
   },
 }
 
-export const DIRECTOR_BOARD_ALREADY_EXISTS: IApiError = {
+export const DIRECTOR_BOARD_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'DIRECTOR_BOARD_ALREADY_EXISTS',
@@ -24,7 +24,7 @@ export const DIRECTOR_BOARD_ALREADY_EXISTS: IApiError = {
   },
 }
 
-export const DIRECTOR_BOARD_POSITION_ALREADY_OCCUPIED: IApiError = {
+export const DIRECTOR_BOARD_POSITION_ALREADY_OCCUPIED: IApiResponse = {
   status: 409,
   body: {
     code: 'DIRECTOR_BOARD_POSITION_ALREADY_OCCUPIED',
@@ -32,7 +32,7 @@ export const DIRECTOR_BOARD_POSITION_ALREADY_OCCUPIED: IApiError = {
   },
 }
 
-export const DIRECTOR_BOARD_USER_ALREADY_EXISTS: IApiError = {
+export const DIRECTOR_BOARD_USER_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'DIRECTOR_BOARD_USER_ALREADY_EXISTS',

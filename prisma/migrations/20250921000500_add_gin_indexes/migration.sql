@@ -61,7 +61,21 @@ REINDEX INDEX idx_newsletters_volume_trgm_gin;
 
 --------------------------------------------------------
 
-CREATE INDEX IF NOT EXISTS idx_meeting_title_trgm_gin
+CREATE INDEX IF NOT EXISTS idx_meetings_title_trgm_gin
 ON public.meetings USING GIN (title gin_trgm_ops);
 
-REINDEX INDEX idx_meeting_title_trgm_gin;
+REINDEX INDEX idx_meetings_title_trgm_gin;
+
+--------------------------------------------------------
+
+CREATE INDEX IF NOT EXISTS idx_institutions_name_trgm_gin
+ON public.institutions USING GIN (name gin_trgm_ops);
+
+REINDEX INDEX idx_institutions_name_trgm_gin;
+
+--------------------------------------------------------
+
+CREATE INDEX IF NOT EXISTS idx_director_positions_position_trgm_gin
+ON public.director_positions USING GIN (position gin_trgm_ops);
+
+REINDEX INDEX idx_director_positions_position_trgm_gin;

@@ -1,4 +1,4 @@
-import type { BlogWithDetails, HTTPBlogDetailed } from '@custom-types/http/presenter/blog/blog-detailed'
+import type { BlogDetailedPresenterInput, HTTPBlogDetailed } from '@custom-types/http/presenter/blog/blog-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'
@@ -16,7 +16,7 @@ export async function findBlogByPublicId(request: FastifyRequest, reply: Fastify
 
   const { blog } = await useCase.execute({ publicId: parsedParams.publicId, ip })
 
-  const formattedReply = BlogPresenter.toHTTP<BlogWithDetails, HTTPBlogDetailed>(
+  const formattedReply = BlogPresenter.toHTTP<BlogDetailedPresenterInput, HTTPBlogDetailed>(
     blog,
     tokens.presenters.blog.blogDetailed,
   )

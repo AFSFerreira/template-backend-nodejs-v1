@@ -1,7 +1,7 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 
-export const SLIDER_IMAGE_INVALID_ORDER: IApiError = {
+export const SLIDER_IMAGE_INVALID_ORDER: IApiResponse = {
   status: 400,
   body: {
     code: 'SLIDER_IMAGE_INVALID_ORDER',
@@ -9,7 +9,7 @@ export const SLIDER_IMAGE_INVALID_ORDER: IApiError = {
   },
 }
 
-export const SLIDER_IMAGE_NOT_FOUND: IApiError = {
+export const SLIDER_IMAGE_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'SLIDER_IMAGE_NOT_FOUND',
@@ -17,7 +17,7 @@ export const SLIDER_IMAGE_NOT_FOUND: IApiError = {
   },
 }
 
-export const SLIDER_IMAGE_LIMIT_REACHED: IApiError = {
+export const SLIDER_IMAGE_LIMIT_REACHED: IApiResponse = {
   status: 409,
   body: {
     code: 'SLIDER_IMAGE_LIMIT_REACHED',

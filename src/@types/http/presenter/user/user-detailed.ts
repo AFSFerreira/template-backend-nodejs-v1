@@ -1,11 +1,7 @@
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
 
-export interface UserDetailedPresenterInput extends Omit<UserWithDetails, 'DirectorBoard'> {
-  DirectorBoard?: Omit<NonNullable<UserWithDetails['DirectorBoard']>, 'aboutMe'> & {
-    aboutMe: string
-  }
-}
+export interface UserDetailedPresenterInput extends UserWithDetails {}
 
 interface HTTPUserDetails {
   id: string
@@ -73,7 +69,6 @@ interface HTTPAcademicPublications {
 interface HTTPDirectorBoardInfo {
   profileImage: string
   name: string
-  aboutMe: string
   position: string
   linkLattes?: string | null
 }

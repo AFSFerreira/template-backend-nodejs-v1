@@ -17,23 +17,22 @@ export class CheckAvailabilityUseCase {
   async execute(
     checkAvailabilityUseCaseInput: CheckAvailabilityUseCaseRequest,
   ): Promise<CheckAvailabilityUseCaseResponse> {
-    const identity = checkAvailabilityUseCaseInput.identity
+    const { email, username, identity } = checkAvailabilityUseCaseInput
 
     const checks: Array<[string, () => Promise<boolean>]> = [
       [
         'email',
-        async () => !!(await this.usersRepository.findUniqueBy({ email: checkAvailabilityUseCaseInput.email })),
-      ],
-      [
-        'secondaryEmail',
         async () =>
-          !!(await this.usersRepository.findUniqueBy({ secondaryEmail: checkAvailabilityUseCaseInput.secondaryEmail })),
+          !!(await this.usersRepository.findConflictingUser({
+            email,
+            secondaryEmail: email,
+          })),
       ],
       [
         'username',
         async () =>
-          !!(await this.usersRepository.findUniqueBy({
-            username: checkAvailabilityUseCaseInput.username,
+          !!(await this.usersRepository.findConflictingUser({
+            username,
           })),
       ],
       ...(identity
@@ -41,12 +40,7 @@ export class CheckAvailabilityUseCase {
             [
               'identity',
               async () =>
-                !!(await this.usersRepository.findUniqueBy({
-                  identityType_identityDocument: {
-                    identityType: identity.identityType,
-                    identityDocument: identity.identityDocument,
-                  },
-                })),
+                !!(await this.usersRepository.findConflictingUser({ identityType_identityDocument: identity })),
             ] as [string, () => Promise<boolean>],
           ]
         : []),

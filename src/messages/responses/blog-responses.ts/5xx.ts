@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const BLOG_BANNER_PERSIST_FAILED: IApiError = {
+export const BLOG_BANNER_PERSIST_FAILED: IApiResponse = {
   status: 500,
   body: {
     code: 'BLOG_BANNER_PERSIST_FAILED',
@@ -8,7 +8,7 @@ export const BLOG_BANNER_PERSIST_FAILED: IApiError = {
   },
 }
 
-export const BLOG_CONTENT_COPY_FAILED: IApiError = {
+export const BLOG_CONTENT_COPY_FAILED: IApiResponse = {
   status: 500,
   body: {
     code: 'BLOG_CONTENT_COPY_FAILED',
@@ -16,7 +16,7 @@ export const BLOG_CONTENT_COPY_FAILED: IApiError = {
   },
 }
 
-export const BLOG_IMAGE_COPY_FAILED: IApiError = {
+export const BLOG_IMAGE_COPY_FAILED: IApiResponse = {
   status: 500,
   body: {
     code: 'BLOG_IMAGE_COPY_FAILED',
@@ -24,7 +24,7 @@ export const BLOG_IMAGE_COPY_FAILED: IApiError = {
   },
 }
 
-export const BLOG_IMAGE_PERSIST_FAILED: IApiError = {
+export const BLOG_IMAGE_PERSIST_FAILED: IApiResponse = {
   status: 500,
   body: {
     code: 'BLOG_IMAGE_PERSIST_FAILED',

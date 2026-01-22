@@ -5,3 +5,5 @@ export interface DashboardNewslettersMetrics {
 export interface HTTPDashboardNewslettersMetrics {
   totalNewsletters: number
 }
+
+export interface DashboardNewslettersMetricsPresenterInput extends DashboardNewslettersMetrics {}

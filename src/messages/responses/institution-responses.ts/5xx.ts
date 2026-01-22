@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const RETRIEVE_INSTITUTIONS_ERROR: IApiError = {
+export const RETRIEVE_INSTITUTIONS_ERROR: IApiResponse = {
   status: 503,
   body: {
     code: 'RETRIEVE_INSTITUTIONS_ERROR',

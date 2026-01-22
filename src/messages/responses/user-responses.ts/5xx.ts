@@ -1,6 +1,6 @@
-import type { IApiError } from '@custom-types/errors/api-error'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
-export const USER_IMAGE_PROCESSING_ERROR: IApiError = {
+export const USER_IMAGE_PROCESSING_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'USER_IMAGE_PROCESSING_ERROR',
@@ -8,7 +8,7 @@ export const USER_IMAGE_PROCESSING_ERROR: IApiError = {
   },
 }
 
-export const PROFILE_IMAGE_UPDATE_ERROR: IApiError = {
+export const PROFILE_IMAGE_UPDATE_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'PROFILE_IMAGE_UPDATE_ERROR',
@@ -16,7 +16,7 @@ export const PROFILE_IMAGE_UPDATE_ERROR: IApiError = {
   },
 }
 
-export const USER_PROFILE_IMAGE_PERSISTENCE_ERROR: IApiError = {
+export const USER_PROFILE_IMAGE_PERSISTENCE_ERROR: IApiResponse = {
   status: 500,
   body: {
     code: 'USER_PROFILE_IMAGE_PERSISTENCE_ERROR',

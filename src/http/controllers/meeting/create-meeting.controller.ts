@@ -1,5 +1,7 @@
-import type { HTTPMeetingWithDetails } from '@custom-types/http/presenter/meeting/meeting-detailed'
-import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
+import type {
+  HTTPMeetingWithDetails,
+  MeetingDetailedPresenterInput,
+} from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingPresenter } from '@presenters/meeting-presenter'
@@ -14,7 +16,7 @@ export async function createMeeting(request: FastifyRequest, reply: FastifyReply
 
   const { meeting } = await useCase.execute(parsedBody)
 
-  const formattedReply = MeetingPresenter.toHTTP<MeetingWithDetails, HTTPMeetingWithDetails>(
+  const formattedReply = MeetingPresenter.toHTTP<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>(
     meeting,
     tokens.presenters.meeting.meetingDetailed,
   )

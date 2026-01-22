@@ -1,5 +1,4 @@
-import type { HTTPUser } from '@custom-types/http/presenter/user/user-default'
-import type { User } from '@prisma/client'
+import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'
 import { UserPresenter } from '@presenters/user-presenter'
@@ -43,7 +42,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     },
   })
 
-  const formattedUser = UserPresenter.toHTTP<User, HTTPUser>(user)
+  const formattedUser = UserPresenter.toHTTP<UserDefaultPresenterInput, HTTPUser>(user)
 
   return await reply
     .setCookie('refreshToken', refreshToken, {

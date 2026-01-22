@@ -4,7 +4,10 @@ import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR, SAVE_MULTIPART_FILE_ERROR } from '@messages/loggings/file-loggings'
+import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
+import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
+import { fileExists } from '@utils/files/file-exists'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import fs, { ensureDir } from 'fs-extra'
 
@@ -15,6 +18,13 @@ export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMulti
   const finalFilePath = path.resolve(baseFolderPath, filename)
 
   const partialReturnData = { finalFilePath, filename }
+
+  const fileAreadyExists = await fileExists(finalFilePath)
+
+  // O arquivo já foi persistido anteriormente:
+  if (fileAreadyExists) {
+    return { ...partialReturnData, success: true }
+  }
 
   try {
     await ensureDir(baseFolderPath)
@@ -30,15 +40,13 @@ export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMulti
   const tempFileName = `temp-${generateFileHash()}`
   const tempFilePath = path.resolve(baseFolderPath, tempFileName)
 
-  const writeStream = fs.createWriteStream(tempFilePath)
-
   try {
+    const writeStream = await CreateFileWriteSteam(tempFilePath)
+
     await pipeline(filePart.file, writeStream)
 
     if (filePart.file.truncated) {
-      // Tenta remover o arquivo temporario corrompido persistido:
-      await deleteFile(tempFilePath)
-      return { ...partialReturnData, success: false }
+      throw new FileSaveError()
     }
 
     // Persiste o arquivo temporário final:

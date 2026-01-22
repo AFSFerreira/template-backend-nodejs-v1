@@ -5,3 +5,5 @@ export interface DashboardBlogsMetrics {
 export interface HTTPDashboardBlogsMetrics {
   totalBlogs: number
 }
+
+export interface DashboardBlogsMetricsPresenterInput extends DashboardBlogsMetrics {}

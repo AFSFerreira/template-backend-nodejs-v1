@@ -5,5 +5,5 @@ export const staticRouteConfigurations = {
   serveDotFiles: false,
   cacheControl: true,
   immutable: true,
-  maxAge: '1y',
+  maxAge: '15m',
 } satisfies FastifyStaticOptions

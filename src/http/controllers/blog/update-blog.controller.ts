@@ -1,5 +1,4 @@
-import type { HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
-import type { Blog } from '@prisma/client'
+import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { updateBlogBodySchema } from '@schemas/blog/update-blog-body-schema'
@@ -22,6 +21,6 @@ export async function updateBlog(request: FastifyRequest, reply: FastifyReply) {
   })
 
   return await reply.status(200).send({
-    data: BlogPresenter.toHTTP<Blog, HTTPBlog>(blog),
+    data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
   })
 }

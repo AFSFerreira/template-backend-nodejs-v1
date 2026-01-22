@@ -1,4 +1,7 @@
+import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import type { HTTPMeeting } from './meeting-default'
+
+export interface MeetingDetailedPresenterInput extends MeetingWithDetails {}
 
 interface HTTPMeetingPaymentInfo {
   code: string

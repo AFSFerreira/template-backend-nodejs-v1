@@ -1,0 +1,8 @@
+import type { VerifyEmailBodySchemaType } from '@custom-types/http/schemas/user/verify-email-body-schema'
+import type { User } from '@prisma/client'
+
+export interface VerifyEmailUseCaseRequest extends VerifyEmailBodySchemaType {}
+
+export interface VerifyEmailUseCaseResponse {
+  user: User
+}

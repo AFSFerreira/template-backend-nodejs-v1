@@ -3,7 +3,7 @@ import type { EditorialStatusType } from '@prisma/client'
 
 export type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 
-export interface IBlogDetailedForAdmin extends CustomBlogDetailed {}
+export interface BlogDetailedForAdminPresenterInput extends CustomBlogDetailed {}
 
 export interface HTTPBlogDetailedForAdmin {
   id: string
