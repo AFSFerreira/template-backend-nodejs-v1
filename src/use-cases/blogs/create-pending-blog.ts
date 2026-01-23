@@ -3,10 +3,14 @@ import type {
   CreatePendingBlogUseCaseRequest,
   CreatePendingBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-blog'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
@@ -15,10 +19,6 @@ import {
   BLOG_FILES_RESTORATION_ERROR,
 } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
-import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'

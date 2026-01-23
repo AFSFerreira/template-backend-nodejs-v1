@@ -1,3 +1,4 @@
+import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 import type {
   CreateDraftBlogUseCaseRequest,
   CreateDraftBlogUseCaseResponse,
@@ -36,7 +37,6 @@ import { inject, injectable } from 'tsyringe'
 import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 import { InvalidBlogContentError } from '../errors/blog/invalid-blog-content-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
-import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 
 @injectable()
 export class CreateDraftBlogUseCase {
@@ -112,51 +112,51 @@ export class CreateDraftBlogUseCase {
           error: new UserNotFoundError(),
         })
 
-      const { validatedActivityAreas, success } = await validateActivityAreas({
-        activityAreasRepository: this.activityAreasRepository,
-        activityAreas: createDraftBlogUseCaseInput.subcategories.map((subcategory) => ({
-          area: subcategory,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        })),
+        const { validatedActivityAreas, success } = await validateActivityAreas({
+          activityAreasRepository: this.activityAreasRepository,
+          activityAreas: createDraftBlogUseCaseInput.subcategories.map((subcategory) => ({
+            area: subcategory,
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          })),
+        })
+
+        if (!success) {
+          throw new InvalidActivityArea(
+            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+          )
+        }
+
+        const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
+
+        const createdBlog = await this.blogsRepository.create({
+          title: createDraftBlogUseCaseInput.title,
+          bannerImage: createDraftBlogUseCaseInput.bannerImage,
+          editorialStatus: EditorialStatusType.DRAFT,
+          searchContent,
+          subcategoriesIds,
+          content: newProseMirror as InputJsonValue,
+          authorName: author.fullName,
+          userId: author.id,
+        })
+
+        return { author, blog: createdBlog }
       })
 
-      if (!success) {
-        throw new InvalidActivityArea(
-          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-        )
+      logger.info(
+        {
+          blogPublicId: blog.publicId,
+          title: blog.title,
+          authorPublicId: author.publicId,
+        },
+        BLOG_CREATED_SUCCESSFULLY,
+      )
+
+      return {
+        blog: {
+          ...blog,
+          bannerImage: buildBlogBannerUrl(blog.bannerImage),
+        },
       }
-
-      const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
-
-      const createdBlog = await this.blogsRepository.create({
-        title: createDraftBlogUseCaseInput.title,
-        bannerImage: createDraftBlogUseCaseInput.bannerImage,
-        editorialStatus: EditorialStatusType.DRAFT,
-        searchContent,
-        subcategoriesIds,
-        content: newProseMirror as InputJsonValue,
-        authorName: author.fullName,
-        userId: author.id,
-      })
-
-      return { author, blog: createdBlog }
-    })
-
-    logger.info(
-      {
-        blogPublicId: blog.publicId,
-        title: blog.title,
-        authorPublicId: author.publicId,
-      },
-      BLOG_CREATED_SUCCESSFULLY,
-    )
-
-    return {
-      blog: {
-        ...blog,
-        bannerImage: buildBlogBannerUrl(blog.bannerImage),
-      },
-    }
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 

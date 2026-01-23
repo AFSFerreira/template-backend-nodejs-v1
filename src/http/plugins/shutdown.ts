@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { SENTRY_CLOSE_TIMEOUT } from '@constants/timing-constants'
+import { workers } from '@lib/bullmq'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { prisma } from '@lib/prisma'
@@ -11,6 +12,7 @@ import {
   REDIS_SHUTDOWN,
   SENTRY_SHUTDOWN,
   STARTING_GRACEFUL_SHUTDOWN,
+  WORKERS_SHUTDOWN,
 } from '@messages/loggings/system/server-loggings'
 import * as Sentry from '@sentry/node'
 
@@ -30,6 +32,17 @@ export async function gracefulShutdown(_instance: FastifyInstance) {
         logError({
           error,
           message: `${GRACEFUL_SHUTDOWN_ERROR} [Postgres]`,
+        })
+      }),
+
+    Promise.all(workers.map((worker) => worker.close()))
+      .then(() => {
+        logger.info(WORKERS_SHUTDOWN)
+      })
+      .catch((error: unknown) => {
+        logError({
+          error,
+          message: `${GRACEFUL_SHUTDOWN_ERROR} [BullMQ Workers]`,
         })
       }),
 
