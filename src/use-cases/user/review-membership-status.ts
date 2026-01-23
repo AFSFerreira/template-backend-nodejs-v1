@@ -22,6 +22,7 @@ import { membershipRejectedTextTemplate } from '@templates/user/membership-rejec
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
+import { MembershipStatusType } from '@prisma/client'
 
 @injectable()
 export class ReviewMembershipStatusUseCase {
@@ -75,7 +76,16 @@ export class ReviewMembershipStatusUseCase {
         return user
       }
 
-      if (membershipStatusReview === 'ACTIVE') {
+      if (membershipStatusReview === MembershipStatusType.ACTIVE) {
+        await this.usersRepository.update({
+          id: user.id,
+          data: {
+            user: {
+              membershipStatus: MembershipStatusType.ACTIVE,
+            },
+          },
+        })
+
         const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
 
         try {
