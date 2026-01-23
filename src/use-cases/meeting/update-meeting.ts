@@ -5,6 +5,7 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import type { PaymentInfoRepository } from '@repositories/payment-info-repository'
 import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
@@ -16,10 +17,12 @@ import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/bu
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { moveFile } from '@services/files/move-file'
+import { InactiveMeetingPaymentInfoUpdateForbiddenError } from '@use-cases/errors/meeting/inactive-meeting-payment-info-update-forbidden-error'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
+import { PaymentInfoNotFoundError } from '@use-cases/errors/payment-info/payment-info-not-found-error'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -30,11 +33,16 @@ export class UpdateMeetingUseCase {
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
+    @inject(tsyringeTokens.repositories.paymentInfo)
+    private readonly paymentInfoRepository: PaymentInfoRepository,
+
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
+    const updateData: Prisma.MeetingUpdateInput = {}
+
     const { meeting } = await this.dbContext.runInTransaction(async () => {
       try {
         const meeting = ensureExists({
@@ -42,7 +50,7 @@ export class UpdateMeetingUseCase {
           error: new MeetingNotFoundError(),
         })
 
-        const updateData: Prisma.MeetingUpdateInput = {}
+        const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
         if (body.title) {
           updateData.title = body.title
@@ -60,8 +68,6 @@ export class UpdateMeetingUseCase {
           const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
 
           updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
-
-          const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
           if (activeMeeting && updateData.lastDate >= activeMeeting.lastDate) {
             throw new MeetingDateConflictError()
@@ -95,6 +101,22 @@ export class UpdateMeetingUseCase {
           })
 
           updateData.agenda = body.agenda
+        }
+
+        if (body.paymentInfo) {
+          if (activeMeeting && activeMeeting.id !== meeting.id) {
+            throw new InactiveMeetingPaymentInfoUpdateForbiddenError()
+          }
+
+          const paymentInfo = ensureExists({
+            value: await this.paymentInfoRepository.getPaymentInfo(),
+            error: new PaymentInfoNotFoundError(),
+          })
+
+          await this.paymentInfoRepository.update({
+            id: paymentInfo?.id,
+            data: body.paymentInfo,
+          })
         }
 
         const updatedMeeting = await this.meetingsRepository.update({

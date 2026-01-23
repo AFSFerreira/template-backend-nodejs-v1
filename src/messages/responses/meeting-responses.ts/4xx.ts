@@ -1,5 +1,13 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+export const INACTIVE_MEETING_PAYMENT_INFO_UPDATE_FORBIDDEN: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'INACTIVE_MEETING_PAYMENT_INFO_UPDATE_FORBIDDEN',
+    message: 'Não é permitido alterar informações de pagamento de reuniões não ativas',
+  },
+}
+
 export const MEETING_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
