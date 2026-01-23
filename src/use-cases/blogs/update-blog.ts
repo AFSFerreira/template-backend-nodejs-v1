@@ -14,7 +14,7 @@ import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
-import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
+import { BLOG_UPDATED_SUCCESSFULLY, BLOG_UPDATE_ERROR } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -59,182 +59,172 @@ export class UpdateBlogUseCase {
   ) {}
 
   async execute({ publicId, userPublicId, body }: UpdateBlogUseCaseRequest): Promise<UpdateBlogUseCaseResponse> {
-    const { blog, user } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const updateData: Prisma.BlogUpdateInput = {}
 
-      const blog = ensureExists({
-        value: await this.blogsRepository.findByPublicId(publicId),
-        error: new BlogNotFoundError(),
-      })
+    let newImages: Array<string> | undefined
+    let removedImages: Array<string> | undefined
 
-      // Se o usuário é um produtor de conteúdo e o blog não for de autoria dele:
-      const userIsContentProducerAndIsNotAuthor = !CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id
-
-      // Se o usuário é um produtor de conteúdo e o blog não está em estado de rascunho ou mudanças solicitadas:
-      const userIsContentProducerAndBlogIsUnavailable =
-        !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
-        blog.userId === user.id &&
-        !DRAFT_OR_PENDING_OR_CHANGES_REQUESTED.has(blog.editorialStatus)
-
-      if (userIsContentProducerAndIsNotAuthor || userIsContentProducerAndBlogIsUnavailable) {
-        throw new BlogAccessForbiddenError()
-      }
-
-      const updateData: Prisma.BlogUpdateInput = {}
-
-      const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
-      const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
-
-      const newImages = newBlogImages.difference(oldBlogImages)
-      const removedImages = oldBlogImages.difference(newBlogImages)
-
-      if (body.title) {
-        updateData.title = body.title
-      }
-
-      if (body.editorialStatus) {
-        if (!CONTENT_LEADER_PERMISSIONS.has(user.role)) {
-          throw new BlogEditorialStatusChangeForbiddenError()
-        }
-
-        updateData.editorialStatus = body.editorialStatus
-      }
-
-      if (body.content) {
-        const searchContent = ensureExists({
-          value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
-          error: new InvalidBlogContentError(),
+    try {
+      const { blog, user } = await this.dbContext.runInTransaction(async () => {
+        const user = ensureExists({
+          value: await this.usersRepository.findByPublicId(userPublicId),
+          error: new UserNotFoundError(),
         })
 
-        const oldToNewImagesLinkMap = new Map<string, string>()
+        const blog = ensureExists({
+          value: await this.blogsRepository.findByPublicId(publicId),
+          error: new BlogNotFoundError(),
+        })
 
-        // Persistindo as novas imagens do blog:
-        await Promise.all(
-          Array.from(newImages).map(async (imageLink) => {
-            const imageName = ensureExists({
+        // Se o usuário é um produtor de conteúdo e o blog não for de autoria dele:
+        const userIsContentProducerAndIsNotAuthor =
+          !CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id
+
+        // Se o usuário é um produtor de conteúdo e o blog não está em estado de rascunho ou mudanças solicitadas:
+        const userIsContentProducerAndBlogIsUnavailable =
+          !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
+          blog.userId === user.id &&
+          !DRAFT_OR_PENDING_OR_CHANGES_REQUESTED.has(blog.editorialStatus)
+
+        if (userIsContentProducerAndIsNotAuthor || userIsContentProducerAndBlogIsUnavailable) {
+          throw new BlogAccessForbiddenError()
+        }
+
+        if (body.title) {
+          updateData.title = body.title
+        }
+
+        if (body.editorialStatus) {
+          if (!CONTENT_LEADER_PERMISSIONS.has(user.role)) {
+            throw new BlogEditorialStatusChangeForbiddenError()
+          }
+
+          updateData.editorialStatus = body.editorialStatus
+        }
+
+        if (body.content) {
+          const searchContent = ensureExists({
+            value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
+            error: new InvalidBlogContentError(),
+          })
+
+          const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
+          const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
+
+          newImages = Array.from<string>(newBlogImages.difference(oldBlogImages)).map((imageLink) => {
+            return ensureExists({
               value: sanitizeUrlFilename(imageLink),
               error: new BlogInvalidImageLinkError(),
             })
+          })
 
-            oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
+          removedImages = Array.from<string>(oldBlogImages.difference(newBlogImages)).map((imageLink) => {
+            return ensureExists({
+              value: sanitizeUrlFilename(imageLink),
+              error: new BlogInvalidImageLinkError(),
+            })
+          })
 
-            const oldFilePath = buildBlogTempImagePath(imageName)
-            const newFilePath = buildBlogImagePath(imageName)
+          const oldToNewImagesLinkMap = new Map<string, string>()
 
-            const imagePersistResult = await moveFile({
-              oldFilePath,
-              newFilePath,
-              options: {
-                ignoreOldFileMissing: true,
-              },
+          // Persistindo as novas imagens do blog:
+          await Promise.all(
+            newImages.map(async (imageName) => {
+              oldToNewImagesLinkMap.set(imageName, buildBlogImageUrl(imageName))
+
+              const oldFilePath = buildBlogTempImagePath(imageName)
+              const newFilePath = buildBlogImagePath(imageName)
+
+              const imagePersistResult = await moveFile({
+                oldFilePath,
+                newFilePath,
+                options: {
+                  ignoreOldFileMissing: true,
+                },
+              })
+
+              // Se ocorrer algum erro durante a persistência da imagem do blog:
+              if (!imagePersistResult) {
+                throw new BlogImagePersistError()
+              }
+
+              // Se a imagem não foi encontrada na pasta temporária,
+              // ela precisa estar na pasta definitiva:
+              const fileAlreadyExists = await fileExists(newFilePath)
+
+              if (imagePersistResult === oldFilePath || !fileAlreadyExists) {
+                throw new BlogImageNotFoundError()
+              }
+            }),
+          )
+
+          const newProseMirror = replaceProseMirrorImages({
+            proseMirror: body.content,
+            oldToNewImagesMap: oldToNewImagesLinkMap,
+          })
+
+          updateData.content = newProseMirror as InputJsonValue
+          updateData.searchContent = searchContent
+        }
+
+        if (body.bannerImage) {
+          const newBannerImage = ensureExists({
+            value: sanitizeUrlFilename(body.bannerImage),
+            error: new BlogInvalidBannerLinkError(),
+          })
+
+          if (newBannerImage !== blog.bannerImage) {
+            const persistedBanner = await moveFile({
+              oldFilePath: buildBlogTempBannerPath(newBannerImage),
+              newFilePath: buildBlogBannerPath(newBannerImage),
             })
 
-            // Se a imagem não foi encontrada na pasta temporária,
-            // ela precisa estar na pasta definitiva:
-            const fileAlreadyExists = await fileExists(newFilePath)
-
-            if (imagePersistResult === oldFilePath && !fileAlreadyExists) {
-              throw new BlogImageNotFoundError()
+            if (!persistedBanner) {
+              throw new BlogBannerPersistError()
             }
 
-            // Se ocorrer algum erro durante a persistência da imagem do blog:
-            if (!imagePersistResult) {
-              throw new BlogImagePersistError()
-            }
-          }),
-        )
+            updateData.bannerImage = persistedBanner
+          }
+        }
 
-        const newProseMirror = replaceProseMirrorImages({
-          proseMirror: body.content,
-          oldToNewImagesMap: oldToNewImagesLinkMap,
-        })
+        if (body.subcategories) {
+          const formattedSubcategories = body.subcategories.map((subcategory) => ({
+            area: subcategory,
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          }))
 
-        updateData.content = newProseMirror as InputJsonValue
-        updateData.searchContent = searchContent
-      }
-
-      if (body.bannerImage) {
-        const newBannerImage = ensureExists({
-          value: sanitizeUrlFilename(body.bannerImage),
-          error: new BlogInvalidBannerLinkError(),
-        })
-
-        if (newBannerImage !== blog.bannerImage) {
-          const persistedBanner = await moveFile({
-            oldFilePath: buildBlogTempBannerPath(newBannerImage),
-            newFilePath: buildBlogBannerPath(newBannerImage),
+          // Valida as novas subcategorias:
+          const { validatedActivityAreas, success } = await validateActivityAreas({
+            activityAreas: formattedSubcategories,
+            activityAreasRepository: this.activityAreasRepository,
           })
 
-          if (!persistedBanner) {
-            throw new BlogBannerPersistError()
+          if (!success) {
+            throw new InvalidActivityArea(
+              validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+            )
           }
 
-          updateData.bannerImage = persistedBanner
+          updateData.Subcategories = {
+            set: [],
+            connectOrCreate: formattedSubcategories.map((formattedSubcategory) => ({
+              where: { type_area: formattedSubcategory },
+              create: formattedSubcategory,
+            })),
+          }
         }
-      }
 
-      if (body.subcategories) {
-        const formattedSubcategories = body.subcategories.map((subcategory) => ({
-          area: subcategory,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        }))
-
-        // Valida as novas subcategorias:
-        const { validatedActivityAreas, success } = await validateActivityAreas({
-          activityAreas: formattedSubcategories,
-          activityAreasRepository: this.activityAreasRepository,
+        const updatedBlog = await this.blogsRepository.update({
+          id: blog.id,
+          data: updateData,
         })
 
-        if (!success) {
-          throw new InvalidActivityArea(
-            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-          )
-        }
-
-        updateData.Subcategories = {
-          set: [],
-          connectOrCreate: formattedSubcategories.map((formattedSubcategory) => ({
-            where: { type_area: formattedSubcategory },
-            create: formattedSubcategory,
-          })),
-        }
-      }
-
-      const updatedBlog = await this.blogsRepository.update({
-        id: blog.id,
-        data: updateData,
-      })
-
-      // Enfileirando a remoção da imagem antiga somente após update bem-sucedido:
-      if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
-        try {
-          fileQueue.add('delete', {
-            type: 'delete',
-            filePath: buildBlogBannerPath(blog.bannerImage),
-          })
-        } catch (error) {
-          logError({
-            error,
-            message: FAILED_TO_ENQUEUE_FILE_JOB,
-          })
-        }
-      }
-
-      // Enfileirando a remoção das imagens removidas do conteúdo blog:
-      await Promise.all(
-        Array.from(removedImages).map(async (image) => {
-          const filenameFromUrl = ensureExists({
-            value: sanitizeUrlFilename(image),
-            error: new BlogInvalidImageLinkError(),
-          })
-
+        // Enfileirando a remoção da imagem antiga somente após update bem-sucedido:
+        if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
           try {
             fileQueue.add('delete', {
               type: 'delete',
-              filePath: buildBlogImagePath(filenameFromUrl),
+              filePath: buildBlogBannerPath(blog.bannerImage),
             })
           } catch (error) {
             logError({
@@ -242,30 +232,85 @@ export class UpdateBlogUseCase {
               message: FAILED_TO_ENQUEUE_FILE_JOB,
             })
           }
-        }),
-      )
+        }
 
-      // Remover cache HTML do blog para forçar regeneração
+        return { blog: updatedBlog, user }
+      })
+
+      if (removedImages) {
+        // Enfileirando a remoção das imagens removidas do conteúdo blog:
+        removedImages.forEach((imageName) => {
+          try {
+            fileQueue.add('delete', {
+              type: 'delete',
+              filePath: buildBlogImagePath(imageName),
+            })
+          } catch (error) {
+            logError({
+              error,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
+        })
+      }
+
+      // Remover cache HTML do blog para forçar regeneração:
       await removeBlogHTMLCache({ blogId: blog.id, redis })
 
-      return { blog: updatedBlog, user }
-    })
+      logger.info(
+        {
+          blogPublicId: blog.publicId,
+          title: blog.title,
+          authorPublicId: user.publicId,
+          authorName: user.fullName,
+        },
+        BLOG_UPDATED_SUCCESSFULLY,
+      )
 
-    logger.info(
-      {
-        blogPublicId: blog.publicId,
-        title: blog.title,
-        authorPublicId: user.publicId,
-        authorName: user.fullName,
-      },
-      BLOG_UPDATED_SUCCESSFULLY,
-    )
+      return {
+        blog: {
+          ...blog,
+          bannerImage: buildBlogBannerUrl(blog.bannerImage),
+        },
+      }
+    } catch (error) {
+      logError({ error, message: BLOG_UPDATE_ERROR })
 
-    return {
-      blog: {
-        ...blog,
-        bannerImage: buildBlogBannerUrl(blog.bannerImage),
-      },
+      if (body.bannerImage) {
+        // Restaurando a imagen de banner de blog previamente persistida:
+        try {
+          fileQueue.add('move', {
+            type: 'move',
+            oldFilePath: buildBlogBannerPath(body.bannerImage),
+            newFilePath: buildBlogTempBannerPath(body.bannerImage),
+          })
+        } catch (fileError) {
+          logError({
+            error: fileError,
+            message: FAILED_TO_ENQUEUE_FILE_JOB,
+          })
+        }
+      }
+
+      if (newImages) {
+        // Restaurando as novas imagens de blog previamente persistidas:
+        newImages.forEach((imageName) => {
+          try {
+            fileQueue.add('move', {
+              type: 'move',
+              oldFilePath: buildBlogImagePath(imageName),
+              newFilePath: buildBlogTempImagePath(imageName),
+            })
+          } catch (fileError) {
+            logError({
+              error: fileError,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
+        })
+      }
+
+      throw error
     }
   }
 }

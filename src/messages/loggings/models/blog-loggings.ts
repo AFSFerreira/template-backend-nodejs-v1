@@ -10,6 +10,8 @@ export const BLOG_DELETION_SUCCESSFUL = 'Blog deletado com sucesso'
 
 export const BLOG_UPDATED_SUCCESSFULLY = 'Blog atualizado com sucesso'
 
+export const BLOG_UPDATE_ERROR = 'Erro ao atualizar blog'
+
 export const BLOG_SUBMITTED_FOR_REVIEW = 'Blog rascunho enviado para revisão com sucesso'
 
 export const BLOG_SUBMITTED_TO_PUBLISH = 'Blog aprovado e publicado com sucesso'
@@ -35,3 +37,5 @@ export const BLOG_IMAGES_PERSIST_ERROR = 'Erro ao persistir as imagens do blog'
 export const BLOG_IMAGE_DELETED_SUCCESSFULLY = 'Imagem de blog deletada com sucesso'
 
 export const BLOG_CREATION_ERROR = 'Erro durante a criação do blog'
+
+export const BLOG_FILES_RESTORATION_ERROR = 'Erro ao restaurar arquivos do blog'

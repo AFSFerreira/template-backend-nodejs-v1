@@ -5,16 +5,20 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { PaymentInfoRepository } from '@repositories/payment-info-repository'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
+import {
+  MEETING_CREATION_ERROR,
+  MEETING_CREATION_SUCCESSFUL,
+  MEETING_FILES_RESTORATION_ERROR,
+} from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { moveFile } from '@services/files/move-file'
-import { moveFiles } from '@services/files/move-files'
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
@@ -99,16 +103,24 @@ export class CreateMeetingUseCase {
       logError({ error, message: MEETING_CREATION_ERROR })
 
       // Restaurando os arquivos incorretamente persistidos:
-      await moveFiles([
-        {
+      try {
+        fileQueue.add('move', {
+          type: 'move',
           oldFilePath: buildMeetingBannerPath(data.bannerImage),
           newFilePath: buildTempMeetingBannerPath(data.bannerImage),
-        },
-        {
+        })
+
+        fileQueue.add('move', {
+          type: 'move',
           oldFilePath: buildMeetingAgendaPath(data.agenda),
           newFilePath: buildTempMeetingAgendaPath(data.agenda),
-        },
-      ])
+        })
+      } catch (fileError) {
+        logError({
+          error: fileError,
+          message: MEETING_FILES_RESTORATION_ERROR,
+        })
+      }
 
       throw error
     }

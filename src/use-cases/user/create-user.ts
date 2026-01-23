@@ -76,28 +76,28 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(registerUseCaseInput: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
-    let profileImage = DEFAULT_PROFILE_IMAGE_NAME
+    const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
     const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
     const emailVerificationTokenHash = hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_VALIDATION_EXPIRATION_TIME)
 
-    if (registerUseCaseInput.user.profileImage) {
-      const profileImagePersistSucessful = await moveFile({
-        oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
-        newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
-      })
+    try {
+      let profileImage = DEFAULT_PROFILE_IMAGE_NAME
 
-      if (!profileImagePersistSucessful) {
-        throw new UserImageStorageError()
+      if (registerUseCaseInput.user.profileImage) {
+        const profileImagePersistSucessful = await moveFile({
+          oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+          newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+        })
+
+        if (!profileImagePersistSucessful) {
+          throw new UserImageStorageError()
+        }
+
+        profileImage = path.basename(profileImagePersistSucessful)
       }
 
-      profileImage = path.basename(profileImagePersistSucessful)
-    }
-
-    const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
-
-    try {
       const createdUser = await this.dbContext.runInTransaction(async () => {
         const userAlreadyExists = await this.usersRepository.findConflictingUser({
           email: registerUseCaseInput.user.email,

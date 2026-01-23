@@ -17,3 +17,5 @@ export const MEETING_UPDATED_SUCCESSFULLY = 'Reunião atualizada com sucesso'
 export const MEETING_UPDATE_ERROR = 'Erro ao atualizar reunião'
 
 export const MEETING_DELETED_SUCCESSFULLY = 'Reunião deletada com sucesso'
+
+export const MEETING_FILES_RESTORATION_ERROR = 'Erro ao restaurar arquivos da reunião'

@@ -7,11 +7,16 @@ import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/models/blog-loggings'
+import {
+  BLOG_CREATED_SUCCESSFULLY,
+  BLOG_CREATION_ERROR,
+  BLOG_FILES_RESTORATION_ERROR,
+} from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -21,7 +26,6 @@ import { extractProseMirrorImages } from '@services/extractors/extract-prose-mir
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { moveFile } from '@services/files/move-file'
-import { moveFiles } from '@services/files/move-files'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
@@ -154,16 +158,29 @@ export class CreateDraftBlogUseCase {
       logError({ error, message: BLOG_CREATION_ERROR })
 
       // Restaurando as imagens de blog e a imagem de banner previamente persistida:
-      await moveFiles([
+      const filesToMove = [
         ...formatedBlogImages.map((imageInfo) => ({
+          type: 'move' as const,
           oldFilePath: imageInfo.newFilePath,
           newFilePath: imageInfo.oldFilePath,
         })),
         {
+          type: 'move' as const,
           oldFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
           newFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
         },
-      ])
+      ]
+
+      filesToMove.forEach((file) => {
+        try {
+          fileQueue.add('move', file)
+        } catch (fileError) {
+          logError({
+            error: fileError,
+            message: BLOG_FILES_RESTORATION_ERROR,
+          })
+        }
+      })
 
       throw error
     }
