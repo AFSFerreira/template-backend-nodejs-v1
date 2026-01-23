@@ -3,7 +3,7 @@ import { APP_NAME } from '@constants/env-constants'
 import { env } from '@env/index'
 
 export function confirmAccountTextTemplate({ fullName, email, token }: IConfirmAccountTextTemplate) {
-  const url = `${env.FRONTEND_URL}/confirm-account?token=${token}`
+  const url = `${env.FRONTEND_URL}/verificar-email/${token}`
 
   return `
 Olá, ${fullName}!

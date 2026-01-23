@@ -12,7 +12,7 @@ export function confirmAccountHtmlTemplate({
   email,
   token,
 }: IConfirmAccountHtmlTemplate): HtmlTemplateOutput {
-  const url = `${env.FRONTEND_URL}/confirm-account?token=${token}`
+  const url = `${env.FRONTEND_URL}/verificar-email/${token}`
 
   const attachments: Attachment[] = [
     {
