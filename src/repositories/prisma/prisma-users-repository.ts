@@ -13,7 +13,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { UsersRepository } from '../users-repository'
 import { userWithDetails } from '@custom-types/validators/user-with-details'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ActivityAreaType, MembershipStatusType } from '@prisma/client'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
@@ -28,7 +28,7 @@ import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-u
 @injectable()
 export class PrismaUsersRepository implements UsersRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

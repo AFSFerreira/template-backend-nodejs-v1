@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/blogs/upload-blog-image'
 import { BLOG_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
-import { BLOG_IMAGE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
+import { BLOG_IMAGE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { saveAvifImage } from '@services/files/save-avif-image'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'

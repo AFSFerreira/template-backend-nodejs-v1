@@ -4,16 +4,21 @@ import type {
 } from '@custom-types/use-cases/user/review-membership-status'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
+import { emailQueue } from '@jobs/queues/definitions/email-queue'
+import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MEMBERSHIP_REJECTED_EMAIL_SUBJECT } from '@messages/emails/user-emails'
-import { MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR } from '@messages/loggings/user-loggings'
-import { MembershipStatusType } from '@prisma/client'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT, MEMBERSHIP_REJECTED_EMAIL_SUBJECT } from '@messages/emails/user-emails'
+import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
+import {
+  MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
+  MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
+} from '@messages/loggings/models/user-loggings'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { sendEmail } from '@services/external/send-email'
+import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
+import { membershipApprovedTextTemplate } from '@templates/user/membership-accepted/membership-accepted-text'
 import { membershipRejectedHtmlTemplate } from '@templates/user/membership-rejected/membership-rejected-html'
 import { membershipRejectedTextTemplate } from '@templates/user/membership-rejected/membership-rejected-text'
-import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -21,10 +26,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class ReviewMembershipStatusUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -38,33 +43,57 @@ export class ReviewMembershipStatusUseCase {
         error: new UserNotFoundError(),
       })
 
-      if (user.membershipStatus !== MembershipStatusType.PENDING) {
-        throw new MembershipStatusNotPending()
+      const emailInfo = {
+        fullName: user.fullName,
+        email: user.email,
       }
 
       if (membershipStatusReview === 'REJECTED') {
         await this.usersRepository.delete(user.id)
 
-        const emailInfo = {
-          fullName: user.fullName,
-          email: user.email,
-        }
+        const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
 
         try {
-          const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
-
-          await sendEmail({
+          emailQueue.add(bullmqTokens.tasksNames.email, {
             to: user.email,
             subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
             message: membershipRejectedTextTemplate(emailInfo),
             html,
             attachments,
+            logging: {
+              errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
+              context: { userPublicId: user.publicId, userEmail: user.email },
+            },
           })
         } catch (error) {
           logError({
             error,
-            context: { userPublicId: user.publicId, userEmail: user.email },
-            message: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
+            message: FAILED_TO_ENQUEUE_EMAIL_JOB,
+          })
+        }
+
+        return user
+      }
+
+      if (membershipStatusReview === 'ACTIVE') {
+        const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
+
+        try {
+          emailQueue.add(bullmqTokens.tasksNames.email, {
+            to: user.email,
+            subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
+            message: membershipApprovedTextTemplate(emailInfo),
+            html,
+            attachments,
+            logging: {
+              errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
+              context: { userPublicId: user.publicId, userEmail: user.email },
+            },
+          })
+        } catch (error) {
+          logError({
+            error,
+            message: FAILED_TO_ENQUEUE_EMAIL_JOB,
           })
         }
 

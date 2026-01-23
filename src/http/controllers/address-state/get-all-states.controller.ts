@@ -3,7 +3,7 @@ import type {
   HTTPAddressStates,
 } from '@custom-types/http/presenter/address/address-with-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { AddressPresenter } from '@presenters/address-presenter'
 import { getAllStatesQuerySchema } from '@schemas/address/get-all-states-query-schema'
 import { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
@@ -18,7 +18,7 @@ export async function getAllStates(request: FastifyRequest, reply: FastifyReply)
 
   const formattedReply = AddressPresenter.toHTTP<AddressWithUsersCountPresenterInput, HTTPAddressStates>(
     data,
-    tokens.presenters.address.addressWithUsersCount,
+    tsyringeTokens.presenters.address.addressWithUsersCount,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

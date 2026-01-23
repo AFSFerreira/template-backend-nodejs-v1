@@ -3,7 +3,7 @@ import type { UpdateSliderImageQuery } from '@custom-types/repository/prisma/sli
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class PrismaSliderImagesRepository implements SliderImagesRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

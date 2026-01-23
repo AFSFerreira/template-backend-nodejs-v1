@@ -3,14 +3,14 @@ import type {
   GetAllUsersDetailedUseCaseRequest,
 } from '@custom-types/use-cases/user/get-all-users-detailed'
 import type { UsersRepository } from '@repositories/users-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllUsersDetailedUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
   ) {}
 

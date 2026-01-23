@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'
 
 export class AcademicPublicationPresenter {
@@ -9,7 +9,7 @@ export class AcademicPublicationPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.academicPublication.academicPublicationDefault,
+    contextKey: string = tsyringeTokens.presenters.academicPublication.academicPublicationDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => AcademicPublicationPresenter.toHTTP<TInput, TOutput>(item, contextKey))

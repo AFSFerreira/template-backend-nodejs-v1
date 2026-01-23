@@ -11,7 +11,7 @@ import {
   REDIS_SHUTDOWN,
   SENTRY_SHUTDOWN,
   STARTING_GRACEFUL_SHUTDOWN,
-} from '@messages/loggings/server-loggings'
+} from '@messages/loggings/system/server-loggings'
 import * as Sentry from '@sentry/node'
 
 export async function gracefulShutdown(_instance: FastifyInstance) {

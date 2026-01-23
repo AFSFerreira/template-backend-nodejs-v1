@@ -31,3 +31,19 @@ export const USER_ALREADY_REGISTERED_IN_MEETING: IApiResponse = {
     message: 'O usuário já está cadastrado na reunião',
   },
 }
+
+export const ACTIVE_MEETING_ALREADY_EXISTS: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'ACTIVE_MEETING_ALREADY_EXISTS',
+    message: 'Já existe uma reunião ativa no sistema',
+  },
+}
+
+export const MEETING_DATE_CONFLICT: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'MEETING_DATE_CONFLICT',
+    message: 'A data da reunião conflita com uma reunião ativa existente',
+  },
+}

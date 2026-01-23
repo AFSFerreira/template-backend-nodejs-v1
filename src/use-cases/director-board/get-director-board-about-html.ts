@@ -6,7 +6,7 @@ import type { DirectorBoardRepository } from '@repositories/directors-board-repo
 import type { JSONContent } from '@tiptap/core'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getDirectorBoardHTMLCached, setDirectorBoardHTMLCache } from '@services/cache/director-board-html-cache'
 import { generateHTML } from '@tiptap/html'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -16,7 +16,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class GetDirectorBoardAboutHTMLUseCase {
   constructor(
-    @inject(tokens.repositories.directorsBoard)
+    @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
   ) {}
 

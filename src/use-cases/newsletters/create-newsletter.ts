@@ -4,10 +4,15 @@ import type {
 } from '@custom-types/use-cases/newsletters/create-newsletter'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { NEWSLETTER_CREATED_SUCCESSFULLY, NEWSLETTER_CREATION_ERROR } from '@messages/loggings/newsletter-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
+import {
+  NEWSLETTER_CREATED_SUCCESSFULLY,
+  NEWSLETTER_CREATION_ERROR,
+} from '@messages/loggings/models/newsletter-loggings'
 import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,
@@ -22,10 +27,10 @@ import { NewsletterHtmlPersistError } from '../errors/newsletter/newsletter-html
 @injectable()
 export class CreateNewsletterUseCase {
   constructor(
-    @inject(tokens.repositories.newsletters)
+    @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -76,11 +81,19 @@ export class CreateNewsletterUseCase {
     } catch (error) {
       logError({ error, message: NEWSLETTER_CREATION_ERROR })
 
-      // Restaurando o arquivo incorretamente persistido:
-      await moveFile({
-        oldFilePath: buildNewsletterHtmlPath(contentFilename),
-        newFilePath: buildNewsletterTempHtmlPath(contentFilename),
-      })
+      // Enfileirando a restauração do arquivo incorretamente persistido:
+      try {
+        fileQueue.add('move', {
+          type: 'move',
+          oldFilePath: buildNewsletterHtmlPath(contentFilename),
+          newFilePath: buildNewsletterTempHtmlPath(contentFilename),
+        })
+      } catch (fileError) {
+        logError({
+          error: fileError,
+          message: FAILED_TO_ENQUEUE_FILE_JOB,
+        })
+      }
 
       throw error
     }

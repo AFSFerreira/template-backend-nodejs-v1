@@ -1,7 +1,7 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { logError } from '@lib/logger/helpers/log-error'
-import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/file-loggings'
+import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/system/file-loggings'
 import { InvalidFilesystemPathsError } from '@services/errors/files/invalid-filesystem-paths-error'
 import { fileExistsSync } from '@utils/files/file-exists-sync'
 import { IS_PROD } from './env-constants'

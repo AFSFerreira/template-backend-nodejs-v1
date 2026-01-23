@@ -5,8 +5,8 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/user-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { UserRoleType } from '@prisma/client'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -16,10 +16,10 @@ import { UserNotFoundError } from '../errors/user/user-not-found-error'
 @injectable()
 export class TransferAdminRoleUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

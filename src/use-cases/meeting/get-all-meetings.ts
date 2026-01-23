@@ -3,7 +3,7 @@ import type {
   GetAllMeetingsUseCaseResponse,
 } from '@custom-types/use-cases/meeting/get-all-meetings'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { inject, injectable } from 'tsyringe'
@@ -11,7 +11,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class GetAllMeetingsUseCase {
   constructor(
-    @inject(tokens.repositories.meetings)
+    @inject(tsyringeTokens.repositories.meetings)
     private readonly MeetingsRepository: MeetingsRepository,
   ) {}
 

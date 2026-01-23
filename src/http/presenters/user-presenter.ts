@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'
 
 export class UserPresenter {
@@ -9,7 +9,7 @@ export class UserPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.user.userDefault,
+    contextKey: string = tsyringeTokens.presenters.user.userDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => UserPresenter.toHTTP<TInput, TOutput>(item, contextKey))

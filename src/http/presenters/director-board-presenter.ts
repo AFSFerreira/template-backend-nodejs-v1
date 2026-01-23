@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'
 
 export class DirectorBoardPresenter {
@@ -9,7 +9,7 @@ export class DirectorBoardPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.directorBoard.directorBoardDefault,
+    contextKey: string = tsyringeTokens.presenters.directorBoard.directorBoardDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => DirectorBoardPresenter.toHTTP<TInput, TOutput>(item, contextKey))

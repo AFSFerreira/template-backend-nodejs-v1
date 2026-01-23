@@ -1,5 +1,5 @@
 import { logError } from '@lib/logger/helpers/log-error'
-import { FILE_STREAM_CREATION_ERROR } from '@messages/loggings/file-loggings'
+import { FILE_STREAM_CREATION_ERROR } from '@messages/loggings/system/file-loggings'
 import fs from 'fs-extra'
 
 export async function createFileReadStream(filename: string) {

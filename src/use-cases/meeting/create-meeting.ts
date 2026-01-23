@@ -4,29 +4,35 @@ import type {
 } from '@custom-types/use-cases/meeting/create-meeting'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import type { PaymentInfoRepository } from '@repositories/payment-info-repository'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/meeting-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { moveFile } from '@services/files/move-file'
 import { moveFiles } from '@services/files/move-files'
+import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
+import { PaymentInfoNotFoundError } from '@use-cases/errors/payment-info/payment-info-not-found-error'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
-import { ensureExists } from '@utils/validators/ensure'
+import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class CreateMeetingUseCase {
   constructor(
-    @inject(tokens.repositories.meetings)
+    @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.repositories.paymentInfo)
+    private readonly paymentInfo: PaymentInfoRepository,
+
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -51,6 +57,21 @@ export class CreateMeetingUseCase {
       const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
 
       const { meeting } = await this.dbContext.runInTransaction(async () => {
+        ensureNotExists({
+          value: await this.meetingsRepository.findActiveMeeting(),
+          error: new ActiveMeetingAlreadyExistsError(),
+        })
+
+        const paymentInfo = ensureExists({
+          value: await this.paymentInfo.getPaymentInfo(),
+          error: new PaymentInfoNotFoundError(),
+        })
+
+        await this.paymentInfo.update({
+          id: paymentInfo.id,
+          data: data.paymentInfo,
+        })
+
         const meeting = await this.meetingsRepository.create({
           title: data.title,
           bannerImage: data.bannerImage,
@@ -59,7 +80,7 @@ export class CreateMeetingUseCase {
           location: data.location,
           lastDate: getArrayMaxDate(nonRepeatingDates),
           dates: nonRepeatingDates,
-          paymentInfo: data.paymentInfo,
+          meetingPaymentInfo: data.meetingPaymentInfo,
         })
 
         return { meeting }

@@ -1,6 +1,6 @@
 import type { DependencyContainer } from 'tsyringe'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogDefaultPresenter } from '@presenters/blog/blog-default.presenter'
 import { BlogDetailedPresenter } from '@presenters/blog/blog-detailed.presenter'
 import { BlogDetailedForAdminPresenter } from '@presenters/blog/blog-detailed-for-admin.presenter'
@@ -9,31 +9,31 @@ import { BlogSimplifiedPresenter } from '@presenters/blog/blog-simplified.presen
 
 export function registerBlogPresenters(container: DependencyContainer) {
   registerPresenter({
-    contextKey: tokens.presenters.blog.blogDefault,
+    contextKey: tsyringeTokens.presenters.blog.blogDefault,
     container,
     target: BlogDefaultPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.blog.blogSimplified,
+    contextKey: tsyringeTokens.presenters.blog.blogSimplified,
     container,
     target: BlogSimplifiedPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.blog.blogDetailed,
+    contextKey: tsyringeTokens.presenters.blog.blogDetailed,
     container,
     target: BlogDetailedPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.blog.blogDetailedForAdmin,
+    contextKey: tsyringeTokens.presenters.blog.blogDetailedForAdmin,
     container,
     target: BlogDetailedForAdminPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.blog.blogDetailedWithContent,
+    contextKey: tsyringeTokens.presenters.blog.blogDetailedWithContent,
     container,
     target: BlogDetailedWithContentPresenter,
   })

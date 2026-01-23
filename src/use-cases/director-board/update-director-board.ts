@@ -8,7 +8,7 @@ import type { DirectorPositionsRepository } from '@repositories/director-positio
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import type { JSONContent } from '@tiptap/core'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
@@ -28,13 +28,13 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateDirectorBoardUseCase {
   constructor(
-    @inject(tokens.repositories.directorsBoard)
+    @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
 
-    @inject(tokens.repositories.directorPositions)
+    @inject(tsyringeTokens.repositories.directorPositions)
     private readonly directorPositionsRepository: DirectorPositionsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

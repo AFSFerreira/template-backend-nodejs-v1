@@ -1,10 +1,7 @@
 import type { SendEmailRequest } from '@custom-types/lib/node-mailer/send-email-request-type'
 import type { SentMessageInfo } from 'nodemailer'
-import { transporterOptions } from '@constants/email-configuration-constants'
 import { env } from '@env/index'
-import nodemailer from 'nodemailer'
-
-const transporter = nodemailer.createTransport(transporterOptions)
+import { transporter } from '@lib/nodemailer'
 
 export async function sendEmail({
   to,
@@ -19,7 +16,7 @@ export async function sendEmail({
     subject,
     text: message,
     html,
-    ...(attachments !== undefined ? { attachments } : {}),
+    attachments,
   })
 
   return info

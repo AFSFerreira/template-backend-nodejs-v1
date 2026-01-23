@@ -3,7 +3,7 @@ import type {
   FindMeetingByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/meeting/find-by-public-id'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { ensureExists } from '@utils/validators/ensure'
@@ -13,7 +13,7 @@ import { MeetingNotFoundError } from '../errors/meeting/meeting-not-found-error'
 @injectable()
 export class FindMeetingByPublicIdUseCase {
   constructor(
-    @inject(tokens.repositories.meetings)
+    @inject(tsyringeTokens.repositories.meetings)
     private readonly MeetingsRepository: MeetingsRepository,
   ) {}
 

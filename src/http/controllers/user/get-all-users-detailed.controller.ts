@@ -3,7 +3,7 @@ import type {
   UserSimplifiedForAdminPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/user-presenter'
 import { getAllUsersDetailedQuerySchema } from '@schemas/user/get-all-users-detailed-query-schema'
 import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
@@ -18,7 +18,7 @@ export async function getAllUsersDetailed(request: FastifyRequest, reply: Fastif
 
   const formattedReply = UserPresenter.toHTTP<UserSimplifiedForAdminPresenterInput, HTTPSimplifiedUserDetailsForAdmin>(
     data,
-    tokens.presenters.user.userSimplifiedForAdmin,
+    tsyringeTokens.presenters.user.userSimplifiedForAdmin,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

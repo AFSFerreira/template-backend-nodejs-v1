@@ -1,6 +1,6 @@
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/user-presenter'
 import { reviewMembershipStatusBodySchema } from '@schemas/user/review-membership-status-body-schema'
 import { reviewMembershipStatusParamsSchema } from '@schemas/user/review-membership-status-params-schema'
@@ -19,7 +19,10 @@ export async function reviewMembershipStatus(request: FastifyRequest, reply: Fas
   })
 
   const formattedReply = user
-    ? UserPresenter.toHTTP<UserDetailedPresenterInput, HTTPUserWithDetails>(user, tokens.presenters.user.userDetailed)
+    ? UserPresenter.toHTTP<UserDetailedPresenterInput, HTTPUserWithDetails>(
+        user,
+        tsyringeTokens.presenters.user.userDetailed,
+      )
     : undefined
 
   return await reply.status(200).send({ data: formattedReply })

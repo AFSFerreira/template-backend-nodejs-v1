@@ -1,6 +1,6 @@
 import type { DependencyContainer } from 'tsyringe'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DashboardBlogsMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-blogs-metrics.presenter'
 import { DashboardMetricsDefaultPresenter } from '@presenters/dashboard-metrics/dashboard-metrics-default.presenter'
 import { DashboardNewslettersMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-newsletters-metrics.presenter'
@@ -8,25 +8,25 @@ import { UsersMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-u
 
 export function registerDashboardMetricsPresenters(container: DependencyContainer) {
   registerPresenter({
-    contextKey: tokens.presenters.dashboardMetrics.dashboardMetricsDefault,
+    contextKey: tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsDefault,
     container,
     target: DashboardMetricsDefaultPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.dashboardMetrics.dashboardMetricsBlogs,
+    contextKey: tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsBlogs,
     container,
     target: DashboardBlogsMetricsPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.dashboardMetrics.dashboardMetricsUsers,
+    contextKey: tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsUsers,
     container,
     target: UsersMetricsPresenter,
   })
 
   registerPresenter({
-    contextKey: tokens.presenters.dashboardMetrics.dashboardMetricsNewsletters,
+    contextKey: tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsNewsletters,
     container,
     target: DashboardNewslettersMetricsPresenter,
   })

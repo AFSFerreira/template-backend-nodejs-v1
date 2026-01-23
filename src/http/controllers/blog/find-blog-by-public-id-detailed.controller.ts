@@ -3,7 +3,7 @@ import type {
   HTTPBlogDetailedWithContent,
 } from '@custom-types/http/presenter/blog/blog-detailed-with-content'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { findBlogByPublicIdParamsSchema } from '@schemas/blog/find-blog-by-public-id-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
@@ -20,7 +20,7 @@ export async function findBlogByPublicIdRestricted(request: FastifyRequest, repl
 
   const formattedReply = BlogPresenter.toHTTP<BlogDetailedWithContentPresenterInput, HTTPBlogDetailedWithContent>(
     blog,
-    tokens.presenters.blog.blogDetailedWithContent,
+    tsyringeTokens.presenters.blog.blogDetailedWithContent,
   )
 
   return await reply.status(200).send({ data: formattedReply })

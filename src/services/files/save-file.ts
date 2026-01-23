@@ -3,7 +3,7 @@ import type { ISaveMultipartFile } from '@custom-types/services/files/save-docum
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
-import { DIRECTORY_NOT_FOUND_ERROR, SAVE_MULTIPART_FILE_ERROR } from '@messages/loggings/file-loggings'
+import { DIRECTORY_NOT_FOUND_ERROR, SAVE_MULTIPART_FILE_ERROR } from '@messages/loggings/system/file-loggings'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'

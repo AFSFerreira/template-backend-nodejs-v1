@@ -13,6 +13,6 @@ export const updateMeetingBodySchema = z
     description: nonemptyTextSchema,
     location: limitedNonemptyTextSchema,
     dates: rangedDateArraySchema.min(1),
-    paymentInfo: meetingPaymentInfo,
+    paymentMeetingInfo: meetingPaymentInfo,
   })
   .partial()

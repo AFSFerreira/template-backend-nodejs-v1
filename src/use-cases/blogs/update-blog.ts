@@ -7,11 +7,14 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
+import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -33,7 +36,6 @@ import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { InvalidBlogContentError } from '@use-cases/errors/blog/invalid-blog-content-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
@@ -43,16 +45,16 @@ import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error
 @injectable()
 export class UpdateBlogUseCase {
   constructor(
-    @inject(tokens.repositories.activityAreas)
+    @inject(tsyringeTokens.repositories.activityAreas)
     private readonly activityAreasRepository: ActivityAreasRepository,
 
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -83,6 +85,12 @@ export class UpdateBlogUseCase {
 
       const updateData: Prisma.BlogUpdateInput = {}
 
+      const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
+      const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
+
+      const newImages = newBlogImages.difference(oldBlogImages)
+      const removedImages = oldBlogImages.difference(newBlogImages)
+
       if (body.title) {
         updateData.title = body.title
       }
@@ -100,12 +108,6 @@ export class UpdateBlogUseCase {
           value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
           error: new InvalidBlogContentError(),
         })
-
-        const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
-        const newBlogImages = extractProseMirrorImages(body.content)
-
-        const newImages = newBlogImages.difference(oldBlogImages)
-        const removedImages = oldBlogImages.difference(newBlogImages)
 
         const oldToNewImagesLinkMap = new Map<string, string>()
 
@@ -142,18 +144,6 @@ export class UpdateBlogUseCase {
             if (!imagePersistResult) {
               throw new BlogImagePersistError()
             }
-          }),
-        )
-
-        // Apagando as imagens removidas do blog:
-        await Promise.all(
-          Array.from(removedImages).map(async (image) => {
-            const filenameFromUrl = ensureExists({
-              value: sanitizeUrlFilename(image),
-              error: new BlogInvalidImageLinkError(),
-            })
-
-            await deleteFile(buildBlogImagePath(filenameFromUrl))
           }),
         )
 
@@ -218,10 +208,42 @@ export class UpdateBlogUseCase {
         data: updateData,
       })
 
-      // Remove a imagem antiga somente após update bem-sucedido:
+      // Enfileirando a remoção da imagem antiga somente após update bem-sucedido:
       if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
-        await deleteFile(buildBlogBannerPath(blog.bannerImage))
+        try {
+          fileQueue.add('delete', {
+            type: 'delete',
+            filePath: buildBlogBannerPath(blog.bannerImage),
+          })
+        } catch (error) {
+          logError({
+            error,
+            message: FAILED_TO_ENQUEUE_FILE_JOB,
+          })
+        }
       }
+
+      // Enfileirando a remoção das imagens removidas do conteúdo blog:
+      await Promise.all(
+        Array.from(removedImages).map(async (image) => {
+          const filenameFromUrl = ensureExists({
+            value: sanitizeUrlFilename(image),
+            error: new BlogInvalidImageLinkError(),
+          })
+
+          try {
+            fileQueue.add('delete', {
+              type: 'delete',
+              filePath: buildBlogImagePath(filenameFromUrl),
+            })
+          } catch (error) {
+            logError({
+              error,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
+        }),
+      )
 
       // Remover cache HTML do blog para forçar regeneração
       await removeBlogHTMLCache({ blogId: blog.id, redis })

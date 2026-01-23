@@ -3,7 +3,7 @@ import type {
   MeetingEnrollmentPresenterInput,
 } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingEnrollmentPresenter } from '@presenters/meeting-enrollment-presenter'
 import { getMeetingParticipantsParamsSchema } from '@schemas/meeting/get-meeting-participants-params-schema'
 import { getMeetingParticipantsQuerySchema } from '@schemas/meeting/get-meeting-participants-query-schema'
@@ -24,7 +24,7 @@ export async function getMeetingParticipants(request: FastifyRequest, reply: Fas
   const formattedReply = MeetingEnrollmentPresenter.toHTTP<
     MeetingEnrollmentPresenterInput,
     HTTPMeetingEnrollmentDetailed
-  >(data, tokens.presenters.meetingEnrollment.meetingEnrollmentDetailed)
+  >(data, tsyringeTokens.presenters.meetingEnrollment.meetingEnrollmentDetailed)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

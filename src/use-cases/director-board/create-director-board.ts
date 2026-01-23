@@ -11,8 +11,8 @@ import type { JSONContent } from '@tiptap/core'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DIRECTOR_BOARD_CREATION_ERROR } from '@messages/loggings/director-board-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { DIRECTOR_BOARD_CREATION_ERROR } from '@messages/loggings/models/director-board-loggings'
 import { UserRoleType } from '@prisma/client'
 import {
   buildDirectorBoardProfileImagePath,
@@ -34,16 +34,16 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class CreateDirectorBoardUseCase {
   constructor(
-    @inject(tokens.repositories.directorsBoard)
+    @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.repositories.directorPositions)
+    @inject(tsyringeTokens.repositories.directorPositions)
     private readonly directorPositionsRepository: DirectorPositionsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

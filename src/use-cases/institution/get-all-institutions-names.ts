@@ -3,7 +3,7 @@ import type {
   GetAllInstitutionsNamesUseCaseResponse,
 } from '@custom-types/use-cases/institution/get-all-institutions-names'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getAllInstitutions } from '@services/external/get-all-institutions'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { paginateArray } from '@utils/generics/paginate-array'
@@ -12,7 +12,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class GetAllInstitutionsNamesUseCase {
   constructor(
-    @inject(tokens.repositories.institutions)
+    @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
   ) {}
 

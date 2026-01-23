@@ -6,7 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { meetingWithDetails } from '@custom-types/validators/meeting-with-details'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/mappers/map-status-to-date-filter'
@@ -15,12 +15,12 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class PrismaMeetingsRepository implements MeetingsRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
   async create(data: CreateMeetingQuery) {
-    const { dates, paymentInfo, ...meetingData } = data
+    const { dates, meetingPaymentInfo, ...meetingData } = data
 
     const meeting = await this.dbContext.client.meeting.create({
       data: {
@@ -28,11 +28,11 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
         MeetingDate: {
           create: dates.map((date) => ({ date })),
         },
-        MeetingPaymentInfo: paymentInfo
+        MeetingPaymentInfo: meetingPaymentInfo
           ? {
               create: {
-                value: paymentInfo.value,
-                limitDate: paymentInfo.limitDate,
+                value: meetingPaymentInfo.value,
+                limitDate: meetingPaymentInfo.limitDate,
               },
             }
           : undefined,
@@ -40,6 +40,17 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
       include: meetingWithDetails.include,
     })
 
+    return meeting
+  }
+
+  async findActiveMeeting() {
+    const meeting = await this.dbContext.client.meeting.findFirst({
+      where: {
+        lastDate: {
+          gte: new Date(),
+        },
+      },
+    })
     return meeting
   }
 
@@ -121,5 +132,11 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
         pageSize,
       },
     }
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.dbContext.client.meeting.delete({
+      where: { id },
+    })
   }
 }

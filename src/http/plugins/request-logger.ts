@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from 'fastify'
 import { asyncLocalStorage } from '@lib/async-local-storage'
 import { logger } from '@lib/logger'
-import { INCOMING_REQUEST } from '@messages/loggings/common-loggings'
+import { INCOMING_REQUEST } from '@messages/loggings/system/common-loggings'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { v7 as uuidv7 } from 'uuid'
 

@@ -11,8 +11,8 @@ import { BLOG_BANNERS_PATH, BLOG_IMAGES_PATH } from '@constants/dynamic-file-con
 import { CONTENT_LEADER_PERMISSIONS } from '@constants/sets'
 import { logger } from '@lib/logger'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_COPY_CREATED_SUCCESSFULLY } from '@messages/loggings/blog-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { BLOG_COPY_CREATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -32,13 +32,13 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class CreateDraftCopyBlogUseCase {
   constructor(
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

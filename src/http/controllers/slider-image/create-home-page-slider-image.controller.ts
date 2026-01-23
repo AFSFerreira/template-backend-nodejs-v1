@@ -3,7 +3,7 @@ import type {
   SliderImageDefaultPresenterInput,
 } from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { SliderImagePresenter } from '@presenters/slider-image-presenter'
 import { createHomePageSliderImageBodySchema } from '@schemas/slider-image/create-home-page-slider-image-body-schema'
 import { CreateHomePageSliderImageUseCase } from '@use-cases/slider-image/create-home-page-slider-image-use-case'
@@ -18,7 +18,7 @@ export async function createHomePageSliderImage(request: FastifyRequest, reply: 
 
   const formattedReply = SliderImagePresenter.toHTTP<SliderImageDefaultPresenterInput, HTTPSliderImage>(
     sliderImage,
-    tokens.presenters.sliderImage.sliderImageHomePage,
+    tsyringeTokens.presenters.sliderImage.sliderImageHomePage,
   )
 
   return await reply.status(201).send({ data: { sliderImage: formattedReply } })

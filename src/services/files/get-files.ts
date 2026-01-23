@@ -1,6 +1,6 @@
 import { glob } from 'node:fs/promises'
 import { logError } from '@lib/logger/helpers/log-error'
-import { FILE_RETRIEVAL_ERROR } from '@messages/loggings/file-loggings'
+import { FILE_RETRIEVAL_ERROR } from '@messages/loggings/system/file-loggings'
 
 export async function getFiles(filePattern: string) {
   try {

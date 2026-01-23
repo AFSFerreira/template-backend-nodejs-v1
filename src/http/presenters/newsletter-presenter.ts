@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'
 
 export class NewsletterPresenter {
@@ -9,7 +9,7 @@ export class NewsletterPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.newsletter.newsletterDefault,
+    contextKey: string = tsyringeTokens.presenters.newsletter.newsletterDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => NewsletterPresenter.toHTTP<TInput, TOutput>(item, contextKey))

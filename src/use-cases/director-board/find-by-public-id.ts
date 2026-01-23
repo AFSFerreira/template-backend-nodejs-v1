@@ -3,7 +3,7 @@ import type {
   FindDirectorBoardByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/director-board/find-by-public-id'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { ensureExists } from '@utils/validators/ensure'
@@ -13,7 +13,7 @@ import { DirectorBoardNotFoundError } from '../errors/director-board/director-bo
 @injectable()
 export class FindDirectorBoardByPublicIdUseCase {
   constructor(
-    @inject(tokens.repositories.directorsBoard)
+    @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
   ) {}
 

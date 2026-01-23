@@ -3,7 +3,7 @@ import type { ListAllAddressStateQuery } from '@custom-types/repository/prisma/a
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, UserRoleType } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -12,7 +12,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class PrismaAddressStatesRepository implements AddressStatesRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
   async findOrCreate(data: AddressStateFindOrCreateQuery) {

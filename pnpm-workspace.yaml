@@ -4,5 +4,6 @@ onlyBuiltDependencies:
   - '@sentry/cli'
   - '@swc/core'
   - esbuild
+  - msgpackr-extract
   - prisma
   - sharp

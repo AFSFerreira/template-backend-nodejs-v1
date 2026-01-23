@@ -3,13 +3,13 @@ import type {
   GetAllUsersUseCaseRequest,
 } from '@custom-types/use-cases/user/get-all-users-simplified'
 import type { UsersRepository } from '@repositories/users-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllUsersSimplifiedUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
   ) {}
 

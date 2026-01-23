@@ -1,4 +1,5 @@
 import { meetingPaymentInfo } from '@schemas/utils/components/meeting/meeting-payment-info'
+import { paymentInfoSchema } from '@schemas/utils/components/payment-info/payment-info-schema'
 import { rangedDateArraySchema } from '@schemas/utils/generic-components/ranged-date-array-schema'
 import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
@@ -12,5 +13,6 @@ export const createMeetingBodySchema = z.object({
   description: nonemptyTextSchema,
   location: limitedNonemptyTextSchema,
   dates: rangedDateArraySchema.min(1),
-  paymentInfo: meetingPaymentInfo,
+  meetingPaymentInfo: meetingPaymentInfo,
+  paymentInfo: paymentInfoSchema,
 })

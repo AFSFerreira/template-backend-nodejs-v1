@@ -5,7 +5,7 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { redis } from '@lib/redis'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { registerBlogViews } from '@services/cache/register-blog-views'
@@ -16,10 +16,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class FindBlogByPublicIdUseCase {
   constructor(
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

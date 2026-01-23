@@ -5,7 +5,7 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 import { SliderImageInvalidOrderError } from '@use-cases/errors/slider-image/slider-image-invalid-order-error'
 import { SliderImageNotFoundError } from '@use-cases/errors/slider-image/slider-image-not-found-error'
@@ -15,10 +15,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateSliderImageUseCase {
   constructor(
-    @inject(tokens.repositories.sliderImages)
+    @inject(tsyringeTokens.repositories.sliderImages)
     private readonly sliderImagesRepository: SliderImagesRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

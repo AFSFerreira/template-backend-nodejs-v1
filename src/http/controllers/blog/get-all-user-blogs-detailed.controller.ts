@@ -3,7 +3,7 @@ import type {
   HTTPBlogDetailedForAdmin,
 } from '@custom-types/http/presenter/blog/blog-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { getAllUserBlogsDetailedQuerySchema } from '@schemas/blog/get-all-user-blogs-detailed-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
@@ -23,7 +23,7 @@ export async function getAllUserBlogsDetailed(request: FastifyRequest, reply: Fa
 
   const formattedReply = BlogPresenter.toHTTP<BlogDetailedForAdminPresenterInput, HTTPBlogDetailedForAdmin>(
     data,
-    tokens.presenters.blog.blogDetailedForAdmin,
+    tsyringeTokens.presenters.blog.blogDetailedForAdmin,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

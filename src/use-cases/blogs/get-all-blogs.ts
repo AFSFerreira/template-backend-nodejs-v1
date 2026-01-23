@@ -1,13 +1,13 @@
 import type { GetAllBlogsUseCaseRequest, GetAllBlogsUseCaseResponse } from '@custom-types/use-cases/blogs/get-all-blogs'
 import type { BlogsRepository } from '@repositories/blogs-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllBlogsUseCase {
   constructor(
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
   ) {}
 

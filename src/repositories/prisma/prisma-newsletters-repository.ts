@@ -5,7 +5,7 @@ import type { UpdateNewsletterQuery } from '@custom-types/repository/prisma/news
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Newsletter, Prisma } from '@prisma/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -13,7 +13,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class PrismaNewslettersRepository implements NewslettersRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

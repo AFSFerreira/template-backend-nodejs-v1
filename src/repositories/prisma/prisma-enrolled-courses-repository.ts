@@ -2,13 +2,13 @@ import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/prisma/
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { EnrolledCoursesRepository } from '../enrolled-courses-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaEnrolledCoursesRepository implements EnrolledCoursesRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
   async create(data: Prisma.EnrolledCourseUncheckedCreateInput) {

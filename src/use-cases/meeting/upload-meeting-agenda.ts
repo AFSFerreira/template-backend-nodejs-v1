@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/meeting/upload-meeting-agenda'
 import { MEETING_TEMP_AGENDAS_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/logger'
-import { MEETING_AGENDA_UPLOADED_SUCCESSFULLY } from '@messages/loggings/meeting-loggings'
+import { MEETING_AGENDA_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
 import { saveFile } from '@services/files/save-file'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'

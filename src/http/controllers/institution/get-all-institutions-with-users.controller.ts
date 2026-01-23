@@ -3,7 +3,7 @@ import type {
   InstitutionWithUsersCountPresenterInput,
 } from '@custom-types/http/presenter/institution/institution-with-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { InstitutionPresenter } from '@presenters/institution-presenter'
 import { getAllInstitutionsWithUsersQuerySchema } from '@schemas/institution/get-all-institutions-with-users-query-schema'
 import { GetAllInstitutionsWithUsersUseCase } from '@use-cases/institution/get-all-institutions-with-user'
@@ -19,7 +19,7 @@ export async function getAllInstitutionsWithUsers(request: FastifyRequest, reply
   const formattedReply = InstitutionPresenter.toHTTP<
     InstitutionWithUsersCountPresenterInput,
     HTTPInstitutionWithUsersCount
-  >(data, tokens.presenters.institution.institutionWithUsersCount)
+  >(data, tsyringeTokens.presenters.institution.institutionWithUsersCount)
 
   return await reply.status(200).send({ data: formattedReply, meta })
 }

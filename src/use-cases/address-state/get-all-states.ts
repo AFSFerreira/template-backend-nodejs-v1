@@ -3,13 +3,13 @@ import type {
   GetAllStatesUseCaseResponse,
 } from '@custom-types/use-cases/address/get-all-states'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllStatesUseCase {
   constructor(
-    @inject(tokens.repositories.addressStates)
+    @inject(tsyringeTokens.repositories.addressStates)
     private readonly addressesStatesRepository: AddressStatesRepository,
   ) {}
 

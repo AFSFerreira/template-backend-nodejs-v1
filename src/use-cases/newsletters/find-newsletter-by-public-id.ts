@@ -3,7 +3,7 @@ import type {
   FindNewsletterByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/find-newsletter-by-public-id'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -12,7 +12,7 @@ import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-fou
 @injectable()
 export class FindNewsletterByPublicIdUseCase {
   constructor(
-    @inject(tokens.repositories.newsletters)
+    @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
   ) {}
 

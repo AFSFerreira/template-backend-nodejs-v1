@@ -8,7 +8,7 @@ import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS } from '@constants/sets'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getBlogHTMLCached, setBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { generateHTML } from '@tiptap/html'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
@@ -20,10 +20,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class GetRestrictBlogHTMLContentUseCase {
   constructor(
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
   ) {}
 

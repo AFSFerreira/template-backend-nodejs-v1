@@ -5,8 +5,8 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DIRECTOR_POSITION_DELETION_SUCCESSFUL } from '@messages/loggings/director-position-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { DIRECTOR_POSITION_DELETION_SUCCESSFUL } from '@messages/loggings/models/director-position-loggings'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -14,10 +14,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class DeleteDirectorPositionUseCase {
   constructor(
-    @inject(tokens.repositories.directorPositions)
+    @inject(tsyringeTokens.repositories.directorPositions)
     private readonly directorPositionsRepository: DirectorPositionsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'
 
 export class PaymentInfoPresenter {
@@ -9,7 +9,7 @@ export class PaymentInfoPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.paymentInfo.paymentInfoDefault,
+    contextKey: string = tsyringeTokens.presenters.paymentInfo.paymentInfoDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => PaymentInfoPresenter.toHTTP<TInput, TOutput>(item, contextKey))

@@ -4,8 +4,8 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, PENDING_APPROVAL_OR_PUBLISHED } from '@constants/sets'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_DELETION_SUCCESSFUL } from '@messages/loggings/blog-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { BLOG_DELETION_SUCCESSFUL } from '@messages/loggings/models/blog-loggings'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -15,13 +15,13 @@ import { BlogNotFoundError } from '../errors/blog/blog-not-found-error'
 @injectable()
 export class DeleteBlogUseCase {
   constructor(
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

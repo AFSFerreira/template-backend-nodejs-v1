@@ -2,13 +2,13 @@ import type { UpdateInstitutionalInfoQuery } from '@custom-types/repository/pris
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InstitutionalInfo } from '@prisma/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaInstitutionalInfoRepository implements InstitutionalInfoRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

@@ -3,14 +3,14 @@ import type {
   CheckAvailabilityUseCaseResponse,
 } from '@custom-types/use-cases/user/check-availability'
 import type { UsersRepository } from '@repositories/users-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class CheckAvailabilityUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
   ) {}
 

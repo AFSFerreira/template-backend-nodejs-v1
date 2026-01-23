@@ -5,7 +5,7 @@ import type {
 import path from 'node:path'
 import { STATUTE_FILE_NAME } from '@constants/static-file-constants'
 import { logger } from '@lib/logger'
-import { STATUTE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/document-management-loggings'
+import { STATUTE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/document-management-loggings'
 import { swapFiles } from '@services/files/swap-files'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'

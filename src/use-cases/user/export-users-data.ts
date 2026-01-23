@@ -3,8 +3,8 @@ import type { UserWithDetails } from '@custom-types/validators/user-with-details
 import type { UsersRepository } from '@repositories/users-repository'
 import { Readable } from 'node:stream'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings/user-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings/models/user-loggings'
 import { flattenUser } from '@services/transformers/flatten-user'
 import { Transform } from 'json2csv'
 import { inject, injectable } from 'tsyringe'
@@ -12,7 +12,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class ExportUsersDataUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
   ) {}
 

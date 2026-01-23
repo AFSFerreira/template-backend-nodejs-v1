@@ -19,119 +19,119 @@ import { PrismaPaymentInfoRepository } from '@repositories/prisma/prisma-payment
 import { PrismaSliderImagesRepository } from '@repositories/prisma/prisma-slider-images-repository'
 import { PrismaUsersRepository } from '@repositories/prisma/prisma-users-repository'
 import { registerRepository } from '../../register-repository'
-import { tokens } from '../../tokens'
+import { tsyringeTokens } from '../../tokens'
 
 export function registerRepositories(container: DependencyContainer) {
   registerRepository({
-    contextKey: tokens.repositories.academicPublications,
+    contextKey: tsyringeTokens.repositories.academicPublications,
     container,
     target: PrismaAcademicPublicationsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.activityAreas,
+    contextKey: tsyringeTokens.repositories.activityAreas,
     container,
     target: PrismaActivityAreasRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.addressCountries,
+    contextKey: tsyringeTokens.repositories.addressCountries,
     container,
     target: PrismaAddressCountriesRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.addressStates,
+    contextKey: tsyringeTokens.repositories.addressStates,
     container,
     target: PrismaAddressStatesRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.addresses,
+    contextKey: tsyringeTokens.repositories.addresses,
     container,
     target: PrismaAddressesRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.authenticationAudits,
+    contextKey: tsyringeTokens.repositories.authenticationAudits,
     container,
     target: PrismaAuthenticationAuditsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.blogs,
+    contextKey: tsyringeTokens.repositories.blogs,
     container,
     target: PrismaBlogsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.directorsBoard,
+    contextKey: tsyringeTokens.repositories.directorsBoard,
     container,
     target: PrismaDirectorBoardRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.directorPositions,
+    contextKey: tsyringeTokens.repositories.directorPositions,
     container,
     target: PrismaDirectorPositionsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.enrolledCourses,
+    contextKey: tsyringeTokens.repositories.enrolledCourses,
     container,
     target: PrismaEnrolledCoursesRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.institutionalInfo,
+    contextKey: tsyringeTokens.repositories.institutionalInfo,
     container,
     target: PrismaInstitutionalInfoRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.institutions,
+    contextKey: tsyringeTokens.repositories.institutions,
     container,
     target: PrismaInstitutionsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.keywords,
+    contextKey: tsyringeTokens.repositories.keywords,
     container,
     target: PrismaKeywordsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.meetingEnrollments,
+    contextKey: tsyringeTokens.repositories.meetingEnrollments,
     container,
     target: PrismaMeetingEnrollmentsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.meetings,
+    contextKey: tsyringeTokens.repositories.meetings,
     container,
     target: PrismaMeetingsRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.newsletters,
+    contextKey: tsyringeTokens.repositories.newsletters,
     container,
     target: PrismaNewslettersRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.paymentInfo,
+    contextKey: tsyringeTokens.repositories.paymentInfo,
     container,
     target: PrismaPaymentInfoRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.sliderImages,
+    contextKey: tsyringeTokens.repositories.sliderImages,
     container,
     target: PrismaSliderImagesRepository,
   })
 
   registerRepository({
-    contextKey: tokens.repositories.users,
+    contextKey: tsyringeTokens.repositories.users,
     container,
     target: PrismaUsersRepository,
   })

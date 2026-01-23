@@ -10,7 +10,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { blogWithDetails } from '@custom-types/validators/blog-with-details'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { blogDetailedAdapter } from './adapters/blogs/blog-detailed-adapter'
@@ -22,7 +22,7 @@ import { buildListAllUserBlogsDetailedQuery } from './queries/blogs/build-list-a
 @injectable()
 export class PrismaBlogsRepository implements BlogsRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
   async create(data: CreateBlogQuery) {

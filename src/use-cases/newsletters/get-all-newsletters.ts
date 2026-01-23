@@ -3,14 +3,14 @@ import type {
   GetAllNewslettersUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/get-all-newsletters'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllNewslettersUseCase {
   constructor(
-    @inject(tokens.repositories.newsletters)
+    @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
   ) {}
 

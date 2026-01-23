@@ -5,9 +5,12 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MEETING_UPDATED_SUCCESSFULLY } from '@messages/loggings/meeting-loggings'
+import { logError } from '@lib/logger/helpers/log-error'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
+import { MEETING_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
@@ -15,8 +18,8 @@ import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-ban
 import { moveFile } from '@services/files/move-file'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
+import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -24,10 +27,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateMeetingUseCase {
   constructor(
-    @inject(tokens.repositories.meetings)
+    @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -54,25 +57,19 @@ export class UpdateMeetingUseCase {
         }
 
         if (body.dates) {
-          updateData.lastDate = getArrayMaxDate(body.dates)
+          const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
+
+          updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
+
+          const activeMeeting = await this.meetingsRepository.findActiveMeeting()
+
+          if (activeMeeting && updateData.lastDate >= activeMeeting.lastDate) {
+            throw new MeetingDateConflictError()
+          }
+
           updateData.MeetingDate = {
             deleteMany: {},
-            create: body.dates.map((date) => ({ date })),
-          }
-        }
-
-        if (body.paymentInfo) {
-          updateData.MeetingPaymentInfo = {
-            upsert: {
-              create: {
-                value: body.paymentInfo.value,
-                limitDate: body.paymentInfo.limitDate,
-              },
-              update: {
-                value: body.paymentInfo.value,
-                limitDate: body.paymentInfo.limitDate,
-              },
-            },
+            create: nonRepeatingDates.map((date) => ({ date })),
           }
         }
 
@@ -105,31 +102,67 @@ export class UpdateMeetingUseCase {
           data: updateData,
         })
 
-        // Remove a imagem antiga somente após persistir a nova e atualizar a reunião:
+        // Enfileirando a remoção da imagem antiga somente após persistir a nova e atualizar a reunião:
         if (body.bannerImage && body.bannerImage !== meeting.bannerImage) {
-          await deleteFile(buildMeetingBannerPath(meeting.bannerImage))
+          try {
+            fileQueue.add('delete', {
+              type: 'delete',
+              filePath: buildMeetingBannerPath(meeting.bannerImage),
+            })
+          } catch (error) {
+            logError({
+              error,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
         }
 
-        // Remove a agenda antiga somente após persistir a nova e atualizar a reunião:
+        // Enfileirando a remoção da agenda antiga somente após persistir a nova e atualizar a reunião:
         if (body.agenda && body.agenda !== meeting.agenda) {
-          await deleteFile(buildMeetingAgendaPath(meeting.agenda))
+          try {
+            fileQueue.add('delete', {
+              type: 'delete',
+              filePath: buildMeetingAgendaPath(meeting.agenda),
+            })
+          } catch (error) {
+            logError({
+              error,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
         }
 
         return { meeting: updatedMeeting }
       } catch (error) {
-        // Restaurando os arquivos incorretamente persistidos:
+        // Enfileirando a restauração dos arquivos incorretamente persistidos:
         if (body.bannerImage) {
-          await moveFile({
-            oldFilePath: buildMeetingBannerPath(body.bannerImage),
-            newFilePath: buildTempMeetingBannerPath(body.bannerImage),
-          })
+          try {
+            fileQueue.add('move', {
+              type: 'move',
+              oldFilePath: buildMeetingBannerPath(body.bannerImage),
+              newFilePath: buildTempMeetingBannerPath(body.bannerImage),
+            })
+          } catch (fileError) {
+            logError({
+              error: fileError,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
         }
 
         if (body.agenda) {
-          await moveFile({
-            oldFilePath: buildMeetingAgendaPath(body.agenda),
-            newFilePath: buildTempMeetingAgendaPath(body.agenda),
-          })
+          try {
+            fileQueue.add('move', {
+              type: 'move',
+              oldFilePath: buildMeetingAgendaPath(body.agenda),
+              newFilePath: buildTempMeetingAgendaPath(body.agenda),
+            })
+          } catch (fileError) {
+            logError({
+              error: fileError,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
         }
 
         throw error

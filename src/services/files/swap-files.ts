@@ -2,7 +2,7 @@ import type { IswapFiles } from '@custom-types/services/files/swap-multipart-fil
 import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { logError } from '@lib/logger/helpers/log-error'
-import { SWAP_FILE_LOOP_ERROR } from '@messages/loggings/file-loggings'
+import { SWAP_FILE_LOOP_ERROR } from '@messages/loggings/system/file-loggings'
 import { deleteFile } from '../../utils/files/delete-file'
 import { saveFile } from './save-file'
 

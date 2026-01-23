@@ -5,8 +5,8 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { INSTITUTION_CREATED_SUCCESSFULLY } from '@messages/loggings/institution-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { INSTITUTION_CREATED_SUCCESSFULLY } from '@messages/loggings/models/institution-loggings'
 import { InstitutionAlreadyExistsError } from '@use-cases/errors/institution/institution-already-exists-error'
 import { ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -14,10 +14,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class CreateInstitutionUseCase {
   constructor(
-    @inject(tokens.repositories.institutions)
+    @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

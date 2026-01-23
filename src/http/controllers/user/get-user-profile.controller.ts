@@ -1,6 +1,6 @@
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/user-presenter'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
@@ -16,7 +16,7 @@ export async function getUserProfile(request: FastifyRequest, reply: FastifyRepl
 
   const formattedReply = UserPresenter.toHTTP<UserDetailedPresenterInput, HTTPUserWithDetails>(
     user,
-    tokens.presenters.user.userDetailed,
+    tsyringeTokens.presenters.user.userDetailed,
   )
 
   return await reply.status(200).send({ data: formattedReply })

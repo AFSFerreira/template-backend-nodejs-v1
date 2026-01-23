@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'
 
 export class DashboardPresenter {
@@ -9,7 +9,7 @@ export class DashboardPresenter {
 
   static toHTTP<TInput, TOutput>(
     input: TInput | TInput[],
-    contextKey: string = tokens.presenters.dashboardMetrics.dashboardMetricsDefault,
+    contextKey: string = tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsDefault,
   ): TOutput | TOutput[] {
     if (Array.isArray(input)) {
       return input.map((item) => DashboardPresenter.toHTTP<TInput, TOutput>(item, contextKey))

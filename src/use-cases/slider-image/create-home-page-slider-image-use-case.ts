@@ -6,8 +6,8 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { SLIDER_IMAGE_CREATION_ERROR } from '@messages/loggings/slider-image-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { SLIDER_IMAGE_CREATION_ERROR } from '@messages/loggings/models/slider-image-loggings'
 import {
   buildHomePageSliderImagePath,
   buildTempSliderImagePath,
@@ -22,10 +22,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class CreateHomePageSliderImageUseCase {
   constructor(
-    @inject(tokens.repositories.sliderImages)
+    @inject(tsyringeTokens.repositories.sliderImages)
     private readonly sliderImagesRepository: SliderImagesRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

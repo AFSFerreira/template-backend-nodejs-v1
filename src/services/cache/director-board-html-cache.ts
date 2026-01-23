@@ -8,7 +8,7 @@ import { logger } from '@lib/logger'
 import {
   GET_DIRECTOR_BOARD_HTML_CACHED_INFO,
   SET_DIRECTOR_BOARD_HTML_CACHE_INFO,
-} from '@messages/loggings/director-board-loggings'
+} from '@messages/loggings/models/director-board-loggings'
 
 const generateDirectorBoardHtmlKey = (directorBoardId: number) => `cache:directorBoard:${directorBoardId}:aboutMeHtml`
 

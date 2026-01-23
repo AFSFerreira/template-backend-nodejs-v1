@@ -12,22 +12,26 @@ import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { env } from '@env/index'
+import { emailQueue } from '@jobs/queues/definitions/email-queue'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
+import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
+import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import {
   EMAIL_VERIFICATION_SEND_ERROR,
   SUCCESSFUL_USER_CREATION,
   USER_CREATION_ERROR,
-} from '@messages/loggings/user-loggings'
+} from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
 } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { sendEmail } from '@services/external/send-email'
 import { moveFile } from '@services/files/move-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
@@ -52,22 +56,22 @@ import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 @injectable()
 export class CreateUserUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.repositories.activityAreas)
+    @inject(tsyringeTokens.repositories.activityAreas)
     private readonly activityAreasRepository: ActivityAreasRepository,
 
-    @inject(tokens.repositories.institutions)
+    @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
 
-    @inject(tokens.repositories.addressStates)
+    @inject(tsyringeTokens.repositories.addressStates)
     private readonly addressStatesRepository: AddressStatesRepository,
 
-    @inject(tokens.repositories.addressCountries)
+    @inject(tsyringeTokens.repositories.addressCountries)
     private readonly addressCountriesRepository: AddressCountryRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -209,18 +213,21 @@ export class CreateUserUseCase {
       try {
         const { html, attachments } = confirmAccountHtmlTemplate(emailInfo)
 
-        await sendEmail({
+        emailQueue.add(bullmqTokens.tasksNames.email, {
           to: createdUser.email,
           subject: EMAIL_VERIFICATION_SUBJECT,
           message: confirmAccountTextTemplate(emailInfo),
           html,
           attachments,
+          logging: {
+            errorMessage: EMAIL_VERIFICATION_SEND_ERROR,
+            context: { userPublicId: createdUser.publicId, userEmail: createdUser.email },
+          },
         })
       } catch (error) {
         logError({
           error,
-          context: { userPublicId: createdUser.publicId, userEmail: createdUser.email },
-          message: EMAIL_VERIFICATION_SEND_ERROR,
+          message: FAILED_TO_ENQUEUE_EMAIL_JOB,
         })
       }
 
@@ -235,12 +242,20 @@ export class CreateUserUseCase {
     } catch (error) {
       logError({ error, message: USER_CREATION_ERROR })
 
-      // Restaurando a imagem incorretamente persistida:
+      // Enfileirando a restauração da imagem incorretamente persistida:
       if (registerUseCaseInput.user.profileImage) {
-        await moveFile({
-          oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
-          newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
-        })
+        try {
+          fileQueue.add('move', {
+            type: 'move',
+            oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+            newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+          })
+        } catch (fileError) {
+          logError({
+            error: fileError,
+            message: FAILED_TO_ENQUEUE_FILE_JOB,
+          })
+        }
       }
 
       throw error

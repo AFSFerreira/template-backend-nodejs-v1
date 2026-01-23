@@ -10,8 +10,8 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/blog-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -36,16 +36,16 @@ import { UserNotFoundError } from '../errors/user/user-not-found-error'
 @injectable()
 export class CreatePendingBlogUseCase {
   constructor(
-    @inject(tokens.repositories.activityAreas)
+    @inject(tsyringeTokens.repositories.activityAreas)
     private readonly activityAreasRepository: ActivityAreasRepository,
 
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

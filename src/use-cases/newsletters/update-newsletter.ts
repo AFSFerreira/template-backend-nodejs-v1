@@ -5,9 +5,12 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/newsletter-loggings'
+import { logError } from '@lib/logger/helpers/log-error'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
+import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,
@@ -17,17 +20,16 @@ import { moveFile } from '@services/files/move-file'
 import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsletter-already-exists-error'
 import { NewsletterHtmlPersistError } from '@use-cases/errors/newsletter/newsletter-html-persist-error'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
-import { deleteFile } from '@utils/files/delete-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UpdateNewsletterUseCase {
   constructor(
-    @inject(tokens.repositories.newsletters)
+    @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -87,19 +89,37 @@ export class UpdateNewsletterUseCase {
           data: updateData,
         })
 
-        // Remove o arquivo antigo somente após update bem-sucedido:
+        // Enfileirando a remoção do arquivo antigo somente após update bem-sucedido:
         if (body.contentFilename && body.contentFilename !== newsletter.content) {
-          await deleteFile(buildNewsletterHtmlPath(newsletter.content))
+          try {
+            fileQueue.add('delete', {
+              type: 'delete',
+              filePath: buildNewsletterHtmlPath(newsletter.content),
+            })
+          } catch (error) {
+            logError({
+              error,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
         }
 
         return { newsletter: updatedNewsletter }
       } catch (error) {
-        // Restaurando o arquivo incorretamente persistido:
+        // Enfileirando a restauração do arquivo incorretamente persistido:
         if (body.contentFilename) {
-          await moveFile({
-            oldFilePath: buildNewsletterHtmlPath(body.contentFilename),
-            newFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
-          })
+          try {
+            fileQueue.add('move', {
+              type: 'move',
+              oldFilePath: buildNewsletterHtmlPath(body.contentFilename),
+              newFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
+            })
+          } catch (fileError) {
+            logError({
+              error: fileError,
+              message: FAILED_TO_ENQUEUE_FILE_JOB,
+            })
+          }
         }
 
         throw error

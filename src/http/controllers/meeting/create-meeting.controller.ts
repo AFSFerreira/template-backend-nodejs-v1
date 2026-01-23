@@ -3,7 +3,7 @@ import type {
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingPresenter } from '@presenters/meeting-presenter'
 import { createMeetingBodySchema } from '@schemas/meeting/create-meeting-body-schema'
 import { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
@@ -18,7 +18,7 @@ export async function createMeeting(request: FastifyRequest, reply: FastifyReply
 
   const formattedReply = MeetingPresenter.toHTTP<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>(
     meeting,
-    tokens.presenters.meeting.meetingDetailed,
+    tsyringeTokens.presenters.meeting.meetingDetailed,
   )
 
   return await reply.status(201).send({ data: formattedReply })

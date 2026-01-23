@@ -8,10 +8,12 @@ import type { AddressStatesRepository } from '@repositories/address-states-repos
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { env } from '@env/index'
+import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
+import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import {
   buildUserProfileImagePath,
@@ -38,22 +40,22 @@ import { UserNotFoundError } from '../errors/user/user-not-found-error'
 @injectable()
 export class UpdateUserUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.repositories.activityAreas)
+    @inject(tsyringeTokens.repositories.activityAreas)
     private readonly activityAreasRepository: ActivityAreasRepository,
 
-    @inject(tokens.repositories.institutions)
+    @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
 
-    @inject(tokens.repositories.addressStates)
+    @inject(tsyringeTokens.repositories.addressStates)
     private readonly addressStatesRepository: AddressStatesRepository,
 
-    @inject(tokens.repositories.addressCountries)
+    @inject(tsyringeTokens.repositories.addressCountries)
     private readonly addressCountriesRepository: AddressCountryRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -205,12 +207,20 @@ export class UpdateUserUseCase {
     } catch (error) {
       logError({ error, message: USER_UPDATE_ERROR })
 
-      // Restaurando a imagem de perfil previamente persistida:
+      // Enfileirando a restauração da imagem de perfil previamente persistida:
       if (data.user?.profileImage) {
-        await moveFile({
-          oldFilePath: buildUserProfileImagePath(data.user.profileImage),
-          newFilePath: buildUserTempProfileImagePath(data.user.profileImage),
-        })
+        try {
+          fileQueue.add('move', {
+            type: 'move',
+            oldFilePath: buildUserProfileImagePath(data.user.profileImage),
+            newFilePath: buildUserTempProfileImagePath(data.user.profileImage),
+          })
+        } catch (fileError) {
+          logError({
+            error: fileError,
+            message: FAILED_TO_ENQUEUE_FILE_JOB,
+          })
+        }
       }
 
       throw error

@@ -6,8 +6,8 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { INSTITUTION_UPDATED_SUCCESSFULLY } from '@messages/loggings/institution-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { INSTITUTION_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/institution-loggings'
 import { InstitutionAlreadyExistsError } from '@use-cases/errors/institution/institution-already-exists-error'
 import { InstitutionNotFoundError } from '@use-cases/errors/institution/institution-not-found-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
@@ -16,10 +16,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateInstitutionUseCase {
   constructor(
-    @inject(tokens.repositories.institutions)
+    @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

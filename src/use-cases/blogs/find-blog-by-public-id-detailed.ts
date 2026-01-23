@@ -6,7 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
@@ -18,13 +18,13 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class FindBlogByPublicIdRestrictedUseCase {
   constructor(
-    @inject(tokens.repositories.blogs)
+    @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

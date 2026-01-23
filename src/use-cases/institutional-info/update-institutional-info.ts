@@ -8,7 +8,7 @@ import type { InstitutionalInfoRepository } from '@repositories/institutional-in
 import type { JSONContent } from '@tiptap/core'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
   buildInstitutionalAboutImagePath,
   buildInstitutionalTempAboutImagePath,
@@ -28,10 +28,10 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateInstitutionalInfoUseCase {
   constructor(
-    @inject(tokens.repositories.institutionalInfo)
+    @inject(tsyringeTokens.repositories.institutionalInfo)
     private readonly institutionalInfoRepository: InstitutionalInfoRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

@@ -15,3 +15,5 @@ export const MEETING_CREATION_ERROR = 'Erro ao criar reunião'
 export const MEETING_UPDATED_SUCCESSFULLY = 'Reunião atualizada com sucesso'
 
 export const MEETING_UPDATE_ERROR = 'Erro ao atualizar reunião'
+
+export const MEETING_DELETED_SUCCESSFULLY = 'Reunião deletada com sucesso'

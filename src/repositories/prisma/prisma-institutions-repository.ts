@@ -5,7 +5,7 @@ import type { UpdateInstitutionQuery } from '@custom-types/repository/prisma/ins
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { InstitutionsRepository } from '../institutions-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, UserRoleType } from '@prisma/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -14,7 +14,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
   async create(data: Prisma.InstitutionUncheckedCreateInput) {

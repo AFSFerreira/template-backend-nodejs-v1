@@ -2,7 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { prisma } from '@lib/prisma'
-import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@messages/loggings/server-loggings'
+import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@messages/loggings/system/server-loggings'
 
 export async function healthCheck(_request: FastifyRequest, reply: FastifyReply) {
   const startTime = Date.now()

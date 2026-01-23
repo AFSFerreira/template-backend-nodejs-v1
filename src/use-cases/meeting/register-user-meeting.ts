@@ -7,8 +7,8 @@ import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollm
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { REGISTER_USER_MEETING } from '@messages/loggings/meeting-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { REGISTER_USER_MEETING } from '@messages/loggings/models/meeting-loggings'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/user-already-registered-in-meeting-error'
@@ -20,16 +20,16 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class RegisterUserMeetingUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.repositories.meetings)
+    @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.repositories.meetingEnrollments)
+    @inject(tsyringeTokens.repositories.meetingEnrollments)
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

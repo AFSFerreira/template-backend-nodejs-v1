@@ -1,13 +1,13 @@
 import type { GetUsersMetricsUseCaseResponse } from '@custom-types/use-cases/dashboard-metrics/get-users-metrics'
 import type { UsersRepository } from '@repositories/users-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/client'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetUsersMetricsUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
   ) {}
 

@@ -4,8 +4,8 @@ import type {
 } from '@custom-types/use-cases/director-board/get-all-directors-board'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { DIRECTOR_BOARD_LIST_ERROR } from '@messages/loggings/director-board-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { DIRECTOR_BOARD_LIST_ERROR } from '@messages/loggings/models/director-board-loggings'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { inject, injectable } from 'tsyringe'
@@ -14,7 +14,7 @@ import { DirectorBoardListError } from '../errors/director-board/director-board-
 @injectable()
 export class GetAllDirectorsBoard {
   constructor(
-    @inject(tokens.repositories.directorsBoard)
+    @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
   ) {}
 

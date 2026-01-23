@@ -6,12 +6,17 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { RECOVERY_PASSWORD_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
+import { emailQueue } from '@jobs/queues/definitions/email-queue'
+import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_RESET_SUBJECT } from '@messages/emails/user-emails'
-import { CHANGE_PASSWORD_REQUEST_SUCCESSFUL, PASSWORD_RESET_EMAIL_FAILED } from '@messages/loggings/user-loggings'
-import { sendEmail } from '@services/external/send-email'
+import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
+import {
+  CHANGE_PASSWORD_REQUEST_SUCCESSFUL,
+  PASSWORD_RESET_EMAIL_FAILED,
+} from '@messages/loggings/models/user-loggings'
 import { forgotPasswordHtmlTemplate } from '@templates/user/forgot-password/forgot-password-html'
 import { forgotPasswordTextTemplate } from '@templates/user/forgot-password/forgot-password-text'
 import { generateToken } from '@utils/tokens/generate-token'
@@ -23,10 +28,10 @@ import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found
 @injectable()
 export class ForgotPasswordUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
@@ -67,18 +72,21 @@ export class ForgotPasswordUseCase {
     try {
       const { html, attachments } = forgotPasswordHtmlTemplate(emailInfo)
 
-      await sendEmail({
+      emailQueue.add(bullmqTokens.tasksNames.email, {
         to: userChosenEmail,
         subject: PASSWORD_RESET_SUBJECT,
         message: forgotPasswordTextTemplate(emailInfo),
         html,
         attachments,
+        logging: {
+          errorMessage: PASSWORD_RESET_EMAIL_FAILED,
+          context: { userPublicId: user.publicId, userEmail: userChosenEmail },
+        },
       })
     } catch (error) {
       logError({
         error,
-        context: { userPublicId: user.publicId, userEmail: userChosenEmail },
-        message: PASSWORD_RESET_EMAIL_FAILED,
+        message: FAILED_TO_ENQUEUE_EMAIL_JOB,
       })
     }
 

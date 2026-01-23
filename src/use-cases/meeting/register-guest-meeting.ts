@@ -6,8 +6,8 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { REGISTER_GUEST_MEETING } from '@messages/loggings/meeting-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { REGISTER_GUEST_MEETING } from '@messages/loggings/models/meeting-loggings'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
@@ -18,13 +18,13 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class RegisterGuestMeetingUseCase {
   constructor(
-    @inject(tokens.repositories.meetings)
+    @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
 
-    @inject(tokens.repositories.meetingEnrollments)
+    @inject(tsyringeTokens.repositories.meetingEnrollments)
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

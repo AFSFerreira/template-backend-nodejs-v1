@@ -11,7 +11,7 @@ import {
   RUNNING_JOB_FAILED,
   RUNNING_SCHEDULED_JOB,
   UNHANDLED_JOB_ERROR,
-} from '@messages/loggings/scheduler-loggings'
+} from '@messages/loggings/system/scheduler-loggings'
 import { cronSchema } from '@schemas/utils/generic-components/cron-schema'
 import { InvalidCronExpressionError } from '@services/errors/cron/invalid-cron-expression-error'
 import { JobNameAlreadyExistsError } from '@services/errors/jobs/job-name-already-exists-error'

@@ -30,6 +30,7 @@
       "@schemas/*": ["./src/http/schemas/*"],
       "@uploads/*": ["./src/uploads/*"],
       "@use-cases/*": ["./src/use-cases/*"],
+      "@jobs/*": ["./src/jobs/*"],
       "@repositories/*": ["./src/repositories/*"],
       "@custom-types/*": ["./src/@types/*"],
       "@utils/*": ["./src/utils/*"],

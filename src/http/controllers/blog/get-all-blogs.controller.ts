@@ -3,7 +3,7 @@ import type {
   HTTPSimplifiedBlog,
 } from '@custom-types/http/presenter/blog/blog-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { getAllBlogsQuerySchema } from '@schemas/blog/get-all-blogs-query-schema'
 import { GetAllBlogsUseCase } from '@use-cases/blogs/get-all-blogs'
@@ -18,7 +18,7 @@ export async function getAllBlogs(request: FastifyRequest, reply: FastifyReply) 
 
   const formattedReply = BlogPresenter.toHTTP<BlogSimplifiedPresenterInput, HTTPSimplifiedBlog>(
     data,
-    tokens.presenters.blog.blogSimplified,
+    tsyringeTokens.presenters.blog.blogSimplified,
   )
 
   return await reply.status(200).send({ data: formattedReply, meta })

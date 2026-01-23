@@ -1,13 +1,6 @@
-export interface CreateMeetingQuery {
-  title: string
-  bannerImage: string
-  agenda: string
-  description: string
-  location: string
-  lastDate: Date
+import type { Prisma } from '@prisma/client'
+
+export interface CreateMeetingQuery extends Prisma.MeetingCreateInput {
   dates: Date[]
-  paymentInfo: {
-    value: number
-    limitDate: Date
-  }
+  meetingPaymentInfo: Prisma.MeetingPaymentInfoCreateWithoutMeetingInput
 }

@@ -1,4 +1,4 @@
-export const tokens = {
+export const tsyringeTokens = {
   repositories: {
     academicPublications: 'AcademicPublicationsRepository',
     activityAreas: 'ActivityAreasRepository',

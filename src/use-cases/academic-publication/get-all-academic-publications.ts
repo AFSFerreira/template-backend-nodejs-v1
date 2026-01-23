@@ -3,13 +3,13 @@ import type {
   GetAllAcademicPublicationsUseCaseResponse,
 } from '@custom-types/use-cases/academic-publications/get-all-academic-publications'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllAcademicPublicationsUseCase {
   constructor(
-    @inject(tokens.repositories.academicPublications)
+    @inject(tsyringeTokens.repositories.academicPublications)
     private readonly academicPublicationsRepository: AcademicPublicationsRepository,
   ) {}
 

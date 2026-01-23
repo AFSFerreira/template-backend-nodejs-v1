@@ -6,8 +6,8 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { PasswordRecoveryNotRequestedByUserError } from '@use-cases/errors/user/password-recovery-not-requested-by-user-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { hashToken } from '@utils/tokens/hash-token'
@@ -19,10 +19,10 @@ import { InvalidTokenError } from '../errors/user/invalid-token-error'
 @injectable()
 export class ResetPasswordUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

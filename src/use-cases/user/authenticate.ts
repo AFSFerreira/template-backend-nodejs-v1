@@ -3,8 +3,8 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/user-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType } from '@prisma/client'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
@@ -18,13 +18,13 @@ const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXF
 @injectable()
 export class AuthenticateUseCase {
   constructor(
-    @inject(tokens.repositories.users)
+    @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tokens.repositories.authenticationAudits)
+    @inject(tsyringeTokens.repositories.authenticationAudits)
     private readonly AuthenticationAuditsRepository: AuthenticationAuditsRepository,
 
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

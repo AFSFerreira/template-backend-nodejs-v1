@@ -4,8 +4,8 @@ import type {
 } from '@custom-types/use-cases/meeting-enrollment/delete-meeting-enrollment'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import { logger } from '@lib/logger'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
-import { MEETING_ENROLLMENT_DELETION_SUCCESSFUL } from '@messages/loggings/meeting-enrollment-loggings'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { MEETING_ENROLLMENT_DELETION_SUCCESSFUL } from '@messages/loggings/models/meeting-enrollment-loggings'
 import { MeetingEnrollmentNotFoundError } from '@use-cases/errors/meeting-enrollment/meeting-enrollment-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -13,7 +13,7 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class DeleteMeetingEnrollmentUseCase {
   constructor(
-    @inject(tokens.repositories.meetingEnrollments)
+    @inject(tsyringeTokens.repositories.meetingEnrollments)
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
   ) {}
 

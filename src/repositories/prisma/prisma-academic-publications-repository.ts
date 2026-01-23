@@ -5,7 +5,7 @@ import type { AcademicPublicationSimplifiedRaw } from '@custom-types/repository/
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
-import { tokens } from '@lib/tsyringe/helpers/tokens'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
@@ -14,7 +14,7 @@ import { buildListAllAcademicPublicationsQuery } from './queries/academic-public
 @injectable()
 export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
   constructor(
-    @inject(tokens.infra.database)
+    @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 

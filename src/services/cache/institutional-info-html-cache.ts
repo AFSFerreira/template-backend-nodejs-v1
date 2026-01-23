@@ -8,7 +8,7 @@ import { logger } from '@lib/logger'
 import {
   GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO,
   SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO,
-} from '@messages/loggings/institutional-info-loggings'
+} from '@messages/loggings/models/institutional-info-loggings'
 
 const generateInstitutionalInfoHtmlKey = (institutionalInfoId: number) =>
   `cache:institutionalInfo:${institutionalInfoId}:aboutDescriptionHtml`
