@@ -397,11 +397,11 @@ CREATE TABLE "public"."meeting_enrollments" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."_blog_subcategories" (
+CREATE TABLE "_ActivityAreaToBlog" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
 
-    CONSTRAINT "_blog_subcategories_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "_ActivityAreaToBlog_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateTable
@@ -435,9 +435,6 @@ CREATE UNIQUE INDEX "users_secondary_email_key" ON "users"("secondary_email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "addresses_user_id_key" ON "public"."addresses"("user_id");
-
--- CreateIndex
-CREATE INDEX "addresses_user_id_idx" ON "public"."addresses"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "address_states_name_country_id_key" ON "address_states"("name", "country_id");
@@ -551,10 +548,10 @@ CREATE UNIQUE INDEX "meeting_presentations_meeting_enrollment_id_key" ON "meetin
 CREATE UNIQUE INDEX "meeting_enrollments_public_id_key" ON "meeting_enrollments"("public_id");
 
 -- CreateIndex
-CREATE INDEX "_blog_subcategories_B_index" ON "public"."_blog_subcategories"("B");
+CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
 
 -- CreateIndex
-CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
+CREATE INDEX "_ActivityAreaToBlog_B_index" ON "_ActivityAreaToBlog"("B");
 
 -- AddForeignKey
 ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -629,13 +626,13 @@ ALTER TABLE "guest_meeting_enrollments" ADD CONSTRAINT "guest_meeting_enrollment
 ALTER TABLE "meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."_blog_subcategories" ADD CONSTRAINT "_blog_subcategories_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_A_fkey" FOREIGN KEY ("A") REFERENCES "area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_B_fkey" FOREIGN KEY ("B") REFERENCES "blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
