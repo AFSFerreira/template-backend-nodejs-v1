@@ -89,7 +89,7 @@ export function buildListAllUserBlogsDetailedQuery(query: IBuildGetAllUserBlogsD
       ) AS subcategories
     FROM blogs b
     LEFT JOIN users u ON u.id = b.user_id
-    LEFT JOIN _ActivityAreaToBlog bs ON bs."B" = b.id
+    LEFT JOIN "_ActivityAreaToBlog" bs ON bs."B" = b.id
     LEFT JOIN area_of_activity sc ON sc.id = bs."A" AND sc.type = ${ActivityAreaType.SUB_AREA_OF_ACTIVITY}::"ActivityAreaType"
     ${whereClause}
     GROUP BY b.id, u.full_name
@@ -103,7 +103,7 @@ export function buildListAllUserBlogsDetailedQuery(query: IBuildGetAllUserBlogsD
       SELECT b.id
       FROM blogs b
       LEFT JOIN users u ON u.id = b.user_id
-      LEFT JOIN _ActivityAreaToBlog bs ON bs."B" = b.id
+      LEFT JOIN "_ActivityAreaToBlog" bs ON bs."B" = b.id
       LEFT JOIN area_of_activity sc ON sc.id = bs."A" AND sc.type = ${ActivityAreaType.SUB_AREA_OF_ACTIVITY}::"ActivityAreaType"
       ${whereClause}
       GROUP BY b.id
