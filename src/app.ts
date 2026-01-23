@@ -23,6 +23,9 @@ import { appRoutes } from './http/routes'
 
 export const app = fastify(fastifyConfiguration)
 
+initSentry()
+registerAppSignals(app)
+
 app.register(multipart, multipartConfiguration)
 app.register(staticFileRoutes)
 app.register(fastifyCookie)
@@ -35,8 +38,5 @@ app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)
 app.addHook('preSerialization', preSerialization)
 app.addHook('onClose', gracefulShutdown)
-
-initSentry()
-registerAppSignals(app)
 
 app.setErrorHandler(fastifyErrorHandler)
