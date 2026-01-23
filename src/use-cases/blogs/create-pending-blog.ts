@@ -1,15 +1,12 @@
+import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 import type {
   CreatePendingBlogUseCaseRequest,
   CreatePendingBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-blog'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
@@ -18,6 +15,10 @@ import {
   BLOG_FILES_RESTORATION_ERROR,
 } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
@@ -64,39 +65,40 @@ export class CreatePendingBlogUseCase {
       error: new InvalidBlogContentError(),
     })
 
-    // Persistindo banner e imagens da pasta temporária para a pasta definitiva:
-    ensureExists({
-      value: await moveFile({
-        oldFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
-        newFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
-      }),
-      error: new BlogBannerPersistError(),
-    })
-
-    const oldToNewImagesLinkMap = new Map<string, string>()
-
-    const formatedBlogImages = Array.from(extractProseMirrorImages(createPendingBlogUseCaseInput.content)).map(
-      (imageLink) => {
-        const imageName = ensureExists({
-          value: sanitizeUrlFilename(imageLink),
-          error: new BlogInvalidImageLinkError(),
-        })
-
-        oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
-
-        return {
-          oldFilePath: buildBlogTempImagePath(imageName),
-          newFilePath: buildBlogImagePath(imageName),
-        }
-      },
-    )
-
-    const newProseMirror = replaceProseMirrorImages({
-      proseMirror: createPendingBlogUseCaseInput.content,
-      oldToNewImagesMap: oldToNewImagesLinkMap,
-    })
+    let formatedBlogImages: ImagePathInfo[] = []
 
     try {
+      // Persistindo banner e imagens da pasta temporária para a pasta definitiva:
+      ensureExists({
+        value: await moveFile({
+          oldFilePath: buildBlogTempBannerPath(createPendingBlogUseCaseInput.bannerImage),
+          newFilePath: buildBlogBannerPath(createPendingBlogUseCaseInput.bannerImage),
+        }),
+        error: new BlogBannerPersistError(),
+      })
+
+      const oldToNewImagesLinkMap = new Map<string, string>()
+
+      formatedBlogImages = Array.from(extractProseMirrorImages(createPendingBlogUseCaseInput.content)).map(
+        (imageLink) => {
+          const imageName = ensureExists({
+            value: sanitizeUrlFilename(imageLink),
+            error: new BlogInvalidImageLinkError(),
+          })
+
+          oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
+
+          return {
+            oldFilePath: buildBlogTempImagePath(imageName),
+            newFilePath: buildBlogImagePath(imageName),
+          }
+        },
+      )
+
+      const newProseMirror = replaceProseMirrorImages({
+        proseMirror: createPendingBlogUseCaseInput.content,
+        oldToNewImagesMap: oldToNewImagesLinkMap,
+      })
       // Persistindo as novas imagens do blog:
       await Promise.all(
         formatedBlogImages.map(async (imageInfo) => {

@@ -36,6 +36,7 @@ import { inject, injectable } from 'tsyringe'
 import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 import { InvalidBlogContentError } from '../errors/blog/invalid-blog-content-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
+import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 
 @injectable()
 export class CreateDraftBlogUseCase {
@@ -59,40 +60,42 @@ export class CreateDraftBlogUseCase {
       error: new InvalidBlogContentError(),
     })
 
-    // Persistir banner do blog da pasta temporária para a pasta definitiva:
-    ensureExists({
-      value: await moveFile({
-        oldFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
-        newFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
-      }),
-      error: new BlogBannerPersistError(),
-    })
-
-    // Persistir imagens do blog da pasta temporária para a pasta definitiva:
-    const oldToNewImagesLinkMap = new Map<string, string>()
-
-    const formatedBlogImages = Array.from(extractProseMirrorImages(createDraftBlogUseCaseInput.content)).map(
-      (imageLink) => {
-        const imageName = ensureExists({
-          value: sanitizeUrlFilename(imageLink),
-          error: new BlogInvalidImageLinkError(),
-        })
-
-        oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
-
-        return {
-          oldFilePath: buildBlogTempImagePath(imageName),
-          newFilePath: buildBlogImagePath(imageName),
-        }
-      },
-    )
-
-    const newProseMirror = replaceProseMirrorImages({
-      proseMirror: createDraftBlogUseCaseInput.content,
-      oldToNewImagesMap: oldToNewImagesLinkMap,
-    })
+    let formatedBlogImages: ImagePathInfo[] = []
 
     try {
+      // Persistir banner do blog da pasta temporária para a pasta definitiva:
+      ensureExists({
+        value: await moveFile({
+          oldFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
+          newFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
+        }),
+        error: new BlogBannerPersistError(),
+      })
+
+      // Persistir imagens do blog da pasta temporária para a pasta definitiva:
+      const oldToNewImagesLinkMap = new Map<string, string>()
+
+      formatedBlogImages = Array.from(extractProseMirrorImages(createDraftBlogUseCaseInput.content)).map(
+        (imageLink) => {
+          const imageName = ensureExists({
+            value: sanitizeUrlFilename(imageLink),
+            error: new BlogInvalidImageLinkError(),
+          })
+
+          oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
+
+          return {
+            oldFilePath: buildBlogTempImagePath(imageName),
+            newFilePath: buildBlogImagePath(imageName),
+          }
+        },
+      )
+
+      const newProseMirror = replaceProseMirrorImages({
+        proseMirror: createDraftBlogUseCaseInput.content,
+        oldToNewImagesMap: oldToNewImagesLinkMap,
+      })
+
       // Persistindo as novas imagens do blog:
       await Promise.all(
         formatedBlogImages.map(async (imageInfo) => {
@@ -109,51 +112,51 @@ export class CreateDraftBlogUseCase {
           error: new UserNotFoundError(),
         })
 
-        const { validatedActivityAreas, success } = await validateActivityAreas({
-          activityAreasRepository: this.activityAreasRepository,
-          activityAreas: createDraftBlogUseCaseInput.subcategories.map((subcategory) => ({
-            area: subcategory,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          })),
-        })
-
-        if (!success) {
-          throw new InvalidActivityArea(
-            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-          )
-        }
-
-        const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
-
-        const createdBlog = await this.blogsRepository.create({
-          title: createDraftBlogUseCaseInput.title,
-          bannerImage: createDraftBlogUseCaseInput.bannerImage,
-          editorialStatus: EditorialStatusType.DRAFT,
-          searchContent,
-          subcategoriesIds,
-          content: newProseMirror as InputJsonValue,
-          authorName: author.fullName,
-          userId: author.id,
-        })
-
-        return { author, blog: createdBlog }
+      const { validatedActivityAreas, success } = await validateActivityAreas({
+        activityAreasRepository: this.activityAreasRepository,
+        activityAreas: createDraftBlogUseCaseInput.subcategories.map((subcategory) => ({
+          area: subcategory,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        })),
       })
 
-      logger.info(
-        {
-          blogPublicId: blog.publicId,
-          title: blog.title,
-          authorPublicId: author.publicId,
-        },
-        BLOG_CREATED_SUCCESSFULLY,
-      )
-
-      return {
-        blog: {
-          ...blog,
-          bannerImage: buildBlogBannerUrl(blog.bannerImage),
-        },
+      if (!success) {
+        throw new InvalidActivityArea(
+          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+        )
       }
+
+      const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
+
+      const createdBlog = await this.blogsRepository.create({
+        title: createDraftBlogUseCaseInput.title,
+        bannerImage: createDraftBlogUseCaseInput.bannerImage,
+        editorialStatus: EditorialStatusType.DRAFT,
+        searchContent,
+        subcategoriesIds,
+        content: newProseMirror as InputJsonValue,
+        authorName: author.fullName,
+        userId: author.id,
+      })
+
+      return { author, blog: createdBlog }
+    })
+
+    logger.info(
+      {
+        blogPublicId: blog.publicId,
+        title: blog.title,
+        authorPublicId: author.publicId,
+      },
+      BLOG_CREATED_SUCCESSFULLY,
+    )
+
+    return {
+      blog: {
+        ...blog,
+        bannerImage: buildBlogBannerUrl(blog.bannerImage),
+      },
+    }
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 
