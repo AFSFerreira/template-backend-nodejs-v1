@@ -14,6 +14,7 @@ import {
   MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
 } from '@messages/loggings/models/user-loggings'
+import { MembershipStatusType } from '@prisma/client'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
 import { membershipApprovedTextTemplate } from '@templates/user/membership-accepted/membership-accepted-text'
@@ -22,7 +23,6 @@ import { membershipRejectedTextTemplate } from '@templates/user/membership-rejec
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { MembershipStatusType } from '@prisma/client'
 
 @injectable()
 export class ReviewMembershipStatusUseCase {
