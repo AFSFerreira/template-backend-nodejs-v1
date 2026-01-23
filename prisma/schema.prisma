@@ -26,8 +26,9 @@ model AuthenticationAudit {
   browser    String?
   status     AuthenticationStatusType
   createdAt  DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId     Int?                     @map("user_id")
-  user       User?                    @relation(fields: [userId], references: [id])
+
+  userId Int?  @map("user_id")
+  user   User? @relation(fields: [userId], references: [id])
 
   @@map("authentication_audits")
 }
@@ -64,31 +65,35 @@ model User {
   passwordHash                   String                   @map("password_hash")
   loginAttempts                  Int                      @default(0) @map("login_attempts")
   lastLogin                      DateTime?                @map("last_login") @db.Timestamptz(3)
-  recoveryPasswordTokenHash      String?                  @unique @map("recovery_password_token")
-  recoveryPasswordTokenExpiresAt DateTime?                @map("recovery_password_token_expires_at") @db.Timestamptz(3)
   createdAt                      DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt                      DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
-  activityAreaId                 Int?                     @map("activity_area_id")
-  subActivityAreaId              Int?                     @map("sub_activity_area_id")
-  institutionId                  Int?                     @map("institution_id")
   fullNameTsvPt                  Unsupported("tsvector")? @map("full_name_tsv_pt")
   fullNameUnaccent               String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(full_name, ''::text) FROM 1 FOR 255))")) @map("full_name_unaccent")
+
+  recoveryPasswordTokenHash      String?   @unique @map("recovery_password_token")
+  recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at") @db.Timestamptz(3)
 
   emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
   emailVerificationTokenHash      String?   @unique @map("email_verification_token")
   emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at") @db.Timestamptz(3)
 
-  AcademicPublication   AcademicPublication[]
-  Address               Address?
-  AuthenticationAudit   AuthenticationAudit[]
-  Blog                  Blog[]
-  DirectorBoard         DirectorBoard?
-  EnrolledCourse        EnrolledCourse?
-  ActivityArea          ActivityArea?           @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
-  Institution           Institution?            @relation(fields: [institutionId], references: [id], onDelete: SetNull)
-  SubActivityArea       ActivityArea?           @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
+  institutionId Int?         @map("institution_id")
+  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+
+  activityAreaId Int?          @map("activity_area_id")
+  ActivityArea   ActivityArea? @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
+
+  subActivityAreaId Int?          @map("sub_activity_area_id")
+  SubActivityArea   ActivityArea? @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
+
+  AcademicPublication   AcademicPublication[]   @relation()
+  Address               Address?                @relation()
+  AuthenticationAudit   AuthenticationAudit[]   @relation()
+  Blog                  Blog[]                  @relation()
+  DirectorBoard         DirectorBoard?          @relation()
+  EnrolledCourse        EnrolledCourse?         @relation()
   UserMeetingEnrollment UserMeetingEnrollment[] @relation()
-  Keyword               Keyword[]               @relation("KeywordToUser")
+  Keyword               Keyword[]               @relation()
 
   @@unique([identityType, identityDocument])
   @@index([membershipStatus])
@@ -98,41 +103,45 @@ model User {
 }
 
 model Address {
-  id         Int          @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   zip        String
   number     String
   street     String
   district   String
   city       String
   complement String?
-  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId     Int          @unique @map("user_id")
-  stateId    Int          @map("state_id")
-  State      AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction)
-  User       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  stateId Int          @map("state_id")
+  State   AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction)
+
+  userId Int  @unique @map("user_id")
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([stateId])
-  @@index([userId])
   @@map("addresses")
 }
 
 model AddressState {
-  id        Int            @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
   countryId Int            @map("country_id")
-  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
   Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction)
-  Address   Address[]
+
+  Address Address[] @relation()
 
   @@unique([name, countryId])
   @@map("address_states")
 }
 
 model AddressCountry {
-  id        Int            @id @default(autoincrement())
-  name      String         @unique
-  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  State     AddressState[]
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  State AddressState[] @relation()
 
   @@index([name])
   @@map("address_countries")
@@ -147,8 +156,9 @@ model EnrolledCourse {
   scholarshipHolder      Boolean   @map("scholarship_holder")
   sponsoringOrganization String?   @map("sponsoring_organization")
   createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId                 Int       @unique @map("user_id")
-  User                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  userId Int  @unique @map("user_id")
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("enrolled_courses")
@@ -164,13 +174,15 @@ model AcademicPublication {
   startPage                  String                      @map("start_page")
   linkDoi                    String                      @map("link_doi")
   createdAt                  DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
-  userId                     Int                         @map("user_id")
-  activityAreaId             Int                         @map("activity_area_id")
   titleTsvPt                 Unsupported("tsvector")?    @map("title_tsv_pt")
   titleUnaccent              String?                     @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent")
-  AcademicPublicationAuthors AcademicPublicationAuthor[]
-  ActivityArea               ActivityArea                @relation(fields: [activityAreaId], references: [id], onDelete: NoAction)
-  User                       User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AcademicPublicationAuthors AcademicPublicationAuthor[] @relation()
+
+  activityAreaId Int          @map("activity_area_id")
+  ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction)
+
+  userId Int  @map("user_id")
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_academic_publications_title_trgm_gin", type: Gin)
@@ -182,6 +194,7 @@ model AcademicPublicationAuthor {
   id                    Int                 @id @default(autoincrement())
   publicId              String              @unique @default(uuid(7)) @map("public_id")
   name                  String
+
   academicPublicationId Int                 @map("academic_publication_id")
   AcademicPublication   AcademicPublication @relation(fields: [academicPublicationId], references: [id], onDelete: Cascade)
 
@@ -194,7 +207,8 @@ model Institution {
   publicId  String   @unique @default(uuid(7)) @map("public_id")
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  User      User[]
+
+  User      User[] @relation()
 
   @@index([name(ops: raw("gin_trgm_ops"))], map: "idx_institutions_name_trgm_gin", type: Gin)
   @@map("institutions")
@@ -205,10 +219,11 @@ model ActivityArea {
   area                String
   type                ActivityAreaType
   createdAt           DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
-  AcademicPublication AcademicPublication[]
+
+  AcademicPublication AcademicPublication[] @relation()
   UserActivityArea    User[]                @relation("activity_area")
   UserSubActivityArea User[]                @relation("sub_activity_area")
-  BlogSubCategory     Blog[]                @relation("blog_subcategories")
+  BlogSubCategory     Blog[]                @relation()
 
   @@unique([type, area])
   @@map("area_of_activity")
@@ -218,7 +233,8 @@ model Keyword {
   id        Int      @id @default(autoincrement())
   value     String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  User      User[]   @relation("KeywordToUser")
+
+  User      User[]   @relation()
 
   @@map("keywords")
 }
@@ -226,14 +242,16 @@ model Keyword {
 model DirectorBoard {
   id                 Int              @id @default(autoincrement())
   publicId           String           @unique @default(uuid(7)) @map("public_id")
-  directorPositionId Int              @unique @map("director_position_id")
   publicName         String           @map("public_name")
   profileImage       String?          @map("profile_image")
   aboutMe            Json             @map("about_me") @db.Json
   createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt          DateTime         @updatedAt @map("updated_at") @db.Timestamptz(3)
-  userId             Int              @unique @map("user_id")
+
+  directorPositionId Int              @unique @map("director_position_id")
   DirectorPosition   DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction)
+
+  userId             Int              @unique @map("user_id")
   User               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
@@ -247,7 +265,8 @@ model DirectorPosition {
   precedence    Int
   description   String?
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
-  DirectorBoard DirectorBoard?
+
+  DirectorBoard DirectorBoard? @relation()
 
   @@index([position(ops: raw("gin_trgm_ops"))], map: "idx_director_positions_position_trgm_gin", type: Gin)
   @@map("director_positions")
@@ -403,7 +422,7 @@ model Blog {
   searchTsvPt     Unsupported("tsvector")? @map("search_tsv_pt") // TSVector com <title> + <primeiros 600 caracteres de content>
   titleUnaccent   String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent") // Conteúdo da coluna title sem acentos de pontuação
   User            User?                    @relation(fields: [userId], references: [id])
-  Subcategories   ActivityArea[]           @relation("blog_subcategories")
+  Subcategories   ActivityArea[]           @relation()
 
   @@index([editorialStatus])
   @@index([searchTsvPt], map: "idx_blogs_search_tsv_pt", type: Gin)

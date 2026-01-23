@@ -7,7 +7,6 @@ import type { AddressCountryRepository } from '@repositories/address-countries-r
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import path from 'node:path'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
@@ -49,6 +48,7 @@ import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { generateToken } from '@utils/tokens/generate-token'
 import { hashToken } from '@utils/tokens/hash-token'
+import { ensureExists } from '@utils/validators/ensure'
 import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
@@ -86,16 +86,15 @@ export class CreateUserUseCase {
 
     try {
       if (registerUseCaseInput.user.profileImage) {
-        const profileImagePersistSucessful = await moveFile({
-          oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
-          newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+        ensureExists({
+          value: await moveFile({
+            oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+            newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+          }),
+          error: new UserImageStorageError(),
         })
 
-        if (!profileImagePersistSucessful) {
-          throw new UserImageStorageError()
-        }
-
-        profileImage = path.basename(profileImagePersistSucessful)
+        profileImage = registerUseCaseInput.user.profileImage
       }
 
       const createdUser = await this.dbContext.runInTransaction(async () => {
