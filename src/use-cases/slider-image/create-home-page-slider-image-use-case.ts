@@ -32,15 +32,17 @@ export class CreateHomePageSliderImageUseCase {
   async execute(
     createHomePageSliderImageUseCaseInput: CreateHomePageSliderImageUseCaseRequest,
   ): Promise<CreateHomePageSliderImageUseCaseResponse> {
-    const persistHomePageSliderImage = ensureExists({
-      value: await moveFile({
-        oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-        newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-      }),
-      error: new HomePageSliderImagePersistError(),
-    })
+    let persistHomePageSliderImage: string | undefined
 
     try {
+      persistHomePageSliderImage = ensureExists({
+        value: await moveFile({
+          oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+          newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+        }),
+        error: new HomePageSliderImagePersistError(),
+      })
+
       const { createdSliderImage } = await this.dbContext.runInTransaction(async () => {
         const sliderImageQuanty = await this.sliderImagesRepository.totalCount()
         const newSliderOrder = sliderImageQuanty + 1

@@ -102,36 +102,6 @@ export class UpdateMeetingUseCase {
           data: updateData,
         })
 
-        // Enfileirando a remoção da imagem antiga somente após persistir a nova e atualizar a reunião:
-        if (body.bannerImage && body.bannerImage !== meeting.bannerImage) {
-          try {
-            fileQueue.add('delete', {
-              type: 'delete',
-              filePath: buildMeetingBannerPath(meeting.bannerImage),
-            })
-          } catch (error) {
-            logError({
-              error,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
-        }
-
-        // Enfileirando a remoção da agenda antiga somente após persistir a nova e atualizar a reunião:
-        if (body.agenda && body.agenda !== meeting.agenda) {
-          try {
-            fileQueue.add('delete', {
-              type: 'delete',
-              filePath: buildMeetingAgendaPath(meeting.agenda),
-            })
-          } catch (error) {
-            logError({
-              error,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
-        }
-
         return { meeting: updatedMeeting }
       } catch (error) {
         // Enfileirando a restauração dos arquivos incorretamente persistidos:
@@ -168,6 +138,36 @@ export class UpdateMeetingUseCase {
         throw error
       }
     })
+
+    // Enfileirando a remoção da imagem antiga somente após persistir a nova e atualizar a reunião:
+    if (body.bannerImage && body.bannerImage !== meeting.bannerImage) {
+      try {
+        fileQueue.add('delete', {
+          type: 'delete',
+          filePath: buildMeetingBannerPath(meeting.bannerImage),
+        })
+      } catch (error) {
+        logError({
+          error,
+          message: FAILED_TO_ENQUEUE_FILE_JOB,
+        })
+      }
+    }
+
+    // Enfileirando a remoção da agenda antiga somente após persistir a nova e atualizar a reunião:
+    if (body.agenda && body.agenda !== meeting.agenda) {
+      try {
+        fileQueue.add('delete', {
+          type: 'delete',
+          filePath: buildMeetingAgendaPath(meeting.agenda),
+        })
+      } catch (error) {
+        logError({
+          error,
+          message: FAILED_TO_ENQUEUE_FILE_JOB,
+        })
+      }
+    }
 
     logger.info(
       {

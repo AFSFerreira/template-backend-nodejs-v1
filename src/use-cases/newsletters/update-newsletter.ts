@@ -89,21 +89,6 @@ export class UpdateNewsletterUseCase {
           data: updateData,
         })
 
-        // Enfileirando a remoção do arquivo antigo somente após update bem-sucedido:
-        if (body.contentFilename && body.contentFilename !== newsletter.content) {
-          try {
-            fileQueue.add('delete', {
-              type: 'delete',
-              filePath: buildNewsletterHtmlPath(newsletter.content),
-            })
-          } catch (error) {
-            logError({
-              error,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
-        }
-
         return { newsletter: updatedNewsletter }
       } catch (error) {
         // Enfileirando a restauração do arquivo incorretamente persistido:
@@ -125,6 +110,21 @@ export class UpdateNewsletterUseCase {
         throw error
       }
     })
+
+    // Enfileirando a remoção do arquivo antigo somente após update bem-sucedido:
+    if (body.contentFilename && body.contentFilename !== newsletter.content) {
+      try {
+        fileQueue.add('delete', {
+          type: 'delete',
+          filePath: buildNewsletterHtmlPath(newsletter.content),
+        })
+      } catch (error) {
+        logError({
+          error,
+          message: FAILED_TO_ENQUEUE_FILE_JOB,
+        })
+      }
+    }
 
     logger.info(
       {

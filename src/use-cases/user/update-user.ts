@@ -62,17 +62,17 @@ export class UpdateUserUseCase {
   async execute({ publicId, data }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
     const passwordHash = data.user?.password ? await hash(data.user.password, env.HASH_SALT_ROUNDS) : undefined
 
-    if (data.user?.profileImage) {
-      ensureExists({
-        value: await moveFile({
-          oldFilePath: buildUserTempProfileImagePath(data.user.profileImage),
-          newFilePath: buildUserProfileImagePath(data.user.profileImage),
-        }),
-        error: new UserProfileImagePersistenceError(),
-      })
-    }
-
     try {
+      if (data.user?.profileImage) {
+        ensureExists({
+          value: await moveFile({
+            oldFilePath: buildUserTempProfileImagePath(data.user.profileImage),
+            newFilePath: buildUserProfileImagePath(data.user.profileImage),
+          }),
+          error: new UserProfileImagePersistenceError(),
+        })
+      }
+
       const updatedUser = await this.dbContext.runInTransaction(async () => {
         const userExists = ensureExists({
           value: await this.usersRepository.findByPublicId(publicId),

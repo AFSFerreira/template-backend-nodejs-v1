@@ -82,9 +82,9 @@ export class CreateUserUseCase {
     const emailVerificationTokenHash = hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_VALIDATION_EXPIRATION_TIME)
 
-    try {
-      let profileImage = DEFAULT_PROFILE_IMAGE_NAME
+    let profileImage = DEFAULT_PROFILE_IMAGE_NAME
 
+    try {
       if (registerUseCaseInput.user.profileImage) {
         const profileImagePersistSucessful = await moveFile({
           oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),

@@ -219,23 +219,23 @@ export class UpdateBlogUseCase {
           data: updateData,
         })
 
-        // Enfileirando a remoção da imagem antiga somente após update bem-sucedido:
-        if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
-          try {
-            fileQueue.add('delete', {
-              type: 'delete',
-              filePath: buildBlogBannerPath(blog.bannerImage),
-            })
-          } catch (error) {
-            logError({
-              error,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
-        }
-
         return { blog: updatedBlog, user }
       })
+
+      // Enfileirando a remoção da imagem de banner antiga somente após update bem-sucedido:
+      if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
+        try {
+          fileQueue.add('delete', {
+            type: 'delete',
+            filePath: buildBlogBannerPath(blog.bannerImage),
+          })
+        } catch (error) {
+          logError({
+            error,
+            message: FAILED_TO_ENQUEUE_FILE_JOB,
+          })
+        }
+      }
 
       if (removedImages) {
         // Enfileirando a remoção das imagens removidas do conteúdo blog:
