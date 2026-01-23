@@ -39,7 +39,7 @@ export async function meetingRoutes(app: FastifyInstance) {
     '/:meetingId/register-user',
     {
       ...rateLimit({
-        max: 10,
+        max: 100,
         timeWindow: '1m',
       }),
       preHandler: [verifyJwt],
