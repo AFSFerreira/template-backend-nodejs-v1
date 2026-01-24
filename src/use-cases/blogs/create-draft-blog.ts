@@ -8,16 +8,12 @@ import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import {
-  BLOG_CREATED_SUCCESSFULLY,
-  BLOG_CREATION_ERROR,
-  BLOG_FILES_RESTORATION_ERROR,
-} from '@messages/loggings/models/blog-loggings'
+import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -161,29 +157,18 @@ export class CreateDraftBlogUseCase {
       logError({ error, message: BLOG_CREATION_ERROR })
 
       // Restaurando as imagens de blog e a imagem de banner previamente persistida:
-      const filesToMove = [
+      for (const file of [
         ...formatedBlogImages.map((imageInfo) => ({
-          type: 'move' as const,
           oldFilePath: imageInfo.newFilePath,
           newFilePath: imageInfo.oldFilePath,
         })),
         {
-          type: 'move' as const,
           oldFilePath: buildBlogBannerPath(createDraftBlogUseCaseInput.bannerImage),
           newFilePath: buildBlogTempBannerPath(createDraftBlogUseCaseInput.bannerImage),
         },
-      ]
-
-      filesToMove.forEach((file) => {
-        try {
-          fileQueue.add('move', file)
-        } catch (fileError) {
-          logError({
-            error: fileError,
-            message: BLOG_FILES_RESTORATION_ERROR,
-          })
-        }
-      })
+      ]) {
+        await moveFileEnqueued(file)
+      }
 
       throw error
     }

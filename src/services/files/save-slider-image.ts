@@ -2,6 +2,8 @@ import type { ImageInfo } from '@custom-types/services/files/image-info'
 import type { ISaveSliderImage } from '@custom-types/services/files/save-slider-image'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { logError } from '@lib/logger/helpers/log-error'
+import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
@@ -9,8 +11,6 @@ import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dim
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import { createWriteStream, ensureDir } from 'fs-extra'
 import sharp from 'sharp'
-import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
-import { logError } from '@lib/logger/helpers/log-error'
 
 export async function saveSliderImage({ filePart, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
   const finalName = `${generateFileHash()}.avif`

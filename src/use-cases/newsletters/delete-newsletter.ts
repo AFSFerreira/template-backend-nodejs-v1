@@ -4,11 +4,9 @@ import type {
 } from '@custom-types/use-cases/newsletters/delete-newsletter'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { NEWSLETTER_DELETION_SUCCESSFUL } from '@messages/loggings/models/newsletter-loggings'
 import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
@@ -37,17 +35,9 @@ export class DeleteNewsletterUseCase {
       return { newsletter }
     })
 
-    try {
-      fileQueue.add('delete', {
-        type: 'delete',
-        filePath: buildNewsletterHtmlPath(newsletter.content),
-      })
-    } catch (error) {
-      logError({
-        error,
-        message: FAILED_TO_ENQUEUE_FILE_JOB,
-      })
-    }
+    await deleteFileEnqueued({
+      filePath: buildNewsletterHtmlPath(newsletter.content),
+    })
 
     logger.info({ newsletterPublicId: newsletter.publicId }, NEWSLETTER_DELETION_SUCCESSFUL)
 

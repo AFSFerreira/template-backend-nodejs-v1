@@ -4,11 +4,9 @@ import type {
 } from '@custom-types/use-cases/director-board/delete-director-board'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { DIRECTOR_BOARD_DELETION_SUCCESSFUL } from '@messages/loggings/models/director-board-loggings'
 import { buildDirectorBoardProfileImagePath } from '@services/builders/paths/build-director-board-profile-image-path'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -38,17 +36,9 @@ export class DeleteDirectorBoardUseCase {
     })
 
     if (directorBoard.profileImage) {
-      try {
-        fileQueue.add('delete', {
-          type: 'delete',
-          filePath: buildDirectorBoardProfileImagePath(directorBoard.profileImage),
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_FILE_JOB,
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildDirectorBoardProfileImagePath(directorBoard.profileImage),
+      })
     }
 
     logger.info({ directorBoardPublicId: directorBoard.publicId }, DIRECTOR_BOARD_DELETION_SUCCESSFUL)

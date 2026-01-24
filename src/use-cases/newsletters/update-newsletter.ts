@@ -5,11 +5,9 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import {
   buildNewsletterHtmlPath,
@@ -93,18 +91,10 @@ export class UpdateNewsletterUseCase {
       } catch (error) {
         // Enfileirando a restauração do arquivo incorretamente persistido:
         if (body.contentFilename) {
-          try {
-            fileQueue.add('move', {
-              type: 'move',
-              oldFilePath: buildNewsletterHtmlPath(body.contentFilename),
-              newFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
-            })
-          } catch (fileError) {
-            logError({
-              error: fileError,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
+          await moveFileEnqueued({
+            oldFilePath: buildNewsletterHtmlPath(body.contentFilename),
+            newFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
+          })
         }
 
         throw error
@@ -113,17 +103,9 @@ export class UpdateNewsletterUseCase {
 
     // Enfileirando a remoção do arquivo antigo somente após update bem-sucedido:
     if (body.contentFilename && body.contentFilename !== newsletter.content) {
-      try {
-        fileQueue.add('delete', {
-          type: 'delete',
-          filePath: buildNewsletterHtmlPath(newsletter.content),
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_FILE_JOB,
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildNewsletterHtmlPath(newsletter.content),
+      })
     }
 
     logger.info(

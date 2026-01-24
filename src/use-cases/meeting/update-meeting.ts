@@ -6,11 +6,9 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { PaymentInfoRepository } from '@repositories/payment-info-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { MEETING_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
@@ -128,33 +126,17 @@ export class UpdateMeetingUseCase {
       } catch (error) {
         // Enfileirando a restauração dos arquivos incorretamente persistidos:
         if (body.bannerImage) {
-          try {
-            fileQueue.add('move', {
-              type: 'move',
-              oldFilePath: buildMeetingBannerPath(body.bannerImage),
-              newFilePath: buildTempMeetingBannerPath(body.bannerImage),
-            })
-          } catch (fileError) {
-            logError({
-              error: fileError,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
+          await moveFileEnqueued({
+            oldFilePath: buildMeetingBannerPath(body.bannerImage),
+            newFilePath: buildTempMeetingBannerPath(body.bannerImage),
+          })
         }
 
         if (body.agenda) {
-          try {
-            fileQueue.add('move', {
-              type: 'move',
-              oldFilePath: buildMeetingAgendaPath(body.agenda),
-              newFilePath: buildTempMeetingAgendaPath(body.agenda),
-            })
-          } catch (fileError) {
-            logError({
-              error: fileError,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
+          await moveFileEnqueued({
+            oldFilePath: buildMeetingAgendaPath(body.agenda),
+            newFilePath: buildTempMeetingAgendaPath(body.agenda),
+          })
         }
 
         throw error
@@ -163,32 +145,16 @@ export class UpdateMeetingUseCase {
 
     // Enfileirando a remoção da imagem antiga somente após persistir a nova e atualizar a reunião:
     if (body.bannerImage && body.bannerImage !== meeting.bannerImage) {
-      try {
-        fileQueue.add('delete', {
-          type: 'delete',
-          filePath: buildMeetingBannerPath(meeting.bannerImage),
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_FILE_JOB,
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildMeetingBannerPath(meeting.bannerImage),
+      })
     }
 
     // Enfileirando a remoção da agenda antiga somente após persistir a nova e atualizar a reunião:
     if (body.agenda && body.agenda !== meeting.agenda) {
-      try {
-        fileQueue.add('delete', {
-          type: 'delete',
-          filePath: buildMeetingAgendaPath(meeting.agenda),
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_FILE_JOB,
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildMeetingAgendaPath(meeting.agenda),
+      })
     }
 
     logger.info(

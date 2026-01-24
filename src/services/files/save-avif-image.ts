@@ -3,15 +3,15 @@ import type { ISaveAvifImage } from '@custom-types/services/files/save-avif-imag
 import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
+import { logError } from '@lib/logger/helpers/log-error'
+import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import sharp from 'sharp'
 import { ensureDir } from 'fs-extra'
-import { logError } from '@lib/logger/helpers/log-error'
-import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import sharp from 'sharp'
 
 export async function saveAvifImage({
   filePart,

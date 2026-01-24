@@ -6,13 +6,10 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { RECOVERY_PASSWORD_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
-import { emailQueue } from '@jobs/queues/definitions/email-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_RESET_SUBJECT } from '@messages/emails/user-emails'
-import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
 import {
   CHANGE_PASSWORD_REQUEST_SUCCESSFUL,
   PASSWORD_RESET_EMAIL_FAILED,
@@ -69,26 +66,19 @@ export class ForgotPasswordUseCase {
     // Recuperação de senha enviada para o email escolhido pelo usuário
     const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
 
-    try {
-      const { html, attachments } = forgotPasswordHtmlTemplate(emailInfo)
+    const { html, attachments } = forgotPasswordHtmlTemplate(emailInfo)
 
-      emailQueue.add(bullmqTokens.tasksNames.email, {
-        to: userChosenEmail,
-        subject: PASSWORD_RESET_SUBJECT,
-        message: forgotPasswordTextTemplate(emailInfo),
-        html,
-        attachments,
-        logging: {
-          errorMessage: PASSWORD_RESET_EMAIL_FAILED,
-          context: { userPublicId: user.publicId, userEmail: userChosenEmail },
-        },
-      })
-    } catch (error) {
-      logError({
-        error,
-        message: FAILED_TO_ENQUEUE_EMAIL_JOB,
-      })
-    }
+    await sendEmailEnqueued({
+      to: userChosenEmail,
+      subject: PASSWORD_RESET_SUBJECT,
+      message: forgotPasswordTextTemplate(emailInfo),
+      html,
+      attachments,
+      logging: {
+        errorMessage: PASSWORD_RESET_EMAIL_FAILED,
+        context: { userPublicId: user.publicId, userEmail: userChosenEmail },
+      },
+    })
 
     logger.info({ login }, CHANGE_PASSWORD_REQUEST_SUCCESSFUL)
 

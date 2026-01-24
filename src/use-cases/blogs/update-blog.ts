@@ -7,13 +7,12 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { BLOG_UPDATED_SUCCESSFULLY, BLOG_UPDATE_ERROR } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
@@ -228,34 +227,18 @@ export class UpdateBlogUseCase {
 
       // Enfileirando a remoção da imagem de banner antiga somente após update bem-sucedido:
       if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== blog.bannerImage) {
-        try {
-          fileQueue.add('delete', {
-            type: 'delete',
-            filePath: buildBlogBannerPath(blog.bannerImage),
-          })
-        } catch (error) {
-          logError({
-            error,
-            message: FAILED_TO_ENQUEUE_FILE_JOB,
-          })
-        }
+        await deleteFileEnqueued({
+          filePath: buildBlogBannerPath(blog.bannerImage),
+        })
       }
 
       if (removedImages) {
-        // Enfileirando a remoção das imagens removidas do conteúdo blog:
-        removedImages.forEach((imageName) => {
-          try {
-            fileQueue.add('delete', {
-              type: 'delete',
-              filePath: buildBlogImagePath(imageName),
-            })
-          } catch (error) {
-            logError({
-              error,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
-        })
+        // Enfileirando a remoção das imagens removidas do conteúdo do blog:
+        for (const imageName of removedImages) {
+          await deleteFileEnqueued({
+            filePath: buildBlogImagePath(imageName),
+          })
+        }
       }
 
       // Remover cache HTML do blog para forçar regeneração:
@@ -282,36 +265,20 @@ export class UpdateBlogUseCase {
 
       if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== bannerImage) {
         // Restaurando a imagen de banner de blog previamente persistida:
-        try {
-          fileQueue.add('move', {
-            type: 'move',
-            oldFilePath: buildBlogBannerPath(body.bannerImage),
-            newFilePath: buildBlogTempBannerPath(body.bannerImage),
-          })
-        } catch (fileError) {
-          logError({
-            error: fileError,
-            message: FAILED_TO_ENQUEUE_FILE_JOB,
-          })
-        }
+        await moveFileEnqueued({
+          oldFilePath: buildBlogBannerPath(body.bannerImage),
+          newFilePath: buildBlogTempBannerPath(body.bannerImage),
+        })
       }
 
       if (newImages) {
         // Restaurando as novas imagens de blog previamente persistidas:
-        newImages.forEach((imageName) => {
-          try {
-            fileQueue.add('move', {
-              type: 'move',
-              oldFilePath: buildBlogImagePath(imageName),
-              newFilePath: buildBlogTempImagePath(imageName),
-            })
-          } catch (fileError) {
-            logError({
-              error: fileError,
-              message: FAILED_TO_ENQUEUE_FILE_JOB,
-            })
-          }
-        })
+        for (const imageName of newImages) {
+          await moveFileEnqueued({
+            oldFilePath: buildBlogImagePath(imageName),
+            newFilePath: buildBlogTempImagePath(imageName),
+          })
+        }
       }
 
       throw error

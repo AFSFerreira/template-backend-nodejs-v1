@@ -15,3 +15,15 @@ export const FILE_MOVED_SUCCESSFULLY = 'Arquivo movido com sucesso'
 export const FILE_DELETED_SUCCESSFULLY = 'Arquivo deletado com sucesso'
 
 export const FILE_COPIED_SUCCESSFULLY = 'Arquivo copiado com sucesso'
+
+export const ENQUEUING_DELETE_FILE_JOB = 'Enfileirando deleção de arquivo...'
+
+export const DELETE_FILE_JOB_ENQUEUED_SUCCESSFULLY = 'Job de deleção de arquivo enfileirado com sucesso!'
+
+export const ENQUEUING_MOVE_FILE_JOB = 'Enfileirando movimentação de arquivo...'
+
+export const MOVE_FILE_JOB_ENQUEUED_SUCCESSFULLY = 'Job de movimentação de arquivo enfileirado com sucesso!'
+
+export const ENQUEUING_COPY_FILE_JOB = 'Enfileirando cópia de arquivo...'
+
+export const COPY_FILE_JOB_ENQUEUED_SUCCESSFULLY = 'Job de cópia de arquivo enfileirado com sucesso!'

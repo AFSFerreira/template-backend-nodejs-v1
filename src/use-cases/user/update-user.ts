@@ -8,11 +8,10 @@ import type { AddressStatesRepository } from '@repositories/address-states-repos
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { env } from '@env/index'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
 import {
@@ -209,18 +208,10 @@ export class UpdateUserUseCase {
 
       // Enfileirando a restauração da imagem de perfil previamente persistida:
       if (data.user?.profileImage) {
-        try {
-          fileQueue.add('move', {
-            type: 'move',
-            oldFilePath: buildUserProfileImagePath(data.user.profileImage),
-            newFilePath: buildUserTempProfileImagePath(data.user.profileImage),
-          })
-        } catch (fileError) {
-          logError({
-            error: fileError,
-            message: FAILED_TO_ENQUEUE_FILE_JOB,
-          })
-        }
+        await moveFileEnqueued({
+          oldFilePath: buildUserProfileImagePath(data.user.profileImage),
+          newFilePath: buildUserTempProfileImagePath(data.user.profileImage),
+        })
       }
 
       throw error

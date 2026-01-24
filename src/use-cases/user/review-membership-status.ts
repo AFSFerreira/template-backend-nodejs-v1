@@ -4,12 +4,9 @@ import type {
 } from '@custom-types/use-cases/user/review-membership-status'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
-import { emailQueue } from '@jobs/queues/definitions/email-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
-import { logError } from '@lib/logger/helpers/log-error'
+import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT, MEMBERSHIP_REJECTED_EMAIL_SUBJECT } from '@messages/emails/user-emails'
-import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
 import {
   MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
@@ -54,24 +51,17 @@ export class ReviewMembershipStatusUseCase {
 
         const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
 
-        try {
-          emailQueue.add(bullmqTokens.tasksNames.email, {
-            to: user.email,
-            subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
-            message: membershipRejectedTextTemplate(emailInfo),
-            html,
-            attachments,
-            logging: {
-              errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
-              context: { userPublicId: user.publicId, userEmail: user.email },
-            },
-          })
-        } catch (error) {
-          logError({
-            error,
-            message: FAILED_TO_ENQUEUE_EMAIL_JOB,
-          })
-        }
+        await sendEmailEnqueued({
+          to: user.email,
+          subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
+          message: membershipRejectedTextTemplate(emailInfo),
+          html,
+          attachments,
+          logging: {
+            errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
+            context: { userPublicId: user.publicId, userEmail: user.email },
+          },
+        })
 
         return user
       }
@@ -88,24 +78,17 @@ export class ReviewMembershipStatusUseCase {
 
         const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
 
-        try {
-          emailQueue.add(bullmqTokens.tasksNames.email, {
-            to: user.email,
-            subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
-            message: membershipApprovedTextTemplate(emailInfo),
-            html,
-            attachments,
-            logging: {
-              errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
-              context: { userPublicId: user.publicId, userEmail: user.email },
-            },
-          })
-        } catch (error) {
-          logError({
-            error,
-            message: FAILED_TO_ENQUEUE_EMAIL_JOB,
-          })
-        }
+        await sendEmailEnqueued({
+          to: user.email,
+          subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
+          message: membershipApprovedTextTemplate(emailInfo),
+          html,
+          attachments,
+          logging: {
+            errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
+            context: { userPublicId: user.publicId, userEmail: user.email },
+          },
+        })
 
         return user
       }

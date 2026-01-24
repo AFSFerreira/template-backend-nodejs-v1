@@ -5,15 +5,11 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { PaymentInfoRepository } from '@repositories/payment-info-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import {
-  MEETING_CREATION_ERROR,
-  MEETING_CREATION_SUCCESSFUL,
-  MEETING_FILES_RESTORATION_ERROR,
-} from '@messages/loggings/models/meeting-loggings'
+import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
@@ -103,24 +99,15 @@ export class CreateMeetingUseCase {
       logError({ error, message: MEETING_CREATION_ERROR })
 
       // Restaurando os arquivos incorretamente persistidos:
-      try {
-        fileQueue.add('move', {
-          type: 'move',
-          oldFilePath: buildMeetingBannerPath(data.bannerImage),
-          newFilePath: buildTempMeetingBannerPath(data.bannerImage),
-        })
+      await moveFileEnqueued({
+        oldFilePath: buildMeetingBannerPath(data.bannerImage),
+        newFilePath: buildTempMeetingBannerPath(data.bannerImage),
+      })
 
-        fileQueue.add('move', {
-          type: 'move',
-          oldFilePath: buildMeetingAgendaPath(data.agenda),
-          newFilePath: buildTempMeetingAgendaPath(data.agenda),
-        })
-      } catch (fileError) {
-        logError({
-          error: fileError,
-          message: MEETING_FILES_RESTORATION_ERROR,
-        })
-      }
+      await moveFileEnqueued({
+        oldFilePath: buildMeetingAgendaPath(data.agenda),
+        newFilePath: buildTempMeetingAgendaPath(data.agenda),
+      })
 
       throw error
     }

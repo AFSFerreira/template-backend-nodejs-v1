@@ -5,15 +5,11 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
-import { emailQueue } from '@jobs/queues/definitions/email-queue'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_DELETION_EMAIL_SUBJECT } from '@messages/emails/user-emails'
-import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { USER_DELETION_EMAIL_SEND_ERROR, USER_DELETION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { UserRoleType } from '@prisma/client'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
@@ -55,40 +51,25 @@ export class DeleteUserUseCase {
       email: deletedUser.email,
     }
 
-    try {
-      const { html, attachments } = deleteUserHtmlTemplate(emailInfo)
+    const { html, attachments } = deleteUserHtmlTemplate(emailInfo)
 
-      emailQueue.add(bullmqTokens.tasksNames.email, {
-        to: deletedUser.email,
-        subject: USER_DELETION_EMAIL_SUBJECT,
-        message: deleteUserTextTemplate(emailInfo),
-        html,
-        attachments,
-        logging: {
-          errorMessage: USER_DELETION_EMAIL_SEND_ERROR,
-          context: { userPublicId: deletedUser.publicId, userEmail: deletedUser.email },
-        },
-      })
-    } catch (error) {
-      logError({
-        error,
-        message: FAILED_TO_ENQUEUE_EMAIL_JOB,
-      })
-    }
+    await sendEmailEnqueued({
+      to: deletedUser.email,
+      subject: USER_DELETION_EMAIL_SUBJECT,
+      message: deleteUserTextTemplate(emailInfo),
+      html,
+      attachments,
+      logging: {
+        errorMessage: USER_DELETION_EMAIL_SEND_ERROR,
+        context: { userPublicId: deletedUser.publicId, userEmail: deletedUser.email },
+      },
+    })
 
     // Enfileirando a remoção da antiga foto de perfil do usuário:
     if (deletedUser.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
-      try {
-        fileQueue.add('delete', {
-          type: 'delete',
-          filePath: buildUserProfileImagePath(deletedUser.profileImage),
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_FILE_JOB,
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildUserProfileImagePath(deletedUser.profileImage),
+      })
     }
 
     logger.info(

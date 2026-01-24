@@ -1,5 +1,6 @@
 import type { DependencyContainer } from 'tsyringe'
 import { registerAcademicPublicationPresenters } from './variants/register-academic-publication-presenters'
+import { registerActivityAreaPresenters } from './variants/register-activity-area-presenters'
 import { registerAddressPresenters } from './variants/register-address-presenters'
 import { registerBlogPresenters } from './variants/register-blog-presenters'
 import { registerDashboardMetricsPresenters } from './variants/register-dashboard-metric-presenters'
@@ -14,7 +15,6 @@ import { registerNewsletterPresenters } from './variants/register-newsletter-pre
 import { registerPaymentInfoPresenters } from './variants/register-payment-info-presenters'
 import { registerSliderImagePresenters } from './variants/register-slider-image-presenters'
 import { registerUserPresenters } from './variants/register-user-presenters'
-import { registerActivityAreaPresenters } from './variants/registeractivity-area-presenters'
 
 export function registerPresenters(container: DependencyContainer) {
   registerUserPresenters(container)

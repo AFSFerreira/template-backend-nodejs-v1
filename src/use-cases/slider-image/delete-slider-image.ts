@@ -4,11 +4,9 @@ import type {
 } from '@custom-types/use-cases/slider-image/delete-slider-image'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { SLIDER_IMAGE_DELETION_SUCCESSFUL } from '@messages/loggings/models/slider-image-loggings'
 import { buildHomePageSliderImagePath } from '@services/builders/paths/build-slider-image-path'
 import { SliderImageNotFoundError } from '@use-cases/errors/slider-image/slider-image-not-found-error'
@@ -37,17 +35,9 @@ export class DeleteSliderImageUseCase {
       return { sliderImage }
     })
 
-    try {
-      fileQueue.add('delete', {
-        type: 'delete',
-        filePath: buildHomePageSliderImagePath(sliderImage.image),
-      })
-    } catch (error) {
-      logError({
-        error,
-        message: FAILED_TO_ENQUEUE_FILE_JOB,
-      })
-    }
+    await deleteFileEnqueued({
+      filePath: buildHomePageSliderImagePath(sliderImage.image),
+    })
 
     logger.info({ sliderImagePublicId: sliderImage.publicId }, SLIDER_IMAGE_DELETION_SUCCESSFUL)
 

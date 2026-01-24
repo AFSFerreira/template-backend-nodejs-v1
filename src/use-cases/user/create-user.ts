@@ -11,15 +11,12 @@ import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { env } from '@env/index'
-import { emailQueue } from '@jobs/queues/definitions/email-queue'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
-import { FAILED_TO_ENQUEUE_EMAIL_JOB } from '@messages/loggings/jobs/queues/emails'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import {
   EMAIL_VERIFICATION_SEND_ERROR,
   SUCCESSFUL_USER_CREATION,
@@ -209,26 +206,19 @@ export class CreateUserUseCase {
         token: emailVerificationToken,
       }
 
-      try {
-        const { html, attachments } = confirmAccountHtmlTemplate(emailInfo)
+      const { html, attachments } = confirmAccountHtmlTemplate(emailInfo)
 
-        emailQueue.add(bullmqTokens.tasksNames.email, {
-          to: createdUser.email,
-          subject: EMAIL_VERIFICATION_SUBJECT,
-          message: confirmAccountTextTemplate(emailInfo),
-          html,
-          attachments,
-          logging: {
-            errorMessage: EMAIL_VERIFICATION_SEND_ERROR,
-            context: { userPublicId: createdUser.publicId, userEmail: createdUser.email },
-          },
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_EMAIL_JOB,
-        })
-      }
+      await sendEmailEnqueued({
+        to: createdUser.email,
+        subject: EMAIL_VERIFICATION_SUBJECT,
+        message: confirmAccountTextTemplate(emailInfo),
+        html,
+        attachments,
+        logging: {
+          errorMessage: EMAIL_VERIFICATION_SEND_ERROR,
+          context: { userPublicId: createdUser.publicId, userEmail: createdUser.email },
+        },
+      })
 
       logger.info({ userPublicId: createdUser.publicId, fullName: createdUser.fullName }, SUCCESSFUL_USER_CREATION)
 
@@ -243,18 +233,10 @@ export class CreateUserUseCase {
 
       // Enfileirando a restauração da imagem incorretamente persistida:
       if (registerUseCaseInput.user.profileImage) {
-        try {
-          fileQueue.add('move', {
-            type: 'move',
-            oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
-            newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
-          })
-        } catch (fileError) {
-          logError({
-            error: fileError,
-            message: FAILED_TO_ENQUEUE_FILE_JOB,
-          })
-        }
+        await moveFileEnqueued({
+          oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+          newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+        })
       }
 
       throw error

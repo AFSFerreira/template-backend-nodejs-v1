@@ -5,11 +5,9 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
-import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FAILED_TO_ENQUEUE_FILE_JOB } from '@messages/loggings/jobs/queues/files'
 import { USER_DELETION_BY_ADMIN_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
@@ -53,17 +51,9 @@ export class DeleteUserByAdminUseCase {
 
     // Enfileirando a remoção da antiga foto de perfil do usuário:
     if (deletedUser.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
-      try {
-        fileQueue.add('delete', {
-          type: 'delete',
-          filePath: buildUserProfileImagePath(deletedUser.profileImage),
-        })
-      } catch (error) {
-        logError({
-          error,
-          message: FAILED_TO_ENQUEUE_FILE_JOB,
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildUserProfileImagePath(deletedUser.profileImage),
+      })
     }
 
     logger.info(
