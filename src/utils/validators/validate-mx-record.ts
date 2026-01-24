@@ -1,6 +1,6 @@
+import { resolveMx } from 'node:dns/promises'
 import { redis } from '@lib/redis'
 import { getMxRecordCached, setMxRecordCached } from '@services/cache/validate-mx-record-cache'
-import { resolveMx } from 'node:dns/promises'
 
 export async function hasValidMxRecord(email: string) {
   const domain = email.split('@')[1]

@@ -1,13 +1,11 @@
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
-import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { env } from '@env/index'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
@@ -26,13 +24,9 @@ import { validateActivityAreas } from '@services/validators/validate-activity-ar
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
-import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserProfileImagePersistenceError } from '@use-cases/errors/user/user-profile-image-persistence-error'
-import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
-import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { ensureExists } from '@utils/validators/ensure'
-import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
@@ -59,8 +53,6 @@ export class UpdateUserUseCase {
   ) {}
 
   async execute({ publicId, data }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
-    const passwordHash = data.user?.password ? await hash(data.user.password, env.HASH_SALT_ROUNDS) : undefined
-
     try {
       if (data.user?.profileImage) {
         ensureExists({
@@ -83,41 +75,15 @@ export class UpdateUserUseCase {
         let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
 
         if (data.user) {
-          if (
-            (data.user.email || data.user.username) &&
-            (data.user.email !== userExists.email || data.user.username !== userExists.username)
-          ) {
-            const userConflictingUpdateInfo = await this.usersRepository.findConflictingUser({
-              email: data.user.email,
-              username: data.user.username,
-            })
+          if (data.user.username && data.user.username !== userExists.username) {
+            const userConflictingUpdateInfo = await this.usersRepository.findByUsername(data.user.username)
 
             if (userConflictingUpdateInfo) {
-              const apiError = getTrueMapping<ApiError>([
-                {
-                  expression: userConflictingUpdateInfo.email === data.user.email,
-                  value: new UserWithSameEmail(),
-                },
-                {
-                  expression: userConflictingUpdateInfo.username === data.user.username,
-                  value: new UserWithSameUsername(),
-                },
-              ])
-
-              if (!apiError) {
-                throw new UserAlreadyExistsError()
-              }
-
-              throw apiError
+              throw new UserWithSameUsername()
             }
           }
 
-          const { password, ...filteredUserUpdateData } = data.user
-
-          userUpdateInfo = {
-            ...filteredUserUpdateData,
-            passwordHash: passwordHash ?? userExists.passwordHash,
-          }
+          userUpdateInfo = data.user
         }
 
         if (data.address) {

@@ -1,6 +1,6 @@
+import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
-import type { IApiResponse } from '@custom-types/responses/api-response'
 
 export const IDENTITY_INFO_MISSING: IApiResponse = {
   status: 400,
