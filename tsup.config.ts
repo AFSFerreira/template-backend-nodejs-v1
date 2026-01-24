@@ -7,6 +7,7 @@ const defaultConfig = {
   format: ["esm"],
   minify: true,
   sourcemap: true,
+  noExternal: ['bancos-brasileiros'],
   swc: {
     logger: {
       error: (msg) => console.error("SWC Error:", msg),
