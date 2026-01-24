@@ -28,6 +28,8 @@ export const USER_DELETION_BY_ADMIN_SUCCESSFUL = 'Conta de usuário deletada por
 
 export const RESET_PASSWORD_SUCCESSFUL = 'Pedido de restauração de senha bem sucedida'
 
+export const PASSWORD_UPDATED_SUCCESSFULLY = 'Senha atualizada com sucesso'
+
 export const EMAIL_VERIFICATION_SUCCESSFUL = 'Verificação de e-mail realizada com sucesso'
 
 export const EMAIL_VERIFICATION_SEND_ERROR = 'Falha ao enviar e-mail de confirmação de conta'

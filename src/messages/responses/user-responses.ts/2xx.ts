@@ -24,6 +24,14 @@ export const PASSWORD_RESET_SUCCESSFUL: IApiResponse = {
   },
 }
 
+export const PASSWORD_UPDATED_SUCCESSFULLY: IApiResponse = {
+  status: 200,
+  body: {
+    code: 'PASSWORD_UPDATED_SUCCESSFULLY',
+    message: 'Senha atualizada com sucesso!',
+  },
+}
+
 export const EMAIL_VERIFICATION_SUCCESSFUL: IApiResponse = {
   status: 200,
   body: {

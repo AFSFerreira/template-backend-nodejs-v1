@@ -58,6 +58,14 @@ export const INVALID_CREDENTIALS: IApiResponse = {
   },
 }
 
+export const INCORRECT_OLD_PASSWORD: IApiResponse = {
+  status: 401,
+  body: {
+    code: 'INCORRECT_OLD_PASSWORD',
+    message: 'A senha antiga fornecida está incorreta',
+  },
+}
+
 export const INVALID_OR_EXPIRED_TOKEN: IApiResponse = {
   status: 401,
   body: {

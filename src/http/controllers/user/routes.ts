@@ -1,14 +1,14 @@
-import type { FastifyInstance } from 'fastify'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { rateLimit } from '@utils/http/rate-limit'
+import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate.controller'
 import { checkAvailability } from './check-availability.controller'
 import { createUser } from './create-user.controller'
-import { deleteUser } from './delete-user.controller'
 import { deleteUserByAdmin } from './delete-user-by-admin.controller'
+import { deleteUser } from './delete-user.controller'
 import { exportUsersData } from './export-users-data.controller'
 import { findUserByPublicId } from './find-user-by-public-id.controller'
 import { forgotPassword } from './forgot-password.controller'
@@ -20,9 +20,10 @@ import { refreshToken } from './refresh-token.controller'
 import { resetPassword } from './reset-password.controller'
 import { reviewMembershipStatus } from './review-membership-status.controller'
 import { transferAdminRole } from './transfer-admin-role.controller'
-import { updateUser } from './update-user.controller'
+import { updatePassword } from './update-password.controller'
 import { updateUserByPublicId } from './update-user-by-public-id.controller'
 import { updateUserPermissions } from './update-user-permissions.controller'
+import { updateUser } from './update-user.controller'
 import { uploadProfileImage } from './upload-profile-image.controller'
 import { verifyEmail } from './verify-email.controller'
 
@@ -106,6 +107,14 @@ export async function userRoutes(app: FastifyInstance) {
 
   // PATCH
   app.patch('/reset-password', resetPassword)
+  app.patch(
+    '/update-password',
+    {
+      ...rateLimit({ max: 300, timeWindow: '1h' }),
+      preHandler: [verifyJwt],
+    },
+    updatePassword,
+  )
   app.patch(
     '/me',
     {
