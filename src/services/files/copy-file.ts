@@ -1,19 +1,26 @@
 import type { ICopyFile } from '@custom-types/services/files/copy-file'
 import type { FileInfo } from '@custom-types/services/files/file-info'
 import path from 'node:path'
-import { deleteFile } from '@utils/files/delete-file'
-import { folderExists } from '@utils/files/folder-exists'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import fs from 'fs-extra'
+import fs, { ensureDir } from 'fs-extra'
+import { logError } from '@lib/logger/helpers/log-error'
+import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import { logger } from '@lib/logger'
+import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
+import { deleteFile } from '@utils/files/delete-file'
 
-export async function copyFile({ sourceFilePath, newFilename, destinationFolderPath }: ICopyFile): Promise<FileInfo> {
+export async function copyFile({ sourceFilePath, newFilename, destinationFolderPath, buildShard }: ICopyFile): Promise<FileInfo> {
   const filename = `${newFilename ?? generateFileHash()}${path.extname(sourceFilePath)}`
-  const finalFilePath = path.resolve(destinationFolderPath, filename)
+  const fileFolderShard = buildShard ? buildShardFileFolder(filename) : ''
+  const finalFilePath = path.resolve(destinationFolderPath, fileFolderShard, filename)
 
   const partialReturnData = { finalFilePath, filename }
 
-  const baseFolderExists = await folderExists(destinationFolderPath)
-  if (!baseFolderExists) {
+  try {
+    await ensureDir(path.join(destinationFolderPath, fileFolderShard))
+  } catch (error) {
+    logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
+
     return { ...partialReturnData, success: false }
   }
 

@@ -69,6 +69,7 @@ export class CreateDraftCopyBlogUseCase {
       // Cria um map para transformar cada link de imagem antigo para o novo:
       await Promise.all(
         Array.from(blogImages).map(async (imageLink) => {
+          logger.fatal(imageLink)
           const imageName = ensureExists({
             value: sanitizeUrlFilename(imageLink),
             error: new BlogContentCopyError(),
@@ -105,6 +106,7 @@ export class CreateDraftCopyBlogUseCase {
       const newBannerImage = await copyFile({
         sourceFilePath: buildBlogBannerPath(blog.bannerImage),
         destinationFolderPath: BLOG_BANNERS_PATH,
+        buildShard: true,
       })
 
       if (!newBannerImage.success) {

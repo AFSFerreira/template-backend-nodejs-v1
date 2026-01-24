@@ -61,6 +61,8 @@ export class UpdateBlogUseCase {
   async execute({ publicId, userPublicId, body }: UpdateBlogUseCaseRequest): Promise<UpdateBlogUseCaseResponse> {
     const updateData: Prisma.BlogUpdateInput = {}
 
+    let bannerImage: string | undefined
+
     let newImages: Array<string> | undefined
     let removedImages: Array<string> | undefined
 
@@ -75,6 +77,8 @@ export class UpdateBlogUseCase {
           value: await this.blogsRepository.findByPublicId(publicId),
           error: new BlogNotFoundError(),
         })
+
+        bannerImage = blog.bannerImage
 
         // Se o usuário é um produtor de conteúdo e o blog não for de autoria dele:
         const userIsContentProducerAndIsNotAuthor =
@@ -167,7 +171,7 @@ export class UpdateBlogUseCase {
           updateData.searchContent = searchContent
         }
 
-        if (body.bannerImage) {
+        if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== blog.bannerImage) {
           const newBannerImage = ensureExists({
             value: sanitizeUrlFilename(body.bannerImage),
             error: new BlogInvalidBannerLinkError(),
@@ -223,7 +227,7 @@ export class UpdateBlogUseCase {
       })
 
       // Enfileirando a remoção da imagem de banner antiga somente após update bem-sucedido:
-      if (body.bannerImage && body.bannerImage !== blog.bannerImage) {
+      if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== blog.bannerImage) {
         try {
           fileQueue.add('delete', {
             type: 'delete',
@@ -276,7 +280,7 @@ export class UpdateBlogUseCase {
     } catch (error) {
       logError({ error, message: BLOG_UPDATE_ERROR })
 
-      if (body.bannerImage) {
+      if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== bannerImage) {
         // Restaurando a imagen de banner de blog previamente persistida:
         try {
           fileQueue.add('move', {
