@@ -3,12 +3,12 @@ import type {
   IRemoveInstitutionalInfoHTMLCache,
   ISetInstitutionalInfoHTMLCache,
 } from '@custom-types/services/cache/institutional-info-html-cache'
-import { INSTITUTIONAL_INFO_HTML_CACHE_TTL } from '@constants/timing-constants'
+import { INSTITUTIONAL_INFO_HTML_CACHE_TTL } from '@constants/cache-constants'
 import { logger } from '@lib/logger'
 import {
   GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO,
   SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO,
-} from '@messages/loggings/models/institutional-info-loggings'
+} from '@messages/loggings/services/cache'
 
 const generateInstitutionalInfoHtmlKey = (institutionalInfoId: number) =>
   `cache:institutionalInfo:${institutionalInfoId}:aboutDescriptionHtml`
@@ -16,6 +16,11 @@ const generateInstitutionalInfoHtmlKey = (institutionalInfoId: number) =>
 export async function getInstitutionalInfoHTMLCached({ institutionalInfoId, redis }: IGetInstitutionalInfoHTMLCached) {
   const key = generateInstitutionalInfoHtmlKey(institutionalInfoId)
   const htmlCached: string | null = await redis.get(key)
+
+  if (!htmlCached) {
+    // Reseta o TTL do cache:
+    await redis.pexpire(key, INSTITUTIONAL_INFO_HTML_CACHE_TTL)
+  }
 
   logger.info({ key }, GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO)
 

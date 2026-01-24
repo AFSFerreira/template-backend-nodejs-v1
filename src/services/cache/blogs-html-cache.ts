@@ -3,15 +3,20 @@ import type {
   IRemoveBlogHTMLCache,
   ISetBlogHTMLCache,
 } from '@custom-types/services/cache/blogs-html-cache'
-import { BLOG_HTML_CACHE_TTL } from '@constants/timing-constants'
+import { BLOG_HTML_CACHE_TTL } from '@constants/cache-constants'
 import { logger } from '@lib/logger'
-import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/models/blog-loggings'
+import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/services/cache'
 
 const generateBlogHtmlKey = (blogId: number) => `cache:blog:${blogId}:contentHtml`
 
 export async function getBlogHTMLCached({ blogId, redis }: IGetBlogHTMLCached) {
   const key = generateBlogHtmlKey(blogId)
   const htmlCached: string | null = await redis.get(key)
+
+  if (htmlCached) {
+    // Reseta o TTL do cache:
+    await redis.pexpire(key, BLOG_HTML_CACHE_TTL)
+  }
 
   logger.info({ key }, GET_BLOG_HTML_CACHED_INFO)
 
