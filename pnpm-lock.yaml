@@ -53,6 +53,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: 3.16.0
         version: 3.16.0
+      bancos-brasileiros:
+        specifier: 6.2.143
+        version: 6.2.143
       bcryptjs:
         specifier: 3.0.3
         version: 3.0.3
@@ -2267,6 +2270,9 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  bancos-brasileiros@6.2.143:
+    resolution: {integrity: sha512-ROMnWmb4TmajYo6jkvGrGYzfdeooOPGi5jMrBkMP2IaWHbMfeLY3IGDC79xcc8IOAR0iCw2buJDINyrRPdLplg==}
 
   baseline-browser-mapping@2.9.11:
     resolution: {integrity: sha512-Sg0xJUNDU1sJNGdfGWhVHX0kkZ+HWcvmVymJbj6NSgZZmW/8S9Y2HQ5euytnIgakgxN6papOAWiwDo1ctFDcoQ==}
@@ -7045,6 +7051,8 @@ snapshots:
   aws-ssl-profiles@1.1.2: {}
 
   balanced-match@1.0.2: {}
+
+  bancos-brasileiros@6.2.143: {}
 
   baseline-browser-mapping@2.9.11: {}
 

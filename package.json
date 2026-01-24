@@ -102,6 +102,7 @@
     "@tiptap/extension-text-align": "3.16.0",
     "@tiptap/html": "3.16.0",
     "@tiptap/starter-kit": "3.16.0",
+    "bancos-brasileiros": "6.2.143",
     "bcryptjs": "3.0.3",
     "bullmq": "5.66.7",
     "cpf-cnpj-validator": "1.0.3",
