@@ -3,11 +3,8 @@ import type { HTTPMeeting, MeetingDefaultPresenterInput } from '@custom-types/ht
 
 export class MeetingDefaultPresenter implements IPresenterStrategy<MeetingDefaultPresenterInput, HTTPMeeting> {
   public toHTTP(input: MeetingDefaultPresenterInput): HTTPMeeting {
-    const { id, publicId, createdAt, updatedAt, location, participantsCount, ...filteredInfo } = input
-
     return {
-      ...filteredInfo,
-      id: publicId,
+      id: input.publicId,
       title: input.title,
       bannerImage: input.bannerImage,
       description: input.description,

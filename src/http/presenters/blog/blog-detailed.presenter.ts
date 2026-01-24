@@ -3,22 +3,12 @@ import type { BlogDetailedPresenterInput, HTTPBlogDetailed } from '@custom-types
 
 export class BlogDetailedPresenter implements IPresenterStrategy<BlogDetailedPresenterInput, HTTPBlogDetailed> {
   public toHTTP(input: BlogDetailedPresenterInput): HTTPBlogDetailed {
-    const {
-      id,
-      publicId,
-      content,
-      titleUnaccent,
-      userId,
-      searchContent,
-      Subcategories,
-      User,
-      editorialStatus,
-      ...filteredBlog
-    } = input
-
     return {
-      ...filteredBlog,
       id: input.publicId,
+      accessCount: input.accessCount,
+      createdAt: input.createdAt,
+      updatedAt: input.updatedAt,
+      title: input.title,
       editorialStatus: input.editorialStatus,
       bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,

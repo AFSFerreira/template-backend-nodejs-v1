@@ -8,6 +8,11 @@ export class UsersMetricsPresenter
   implements IPresenterStrategy<DashboardUsersMetricsPresenterInput, HTTPDashboardUsersMetrics>
 {
   public toHTTP(input: DashboardUsersMetricsPresenterInput): HTTPDashboardUsersMetrics {
-    return input
+    return {
+      totalActiveUsers: input.totalActiveUsers,
+      totalInactiveUsers: input.totalInactiveUsers,
+      totalPendingUsers: input.totalPendingUsers,
+      totalUsers: input.totalUsers,
+    }
   }
 }

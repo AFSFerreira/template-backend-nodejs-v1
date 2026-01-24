@@ -9,7 +9,7 @@ export class DashboardNewslettersMetricsPresenter
 {
   public toHTTP(input: DashboardNewslettersMetricsPresenterInput): HTTPDashboardNewslettersMetrics {
     return {
-      ...input,
+      totalNewsletters: input.totalNewsletters,
     }
   }
 }

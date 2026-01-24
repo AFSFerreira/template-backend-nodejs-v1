@@ -8,21 +8,12 @@ export class BlogDetailedWithContentPresenter
   implements IPresenterStrategy<BlogDetailedWithContentPresenterInput, HTTPBlogDetailedWithContent>
 {
   public toHTTP(input: BlogDetailedWithContentPresenterInput): HTTPBlogDetailedWithContent {
-    const {
-      id,
-      publicId,
-      titleUnaccent,
-      userId,
-      searchContent,
-      Subcategories,
-      User,
-      editorialStatus,
-      ...filteredBlog
-    } = input
-
     return {
-      ...filteredBlog,
       id: input.publicId,
+      accessCount: input.accessCount,
+      createdAt: input.createdAt,
+      updatedAt: input.updatedAt,
+      title: input.title,
       editorialStatus: input.editorialStatus,
       bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,

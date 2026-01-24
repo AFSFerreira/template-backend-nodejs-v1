@@ -3,8 +3,13 @@ import type { AddressDefaultPresenterInput, HTTPAddress } from '@custom-types/ht
 
 export class AddressDefaultPresenter implements IPresenterStrategy<AddressDefaultPresenterInput, HTTPAddress> {
   public toHTTP(input: AddressDefaultPresenterInput): HTTPAddress {
-    const { id, userId, createdAt, ...filteredInfo } = input
-
-    return filteredInfo
+    return {
+      zip: input.zip,
+      number: input.number,
+      complement: input.complement,
+      street: input.street,
+      district: input.district,
+      city: input.city,
+    }
   }
 }
