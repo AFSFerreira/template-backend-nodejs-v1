@@ -122,6 +122,7 @@
     "orcid-utils": "1.2.3",
     "pg": "8.17.2",
     "pino": "10.2.1",
+    "pixkey": "2.0.1",
     "reflect-metadata": "0.2.2",
     "sharp": "0.34.5",
     "slash": "5.1.0",
