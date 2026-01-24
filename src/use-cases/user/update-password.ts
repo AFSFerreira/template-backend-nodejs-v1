@@ -2,12 +2,12 @@ import type {
   UpdatePasswordUseCaseRequest,
   UpdatePasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/update-password'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UsersRepository } from '@repositories/users-repository'
 import { env } from '@env/index'
 import { logger } from '@lib/logger'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
-import type { UsersRepository } from '@repositories/users-repository'
 import { IncorrectOldPasswordError } from '@use-cases/errors/user/incorrect-old-password-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'

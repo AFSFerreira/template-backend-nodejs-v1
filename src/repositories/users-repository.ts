@@ -1,11 +1,13 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/user-simplified'
 import type { ChangeUserPasswordQuery } from '@custom-types/repository/prisma/user/change-user-password-query'
+import type { ConfirmEmailChangeQuery } from '@custom-types/repository/prisma/user/confirm-email-change-query'
 import type { CreateUserQuery } from '@custom-types/repository/prisma/user/create-user-query'
 import type { FindByIdentityDocumentQuery } from '@custom-types/repository/prisma/user/find-by-identity-document-query'
 import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
 import type { ListAllUsersDetailedQuery } from '@custom-types/repository/prisma/user/list-all-users-detailed-query'
 import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
+import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/user/set-email-change-token-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
@@ -41,4 +43,6 @@ export interface UsersRepository {
   confirmEmailVerification: (id: number) => Promise<User>
   changePassword: (query: ChangeUserPasswordQuery) => Promise<User>
   setPasswordToken: (query: SetPasswordTokenQuery) => Promise<User>
+  setEmailChangeToken: (query: SetEmailChangeTokenQuery) => Promise<User>
+  confirmEmailChange: (query: ConfirmEmailChangeQuery) => Promise<User>
 }

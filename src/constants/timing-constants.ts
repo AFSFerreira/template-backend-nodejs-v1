@@ -2,6 +2,7 @@ import ms from 'ms'
 
 export const RECOVERY_PASSWORD_EXPIRATION_TIME = ms('15m')
 export const EMAIL_VALIDATION_EXPIRATION_TIME = ms('5d')
+export const EMAIL_CHANGE_EXPIRATION_TIME = ms('1d')
 
 export const CORS_MAX_AGE = ms('2h') / 1000
 

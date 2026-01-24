@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["views"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -73,9 +72,10 @@ model User {
   recoveryPasswordTokenHash      String?   @unique @map("recovery_password_token")
   recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at") @db.Timestamptz(3)
 
-  emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
+  newEmail                        String?   @map("new_email")
   emailVerificationTokenHash      String?   @unique @map("email_verification_token")
   emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at") @db.Timestamptz(3)
+  emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
 
   institutionId Int?         @map("institution_id")
   Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)

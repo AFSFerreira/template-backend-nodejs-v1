@@ -32,6 +32,22 @@ export const PASSWORD_UPDATED_SUCCESSFULLY: IApiResponse = {
   },
 }
 
+export const EMAIL_CHANGE_REQUESTED: IApiResponse = {
+  status: 200,
+  body: {
+    code: 'EMAIL_CHANGE_REQUESTED',
+    message: 'Solicitação de alteração de e-mail enviada! Verifique o novo e-mail para confirmar a alteração.',
+  },
+}
+
+export const EMAIL_UPDATED_SUCCESSFULLY: IApiResponse = {
+  status: 200,
+  body: {
+    code: 'EMAIL_UPDATED_SUCCESSFULLY',
+    message: 'E-mail atualizado com sucesso!',
+  },
+}
+
 export const EMAIL_VERIFICATION_SUCCESSFUL: IApiResponse = {
   status: 200,
   body: {

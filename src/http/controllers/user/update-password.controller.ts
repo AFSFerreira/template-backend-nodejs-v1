@@ -1,8 +1,8 @@
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/responses/user-responses.ts/2xx'
 import { updatePasswordBodySchema } from '@schemas/user/update-password-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdatePasswordUseCase } from '@use-cases/user/update-password'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function updatePassword(request: FastifyRequest, reply: FastifyReply) {

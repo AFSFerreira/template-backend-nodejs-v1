@@ -1,14 +1,15 @@
+import type { FastifyInstance } from 'fastify'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { rateLimit } from '@utils/http/rate-limit'
-import type { FastifyInstance } from 'fastify'
 import { authenticate } from './authenticate.controller'
 import { checkAvailability } from './check-availability.controller'
+import { confirmEmailChange } from './confirm-email-change.controller'
 import { createUser } from './create-user.controller'
-import { deleteUserByAdmin } from './delete-user-by-admin.controller'
 import { deleteUser } from './delete-user.controller'
+import { deleteUserByAdmin } from './delete-user-by-admin.controller'
 import { exportUsersData } from './export-users-data.controller'
 import { findUserByPublicId } from './find-user-by-public-id.controller'
 import { forgotPassword } from './forgot-password.controller'
@@ -17,13 +18,14 @@ import { getAllUsersSimplified } from './get-all-users-simplified.controller'
 import { getUserProfile } from './get-user-profile.controller'
 import { logout } from './logout.controller'
 import { refreshToken } from './refresh-token.controller'
+import { requestEmailChange } from './request-email-change.controller'
 import { resetPassword } from './reset-password.controller'
 import { reviewMembershipStatus } from './review-membership-status.controller'
 import { transferAdminRole } from './transfer-admin-role.controller'
 import { updatePassword } from './update-password.controller'
+import { updateUser } from './update-user.controller'
 import { updateUserByPublicId } from './update-user-by-public-id.controller'
 import { updateUserPermissions } from './update-user-permissions.controller'
-import { updateUser } from './update-user.controller'
 import { uploadProfileImage } from './upload-profile-image.controller'
 import { verifyEmail } from './verify-email.controller'
 
@@ -114,6 +116,21 @@ export async function userRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt],
     },
     updatePassword,
+  )
+  app.patch(
+    '/request-email-change',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1h' }),
+      preHandler: [verifyJwt],
+    },
+    requestEmailChange,
+  )
+  app.patch(
+    '/confirm-email-change',
+    {
+      ...rateLimit({ max: 150, timeWindow: '1h' }),
+    },
+    confirmEmailChange,
   )
   app.patch(
     '/me',

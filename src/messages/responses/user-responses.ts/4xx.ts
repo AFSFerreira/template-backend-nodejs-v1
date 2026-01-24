@@ -66,6 +66,22 @@ export const INCORRECT_OLD_PASSWORD: IApiResponse = {
   },
 }
 
+export const EMAILS_DO_NOT_MATCH: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'EMAILS_DO_NOT_MATCH',
+    message: 'O e-mail antigo fornecido não corresponde ao e-mail atual da conta',
+  },
+}
+
+export const EMAIL_CHANGE_NOT_REQUESTED: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'EMAIL_CHANGE_NOT_REQUESTED',
+    message: 'Não há solicitação de alteração de e-mail pendente para este usuário',
+  },
+}
+
 export const INVALID_OR_EXPIRED_TOKEN: IApiResponse = {
   status: 401,
   body: {

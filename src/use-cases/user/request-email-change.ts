@@ -1,0 +1,110 @@
+import type {
+  RequestEmailChangeUseCaseRequest,
+  RequestEmailChangeUseCaseResponse,
+} from '@custom-types/use-cases/user/request-email-change'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UsersRepository } from '@repositories/users-repository'
+import { EMAIL_CHANGE_EXPIRATION_TIME } from '@constants/timing-constants'
+import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
+import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
+import { logger } from '@lib/logger'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { EMAIL_CHANGE_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
+import {
+  EMAIL_CHANGE_EMAIL_SEND_ERROR,
+  EMAIL_CHANGE_REQUESTED_SUCCESSFULLY,
+} from '@messages/loggings/models/user-loggings'
+import { changeEmailHtmlTemplate } from '@templates/user/change-email/change-email-html'
+import { changeEmailTextTemplate } from '@templates/user/change-email/change-email-text'
+import { EmailsDoNotMatchError } from '@use-cases/errors/user/emails-do-not-match-error'
+import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
+import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
+import { generateToken } from '@utils/tokens/generate-token'
+import { hashToken } from '@utils/tokens/hash-token'
+import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
+import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
+import { inject, injectable } from 'tsyringe'
+
+@injectable()
+export class RequestEmailChangeUseCase {
+  constructor(
+    @inject(tsyringeTokens.repositories.users)
+    private readonly usersRepository: UsersRepository,
+
+    @inject(tsyringeTokens.infra.database)
+    private readonly dbContext: DatabaseContext,
+  ) {}
+
+  async execute({
+    userPublicId,
+    oldEmail,
+    newEmail,
+  }: RequestEmailChangeUseCaseRequest): Promise<RequestEmailChangeUseCaseResponse> {
+    ensureExists({
+      value: await hasValidMxRecord(newEmail),
+      error: new InvalidEmailDomainError(),
+    })
+
+    const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
+    const emailVerificationTokenHash = hashToken(emailVerificationToken)
+    const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_CHANGE_EXPIRATION_TIME)
+
+    const user = await this.dbContext.runInTransaction(async () => {
+      const userFound = ensureExists({
+        value: await this.usersRepository.findByPublicId(userPublicId),
+        error: new UserNotFoundError(),
+      })
+
+      if (userFound.email !== oldEmail) {
+        throw new EmailsDoNotMatchError()
+      }
+
+      ensureNotExists({
+        value: await this.usersRepository.findByEmail(newEmail),
+        error: new UserWithSameEmail(),
+      })
+
+      const updatedUser = await this.usersRepository.setEmailChangeToken({
+        id: userFound.id,
+        newEmail,
+        emailVerificationTokenHash,
+        emailVerificationTokenExpiresAt,
+      })
+
+      return updatedUser
+    })
+
+    const emailInfo = {
+      fullName: user.fullName,
+      oldEmail: user.email,
+      newEmail,
+      token: emailVerificationToken,
+    }
+
+    const { html, attachments } = changeEmailHtmlTemplate(emailInfo)
+
+    await sendEmailEnqueued({
+      to: newEmail,
+      subject: EMAIL_CHANGE_VERIFICATION_SUBJECT,
+      message: changeEmailTextTemplate(emailInfo),
+      html,
+      attachments,
+      logging: {
+        errorMessage: EMAIL_CHANGE_EMAIL_SEND_ERROR,
+        context: { userPublicId: user.publicId, newEmail },
+      },
+    })
+
+    logger.info(
+      {
+        userPublicId: user.publicId,
+        oldEmail: user.email,
+        newEmail,
+      },
+      EMAIL_CHANGE_REQUESTED_SUCCESSFULLY,
+    )
+
+    return {}
+  }
+}

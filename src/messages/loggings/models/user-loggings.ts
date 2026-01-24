@@ -30,6 +30,12 @@ export const RESET_PASSWORD_SUCCESSFUL = 'Pedido de restauração de senha bem s
 
 export const PASSWORD_UPDATED_SUCCESSFULLY = 'Senha atualizada com sucesso'
 
+export const EMAIL_CHANGE_REQUESTED_SUCCESSFULLY = 'Solicitação de alteração de e-mail realizada com sucesso'
+
+export const EMAIL_CHANGE_EMAIL_SEND_ERROR = 'Falha ao enviar e-mail de confirmação de alteração de e-mail'
+
+export const EMAIL_UPDATED_SUCCESSFULLY = 'E-mail atualizado com sucesso'
+
 export const EMAIL_VERIFICATION_SUCCESSFUL = 'Verificação de e-mail realizada com sucesso'
 
 export const EMAIL_VERIFICATION_SEND_ERROR = 'Falha ao enviar e-mail de confirmação de conta'

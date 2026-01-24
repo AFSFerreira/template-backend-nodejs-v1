@@ -79,6 +79,7 @@ CREATE TABLE "public"."users" (
     "sub_activity_area_id" INTEGER,
     "institution_id" INTEGER,
     "email_verification_token" TEXT,
+    "new_email" TEXT,
     "email_verification_token_expires_at" TIMESTAMPTZ(3),
     "email_verified_at" TIMESTAMPTZ(3),
 
