@@ -1,7 +1,7 @@
 import type { IRegisterBlogViews } from '@custom-types/services/cache/register-blog-views'
-import { BLOG_IP_VIEW_TTL } from '@constants/timing-constants'
+import { BLOG_IP_VIEW_TTL } from '@constants/cache-constants'
 import { logger } from '@lib/logger'
-import { BLOG_VISUALIZATION_CACHED } from '@messages/loggings/models/blog-loggings'
+import { BLOG_VISUALIZATION_CACHED } from '@messages/loggings/services/cache'
 
 export async function registerBlogViews({ blogId, ip, redis }: IRegisterBlogViews) {
   const key = `view:blog:${blogId}:userIp:${ip}`
