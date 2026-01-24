@@ -1,4 +1,4 @@
-import type { EmailJobData } from '@custom-types/jobs/queues/definitions/email-queue'
+import type { EmailEnqueuedInput } from '@custom-types/jobs/queues/facades/email-queue-facade'
 import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
@@ -9,7 +9,7 @@ import {
 } from '@messages/loggings/jobs/queues/emails'
 import { emailQueue } from '../definitions/email-queue'
 
-export async function sendEmailEnqueued(input: EmailJobData) {
+export async function sendEmailEnqueued(input: EmailEnqueuedInput) {
   logger.info(ENQUEUING_EMAIL_JOB)
 
   try {

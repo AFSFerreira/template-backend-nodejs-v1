@@ -1,8 +1,8 @@
 import type {
-  CopyFileOperation,
-  DeleteFileOperation,
-  MoveFileOperation,
-} from '@custom-types/jobs/queues/definitions/file-processor'
+  CopyFileEnqueuedInput,
+  DeleteFileEnqueuedInput,
+  MoveFileEnqueuedInput,
+} from '@custom-types/jobs/queues/facades/file-queue-facade'
 import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
@@ -17,7 +17,7 @@ import {
 } from '@messages/loggings/jobs/queues/files'
 import { fileQueue } from '../definitions/file-queue'
 
-export async function deleteFileEnqueued(input: Omit<DeleteFileOperation, 'type'>) {
+export async function deleteFileEnqueued(input: DeleteFileEnqueuedInput) {
   logger.info(ENQUEUING_DELETE_FILE_JOB)
 
   try {
@@ -44,7 +44,7 @@ export async function deleteFileEnqueued(input: Omit<DeleteFileOperation, 'type'
   }
 }
 
-export async function moveFileEnqueued(input: Omit<MoveFileOperation, 'type'>) {
+export async function moveFileEnqueued(input: MoveFileEnqueuedInput) {
   logger.info(ENQUEUING_MOVE_FILE_JOB)
 
   try {
@@ -71,7 +71,7 @@ export async function moveFileEnqueued(input: Omit<MoveFileOperation, 'type'>) {
   }
 }
 
-export async function copyFileEnqueued(input: Omit<CopyFileOperation, 'type'>) {
+export async function copyFileEnqueued(input: CopyFileEnqueuedInput) {
   logger.info(ENQUEUING_COPY_FILE_JOB)
 
   try {
