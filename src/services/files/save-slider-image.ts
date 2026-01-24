@@ -5,11 +5,12 @@ import { pipeline } from 'node:stream/promises'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { folderExists } from '@utils/files/folder-exists'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import { createWriteStream } from 'fs-extra'
+import { createWriteStream, ensureDir } from 'fs-extra'
 import sharp from 'sharp'
+import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import { logError } from '@lib/logger/helpers/log-error'
 
 export async function saveSliderImage({ filePart, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
   const finalName = `${generateFileHash()}.avif`
@@ -19,8 +20,11 @@ export async function saveSliderImage({ filePart, folderPath, options }: ISaveSl
 
   const fileAreadyExists = await fileExists(finalImagePath)
 
-  const baseFolderExists = await folderExists(folderPath)
-  if (!baseFolderExists) {
+  try {
+    await ensureDir(folderPath)
+  } catch (error) {
+    logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
+
     return { ...partialReturnData, success: false }
   }
 

@@ -6,9 +6,11 @@ import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { folderExists } from '@utils/files/folder-exists'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import sharp from 'sharp'
+import { ensureDir } from 'fs-extra'
+import { logError } from '@lib/logger/helpers/log-error'
+import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 
 export async function saveCompressedImage({
   filePart,
@@ -34,8 +36,11 @@ export async function saveCompressedImage({
     return { ...partialReturnData, success: true }
   }
 
-  const baseFolderExists = await folderExists(folderPath)
-  if (!baseFolderExists) {
+  try {
+    await ensureDir(folderPath)
+  } catch (error) {
+    logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
+
     return { ...partialReturnData, success: false }
   }
 

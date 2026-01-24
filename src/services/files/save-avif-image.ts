@@ -6,10 +6,12 @@ import { pipeline } from 'node:stream/promises'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { folderExists } from '@utils/files/folder-exists'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import sharp from 'sharp'
+import { ensureDir } from 'fs-extra'
+import { logError } from '@lib/logger/helpers/log-error'
+import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 
 export async function saveAvifImage({
   filePart,
@@ -29,8 +31,11 @@ export async function saveAvifImage({
     return { ...partialReturnData, success: true }
   }
 
-  const baseFolderExists = await folderExists(folderPath)
-  if (!baseFolderExists) {
+  try {
+    await ensureDir(folderPath)
+  } catch (error) {
+    logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
+
     return { ...partialReturnData, success: false }
   }
 
