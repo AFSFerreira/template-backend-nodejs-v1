@@ -1,6 +1,6 @@
-import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
 export const IDENTITY_INFO_MISSING: IApiResponse = {
   status: 400,
@@ -23,6 +23,22 @@ export const INVALID_AREA_OF_ACTIVITY: IApiResponse = {
   body: {
     code: 'INVALID_AREA_OF_ACTIVITY',
     message: 'Área de atuação inválida',
+  },
+}
+
+export const INVALID_EMAIL_DOMAIN: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'INVALID_EMAIL_DOMAIN',
+    message: 'O domínio do e-mail fornecido é inválido ou não possui registros MX válidos',
+  },
+}
+
+export const INVALID_SECONDARY_EMAIL_DOMAIN: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'INVALID_SECONDARY_EMAIL_DOMAIN',
+    message: 'O domínio do e-mail secundário fornecido é inválido ou não possui registros MX válidos',
   },
 }
 

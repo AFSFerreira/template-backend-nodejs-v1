@@ -1,3 +1,5 @@
+import { redis } from '@lib/redis'
+import { getMxRecordCached, setMxRecordCached } from '@services/cache/validate-mx-record-cache'
 import { resolveMx } from 'node:dns/promises'
 
 export async function hasValidMxRecord(email: string) {
@@ -5,10 +7,24 @@ export async function hasValidMxRecord(email: string) {
 
   if (!domain) return false
 
+  const mxRecordCached = await getMxRecordCached({
+    mxRecord: domain,
+    redis,
+  })
+
+  if (mxRecordCached) return true
+
   try {
     const records = await resolveMx(domain)
 
     const isMxValid = records && records.length > 0
+
+    if (isMxValid) {
+      setMxRecordCached({
+        mxRecord: domain,
+        redis,
+      })
+    }
 
     return isMxValid
   } catch (_error) {

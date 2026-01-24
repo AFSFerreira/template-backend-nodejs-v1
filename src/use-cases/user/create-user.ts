@@ -1,20 +1,15 @@
-import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
-import type { CreateUserUseCaseRequest, CreateUserUseCaseResponse } from '@custom-types/use-cases/user/create-user'
-import type { ApiError } from '@errors/api-error'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { AddressCountryRepository } from '@repositories/address-countries-repository'
-import type { AddressStatesRepository } from '@repositories/address-states-repository'
-import type { InstitutionsRepository } from '@repositories/institutions-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
+import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
+import type { CreateUserUseCaseRequest, CreateUserUseCaseResponse } from '@custom-types/use-cases/user/create-user'
 import { env } from '@env/index'
+import type { ApiError } from '@errors/api-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
 import {
@@ -23,6 +18,11 @@ import {
   USER_CREATION_ERROR,
 } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { AddressCountryRepository } from '@repositories/address-countries-repository'
+import type { AddressStatesRepository } from '@repositories/address-states-repository'
+import type { InstitutionsRepository } from '@repositories/institutions-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
@@ -36,7 +36,9 @@ import { validateInstitutionName } from '@services/validators/validate-instituti
 import { confirmAccountHtmlTemplate } from '@templates/user/confirm-account/confirm-account-html'
 import { confirmAccountTextTemplate } from '@templates/user/confirm-account/confirm-account-text'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
+import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
+import { InvalidSecondaryEmailDomainError } from '@use-cases/errors/user/invalid-secondary-email-domain-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
@@ -46,6 +48,7 @@ import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { generateToken } from '@utils/tokens/generate-token'
 import { hashToken } from '@utils/tokens/hash-token'
 import { ensureExists } from '@utils/validators/ensure'
+import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
@@ -73,6 +76,18 @@ export class CreateUserUseCase {
   ) {}
 
   async execute(registerUseCaseInput: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
+    ensureExists({
+      value: await hasValidMxRecord(registerUseCaseInput.user.email),
+      error: new InvalidEmailDomainError(),
+    })
+
+    if (registerUseCaseInput.user.secondaryEmail) {
+      ensureExists({
+        value: await hasValidMxRecord(registerUseCaseInput.user.secondaryEmail),
+        error: new InvalidSecondaryEmailDomainError(),
+      })
+    }
+
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
     const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
