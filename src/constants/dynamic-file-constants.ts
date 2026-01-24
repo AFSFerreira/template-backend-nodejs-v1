@@ -3,9 +3,9 @@ import { fileURLToPath } from 'node:url'
 import { logError } from '@lib/logger/helpers/log-error'
 import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/system/file-loggings'
 import { InvalidFilesystemPathsError } from '@services/errors/files/invalid-filesystem-paths-error'
+import { folderExistsSync } from '@utils/files/folder-exists-sync'
 import { IS_PROD } from './env-constants'
 import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-constants'
-import { folderExistsSync } from '@utils/files/folder-exists-sync'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

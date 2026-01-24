@@ -1,8 +1,7 @@
+import type { ForgotPasswordBodySchemaType } from '@custom-types/http/schemas/user/forgot-password-body-schema'
 import type { User } from '@prisma/client'
 
-export interface ForgotPasswordUseCaseRequest {
-  login: string
-}
+export interface ForgotPasswordUseCaseRequest extends ForgotPasswordBodySchemaType {}
 
 export interface ForgotPasswordUseCaseResponse {
   user: User
