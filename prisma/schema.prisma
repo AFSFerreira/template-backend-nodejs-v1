@@ -97,6 +97,8 @@ model User {
 
   @@unique([identityType, identityDocument])
   @@index([membershipStatus])
+  @@index([newEmail])
+  @@index([role])
   @@index([fullNameTsvPt], map: "idx_users_full_name_tsv_pt", type: Gin)
   @@index([fullNameUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_users_fullname_trgm_gin", type: Gin)
   @@map("users")
@@ -316,6 +318,7 @@ model MeetingEnrollment {
   UserDetails         UserMeetingEnrollment?  @relation()
   GuestDetails        GuestMeetingEnrollment? @relation()
 
+  @@index([meetingId])
   @@map("meeting_enrollments")
 }
 
@@ -456,7 +459,6 @@ model Newsletter {
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  @@unique([volume, editionNumber])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
   @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
   @@index([volume(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_volume_trgm_gin", type: Gin)

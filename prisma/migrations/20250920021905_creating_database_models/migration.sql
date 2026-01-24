@@ -510,6 +510,9 @@ CREATE INDEX "meetings_last_date_idx" ON "public"."meetings"("last_date");
 CREATE INDEX "meeting_date_meeting_id_idx" ON "public"."meeting_date"("meeting_id");
 
 -- CreateIndex
+CREATE INDEX "meeting_enrollments_meeting_id_idx" ON "meeting_enrollments"("meeting_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "public"."blogs"("public_id");
 
 -- CreateIndex
@@ -520,9 +523,6 @@ CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("publi
 
 -- CreateIndex
 CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "newsletters"("sequence_number");
-
--- CreateIndex
-CREATE UNIQUE INDEX "newsletters_volume_edition_number_key" ON "newsletters"("volume", "edition_number");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "slider_images_public_id_key" ON "slider_images"("public_id");
@@ -538,6 +538,12 @@ CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_user_id_key"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_verification_token_key" ON "users"("email_verification_token");
+
+-- CreateIndex
+CREATE INDEX "users_new_email_idx" ON "users"("new_email");
+
+-- CreateIndex
+CREATE INDEX "users_role_idx" ON "users"("role");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "guest_meeting_enrollments_meeting_enrollment_id_key" ON "guest_meeting_enrollments"("meeting_enrollment_id");
