@@ -6,7 +6,8 @@ import type { AddressCountryRepository } from '@repositories/address-countries-r
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
+import { USER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -26,6 +27,7 @@ import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-are
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserProfileImagePersistenceError } from '@use-cases/errors/user/user-profile-image-persistence-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
+import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
@@ -160,6 +162,16 @@ export class UpdateUserUseCase {
 
         return user
       })
+
+      if (
+        data.user?.profileImage &&
+        sanitizeUrlFilename(data.user.profileImage) !== updatedUser.profileImage &&
+        updatedUser.profileImage !== USER_DEFAULT_PRESENTER_KEY
+      ) {
+        await deleteFileEnqueued({
+          filePath: buildUserProfileImagePath(updatedUser.profileImage),
+        })
+      }
 
       logger.info({ publicId }, USER_UPDATE_SUCCESSFUL)
 

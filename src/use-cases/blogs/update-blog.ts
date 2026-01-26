@@ -60,6 +60,8 @@ export class UpdateBlogUseCase {
   async execute({ publicId, userPublicId, body }: UpdateBlogUseCaseRequest): Promise<UpdateBlogUseCaseResponse> {
     const updateData: Prisma.BlogUpdateInput = {}
 
+    const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
+
     let bannerImage: string | undefined
 
     let newImages: Array<string> | undefined
@@ -170,24 +172,22 @@ export class UpdateBlogUseCase {
           updateData.searchContent = searchContent
         }
 
-        if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== blog.bannerImage) {
-          const newBannerImage = ensureExists({
-            value: sanitizeUrlFilename(body.bannerImage),
+        if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== blog.bannerImage) {
+          ensureExists({
+            value: bannerImageSanitized,
             error: new BlogInvalidBannerLinkError(),
           })
 
-          if (newBannerImage !== blog.bannerImage) {
-            const persistedBanner = await moveFile({
-              oldFilePath: buildBlogTempBannerPath(newBannerImage),
-              newFilePath: buildBlogBannerPath(newBannerImage),
-            })
+          const persistedBanner = await moveFile({
+            oldFilePath: buildBlogTempBannerPath(bannerImageSanitized),
+            newFilePath: buildBlogBannerPath(bannerImageSanitized),
+          })
 
-            if (!persistedBanner) {
-              throw new BlogBannerPersistError()
-            }
-
-            updateData.bannerImage = persistedBanner
+          if (!persistedBanner) {
+            throw new BlogBannerPersistError()
           }
+
+          updateData.bannerImage = persistedBanner
         }
 
         if (body.subcategories) {
@@ -226,7 +226,7 @@ export class UpdateBlogUseCase {
       })
 
       // Enfileirando a remoção da imagem de banner antiga somente após update bem-sucedido:
-      if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== blog.bannerImage) {
+      if (bannerImageSanitized && bannerImageSanitized !== blog.bannerImage) {
         await deleteFileEnqueued({
           filePath: buildBlogBannerPath(blog.bannerImage),
         })
@@ -263,11 +263,11 @@ export class UpdateBlogUseCase {
     } catch (error) {
       logError({ error, message: BLOG_UPDATE_ERROR })
 
-      if (body.bannerImage && sanitizeUrlFilename(body.bannerImage) !== bannerImage) {
+      if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== bannerImage) {
         // Restaurando a imagen de banner de blog previamente persistida:
         await moveFileEnqueued({
-          oldFilePath: buildBlogBannerPath(body.bannerImage),
-          newFilePath: buildBlogTempBannerPath(body.bannerImage),
+          oldFilePath: buildBlogBannerPath(bannerImageSanitized),
+          newFilePath: buildBlogTempBannerPath(bannerImageSanitized),
         })
       }
 

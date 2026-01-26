@@ -22,6 +22,7 @@ import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoImageStorageError } from '@use-cases/errors/institutional-info/institutional-info-image-storage-error'
 import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-info/institutional-info-not-found-error'
+import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -36,6 +37,8 @@ export class UpdateInstitutionalInfoUseCase {
   ) {}
 
   async execute({ data }: UpdateInstitutionalInfoUseCaseRequest): Promise<UpdateInstitutionalInfoUseCaseResponse> {
+    const aboutImageSanitized = sanitizeUrlFilename(data.aboutImage)
+
     const updateData: Prisma.InstitutionalInfoUpdateInput = {}
 
     if (data.aboutDescription) {
@@ -50,16 +53,21 @@ export class UpdateInstitutionalInfoUseCase {
     }
 
     try {
-      if (data.aboutImage) {
+      if (data.aboutImage && aboutImageSanitized) {
+        ensureExists({
+          value: aboutImageSanitized,
+          error: new InstitutionalInfoImageStorageError(),
+        })
+
         ensureExists({
           value: await moveFile({
-            oldFilePath: buildInstitutionalTempAboutImagePath(data.aboutImage),
-            newFilePath: buildInstitutionalAboutImagePath(data.aboutImage),
+            oldFilePath: buildInstitutionalTempAboutImagePath(aboutImageSanitized),
+            newFilePath: buildInstitutionalAboutImagePath(aboutImageSanitized),
           }),
           error: new InstitutionalInfoImageStorageError(),
         })
 
-        updateData.aboutImage = data.aboutImage
+        updateData.aboutImage = aboutImageSanitized
       }
 
       const { institutionalInfo } = await this.dbContext.runInTransaction(async () => {
@@ -95,10 +103,10 @@ export class UpdateInstitutionalInfoUseCase {
       }
     } catch (error) {
       // Restaurando a imagem incorretamente persistida:
-      if (data.aboutImage) {
+      if (aboutImageSanitized) {
         await moveFile({
-          oldFilePath: buildInstitutionalAboutImagePath(data.aboutImage),
-          newFilePath: buildInstitutionalTempAboutImagePath(data.aboutImage),
+          oldFilePath: buildInstitutionalAboutImagePath(aboutImageSanitized),
+          newFilePath: buildInstitutionalTempAboutImagePath(aboutImageSanitized),
         })
       }
 

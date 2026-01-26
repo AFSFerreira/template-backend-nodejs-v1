@@ -4,9 +4,12 @@ import type {
 } from '@custom-types/use-cases/meeting/delete-meeting'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_DELETED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
+import { buildMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
+import { buildMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -31,6 +34,16 @@ export class DeleteMeetingUseCase {
       await this.meetingsRepository.delete(meeting.id)
 
       return { meeting }
+    })
+
+    // Enfileirando a remoção da imagem de banner da reunião:
+    await deleteFileEnqueued({
+      filePath: buildMeetingBannerPath(meeting.bannerImage),
+    })
+
+    // Enfileirando a remoção do programa da banner da reunião:
+    await deleteFileEnqueued({
+      filePath: buildMeetingAgendaPath(meeting.agenda),
     })
 
     logger.info({ meetingId: meeting.publicId }, MEETING_DELETED_SUCCESSFULLY)

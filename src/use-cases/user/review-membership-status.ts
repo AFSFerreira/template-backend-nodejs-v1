@@ -4,7 +4,9 @@ import type {
 } from '@custom-types/use-cases/user/review-membership-status'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
+import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT, MEMBERSHIP_REJECTED_EMAIL_SUBJECT } from '@messages/emails/user-emails'
 import {
@@ -12,6 +14,7 @@ import {
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
 } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType } from '@prisma/client'
+import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
 import { membershipApprovedTextTemplate } from '@templates/user/membership-accepted/membership-accepted-text'
@@ -62,6 +65,13 @@ export class ReviewMembershipStatusUseCase {
             context: { userPublicId: user.publicId, userEmail: user.email },
           },
         })
+
+        // Removendo a imagem de perfil do usuário:
+        if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
+          await deleteFileEnqueued({
+            filePath: buildUserProfileImagePath(user.profileImage),
+          })
+        }
 
         return user
       }

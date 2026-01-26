@@ -22,6 +22,7 @@ import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/dir
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
+import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -39,31 +40,38 @@ export class UpdateDirectorBoardUseCase {
   ) {}
 
   async execute({ publicId, data }: UpdateDirectorBoardUseCaseRequest): Promise<UpdateDirectorBoardUseCaseResponse> {
-    let persistedProfileImage: string | undefined
+    let profileImage: string | null | undefined
+    const profileImageSanitized = sanitizeUrlFilename(data.profileImage)
 
-    const updateData: Omit<Prisma.DirectorBoardUpdateInput, 'User' | 'DirectorPosition'> & {
+    const updateData: Prisma.DirectorBoardUpdateInput & {
       directorPositionId?: number
     } = {}
 
     try {
-      if (data.profileImage) {
-        ensureExists({
-          value: await moveFile({
-            oldFilePath: buildDirectorBoardTempProfileImagePath(data.profileImage),
-            newFilePath: buildDirectorBoardProfileImagePath(data.profileImage),
-          }),
-          error: new DirectorBoardImageStorageError(),
-        })
-
-        persistedProfileImage = data.profileImage
-        updateData.profileImage = data.profileImage
-      }
-
       const { directorBoard } = await this.dbContext.runInTransaction(async () => {
         const currentDirectorBoard = ensureExists({
           value: await this.directorBoardRepository.findByPublicId(publicId),
           error: new DirectorBoardNotFoundError(),
         })
+
+        profileImage = currentDirectorBoard.profileImage
+
+        if (data.profileImage && profileImageSanitized && profileImageSanitized !== currentDirectorBoard.profileImage) {
+          ensureExists({
+            value: profileImageSanitized,
+            error: new DirectorBoardImageStorageError(),
+          })
+
+          ensureExists({
+            value: await moveFile({
+              oldFilePath: buildDirectorBoardTempProfileImagePath(profileImageSanitized),
+              newFilePath: buildDirectorBoardProfileImagePath(profileImageSanitized),
+            }),
+            error: new DirectorBoardImageStorageError(),
+          })
+
+          updateData.profileImage = profileImageSanitized
+        }
 
         if (data.positionId) {
           const directorPosition = ensureExists({
@@ -116,10 +124,10 @@ export class UpdateDirectorBoardUseCase {
       }
     } catch (error) {
       // Restaurando a imagem incorretamente persistida:
-      if (persistedProfileImage) {
+      if (data.profileImage && profileImageSanitized && profileImageSanitized !== profileImage) {
         await moveFile({
-          oldFilePath: buildDirectorBoardProfileImagePath(persistedProfileImage),
-          newFilePath: buildDirectorBoardTempProfileImagePath(persistedProfileImage),
+          oldFilePath: buildDirectorBoardProfileImagePath(profileImageSanitized),
+          newFilePath: buildDirectorBoardTempProfileImagePath(profileImageSanitized),
         })
       }
 

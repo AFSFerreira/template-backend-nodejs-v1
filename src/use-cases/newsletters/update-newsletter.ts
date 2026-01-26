@@ -18,6 +18,7 @@ import { moveFile } from '@services/files/move-file'
 import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsletter-already-exists-error'
 import { NewsletterHtmlPersistError } from '@use-cases/errors/newsletter/newsletter-html-persist-error'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
+import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -32,14 +33,16 @@ export class UpdateNewsletterUseCase {
   ) {}
 
   async execute({ publicId, body }: UpdateNewsletterUseCaseRequest): Promise<UpdateNewsletterUseCaseResponse> {
-    const { newsletter } = await this.dbContext.runInTransaction(async () => {
+    const updateData: Prisma.NewsletterUpdateInput = {}
+
+    const filenameSanitized = sanitizeUrlFilename(body.contentFilename)
+
+    const { updatedNewsletter } = await this.dbContext.runInTransaction(async () => {
       try {
         const newsletter = ensureExists({
           value: await this.newslettersRepository.findByPublicId(publicId),
           error: new NewsletterNotFoundError(),
         })
-
-        const updateData: Prisma.NewsletterUpdateInput = {}
 
         if (body.sequenceNumber || body.editionNumber || body.volume) {
           const sequenceNumber = body.sequenceNumber ?? newsletter.sequenceNumber
@@ -70,11 +73,11 @@ export class UpdateNewsletterUseCase {
           }
         }
 
-        if (body.contentFilename && body.contentFilename !== newsletter.content) {
+        if (body.contentFilename && filenameSanitized && filenameSanitized !== newsletter.content) {
           ensureExists({
             value: await moveFile({
-              oldFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
-              newFilePath: buildNewsletterHtmlPath(body.contentFilename),
+              oldFilePath: buildNewsletterTempHtmlPath(filenameSanitized),
+              newFilePath: buildNewsletterHtmlPath(filenameSanitized),
             }),
             error: new NewsletterHtmlPersistError(),
           })
@@ -87,13 +90,13 @@ export class UpdateNewsletterUseCase {
           data: updateData,
         })
 
-        return { newsletter: updatedNewsletter }
+        return { updatedNewsletter }
       } catch (error) {
         // Enfileirando a restauração do arquivo incorretamente persistido:
-        if (body.contentFilename) {
+        if (body.contentFilename && filenameSanitized && filenameSanitized !== updatedNewsletter.content) {
           await moveFileEnqueued({
-            oldFilePath: buildNewsletterHtmlPath(body.contentFilename),
-            newFilePath: buildNewsletterTempHtmlPath(body.contentFilename),
+            oldFilePath: buildNewsletterHtmlPath(filenameSanitized),
+            newFilePath: buildNewsletterTempHtmlPath(filenameSanitized),
           })
         }
 
@@ -102,24 +105,24 @@ export class UpdateNewsletterUseCase {
     })
 
     // Enfileirando a remoção do arquivo antigo somente após update bem-sucedido:
-    if (body.contentFilename && body.contentFilename !== newsletter.content) {
+    if (body.contentFilename && filenameSanitized && filenameSanitized !== updatedNewsletter.content) {
       await deleteFileEnqueued({
-        filePath: buildNewsletterHtmlPath(newsletter.content),
+        filePath: buildNewsletterHtmlPath(updatedNewsletter.content),
       })
     }
 
     logger.info(
       {
-        newsletterPublicId: newsletter.publicId,
-        sequenceNumber: newsletter.sequenceNumber,
+        newsletterPublicId: updatedNewsletter.publicId,
+        sequenceNumber: updatedNewsletter.sequenceNumber,
       },
       NEWSLETTER_UPDATED_SUCCESSFULLY,
     )
 
     return {
       newsletter: {
-        ...newsletter,
-        content: buildNewsletterHtmlUrl(newsletter.content),
+        ...updatedNewsletter,
+        content: buildNewsletterHtmlUrl(updatedNewsletter.content),
       },
     }
   }

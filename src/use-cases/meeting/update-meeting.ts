@@ -21,6 +21,7 @@ import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-ban
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { PaymentInfoNotFoundError } from '@use-cases/errors/payment-info/payment-info-not-found-error'
+import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -40,6 +41,9 @@ export class UpdateMeetingUseCase {
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
     const updateData: Prisma.MeetingUpdateInput = {}
+
+    const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
+    const agendaSanitized = sanitizeUrlFilename(body.agenda)
 
     const { meeting } = await this.dbContext.runInTransaction(async () => {
       try {
@@ -77,28 +81,28 @@ export class UpdateMeetingUseCase {
           }
         }
 
-        if (body.bannerImage && body.bannerImage !== meeting.bannerImage) {
+        if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage) {
           ensureExists({
             value: await moveFile({
-              oldFilePath: buildTempMeetingBannerPath(body.bannerImage),
-              newFilePath: buildMeetingBannerPath(body.bannerImage),
+              oldFilePath: buildTempMeetingBannerPath(bannerImageSanitized),
+              newFilePath: buildMeetingBannerPath(bannerImageSanitized),
             }),
             error: new MeetingBannerPersistError(),
           })
 
-          updateData.bannerImage = body.bannerImage
+          updateData.bannerImage = bannerImageSanitized
         }
 
-        if (body.agenda && body.agenda !== meeting.agenda) {
+        if (body.agenda && agendaSanitized && agendaSanitized !== meeting.agenda) {
           ensureExists({
             value: await moveFile({
-              oldFilePath: buildTempMeetingAgendaPath(body.agenda),
-              newFilePath: buildMeetingAgendaPath(body.agenda),
+              oldFilePath: buildTempMeetingAgendaPath(agendaSanitized),
+              newFilePath: buildMeetingAgendaPath(agendaSanitized),
             }),
             error: new MeetingAgendaPersistError(),
           })
 
-          updateData.agenda = body.agenda
+          updateData.agenda = agendaSanitized
         }
 
         if (body.paymentInfo) {
@@ -125,17 +129,17 @@ export class UpdateMeetingUseCase {
         return { meeting: updatedMeeting }
       } catch (error) {
         // Enfileirando a restauração dos arquivos incorretamente persistidos:
-        if (body.bannerImage) {
+        if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage) {
           await moveFileEnqueued({
-            oldFilePath: buildMeetingBannerPath(body.bannerImage),
-            newFilePath: buildTempMeetingBannerPath(body.bannerImage),
+            oldFilePath: buildMeetingBannerPath(bannerImageSanitized),
+            newFilePath: buildTempMeetingBannerPath(bannerImageSanitized),
           })
         }
 
-        if (body.agenda) {
+        if (body.agenda && agendaSanitized && agendaSanitized !== meeting.agenda) {
           await moveFileEnqueued({
-            oldFilePath: buildMeetingAgendaPath(body.agenda),
-            newFilePath: buildTempMeetingAgendaPath(body.agenda),
+            oldFilePath: buildMeetingAgendaPath(agendaSanitized),
+            newFilePath: buildTempMeetingAgendaPath(agendaSanitized),
           })
         }
 
@@ -144,14 +148,14 @@ export class UpdateMeetingUseCase {
     })
 
     // Enfileirando a remoção da imagem antiga somente após persistir a nova e atualizar a reunião:
-    if (body.bannerImage && body.bannerImage !== meeting.bannerImage) {
+    if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage) {
       await deleteFileEnqueued({
         filePath: buildMeetingBannerPath(meeting.bannerImage),
       })
     }
 
     // Enfileirando a remoção da agenda antiga somente após persistir a nova e atualizar a reunião:
-    if (body.agenda && body.agenda !== meeting.agenda) {
+    if (body.agenda && agendaSanitized && agendaSanitized !== meeting.agenda) {
       await deleteFileEnqueued({
         filePath: buildMeetingAgendaPath(meeting.agenda),
       })
