@@ -10,7 +10,7 @@ import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-cons
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-export const BASE_PROJECT_PATH = IS_PROD ? path.resolve(__dirname, '..') : path.resolve(__dirname, '..', '..')
+export const BASE_PROJECT_PATH = IS_PROD ? path.resolve(__dirname, '..') : path.resolve(__dirname, '..')
 
 // Caminhos relativos de imagens de perfil de usuários:
 export const REGISTER_PROFILE_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'user', 'profile-images')
