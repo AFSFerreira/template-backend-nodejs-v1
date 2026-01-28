@@ -15,4 +15,4 @@ npm run sentry:upload
 
 npm run db:deploy
 
-env ASDF_NODEJS_VERSION=$NODE_VERSION_PM2 SENTRY_RELEASE=$SENTRY_RELEASE pm2 reload ecosystem.config.cjs --update-env
+env ASDF_NODEJS_VERSION=$NODE_VERSION_PM2 SENTRY_RELEASE=$SENTRY_RELEASE pm2 reload ecosystem.config.cjs --update-env --only astrobiologia-staging
