@@ -4,7 +4,7 @@ module.exports = {
       name: 'astrobiologia-staging',
       script: './dist/server.js',
       cwd: '/home/injunior-infra/dev/projects/astrobiologia-backend',
-      max_memory_restart: '256M',
+      max_memory_restart: '512M',
 
       // Node flags + Environment:
       node_args: '--env-file=.env',
