@@ -1,9 +1,9 @@
 import type { HtmlTemplateOutput } from '@custom-types/templates/html-template-output'
 import type { IForgotPasswordHtmlTemplate } from '@custom-types/templates/user/forgot-password'
 import type { Attachment } from 'nodemailer/lib/mailer'
+import { EMAIL_LOGO_PATH } from '@constants/dynamic-file-constants'
 import { APP_NAME } from '@constants/env-constants'
 import { EMAIL_LOGO_CID, EMAIL_LOGO_NAME } from '@constants/static-file-constants'
-import { EMAIL_LOGO_LINK } from '@constants/url-constants'
 import { env } from '@env/index'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
 
@@ -18,7 +18,7 @@ export function forgotPasswordHtmlTemplate({
   const attachments: Attachment[] = [
     {
       filename: EMAIL_LOGO_NAME,
-      path: EMAIL_LOGO_LINK,
+      path: EMAIL_LOGO_PATH,
       cid: EMAIL_LOGO_CID,
     },
   ]

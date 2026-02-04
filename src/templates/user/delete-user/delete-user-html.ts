@@ -1,16 +1,16 @@
 import type { HtmlTemplateOutput } from '@custom-types/templates/html-template-output'
 import type { IDeleteUserHtmlTemplate } from '@custom-types/templates/user/delete-user'
 import type { Attachment } from 'nodemailer/lib/mailer'
+import { EMAIL_LOGO_PATH } from '@constants/dynamic-file-constants'
 import { APP_NAME } from '@constants/env-constants'
 import { EMAIL_LOGO_CID, EMAIL_LOGO_NAME } from '@constants/static-file-constants'
-import { EMAIL_LOGO_LINK } from '@constants/url-constants'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
 
 export function deleteUserHtmlTemplate({ fullName, email }: IDeleteUserHtmlTemplate): HtmlTemplateOutput {
   const attachments: Attachment[] = [
     {
       filename: EMAIL_LOGO_NAME,
-      path: EMAIL_LOGO_LINK,
+      path: EMAIL_LOGO_PATH,
       cid: EMAIL_LOGO_CID,
     },
   ]

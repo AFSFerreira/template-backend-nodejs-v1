@@ -1,5 +1,6 @@
 import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import { redisConnection } from '@lib/redis/helpers/configuration'
 import {
   FILE_JOB_STALLED,
@@ -32,14 +33,19 @@ fileWorker.on('completed', (job) => {
   logger.info({ jobId: job.id, type: job.data.type }, FILE_OPERATION_SUCCESS)
 })
 
-fileWorker.on('failed', (job, err) => {
-  logger.error({ jobId: job?.id, type: job?.data.type, error: err.message }, FILE_OPERATION_FAILED)
+fileWorker.on('failed', (job, error) => {
+  const context = {
+    jobId: job?.id,
+    type: job?.data.type,
+  }
+
+  logError({ error, context, message: FILE_OPERATION_FAILED })
 })
 
 fileWorker.on('stalled', (jobId) => {
   logger.warn({ jobId }, FILE_JOB_STALLED)
 })
 
-fileWorker.on('error', (err) => {
-  logger.error({ error: err.message }, FILE_WORKER_ERROR)
+fileWorker.on('error', (error) => {
+  logError({ error, message: FILE_WORKER_ERROR })
 })

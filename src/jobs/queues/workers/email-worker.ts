@@ -1,6 +1,7 @@
 import type { FileJobLogging } from '@custom-types/custom/file-job-logging'
 import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
 import { redisConnection } from '@lib/redis/helpers/configuration'
 import {
   EMAIL_JOB_STALLED,
@@ -48,13 +49,13 @@ emailWorker.on('failed', (job, error) => {
     ...(logMeta?.context || {}),
   }
 
-  logger.error(context, message)
+  logError({ context, error, message })
 })
 
 emailWorker.on('stalled', (jobId) => {
   logger.warn({ jobId }, EMAIL_JOB_STALLED)
 })
 
-emailWorker.on('error', (err) => {
-  logger.error({ error: err.message }, EMAIL_WORKER_ERROR)
+emailWorker.on('error', (error) => {
+  logError({ error, message: EMAIL_WORKER_ERROR })
 })

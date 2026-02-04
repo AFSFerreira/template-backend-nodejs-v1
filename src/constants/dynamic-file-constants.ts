@@ -12,6 +12,8 @@ const __dirname = path.dirname(__filename)
 
 export const BASE_PROJECT_PATH = IS_PROD ? path.resolve(__dirname, '..') : path.resolve(__dirname, '..', '..')
 
+export const EMAIL_LOGO_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'documents', 'private', 'logo.png')
+
 // Caminhos relativos de imagens de perfil de usuários:
 export const REGISTER_PROFILE_IMAGES_PATH = path.resolve(BASE_PROJECT_PATH, 'uploads', 'user', 'profile-images')
 export const REGISTER_TEMP_PROFILE_IMAGES_PATH = path.resolve(
