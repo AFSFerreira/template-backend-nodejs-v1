@@ -119,7 +119,7 @@
     "jsonwebtoken": "9.0.3",
     "ms": "2.1.3",
     "node-cron": "4.2.1",
-    "nodemailer": "7.0.13",
+    "nodemailer": "8.0.0",
     "orcid-utils": "1.2.3",
     "pg": "8.18.0",
     "pino": "10.3.0",
