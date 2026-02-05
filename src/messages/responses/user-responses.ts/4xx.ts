@@ -154,6 +154,14 @@ export const ADMIN_CANNOT_DELETE_SELF: IApiResponse = {
   },
 }
 
+export const ADMIN_CANNOT_DEACTIVATE_SELF: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'ADMIN_CANNOT_DEACTIVATE_SELF',
+    message: 'Administradores não podem inativar a si mesmos',
+  },
+}
+
 export const USER_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {

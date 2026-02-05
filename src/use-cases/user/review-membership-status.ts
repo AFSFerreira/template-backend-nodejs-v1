@@ -13,13 +13,14 @@ import {
   MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
 } from '@messages/loggings/models/user-loggings'
-import { MembershipStatusType } from '@prisma/client'
+import { MembershipStatusType, UserRoleType } from '@prisma/client'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
 import { membershipApprovedTextTemplate } from '@templates/user/membership-accepted/membership-accepted-text'
 import { membershipRejectedHtmlTemplate } from '@templates/user/membership-rejected/membership-rejected-html'
 import { membershipRejectedTextTemplate } from '@templates/user/membership-rejected/membership-rejected-text'
+import { AdminCannotDeactivateSelfError } from '@use-cases/errors/user/admin-cannot-deactivate-self-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -47,6 +48,10 @@ export class ReviewMembershipStatusUseCase {
       const emailInfo = {
         fullName: user.fullName,
         email: user.email,
+      }
+
+      if (user.role === UserRoleType.ADMIN && membershipStatusReview === MembershipStatusType.INACTIVE) {
+        throw new AdminCannotDeactivateSelfError()
       }
 
       if (membershipStatusReview === 'REJECTED') {
