@@ -16,7 +16,6 @@ import {
 } from '@messages/loggings/models/user-loggings'
 import { changeEmailHtmlTemplate } from '@templates/user/change-email/change-email-html'
 import { changeEmailTextTemplate } from '@templates/user/change-email/change-email-text'
-import { EmailsDoNotMatchError } from '@use-cases/errors/user/emails-do-not-match-error'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
@@ -38,7 +37,6 @@ export class RequestEmailChangeUseCase {
 
   async execute({
     userPublicId,
-    oldEmail,
     newEmail,
   }: RequestEmailChangeUseCaseRequest): Promise<RequestEmailChangeUseCaseResponse> {
     ensureExists({
@@ -55,10 +53,6 @@ export class RequestEmailChangeUseCase {
         value: await this.usersRepository.findByPublicId(userPublicId),
         error: new UserNotFoundError(),
       })
-
-      if (userFound.email !== oldEmail) {
-        throw new EmailsDoNotMatchError()
-      }
 
       ensureNotExists({
         value: await this.usersRepository.findByEmail(newEmail),
