@@ -119,6 +119,9 @@ importers:
       pix-utils:
         specifier: 2.8.2
         version: 2.8.2
+      pixkey:
+        specifier: 2.0.1
+        version: 2.0.1
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -2129,6 +2132,10 @@ packages:
   effect@3.18.4:
     resolution: {integrity: sha512-b1LXQJLe9D11wfnOKAk3PKxuqYshQ0Heez+y5pnkd3jLj1yx9QhM72zZ9uUrOQyNvrs2GZZd/3maL0ZV18YuDA==}
 
+  email-validator@2.0.4:
+    resolution: {integrity: sha512-gYCwo7kh5S3IDyZPLZf6hSS0MnZT8QmJFqYvbqlDZSbwdZlY6QZWxJ4i/6UhITOJ4XzyI647Bm2MXKCLqnJ4nQ==}
+    engines: {node: '>4.0'}
+
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
 
@@ -2631,6 +2638,9 @@ packages:
     resolution: {integrity: sha512-34wB/Y7MW7bzjKRjUKTa46I2Z7eV62Rkhva+KkopW7Qvv/OSWBqvkSY7vusOPrNuZcUG3tApvdVgNB8POj3SPw==}
     engines: {node: '>=10'}
 
+  js-brasil@2.6.4:
+    resolution: {integrity: sha512-qdXbLToqwYh6mQdkfRurbD0AeuJfcbIL9KJRRR5Au5kXAjd9pMI6OyNHDt3OayID8J99w86Pj1v4WL0wF4gG/w==}
+
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -2672,6 +2682,9 @@ packages:
 
   jws@4.0.1:
     resolution: {integrity: sha512-EKI/M/yqPncGUUh44xz0PxSidXFr/+r0pA70+gIYhjv+et7yxM+s29Y+VGDkovRofQem0fs7Uvf4+YmAdyRduA==}
+
+  libphonenumber-js@1.12.36:
+    resolution: {integrity: sha512-woWhKMAVx1fzzUnMCyOzglgSgf6/AFHLASdOBcchYCyvWSGWt12imw3iu2hdI5d4dGZRsNWAmWiz37sDKUPaRQ==}
 
   light-my-request@6.6.0:
     resolution: {integrity: sha512-CHYbu8RtboSIoVsHZ6Ye4cj4Aw/yg2oAFimlF7mNvfDV192LR7nDiKtSIfCuLT7KokPSTn/9kfVLm5OGN0A28A==}
@@ -3059,6 +3072,9 @@ packages:
   pix-utils@2.8.2:
     resolution: {integrity: sha512-PXkuvFJzFkcxlFCotVQJGZAhz6uruOdjUaW1RsBbx5DC5dzfFCYjtVdhb65a0YMG1BScdM5fLBu3udEchyRk4Q==}
     engines: {node: '>=12', npm: '>=6'}
+
+  pixkey@2.0.1:
+    resolution: {integrity: sha512-Xwde73vGHrEa2os4v3dB+wYVQJtRmp/Tw6PJ12VhoZcjBnDAKjjY9hS3jp16ZrJSazWVOeYKRgkF0z+4ETmpZQ==}
 
   pkg-types@2.3.0:
     resolution: {integrity: sha512-SIqCzDRg0s9npO5XQ3tNZioRY1uK06lA41ynBC1YmFTmnY6FjUjVt6s4LoADmwoig1qqD0oK8h1p/8mlMx8Oig==}
@@ -3533,6 +3549,9 @@ packages:
     resolution: {integrity: sha512-Bh7QjT8/SuKUIfObSXNHNSK6WHo6J1tHCqJsuaFDP7gP0fkzSfTxI8y85JrppZ0h8l0maIgc2tfuZQ6/t3GtnQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
+  text-mask-addons@3.8.0:
+    resolution: {integrity: sha512-VSZSdc/tKn4zGxgpJ+uNBzoW1t472AoAFIlbw1K7hSNXz0DfSBYDJNRxLqgxOfWw1BY2z6DQpm7g0sYZn5qLpg==}
+
   thread-stream@4.0.0:
     resolution: {integrity: sha512-4iMVL6HAINXWf1ZKZjIPcz5wYaOdPhtO8ATvZ+Xqp3BTdaqtAwQkNmKORqcIo5YkQqGXq5cwfswDwMqqQNrpJA==}
     engines: {node: '>=20'}
@@ -3678,6 +3697,9 @@ packages:
   url-join@5.0.0:
     resolution: {integrity: sha512-n2huDr9h9yzd6exQVnH/jU5mr+Pfx08LRXXZhkLLetAMESRj+anQsTAh940iMrIetKAmry9coFuZQ2jY8/p3WA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+
+  uuid-validate@0.0.3:
+    resolution: {integrity: sha512-Fykw5U4eZESbq739BeLvEBFRuJODfrlmjx5eJux7W817LjRaq4b7/i4t2zxQmhcX+fAj4nMfRdTzO4tmwLKn0w==}
 
   uuid@11.1.0:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
@@ -5692,6 +5714,8 @@ snapshots:
       '@standard-schema/spec': 1.1.0
       fast-check: 3.23.2
 
+  email-validator@2.0.4: {}
+
   emoji-regex@8.0.0: {}
 
   empathic@2.0.0: {}
@@ -6294,6 +6318,10 @@ snapshots:
 
   joycon@3.1.1: {}
 
+  js-brasil@2.6.4:
+    dependencies:
+      text-mask-addons: 3.8.0
+
   js-tokens@4.0.0: {}
 
   js-yaml@4.1.1:
@@ -6347,6 +6375,8 @@ snapshots:
     dependencies:
       jwa: 2.0.1
       safe-buffer: 5.2.1
+
+  libphonenumber-js@1.12.36: {}
 
   light-my-request@6.6.0:
     dependencies:
@@ -6727,6 +6757,13 @@ snapshots:
       qrcode: 1.5.4
     transitivePeerDependencies:
       - debug
+
+  pixkey@2.0.1:
+    dependencies:
+      email-validator: 2.0.4
+      js-brasil: 2.6.4
+      libphonenumber-js: 1.12.36
+      uuid-validate: 0.0.3
 
   pkg-types@2.3.0:
     dependencies:
@@ -7280,6 +7317,8 @@ snapshots:
       '@pkgr/core': 0.2.9
     optional: true
 
+  text-mask-addons@3.8.0: {}
+
   thread-stream@4.0.0:
     dependencies:
       real-require: 0.2.0
@@ -7431,6 +7470,8 @@ snapshots:
       synckit: 0.11.12
 
   url-join@5.0.0: {}
+
+  uuid-validate@0.0.3: {}
 
   uuid@11.1.0: {}
 
