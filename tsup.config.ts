@@ -15,7 +15,7 @@ const defaultConfig = {
       info: (msg) => console.info("SWC Info:", msg),
       success: (msg) => console.log("SWC Success:", msg),
       log: (msg) => console.log("SWC Log:", msg),
-      setName: (_name) => {}
+      setName: (_name) => {},
     },
     swcrc: true,
   }

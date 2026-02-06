@@ -41,7 +41,7 @@ export async function fileProcessor(job: Job<FileJobData>): Promise<void> {
     }
 
     default: {
-      throw new InvalidFileOperationTypeError(data)
+      throw new InvalidFileOperationTypeError(data satisfies never)
     }
   }
 }
