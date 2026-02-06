@@ -2,7 +2,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "esnext",
-    "target": "es2022",
+    "target": "esnext",
     "noEmit": true,
     "moduleResolution": "bundler",
     "lib": ["ESNext"],
