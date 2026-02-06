@@ -5,10 +5,13 @@ const defaultConfig = {
   outDir: "dist",
   target: 'esnext',
   format: ["esm"],
+  nodeProtocol: true,
   minify: true,
   sourcemap: true,
   shims: true,
-  noExternal: ['bancos-brasileiros'],
+  skipNodeModulesBundle: true,
+  treeshake: true,
+  inlineOnly: false
 } satisfies TsdownConfig
 
 export default defineConfig([

@@ -19,7 +19,7 @@
     "start:prod:docker": "node --enable-source-maps dist/server.mjs",
     "build:tsc": "tsc",
     "build:tsgo": "tsgo",
-    "build:tsdown": "tsdown",
+    "build:tsdown": "tsdown --config ./tsdown.config.ts",
     "lint:src:biome": "biome lint --write src",
     "lint:prisma:biome": "biome lint --write prisma",
     "format:src:biome": "biome format --write src",

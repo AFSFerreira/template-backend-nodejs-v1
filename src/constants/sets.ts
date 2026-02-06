@@ -12,6 +12,9 @@ import {
   NOT_APPROVED_EDITORIAL_STATUS_ARRAY,
   PENDING_APPROVAL_OR_PUBLISHED_ARRAY,
 } from './arrays'
+import banks from 'bancos-brasileiros/bancos.json' with { type: 'json' }
+
+export const VALID_BANK_CODES = new Set<string>(banks.map((bank) => bank.COMPE))
 
 export const LOW_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(LOW_LEVEL_EDUCATION_TYPE_ARRAY)
 
