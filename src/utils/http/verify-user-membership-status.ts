@@ -1,8 +1,8 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
+import type { FastifyRequest } from 'fastify'
 import { INACTIVE_USER, PENDING_USER, UNVERIFIED_EMAIL } from '@messages/responses/user-responses.ts/4xx'
 import { MembershipStatusType } from '@prisma/generated/enums'
 import { getRequestUserStatus } from '@services/http/get-request-user-status'
-import type { FastifyRequest } from 'fastify'
 
 export function verifyUserMembershipStatus(request: FastifyRequest): IApiResponse | null {
   const status = getRequestUserStatus(request)
