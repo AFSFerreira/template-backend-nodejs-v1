@@ -5,7 +5,7 @@ import {
   INVALID_PASSPORT_FORMAT,
   INVALID_RNE_FORMAT,
 } from '@messages/validations/user-validations'
-import { IdentityType } from '@prisma/client'
+import { IdentityType } from '@prisma/generated/enums'
 import { cpf } from 'cpf-cnpj-validator'
 import z from 'zod'
 import { upperCaseTextSchema } from '../../primitives/uppercase-text-schema'

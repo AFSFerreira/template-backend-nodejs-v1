@@ -1,9 +1,9 @@
 import type { FlattenedUser } from '@custom-types/services/transformers/flatten-user'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
-import type { Keyword } from '@prisma/client'
-import type { JSONContent } from '@tiptap/core'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
+import type { Keyword } from '@prisma/generated/client'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import type { JSONContent } from '@tiptap/core'
 
 export function flattenUser(user: UserWithDetails): FlattenedUser {
   const flattenedUser: FlattenedUser = {

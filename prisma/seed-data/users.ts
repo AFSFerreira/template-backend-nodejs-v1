@@ -1,5 +1,11 @@
-import type { Prisma } from '@prisma/client'
-import { EducationLevelType, IdentityType, MembershipStatusType, OccupationType, UserRoleType } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
+import {
+  EducationLevelType,
+  IdentityType,
+  MembershipStatusType,
+  OccupationType,
+  UserRoleType,
+} from '@prisma/generated/enums'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { hashSync } from 'bcryptjs'
 import { env } from '../../src/env/index'

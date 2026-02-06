@@ -3,7 +3,7 @@ import type { CreateMeetingQuery } from '@custom-types/repository/prisma/meeting
 import type { ListAllMeetingsQuery } from '@custom-types/repository/prisma/meeting/list-all-meetings-query'
 import type { UpdateMeetingQuery } from '@custom-types/repository/prisma/meeting/update-meeting-query'
 import type { MeetingWithDetails } from '@custom-types/validators/meeting-with-details'
-import type { Meeting } from '@prisma/client'
+import type { Meeting } from '@prisma/generated/client'
 
 export interface MeetingsRepository {
   create: (data: CreateMeetingQuery) => Promise<MeetingWithDetails>

@@ -1,5 +1,5 @@
-import type { Prisma } from '@prisma/client'
-import { EducationLevelType, OccupationType } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
+import { EducationLevelType, OccupationType } from '@prisma/generated/enums'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 
 export const guestMeetingEnrollmentData1: Prisma.GuestMeetingEnrollmentCreateNestedOneWithoutMeetingEnrollmentInput = {

@@ -1,4 +1,5 @@
-import type { DirectorPosition } from '@prisma/client'
+import type { DirectorPosition } from "@prisma/generated/client"
+
 
 export interface DirectorPositionDefaultPresenterInput extends DirectorPosition {}
 

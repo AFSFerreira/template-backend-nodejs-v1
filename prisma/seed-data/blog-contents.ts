@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 import { proseMirrorData1, proseMirrorData2, proseMirrorData3 } from './prose-mirrors'
 
 type BlogSearchContentInput = Pick<Prisma.BlogCreateInput, 'searchContent' | 'content'>

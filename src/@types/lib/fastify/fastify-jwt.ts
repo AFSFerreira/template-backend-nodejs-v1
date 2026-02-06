@@ -1,6 +1,6 @@
 import '@fastify/jwt'
+import type { MembershipStatusType, UserRoleType } from '@prisma/generated/enums'
 import 'fastify'
-import type { MembershipStatusType, UserRoleType } from '@prisma/client'
 
 declare module '@fastify/jwt' {
   export interface FastifyJWT {

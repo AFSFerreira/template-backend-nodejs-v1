@@ -12,7 +12,7 @@ import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
-import type { Prisma, User } from '@prisma/client'
+import type { Prisma, User } from '@prisma/generated/client'
 
 export interface UsersRepository {
   create: (data: CreateUserQuery) => Promise<UserWithDetails>

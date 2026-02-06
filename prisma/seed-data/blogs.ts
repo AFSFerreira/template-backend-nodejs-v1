@@ -1,5 +1,5 @@
-import type { Prisma } from '@prisma/client'
-import { EditorialStatusType } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
+import { EditorialStatusType } from '@prisma/generated/enums'
 import {
   subActivityAreaData1,
   subActivityAreaData11,

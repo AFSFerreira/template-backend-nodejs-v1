@@ -1,5 +1,5 @@
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/user-simplified'
-import type { UserRoleType } from '@prisma/client'
+import type { UserRoleType } from '@prisma/generated/enums'
 
 export interface UserSimplifiedForAdminPresenterInput extends CustomUserWithSimplifiedDetails {
   role: UserRoleType

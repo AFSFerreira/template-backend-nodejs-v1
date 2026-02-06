@@ -1,4 +1,4 @@
-import type { ActivityArea, ActivityAreaType } from '@prisma/client'
+import type { ActivityArea, ActivityAreaType } from '@prisma/generated/client'
 
 export interface ActivityAreaDefaultPresenterInput extends ActivityArea {}
 

@@ -1,17 +1,17 @@
+import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import type {
   DeleteUserUseCaseRequest,
   DeleteUserUseCaseResponse,
 } from '@custom-types/use-cases/user/delete-own-account'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { UsersRepository } from '@repositories/users-repository'
-import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_DELETION_EMAIL_SUBJECT } from '@messages/emails/user-emails'
 import { USER_DELETION_EMAIL_SEND_ERROR, USER_DELETION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
-import { UserRoleType } from '@prisma/client'
+import { UserRoleType } from '@prisma/generated/enums'
+import type { UsersRepository } from '@repositories/users-repository'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { deleteUserHtmlTemplate } from '@templates/user/delete-user/delete-user-html'
 import { deleteUserTextTemplate } from '@templates/user/delete-user/delete-user-text'

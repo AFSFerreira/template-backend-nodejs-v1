@@ -1,5 +1,5 @@
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
-import type { EditorialStatusType } from '@prisma/client'
+import type { EditorialStatusType } from '@prisma/generated/enums'
 
 export type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
 

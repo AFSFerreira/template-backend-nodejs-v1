@@ -1,5 +1,5 @@
 import type { RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
-import type { EducationLevelType, IdentityType, OccupationType } from '@prisma/client'
+import type { EducationLevelType, IdentityType, OccupationType } from '@prisma/generated/enums'
 
 export type CreateUserQuery = Omit<RegisterUserBodySchemaType, 'user' | 'address'> & {
   user: Omit<RegisterUserBodySchemaType['user'], 'password' | 'occupation' | 'educationLevel' | 'identity'> & {

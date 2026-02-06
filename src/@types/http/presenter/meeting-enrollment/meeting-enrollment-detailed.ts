@@ -1,6 +1,6 @@
 import type { MeetingEnrollmentPresenterInput as MEPresenterInput } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
-import type { EducationLevelType, OccupationType } from '@prisma/client'
+import type { EducationLevelType, OccupationType } from '@prisma/generated/enums'
 
 export interface MeetingEnrollmentPresenterInput extends MeetingEnrollmentWithDetails {}
 

@@ -1,5 +1,5 @@
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
-import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/client'
+import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/generated/enums'
 
 export interface UserDetailedPresenterInput extends UserWithDetails {}
 

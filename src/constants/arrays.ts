@@ -1,4 +1,4 @@
-import { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/client'
+import { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/generated/enums'
 
 export const LOW_LEVEL_EDUCATION_TYPE_ARRAY = [
   EducationLevelType.ELEMENTARY_SCHOOL,

@@ -1,4 +1,4 @@
-import type { UserRoleType } from '@prisma/client'
+import type { UserRoleType } from '@prisma/generated/enums'
 
 export interface UserWithSimplifiedDetailsRaw {
   id: number

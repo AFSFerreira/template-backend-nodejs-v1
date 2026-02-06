@@ -1,5 +1,5 @@
 import type { IBuildListAllAcademicPublicationsQuery } from '@custom-types/repository/prisma/query/academic-publications/list-all-academic-publications'
-import { Prisma } from '@prisma/client'
+import { Prisma } from '@prisma/generated/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { mapComparisonOperation } from '@utils/mappers/map-comparison-operation'
 

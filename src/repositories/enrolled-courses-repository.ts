@@ -1,5 +1,5 @@
 import type { UpdateEnrolledCourseQuery } from '@custom-types/repository/prisma/enrolled-course/update-enrolled-course-query'
-import type { EnrolledCourse, Prisma } from '@prisma/client'
+import type { EnrolledCourse, Prisma } from '@prisma/generated/client'
 
 export interface EnrolledCoursesRepository {
   create: (data: Prisma.EnrolledCourseUncheckedCreateInput) => Promise<EnrolledCourse>

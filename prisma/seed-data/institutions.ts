@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 
 export const institutionData1: Prisma.InstitutionCreateInput = {
   name: 'UNIVERSIDADE FEDERAL FLUMINENSE',

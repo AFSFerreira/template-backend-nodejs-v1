@@ -3,7 +3,7 @@ import type { CreateNewsletterQuery } from '@custom-types/repository/prisma/news
 import type { FindConflictingNewsletterQuery } from '@custom-types/repository/prisma/newsletter/find-conflicting-newsletter-query'
 import type { ListAllNewslettersQuery } from '@custom-types/repository/prisma/newsletter/list-all-newsletters-query'
 import type { UpdateNewsletterQuery } from '@custom-types/repository/prisma/newsletter/update-newsletter-query'
-import type { Newsletter, Prisma } from '@prisma/client'
+import type { Newsletter, Prisma } from '@prisma/generated/client'
 
 export interface NewslettersRepository {
   create: (data: CreateNewsletterQuery) => Promise<Newsletter>

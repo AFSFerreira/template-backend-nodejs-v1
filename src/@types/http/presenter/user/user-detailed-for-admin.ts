@@ -5,7 +5,7 @@ import type {
   MembershipStatusType,
   OccupationType,
   UserRoleType,
-} from '@prisma/client'
+} from '@prisma/generated/enums'
 
 export interface UserDetailedPresenterForAdminInput extends UserWithDetails {}
 

@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 import {
   directorPositionData1,
   directorPositionData2,

@@ -1,4 +1,4 @@
-import type { Meeting } from '@prisma/client'
+import type { Meeting } from "@prisma/generated/client"
 
 export interface MeetingDefaultPresenterInput extends Meeting {}
 

@@ -1,4 +1,4 @@
-import type { Newsletter } from '@prisma/client'
+import type { Newsletter } from "@prisma/generated/client"
 
 export interface NewsletterDefaultPresenterInput extends Newsletter {}
 

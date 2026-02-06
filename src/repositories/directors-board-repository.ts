@@ -3,7 +3,7 @@ import type { CreateDirectorBoardQuery } from '@custom-types/repository/prisma/d
 import type { listAllDirectorBoardMembers } from '@custom-types/repository/prisma/director-board/list-all-director-board-members'
 import type { UpdateDirectorBoardQuery } from '@custom-types/repository/prisma/director-board/update-director-board-query'
 import type { DirectorBoardWithUser } from '@custom-types/validators/director-board-with-user'
-import type { DirectorBoard } from '@prisma/client'
+import type { DirectorBoard } from '@prisma/generated/client'
 
 export interface DirectorBoardRepository {
   create: (data: CreateDirectorBoardQuery) => Promise<DirectorBoardWithUser>

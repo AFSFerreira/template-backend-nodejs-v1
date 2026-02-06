@@ -1,5 +1,5 @@
 import type { UpdateInstitutionBodySchemaType } from '@custom-types/http/schemas/institution/update-institution-body-schema'
-import type { Institution } from '@prisma/client'
+import type { Institution } from '@prisma/generated/client'
 
 export interface UpdateInstitutionUseCaseRequest {
   publicId: string

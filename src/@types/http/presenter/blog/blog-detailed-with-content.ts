@@ -1,6 +1,6 @@
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
-import type { EditorialStatusType } from '@prisma/client'
-import type { JsonValue } from '@prisma/client/runtime/client'
+import type { EditorialStatusType } from '@prisma/generated/enums'
+import type { JsonValue } from '@prisma/generated/internal/prismaNamespace'
 
 export interface BlogDetailedWithContentPresenterInput extends BlogWithDetails {}
 

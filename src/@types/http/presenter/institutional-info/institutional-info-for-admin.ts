@@ -1,4 +1,4 @@
-import type { InstitutionalInfo } from '@prisma/client'
+import type { InstitutionalInfo } from '@prisma/generated/client'
 import type { JSONContent } from '@tiptap/core'
 
 export interface InstitutionalInfoForAdminPresenterInput extends InstitutionalInfo {}

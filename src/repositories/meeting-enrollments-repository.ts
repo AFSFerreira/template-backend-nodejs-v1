@@ -5,7 +5,7 @@ import type { FindByGuestEmailAndMeetingIdQuery } from '@custom-types/repository
 import type { FindByUserIdAndMeetingIdQuery } from '@custom-types/repository/prisma/meeting-enrollment/find-by-user-id-and-meeting-id-query'
 import type { ListMeetingEnrollmentsQuery } from '@custom-types/repository/prisma/meeting-enrollment/list-meeting-enrollments-query'
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
-import type { MeetingEnrollment } from '@prisma/client'
+import type { MeetingEnrollment } from '@prisma/generated/client'
 
 export interface MeetingEnrollmentsRepository {
   createForUser: (data: CreateUserMeetingEnrollmentQuery) => Promise<MeetingEnrollment>

@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 
 export const meetingPresentationAffiliationsData1: Prisma.MeetingPresentationAffiliationCreateWithoutPresentationInput[] =
   [{ name: 'Universidade de São Paulo (USP)' }, { name: 'Instituto Nacional de Pesquisas Espaciais (INPE)' }]

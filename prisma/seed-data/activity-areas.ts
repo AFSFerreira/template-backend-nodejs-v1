@@ -1,5 +1,5 @@
-import type { Prisma } from '@prisma/client'
-import { ActivityAreaType } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
+import { ActivityAreaType } from '@prisma/generated/enums'
 
 export const activityAreaData1: Prisma.ActivityAreaCreateInput = {
   area: 'ASTRONOMIA',

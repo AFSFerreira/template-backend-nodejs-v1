@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 import { academicPublicationsAuthorsCreateNestedAcademicPublicationData1 } from './academic-pulication-authors'
 import { subActivityAreaData1 } from './activity-areas'
 

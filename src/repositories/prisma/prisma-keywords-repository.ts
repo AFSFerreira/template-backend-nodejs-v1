@@ -1,9 +1,9 @@
 import type { UpdateKeywordsQuery } from '@custom-types/repository/prisma/keyword/update-keywords-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/client'
-import type { KeywordsRepository } from '../keywords-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import type { Prisma } from '@prisma/generated/client'
 import { inject, injectable } from 'tsyringe'
+import type { KeywordsRepository } from '../keywords-repository'
 
 @injectable()
 export class PrismaKeywordsRepository implements KeywordsRepository {

@@ -1,4 +1,4 @@
-import type { Blog, EditorialStatusType } from '@prisma/client'
+import type { Blog, EditorialStatusType } from '@prisma/generated/client'
 
 export interface BlogDefaultPresenterInput extends Blog {}
 

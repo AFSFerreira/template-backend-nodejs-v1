@@ -1,4 +1,5 @@
-import type { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/client'
+import type { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/generated/enums'
+import banks from 'bancos-brasileiros/bancos.json' with { type: 'json' }
 import {
   ADMIN_PERMISSIONS_ARRAY,
   CONTENT_LEADER_PERMISSIONS_ARRAY,
@@ -12,7 +13,6 @@ import {
   NOT_APPROVED_EDITORIAL_STATUS_ARRAY,
   PENDING_APPROVAL_OR_PUBLISHED_ARRAY,
 } from './arrays'
-import banks from 'bancos-brasileiros/bancos.json' with { type: 'json' }
 
 export const VALID_BANK_CODES = new Set<string>(banks.map((bank) => bank.COMPE))
 

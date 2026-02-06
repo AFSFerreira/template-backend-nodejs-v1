@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 import { addressCountry1 } from './address-country'
 
 export const addressStateData1: Prisma.AddressStateCreateInput = {

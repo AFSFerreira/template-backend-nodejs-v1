@@ -1,5 +1,5 @@
 import type { SubmitDraftForReviewParamsSchemaType } from '@custom-types/http/schemas/blog/submit-draft-for-review-params-schema'
-import type { Blog } from '@prisma/client'
+import type { Blog } from '@prisma/generated/client'
 
 export interface SubmitDraftForReviewUseCaseRequest extends SubmitDraftForReviewParamsSchemaType {
   userPublicId: string

@@ -1,4 +1,4 @@
-import type { Institution } from '@prisma/client'
+import type { Institution } from "@prisma/generated/client"
 
 export interface CreateInstitutionUseCaseRequest {
   name: string

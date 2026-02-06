@@ -1,5 +1,5 @@
 import type { IBuildListAllUserBlogsDetailedQuery } from '@custom-types/repository/prisma/query/blogs/blog-simplified'
-import { ActivityAreaType, EditorialStatusType, Prisma } from '@prisma/client'
+import { ActivityAreaType, EditorialStatusType, Prisma } from '@prisma/generated/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 
 export function buildListAllBlogsSimplifiedQuery(query: IBuildListAllUserBlogsDetailedQuery) {

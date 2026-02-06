@@ -1,4 +1,4 @@
-import type { EditorialStatusType } from '@prisma/client'
+import type { EditorialStatusType } from '@prisma/generated/enums'
 
 export interface BlogSimplifiedRaw {
   id: number

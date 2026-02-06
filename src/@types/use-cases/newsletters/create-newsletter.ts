@@ -1,5 +1,5 @@
 import type { CreateNewsletterBodySchemaType } from '@custom-types/http/schemas/newsletter/create-newsletter-body-schema'
-import type { Newsletter } from '@prisma/client'
+import type { Newsletter } from '@prisma/generated/client'
 
 export interface CreateNewsletterUseCaseRequest extends CreateNewsletterBodySchemaType {}
 

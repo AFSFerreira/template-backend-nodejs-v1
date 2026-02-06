@@ -3,7 +3,7 @@ import type { InstitutionsUsersCount } from '@custom-types/repository/prisma/ins
 import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-names-query'
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-with-users-query'
 import type { UpdateInstitutionQuery } from '@custom-types/repository/prisma/institution/update-institution-query'
-import type { Institution, Prisma } from '@prisma/client'
+import type { Institution, Prisma } from '@prisma/generated/client'
 
 export interface InstitutionsRepository {
   create: (data: Prisma.InstitutionUncheckedCreateInput) => Promise<Institution>

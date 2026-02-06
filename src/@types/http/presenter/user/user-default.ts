@@ -1,4 +1,5 @@
-import type { EducationLevelType, IdentityType, OccupationType, User, UserRoleType } from '@prisma/client'
+import type { User } from '@prisma/generated/client'
+import type { EducationLevelType, IdentityType, OccupationType, UserRoleType } from '@prisma/generated/enums'
 
 export interface UserDefaultPresenterInput extends User {}
 

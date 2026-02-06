@@ -2,13 +2,13 @@ import type {
   SubmitReviewToPendingUseCaseRequest,
   SubmitReviewToPendingUseCaseResponse,
 } from '@custom-types/use-cases/blogs/submit-review-to-pending'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_SUBMITTED_REVIEW_TO_PENDING } from '@messages/loggings/models/blog-loggings'
-import { EditorialStatusType } from '@prisma/client'
+import { EditorialStatusType } from '@prisma/generated/enums'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { BlogNotInChangesRequestedStatusError } from '@use-cases/errors/blog/blog-not-in-changes-requested-status-error'

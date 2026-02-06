@@ -7,7 +7,7 @@ import type { ListAllBlogsQuery } from '@custom-types/repository/prisma/blog/lis
 import type { UpdateBlogQuery } from '@custom-types/repository/prisma/blog/update-blog-query'
 import type { UpdateBlogStatusQuery } from '@custom-types/repository/prisma/blog/update-blog-status-query'
 import type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
-import type { Blog, Prisma } from '@prisma/client'
+import type { Blog, Prisma } from '@prisma/generated/client'
 
 export interface BlogsRepository {
   create: (data: CreateBlogQuery) => Promise<Blog>

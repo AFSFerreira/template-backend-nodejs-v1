@@ -1,4 +1,4 @@
-import type { EducationLevelType } from '@prisma/client'
+import type { EducationLevelType } from '@prisma/generated/enums'
 
 export type HasEducationLevel = { user: { educationLevel: EducationLevelType } }
 

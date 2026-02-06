@@ -1,5 +1,5 @@
 import type { FindNewsletterByPublicIdParamsSchemaType } from '@custom-types/http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
-import type { Newsletter } from '@prisma/client'
+import type { Newsletter } from '@prisma/generated/client'
 
 export interface FindNewsletterByPublicIdUseCaseRequest extends FindNewsletterByPublicIdParamsSchemaType {}
 

@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 
 export const sliderImageData1: Prisma.SliderImageCreateInput = {
   image: 'banner-1.png',

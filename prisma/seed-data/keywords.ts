@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 
 const keywordConnectOrCreateUserData1: Prisma.KeywordCreateOrConnectWithoutUserInput = {
   where: { value: 'PALAVRA-CHAVE 1' },

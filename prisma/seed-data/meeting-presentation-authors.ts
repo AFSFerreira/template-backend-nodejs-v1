@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 
 export const meetingPresentationAuthorsData1: Prisma.MeetingPresentationAuthorCreateWithoutPresentationInput[] = [
   { name: 'João Silva' },

@@ -1,5 +1,5 @@
 import type { UpdateAddressQuery } from '@custom-types/repository/prisma/address/update-address-query'
-import type { Address, Prisma } from '@prisma/client'
+import type { Address, Prisma } from '@prisma/generated/client'
 
 export interface AddressesRepository {
   create: (data: Prisma.AddressUncheckedCreateInput) => Promise<Address>

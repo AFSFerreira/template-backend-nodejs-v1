@@ -1,4 +1,4 @@
-import type { ActivityAreaType } from '@prisma/client'
+import type { ActivityAreaType } from '@prisma/generated/enums'
 
 export interface ActivityAreaQuery {
   area: string

@@ -1,4 +1,4 @@
-import type { Address } from '@prisma/client'
+import type { Address } from "@prisma/generated/client"
 
 export interface AddressDefaultPresenterInput extends Address {}
 

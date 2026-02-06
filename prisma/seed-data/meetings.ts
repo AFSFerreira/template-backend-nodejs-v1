@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 import { meetingPaymentInfoNestedMeetingData1 } from './meeting-payments-info'
 
 export const meetingData1: Prisma.MeetingCreateInput = {

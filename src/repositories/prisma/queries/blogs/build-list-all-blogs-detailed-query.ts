@@ -1,5 +1,5 @@
 import type { IBuildGetAllBlogsDetailedQuerySchemaType } from '@custom-types/repository/prisma/query/blogs/blog-detailed'
-import { ActivityAreaType, EditorialStatusType, Prisma } from '@prisma/client'
+import { ActivityAreaType, EditorialStatusType, Prisma } from '@prisma/generated/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 
 export function buildListAllBlogsDetailedQuery(query: IBuildGetAllBlogsDetailedQuerySchemaType) {

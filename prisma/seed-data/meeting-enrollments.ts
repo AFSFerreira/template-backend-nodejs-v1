@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { guestMeetingEnrollmentDataArray1, guestMeetingEnrollmentDataArray2 } from './meeting-guests'
 import { meetingPresentationNestedMeetingEnrollmentDataArray1 } from './meeting-presentations'

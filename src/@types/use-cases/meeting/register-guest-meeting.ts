@@ -1,5 +1,5 @@
 import type { RegisterGuestMeetingBodySchemaType } from '@custom-types/http/schemas/meeting/register-guest-meeting-body-schema'
-import type { MeetingEnrollment } from '@prisma/client'
+import type { MeetingEnrollment } from '@prisma/generated/client'
 
 export interface RegisterGuestMeetingUseCaseRequest extends RegisterGuestMeetingBodySchemaType {
   meetingId: string

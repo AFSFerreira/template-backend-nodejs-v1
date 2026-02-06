@@ -1,5 +1,5 @@
 import type { IBuildListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/query/users/user-simplified'
-import { MembershipStatusType, Prisma, UserRoleType } from '@prisma/client'
+import { MembershipStatusType, Prisma, UserRoleType } from '@prisma/generated/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 
 export function buildListAllUsersSimplifiedQuery(query: IBuildListAllUsersSimplifiedQuery) {

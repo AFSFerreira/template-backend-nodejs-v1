@@ -1,5 +1,5 @@
 import type { UpdateUserBodySchemaType } from '@custom-types/http/schemas/user/update-user-body-schema'
-import type { EducationLevelType, MembershipStatusType } from '@prisma/client'
+import type { EducationLevelType, MembershipStatusType } from '@prisma/generated/enums'
 
 export interface UpdateUserQuery {
   id: number

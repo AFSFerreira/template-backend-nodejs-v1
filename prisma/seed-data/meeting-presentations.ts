@@ -1,5 +1,5 @@
-import type { Prisma } from '@prisma/client'
-import { PresentationType } from '@prisma/client'
+import type { Prisma } from '@prisma/generated/client'
+import { PresentationType } from '@prisma/generated/enums'
 import {
   meetingPresentationAffiliationsData1,
   meetingPresentationAffiliationsData2,

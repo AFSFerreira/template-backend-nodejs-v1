@@ -1,5 +1,5 @@
 import type { CustomBlogWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/blog-simplified'
-import type { EditorialStatusType } from '@prisma/client'
+import type { EditorialStatusType } from '@prisma/generated/enums'
 
 export interface BlogSimplifiedPresenterInput extends CustomBlogWithSimplifiedDetails {}
 

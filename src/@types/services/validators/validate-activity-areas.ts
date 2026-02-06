@@ -1,4 +1,4 @@
-import type { ActivityArea, ActivityAreaType } from '@prisma/client'
+import type { ActivityArea, ActivityAreaType } from '@prisma/generated/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 
 type PartialActivityAreas = Array<{

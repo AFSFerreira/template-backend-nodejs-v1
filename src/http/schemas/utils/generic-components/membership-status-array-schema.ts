@@ -1,4 +1,4 @@
-import { MembershipStatusType } from '@prisma/client'
+import { MembershipStatusType } from '@prisma/generated/enums'
 import z from 'zod'
 import { membershipStatusEnumSchema } from '../enums/membership-status-enum-schema'
 
