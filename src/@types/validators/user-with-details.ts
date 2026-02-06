@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
-export const userWithDetails = Prisma.validator<Prisma.UserDefaultArgs>()({
+export const userWithDetails = {
   include: {
     EnrolledCourse: true,
     ActivityArea: true,
@@ -28,6 +28,6 @@ export const userWithDetails = Prisma.validator<Prisma.UserDefaultArgs>()({
       },
     },
   },
-})
+} satisfies Prisma.UserDefaultArgs
 
 export type UserWithDetails = Prisma.UserGetPayload<typeof userWithDetails>

@@ -3,7 +3,7 @@ import type { Options as TsupOptions } from "tsup"
 
 const defaultConfig = {
   outDir: "dist",
-  target: 'es2022',
+  target: 'esnext',
   format: ["esm"],
   minify: true,
   sourcemap: true,

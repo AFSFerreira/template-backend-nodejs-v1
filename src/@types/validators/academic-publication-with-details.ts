@@ -1,11 +1,11 @@
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
-export const academicPublicationWithDetails = Prisma.validator<Prisma.AcademicPublicationDefaultArgs>()({
+export const academicPublicationWithDetails = {
   include: {
     User: true,
     ActivityArea: true,
     AcademicPublicationAuthors: true,
   },
-})
+} satisfies Prisma.AcademicPublicationDefaultArgs
 
 export type AcademicPublicationWithDetails = Prisma.AcademicPublicationGetPayload<typeof academicPublicationWithDetails>

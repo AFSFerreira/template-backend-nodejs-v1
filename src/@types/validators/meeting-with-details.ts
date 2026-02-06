@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client'
+import type { Prisma } from '@prisma/client'
 
-export const meetingWithDetails = Prisma.validator<Prisma.MeetingDefaultArgs>()({
+export const meetingWithDetails = {
   include: {
     MeetingPaymentInfo: {
       include: {
@@ -9,6 +9,6 @@ export const meetingWithDetails = Prisma.validator<Prisma.MeetingDefaultArgs>()(
     },
     MeetingDate: true,
   },
-})
+} satisfies Prisma.MeetingDefaultArgs
 
 export type MeetingWithDetails = Prisma.MeetingGetPayload<typeof meetingWithDetails>
