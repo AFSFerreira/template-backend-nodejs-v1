@@ -1,4 +1,6 @@
 {
+  // "$schema": "https://www.schemastore.org/tsconfig",
+  // "_version": "22.0.0",
   "compilerOptions": {
     "outDir": "./dist",
     "module": "esnext",
@@ -45,5 +47,14 @@
     }
   },
   "include": ["./**/*.ts", "tsup.config.ts"],
-  "exclude": ["node_modules", "dist", "uploads", "./**/*.cjs", "./**/*.js", "./**/*.json", "ecosystem.config.cjs", "./**/*.mjs"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "uploads",
+    "./**/*.cjs",
+    "./**/*.js",
+    "./**/*.json",
+    "ecosystem.config.cjs",
+    "./**/*.mjs"
+  ]
 }
