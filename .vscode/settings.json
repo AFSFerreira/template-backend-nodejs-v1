@@ -1,4 +1,9 @@
 {
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+        "text": "Gere as mensagens de commit SEMPRE em Português do Brasil (PT-BR). Siga estritamente o padrão Conventional Commits (feat, fix, chore, docs, etc). Seja conciso."
+    }
+  ],
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
   "files.autoSave": "afterDelay",
