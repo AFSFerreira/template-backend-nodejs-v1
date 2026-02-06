@@ -11,10 +11,11 @@ import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
-import { userWithDetails } from '@custom-types/validators/user-with-details'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
+import type { UsersRepository } from '../users-repository'
+import { userWithDetails } from '@custom-types/validators/user-with-details'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ActivityAreaType, MembershipStatusType } from '@prisma/generated/enums'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
@@ -24,7 +25,6 @@ import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-
 import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
-import type { UsersRepository } from '../users-repository'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 @injectable()

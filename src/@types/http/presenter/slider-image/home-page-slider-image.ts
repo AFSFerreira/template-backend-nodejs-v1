@@ -1,4 +1,4 @@
-import type { SliderImage } from "@prisma/generated/client"
+import type { SliderImage } from '@prisma/generated/client'
 
 export interface HomePageSliderImagePresenterInput extends SliderImage {}
 

@@ -1,8 +1,8 @@
 import type { UpdateInstitutionalInfoQuery } from '@custom-types/repository/prisma/institutional-info/update-institutional-info-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { InstitutionalInfo } from '@prisma/generated/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

@@ -3,13 +3,13 @@ import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/pri
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-with-users-query'
 import type { UpdateInstitutionQuery } from '@custom-types/repository/prisma/institution/update-institution-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
+import type { InstitutionsRepository } from '../institutions-repository'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, UserRoleType } from '@prisma/generated/enums'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
-import type { InstitutionsRepository } from '../institutions-repository'
 
 @injectable()
 export class PrismaInstitutionsRepository implements InstitutionsRepository {

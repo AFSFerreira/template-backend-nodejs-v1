@@ -6,4 +6,3 @@ export const prisma = new PrismaClient({
   log: IS_DEBUG ? ['query', 'info', 'warn'] : [],
   adapter,
 })
-

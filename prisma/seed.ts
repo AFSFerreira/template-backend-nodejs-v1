@@ -1,5 +1,5 @@
-import { adapter, pool } from '@lib/prisma/helpers/configuration'
 import type { AddressState, Meeting, User } from '@prisma/generated/client'
+import { adapter, pool } from '@lib/prisma/helpers/configuration'
 import { PrismaClient } from '@prisma/generated/client'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'

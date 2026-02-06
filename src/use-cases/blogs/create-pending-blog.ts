@@ -3,17 +3,18 @@ import type {
   CreatePendingBlogUseCaseRequest,
   CreatePendingBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-blog'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/generated/enums'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { BlogsRepository } from '@repositories/blogs-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
@@ -32,7 +33,6 @@ import { inject, injectable } from 'tsyringe'
 import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 import { InvalidBlogContentError } from '../errors/blog/invalid-blog-content-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
-import type { InputJsonValue } from '@prisma/client/runtime/client'
 
 @injectable()
 export class CreatePendingBlogUseCase {

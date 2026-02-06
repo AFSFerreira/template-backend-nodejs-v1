@@ -1,8 +1,8 @@
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
-import { inject, injectable } from 'tsyringe'
 import type { AuthenticationAuditsRepository } from '../authentication-audits-repository'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class PrismaAuthenticationAuditsRepository implements AuthenticationAuditsRepository {

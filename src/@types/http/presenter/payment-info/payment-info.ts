@@ -1,4 +1,4 @@
-import type { PaymentInfo } from "@prisma/generated/client"
+import type { PaymentInfo } from '@prisma/generated/client'
 
 export interface PaymentInfoPresenterInput extends PaymentInfo {}
 

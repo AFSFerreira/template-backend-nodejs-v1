@@ -2,13 +2,13 @@ import type {
   GetBlogHTMLContentUseCaseRequest,
   GetBlogHTMLContentUseCaseResponse,
 } from '@custom-types/use-cases/blogs/get-blog-html-content'
+import type { BlogsRepository } from '@repositories/blogs-repository'
+import type { JSONContent } from '@tiptap/core'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import type { BlogsRepository } from '@repositories/blogs-repository'
 import { getBlogHTMLCached, setBlogHTMLCache } from '@services/cache/blogs-html-cache'
-import type { JSONContent } from '@tiptap/core'
 import { generateHTML } from '@tiptap/html'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'

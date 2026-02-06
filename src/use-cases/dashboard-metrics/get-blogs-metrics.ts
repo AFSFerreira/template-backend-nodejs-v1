@@ -1,7 +1,7 @@
 import type { GetBlogsMetricsUseCaseResponse } from '@custom-types/use-cases/dashboard-metrics/get-blogs-metrics'
+import type { BlogsRepository } from '@repositories/blogs-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import type { BlogsRepository } from '@repositories/blogs-repository'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

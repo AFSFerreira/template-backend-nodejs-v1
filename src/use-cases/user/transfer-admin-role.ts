@@ -2,12 +2,12 @@ import type {
   TransferAdminRoleUseCaseRequest,
   TransferAdminRoleUseCaseResponse,
 } from '@custom-types/use-cases/user/transfer-admin-role'
-import { logger } from '@lib/logger'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UsersRepository } from '@repositories/users-repository'
+import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { UserRoleType } from '@prisma/generated/enums'
-import type { UsersRepository } from '@repositories/users-repository'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { CannotTransferAdminToSelfError } from '../errors/user/cannot-transfer-admin-to-self-error'

@@ -3,10 +3,10 @@ import type {
   FindBlogByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/blogs/find-blog-by-public-id'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { BlogsRepository } from '@repositories/blogs-repository'
 import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import type { BlogsRepository } from '@repositories/blogs-repository'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { registerBlogViews } from '@services/cache/register-blog-views-cache'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
