@@ -398,7 +398,7 @@ CREATE TABLE "public"."meeting_enrollments" (
 );
 
 -- CreateTable
-CREATE TABLE "_ActivityAreaToBlog" (
+CREATE TABLE "public"."_ActivityAreaToBlog" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
 
@@ -432,22 +432,22 @@ CREATE INDEX "users_membership_status_idx" ON "public"."users"("membership_statu
 CREATE UNIQUE INDEX "users_identity_type_identity_document_key" ON "public"."users"("identity_type", "identity_document");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_secondary_email_key" ON "users"("secondary_email");
+CREATE UNIQUE INDEX "users_secondary_email_key" ON "public"."users"("secondary_email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "addresses_user_id_key" ON "public"."addresses"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "address_states_name_country_id_key" ON "address_states"("name", "country_id");
+CREATE UNIQUE INDEX "address_states_name_country_id_key" ON "public"."address_states"("name", "country_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "address_countries_name_key" ON "address_countries"("name");
+CREATE UNIQUE INDEX "address_countries_name_key" ON "public"."address_countries"("name");
 
 -- CreateIndex
-CREATE INDEX "address_countries_name_idx" ON "address_countries"("name");
+CREATE INDEX "address_countries_name_idx" ON "public"."address_countries"("name");
 
 -- CreateIndex
-CREATE INDEX "addresses_state_id_idx" ON "addresses"("state_id");
+CREATE INDEX "addresses_state_id_idx" ON "public"."addresses"("state_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses"("user_id");
@@ -486,13 +486,13 @@ CREATE INDEX "directors_board_user_id_idx" ON "public"."directors_board"("user_i
 CREATE UNIQUE INDEX "directors_board_director_position_id_key" ON "public"."directors_board"("director_position_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "directors_board_public_id_key" ON "directors_board"("public_id");
+CREATE UNIQUE INDEX "directors_board_public_id_key" ON "public"."directors_board"("public_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "director_positions_position_key" ON "public"."director_positions"("position");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "director_positions_public_id_key" ON "director_positions"("public_id");
+CREATE UNIQUE INDEX "director_positions_public_id_key" ON "public"."director_positions"("public_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."meeting_payment_information"("meeting_id");
@@ -510,55 +510,58 @@ CREATE INDEX "meetings_last_date_idx" ON "public"."meetings"("last_date");
 CREATE INDEX "meeting_date_meeting_id_idx" ON "public"."meeting_date"("meeting_id");
 
 -- CreateIndex
-CREATE INDEX "meeting_enrollments_meeting_id_idx" ON "meeting_enrollments"("meeting_id");
+CREATE INDEX "meeting_enrollments_meeting_id_idx" ON "public"."meeting_enrollments"("meeting_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "public"."blogs"("public_id");
 
 -- CreateIndex
-CREATE INDEX "blogs_editorial_status_idx" ON "blogs"("editorial_status");
+CREATE INDEX "blogs_editorial_status_idx" ON "public"."blogs"("editorial_status");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "newsletters_public_id_key" ON "public"."newsletters"("public_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "newsletters"("sequence_number");
+CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "public"."newsletters"("sequence_number");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "slider_images_public_id_key" ON "slider_images"("public_id");
+CREATE UNIQUE INDEX "newsletters_edition_number_volume_key" ON "public"."newsletters"("edition_number", "volume");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "slider_images_image_key" ON "slider_images"("image");
+CREATE UNIQUE INDEX "slider_images_public_id_key" ON "public"."slider_images"("public_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_key" ON "user_meeting_enrollments"("meeting_enrollment_id");
+CREATE UNIQUE INDEX "slider_images_image_key" ON "public"."slider_images"("image");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_user_id_key" ON "user_meeting_enrollments"("meeting_enrollment_id", "user_id");
+CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_key" ON "public"."user_meeting_enrollments"("meeting_enrollment_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_email_verification_token_key" ON "users"("email_verification_token");
+CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_user_id_key" ON "public"."user_meeting_enrollments"("meeting_enrollment_id", "user_id");
 
 -- CreateIndex
-CREATE INDEX "users_new_email_idx" ON "users"("new_email");
+CREATE UNIQUE INDEX "users_email_verification_token_key" ON "public"."users"("email_verification_token");
 
 -- CreateIndex
-CREATE INDEX "users_role_idx" ON "users"("role");
+CREATE INDEX "users_new_email_idx" ON "public"."users"("new_email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "guest_meeting_enrollments_meeting_enrollment_id_key" ON "guest_meeting_enrollments"("meeting_enrollment_id");
+CREATE INDEX "users_role_idx" ON "public"."users"("role");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "meeting_presentations_meeting_enrollment_id_key" ON "meeting_presentations"("meeting_enrollment_id");
+CREATE UNIQUE INDEX "guest_meeting_enrollments_meeting_enrollment_id_key" ON "public"."guest_meeting_enrollments"("meeting_enrollment_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "meeting_enrollments_public_id_key" ON "meeting_enrollments"("public_id");
+CREATE UNIQUE INDEX "meeting_presentations_meeting_enrollment_id_key" ON "public"."meeting_presentations"("meeting_enrollment_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "meeting_enrollments_public_id_key" ON "public"."meeting_enrollments"("public_id");
 
 -- CreateIndex
 CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
 
 -- CreateIndex
-CREATE INDEX "_ActivityAreaToBlog_B_index" ON "_ActivityAreaToBlog"("B");
+CREATE INDEX "_ActivityAreaToBlog_B_index" ON "public"."_ActivityAreaToBlog"("B");
 
 -- AddForeignKey
 ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -570,16 +573,16 @@ ALTER TABLE "public"."users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIG
 ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "addresses" ADD CONSTRAINT "addresses_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "address_states"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_state_id_fkey" FOREIGN KEY ("state_id") REFERENCES "public"."address_states"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "address_states" ADD CONSTRAINT "address_states_country_id_fkey" FOREIGN KEY ("country_id") REFERENCES "address_countries"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."address_states" ADD CONSTRAINT "address_states_country_id_fkey" FOREIGN KEY ("country_id") REFERENCES "public"."address_countries"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."enrolled_courses" ADD CONSTRAINT "enrolled_courses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -618,19 +621,19 @@ ALTER TABLE "public"."meeting_date" ADD CONSTRAINT "meeting_date_meeting_id_fkey
 ALTER TABLE "public"."blogs" ADD CONSTRAINT "blogs_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "meeting_enrollments" ADD CONSTRAINT "meeting_enrollments_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_enrollments" ADD CONSTRAINT "meeting_enrollments_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_meeting_enrollments" ADD CONSTRAINT "user_meeting_enrollments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."user_meeting_enrollments" ADD CONSTRAINT "user_meeting_enrollments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_meeting_enrollments" ADD CONSTRAINT "user_meeting_enrollments_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."user_meeting_enrollments" ADD CONSTRAINT "user_meeting_enrollments_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "public"."meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "guest_meeting_enrollments" ADD CONSTRAINT "guest_meeting_enrollments_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."guest_meeting_enrollments" ADD CONSTRAINT "guest_meeting_enrollments_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "public"."meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "public"."meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -639,7 +642,7 @@ ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOR
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_A_fkey" FOREIGN KEY ("A") REFERENCES "area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_B_fkey" FOREIGN KEY ("B") REFERENCES "blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."blogs"("id") ON DELETE CASCADE ON UPDATE CASCADE;
