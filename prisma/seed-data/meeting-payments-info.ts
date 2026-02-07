@@ -7,6 +7,7 @@ export const meetingPaymentInfoNestedMeetingData1: Prisma.MeetingPaymentInfoCrea
     code: '123456',
     agency: 'CAIXA ECONÔMICA FEDERAL',
     account: 'account',
+    billingEmail: "example@email.com",
     value: 120.34,
     limitDate: new Date(new Date('2025-11-14').getTime() + 1000 * 60 * 60 * 24),
   },
