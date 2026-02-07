@@ -8,7 +8,7 @@ export class AcademicPublicationFilteredPresenter
   toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication {
     return {
       title: input.title,
-      authorsName: input.authorsName,
+      authorsNames: input.authorsNames,
       editionNumber: input.editionNumber,
       journalName: input.journalName,
       linkDoi: input.linkDoi,

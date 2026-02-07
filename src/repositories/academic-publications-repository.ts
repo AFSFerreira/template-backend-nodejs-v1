@@ -1,4 +1,5 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
+import type { GetAcademicPublicationsYearsQuerySchemaType } from '@custom-types/http/schemas/academic-pulication/get-academic-publications-years-query-schema'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/prisma/academic-publication/list-all-academic-publications-query'
 import type { UpdateAcademicPublicationQuery } from '@custom-types/repository/prisma/academic-publication/update-academic-publication-query'
 import type { CustomAcademicPublicationWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
@@ -12,6 +13,9 @@ export interface AcademicPublicationsRepository {
   listAllAcademicPublications: (
     query?: ListAllAcademicPublicationsQuery,
   ) => Promise<PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]>>
+  getYearsWithCount: (
+    query: GetAcademicPublicationsYearsQuerySchemaType,
+  ) => Promise<PaginatedResult<Array<{ year: number; count: number }>>>
   delete: (id: number) => Promise<void>
   update: (query: UpdateAcademicPublicationQuery) => Promise<AcademicPublication>
 }

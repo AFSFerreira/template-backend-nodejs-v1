@@ -11,5 +11,5 @@ export interface HTTPAcademicPublication {
   startPage: string
   linkDoi: string
   mainCategory: string
-  authorsName: string[]
+  authorsNames: string[]
 }

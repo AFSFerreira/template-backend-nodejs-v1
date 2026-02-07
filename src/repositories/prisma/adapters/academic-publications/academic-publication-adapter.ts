@@ -16,7 +16,7 @@ export function academicPublicationAdapter(
     startPage: rawPublication.start_page,
     linkDoi: rawPublication.link_doi,
     createdAt: rawPublication.created_at,
-    authorsName: rawPublication.authors,
+    authorsNames: rawPublication.authors,
     mainCategory: rawPublication.main_category,
   }
 }

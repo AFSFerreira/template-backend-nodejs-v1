@@ -22,6 +22,6 @@ export interface CustomAcademicPublicationWithSimplifiedDetails {
   startPage: string
   linkDoi: string
   createdAt: Date
-  authorsName: string[]
+  authorsNames: string[]
   mainCategory: string
 }

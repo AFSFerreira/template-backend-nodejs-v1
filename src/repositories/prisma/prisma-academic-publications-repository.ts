@@ -1,7 +1,9 @@
 import type { OrderableType } from '@custom-types/custom/orderable'
+import type { GetAcademicPublicationsYearsQuerySchemaType } from '@custom-types/http/schemas/academic-pulication/get-academic-publications-years-query-schema'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/prisma/academic-publication/list-all-academic-publications-query'
 import type { UpdateAcademicPublicationQuery } from '@custom-types/repository/prisma/academic-publication/update-academic-publication-query'
 import type { AcademicPublicationSimplifiedRaw } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
+import type { AcademicPublicationYearRaw } from '@custom-types/repository/prisma/adapter/academic-publication-year'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
@@ -9,6 +11,8 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
+import { academicPublicationYearAdapter } from './adapters/academic-publications/academic-publication-year-adapter'
+import { buildListAcademicPublicationsYearsQuery } from './queries/academic-publications/build-list-academic-publications-years-query'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
 
 @injectable()
@@ -74,7 +78,7 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
       const formattedAcademicPublications = academicPublications.map((academicPublicationInfo) => ({
         ...academicPublicationInfo,
-        authorsName: academicPublicationInfo.AcademicPublicationAuthors.map(
+        authorsNames: academicPublicationInfo.AcademicPublicationAuthors.map(
           (academicPublicationAuthorInfo) => academicPublicationAuthorInfo.name,
         ),
         mainCategory: academicPublicationInfo.ActivityArea.area,
@@ -105,6 +109,30 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
     return {
       data: academicPublications.map(academicPublicationAdapter),
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize,
+      },
+    }
+  }
+
+  async getYearsWithCount(query: GetAcademicPublicationsYearsQuerySchemaType) {
+    const { searchQuery, countQuery } = buildListAcademicPublicationsYearsQuery(query)
+
+    const [countResult, academicPublicationYears] = await Promise.all([
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
+      this.dbContext.client.$queryRaw<AcademicPublicationYearRaw[]>(searchQuery),
+    ])
+
+    const pageSize = query.limit
+    const totalItems = countResult[0].total
+
+    const totalPages = evalTotalPages({ pageSize, totalItems })
+
+    return {
+      data: academicPublicationYears.map(academicPublicationYearAdapter),
       meta: {
         totalItems,
         totalPages,

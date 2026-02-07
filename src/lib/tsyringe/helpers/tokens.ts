@@ -37,6 +37,7 @@ export const tsyringeTokens = {
     academicPublication: {
       academicPublicationDefault: 'academic-publication:default',
       academicPublicationSimplified: 'academic-publication:simplified',
+      academicPublicationYear: 'academic-publication:year',
     },
 
     activityArea: {

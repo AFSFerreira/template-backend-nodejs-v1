@@ -8,5 +8,4 @@ export const INVALID_CRON_FORMAT = 'Formato de expressão cron inválido'
 
 export const NUMERIC_INTEGER_STRING_INVALID = 'O valor deve conter apenas números inteiros'
 
-export const INVALID_PIX_KEY =
-  'Chave PIX inválida. Use um CPF, CNPJ, e-mail, telefone (+5511999999999) ou chave aleatória válida'
+export const INVALID_PIX_KEY = 'Chave PIX inválida. Use um CPF, CNPJ, e-mail, telefone ou chave aleatória válida'

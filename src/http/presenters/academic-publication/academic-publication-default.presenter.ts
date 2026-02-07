@@ -10,7 +10,7 @@ export class AcademicPublicationDefaultPresenter
   toHTTP(input: AcademicPublicationDefaultPresenterInput): HTTPAcademicPublication {
     return {
       title: input.title,
-      authorsName: input.AcademicPublicationAuthors?.map((author) => author.name),
+      authorsNames: input.AcademicPublicationAuthors?.map((author) => author.name),
       editionNumber: input.editionNumber,
       journalName: input.journalName,
       linkDoi: input.linkDoi,
