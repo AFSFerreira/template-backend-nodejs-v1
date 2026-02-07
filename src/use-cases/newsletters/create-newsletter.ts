@@ -17,7 +17,6 @@ import {
   buildNewsletterTempHtmlPath,
 } from '@services/builders/paths/build-newsletter-html-path'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
-import { moveFile } from '@services/files/move-file'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { NewsletterAlreadyExistsError } from '../errors/newsletter/newsletter-already-exists-error'
@@ -36,57 +35,59 @@ export class CreateNewsletterUseCase {
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
     const { contentFilename, ...filteredCreatedNewsletterInput } = createNewsletterInput
 
-    ensureExists({
-      value: await moveFile({
-        oldFilePath: buildNewsletterTempHtmlPath(contentFilename),
-        newFilePath: buildNewsletterHtmlPath(contentFilename),
-      }),
-      error: new NewsletterHtmlPersistError(),
-    })
-
-    try {
-      const { newsletter } = await this.dbContext.runInTransaction(async () => {
-        ensureNotExists({
-          value: await this.newslettersRepository.findConflictingNewsletter({
-            editionNumber: createNewsletterInput.editionNumber,
-            sequenceNumber: createNewsletterInput.sequenceNumber,
-            volume: createNewsletterInput.volume,
-          }),
-          error: new NewsletterAlreadyExistsError(),
-        })
-
-        const newsletter = await this.newslettersRepository.create({
-          ...filteredCreatedNewsletterInput,
-          content: contentFilename,
-        })
-
-        return { newsletter }
+    const { newsletter } = await this.dbContext.runInTransaction(async () => {
+      ensureNotExists({
+        value: await this.newslettersRepository.findConflictingNewsletter({
+          editionNumber: createNewsletterInput.editionNumber,
+          sequenceNumber: createNewsletterInput.sequenceNumber,
+          volume: createNewsletterInput.volume,
+        }),
+        error: new NewsletterAlreadyExistsError(),
       })
 
-      logger.info(
-        {
-          newsletterPublicId: newsletter.publicId,
-          sequenceNumber: newsletter.sequenceNumber,
-        },
-        NEWSLETTER_CREATED_SUCCESSFULLY,
-      )
+      const newsletter = await this.newslettersRepository.create({
+        ...filteredCreatedNewsletterInput,
+        content: contentFilename,
+      })
 
-      return {
-        newsletter: {
-          ...newsletter,
-          content: buildNewsletterHtmlUrl(newsletter.content),
-        },
-      }
+      return { newsletter }
+    })
+
+    const newsletterHtmlPaths = {
+      oldFilePath: buildNewsletterTempHtmlPath(contentFilename),
+      newFilePath: buildNewsletterHtmlPath(contentFilename),
+    }
+
+    try {
+      ensureExists({
+        value: await moveFileEnqueued(newsletterHtmlPaths),
+        error: new NewsletterHtmlPersistError(),
+      })
     } catch (error) {
       logError({ error, message: NEWSLETTER_CREATION_ERROR })
 
-      // Enfileirando a restauração do arquivo incorretamente persistido:
+      // Restaurando o arquivo incorretamente persistido:
       await moveFileEnqueued({
-        oldFilePath: buildNewsletterHtmlPath(contentFilename),
-        newFilePath: buildNewsletterTempHtmlPath(contentFilename),
+        oldFilePath: newsletterHtmlPaths.newFilePath,
+        newFilePath: newsletterHtmlPaths.oldFilePath,
       })
 
       throw error
+    }
+
+    logger.info(
+      {
+        newsletterPublicId: newsletter.publicId,
+        sequenceNumber: newsletter.sequenceNumber,
+      },
+      NEWSLETTER_CREATED_SUCCESSFULLY,
+    )
+
+    return {
+      newsletter: {
+        ...newsletter,
+        content: buildNewsletterHtmlUrl(newsletter.content),
+      },
     }
   }
 }

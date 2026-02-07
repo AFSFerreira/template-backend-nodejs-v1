@@ -28,7 +28,6 @@ import {
   buildUserTempProfileImagePath,
 } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { moveFile } from '@services/files/move-file'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -96,124 +95,130 @@ export class CreateUserUseCase {
 
     let profileImage = DEFAULT_PROFILE_IMAGE_NAME
 
-    try {
-      if (registerUseCaseInput.user.profileImage) {
-        ensureExists({
-          value: await moveFile({
-            oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
-            newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
-          }),
-          error: new UserImageStorageError(),
+    const createdUser = await this.dbContext.runInTransaction(async () => {
+      const userAlreadyExists = await this.usersRepository.findConflictingUser({
+        email: registerUseCaseInput.user.email,
+        secondaryEmail: registerUseCaseInput.user.secondaryEmail,
+        username: registerUseCaseInput.user.username,
+        identity: registerUseCaseInput.user.identity as FindConflictingUserQuery['identity'],
+      })
+
+      if (userAlreadyExists) {
+        const apiError = getTrueMapping<ApiError>([
+          {
+            expression: userAlreadyExists.email === registerUseCaseInput.user.email,
+            value: new UserWithSameEmail(),
+          },
+          {
+            expression: userAlreadyExists.username === registerUseCaseInput.user.username,
+            value: new UserWithSameUsername(),
+          },
+          {
+            expression: objectDeepEqual(
+              { identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType },
+              registerUseCaseInput.user.identity,
+            ),
+            value: new UserWithSameIdentityDocument(),
+          },
+        ])
+
+        if (!apiError) {
+          throw new UserAlreadyExistsError()
+        }
+
+        throw apiError
+      }
+
+      if (
+        isRegisterUserHighLevelStudentEducation(registerUseCaseInput) ||
+        isRegisterUserHighLevelEducation(registerUseCaseInput)
+      ) {
+        const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
+          area: academicPub.area,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        }))
+
+        const activityAreas = [
+          ...academicPublicationsActivityAreas,
+          {
+            area: registerUseCaseInput.activityArea.mainActivityArea,
+            type: ActivityAreaType.AREA_OF_ACTIVITY,
+          },
+          {
+            area: registerUseCaseInput.activityArea.subActivityArea,
+            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+          },
+        ]
+
+        const { validatedActivityAreas, success } = await validateActivityAreas({
+          activityAreas,
+          activityAreasRepository: this.activityAreasRepository,
         })
 
+        if (!success) {
+          throw new InvalidActivityArea(
+            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+          )
+        }
+
+        const isValidInstitution = await validateInstitutionName({
+          institution: registerUseCaseInput.institution.name,
+          institutionsRepository: this.institutionsRepository,
+        })
+
+        if (!isValidInstitution) {
+          throw new InvalidInstitutionName()
+        }
+      }
+
+      const addressCountry = await this.addressCountriesRepository.findOrCreate(registerUseCaseInput.address.country)
+
+      const addressState = await this.addressStatesRepository.findOrCreate({
+        state: registerUseCaseInput.address.state,
+        countryId: addressCountry.id,
+      })
+
+      const { password, identity, ...filteredUserInfo } = registerUseCaseInput.user
+      const { state, country, ...filteredAddressInfo } = registerUseCaseInput.address
+
+      if (registerUseCaseInput.user.profileImage) {
         profileImage = registerUseCaseInput.user.profileImage
       }
 
-      const createdUser = await this.dbContext.runInTransaction(async () => {
-        const userAlreadyExists = await this.usersRepository.findConflictingUser({
-          email: registerUseCaseInput.user.email,
-          secondaryEmail: registerUseCaseInput.user.secondaryEmail,
-          username: registerUseCaseInput.user.username,
-          identity: registerUseCaseInput.user.identity as FindConflictingUserQuery['identity'],
-        })
-
-        if (userAlreadyExists) {
-          const apiError = getTrueMapping<ApiError>([
-            {
-              expression: userAlreadyExists.email === registerUseCaseInput.user.email,
-              value: new UserWithSameEmail(),
-            },
-            {
-              expression: userAlreadyExists.username === registerUseCaseInput.user.username,
-              value: new UserWithSameUsername(),
-            },
-            {
-              expression: objectDeepEqual(
-                { identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType },
-                registerUseCaseInput.user.identity,
-              ),
-              value: new UserWithSameIdentityDocument(),
-            },
-          ])
-
-          if (!apiError) {
-            throw new UserAlreadyExistsError()
-          }
-
-          throw apiError
-        }
-
-        if (
-          isRegisterUserHighLevelStudentEducation(registerUseCaseInput) ||
-          isRegisterUserHighLevelEducation(registerUseCaseInput)
-        ) {
-          const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
-            area: academicPub.area,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          }))
-
-          const activityAreas = [
-            ...academicPublicationsActivityAreas,
-            {
-              area: registerUseCaseInput.activityArea.mainActivityArea,
-              type: ActivityAreaType.AREA_OF_ACTIVITY,
-            },
-            {
-              area: registerUseCaseInput.activityArea.subActivityArea,
-              type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-            },
-          ]
-
-          const { validatedActivityAreas, success } = await validateActivityAreas({
-            activityAreas,
-            activityAreasRepository: this.activityAreasRepository,
-          })
-
-          if (!success) {
-            throw new InvalidActivityArea(
-              validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-            )
-          }
-
-          const isValidInstitution = await validateInstitutionName({
-            institution: registerUseCaseInput.institution.name,
-            institutionsRepository: this.institutionsRepository,
-          })
-
-          if (!isValidInstitution) {
-            throw new InvalidInstitutionName()
-          }
-        }
-
-        const addressCountry = await this.addressCountriesRepository.findOrCreate(registerUseCaseInput.address.country)
-
-        const addressState = await this.addressStatesRepository.findOrCreate({
-          state: registerUseCaseInput.address.state,
-          countryId: addressCountry.id,
-        })
-
-        const { password, identity, ...filteredUserInfo } = registerUseCaseInput.user
-        const { state, country, ...filteredAddressInfo } = registerUseCaseInput.address
-
-        const user = await this.usersRepository.create({
-          ...registerUseCaseInput,
-          user: {
-            ...filteredUserInfo,
-            identityType: identity.identityType,
-            identityDocument: identity.identityDocument,
-            profileImage,
-            passwordHash,
-            emailVerificationTokenHash,
-            emailVerificationTokenExpiresAt,
-          },
-          address: {
-            ...filteredAddressInfo,
-            stateId: addressState.id,
-          },
-        })
-
-        return user
+      const user = await this.usersRepository.create({
+        ...registerUseCaseInput,
+        user: {
+          ...filteredUserInfo,
+          identityType: identity.identityType,
+          identityDocument: identity.identityDocument,
+          profileImage,
+          passwordHash,
+          emailVerificationTokenHash,
+          emailVerificationTokenExpiresAt,
+        },
+        address: {
+          ...filteredAddressInfo,
+          stateId: addressState.id,
+        },
       })
+
+      return user
+    })
+
+    const userProfileImagePaths = registerUseCaseInput.user.profileImage
+      ? {
+          oldFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+          newFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
+        }
+      : undefined
+
+    try {
+      if (userProfileImagePaths) {
+        ensureExists({
+          value: await moveFileEnqueued(userProfileImagePaths),
+          error: new UserImageStorageError(),
+        })
+      }
 
       const emailInfo = {
         fullName: createdUser.fullName,
@@ -246,11 +251,11 @@ export class CreateUserUseCase {
     } catch (error) {
       logError({ error, message: USER_CREATION_ERROR })
 
-      // Enfileirando a restauração da imagem incorretamente persistida:
-      if (registerUseCaseInput.user.profileImage) {
+      // Restaurando a imagem incorretamente persistida:
+      if (userProfileImagePaths) {
         await moveFileEnqueued({
-          oldFilePath: buildUserProfileImagePath(registerUseCaseInput.user.profileImage),
-          newFilePath: buildUserTempProfileImagePath(registerUseCaseInput.user.profileImage),
+          oldFilePath: userProfileImagePaths.newFilePath,
+          newFilePath: userProfileImagePaths.oldFilePath,
         })
       }
 

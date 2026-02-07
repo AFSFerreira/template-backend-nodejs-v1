@@ -5,6 +5,7 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { SLIDER_IMAGE_CREATION_ERROR } from '@messages/loggings/models/slider-image-loggings'
@@ -13,7 +14,6 @@ import {
   buildTempSliderImagePath,
 } from '@services/builders/paths/build-slider-image-path'
 import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
-import { moveFile } from '@services/files/move-file'
 import { HomePageSliderImagePersistError } from '@use-cases/errors/slider-image/home-page-slider-image-persist-error'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
 import { ensureExists } from '@utils/validators/ensure'
@@ -32,51 +32,48 @@ export class CreateHomePageSliderImageUseCase {
   async execute(
     createHomePageSliderImageUseCaseInput: CreateHomePageSliderImageUseCaseRequest,
   ): Promise<CreateHomePageSliderImageUseCaseResponse> {
-    let persistHomePageSliderImage: string | undefined
+    const { createdSliderImage } = await this.dbContext.runInTransaction(async () => {
+      const sliderImageQuanty = await this.sliderImagesRepository.totalCount()
+      const newSliderOrder = sliderImageQuanty + 1
+
+      if (newSliderOrder > MAX_SLIDER_IMAGES_QUANTITY) {
+        throw new SliderImageLimitReachedError()
+      }
+
+      const createdSliderImage = await this.sliderImagesRepository.create({
+        ...createHomePageSliderImageUseCaseInput,
+        order: newSliderOrder,
+      })
+
+      return { createdSliderImage }
+    })
+
+    const homePageSliderImagePaths = {
+      oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+      newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
+    }
 
     try {
-      persistHomePageSliderImage = ensureExists({
-        value: await moveFile({
-          oldFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-          newFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-        }),
+      ensureExists({
+        value: await moveFileEnqueued(homePageSliderImagePaths),
         error: new HomePageSliderImagePersistError(),
       })
-
-      const { createdSliderImage } = await this.dbContext.runInTransaction(async () => {
-        const sliderImageQuanty = await this.sliderImagesRepository.totalCount()
-        const newSliderOrder = sliderImageQuanty + 1
-
-        if (newSliderOrder > MAX_SLIDER_IMAGES_QUANTITY) {
-          throw new SliderImageLimitReachedError()
-        }
-
-        const createdSliderImage = await this.sliderImagesRepository.create({
-          ...createHomePageSliderImageUseCaseInput,
-          order: newSliderOrder,
-        })
-
-        return { createdSliderImage }
-      })
-
-      return {
-        sliderImage: {
-          ...createdSliderImage,
-          image: buildSliderImageUrl(createdSliderImage.image, 'home-page'),
-        },
-      }
     } catch (error) {
       logError({ error, message: SLIDER_IMAGE_CREATION_ERROR })
 
-      // Restaurando a imagem incorretamente persistida:
-      if (persistHomePageSliderImage) {
-        await moveFile({
-          oldFilePath: buildHomePageSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-          newFilePath: buildTempSliderImagePath(createHomePageSliderImageUseCaseInput.image),
-        })
-      }
+      await moveFileEnqueued({
+        oldFilePath: homePageSliderImagePaths.newFilePath,
+        newFilePath: homePageSliderImagePaths.oldFilePath,
+      })
 
       throw error
+    }
+
+    return {
+      sliderImage: {
+        ...createdSliderImage,
+        image: buildSliderImageUrl(createdSliderImage.image, 'home-page'),
+      },
     }
   }
 }

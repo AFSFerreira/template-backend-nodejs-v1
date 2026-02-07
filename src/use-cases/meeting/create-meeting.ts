@@ -14,7 +14,6 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
-import { moveFile } from '@services/files/move-file'
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
@@ -37,79 +36,83 @@ export class CreateMeetingUseCase {
   ) {}
 
   async execute(data: CreateMeetingUseCaseRequest): Promise<CreateMeetingUseCaseResponse> {
+    const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
+
+    const createdMeeting = await this.dbContext.runInTransaction(async () => {
+      ensureNotExists({
+        value: await this.meetingsRepository.findActiveMeeting(),
+        error: new ActiveMeetingAlreadyExistsError(),
+      })
+
+      const paymentInfo = ensureExists({
+        value: await this.paymentInfo.getPaymentInfo(),
+        error: new PaymentInfoNotFoundError(),
+      })
+
+      await this.paymentInfo.update({
+        id: paymentInfo.id,
+        data: data.paymentInfo,
+      })
+
+      const meeting = await this.meetingsRepository.create({
+        title: data.title,
+        bannerImage: data.bannerImage,
+        agenda: data.agenda,
+        description: data.description,
+        location: data.location,
+        lastDate: getArrayMaxDate(nonRepeatingDates),
+        dates: nonRepeatingDates,
+        meetingPaymentInfo: data.meetingPaymentInfo,
+      })
+
+      return meeting
+    })
+
+    const meetingBannerPaths = {
+      oldFilePath: buildTempMeetingBannerPath(data.bannerImage),
+      newFilePath: buildMeetingBannerPath(data.bannerImage),
+    }
+
+    const meetingAgendaPaths = {
+      oldFilePath: buildTempMeetingAgendaPath(data.agenda),
+      newFilePath: buildMeetingAgendaPath(data.agenda),
+    }
+
     try {
       ensureExists({
-        value: await moveFile({
-          oldFilePath: buildTempMeetingBannerPath(data.bannerImage),
-          newFilePath: buildMeetingBannerPath(data.bannerImage),
-        }),
+        value: await moveFileEnqueued(meetingBannerPaths),
         error: new MeetingBannerPersistError(),
       })
 
       ensureExists({
-        value: await moveFile({
-          oldFilePath: buildTempMeetingAgendaPath(data.agenda),
-          newFilePath: buildMeetingAgendaPath(data.agenda),
-        }),
+        value: await moveFileEnqueued(meetingAgendaPaths),
         error: new MeetingAgendaPersistError(),
       })
-
-      const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
-
-      const { meeting } = await this.dbContext.runInTransaction(async () => {
-        ensureNotExists({
-          value: await this.meetingsRepository.findActiveMeeting(),
-          error: new ActiveMeetingAlreadyExistsError(),
-        })
-
-        const paymentInfo = ensureExists({
-          value: await this.paymentInfo.getPaymentInfo(),
-          error: new PaymentInfoNotFoundError(),
-        })
-
-        await this.paymentInfo.update({
-          id: paymentInfo.id,
-          data: data.paymentInfo,
-        })
-
-        const meeting = await this.meetingsRepository.create({
-          title: data.title,
-          bannerImage: data.bannerImage,
-          agenda: data.agenda,
-          description: data.description,
-          location: data.location,
-          lastDate: getArrayMaxDate(nonRepeatingDates),
-          dates: nonRepeatingDates,
-          meetingPaymentInfo: data.meetingPaymentInfo,
-        })
-
-        return { meeting }
-      })
-
-      logger.info({ meetingId: meeting.publicId }, MEETING_CREATION_SUCCESSFUL)
-
-      return {
-        meeting: {
-          ...meeting,
-          agenda: buildMeetingAgendaUrl(meeting.agenda),
-          bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
-        },
-      }
     } catch (error) {
       logError({ error, message: MEETING_CREATION_ERROR })
 
       // Restaurando os arquivos incorretamente persistidos:
       await moveFileEnqueued({
-        oldFilePath: buildMeetingBannerPath(data.bannerImage),
-        newFilePath: buildTempMeetingBannerPath(data.bannerImage),
+        oldFilePath: meetingBannerPaths.newFilePath,
+        newFilePath: meetingBannerPaths.oldFilePath,
       })
 
       await moveFileEnqueued({
-        oldFilePath: buildMeetingAgendaPath(data.agenda),
-        newFilePath: buildTempMeetingAgendaPath(data.agenda),
+        oldFilePath: meetingAgendaPaths.newFilePath,
+        newFilePath: meetingAgendaPaths.oldFilePath,
       })
 
       throw error
+    }
+
+    logger.info({ meetingId: createdMeeting.publicId }, MEETING_CREATION_SUCCESSFUL)
+
+    return {
+      meeting: {
+        ...createdMeeting,
+        agenda: buildMeetingAgendaUrl(createdMeeting.agenda),
+        bannerImage: buildMeetingBannerUrl(createdMeeting.bannerImage),
+      },
     }
   }
 }

@@ -9,6 +9,7 @@ import type { DirectorBoardRepository } from '@repositories/directors-board-repo
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -20,7 +21,6 @@ import {
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { moveFile } from '@services/files/move-file'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
@@ -60,75 +60,79 @@ export class CreateDirectorBoardUseCase {
       throw new InvalidProseMirrorError()
     }
 
-    try {
-      const { directorBoard, user } = await this.dbContext.runInTransaction(async () => {
-        const user = ensureExists({
-          value: await this.usersRepository.findByPublicId(userId),
-          error: new UserNotFoundError(),
-        })
-
-        if (!MANAGER_PERMISSIONS.has(user.role)) {
-          // Atribui permissão de gestor do sistema automaticamente:
-          await this.usersRepository.updateRole({ id: user.id, role: UserRoleType.MANAGER })
-        }
-
-        ensureNotExists({
-          value: await this.directorBoardRepository.findByUserId(user.id),
-          error: new DirectorBoardUserAlreadyExistsError(),
-        })
-
-        const directorPosition = ensureExists({
-          value: await this.directorPositionsRepository.findUniqueBy({ publicId: positionId }),
-          error: new DirectorPositionNotFoundError(),
-        })
-
-        ensureNotExists({
-          value: await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id),
-          error: new DirectorBoardPositionAlreadyOccupiedError(),
-        })
-
-        if (profileImage) {
-          ensureExists({
-            value: await moveFile({
-              oldFilePath: buildDirectorBoardTempProfileImagePath(profileImage),
-              newFilePath: buildDirectorBoardProfileImagePath(profileImage),
-            }),
-            error: new DirectorBoardImageStorageError(),
-          })
-        }
-
-        // Criar o registro no banco de dados
-        const directorBoard = await this.directorBoardRepository.create({
-          userId: user.id,
-          directorPositionId: directorPosition.id,
-          profileImage,
-          aboutMe: aboutMe as Prisma.InputJsonValue,
-          publicName,
-        })
-
-        return { directorBoard, user }
+    const { directorBoard, user } = await this.dbContext.runInTransaction(async () => {
+      const user = ensureExists({
+        value: await this.usersRepository.findByPublicId(userId),
+        error: new UserNotFoundError(),
       })
 
-      return {
-        directorBoard: {
-          ...directorBoard,
-          profileImage: profileImage
-            ? buildDirectorBoardProfileImageUrl(profileImage)
-            : buildUserProfileImageUrl(user.profileImage),
-        },
+      if (!MANAGER_PERMISSIONS.has(user.role)) {
+        // Atribui permissão de gestor do sistema automaticamente:
+        await this.usersRepository.updateRole({ id: user.id, role: UserRoleType.MANAGER })
+      }
+
+      ensureNotExists({
+        value: await this.directorBoardRepository.findByUserId(user.id),
+        error: new DirectorBoardUserAlreadyExistsError(),
+      })
+
+      const directorPosition = ensureExists({
+        value: await this.directorPositionsRepository.findUniqueBy({ publicId: positionId }),
+        error: new DirectorPositionNotFoundError(),
+      })
+
+      ensureNotExists({
+        value: await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id),
+        error: new DirectorBoardPositionAlreadyOccupiedError(),
+      })
+
+      // Criar o registro no banco de dados
+      const directorBoard = await this.directorBoardRepository.create({
+        userId: user.id,
+        directorPositionId: directorPosition.id,
+        profileImage,
+        aboutMe: aboutMe as Prisma.InputJsonValue,
+        publicName,
+      })
+
+      return { directorBoard, user }
+    })
+
+    const directorBoardProfileImagePaths = profileImage
+      ? {
+          oldFilePath: buildDirectorBoardTempProfileImagePath(profileImage),
+          newFilePath: buildDirectorBoardProfileImagePath(profileImage),
+        }
+      : undefined
+
+    try {
+      if (directorBoardProfileImagePaths) {
+        ensureExists({
+          value: await moveFileEnqueued(directorBoardProfileImagePaths),
+          error: new DirectorBoardImageStorageError(),
+        })
       }
     } catch (error) {
       logError({ error, message: DIRECTOR_BOARD_CREATION_ERROR })
 
       // Restaurando a imagem incorretamente persistida:
-      if (profileImage) {
-        await moveFile({
-          oldFilePath: buildDirectorBoardProfileImagePath(profileImage),
-          newFilePath: buildDirectorBoardTempProfileImagePath(profileImage),
+      if (directorBoardProfileImagePaths) {
+        await moveFileEnqueued({
+          oldFilePath: directorBoardProfileImagePaths.newFilePath,
+          newFilePath: directorBoardProfileImagePaths.oldFilePath,
         })
       }
 
       throw error
+    }
+
+    return {
+      directorBoard: {
+        ...directorBoard,
+        profileImage: profileImage
+          ? buildDirectorBoardProfileImageUrl(profileImage)
+          : buildUserProfileImageUrl(user.profileImage),
+      },
     }
   }
 }

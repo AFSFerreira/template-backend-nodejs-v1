@@ -7,16 +7,17 @@ import ms from 'ms'
 export const fileQueue = new Queue<FileJobData>(bullmqTokens.files.management, {
   connection: redisConnection,
   defaultJobOptions: {
-    attempts: 3,
+    attempts: 5,
     backoff: {
       type: 'exponential',
-      delay: ms('2s'),
+      delay: ms('5s'),
     },
     removeOnComplete: {
-      count: 20,
+      age: ms('24h'),
+      count: 1000,
     },
     removeOnFail: {
-      count: 50,
+      age: ms('7d'),
     },
   },
 })

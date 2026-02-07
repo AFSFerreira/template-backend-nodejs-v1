@@ -16,13 +16,13 @@ import { fileProcessor } from '../processors/file-processor'
 export const fileWorker = new Worker(bullmqTokens.files.management, fileProcessor, {
   connection: redisConnection,
   concurrency: 10,
-  lockDuration: ms('30s'),
-  lockRenewTime: ms('10s'),
+  lockDuration: ms('2m'),
+  lockRenewTime: ms('30s'),
   limiter: {
-    max: 5,
+    max: 50,
     duration: ms('1s'),
   },
-  drainDelay: 5,
+  drainDelay: 500,
 })
 
 fileWorker.on('active', (job) => {

@@ -22,7 +22,6 @@ import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
-import { moveFile } from '@services/files/move-file'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
@@ -58,83 +57,85 @@ export class CreateAndPublishBlogUseCase {
       error: new InvalidBlogContentError(),
     })
 
-    let formatedBlogImages: ImagePathInfo[] = []
+    const oldToNewImagesLinkMap = new Map<string, string>()
+
+    const formatedBlogImages: ImagePathInfo[] = Array.from(
+      extractProseMirrorImages(publishBlogUseCaseInput.content),
+    ).map((imageLink) => {
+      const imageName = ensureExists({
+        value: sanitizeUrlFilename(imageLink),
+        error: new BlogInvalidImageLinkError(),
+      })
+
+      oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
+
+      return {
+        oldFilePath: buildBlogTempImagePath(imageName),
+        newFilePath: buildBlogImagePath(imageName),
+      }
+    })
+
+    const newProseMirror = replaceProseMirrorImages({
+      proseMirror: publishBlogUseCaseInput.content,
+      oldToNewImagesMap: oldToNewImagesLinkMap,
+    })
+
+    const { author, blog } = await this.dbContext.runInTransaction(async () => {
+      const author = ensureExists({
+        value: await this.usersRepository.findByPublicId(publishBlogUseCaseInput.authorPublicId),
+        error: new UserNotFoundError(),
+      })
+
+      const { validatedActivityAreas, success } = await validateActivityAreas({
+        activityAreasRepository: this.activityAreasRepository,
+        activityAreas: publishBlogUseCaseInput.subcategories.map((subcategory) => ({
+          area: subcategory,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        })),
+      })
+
+      if (!success) {
+        throw new InvalidActivityArea(
+          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+        )
+      }
+
+      const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
+
+      const createdBlog = await this.blogsRepository.create({
+        title: publishBlogUseCaseInput.title,
+        bannerImage: publishBlogUseCaseInput.bannerImage,
+        editorialStatus: EditorialStatusType.PUBLISHED,
+        searchContent,
+        subcategoriesIds,
+        content: newProseMirror as InputJsonValue,
+        authorName: author.fullName,
+        userId: author.id,
+      })
+
+      return { author, blog: createdBlog }
+    })
+
+    const blogBannerPaths = {
+      oldFilePath: buildBlogTempBannerPath(publishBlogUseCaseInput.bannerImage),
+      newFilePath: buildBlogBannerPath(publishBlogUseCaseInput.bannerImage),
+    }
 
     try {
       // Persistir banner e imagens da pasta temporária para a pasta definitiva
       ensureExists({
-        value: await moveFile({
-          oldFilePath: buildBlogTempBannerPath(publishBlogUseCaseInput.bannerImage),
-          newFilePath: buildBlogBannerPath(publishBlogUseCaseInput.bannerImage),
-        }),
+        value: await moveFileEnqueued(blogBannerPaths),
         error: new BlogBannerPersistError(),
       })
 
-      const oldToNewImagesLinkMap = new Map<string, string>()
-
-      formatedBlogImages = Array.from(extractProseMirrorImages(publishBlogUseCaseInput.content)).map((imageLink) => {
-        const imageName = ensureExists({
-          value: sanitizeUrlFilename(imageLink),
-          error: new BlogInvalidImageLinkError(),
-        })
-
-        oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
-
-        return {
-          oldFilePath: buildBlogTempImagePath(imageName),
-          newFilePath: buildBlogImagePath(imageName),
-        }
-      })
-
-      const newProseMirror = replaceProseMirrorImages({
-        proseMirror: publishBlogUseCaseInput.content,
-        oldToNewImagesMap: oldToNewImagesLinkMap,
-      })
-      // Persistindo as novas imagens do blog:
       await Promise.all(
         formatedBlogImages.map(async (imageInfo) => {
           ensureExists({
-            value: await moveFile(imageInfo),
+            value: await moveFileEnqueued(imageInfo),
             error: new BlogImagePersistError(),
           })
         }),
       )
-
-      const { author, blog } = await this.dbContext.runInTransaction(async () => {
-        const author = ensureExists({
-          value: await this.usersRepository.findByPublicId(publishBlogUseCaseInput.authorPublicId),
-          error: new UserNotFoundError(),
-        })
-
-        const { validatedActivityAreas, success } = await validateActivityAreas({
-          activityAreasRepository: this.activityAreasRepository,
-          activityAreas: publishBlogUseCaseInput.subcategories.map((subcategory) => ({
-            area: subcategory,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          })),
-        })
-
-        if (!success) {
-          throw new InvalidActivityArea(
-            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-          )
-        }
-
-        const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
-
-        const createdBlog = await this.blogsRepository.create({
-          title: publishBlogUseCaseInput.title,
-          bannerImage: publishBlogUseCaseInput.bannerImage,
-          editorialStatus: EditorialStatusType.PUBLISHED,
-          searchContent,
-          subcategoriesIds,
-          content: newProseMirror as InputJsonValue,
-          authorName: author.fullName,
-          userId: author.id,
-        })
-
-        return { author, blog: createdBlog }
-      })
 
       logger.info(
         {
@@ -155,17 +156,16 @@ export class CreateAndPublishBlogUseCase {
       logError({ error, message: BLOG_CREATION_ERROR })
 
       // Restaurando as imagens de blog e a imagem de banner previamente persistida:
-      for (const file of [
-        ...formatedBlogImages.map((imageInfo) => ({
+      await moveFileEnqueued({
+        oldFilePath: blogBannerPaths.newFilePath,
+        newFilePath: blogBannerPaths.oldFilePath,
+      })
+
+      for (const imageInfo of formatedBlogImages) {
+        await moveFileEnqueued({
           oldFilePath: imageInfo.newFilePath,
           newFilePath: imageInfo.oldFilePath,
-        })),
-        {
-          oldFilePath: buildBlogBannerPath(publishBlogUseCaseInput.bannerImage),
-          newFilePath: buildBlogTempBannerPath(publishBlogUseCaseInput.bannerImage),
-        },
-      ]) {
-        await moveFileEnqueued(file)
+        })
       }
 
       throw error
