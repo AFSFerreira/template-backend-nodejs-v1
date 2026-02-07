@@ -56,6 +56,8 @@ export class UpdateUserUseCase {
   async execute({ publicId, data }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
     let newProfileImage: string | undefined
 
+    const isHighLevelEducation = isUpdateUserHighLevelStudentEducation(data) || isUpdateUserHighLevelEducation(data)
+
     const { user } = await this.dbContext.runInTransaction(async () => {
       const userExists = ensureExists({
         value: await this.usersRepository.findByPublicId(publicId),
@@ -103,7 +105,7 @@ export class UpdateUserUseCase {
         }
       }
 
-      if (isUpdateUserHighLevelStudentEducation(data) || isUpdateUserHighLevelEducation(data)) {
+      if (isHighLevelEducation) {
         if (data.academicPublication) {
           const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
             area: academicPub.area,
@@ -150,10 +152,15 @@ export class UpdateUserUseCase {
         }
       }
 
+      // Removendo elementos duplicados de keywords:
+      const nonRepeatingKeywords =
+        isHighLevelEducation && data.keyword ? Array.from<string>(new Set<string>(data.keyword)) : undefined
+
       const user = await this.usersRepository.update({
         id: userExists.id,
         data: {
           ...data,
+          ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
           address: addressUpdateInfo,
           user: userUpdateInfo,
         },

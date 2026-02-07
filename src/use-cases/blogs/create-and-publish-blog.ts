@@ -86,9 +86,11 @@ export class CreateAndPublishBlogUseCase {
         error: new UserNotFoundError(),
       })
 
+      const nonRepeatingSubcategories = Array.from<string>(new Set<string>(publishBlogUseCaseInput.subcategories))
+
       const { validatedActivityAreas, success } = await validateActivityAreas({
         activityAreasRepository: this.activityAreasRepository,
-        activityAreas: publishBlogUseCaseInput.subcategories.map((subcategory) => ({
+        activityAreas: nonRepeatingSubcategories.map((subcategory) => ({
           area: subcategory,
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         })),

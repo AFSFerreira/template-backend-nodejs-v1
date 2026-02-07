@@ -87,6 +87,10 @@ export class CreateUserUseCase {
       })
     }
 
+    const isHighLevelEducation =
+      isRegisterUserHighLevelEducation(registerUseCaseInput) ||
+      isRegisterUserHighLevelStudentEducation(registerUseCaseInput)
+
     const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
 
     const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
@@ -129,10 +133,7 @@ export class CreateUserUseCase {
         throw apiError
       }
 
-      if (
-        isRegisterUserHighLevelStudentEducation(registerUseCaseInput) ||
-        isRegisterUserHighLevelEducation(registerUseCaseInput)
-      ) {
+      if (isHighLevelEducation) {
         const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
           area: academicPub.area,
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
@@ -185,8 +186,15 @@ export class CreateUserUseCase {
         profileImage = registerUseCaseInput.user.profileImage
       }
 
+      // Removendo elementos duplicados de keywords:
+      const nonRepeatingKeywords =
+        isHighLevelEducation && registerUseCaseInput.keyword
+          ? Array.from<string>(new Set<string>(registerUseCaseInput.keyword))
+          : undefined
+
       const user = await this.usersRepository.create({
         ...registerUseCaseInput,
+        ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
         user: {
           ...filteredUserInfo,
           identityType: identity.identityType,

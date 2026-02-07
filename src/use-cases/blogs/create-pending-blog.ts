@@ -89,9 +89,11 @@ export class CreatePendingBlogUseCase {
         error: new UserNotFoundError(),
       })
 
+      const nonRepeatingSubcategories = Array.from<string>(new Set<string>(createPendingBlogUseCaseInput.subcategories))
+
       const { validatedActivityAreas, success } = await validateActivityAreas({
         activityAreasRepository: this.activityAreasRepository,
-        activityAreas: createPendingBlogUseCaseInput.subcategories.map((subcategory) => ({
+        activityAreas: nonRepeatingSubcategories.map((subcategory) => ({
           area: subcategory,
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         })),

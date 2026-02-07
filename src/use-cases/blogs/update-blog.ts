@@ -156,7 +156,9 @@ export class UpdateBlogUseCase {
       }
 
       if (body.subcategories) {
-        const formattedSubcategories = body.subcategories.map((subcategory) => ({
+        const nonRepeatingSubcategories = Array.from<string>(new Set<string>(body.subcategories))
+
+        const formattedSubcategories = nonRepeatingSubcategories.map((subcategory) => ({
           area: subcategory,
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         }))

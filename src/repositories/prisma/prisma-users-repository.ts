@@ -16,15 +16,13 @@ import type { Prisma } from '@prisma/generated/client'
 import type { UsersRepository } from '../users-repository'
 import { userWithDetails } from '@custom-types/validators/user-with-details'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { ActivityAreaType, MembershipStatusType } from '@prisma/generated/enums'
+import { MembershipStatusType } from '@prisma/generated/enums'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
-import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
-import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
-import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
-import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
+import { toPrismaCreateUser } from './mappers/users/create-user'
+import { toPrismaUpdateUser } from './mappers/users/update-user'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
 
 @injectable()
@@ -35,114 +33,10 @@ export class PrismaUsersRepository implements UsersRepository {
   ) {}
 
   async create(data: CreateUserQuery) {
-    let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined
-
-    let academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] | undefined
-
-    let enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] | undefined
-
-    let institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] | undefined
-
-    let activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] | undefined
-
-    let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined
-
-    const isUserHighLevelEducation = isRegisterUserHighLevelEducation(data)
-    const isUserHighLevelStudentEducation = isRegisterUserHighLevelStudentEducation(data)
-
-    if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
-      if (isUserHighLevelStudentEducation) {
-        enrolledCourseCreateData = {
-          create: {
-            ...data.enrolledCourse,
-            startGraduationDate: new Date(data.enrolledCourse.startGraduationDate),
-            expectedGraduationDate: new Date(data.enrolledCourse.expectedGraduationDate),
-            scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-          },
-        }
-      }
-
-      keywordsConnectOrCreateData = {
-        connectOrCreate: data.keyword.map((value: string) => ({
-          where: { value },
-          create: { value },
-        })),
-      }
-
-      academicPublicationCreateData = {
-        create: data.academicPublication.map((academicPublication) => {
-          const { area, authors, ...filteredAcademicPublicationData } = academicPublication
-          return {
-            ...filteredAcademicPublicationData,
-            AcademicPublicationAuthors: {
-              create: authors.map((author) => ({
-                name: author,
-              })),
-            },
-            ActivityArea: {
-              connect: {
-                type_area: {
-                  area,
-                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                },
-              },
-            },
-          }
-        }),
-      }
-
-      institutionConnectOrCreateData = {
-        connectOrCreate: {
-          create: { name: data.institution.name },
-          where: { name: data.institution.name },
-        },
-      }
-
-      activityAreaConnectData = {
-        connect: {
-          type_area: {
-            area: data.activityArea.mainActivityArea,
-            type: ActivityAreaType.AREA_OF_ACTIVITY,
-          },
-        },
-      }
-
-      subActivityAreaConnectData = {
-        connect: {
-          type_area: {
-            area: data.activityArea.subActivityArea,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          },
-        },
-      }
-    }
-
-    const { stateId, ...filteredAddressInfo } = data.address
-    const addressCreateData: Prisma.UserCreateInput['Address'] = {
-      create: {
-        ...filteredAddressInfo,
-        State: {
-          connect: {
-            id: stateId,
-          },
-        },
-      },
-    }
+    const formattedData = toPrismaCreateUser(data)
 
     const user = await this.dbContext.client.user.create({
-      data: {
-        ...data.user,
-        birthdate: new Date(data.user.birthdate),
-        emailIsPublic: data.user.emailIsPublic ?? false,
-        receiveReports: data.user.receiveReports ?? false,
-        Address: addressCreateData,
-        EnrolledCourse: enrolledCourseCreateData,
-        Institution: institutionConnectOrCreateData,
-        AcademicPublication: academicPublicationCreateData,
-        Keyword: keywordsConnectOrCreateData,
-        ActivityArea: activityAreaConnectData,
-        SubActivityArea: subActivityAreaConnectData,
-      },
+      data: formattedData,
       include: userWithDetails.include,
     })
 
@@ -407,124 +301,11 @@ export class PrismaUsersRepository implements UsersRepository {
   }
 
   async update({ id, data }: UpdateUserQuery) {
-    let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined
-
-    let academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] | undefined
-
-    let enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] | undefined
-
-    let institutionConnectData: Prisma.UserUpdateInput['Institution'] | undefined
-
-    let activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] | undefined
-
-    let subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] | undefined
-
-    const isUserHighLevelEducation = isUpdateUserHighLevelEducation(data)
-    const isUserHighLevelStudentEducation = isUpdateUserHighLevelStudentEducation(data)
-
-    if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
-      if (isUserHighLevelStudentEducation) {
-        enrolledCourseUpsertData = data.enrolledCourse
-          ? {
-              upsert: {
-                create: {
-                  ...data.enrolledCourse,
-                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-                },
-                update: {
-                  ...data.enrolledCourse,
-                  scholarshipHolder: data.enrolledCourse.scholarshipHolder ?? false,
-                },
-              },
-            }
-          : undefined
-      }
-
-      keywordsConnectOrCreateData = data.keyword
-        ? {
-            set: [],
-            connectOrCreate: data.keyword.map((value: string) => ({
-              where: { value },
-              create: { value },
-            })),
-          }
-        : undefined
-
-      academicPublicationCreateData = data.academicPublication
-        ? {
-            deleteMany: {},
-            create: data.academicPublication.map((academicPublication) => {
-              const { area, authors, ...filteredAcademicPublicationData } = academicPublication
-              return {
-                ...filteredAcademicPublicationData,
-                AcademicPublicationAuthors: {
-                  create: authors.map((author) => ({
-                    name: author,
-                  })),
-                },
-                ActivityArea: {
-                  connect: {
-                    type_area: {
-                      area,
-                      type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                    },
-                  },
-                },
-              }
-            }),
-          }
-        : undefined
-
-      institutionConnectData = data.institution
-        ? {
-            connect: { name: data.institution.name },
-          }
-        : undefined
-
-      activityAreaConnectData = data.activityArea
-        ? {
-            connect: {
-              type_area: {
-                area: data.activityArea.mainActivityArea,
-                type: ActivityAreaType.AREA_OF_ACTIVITY,
-              },
-            },
-          }
-        : undefined
-
-      subActivityAreaConnectData = data.activityArea
-        ? {
-            connect: {
-              type_area: {
-                area: data.activityArea.subActivityArea,
-                type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-              },
-            },
-          }
-        : undefined
-    }
-
-    const addressUpsertData: Prisma.UserUpdateInput['Address'] = data.address
-      ? {
-          upsert: {
-            create: data.address,
-            update: data.address,
-          },
-        }
-      : undefined
+    const formattedData = toPrismaUpdateUser(data)
 
     const user = await this.dbContext.client.user.update({
       where: { id },
-      data: {
-        ...data.user,
-        Address: addressUpsertData,
-        EnrolledCourse: enrolledCourseUpsertData,
-        Institution: institutionConnectData,
-        AcademicPublication: academicPublicationCreateData,
-        Keyword: keywordsConnectOrCreateData,
-        ActivityArea: activityAreaConnectData,
-        SubActivityArea: subActivityAreaConnectData,
-      },
+      data: formattedData,
       include: userWithDetails.include,
     })
 
