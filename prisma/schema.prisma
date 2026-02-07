@@ -275,23 +275,13 @@ model DirectorPosition {
   @@map("director_positions")
 }
 
-model PaymentInfo {
+model MeetingPaymentInfo {
   id        Int      @id @default(autoincrement())
   pixKey    String   @map("pix_key")
   bank      String
   code      String
   agency    String
   account   String
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  MeetingPaymentInfo MeetingPaymentInfo[] @relation()
-
-  @@map("payment_info")
-}
-
-model MeetingPaymentInfo {
-  id        Int      @id @default(autoincrement())
   value     Decimal  @db.Decimal(10, 2)
   limitDate DateTime @map("limit_date") @db.Date
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
@@ -299,9 +289,6 @@ model MeetingPaymentInfo {
 
   meetingId Int     @unique @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-
-  paymentInfoId Int         @default(1) @map("payment_info_id")
-  PaymentInfo   PaymentInfo @relation(fields: [paymentInfoId], references: [id])
 
   @@index([meetingId])
   @@map("meeting_payment_information")

@@ -220,27 +220,17 @@ CREATE TABLE "public"."director_positions" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."payment_info" (
-    "id" SERIAL NOT NULL,
-    "pix_key" TEXT NOT NULL,
-    "bank" TEXT NOT NULL,
-    "code" TEXT NOT NULL,
-    "agency" TEXT NOT NULL,
-    "account" TEXT NOT NULL,
-    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(3) NOT NULL,
-
-    CONSTRAINT "payment_info_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "public"."meeting_payment_information" (
     "id" SERIAL NOT NULL,
+    "account" TEXT NOT NULL,
+    "agency" TEXT NOT NULL,
+    "bank" TEXT NOT NULL,
+    "code" TEXT NOT NULL,
+    "pix_key" TEXT NOT NULL,
     "value" DECIMAL(10,2) NOT NULL,
     "limit_date" DATE NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
-    "payment_info_id" INTEGER NOT NULL DEFAULT 1,
     "meeting_id" INTEGER NOT NULL,
 
     CONSTRAINT "meeting_payment_information_pkey" PRIMARY KEY ("id")
@@ -604,9 +594,6 @@ ALTER TABLE "public"."directors_board" ADD CONSTRAINT "directors_board_director_
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_meeting_id_fkey" FOREIGN KEY ("meeting_id") REFERENCES "public"."meetings"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "public"."meeting_payment_information" ADD CONSTRAINT "meeting_payment_information_payment_info_id_fkey" FOREIGN KEY ("payment_info_id") REFERENCES "public"."payment_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_presentation_authors" ADD CONSTRAINT "meeting_presentation_authors_presentation_id_fkey" FOREIGN KEY ("presentation_id") REFERENCES "public"."meeting_presentations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
