@@ -23,6 +23,7 @@ export class MeetingDetailedPresenter
             bank: input.MeetingPaymentInfo.bank,
             agency: input.MeetingPaymentInfo.agency,
             account: input.MeetingPaymentInfo.account,
+            billingEmail: input.MeetingPaymentInfo.billingEmail,
             value: input.MeetingPaymentInfo.value.toString(),
             limitDate: input.MeetingPaymentInfo.limitDate,
           }
