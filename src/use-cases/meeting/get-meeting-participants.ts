@@ -2,9 +2,9 @@ import type {
   GetMeetingParticipantsUseCaseRequest,
   GetMeetingParticipantsUseCaseResponse,
 } from '@custom-types/use-cases/meeting/get-meeting-participants'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
