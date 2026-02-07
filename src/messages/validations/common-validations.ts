@@ -7,3 +7,6 @@ export const INVALID_DATE_RANGE = `Data inválida. Só é permitido um intervalo
 export const INVALID_CRON_FORMAT = 'Formato de expressão cron inválido'
 
 export const NUMERIC_INTEGER_STRING_INVALID = 'O valor deve conter apenas números inteiros'
+
+export const INVALID_PIX_KEY =
+  'Chave PIX inválida. Use um CPF, CNPJ, e-mail, telefone (+5511999999999) ou chave aleatória válida'

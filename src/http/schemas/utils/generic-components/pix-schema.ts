@@ -1,8 +1,14 @@
-import type { PixError } from 'pix-utils'
-import { parsePix } from 'pix-utils'
-import { validate as validatePix } from 'pixkey'
+import { INVALID_PIX_KEY } from '@messages/validations/common-validations'
+import { identify as validatePix } from 'pix-utils-js'
 import { limitedNonemptyTextSchema } from '../primitives/limited-nonempty-text-schema'
 
 export const pixSchema = limitedNonemptyTextSchema.refine(
-  (data) => (parsePix(data) as PixError).error === undefined || validatePix(data).length > 0,
+  (data) => {
+    try {
+      return !!validatePix({ pix: data })
+    } catch {
+      return false
+    }
+  },
+  { message: INVALID_PIX_KEY },
 )
