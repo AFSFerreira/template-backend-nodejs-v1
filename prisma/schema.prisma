@@ -276,16 +276,17 @@ model DirectorPosition {
 }
 
 model MeetingPaymentInfo {
-  id        Int      @id @default(autoincrement())
-  pixKey    String   @map("pix_key")
-  bank      String
-  code      String
-  agency    String
-  account   String
-  value     Decimal  @db.Decimal(10, 2)
-  limitDate DateTime @map("limit_date") @db.Date
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+  id           Int      @id @default(autoincrement())
+  pixKey       String   @map("pix_key")
+  bank         String
+  code         String
+  agency       String
+  account      String
+  billingEmail String   @map("billing_email")
+  value        Decimal  @db.Decimal(10, 2)
+  limitDate    DateTime @map("limit_date") @db.Date
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   meetingId Int     @unique @map("meeting_id")
   Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)

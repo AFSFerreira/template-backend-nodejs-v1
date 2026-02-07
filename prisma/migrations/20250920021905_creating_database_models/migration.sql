@@ -226,6 +226,7 @@ CREATE TABLE "public"."meeting_payment_information" (
     "agency" TEXT NOT NULL,
     "bank" TEXT NOT NULL,
     "code" TEXT NOT NULL,
+    "billing_email" TEXT NOT NULL,
     "pix_key" TEXT NOT NULL,
     "value" DECIMAL(10,2) NOT NULL,
     "limit_date" DATE NOT NULL,
