@@ -5,7 +5,6 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import type { PaymentInfoRepository } from '@repositories/payment-info-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -14,12 +13,10 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
-import { InactiveMeetingPaymentInfoUpdateForbiddenError } from '@use-cases/errors/meeting/inactive-meeting-payment-info-update-forbidden-error'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
-import { PaymentInfoNotFoundError } from '@use-cases/errors/payment-info/payment-info-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
@@ -30,9 +27,6 @@ export class UpdateMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
-
-    @inject(tsyringeTokens.repositories.paymentInfo)
-    private readonly paymentInfoRepository: PaymentInfoRepository,
 
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
@@ -98,22 +92,6 @@ export class UpdateMeetingUseCase {
 
       if (newAgenda) {
         updateData.agenda = newAgenda
-      }
-
-      if (body.paymentInfo) {
-        if (activeMeeting && activeMeeting.id !== meeting.id) {
-          throw new InactiveMeetingPaymentInfoUpdateForbiddenError()
-        }
-
-        const paymentInfo = ensureExists({
-          value: await this.paymentInfoRepository.getPaymentInfo(),
-          error: new PaymentInfoNotFoundError(),
-        })
-
-        await this.paymentInfoRepository.update({
-          id: paymentInfo?.id,
-          data: body.paymentInfo,
-        })
       }
 
       const updatedMeeting = await this.meetingsRepository.update({

@@ -13,7 +13,6 @@ import { institutionalInfoRoutes } from './controllers/institutional-info/routes
 import { meetingRoutes } from './controllers/meeting/routes'
 import { meetingEnrollmentRoutes } from './controllers/meeting-enrollment/routes'
 import { newsletterRoutes } from './controllers/newsletter/routes'
-import { paymentInfoRoutes } from './controllers/payment-info/routes'
 import { sliderImageRoutes } from './controllers/slider-image/routes'
 import { userRoutes } from './controllers/user/routes'
 
@@ -24,7 +23,6 @@ export async function appRoutes(app: FastifyInstance) {
   app.register(blogRoutes, { prefix: '/blogs' })
   app.register(institutionRoutes, { prefix: '/institutions' })
   app.register(institutionalInfoRoutes, { prefix: '/institutional-info' })
-  app.register(paymentInfoRoutes, { prefix: '/payment-infos' })
   app.register(userRoutes, { prefix: '/users' })
   app.register(meetingRoutes, { prefix: '/meetings' })
   app.register(meetingEnrollmentRoutes, { prefix: '/meeting-enrollments' })

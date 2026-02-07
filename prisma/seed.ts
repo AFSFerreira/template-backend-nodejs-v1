@@ -14,7 +14,6 @@ import { meetingEnrollmentDataArray1 } from './seed-data/meeting-enrollments'
 import { meetingPresentationNestedMeetingEnrollmentDataArray1 } from './seed-data/meeting-presentations'
 import { meetingDataArray1 } from './seed-data/meetings'
 import { newsletterDataArray1 } from './seed-data/newsletter'
-import { paymentInfo1 } from './seed-data/payments-info'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2, usersDataArray3 } from './seed-data/users'
 
@@ -97,13 +96,6 @@ async function main() {
       })
     }
   }
-
-  // Criando Informações Bancárias:
-  await prisma.paymentInfo.upsert({
-    where: { id: 1 },
-    update: {},
-    create: paymentInfo1,
-  })
 
   const createdMeetings: Meeting[] = []
 

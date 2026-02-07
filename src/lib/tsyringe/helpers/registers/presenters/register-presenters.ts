@@ -12,7 +12,6 @@ import { registerInstitutionalInfoPresenters } from './variants/register-institu
 import { registerMeetingEnrollmentPresenters } from './variants/register-meeting-enrollment-presenters'
 import { registerMeetingPresenters } from './variants/register-meeting-presenters'
 import { registerNewsletterPresenters } from './variants/register-newsletter-presenters'
-import { registerPaymentInfoPresenters } from './variants/register-payment-info-presenters'
 import { registerSliderImagePresenters } from './variants/register-slider-image-presenters'
 import { registerUserPresenters } from './variants/register-user-presenters'
 
@@ -31,6 +30,5 @@ export function registerPresenters(container: DependencyContainer) {
   registerMeetingEnrollmentPresenters(container)
   registerMeetingPresenters(container)
   registerNewsletterPresenters(container)
-  registerPaymentInfoPresenters(container)
   registerSliderImagePresenters(container)
 }

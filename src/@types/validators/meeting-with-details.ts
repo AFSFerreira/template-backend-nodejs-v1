@@ -2,11 +2,7 @@ import type { Prisma } from '@prisma/generated/client'
 
 export const meetingWithDetails = {
   include: {
-    MeetingPaymentInfo: {
-      include: {
-        PaymentInfo: true,
-      },
-    },
+    MeetingPaymentInfo: true,
     MeetingDate: true,
   },
 } satisfies Prisma.MeetingDefaultArgs

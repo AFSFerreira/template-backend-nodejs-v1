@@ -30,10 +30,7 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
         },
         MeetingPaymentInfo: meetingPaymentInfo
           ? {
-              create: {
-                value: meetingPaymentInfo.value,
-                limitDate: meetingPaymentInfo.limitDate,
-              },
+              create: meetingPaymentInfo,
             }
           : undefined,
       },

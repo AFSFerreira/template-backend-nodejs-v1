@@ -18,11 +18,11 @@ export class MeetingDetailedPresenter
       lastDate: input.lastDate,
       meetingPaymentInfo: input.MeetingPaymentInfo
         ? {
-            code: input.MeetingPaymentInfo.PaymentInfo.code,
-            pixKey: input.MeetingPaymentInfo.PaymentInfo.pixKey,
-            bank: input.MeetingPaymentInfo.PaymentInfo.bank,
-            agency: input.MeetingPaymentInfo.PaymentInfo.agency,
-            account: input.MeetingPaymentInfo.PaymentInfo.account,
+            code: input.MeetingPaymentInfo.code,
+            pixKey: input.MeetingPaymentInfo.pixKey,
+            bank: input.MeetingPaymentInfo.bank,
+            agency: input.MeetingPaymentInfo.agency,
+            account: input.MeetingPaymentInfo.account,
             value: input.MeetingPaymentInfo.value.toString(),
             limitDate: input.MeetingPaymentInfo.limitDate,
           }
