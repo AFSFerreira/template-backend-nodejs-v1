@@ -9,3 +9,4 @@ export const UPPERCASE_PASSWORD_CHARACTERS_REGEX = /[A-Z]/
 export const LOWERCASE_PASSWORD_CHARACTERS_REGEX = /[a-z]/
 export const PASSWORD_DIGIT_REGEX = /[0-9]/
 export const PASSWORD_SPECIAL_CHARACTER_REGEX = /[\W_]/
+export const DIGITS_ONLY_REGEX = /^\d+$/
