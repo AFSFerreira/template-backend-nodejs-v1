@@ -14,7 +14,6 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
-import { moveFile } from '@services/files/move-file'
 import { InactiveMeetingPaymentInfoUpdateForbiddenError } from '@use-cases/errors/meeting/inactive-meeting-payment-info-update-forbidden-error'
 import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
@@ -42,123 +41,142 @@ export class UpdateMeetingUseCase {
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
     const updateData: Prisma.MeetingUpdateInput = {}
 
-    const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
-    const agendaSanitized = sanitizeUrlFilename(body.agenda)
+    let newBannerImage: string | undefined
+    let newAgenda: string | undefined
 
     const { meeting } = await this.dbContext.runInTransaction(async () => {
-      try {
-        const meeting = ensureExists({
-          value: await this.meetingsRepository.findByPublicId(publicId),
-          error: new MeetingNotFoundError(),
-        })
+      const meeting = ensureExists({
+        value: await this.meetingsRepository.findByPublicId(publicId),
+        error: new MeetingNotFoundError(),
+      })
 
-        const activeMeeting = await this.meetingsRepository.findActiveMeeting()
+      if (body.bannerImage) {
+        const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
 
-        if (body.title) {
-          updateData.title = body.title
-        }
-
-        if (body.description) {
-          updateData.description = body.description
-        }
-
-        if (body.location) {
-          updateData.location = body.location
-        }
-
-        if (body.dates) {
-          const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
-
-          updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
-
-          if (activeMeeting && updateData.lastDate >= activeMeeting.lastDate) {
-            throw new MeetingDateConflictError()
-          }
-
-          updateData.MeetingDate = {
-            deleteMany: {},
-            create: nonRepeatingDates.map((date) => ({ date })),
-          }
-        }
-
-        if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage) {
-          ensureExists({
-            value: await moveFile({
-              oldFilePath: buildTempMeetingBannerPath(bannerImageSanitized),
-              newFilePath: buildMeetingBannerPath(bannerImageSanitized),
-            }),
-            error: new MeetingBannerPersistError(),
-          })
-
-          updateData.bannerImage = bannerImageSanitized
-        }
-
-        if (body.agenda && agendaSanitized && agendaSanitized !== meeting.agenda) {
-          ensureExists({
-            value: await moveFile({
-              oldFilePath: buildTempMeetingAgendaPath(agendaSanitized),
-              newFilePath: buildMeetingAgendaPath(agendaSanitized),
-            }),
-            error: new MeetingAgendaPersistError(),
-          })
-
-          updateData.agenda = agendaSanitized
-        }
-
-        if (body.paymentInfo) {
-          if (activeMeeting && activeMeeting.id !== meeting.id) {
-            throw new InactiveMeetingPaymentInfoUpdateForbiddenError()
-          }
-
-          const paymentInfo = ensureExists({
-            value: await this.paymentInfoRepository.getPaymentInfo(),
-            error: new PaymentInfoNotFoundError(),
-          })
-
-          await this.paymentInfoRepository.update({
-            id: paymentInfo?.id,
-            data: body.paymentInfo,
-          })
-        }
-
-        const updatedMeeting = await this.meetingsRepository.update({
-          id: meeting.id,
-          data: updateData,
-        })
-
-        return { meeting: updatedMeeting }
-      } catch (error) {
-        // Enfileirando a restauração dos arquivos incorretamente persistidos:
-        if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage) {
-          await moveFileEnqueued({
-            oldFilePath: buildMeetingBannerPath(bannerImageSanitized),
-            newFilePath: buildTempMeetingBannerPath(bannerImageSanitized),
-          })
-        }
-
-        if (body.agenda && agendaSanitized && agendaSanitized !== meeting.agenda) {
-          await moveFileEnqueued({
-            oldFilePath: buildMeetingAgendaPath(agendaSanitized),
-            newFilePath: buildTempMeetingAgendaPath(agendaSanitized),
-          })
-        }
-
-        throw error
+        newBannerImage =
+          bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage ? bannerImageSanitized : undefined
       }
+
+      if (body.agenda) {
+        const agendaSanitized = sanitizeUrlFilename(body.agenda)
+
+        newAgenda = agendaSanitized && agendaSanitized !== meeting.agenda ? agendaSanitized : undefined
+      }
+
+      const activeMeeting = await this.meetingsRepository.findActiveMeeting()
+
+      if (body.title) {
+        updateData.title = body.title
+      }
+
+      if (body.description) {
+        updateData.description = body.description
+      }
+
+      if (body.location) {
+        updateData.location = body.location
+      }
+
+      if (body.dates) {
+        const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
+
+        updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
+
+        if (activeMeeting && updateData.lastDate >= activeMeeting.lastDate) {
+          throw new MeetingDateConflictError()
+        }
+
+        updateData.MeetingDate = {
+          deleteMany: {},
+          create: nonRepeatingDates.map((date) => ({ date })),
+        }
+      }
+
+      if (newBannerImage) {
+        updateData.bannerImage = newBannerImage
+      }
+
+      if (newAgenda) {
+        updateData.agenda = newAgenda
+      }
+
+      if (body.paymentInfo) {
+        if (activeMeeting && activeMeeting.id !== meeting.id) {
+          throw new InactiveMeetingPaymentInfoUpdateForbiddenError()
+        }
+
+        const paymentInfo = ensureExists({
+          value: await this.paymentInfoRepository.getPaymentInfo(),
+          error: new PaymentInfoNotFoundError(),
+        })
+
+        await this.paymentInfoRepository.update({
+          id: paymentInfo?.id,
+          data: body.paymentInfo,
+        })
+      }
+
+      const updatedMeeting = await this.meetingsRepository.update({
+        id: meeting.id,
+        data: updateData,
+      })
+
+      return { meeting: updatedMeeting }
     })
 
-    // Enfileirando a remoção da imagem antiga somente após persistir a nova e atualizar a reunião:
-    if (body.bannerImage && bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage) {
-      await deleteFileEnqueued({
-        filePath: buildMeetingBannerPath(meeting.bannerImage),
-      })
-    }
+    const meetingBannerPaths = newBannerImage
+      ? {
+          oldFilePath: buildTempMeetingBannerPath(newBannerImage),
+          newFilePath: buildMeetingBannerPath(newBannerImage),
+        }
+      : undefined
 
-    // Enfileirando a remoção da agenda antiga somente após persistir a nova e atualizar a reunião:
-    if (body.agenda && agendaSanitized && agendaSanitized !== meeting.agenda) {
-      await deleteFileEnqueued({
-        filePath: buildMeetingAgendaPath(meeting.agenda),
-      })
+    const meetingAgendaPaths = newAgenda
+      ? {
+          oldFilePath: buildTempMeetingAgendaPath(newAgenda),
+          newFilePath: buildMeetingAgendaPath(newAgenda),
+        }
+      : undefined
+
+    try {
+      if (meetingBannerPaths) {
+        ensureExists({
+          value: await moveFileEnqueued(meetingBannerPaths),
+          error: new MeetingBannerPersistError(),
+        })
+
+        await deleteFileEnqueued({
+          filePath: buildMeetingBannerPath(meeting.bannerImage),
+        })
+      }
+
+      if (meetingAgendaPaths) {
+        ensureExists({
+          value: await moveFileEnqueued(meetingAgendaPaths),
+          error: new MeetingAgendaPersistError(),
+        })
+
+        await deleteFileEnqueued({
+          filePath: buildMeetingAgendaPath(meeting.agenda),
+        })
+      }
+    } catch (error) {
+      // Enfileirando a restauração dos arquivos incorretamente persistidos:
+      if (meetingBannerPaths) {
+        await moveFileEnqueued({
+          oldFilePath: meetingBannerPaths.newFilePath,
+          newFilePath: meetingBannerPaths.oldFilePath,
+        })
+      }
+
+      if (meetingAgendaPaths) {
+        await moveFileEnqueued({
+          oldFilePath: meetingAgendaPaths.newFilePath,
+          newFilePath: meetingAgendaPaths.oldFilePath,
+        })
+      }
+
+      throw error
     }
 
     logger.info(

@@ -14,7 +14,6 @@ import {
   buildNewsletterTempHtmlPath,
 } from '@services/builders/paths/build-newsletter-html-path'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
-import { moveFile } from '@services/files/move-file'
 import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsletter-already-exists-error'
 import { NewsletterHtmlPersistError } from '@use-cases/errors/newsletter/newsletter-html-persist-error'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
@@ -35,94 +34,110 @@ export class UpdateNewsletterUseCase {
   async execute({ publicId, body }: UpdateNewsletterUseCaseRequest): Promise<UpdateNewsletterUseCaseResponse> {
     const updateData: Prisma.NewsletterUpdateInput = {}
 
-    const filenameSanitized = sanitizeUrlFilename(body.contentFilename)
+    let newContentFilename: string | undefined
 
-    const { updatedNewsletter } = await this.dbContext.runInTransaction(async () => {
-      try {
-        const newsletter = ensureExists({
-          value: await this.newslettersRepository.findByPublicId(publicId),
-          error: new NewsletterNotFoundError(),
+    const { newsletter } = await this.dbContext.runInTransaction(async () => {
+      const newsletter = ensureExists({
+        value: await this.newslettersRepository.findByPublicId(publicId),
+        error: new NewsletterNotFoundError(),
+      })
+
+      if (body.sequenceNumber || body.editionNumber || body.volume) {
+        const sequenceNumber = body.sequenceNumber ?? newsletter.sequenceNumber
+        const editionNumber = body.editionNumber ?? newsletter.editionNumber
+        const volume = body.volume ?? newsletter.volume
+
+        // Verifica se já existe uma newsletter com os mesmos dados (exceto a atual):
+        const conflictingNewsletter = await this.newslettersRepository.findConflictingNewsletter({
+          ...(editionNumber && volume
+            ? {
+                editionNumber_volume: {
+                  editionNumber,
+                  volume,
+                },
+              }
+            : {}),
+          sequenceNumber,
         })
 
-        if (body.sequenceNumber || body.editionNumber || body.volume) {
-          const sequenceNumber = body.sequenceNumber ?? newsletter.sequenceNumber
-          const editionNumber = body.editionNumber ?? newsletter.editionNumber
-          const volume = body.volume ?? newsletter.volume
-
-          // Verifica se já existe uma newsletter com os mesmos dados (exceto a atual):
-          const conflictingNewsletter = await this.newslettersRepository.findConflictingNewsletter({
-            sequenceNumber,
-            editionNumber,
-            volume,
-          })
-
-          if (conflictingNewsletter && conflictingNewsletter.id !== newsletter.id) {
-            throw new NewsletterAlreadyExistsError()
-          }
-
-          if (body.sequenceNumber) {
-            updateData.sequenceNumber = body.sequenceNumber
-          }
-
-          if (body.editionNumber) {
-            updateData.editionNumber = body.editionNumber
-          }
-
-          if (body.volume) {
-            updateData.volume = body.volume
-          }
+        if (conflictingNewsletter && conflictingNewsletter.id !== newsletter.id) {
+          throw new NewsletterAlreadyExistsError()
         }
 
-        if (body.contentFilename && filenameSanitized && filenameSanitized !== newsletter.content) {
-          ensureExists({
-            value: await moveFile({
-              oldFilePath: buildNewsletterTempHtmlPath(filenameSanitized),
-              newFilePath: buildNewsletterHtmlPath(filenameSanitized),
-            }),
-            error: new NewsletterHtmlPersistError(),
-          })
+        if (body.contentFilename) {
+          const filenameSanitized = sanitizeUrlFilename(body.contentFilename)
 
-          updateData.content = body.contentFilename
+          newContentFilename =
+            filenameSanitized && filenameSanitized !== newsletter.content ? filenameSanitized : undefined
         }
 
-        const updatedNewsletter = await this.newslettersRepository.update({
-          id: newsletter.id,
-          data: updateData,
-        })
-
-        return { updatedNewsletter }
-      } catch (error) {
-        // Enfileirando a restauração do arquivo incorretamente persistido:
-        if (body.contentFilename && filenameSanitized && filenameSanitized !== updatedNewsletter.content) {
-          await moveFileEnqueued({
-            oldFilePath: buildNewsletterHtmlPath(filenameSanitized),
-            newFilePath: buildNewsletterTempHtmlPath(filenameSanitized),
-          })
+        if (newContentFilename) {
+          updateData.content = newContentFilename
         }
 
-        throw error
+        if (body.sequenceNumber) {
+          updateData.sequenceNumber = body.sequenceNumber
+        }
+
+        if (body.editionNumber) {
+          updateData.editionNumber = body.editionNumber
+        }
+
+        if (body.volume) {
+          updateData.volume = body.volume
+        }
       }
+
+      const updatedNewsletter = await this.newslettersRepository.update({
+        id: newsletter.id,
+        data: updateData,
+      })
+
+      return { newsletter: updatedNewsletter }
     })
 
-    // Enfileirando a remoção do arquivo antigo somente após update bem-sucedido:
-    if (body.contentFilename && filenameSanitized && filenameSanitized !== updatedNewsletter.content) {
-      await deleteFileEnqueued({
-        filePath: buildNewsletterHtmlPath(updatedNewsletter.content),
-      })
+    const newsletterHtmlPaths = newContentFilename
+      ? {
+          oldFilePath: buildNewsletterTempHtmlPath(newContentFilename),
+          newFilePath: buildNewsletterHtmlPath(newContentFilename),
+        }
+      : undefined
+
+    try {
+      if (newsletterHtmlPaths) {
+        ensureExists({
+          value: await moveFileEnqueued(newsletterHtmlPaths),
+          error: new NewsletterHtmlPersistError(),
+        })
+
+        await deleteFileEnqueued({
+          filePath: buildNewsletterHtmlPath(newsletter.content),
+        })
+      }
+    } catch (error) {
+      // Enfileirando a restauração do arquivo incorretamente persistido:
+      if (newsletterHtmlPaths) {
+        await moveFileEnqueued({
+          oldFilePath: newsletterHtmlPaths.newFilePath,
+          newFilePath: newsletterHtmlPaths.oldFilePath,
+        })
+      }
+
+      throw error
     }
 
     logger.info(
       {
-        newsletterPublicId: updatedNewsletter.publicId,
-        sequenceNumber: updatedNewsletter.sequenceNumber,
+        newsletterPublicId: newsletter.publicId,
+        sequenceNumber: newsletter.sequenceNumber,
       },
       NEWSLETTER_UPDATED_SUCCESSFULLY,
     )
 
     return {
       newsletter: {
-        ...updatedNewsletter,
-        content: buildNewsletterHtmlUrl(updatedNewsletter.content),
+        ...newsletter,
+        content: buildNewsletterHtmlUrl(newsletter.content),
       },
     }
   }
