@@ -54,7 +54,6 @@
     "./**/*.cjs",
     "./**/*.js",
     "./**/*.json",
-    "ecosystem.config.cjs",
     "./**/*.mjs"
   ]
 }
