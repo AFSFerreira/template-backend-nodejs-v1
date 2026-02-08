@@ -5,7 +5,7 @@ export const commonUpdateUserSchema = z.object({
   ...commonUserSchema.omit({
     email: true,
     password: true,
+    identity: true,
+    interestDescription: true,
   }).shape,
-  identity: z.undefined(),
-  interestDescription: z.undefined(),
 })
