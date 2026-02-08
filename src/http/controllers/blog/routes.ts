@@ -23,6 +23,7 @@ import { submitReviewToPending } from './submit-review-to-pending.controller'
 import { updateBlog } from './update-blog.controller'
 import { uploadBlogBanner } from './upload-blog-banner.controller'
 import { uploadBlogImage } from './upload-blog-image.controller'
+import { BLOGS_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
 
 export async function blogRoutes(app: FastifyInstance) {
   // GET
@@ -41,25 +42,34 @@ export async function blogRoutes(app: FastifyInstance) {
     },
     getAllUserBlogsDetailed,
   )
-  app.get('/:publicId/html', getBlogHtmlContent)
+  app.get(
+    '/:publicId/html',
+    {
+      ...BLOGS_PAYLOAD_LIMIT_SIZE,
+    },
+    getBlogHtmlContent,
+  )
   app.get(
     '/restrict/:publicId/html',
     {
+      ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     getRestrictBlogHtmlContent,
   )
   app.get(
     '/restrict/:publicId',
-    { preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)] },
+    { ...BLOGS_PAYLOAD_LIMIT_SIZE,
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)] },
     findBlogByPublicIdRestricted,
   )
-  app.get('/:publicId', findBlogByPublicId)
+  app.get('/:publicId', { ...BLOGS_PAYLOAD_LIMIT_SIZE }, findBlogByPublicId)
 
   // POST
   app.post(
     '/create/pending',
     {
+      ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     createPendingBlog,
@@ -67,6 +77,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.post(
     '/create/draft',
     {
+      ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     createDraftBlog,
@@ -81,6 +92,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.post(
     '/create/publish',
     {
+      ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     createAndPublishBlog,
@@ -132,6 +144,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
+      ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     updateBlog,
