@@ -2,13 +2,13 @@ import type {
   UpdateNewsletterUseCaseRequest,
   UpdateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/update-newsletter'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/generated/client'
-import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
+import type { Prisma } from '@prisma/generated/client'
+import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,
@@ -88,10 +88,14 @@ export class UpdateNewsletterUseCase {
         }
       }
 
-      const updatedNewsletter = await this.newslettersRepository.update({
-        id: newsletter.id,
-        data: updateData,
-      })
+      const shouldUpdate = Object.keys(updateData).length > 0
+
+      const updatedNewsletter = shouldUpdate
+        ? await this.newslettersRepository.update({
+            id: newsletter.id,
+            data: updateData,
+          })
+        : newsletter
 
       return { newsletter: updatedNewsletter }
     })

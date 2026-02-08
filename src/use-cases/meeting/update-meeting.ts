@@ -2,13 +2,13 @@ import type {
   UpdateMeetingUseCaseRequest,
   UpdateMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/update-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/generated/client'
-import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
+import type { Prisma } from '@prisma/generated/client'
+import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
@@ -94,10 +94,14 @@ export class UpdateMeetingUseCase {
         updateData.agenda = newAgenda
       }
 
-      const updatedMeeting = await this.meetingsRepository.update({
-        id: meeting.id,
-        data: updateData,
-      })
+      const shouldUpdate = Object.keys(updateData).length > 0
+
+      const updatedMeeting = shouldUpdate
+        ? await this.meetingsRepository.update({
+            id: meeting.id,
+            data: updateData,
+          })
+        : meeting
 
       return { meeting: updatedMeeting }
     })

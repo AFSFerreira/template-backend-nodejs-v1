@@ -3,8 +3,8 @@ import type {
   UpdateDirectorPositionUseCaseResponse,
 } from '@custom-types/use-cases/director-position/update-director-position'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -29,10 +29,14 @@ export class UpdateDirectorPositionUseCase {
         error: new DirectorPositionNotFoundError(),
       })
 
-      const updatedDirectorPosition = await this.directorPositionsRepository.update({
-        id: directorPosition.id,
-        data,
-      })
+      const shouldUpdate = Object.keys(data).length > 0
+
+      const updatedDirectorPosition = shouldUpdate
+        ? await this.directorPositionsRepository.update({
+            id: directorPosition.id,
+            data,
+          })
+        : directorPosition
 
       return { directorPosition: updatedDirectorPosition }
     })
