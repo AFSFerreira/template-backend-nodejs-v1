@@ -13,14 +13,14 @@ import {
   MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
 } from '@messages/loggings/models/user-loggings'
-import { MembershipStatusType, UserRoleType } from '@prisma/generated/enums'
+import { MembershipStatusType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
 import { membershipApprovedTextTemplate } from '@templates/user/membership-accepted/membership-accepted-text'
 import { membershipRejectedHtmlTemplate } from '@templates/user/membership-rejected/membership-rejected-html'
 import { membershipRejectedTextTemplate } from '@templates/user/membership-rejected/membership-rejected-text'
-import { AdminCannotDeactivateSelfError } from '@use-cases/errors/user/admin-cannot-deactivate-self-error'
+import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -45,78 +45,69 @@ export class ReviewMembershipStatusUseCase {
         error: new UserNotFoundError(),
       })
 
-      const emailInfo = {
-        fullName: user.fullName,
-        email: user.email,
-      }
-
-      if (user.role === UserRoleType.ADMIN && membershipStatusReview === MembershipStatusType.INACTIVE) {
-        throw new AdminCannotDeactivateSelfError()
+      if (user.membershipStatus !== MembershipStatusType.PENDING) {
+        throw new MembershipStatusNotPending()
       }
 
       if (membershipStatusReview === 'REJECTED') {
         await this.usersRepository.delete(user.id)
-
-        const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
-
-        await sendEmailEnqueued({
-          to: user.email,
-          subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
-          message: membershipRejectedTextTemplate(emailInfo),
-          html,
-          attachments,
-          logging: {
-            errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
-            context: { userPublicId: user.publicId, userEmail: user.email },
-          },
-        })
-
-        // Removendo a imagem de perfil do usuário:
-        if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
-          await deleteFileEnqueued({
-            filePath: buildUserProfileImagePath(user.profileImage),
-          })
-        }
-
         return user
       }
 
-      if (membershipStatusReview === MembershipStatusType.ACTIVE) {
-        await this.usersRepository.update({
-          id: user.id,
-          data: {
-            user: {
-              membershipStatus: MembershipStatusType.ACTIVE,
-            },
-          },
-        })
-
-        const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
-
-        await sendEmailEnqueued({
-          to: user.email,
-          subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
-          message: membershipApprovedTextTemplate(emailInfo),
-          html,
-          attachments,
-          logging: {
-            errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
-            context: { userPublicId: user.publicId, userEmail: user.email },
-          },
-        })
-
-        return user
-      }
-
-      const updatedUser = await this.usersRepository.update({
+      // Aprova o pedido de associação
+      await this.usersRepository.update({
         id: user.id,
         data: {
-          user: { membershipStatus: membershipStatusReview },
+          user: {
+            membershipStatus: MembershipStatusType.ACTIVE,
+          },
         },
       })
 
-      return updatedUser
+      return user
     })
+
+    const emailInfo = {
+      fullName: user.fullName,
+      email: user.email,
+    }
+
+    if (membershipStatusReview === 'REJECTED') {
+      const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
+
+      await sendEmailEnqueued({
+        to: user.email,
+        subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
+        message: membershipRejectedTextTemplate(emailInfo),
+        html,
+        attachments,
+        logging: {
+          errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
+          context: { userPublicId: user.publicId, userEmail: user.email },
+        },
+      })
+
+      // Removendo a imagem de perfil do usuário
+      if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
+        await deleteFileEnqueued({
+          filePath: buildUserProfileImagePath(user.profileImage),
+        })
+      }
+    } else {
+      const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
+
+      await sendEmailEnqueued({
+        to: user.email,
+        subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
+        message: membershipApprovedTextTemplate(emailInfo),
+        html,
+        attachments,
+        logging: {
+          errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
+          context: { userPublicId: user.publicId, userEmail: user.email },
+        },
+      })
+    }
 
     return {
       user: {

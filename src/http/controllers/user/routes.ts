@@ -22,6 +22,7 @@ import { requestEmailChange } from './request-email-change.controller'
 import { resetPassword } from './reset-password.controller'
 import { reviewMembershipStatus } from './review-membership-status.controller'
 import { transferAdminRole } from './transfer-admin-role.controller'
+import { updateMembershipStatus } from './update-membership-status.controller'
 import { updatePassword } from './update-password.controller'
 import { updateUser } from './update-user.controller'
 import { updateUserByPublicId } from './update-user-by-public-id.controller'
@@ -159,6 +160,13 @@ export async function userRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     reviewMembershipStatus,
+  )
+  app.patch(
+    '/:publicId/membership-status',
+    {
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    updateMembershipStatus,
   )
   app.patch(
     '/:publicId/permissions',

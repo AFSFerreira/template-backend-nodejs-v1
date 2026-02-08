@@ -1,6 +1,6 @@
-import { membershipStatusEnumSchema } from '@schemas/utils/enums/membership-status-enum-schema'
+import { MembershipStatusType } from '@prisma/generated/enums'
 import z from 'zod'
 
 export const reviewMembershipStatusBodySchema = z.object({
-  membershipStatusReview: z.union([membershipStatusEnumSchema, z.literal('REJECTED')]),
+  membershipStatusReview: z.union([z.literal(MembershipStatusType.ACTIVE), z.literal('REJECTED')]),
 })
