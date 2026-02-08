@@ -1,11 +1,11 @@
-import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import type {
   UpdateSliderImageUseCaseRequest,
   UpdateSliderImageUseCaseResponse,
 } from '@custom-types/use-cases/slider-image/update-slider-image'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
+import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 import { SliderImageInvalidOrderError } from '@use-cases/errors/slider-image/slider-image-invalid-order-error'
 import { SliderImageNotFoundError } from '@use-cases/errors/slider-image/slider-image-not-found-error'

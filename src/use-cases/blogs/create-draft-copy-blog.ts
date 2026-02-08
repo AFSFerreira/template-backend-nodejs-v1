@@ -113,12 +113,17 @@ export class CreateDraftCopyBlogUseCase {
         throw new BlogContentCopyError()
       }
 
+      // Removendo elementos duplicados de subcategoriesIds:
+      const nonRepeatingSubcategoriesIds = Array.from<number>(
+        new Set<number>(blog.Subcategories.map((subcategory) => subcategory.id)),
+      )
+
       const createdBlog = await this.blogsRepository.create({
         editorialStatus: EditorialStatusType.DRAFT,
         title: `${blog.title} - Cópia`,
         bannerImage: newBannerImage.filename,
         searchContent,
-        subcategoriesIds: blog.Subcategories.map((subcategory) => subcategory.id),
+        subcategoriesIds: nonRepeatingSubcategoriesIds,
         content: newProseMirror as InputJsonValue,
         authorName: user.fullName,
         userId: user.id,

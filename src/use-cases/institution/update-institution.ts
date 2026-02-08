@@ -2,12 +2,12 @@ import type {
   UpdateInstitutionUseCaseRequest,
   UpdateInstitutionUseCaseResponse,
 } from '@custom-types/use-cases/institution/update-institution'
-import { logger } from '@lib/logger'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { INSTITUTION_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/institution-loggings'
 import type { Prisma } from '@prisma/generated/client'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
+import { logger } from '@lib/logger'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { INSTITUTION_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/institution-loggings'
 import { InstitutionAlreadyExistsError } from '@use-cases/errors/institution/institution-already-exists-error'
 import { InstitutionNotFoundError } from '@use-cases/errors/institution/institution-not-found-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'

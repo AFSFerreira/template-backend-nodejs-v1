@@ -171,8 +171,14 @@ export class CreateUserUseCase {
           },
         ]
 
+        // Removendo activity areas duplicadas:
+        const nonRepeatingActivityAreas = activityAreas.filter(
+          (activityArea, index, self) =>
+            index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
+        )
+
         const { validatedActivityAreas, success } = await validateActivityAreas({
-          activityAreas,
+          activityAreas: nonRepeatingActivityAreas,
           activityAreasRepository: this.activityAreasRepository,
         })
 

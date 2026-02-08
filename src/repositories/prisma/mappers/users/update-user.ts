@@ -53,10 +53,14 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
           deleteMany: {},
           create: data.academicPublication.map((academicPublication) => {
             const { area, authors, ...filteredAcademicPublicationData } = academicPublication
+
+            // Removendo elementos duplicados de authors:
+            const nonRepeatingAuthors = Array.from<string>(new Set<string>(authors))
+
             return {
               ...filteredAcademicPublicationData,
               AcademicPublicationAuthors: {
-                create: authors.map((author) => ({
+                create: nonRepeatingAuthors.map((author) => ({
                   name: author,
                 })),
               },

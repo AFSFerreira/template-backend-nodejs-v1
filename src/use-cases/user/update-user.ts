@@ -1,18 +1,18 @@
-import { USER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
-import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
-import { ActivityAreaType } from '@prisma/generated/enums'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import { USER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
+import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
+import { logger } from '@lib/logger'
+import { logError } from '@lib/logger/helpers/log-error'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
+import { ActivityAreaType } from '@prisma/generated/enums'
 import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
@@ -128,8 +128,14 @@ export class UpdateUserUseCase {
               : []),
           ]
 
+          // Removendo activity areas duplicadas:
+          const nonRepeatingActivityAreas = activityAreas.filter(
+            (activityArea, index, self) =>
+              index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
+          )
+
           const { validatedActivityAreas, success } = await validateActivityAreas({
-            activityAreas,
+            activityAreas: nonRepeatingActivityAreas,
             activityAreasRepository: this.activityAreasRepository,
           })
 
