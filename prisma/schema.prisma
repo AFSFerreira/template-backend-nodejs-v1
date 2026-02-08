@@ -28,7 +28,7 @@ model AuthenticationAudit {
   createdAt  DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
 
   userId Int?  @map("user_id")
-  user   User? @relation(fields: [userId], references: [id])
+  user   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@map("authentication_audits")
 }
@@ -79,13 +79,13 @@ model User {
   emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
 
   institutionId Int?         @map("institution_id")
-  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull)
+  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   activityAreaId Int?          @map("activity_area_id")
-  ActivityArea   ActivityArea? @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction)
+  ActivityArea   ActivityArea? @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   subActivityAreaId Int?          @map("sub_activity_area_id")
-  SubActivityArea   ActivityArea? @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction)
+  SubActivityArea   ActivityArea? @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   AcademicPublication   AcademicPublication[]   @relation()
   Address               Address?                @relation()
@@ -116,10 +116,10 @@ model Address {
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   stateId Int          @map("state_id")
-  State   AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction)
+  State   AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([stateId])
   @@map("addresses")
@@ -131,7 +131,7 @@ model AddressState {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   countryId Int            @map("country_id")
-  Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction)
+  Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   Address Address[] @relation()
 
@@ -161,7 +161,7 @@ model EnrolledCourse {
   createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
 
   userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
   @@map("enrolled_courses")
@@ -182,10 +182,10 @@ model AcademicPublication {
   AcademicPublicationAuthors AcademicPublicationAuthor[] @relation()
 
   activityAreaId Int          @map("activity_area_id")
-  ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction)
+  ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   userId Int  @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_academic_publications_title_trgm_gin", type: Gin)
@@ -199,7 +199,7 @@ model AcademicPublicationAuthor {
   name     String
 
   academicPublicationId Int                 @map("academic_publication_id")
-  AcademicPublication   AcademicPublication @relation(fields: [academicPublicationId], references: [id], onDelete: Cascade)
+  AcademicPublication   AcademicPublication @relation(fields: [academicPublicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([academicPublicationId, name])
   @@map("academic_publication_authors")
@@ -252,10 +252,10 @@ model DirectorBoard {
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   directorPositionId Int              @unique @map("director_position_id")
-  DirectorPosition   DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction)
+  DirectorPosition   DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
   @@map("directors_board")
@@ -289,7 +289,7 @@ model MeetingPaymentInfo {
   updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   meetingId Int     @unique @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([meetingId])
   @@map("meeting_payment_information")
@@ -301,7 +301,7 @@ model MeetingEnrollment {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   meetingId Int     @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   MeetingPresentation MeetingPresentation?    @relation()
   UserDetails         UserMeetingEnrollment?  @relation()
@@ -363,7 +363,7 @@ model MeetingPresentationAuthor {
   name String
 
   presentationId Int                 @map("presentation_id")
-  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
+  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("meeting_presentation_authors")
 }
@@ -373,7 +373,7 @@ model MeetingPresentationAffiliation {
   name String
 
   presentationId Int                 @map("presentation_id")
-  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade)
+  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@map("meeting_presentation_affiliations")
 }
@@ -406,7 +406,7 @@ model MeetingDate {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
   meetingId Int     @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([meetingId])
   @@map("meeting_date")
@@ -428,7 +428,7 @@ model Blog {
   titleUnaccent   String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent") // Conteúdo da coluna title sem acentos de pontuação
 
   userId Int?  @map("user_id")
-  User   User? @relation(fields: [userId], references: [id])
+  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   Subcategories ActivityArea[] @relation()
 
