@@ -7,16 +7,22 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { updateDirectorBoardBodySchema } from '@schemas/director-board/update-director-board-body-schema'
 import { updateDirectorBoardParamsSchema } from '@schemas/director-board/update-director-board-params-schema'
+import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateDirectorBoardUseCase } from '@use-cases/director-board/update-director-board'
 import { container } from 'tsyringe'
 
 export async function updateDirectorBoard(request: FastifyRequest, reply: FastifyReply) {
   const { publicId } = updateDirectorBoardParamsSchema.parse(request.params)
   const parsedBody = updateDirectorBoardBodySchema.parse(request.body)
+  const requestUserPublicId = getRequestUserPublicId(request)
 
   const useCase = container.resolve(UpdateDirectorBoardUseCase)
 
-  const { directorBoard } = await useCase.execute({ publicId, data: parsedBody })
+  const { directorBoard } = await useCase.execute({
+    publicId,
+    data: parsedBody,
+    requestUserPublicId,
+  })
 
   const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardWithUserPresenterInput, HTTPDirectorBoardWithUser>(
     directorBoard,

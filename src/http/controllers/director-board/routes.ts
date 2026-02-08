@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { ADMIN_PERMISSIONS } from '@constants/sets'
+import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
@@ -19,7 +19,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
   app.get(
     '/restrict/:publicId',
     {
-      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     findDirectorBoardByPublicIdForAdmin,
   )
@@ -29,7 +29,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
-      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateDirectorBoard,
   )

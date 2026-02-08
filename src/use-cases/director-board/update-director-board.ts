@@ -6,9 +6,11 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { UserRoleType } from '@prisma/generated/enums'
 import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
@@ -20,8 +22,10 @@ import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
+import { ManagerCannotUpdateOtherDirectorBoardError } from '@use-cases/errors/director-board/manager-cannot-update-other-director-board-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
+import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -29,6 +33,9 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateDirectorBoardUseCase {
   constructor(
+    @inject(tsyringeTokens.repositories.users)
+    private readonly usersRepository: UsersRepository,
+
     @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
 
@@ -39,7 +46,11 @@ export class UpdateDirectorBoardUseCase {
     private readonly dbContext: DatabaseContext,
   ) {}
 
-  async execute({ publicId, data }: UpdateDirectorBoardUseCaseRequest): Promise<UpdateDirectorBoardUseCaseResponse> {
+  async execute({
+    publicId,
+    data,
+    requestUserPublicId,
+  }: UpdateDirectorBoardUseCaseRequest): Promise<UpdateDirectorBoardUseCaseResponse> {
     let profileImage: string | null | undefined
     const profileImageSanitized = sanitizeUrlFilename(data.profileImage)
 
@@ -53,6 +64,16 @@ export class UpdateDirectorBoardUseCase {
           value: await this.directorBoardRepository.findByPublicId(publicId),
           error: new DirectorBoardNotFoundError(),
         })
+
+        const requestUser = ensureExists({
+          value: await this.usersRepository.findByPublicId(requestUserPublicId),
+          error: new UserNotFoundError(),
+        })
+
+        // Validação: Manager só pode atualizar seu próprio perfil
+        if (requestUser.role === UserRoleType.MANAGER && currentDirectorBoard.User.publicId !== requestUser.publicId) {
+          throw new ManagerCannotUpdateOtherDirectorBoardError()
+        }
 
         profileImage = currentDirectorBoard.profileImage
 

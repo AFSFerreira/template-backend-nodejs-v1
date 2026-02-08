@@ -8,6 +8,14 @@ export const DIRECTOR_BOARD_USER_ROLE_FORBIDDEN: IApiResponse = {
   },
 }
 
+export const MANAGER_CANNOT_UPDATE_OTHER_DIRECTOR_BOARD: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'MANAGER_CANNOT_UPDATE_OTHER_DIRECTOR_BOARD',
+    message: 'Gestores só podem atualizar seu próprio perfil do corpo diretivo',
+  },
+}
+
 export const DIRECTOR_BOARD_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {

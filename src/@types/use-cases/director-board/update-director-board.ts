@@ -4,6 +4,7 @@ import type { UpdateDirectorBoardBodySchemaType } from '@custom-types/http/schem
 export interface UpdateDirectorBoardUseCaseRequest {
   publicId: string
   data: UpdateDirectorBoardBodySchemaType
+  requestUserPublicId: string
 }
 
 export interface UpdateDirectorBoardUseCaseResponse {
