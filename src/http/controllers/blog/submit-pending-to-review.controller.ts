@@ -1,9 +1,9 @@
 import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { submitPendingToReviewParamsSchema } from '@schemas/blog/submit-pending-to-review-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
-import { SubmitPendingToReviewUseCase } from '@use-cases/blogs/submit-pending-to-review'
+import { SubmitPendingToReviewUseCase } from '@use-cases/blog/submit-pending-to-review'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function submitPendingToReview(request: FastifyRequest, reply: FastifyReply) {

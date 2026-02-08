@@ -2,11 +2,11 @@ import type {
   BlogSimplifiedPresenterInput,
   HTTPSimplifiedBlog,
 } from '@custom-types/http/presenter/blog/blog-simplified'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { getAllBlogsQuerySchema } from '@schemas/blog/get-all-blogs-query-schema'
-import { GetAllBlogsUseCase } from '@use-cases/blogs/get-all-blogs'
+import { GetAllBlogsUseCase } from '@use-cases/blog/get-all-blogs'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function getAllBlogs(request: FastifyRequest, reply: FastifyReply) {
