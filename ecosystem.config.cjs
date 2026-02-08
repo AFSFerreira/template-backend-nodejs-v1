@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'astrobiologia-staging',
-      script: './dist/server.js',
+      script: './dist/server.mjs',
       cwd: '/home/injunior-infra/dev/projects/astrobiologia-backend',
       max_memory_restart: '512M',
 
@@ -23,7 +23,7 @@ module.exports = {
     },
     {
       name: 'astrobiologia',
-      script: './dist/server.js',
+      script: './dist/server.mjs',
       cwd: '/home/astrobiologia-infra/infra/astrobio-infra/projects/astrobiologia-backend',
       max_memory_restart: '512M',
 
