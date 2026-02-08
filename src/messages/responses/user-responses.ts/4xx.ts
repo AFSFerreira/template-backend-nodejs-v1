@@ -1,6 +1,6 @@
-import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 
 export const IDENTITY_INFO_MISSING: IApiResponse = {
   status: 400,
@@ -191,6 +191,14 @@ export const USER_WITH_SAME_EMAIL: IApiResponse = {
   body: {
     code: 'USER_WITH_SAME_EMAIL',
     message: 'Já existe um usuário com o mesmo e-mail',
+  },
+}
+
+export const USER_WITH_SAME_SECONDARY_EMAIL: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'USER_WITH_SAME_SECONDARY_EMAIL',
+    message: 'Já existe um usuário com o mesmo e-mail secundário',
   },
 }
 

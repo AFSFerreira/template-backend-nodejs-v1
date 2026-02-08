@@ -1,20 +1,15 @@
-import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
-import type { CreateUserUseCaseRequest, CreateUserUseCaseResponse } from '@custom-types/use-cases/user/create-user'
-import type { ApiError } from '@errors/api-error'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import type { AddressCountryRepository } from '@repositories/address-countries-repository'
-import type { AddressStatesRepository } from '@repositories/address-states-repository'
-import type { InstitutionsRepository } from '@repositories/institutions-repository'
-import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
+import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
+import type { CreateUserUseCaseRequest, CreateUserUseCaseResponse } from '@custom-types/use-cases/user/create-user'
 import { env } from '@env/index'
+import type { ApiError } from '@errors/api-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
 import {
@@ -23,6 +18,11 @@ import {
   USER_CREATION_ERROR,
 } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import type { AddressCountryRepository } from '@repositories/address-countries-repository'
+import type { AddressStatesRepository } from '@repositories/address-states-repository'
+import type { InstitutionsRepository } from '@repositories/institutions-repository'
+import type { UsersRepository } from '@repositories/users-repository'
 import {
   buildUserProfileImagePath,
   buildUserTempProfileImagePath,
@@ -51,6 +51,7 @@ import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
+import { UserWithSameSecondaryEmail } from '../errors/user/user-with-same-secondary-email-error'
 
 @injectable()
 export class CreateUserUseCase {
@@ -112,6 +113,18 @@ export class CreateUserUseCase {
           {
             expression: userAlreadyExists.email === registerUseCaseInput.user.email,
             value: new UserWithSameEmail(),
+          },
+          {
+            expression: userAlreadyExists.email === registerUseCaseInput.user.secondaryEmail,
+            value: new UserWithSameEmail(),
+          },
+          {
+            expression: !!userAlreadyExists.secondaryEmail && !!registerUseCaseInput.user.secondaryEmail && userAlreadyExists.secondaryEmail === registerUseCaseInput.user.secondaryEmail,
+            value: new UserWithSameSecondaryEmail(),
+          },
+          {
+            expression: !!registerUseCaseInput.user.secondaryEmail && userAlreadyExists.email === registerUseCaseInput.user.secondaryEmail,
+            value: new UserWithSameSecondaryEmail(),
           },
           {
             expression: userAlreadyExists.username === registerUseCaseInput.user.username,
