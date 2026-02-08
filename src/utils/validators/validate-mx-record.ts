@@ -1,33 +1,82 @@
-import { resolveMx } from 'node:dns/promises'
+import { resolveMx, resolve4 } from 'node:dns/promises'
 import { redis } from '@lib/redis'
 import { getMxRecordCached, setMxRecordCached } from '@services/cache/validate-mx-record-cache'
+import { isNodeSystemError } from '@services/guards/is-node-system-error'
+import { EMAIL_REGEX } from '@constants/regex-constants'
+
+async function checkFallbackRecord(domain: string): Promise<boolean> {
+  try {
+    const aRecords = await resolve4(domain)
+    if (aRecords.length > 0) {
+      return true
+    }
+  } catch (error) {
+    if (isNodeSystemError(error) && (error.code === 'ENOTFOUND' || error.code === 'ENODATA')) {
+      return false
+    }
+  }
+  return false
+}
 
 export async function hasValidMxRecord(email: string) {
-  const domain = email.split('@')[1]
+  if (!email || EMAIL_REGEX.test(email)) return false
 
-  if (!domain) return false
+  const domain = email.split('@')[1]
 
   const mxRecordCached = await getMxRecordCached({
     mxRecord: domain,
     redis,
   })
 
-  if (mxRecordCached) return true
+  if (mxRecordCached) return mxRecordCached === 'valid'
 
   try {
-    const records = await resolveMx(domain)
+    const mxRecords = await resolveMx(domain)
 
-    const isMxValid = records && records.length > 0
-
-    if (isMxValid) {
-      setMxRecordCached({
+    if (mxRecords && mxRecords.length > 0) {
+      await setMxRecordCached({
         mxRecord: domain,
+        result: 'valid',
         redis,
       })
+
+      return true
+    }
+  } catch (error: unknown) {
+    if (isNodeSystemError(error)) {
+      if (error.code === 'ENOTFOUND' || error.code === 'NXDOMAIN') {
+        await setMxRecordCached({
+          mxRecord: domain,
+          result: 'invalid',
+          redis,
+        })
+        return false
+      }
+
+      if (error.code === 'ENODATA') {
+        const domainRecordFbResult = (await checkFallbackRecord(domain)) === true ? 'valid' : 'invalid'
+
+        await setMxRecordCached({
+          mxRecord: domain,
+          result: domainRecordFbResult,
+          redis,
+        })
+        return domainRecordFbResult === 'valid'
+      }
     }
 
-    return isMxValid
-  } catch (_error) {
-    return false
+    // Timeout, SERVFAIL, etc
+    return true
   }
+
+  const domainRecordFbResult = (await checkFallbackRecord(domain)) === true ? 'valid' : 'invalid'
+
+  await setMxRecordCached({
+    mxRecord: domain,
+    result: domainRecordFbResult,
+    redis,
+  })
+
+  return domainRecordFbResult === 'valid'
 }
+
