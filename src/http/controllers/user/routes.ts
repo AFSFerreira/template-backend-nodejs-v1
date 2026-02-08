@@ -5,6 +5,7 @@ import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { rateLimit } from '@utils/http/rate-limit'
 import { authenticate } from './authenticate.controller'
+import { changePassword } from './change-password.controller'
 import { checkAvailability } from './check-availability.controller'
 import { confirmEmailChange } from './confirm-email-change.controller'
 import { createUser } from './create-user.controller'
@@ -23,7 +24,6 @@ import { resetPassword } from './reset-password.controller'
 import { reviewMembershipStatus } from './review-membership-status.controller'
 import { transferAdminRole } from './transfer-admin-role.controller'
 import { updateMembershipStatus } from './update-membership-status.controller'
-import { updatePassword } from './update-password.controller'
 import { updateUser } from './update-user.controller'
 import { updateUserByPublicId } from './update-user-by-public-id.controller'
 import { updateUserPermissions } from './update-user-permissions.controller'
@@ -111,12 +111,12 @@ export async function userRoutes(app: FastifyInstance) {
   // PATCH
   app.patch('/reset-password', resetPassword)
   app.patch(
-    '/update-password',
+    '/change-password',
     {
       ...rateLimit({ max: 300, timeWindow: '1h' }),
       preHandler: [verifyJwt],
     },
-    updatePassword,
+    changePassword,
   )
   app.patch(
     '/request-email-change',

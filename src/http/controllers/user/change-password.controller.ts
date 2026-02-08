@@ -1,15 +1,15 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/responses/user-responses.ts/2xx'
-import { updatePasswordBodySchema } from '@schemas/user/update-password-body-schema'
+import { changePasswordBodySchema } from '@schemas/user/update-password-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
-import { UpdatePasswordUseCase } from '@use-cases/user/update-password'
+import { ChangePasswordUseCase } from '@use-cases/user/change-password'
 import { container } from 'tsyringe'
 
-export async function updatePassword(request: FastifyRequest, reply: FastifyReply) {
-  const parsedBody = updatePasswordBodySchema.parse(request.body)
+export async function changePassword(request: FastifyRequest, reply: FastifyReply) {
+  const parsedBody = changePasswordBodySchema.parse(request.body)
   const userPublicId = getRequestUserPublicId(request)
 
-  const useCase = container.resolve(UpdatePasswordUseCase)
+  const useCase = container.resolve(ChangePasswordUseCase)
 
   await useCase.execute({
     ...parsedBody,
