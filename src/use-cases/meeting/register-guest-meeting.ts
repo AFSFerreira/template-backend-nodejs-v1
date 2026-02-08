@@ -2,18 +2,20 @@ import type {
   RegisterGuestMeetingUseCaseRequest,
   RegisterGuestMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-guest-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
-import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { REGISTER_GUEST_MEETING } from '@messages/loggings/models/meeting-loggings'
-import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
+import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
+import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
+import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { toDateOnly } from '@utils/formatters/to-date-only'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
+import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
+import { InvalidEmailDomainError } from '../errors/user/invalid-email-domain-error'
 
 @injectable()
 export class RegisterGuestMeetingUseCase {
@@ -31,6 +33,12 @@ export class RegisterGuestMeetingUseCase {
   async execute(
     registerGuestMeetingUseCaseInput: RegisterGuestMeetingUseCaseRequest,
   ): Promise<RegisterGuestMeetingUseCaseResponse> {
+    const isValidEmailDomain = await hasValidMxRecord(registerGuestMeetingUseCaseInput.email)
+
+    if (!isValidEmailDomain) {
+      throw new InvalidEmailDomainError()
+    }
+
     const meetingEnrollment = await this.dbContext.runInTransaction(async () => {
       const meeting = ensureExists({
         value: await this.meetingsRepository.findByPublicId(registerGuestMeetingUseCaseInput.meetingId),

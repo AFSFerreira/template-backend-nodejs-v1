@@ -2,13 +2,13 @@ import type {
   CreateMeetingUseCaseRequest,
   CreateMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/create-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
+import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
@@ -18,7 +18,9 @@ import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-age
 import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
+import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
+import { InvalidEmailDomainError } from '../errors/user/invalid-email-domain-error'
 
 @injectable()
 export class CreateMeetingUseCase {
@@ -31,6 +33,12 @@ export class CreateMeetingUseCase {
   ) {}
 
   async execute(data: CreateMeetingUseCaseRequest): Promise<CreateMeetingUseCaseResponse> {
+    const isValidBillingEmailDomain = await hasValidMxRecord(data.meetingPaymentInfo.billingEmail)
+
+    if (!isValidBillingEmailDomain) {
+      throw new InvalidEmailDomainError()
+    }
+
     const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
 
     const createdMeeting = await this.dbContext.runInTransaction(async () => {

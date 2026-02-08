@@ -1,19 +1,19 @@
+import { EMAIL_CHANGE_EXPIRATION_TIME } from '@constants/timing-constants'
+import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import type {
   RequestEmailChangeUseCaseRequest,
   RequestEmailChangeUseCaseResponse,
 } from '@custom-types/use-cases/user/request-email-change'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { UsersRepository } from '@repositories/users-repository'
-import { EMAIL_CHANGE_EXPIRATION_TIME } from '@constants/timing-constants'
-import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { logger } from '@lib/logger'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_CHANGE_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
 import {
   EMAIL_CHANGE_EMAIL_SEND_ERROR,
   EMAIL_CHANGE_REQUESTED_SUCCESSFULLY,
 } from '@messages/loggings/models/user-loggings'
+import type { UsersRepository } from '@repositories/users-repository'
 import { changeEmailHtmlTemplate } from '@templates/user/change-email/change-email-html'
 import { changeEmailTextTemplate } from '@templates/user/change-email/change-email-text'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
@@ -39,10 +39,11 @@ export class RequestEmailChangeUseCase {
     userPublicId,
     newEmail,
   }: RequestEmailChangeUseCaseRequest): Promise<RequestEmailChangeUseCaseResponse> {
-    ensureExists({
-      value: await hasValidMxRecord(newEmail),
-      error: new InvalidEmailDomainError(),
-    })
+    const isValidEmailDomain = await hasValidMxRecord(newEmail)
+
+    if (!isValidEmailDomain) {
+      throw new InvalidEmailDomainError()
+    }
 
     const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
     const emailVerificationTokenHash = hashToken(emailVerificationToken)
