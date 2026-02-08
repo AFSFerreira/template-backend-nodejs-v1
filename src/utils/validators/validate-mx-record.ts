@@ -1,8 +1,8 @@
-import { resolveMx, resolve4 } from 'node:dns/promises'
+import { resolve4, resolveMx } from 'node:dns/promises'
+import { EMAIL_REGEX } from '@constants/regex-constants'
 import { redis } from '@lib/redis'
 import { getMxRecordCached, setMxRecordCached } from '@services/cache/validate-mx-record-cache'
 import { isNodeSystemError } from '@services/guards/is-node-system-error'
-import { EMAIL_REGEX } from '@constants/regex-constants'
 
 async function checkFallbackRecord(domain: string): Promise<boolean> {
   try {
@@ -79,4 +79,3 @@ export async function hasValidMxRecord(email: string) {
 
   return domainRecordFbResult === 'valid'
 }
-
