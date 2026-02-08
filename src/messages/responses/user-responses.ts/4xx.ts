@@ -2,19 +2,45 @@ import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { allowedImageMimeTypes } from '@constants/static-file-constants'
 
+// ============= 400 Bad Request =============
+
+export const CANNOT_TRANSFER_ADMIN_TO_SELF: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'CANNOT_TRANSFER_ADMIN_TO_SELF',
+    message: 'Não é possível transferir a role de administrador para si mesmo',
+  },
+}
+
+export const EMAIL_CHANGE_NOT_REQUESTED: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'EMAIL_CHANGE_NOT_REQUESTED',
+    message: 'Não há solicitação de alteração de e-mail pendente para este usuário',
+  },
+}
+
+export const EMAIL_VERIFICATION_NOT_REQUESTED: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'EMAIL_VERIFICATION_NOT_REQUESTED',
+    message: 'Verificação de e-mail não foi solicitada para este usuário',
+  },
+}
+
+export const EMAILS_DO_NOT_MATCH: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'EMAILS_DO_NOT_MATCH',
+    message: 'O e-mail antigo fornecido não corresponde ao e-mail atual da conta',
+  },
+}
+
 export const IDENTITY_INFO_MISSING: IApiResponse = {
   status: 400,
   body: {
     code: 'IDENTITY_INFO_MISSING',
     message: 'Você deve fornecer simultaneamente um tipo de documento e um valor de documento',
-  },
-}
-
-export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiResponse = {
-  status: 400,
-  body: {
-    code: 'MISSING_CHECK_AVAILABILITIES_INPUT',
-    message: 'Propriedades de entrada ausentes Forneça pelo menos uma delas',
   },
 }
 
@@ -42,11 +68,29 @@ export const INVALID_SECONDARY_EMAIL_DOMAIN: IApiResponse = {
   },
 }
 
-export const CANNOT_TRANSFER_ADMIN_TO_SELF: IApiResponse = {
+export const MISSING_CHECK_AVAILABILITIES_INPUT: IApiResponse = {
   status: 400,
   body: {
-    code: 'CANNOT_TRANSFER_ADMIN_TO_SELF',
-    message: 'Não é possível transferir a role de administrador para si mesmo',
+    code: 'MISSING_CHECK_AVAILABILITIES_INPUT',
+    message: 'Propriedades de entrada ausentes Forneça pelo menos uma delas',
+  },
+}
+
+export const CANNOT_UPDATE_MEMBERSHIP_STATUS_VERIFYING_OR_PENDING: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'CANNOT_UPDATE_MEMBERSHIP_STATUS_VERIFYING_OR_PENDING',
+    message: 'Não é possível atualizar o status de membro de usuários com status VERIFYING ou PENDING',
+  },
+}
+
+// ============= 401 Unauthorized =============
+
+export const INCORRECT_OLD_PASSWORD: IApiResponse = {
+  status: 401,
+  body: {
+    code: 'INCORRECT_OLD_PASSWORD',
+    message: 'A senha antiga fornecida está incorreta',
   },
 }
 
@@ -58,27 +102,11 @@ export const INVALID_CREDENTIALS: IApiResponse = {
   },
 }
 
-export const INCORRECT_OLD_PASSWORD: IApiResponse = {
+export const INVALID_IMAGE_FORMAT: IApiResponse = {
   status: 401,
   body: {
-    code: 'INCORRECT_OLD_PASSWORD',
-    message: 'A senha antiga fornecida está incorreta',
-  },
-}
-
-export const EMAILS_DO_NOT_MATCH: IApiResponse = {
-  status: 400,
-  body: {
-    code: 'EMAILS_DO_NOT_MATCH',
-    message: 'O e-mail antigo fornecido não corresponde ao e-mail atual da conta',
-  },
-}
-
-export const EMAIL_CHANGE_NOT_REQUESTED: IApiResponse = {
-  status: 400,
-  body: {
-    code: 'EMAIL_CHANGE_NOT_REQUESTED',
-    message: 'Não há solicitação de alteração de e-mail pendente para este usuário',
+    code: 'INVALID_IMAGE_FORMAT',
+    message: `Apenas arquivos com formato de imagem são válidos: ${allowedImageMimeTypes.join(', ')}`,
   },
 }
 
@@ -87,22 +115,6 @@ export const INVALID_OR_EXPIRED_TOKEN: IApiResponse = {
   body: {
     code: 'INVALID_OR_EXPIRED_TOKEN',
     message: 'Token inválido ou expirado',
-  },
-}
-
-export const EMAIL_VERIFICATION_NOT_REQUESTED: IApiResponse = {
-  status: 400,
-  body: {
-    code: 'EMAIL_VERIFICATION_NOT_REQUESTED',
-    message: 'Verificação de e-mail não foi solicitada para este usuário',
-  },
-}
-
-export const INVALID_IMAGE_FORMAT: IApiResponse = {
-  status: 401,
-  body: {
-    code: 'INVALID_IMAGE_FORMAT',
-    message: `Apenas arquivos com formato de imagem são válidos: ${allowedImageMimeTypes.join(', ')}`,
   },
 }
 
@@ -119,6 +131,41 @@ export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiResponse = {
   body: {
     code: 'PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER',
     message: 'A recuperação de senha não foi solicitada pelo usuário',
+  },
+}
+
+// ============= 403 Forbidden =============
+
+export const ADMIN_CANNOT_BE_INACTIVATED: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'ADMIN_CANNOT_BE_INACTIVATED',
+    message: 'O status de membro de administradores não pode ser inativado',
+  },
+}
+
+export const ADMIN_CANNOT_DEACTIVATE_SELF: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'ADMIN_CANNOT_DEACTIVATE_SELF',
+    message: 'Administradores não podem inativar a si mesmos',
+  },
+}
+
+export const ADMIN_CANNOT_DELETE_SELF: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'ADMIN_CANNOT_DELETE_SELF',
+    message: 'Administradores não podem deletar a si mesmos',
+  },
+}
+
+export const ADMIN_CANNOT_UPDATE_OWN_ROLE: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'ADMIN_CANNOT_UPDATE_OWN_ROLE',
+    message:
+      'Administradores não podem atualizar sua própria permissão. Transfira a permissão de administrador para outro membro primeiro',
   },
 }
 
@@ -146,27 +193,31 @@ export const UNVERIFIED_EMAIL: IApiResponse = {
   },
 }
 
-export const ADMIN_CANNOT_DELETE_SELF: IApiResponse = {
-  status: 403,
-  body: {
-    code: 'ADMIN_CANNOT_DELETE_SELF',
-    message: 'Administradores não podem deletar a si mesmos',
-  },
-}
-
-export const ADMIN_CANNOT_DEACTIVATE_SELF: IApiResponse = {
-  status: 403,
-  body: {
-    code: 'ADMIN_CANNOT_DEACTIVATE_SELF',
-    message: 'Administradores não podem inativar a si mesmos',
-  },
-}
+// ============= 404 Not Found =============
 
 export const USER_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
     code: 'USER_NOT_FOUND',
     message: 'Usuário não encontrado',
+  },
+}
+
+// ============= 409 Conflict =============
+
+export const ADMIN_ROLE_ALREADY_ASSIGNED: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'ADMIN_ROLE_ALREADY_ASSIGNED',
+    message: 'Já existe um administrador no sistema',
+  },
+}
+
+export const IDENTITY_DOCUMENT_ALREADY_USED: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'IDENTITY_DOCUMENT_ALREADY_USED',
+    message: 'Documento de identidade já utilizado',
   },
 }
 
@@ -194,6 +245,14 @@ export const USER_WITH_SAME_EMAIL: IApiResponse = {
   },
 }
 
+export const USER_WITH_SAME_IDENTITY_DOCUMENT: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'USER_WITH_SAME_IDENTITY_DOCUMENT',
+    message: 'Já existe um usuário com o mesmo documento de identificação',
+  },
+}
+
 export const USER_WITH_SAME_SECONDARY_EMAIL: IApiResponse = {
   status: 409,
   body: {
@@ -210,29 +269,7 @@ export const USER_WITH_SAME_USERNAME: IApiResponse = {
   },
 }
 
-export const USER_WITH_SAME_IDENTITY_DOCUMENT: IApiResponse = {
-  status: 409,
-  body: {
-    code: 'USER_WITH_SAME_IDENTITY_DOCUMENT',
-    message: 'Já existe um usuário com o mesmo documento de identificação',
-  },
-}
-
-export const IDENTITY_DOCUMENT_ALREADY_USED: IApiResponse = {
-  status: 409,
-  body: {
-    code: 'IDENTITY_DOCUMENT_ALREADY_USED',
-    message: 'Documento de identidade já utilizado',
-  },
-}
-
-export const ADMIN_ROLE_ALREADY_ASSIGNED: IApiResponse = {
-  status: 409,
-  body: {
-    code: 'ADMIN_ROLE_ALREADY_ASSIGNED',
-    message: 'Já existe um administrador no sistema',
-  },
-}
+// ============= 413 Payload Too Large =============
 
 export const IMAGE_TOO_BIG: IApiResponse = {
   status: 413,

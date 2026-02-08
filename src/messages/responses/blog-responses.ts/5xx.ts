@@ -1,5 +1,7 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 500 Internal Server Error =============
+
 export const BLOG_BANNER_PERSIST_FAILED: IApiResponse = {
   status: 500,
   body: {

@@ -1,5 +1,7 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 403 Forbidden =============
+
 export const DIRECTOR_BOARD_USER_ROLE_FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
@@ -16,6 +18,8 @@ export const MANAGER_CANNOT_UPDATE_OTHER_DIRECTOR_BOARD: IApiResponse = {
   },
 }
 
+// ============= 404 Not Found =============
+
 export const DIRECTOR_BOARD_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
@@ -23,6 +27,8 @@ export const DIRECTOR_BOARD_NOT_FOUND: IApiResponse = {
     message: 'Membro do corpo diretivo não encontrado',
   },
 }
+
+// ============= 409 Conflict =============
 
 export const DIRECTOR_BOARD_ALREADY_EXISTS: IApiResponse = {
   status: 409,

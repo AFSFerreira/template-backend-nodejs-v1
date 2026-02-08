@@ -1,5 +1,7 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 400 Bad Request =============
+
 export const BODY_REQUIRED: IApiResponse = {
   status: 400,
   body: {
@@ -104,6 +106,8 @@ export const VALIDATION_ERROR: IApiResponse = {
   },
 }
 
+// ============= 401 Unauthorized =============
+
 export const INVALID_BODY_FORMAT_JSON: IApiResponse = {
   status: 401,
   body: {
@@ -136,6 +140,8 @@ export const UNAUTHORIZED: IApiResponse = {
   },
 }
 
+// ============= 403 Forbidden =============
+
 export const FORBIDDEN: IApiResponse = {
   status: 403,
   body: {
@@ -144,6 +150,8 @@ export const FORBIDDEN: IApiResponse = {
   },
 }
 
+// ============= 404 Not Found =============
+
 export const RESOURCE_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
@@ -151,6 +159,8 @@ export const RESOURCE_NOT_FOUND: IApiResponse = {
     message: 'Recurso não encontrado',
   },
 }
+
+// ============= 413 Payload Too Large =============
 
 export const MAX_MULTIPART_FILE_SIZE_LIMIT: IApiResponse = {
   status: 413,
@@ -167,6 +177,8 @@ export const MULTER_LIMIT_FILE_SIZE: IApiResponse = {
     message: 'O arquivo enviado excede o tamanho máximo permitido',
   },
 }
+
+// ============= 429 Too Many Requests =============
 
 export const TOO_MANY_REQUESTS: IApiResponse = {
   status: 429,

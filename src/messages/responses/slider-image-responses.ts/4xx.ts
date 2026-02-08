@@ -1,6 +1,8 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 
+// ============= 400 Bad Request =============
+
 export const SLIDER_IMAGE_INVALID_ORDER: IApiResponse = {
   status: 400,
   body: {
@@ -9,6 +11,8 @@ export const SLIDER_IMAGE_INVALID_ORDER: IApiResponse = {
   },
 }
 
+// ============= 404 Not Found =============
+
 export const SLIDER_IMAGE_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
@@ -16,6 +20,8 @@ export const SLIDER_IMAGE_NOT_FOUND: IApiResponse = {
     message: 'A imagem de slider solicitada não foi encontrada',
   },
 }
+
+// ============= 409 Conflict =============
 
 export const SLIDER_IMAGE_LIMIT_REACHED: IApiResponse = {
   status: 409,

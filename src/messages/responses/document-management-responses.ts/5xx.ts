@@ -1,5 +1,7 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 500 Internal Server Error =============
+
 export const ELECTION_NOTICE_FILE_READ_ERROR: IApiResponse = {
   status: 500,
   body: {

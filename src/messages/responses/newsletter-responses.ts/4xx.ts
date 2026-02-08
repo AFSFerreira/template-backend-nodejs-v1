@@ -1,5 +1,7 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 404 Not Found =============
+
 export const NEWSLETTER_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
@@ -8,6 +10,8 @@ export const NEWSLETTER_NOT_FOUND: IApiResponse = {
   },
 }
 
+// ============= 409 Conflict =============
+
 export const NEWSLETTER_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
@@ -15,6 +19,8 @@ export const NEWSLETTER_ALREADY_EXISTS: IApiResponse = {
     message: 'Já existe uma newsletter com esse volume e número de edição',
   },
 }
+
+// ============= 413 Payload Too Large =============
 
 export const FILE_TOO_BIG: IApiResponse = {
   status: 413,

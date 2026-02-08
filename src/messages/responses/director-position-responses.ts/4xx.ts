@@ -1,5 +1,7 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 404 Not Found =============
+
 export const DIRECTOR_POSITION_NOT_FOUND: IApiResponse = {
   status: 404,
   body: {
@@ -7,6 +9,8 @@ export const DIRECTOR_POSITION_NOT_FOUND: IApiResponse = {
     message: 'Cargo de diretoria não encontrado',
   },
 }
+
+// ============= 409 Conflict =============
 
 export const DIRECTOR_POSITION_ALREADY_EXISTS: IApiResponse = {
   status: 409,

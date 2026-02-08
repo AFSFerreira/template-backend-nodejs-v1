@@ -2,6 +2,8 @@ import type { IApiResponse } from '@custom-types/responses/api-response'
 import { MAX_DOCUMENT_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 
+// ============= 400 Bad Request =============
+
 export const SLIDER_IMAGE_INVALID_ASPECT_RATIO: IApiResponse = {
   status: 400,
   body: {
@@ -26,6 +28,8 @@ export const SLIDER_IMAGE_TOO_SMALL: IApiResponse = {
   },
 }
 
+// ============= 404 Not Found =============
+
 export const MISSING_STATUTE_FILE: IApiResponse = {
   status: 404,
   body: {
@@ -34,6 +38,8 @@ export const MISSING_STATUTE_FILE: IApiResponse = {
   },
 }
 
+// ============= 409 Conflict =============
+
 export const SLIDER_ACTIVE_LIMIT_REACHED: IApiResponse = {
   status: 409,
   body: {
@@ -41,6 +47,8 @@ export const SLIDER_ACTIVE_LIMIT_REACHED: IApiResponse = {
     message: `Limite de ${MAX_SLIDER_IMAGES_QUANTITY} imagens ativas atingido. Desative uma imagem antes de adicionar ou ativar outra.`,
   },
 }
+
+// ============= 413 Payload Too Large =============
 
 export const DOCUMENT_TOO_BIG: IApiResponse = {
   status: 413,

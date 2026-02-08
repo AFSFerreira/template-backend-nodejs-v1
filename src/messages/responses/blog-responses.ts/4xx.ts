@@ -1,5 +1,15 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 400 Bad Request =============
+
+export const BLOG_BANNER_REQUIRED_FOR_NON_DRAFT: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'BLOG_BANNER_REQUIRED_FOR_NON_DRAFT',
+    message: 'Blogs fora do estado de rascunho devem possuir banner',
+  },
+}
+
 export const BLOG_INVALID_BANNER_LINK: IApiResponse = {
   status: 400,
   body: {
@@ -64,13 +74,7 @@ export const INVALID_BLOG_CONTENT: IApiResponse = {
   },
 }
 
-export const BLOG_BANNER_REQUIRED_FOR_NON_DRAFT: IApiResponse = {
-  status: 400,
-  body: {
-    code: 'BLOG_BANNER_REQUIRED_FOR_NON_DRAFT',
-    message: 'Blogs fora do estado de rascunho devem possuir banner',
-  },
-}
+// ============= 403 Forbidden =============
 
 export const BLOG_ACCESS_FORBIDDEN: IApiResponse = {
   status: 403,
@@ -103,6 +107,8 @@ export const BLOG_EDITORIAL_STATUS_CHANGE_FORBIDDEN: IApiResponse = {
     message: 'Você não tem permissão para alterar o status editorial deste blog',
   },
 }
+
+// ============= 404 Not Found =============
 
 export const BLOG_IMAGE_NOT_FOUND: IApiResponse = {
   status: 404,

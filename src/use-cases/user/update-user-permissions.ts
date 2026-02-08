@@ -5,9 +5,11 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_PERMISSIONS_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
+import { UserRoleType } from '@prisma/generated/enums'
 import { isManagerPermissions } from '@services/guards/is-manager-permissions'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
+import { AdminCannotUpdateOwnRoleError } from '../errors/user/admin-cannot-update-own-role-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
 @injectable()
@@ -29,6 +31,10 @@ export class UpdateUserPermissionsUseCase {
         value: await this.usersRepository.findByPublicId(publicId),
         error: new UserNotFoundError(),
       })
+
+      if (foundUser.role === UserRoleType.ADMIN) {
+        throw new AdminCannotUpdateOwnRoleError()
+      }
 
       await this.usersRepository.updateRole({ id: foundUser.id, role: data.role })
 
