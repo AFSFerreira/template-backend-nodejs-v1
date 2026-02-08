@@ -29,6 +29,8 @@ export class UpdatePasswordUseCase {
     oldPassword,
     newPassword,
   }: UpdatePasswordUseCaseRequest): Promise<UpdatePasswordUseCaseResponse> {
+    const newPasswordHash = await hash(newPassword, env.HASH_SALT_ROUNDS)
+
     await this.dbContext.runInTransaction(async () => {
       const user = ensureExists({
         value: await this.usersRepository.findByPublicId(userPublicId),
@@ -40,8 +42,6 @@ export class UpdatePasswordUseCase {
       if (!isOldPasswordCorrect) {
         throw new IncorrectOldPasswordError()
       }
-
-      const newPasswordHash = await hash(newPassword, env.HASH_SALT_ROUNDS)
 
       await this.usersRepository.changePassword({
         id: user.id,
