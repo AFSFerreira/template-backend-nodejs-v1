@@ -4,8 +4,10 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, PENDING_APPROVAL_OR_PUBLISHED } from '@constants/sets'
 import { logger } from '@lib/logger'
+import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_DELETION_SUCCESSFUL } from '@messages/loggings/models/blog-loggings'
+import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -55,6 +57,9 @@ export class DeleteBlogUseCase {
 
       return { blog }
     })
+
+    // Removendo o cache HTML do blog:
+    await removeBlogHTMLCache({ blogId: blog.id, redis })
 
     logger.info({ blogId: blog.id, title: blog.title }, BLOG_DELETION_SUCCESSFUL)
 

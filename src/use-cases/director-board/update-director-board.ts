@@ -9,6 +9,7 @@ import type { DirectorBoardRepository } from '@repositories/directors-board-repo
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
+import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserRoleType } from '@prisma/generated/enums'
@@ -18,6 +19,7 @@ import {
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { removeDirectorBoardHTMLCache } from '@services/cache/director-board-html-cache'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -126,7 +128,6 @@ export class UpdateDirectorBoardUseCase {
 
       return {
         directorBoard: updatedDirectorBoard,
-        currentDirectorBoardProfileImage: currentDirectorBoard.profileImage,
       }
     })
 
@@ -143,6 +144,11 @@ export class UpdateDirectorBoardUseCase {
           value: await moveFileEnqueued(directorBoardProfileImagePaths),
           error: new DirectorBoardImageStorageError(),
         })
+      }
+
+      // Invalidando o cache HTML se o aboutMe foi atualizado:
+      if (data.aboutMe) {
+        await removeDirectorBoardHTMLCache({ directorBoardId: directorBoard.id, redis })
       }
     } catch (error) {
       // Restaurando a imagem incorretamente persistida:
