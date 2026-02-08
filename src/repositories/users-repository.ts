@@ -27,10 +27,10 @@ export interface UsersRepository {
   findConflictingUser: (query: FindConflictingUserQuery) => Promise<User | null>
   streamAllUsers: (batchSize?: number) => AsyncIterable<UserWithDetails>
   listAllUsersDetailed: (
-    query?: ListAllUsersDetailedQuery,
+    query: ListAllUsersDetailedQuery,
   ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
   listAllUsersSimplified: (
-    query?: ListAllUsersSimplifiedQuery,
+    query: ListAllUsersSimplifiedQuery,
   ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>
   totalCount: (where?: Prisma.UserWhereInput) => Promise<number>
   setLastLogin: (id: number) => Promise<void>

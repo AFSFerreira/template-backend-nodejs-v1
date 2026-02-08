@@ -11,16 +11,16 @@ import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/generated/client'
-import type { UsersRepository } from '../users-repository'
 import { userWithDetails } from '@custom-types/validators/user-with-details'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import type { Prisma } from '@prisma/generated/client'
 import { MembershipStatusType } from '@prisma/generated/enums'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
+import type { UsersRepository } from '../users-repository'
 import { toPrismaCreateUser } from './mappers/users/create-user'
 import { toPrismaUpdateUser } from './mappers/users/update-user'
 import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
@@ -148,46 +148,7 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  async listAllUsersDetailed(query?: ListAllUsersDetailedQuery) {
-    if (!query) {
-      const users = await this.dbContext.client.user.findMany({
-        select: {
-          id: true,
-          publicId: true,
-          profileImage: true,
-          fullName: true,
-          role: true,
-          email: true,
-          emailIsPublic: true,
-          Address: { select: { State: { select: { name: true } } } },
-          Institution: { select: { name: true } },
-        },
-        orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
-      })
-
-      const formattedUsers = users.map((userInfo) => ({
-        id: userInfo.id,
-        publicId: userInfo.publicId,
-        fullName: userInfo.fullName,
-        profileImage: userInfo.profileImage,
-        role: userInfo.role,
-        email: userInfo.email,
-        emailIsPublic: userInfo.emailIsPublic,
-        institutionName: userInfo.Institution?.name,
-        state: userInfo.Address?.State.name,
-      }))
-
-      return {
-        data: formattedUsers,
-        meta: {
-          totalItems: users.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: users.length,
-        },
-      }
-    }
-
+  async listAllUsersDetailed(query: ListAllUsersDetailedQuery) {
     const { searchQuery, countQuery } = buildListAllUsersDetailedQuery(query)
 
     const [countResult, users] = await Promise.all([
@@ -211,50 +172,7 @@ export class PrismaUsersRepository implements UsersRepository {
     }
   }
 
-  async listAllUsersSimplified(query?: ListAllUsersSimplifiedQuery) {
-    if (!query) {
-      const users = await this.dbContext.client.user.findMany({
-        select: {
-          id: true,
-          publicId: true,
-          fullName: true,
-          role: true,
-          email: true,
-          profileImage: true,
-          emailIsPublic: true,
-          Address: {
-            select: { State: { select: { name: true } } },
-          },
-          Institution: {
-            select: { name: true },
-          },
-        },
-        orderBy: [{ fullName: 'asc' }, { id: 'asc' }],
-      })
-
-      const formattedUsers = users.map((userInfo) => ({
-        id: userInfo.id,
-        publicId: userInfo.publicId,
-        fullName: userInfo.fullName,
-        role: userInfo.role,
-        profileImage: userInfo.profileImage,
-        email: userInfo.email,
-        emailIsPublic: userInfo.emailIsPublic,
-        institutionName: userInfo.Institution?.name,
-        state: userInfo.Address?.State.name,
-      }))
-
-      return {
-        data: formattedUsers,
-        meta: {
-          totalItems: users.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: users.length,
-        },
-      }
-    }
-
+  async listAllUsersSimplified(query: ListAllUsersSimplifiedQuery) {
     const { searchQuery, countQuery } = buildListAllUsersSimplifiedQuery(query)
 
     const [countResult, users] = await Promise.all([

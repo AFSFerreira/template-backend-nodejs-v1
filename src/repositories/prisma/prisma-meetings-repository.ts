@@ -2,11 +2,11 @@ import type { OrderableType } from '@custom-types/custom/orderable'
 import type { CreateMeetingQuery } from '@custom-types/repository/prisma/meeting/create-meeting-query'
 import type { ListAllMeetingsQuery } from '@custom-types/repository/prisma/meeting/list-all-meetings-query'
 import type { UpdateMeetingQuery } from '@custom-types/repository/prisma/meeting/update-meeting-query'
+import { meetingWithDetails } from '@custom-types/validators/meeting-with-details'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { meetingWithDetails } from '@custom-types/validators/meeting-with-details'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/mappers/map-status-to-date-filter'
@@ -68,29 +68,12 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     return meeting
   }
 
-  async listAllMeetings(query?: ListAllMeetingsQuery) {
+  async listAllMeetings(query: ListAllMeetingsQuery) {
     const orderBy: Prisma.MeetingOrderByWithRelationInput[] = [
       { lastDate: 'desc' as OrderableType },
       { title: 'asc' as OrderableType },
       { id: 'asc' as OrderableType },
     ]
-
-    if (!query) {
-      const meetings = await this.dbContext.client.meeting.findMany({
-        orderBy,
-        include: meetingWithDetails.include,
-      })
-
-      return {
-        data: meetings,
-        meta: {
-          totalItems: meetings.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: meetings.length,
-        },
-      }
-    }
 
     const lastDateConstraint = mapMeetingStatusToDateFilter(query.status)
 

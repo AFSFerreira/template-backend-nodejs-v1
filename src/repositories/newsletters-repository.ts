@@ -11,6 +11,6 @@ export interface NewslettersRepository {
   findConflictingNewsletter: (query: FindConflictingNewsletterQuery) => Promise<Newsletter | null>
   update: (query: UpdateNewsletterQuery) => Promise<Newsletter>
   totalCount: (where?: Prisma.NewsletterWhereInput) => Promise<number>
-  listAll: (query?: ListAllNewslettersQuery) => Promise<PaginatedResult<Newsletter[]>>
+  listAll: (query: ListAllNewslettersQuery) => Promise<PaginatedResult<Newsletter[]>>
   delete: (id: number) => Promise<void>
 }

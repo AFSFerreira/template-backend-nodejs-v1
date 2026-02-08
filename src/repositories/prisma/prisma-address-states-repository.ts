@@ -1,10 +1,10 @@
 import type { AddressStateFindOrCreateQuery } from '@custom-types/repository/prisma/address-state/address-state-find-or-create-query'
 import type { ListAllAddressStateQuery } from '@custom-types/repository/prisma/address-state/list-all-address-state-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/generated/client'
-import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import type { Prisma } from '@prisma/generated/client'
 import { MembershipStatusType, UserRoleType } from '@prisma/generated/enums'
+import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -37,7 +37,7 @@ export class PrismaAddressStatesRepository implements AddressStatesRepository {
     return addressState
   }
 
-  async listAllAddressesStates(query?: ListAllAddressStateQuery) {
+  async listAllAddressesStates(query: ListAllAddressStateQuery) {
     const userConstraint: Prisma.AddressWhereInput = {
       User: {
         role: {
@@ -71,29 +71,6 @@ export class PrismaAddressStatesRepository implements AddressStatesRepository {
       },
       { id: 'asc' },
     ]
-
-    if (!query) {
-      const addressesGrouped = await this.dbContext.client.addressState.findMany({
-        where,
-        include,
-        orderBy,
-      })
-
-      const data = addressesGrouped.map((stateCount) => ({
-        state: stateCount.name,
-        usersCount: stateCount._count.Address,
-      }))
-
-      return {
-        data,
-        meta: {
-          totalItems: data.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: data.length,
-        },
-      }
-    }
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 

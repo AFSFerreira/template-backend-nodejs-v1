@@ -1,9 +1,9 @@
 import type { ListAllSliderImagesQuery } from '@custom-types/repository/prisma/slider-image/list-all-slider-images-query'
 import type { UpdateSliderImageQuery } from '@custom-types/repository/prisma/slider-image/update-slider-image-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -41,22 +41,8 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     return totalSliderImages
   }
 
-  async listAll(query?: ListAllSliderImagesQuery) {
+  async listAll(query: ListAllSliderImagesQuery) {
     const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [{ order: 'asc' }, { id: 'asc' }]
-
-    if (!query) {
-      const sliderImages = await this.dbContext.client.sliderImage.findMany({ orderBy })
-
-      return {
-        data: sliderImages,
-        meta: {
-          totalItems: sliderImages.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: sliderImages.length,
-        },
-      }
-    }
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 
@@ -85,23 +71,9 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     }
   }
 
-  async listActive(query?: ListAllSliderImagesQuery) {
+  async listActive(query: ListAllSliderImagesQuery) {
     const where: Prisma.SliderImageWhereInput = { isActive: true }
     const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [{ order: 'asc' }, { id: 'asc' }]
-
-    if (!query) {
-      const sliderImages = await this.dbContext.client.sliderImage.findMany({ where, orderBy })
-
-      return {
-        data: sliderImages,
-        meta: {
-          totalItems: sliderImages.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: sliderImages.length,
-        },
-      }
-    }
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 

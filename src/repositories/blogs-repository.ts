@@ -18,7 +18,7 @@ export interface BlogsRepository {
   updateStatus: (query: UpdateBlogStatusQuery) => Promise<Blog>
   totalCount: (where?: Prisma.BlogWhereInput) => Promise<number>
   findByPublicId: (publicId: string) => Promise<BlogWithDetails | null>
-  listAllBlogs: (query?: ListAllBlogsQuery) => Promise<PaginatedResult<CustomBlogWithSimplifiedDetails[]>>
-  listAllBlogsDetailed: (query?: ListAllBlogsDetailedQuery) => Promise<PaginatedResult<CustomBlogDetailed[]>>
-  listAllUserBlogs: (query?: ListAllBlogsDetailedQuery) => Promise<PaginatedResult<CustomBlogDetailed[]>>
+  listAllBlogs: (query: ListAllBlogsQuery) => Promise<PaginatedResult<CustomBlogWithSimplifiedDetails[]>>
+  listAllBlogsDetailed: (query: ListAllBlogsDetailedQuery) => Promise<PaginatedResult<CustomBlogDetailed[]>>
+  listAllUserBlogs: (query: ListAllBlogsDetailedQuery) => Promise<PaginatedResult<CustomBlogDetailed[]>>
 }

@@ -11,7 +11,7 @@ export interface AcademicPublicationsRepository {
   findById: (id: number) => Promise<AcademicPublication | null>
   findManyByUserId: (userId: number) => Promise<AcademicPublication[]>
   listAllAcademicPublications: (
-    query?: ListAllAcademicPublicationsQuery,
+    query: ListAllAcademicPublicationsQuery,
   ) => Promise<PaginatedResult<CustomAcademicPublicationWithSimplifiedDetails[]>>
   getYearsWithCount: (
     query: GetAcademicPublicationsYearsQuerySchemaType,

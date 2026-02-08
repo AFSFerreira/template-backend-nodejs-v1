@@ -3,9 +3,9 @@ import type { QueryMode } from '@custom-types/custom/query-mode'
 import type { ActivityAreaQuery } from '@custom-types/repository/prisma/activity-area/activity-area-query'
 import type { ListAllActivityAreasQuery } from '@custom-types/repository/prisma/activity-area/list-all-activity-areas-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -36,26 +36,12 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
     return area
   }
 
-  async listAllActivityAreas(query?: ListAllActivityAreasQuery) {
+  async listAllActivityAreas(query: ListAllActivityAreasQuery) {
     const orderBy: Prisma.ActivityAreaOrderByWithRelationInput[] = [
       { type: 'asc' as OrderableType },
       { area: 'asc' as OrderableType },
       { id: 'asc' as OrderableType },
     ]
-
-    if (!query) {
-      const activityAreas = await this.dbContext.client.activityArea.findMany({ orderBy })
-
-      return {
-        data: activityAreas,
-        meta: {
-          totalItems: activityAreas.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: activityAreas.length,
-        },
-      }
-    }
 
     const { page, limit } = query
 

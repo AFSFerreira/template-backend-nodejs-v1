@@ -6,5 +6,5 @@ import type { AddressState } from '@prisma/generated/client'
 
 export interface AddressStatesRepository {
   findOrCreate: (data: AddressStateFindOrCreateQuery) => Promise<AddressState>
-  listAllAddressesStates: (query?: ListAllAddressStateQuery) => Promise<PaginatedResult<AddressStates[]>>
+  listAllAddressesStates: (query: ListAllAddressStateQuery) => Promise<PaginatedResult<AddressStates[]>>
 }

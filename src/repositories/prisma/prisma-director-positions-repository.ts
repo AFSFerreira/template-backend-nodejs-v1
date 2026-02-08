@@ -1,9 +1,9 @@
 import type { ListAllDirectorPositionsQuery } from '@custom-types/repository/prisma/director-position/list-all-director-positions-query'
 import type { UpdateDirectorPositionQuery } from '@custom-types/repository/prisma/director-position/update-director-position-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -25,7 +25,7 @@ export class PrismaDirectorPositionsRepository implements DirectorPositionsRepos
     return directorPosition
   }
 
-  async listAll(query?: ListAllDirectorPositionsQuery) {
+  async listAll(query: ListAllDirectorPositionsQuery) {
     const where: Prisma.DirectorPositionWhereInput = {
       ...(query?.position
         ? {
@@ -37,20 +37,6 @@ export class PrismaDirectorPositionsRepository implements DirectorPositionsRepos
         : {}),
     }
     const orderBy: Prisma.DirectorPositionOrderByWithRelationInput[] = [{ precedence: 'asc' }, { id: 'asc' }]
-
-    if (!query) {
-      const directorPositions = await this.dbContext.client.directorPosition.findMany({ where, orderBy })
-
-      return {
-        data: directorPositions,
-        meta: {
-          totalItems: directorPositions.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: directorPositions.length,
-        },
-      }
-    }
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 

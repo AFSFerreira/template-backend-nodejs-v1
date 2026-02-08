@@ -2,11 +2,11 @@ import type { OrderableType } from '@custom-types/custom/orderable'
 import type { CreateDirectorBoardQuery } from '@custom-types/repository/prisma/director-board/create-director-board-query'
 import type { listAllDirectorBoardMembers } from '@custom-types/repository/prisma/director-board/list-all-director-board-members'
 import type { UpdateDirectorBoardQuery } from '@custom-types/repository/prisma/director-board/update-director-board-query'
+import { directorBoardWithUser } from '@custom-types/validators/director-board-with-user'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import { directorBoardWithUser } from '@custom-types/validators/director-board-with-user'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -85,7 +85,7 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
     })
   }
 
-  async listAllDirectorBoardMembers(query?: listAllDirectorBoardMembers) {
+  async listAllDirectorBoardMembers(query: listAllDirectorBoardMembers) {
     const orderBy: Prisma.DirectorBoardOrderByWithRelationInput[] = [
       ...(query?.orderBy?.precedenceOrder
         ? [
@@ -99,23 +99,6 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
       { User: { fullName: 'asc' as OrderableType } },
       { id: 'asc' as OrderableType },
     ]
-
-    if (!query) {
-      const directors = await this.dbContext.client.directorBoard.findMany({
-        include: directorBoardWithUser.include,
-        orderBy,
-      })
-
-      return {
-        data: directors,
-        meta: {
-          totalItems: directors.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: directors.length,
-        },
-      }
-    }
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
 

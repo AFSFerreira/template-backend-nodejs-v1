@@ -1,4 +1,3 @@
-import type { OrderableType } from '@custom-types/custom/orderable'
 import type { BlogDetailedRaw } from '@custom-types/repository/prisma/adapter/blog-detailed'
 import type { BlogSimplifiedRaw } from '@custom-types/repository/prisma/adapter/blog-simplified'
 import type { CreateBlogQuery } from '@custom-types/repository/prisma/blog/create-blog-query'
@@ -6,11 +5,11 @@ import type { ListAllBlogsDetailedQuery } from '@custom-types/repository/prisma/
 import type { ListAllBlogsQuery } from '@custom-types/repository/prisma/blog/list-all-blogs-query'
 import type { UpdateBlogQuery } from '@custom-types/repository/prisma/blog/update-blog-query'
 import type { UpdateBlogStatusQuery } from '@custom-types/repository/prisma/blog/update-blog-status-query'
+import { blogWithDetails } from '@custom-types/validators/blog-with-details'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
-import { blogWithDetails } from '@custom-types/validators/blog-with-details'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { blogDetailedAdapter } from './adapters/blogs/blog-detailed-adapter'
@@ -70,38 +69,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     return blog
   }
 
-  async listAllBlogs(query?: ListAllBlogsQuery) {
-    const orderBy: Prisma.BlogOrderByWithRelationInput[] = [
-      { title: 'asc' as OrderableType },
-      { id: 'asc' as OrderableType },
-    ]
-
-    if (!query) {
-      const blogs = await this.dbContext.client.blog.findMany({
-        select: {
-          publicId: true,
-          title: true,
-          bannerImage: true,
-          accessCount: true,
-          editorialStatus: true,
-          searchContent: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-        orderBy,
-      })
-
-      return {
-        data: blogs,
-        meta: {
-          totalItems: blogs.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: blogs.length,
-        },
-      }
-    }
-
+  async listAllBlogs(query: ListAllBlogsQuery) {
     const { searchQuery, countQuery } = buildListAllBlogsSimplifiedQuery(query)
 
     const [countResult, blogs] = await Promise.all([
@@ -134,45 +102,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     })
   }
 
-  async listAllBlogsDetailed(query?: ListAllBlogsDetailedQuery) {
-    const orderBy: Prisma.BlogOrderByWithRelationInput[] = [
-      { title: 'asc' as OrderableType },
-      { id: 'asc' as OrderableType },
-    ]
-
-    if (!query) {
-      const blogs = await this.dbContext.client.blog.findMany({
-        select: {
-          publicId: true,
-          authorName: true,
-          title: true,
-          bannerImage: true,
-          editorialStatus: true,
-          accessCount: true,
-          searchContent: true,
-          createdAt: true,
-          updatedAt: true,
-          Subcategories: true,
-          User: {
-            select: {
-              fullName: true,
-            },
-          },
-        },
-        orderBy,
-      })
-
-      return {
-        data: blogs,
-        meta: {
-          totalItems: blogs.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: blogs.length,
-        },
-      }
-    }
-
+  async listAllBlogsDetailed(query: ListAllBlogsDetailedQuery) {
     const { searchQuery, countQuery } = buildListAllBlogsDetailedQuery(query)
 
     const [countResult, blogs] = await Promise.all([
@@ -195,45 +125,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     }
   }
 
-  async listAllUserBlogs(query?: ListAllBlogsDetailedQuery) {
-    const orderBy: Prisma.BlogOrderByWithRelationInput[] = [
-      { title: 'asc' as OrderableType },
-      { id: 'asc' as OrderableType },
-    ]
-
-    if (!query) {
-      const blogs = await this.dbContext.client.blog.findMany({
-        select: {
-          publicId: true,
-          title: true,
-          bannerImage: true,
-          editorialStatus: true,
-          accessCount: true,
-          searchContent: true,
-          createdAt: true,
-          authorName: true,
-          updatedAt: true,
-          Subcategories: true,
-          User: {
-            select: {
-              fullName: true,
-            },
-          },
-        },
-        orderBy,
-      })
-
-      return {
-        data: blogs,
-        meta: {
-          totalItems: blogs.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: blogs.length,
-        },
-      }
-    }
-
+  async listAllUserBlogs(query: ListAllBlogsDetailedQuery) {
     const { searchQuery, countQuery } = buildListAllUserBlogsDetailedQuery(query)
 
     const [countResult, blogs] = await Promise.all([

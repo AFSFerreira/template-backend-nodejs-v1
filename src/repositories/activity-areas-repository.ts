@@ -7,7 +7,7 @@ export interface ActivityAreasRepository {
   create: (data: Prisma.ActivityAreaUncheckedCreateInput) => Promise<ActivityArea>
   findById: (id: number) => Promise<ActivityArea | null>
   findByArea: (query: ActivityAreaQuery) => Promise<ActivityArea | null>
-  listAllActivityAreas: (query?: ListAllActivityAreasQuery) => Promise<PaginatedResult<ActivityArea[]>>
+  listAllActivityAreas: (query: ListAllActivityAreasQuery) => Promise<PaginatedResult<ActivityArea[]>>
   findManyBy: (areas: ActivityAreaQuery[]) => Promise<ActivityArea[]>
   delete: (id: number) => Promise<void>
 }

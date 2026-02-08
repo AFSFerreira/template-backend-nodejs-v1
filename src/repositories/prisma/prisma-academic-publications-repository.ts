@@ -1,13 +1,12 @@
-import type { OrderableType } from '@custom-types/custom/orderable'
 import type { GetAcademicPublicationsYearsQuerySchemaType } from '@custom-types/http/schemas/academic-pulication/get-academic-publications-years-query-schema'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/prisma/academic-publication/list-all-academic-publications-query'
 import type { UpdateAcademicPublicationQuery } from '@custom-types/repository/prisma/academic-publication/update-academic-publication-query'
 import type { AcademicPublicationSimplifiedRaw } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
 import type { AcademicPublicationYearRaw } from '@custom-types/repository/prisma/adapter/academic-publication-year'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import type { Prisma } from '@prisma/generated/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
@@ -48,53 +47,7 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
     return academicPublication
   }
 
-  async listAllAcademicPublications(query?: ListAllAcademicPublicationsQuery) {
-    const orderBy: Prisma.AcademicPublicationOrderByWithRelationInput[] = [
-      { title: 'asc' as OrderableType },
-      { id: 'asc' as OrderableType },
-    ]
-
-    if (!query) {
-      const academicPublications = await this.dbContext.client.academicPublication.findMany({
-        select: {
-          id: true,
-          title: true,
-          journalName: true,
-          publicationYear: true,
-          volume: true,
-          editionNumber: true,
-          startPage: true,
-          linkDoi: true,
-          createdAt: true,
-          ActivityArea: {
-            select: { area: true },
-          },
-          AcademicPublicationAuthors: {
-            select: { name: true },
-          },
-        },
-        orderBy,
-      })
-
-      const formattedAcademicPublications = academicPublications.map((academicPublicationInfo) => ({
-        ...academicPublicationInfo,
-        authorsNames: academicPublicationInfo.AcademicPublicationAuthors.map(
-          (academicPublicationAuthorInfo) => academicPublicationAuthorInfo.name,
-        ),
-        mainCategory: academicPublicationInfo.ActivityArea.area,
-      }))
-
-      return {
-        data: formattedAcademicPublications,
-        meta: {
-          totalItems: academicPublications.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: academicPublications.length,
-        },
-      }
-    }
-
+  async listAllAcademicPublications(query: ListAllAcademicPublicationsQuery) {
     const { searchQuery, countQuery } = buildListAllAcademicPublicationsQuery(query)
 
     const [countResult, academicPublications] = await Promise.all([

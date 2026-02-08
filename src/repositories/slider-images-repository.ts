@@ -10,6 +10,6 @@ export interface SliderImagesRepository {
   totalCount: () => Promise<number>
   update: (query: UpdateSliderImageQuery) => Promise<SliderImage>
   delete: (id: number) => Promise<void>
-  listAll: (query?: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
-  listActive: (query?: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
+  listAll: (query: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
+  listActive: (query: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
 }

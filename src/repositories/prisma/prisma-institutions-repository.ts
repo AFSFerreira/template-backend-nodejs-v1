@@ -3,13 +3,13 @@ import type { ListAllInstitutionsNamesQuery } from '@custom-types/repository/pri
 import type { ListAllInstitutionsWithUsersQuery } from '@custom-types/repository/prisma/institution/list-all-institutions-with-users-query'
 import type { UpdateInstitutionQuery } from '@custom-types/repository/prisma/institution/update-institution-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Prisma } from '@prisma/generated/client'
-import type { InstitutionsRepository } from '../institutions-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import type { Prisma } from '@prisma/generated/client'
 import { MembershipStatusType, UserRoleType } from '@prisma/generated/enums'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
+import type { InstitutionsRepository } from '../institutions-repository'
 
 @injectable()
 export class PrismaInstitutionsRepository implements InstitutionsRepository {
@@ -59,25 +59,11 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     })
   }
 
-  async listAllInstitutionsNames(query?: ListAllInstitutionsNamesQuery) {
+  async listAllInstitutionsNames(query: ListAllInstitutionsNamesQuery) {
     const orderBy: Prisma.InstitutionOrderByWithRelationInput[] = [
       { name: 'asc' as OrderableType },
       { id: 'asc' as OrderableType },
     ]
-
-    if (!query) {
-      const institutions = await this.dbContext.client.institution.findMany({ orderBy })
-
-      return {
-        data: institutions,
-        meta: {
-          totalItems: institutions.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: institutions.length,
-        },
-      }
-    }
 
     const where: Prisma.InstitutionWhereInput = {
       name: { contains: query.name },
@@ -111,7 +97,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     }
   }
 
-  async listAllInstitutionsWithUsersCount(query?: ListAllInstitutionsWithUsersQuery) {
+  async listAllInstitutionsWithUsersCount(query: ListAllInstitutionsWithUsersQuery) {
     const where: Prisma.InstitutionWhereInput = {
       User: {
         some: {
@@ -138,29 +124,6 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
       _count: {
         select: { User: true },
       },
-    }
-
-    if (!query) {
-      const institutions = await this.dbContext.client.institution.findMany({
-        where,
-        orderBy: [{ User: { _count: 'desc' } }, { id: 'asc' }],
-        include,
-      })
-
-      const formattedInstitutions = institutions.map((institution) => ({
-        name: institution.name,
-        usersCount: institution._count.User,
-      }))
-
-      return {
-        data: formattedInstitutions,
-        meta: {
-          totalItems: institutions.length,
-          totalPages: 1,
-          currentPage: 1,
-          pageSize: institutions.length,
-        },
-      }
     }
 
     const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })

@@ -13,7 +13,5 @@ export interface DirectorBoardRepository {
   findByPublicId: (publicId: string) => Promise<DirectorBoardWithUser | null>
   delete: (id: number) => Promise<void>
   deleteByUserId: (userId: number) => Promise<void>
-  listAllDirectorBoardMembers: (
-    query?: listAllDirectorBoardMembers,
-  ) => Promise<PaginatedResult<DirectorBoardWithUser[]>>
+  listAllDirectorBoardMembers: (query: listAllDirectorBoardMembers) => Promise<PaginatedResult<DirectorBoardWithUser[]>>
 }

@@ -10,6 +10,6 @@ export interface MeetingsRepository {
   findActiveMeeting: () => Promise<Meeting | null>
   findByPublicId: (publicId: string) => Promise<MeetingWithDetails | null>
   update: (query: UpdateMeetingQuery) => Promise<MeetingWithDetails>
-  listAllMeetings: (query?: ListAllMeetingsQuery) => Promise<PaginatedResult<MeetingWithDetails[]>>
+  listAllMeetings: (query: ListAllMeetingsQuery) => Promise<PaginatedResult<MeetingWithDetails[]>>
   delete: (id: number) => Promise<void>
 }
