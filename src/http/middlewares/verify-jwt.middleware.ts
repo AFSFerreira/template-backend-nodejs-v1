@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { logger } from '@lib/logger'
 import { setUserId } from '@lib/logger/helpers/set-user-id'
-import { UNAUTHORIZED } from '@messages/responses/common-responses.ts/4xx'
+import { UNAUTHORIZED } from '@messages/responses/common-responses/4xx'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { verifyUserMembershipStatus } from '@utils/http/verify-user-membership-status'
 

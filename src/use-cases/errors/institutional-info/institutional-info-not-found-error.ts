@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { INSTITUTIONAL_INFO_NOT_FOUND } from '@messages/responses/institutional-info-responses.ts/4xx'
+import { INSTITUTIONAL_INFO_NOT_FOUND } from '@messages/responses/institutional-info-responses/4xx'
 
 export class InstitutionalInfoNotFoundError extends ApiError {
   constructor() {

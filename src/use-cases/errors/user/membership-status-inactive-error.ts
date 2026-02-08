@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { INACTIVE_USER } from '@messages/responses/user-responses.ts/4xx'
+import { INACTIVE_USER } from '@messages/responses/user-responses/4xx'
 
 export class MembershipStatusInactiveError extends ApiError {
   constructor() {

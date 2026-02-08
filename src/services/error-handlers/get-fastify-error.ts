@@ -4,8 +4,8 @@ import {
   BODY_REQUIRED,
   INVALID_BODY_FORMAT_JSON,
   MAX_MULTIPART_FILE_SIZE_LIMIT,
-} from '@messages/responses/common-responses.ts/4xx'
-import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses.ts/5xx'
+} from '@messages/responses/common-responses/4xx'
+import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 
 export function getFastifyError(error: FastifyError): IApiResponse {
   if (error.code === 'FST_ERR_CTP_EMPTY_JSON_BODY') {

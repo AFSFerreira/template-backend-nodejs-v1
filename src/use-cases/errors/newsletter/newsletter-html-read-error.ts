@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { NEWSLETTER_HTML_READ_ERROR } from '@messages/responses/newsletter-responses.ts/5xx'
+import { NEWSLETTER_HTML_READ_ERROR } from '@messages/responses/newsletter-responses/5xx'
 
 export class NewsletterHtmlReadError extends ApiError {
   constructor() {

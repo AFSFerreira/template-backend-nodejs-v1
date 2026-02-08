@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { BLOG_INVALID_BANNER_LINK } from '@messages/responses/blog-responses.ts/4xx'
+import { BLOG_INVALID_BANNER_LINK } from '@messages/responses/blog-responses/4xx'
 
 export class BlogInvalidBannerLinkError extends ApiError {
   constructor() {

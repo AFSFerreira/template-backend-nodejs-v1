@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { USER_PROFILE_IMAGE_PERSISTENCE_ERROR } from '@messages/responses/user-responses.ts/5xx'
+import { USER_PROFILE_IMAGE_PERSISTENCE_ERROR } from '@messages/responses/user-responses/5xx'
 
 export class UserProfileImagePersistenceError extends ApiError {
   constructor() {

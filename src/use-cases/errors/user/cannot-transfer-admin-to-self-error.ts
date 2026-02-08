@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { CANNOT_TRANSFER_ADMIN_TO_SELF } from '@messages/responses/user-responses.ts/4xx'
+import { CANNOT_TRANSFER_ADMIN_TO_SELF } from '@messages/responses/user-responses/4xx'
 
 export class CannotTransferAdminToSelfError extends ApiError {
   constructor() {

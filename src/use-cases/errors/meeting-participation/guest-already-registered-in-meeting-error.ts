@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { GUEST_ALREADY_REGISTERED_IN_MEETING } from '@messages/responses/meeting-responses.ts/4xx'
+import { GUEST_ALREADY_REGISTERED_IN_MEETING } from '@messages/responses/meeting-responses/4xx'
 
 export class GuestAlreadyRegisteredInMeetingError extends ApiError {
   constructor() {

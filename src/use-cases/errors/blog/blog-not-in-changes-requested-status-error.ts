@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { BLOG_NOT_IN_CHANGES_REQUESTED_STATUS } from '@messages/responses/blog-responses.ts/4xx'
+import { BLOG_NOT_IN_CHANGES_REQUESTED_STATUS } from '@messages/responses/blog-responses/4xx'
 
 export class BlogNotInChangesRequestedStatusError extends ApiError {
   constructor() {

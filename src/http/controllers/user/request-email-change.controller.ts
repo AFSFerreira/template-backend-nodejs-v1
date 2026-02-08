@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { EMAIL_CHANGE_REQUESTED } from '@messages/responses/user-responses.ts/2xx'
+import { EMAIL_CHANGE_REQUESTED } from '@messages/responses/user-responses/2xx'
 import { requestEmailChangeBodySchema } from '@schemas/user/request-email-change-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { RequestEmailChangeUseCase } from '@use-cases/user/request-email-change'

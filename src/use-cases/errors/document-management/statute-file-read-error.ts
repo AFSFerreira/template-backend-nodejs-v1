@@ -1,5 +1,5 @@
 import { ApiError } from '@errors/api-error'
-import { STATUTE_FILE_READ_ERROR } from '@messages/responses/document-management-responses.ts/5xx'
+import { STATUTE_FILE_READ_ERROR } from '@messages/responses/document-management-responses/5xx'
 
 export class StatuteFileReadError extends ApiError {
   constructor() {
