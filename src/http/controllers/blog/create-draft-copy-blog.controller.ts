@@ -1,9 +1,9 @@
 import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
+import type { FastifyReply, FastifyRequest } from 'fastify'
 import { BlogPresenter } from '@presenters/blog-presenter'
 import { createDraftCopyBlogParamsSchema } from '@schemas/blog/create-draft-copy-blog-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDraftCopyBlogUseCase } from '@use-cases/blog/create-draft-copy-blog'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function createDraftCopyBlog(request: FastifyRequest, reply: FastifyReply) {

@@ -5,20 +5,19 @@
       "name": "Debug: Start Dev (Watch)",
       "type": "node",
       "request": "launch",
-      "skipFiles": ["<node_internals>/**"],
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
       "program": "${workspaceFolder}/src/server.ts",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "tsx",
-        "watch",
-        "--env-file=.env",
-        "--no-deprecation"
-      ],
+      "runtimeArgs": ["tsx", "watch", "--env-file=.env", "--no-deprecation"],
       "restart": true,
       "console": "integratedTerminal",
-      "preLaunchTask": "npm: generate:presenters",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": ["${workspaceFolder}/**/*.js", "!**/node_modules/**"],
+      "resolveSourceMapLocations": ["${workspaceFolder}/**", "!**/node_modules/**"],
       "env": {
-        "NODE_ENV": "development"
+        "NODE_ENV": "development",
+        "NODE_OPTIONS": "--enable-source-maps"
       }
     },
     {
@@ -28,10 +27,7 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/dist/server.js",
       "runtimeExecutable": "node",
-      "runtimeArgs": [
-        "--enable-source-maps",
-        "--env-file=.env",
-      ],
+      "runtimeArgs": ["--enable-source-maps", "--env-file=.env"],
       "console": "integratedTerminal",
       "preLaunchTask": "npm: build",
       "env": {

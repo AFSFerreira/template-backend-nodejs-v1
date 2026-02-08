@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { BLOGS_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
 import { CONTENT_LEADER_PERMISSIONS, CONTENT_PRODUCERS_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -23,7 +24,6 @@ import { submitReviewToPending } from './submit-review-to-pending.controller'
 import { updateBlog } from './update-blog.controller'
 import { uploadBlogBanner } from './upload-blog-banner.controller'
 import { uploadBlogImage } from './upload-blog-image.controller'
-import { BLOGS_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
 
 export async function blogRoutes(app: FastifyInstance) {
   // GET
@@ -59,8 +59,7 @@ export async function blogRoutes(app: FastifyInstance) {
   )
   app.get(
     '/restrict/:publicId',
-    { ...BLOGS_PAYLOAD_LIMIT_SIZE,
-      preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)] },
+    { ...BLOGS_PAYLOAD_LIMIT_SIZE, preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)] },
     findBlogByPublicIdRestricted,
   )
   app.get('/:publicId', { ...BLOGS_PAYLOAD_LIMIT_SIZE }, findBlogByPublicId)

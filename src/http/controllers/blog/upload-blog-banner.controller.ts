@@ -1,9 +1,9 @@
-import { blogBannerMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
+import type { FastifyReply, FastifyRequest } from 'fastify'
+import { blogBannerMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import { FilePresenter } from '@presenters/file-presenter'
 import { imageSchema } from '@schemas/utils/generic-components/image-schema'
 import { UploadBlogBannerUseCase } from '@use-cases/blog/upload-blog-banner'
-import type { FastifyReply, FastifyRequest } from 'fastify'
 import { container } from 'tsyringe'
 
 export async function uploadBlogBanner(request: FastifyRequest, reply: FastifyReply) {
