@@ -8,6 +8,7 @@ import type { DirectorPositionsRepository } from '@repositories/director-positio
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserRoleType } from '@prisma/generated/enums'
@@ -17,7 +18,6 @@ import {
 } from '@services/builders/paths/build-director-board-profile-image-path'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { moveFile } from '@services/files/move-file'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -51,108 +51,118 @@ export class UpdateDirectorBoardUseCase {
     data,
     requestUserPublicId,
   }: UpdateDirectorBoardUseCaseRequest): Promise<UpdateDirectorBoardUseCaseResponse> {
-    let profileImage: string | null | undefined
-    const profileImageSanitized = sanitizeUrlFilename(data.profileImage)
-
     const updateData: Prisma.DirectorBoardUpdateInput & {
       directorPositionId?: number
     } = {}
 
-    try {
-      const { directorBoard } = await this.dbContext.runInTransaction(async () => {
-        const currentDirectorBoard = ensureExists({
-          value: await this.directorBoardRepository.findByPublicId(publicId),
-          error: new DirectorBoardNotFoundError(),
-        })
+    let newProfileImage: string | undefined
 
-        const requestUser = ensureExists({
-          value: await this.usersRepository.findByPublicId(requestUserPublicId),
-          error: new UserNotFoundError(),
-        })
-
-        // Validação: Manager só pode atualizar seu próprio perfil
-        if (requestUser.role === UserRoleType.MANAGER && currentDirectorBoard.User.publicId !== requestUser.publicId) {
-          throw new ManagerCannotUpdateOtherDirectorBoardError()
-        }
-
-        profileImage = currentDirectorBoard.profileImage
-
-        if (data.profileImage && profileImageSanitized && profileImageSanitized !== currentDirectorBoard.profileImage) {
-          ensureExists({
-            value: profileImageSanitized,
-            error: new DirectorBoardImageStorageError(),
-          })
-
-          ensureExists({
-            value: await moveFile({
-              oldFilePath: buildDirectorBoardTempProfileImagePath(profileImageSanitized),
-              newFilePath: buildDirectorBoardProfileImagePath(profileImageSanitized),
-            }),
-            error: new DirectorBoardImageStorageError(),
-          })
-
-          updateData.profileImage = profileImageSanitized
-        }
-
-        if (data.positionId) {
-          const directorPosition = ensureExists({
-            value: await this.directorPositionsRepository.findUniqueBy({ publicId: data.positionId }),
-            error: new DirectorPositionNotFoundError(),
-          })
-
-          const existingDirectorBoard = await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id)
-
-          if (existingDirectorBoard && existingDirectorBoard.id !== currentDirectorBoard.id) {
-            throw new DirectorBoardPositionAlreadyOccupiedError()
-          }
-
-          updateData.directorPositionId = directorPosition.id
-        }
-
-        if (data.aboutMe) {
-          try {
-            generateText(data.aboutMe as JSONContent, tiptapConfiguration)
-          } catch (_error) {
-            throw new InvalidProseMirrorError()
-          }
-
-          updateData.aboutMe = data.aboutMe as Prisma.InputJsonValue
-        }
-
-        if (data.publicName) {
-          updateData.publicName = data.publicName
-        }
-
-        const shouldUpdate = Object.keys(updateData).length > 0
-
-        const updatedDirectorBoard = shouldUpdate
-          ? await this.directorBoardRepository.update({
-              id: currentDirectorBoard.id,
-              data: updateData,
-            })
-          : currentDirectorBoard
-
-        return { directorBoard: updatedDirectorBoard }
+    const { directorBoard } = await this.dbContext.runInTransaction(async () => {
+      const currentDirectorBoard = ensureExists({
+        value: await this.directorBoardRepository.findByPublicId(publicId),
+        error: new DirectorBoardNotFoundError(),
       })
 
+      const requestUser = ensureExists({
+        value: await this.usersRepository.findByPublicId(requestUserPublicId),
+        error: new UserNotFoundError(),
+      })
+
+      // Validação: Manager só pode atualizar seu próprio perfil
+      if (requestUser.role === UserRoleType.MANAGER && currentDirectorBoard.User.publicId !== requestUser.publicId) {
+        throw new ManagerCannotUpdateOtherDirectorBoardError()
+      }
+
+      if (data.profileImage) {
+        const profileImageSanitized = sanitizeUrlFilename(data.profileImage)
+
+        newProfileImage =
+          profileImageSanitized && profileImageSanitized !== currentDirectorBoard.profileImage
+            ? profileImageSanitized
+            : undefined
+
+        if (newProfileImage) {
+          updateData.profileImage = newProfileImage
+        }
+      }
+
+      if (data.positionId) {
+        const directorPosition = ensureExists({
+          value: await this.directorPositionsRepository.findUniqueBy({ publicId: data.positionId }),
+          error: new DirectorPositionNotFoundError(),
+        })
+
+        const existingDirectorBoard = await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id)
+
+        if (existingDirectorBoard && existingDirectorBoard.id !== currentDirectorBoard.id) {
+          throw new DirectorBoardPositionAlreadyOccupiedError()
+        }
+
+        updateData.directorPositionId = directorPosition.id
+      }
+
+      if (data.aboutMe) {
+        try {
+          generateText(data.aboutMe as JSONContent, tiptapConfiguration)
+        } catch (_error) {
+          throw new InvalidProseMirrorError()
+        }
+
+        updateData.aboutMe = data.aboutMe as Prisma.InputJsonValue
+      }
+
+      if (data.publicName) {
+        updateData.publicName = data.publicName
+      }
+
+      const shouldUpdate = Object.keys(updateData).length > 0
+
+      const updatedDirectorBoard = shouldUpdate
+        ? await this.directorBoardRepository.update({
+            id: currentDirectorBoard.id,
+            data: updateData,
+          })
+        : currentDirectorBoard
+
       return {
-        directorBoard: {
-          ...directorBoard,
-          profileImage: directorBoard.profileImage
-            ? buildDirectorBoardProfileImageUrl(directorBoard.profileImage)
-            : buildUserProfileImageUrl(directorBoard.User.profileImage),
-        },
+        directorBoard: updatedDirectorBoard,
+        currentDirectorBoardProfileImage: currentDirectorBoard.profileImage,
+      }
+    })
+
+    const directorBoardProfileImagePaths = newProfileImage
+      ? {
+          oldFilePath: buildDirectorBoardTempProfileImagePath(newProfileImage),
+          newFilePath: buildDirectorBoardProfileImagePath(newProfileImage),
+        }
+      : undefined
+
+    try {
+      if (directorBoardProfileImagePaths) {
+        ensureExists({
+          value: await moveFileEnqueued(directorBoardProfileImagePaths),
+          error: new DirectorBoardImageStorageError(),
+        })
       }
     } catch (error) {
       // Restaurando a imagem incorretamente persistida:
-      if (data.profileImage && profileImageSanitized && profileImageSanitized !== profileImage) {
-        await moveFile({
-          oldFilePath: buildDirectorBoardProfileImagePath(profileImageSanitized),
-          newFilePath: buildDirectorBoardTempProfileImagePath(profileImageSanitized),
+      if (directorBoardProfileImagePaths) {
+        await moveFileEnqueued({
+          oldFilePath: directorBoardProfileImagePaths.newFilePath,
+          newFilePath: directorBoardProfileImagePaths.oldFilePath,
         })
       }
 
       throw error
+    }
+
+    return {
+      directorBoard: {
+        ...directorBoard,
+        profileImage: directorBoard.profileImage
+          ? buildDirectorBoardProfileImageUrl(directorBoard.profileImage)
+          : buildUserProfileImageUrl(directorBoard.User.profileImage),
+      },
     }
   }
 }

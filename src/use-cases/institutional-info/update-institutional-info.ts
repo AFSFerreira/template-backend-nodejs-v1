@@ -6,6 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import type { JSONContent } from '@tiptap/core'
+import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -17,7 +18,6 @@ import { buildElectionNoticeUrl } from '@services/builders/urls/build-election-n
 import { buildInstitutionalAboutImageUrl } from '@services/builders/urls/build-institutional-about-image-url'
 import { buildStatuteUrl } from '@services/builders/urls/build-statute-url'
 import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
-import { moveFile } from '@services/files/move-file'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoImageStorageError } from '@use-cases/errors/institutional-info/institutional-info-image-storage-error'
@@ -37,9 +37,9 @@ export class UpdateInstitutionalInfoUseCase {
   ) {}
 
   async execute({ data }: UpdateInstitutionalInfoUseCaseRequest): Promise<UpdateInstitutionalInfoUseCaseResponse> {
-    const aboutImageSanitized = sanitizeUrlFilename(data.aboutImage)
-
     const updateData: Prisma.InstitutionalInfoUpdateInput = {}
+
+    let newAboutImage: string | undefined
 
     if (data.aboutDescription) {
       // Tenta compilar o prose mirror para validar o formato:
@@ -52,65 +52,75 @@ export class UpdateInstitutionalInfoUseCase {
       updateData.aboutDescription = data.aboutDescription as Prisma.InputJsonValue
     }
 
-    try {
-      if (data.aboutImage && aboutImageSanitized) {
-        ensureExists({
-          value: aboutImageSanitized,
-          error: new InstitutionalInfoImageStorageError(),
-        })
+    const { institutionalInfo } = await this.dbContext.runInTransaction(async () => {
+      const currentInstitutionalInfo = ensureExists({
+        value: await this.institutionalInfoRepository.getInstitutionalInfo(),
+        error: new InstitutionalInfoNotFoundError(),
+      })
 
-        ensureExists({
-          value: await moveFile({
-            oldFilePath: buildInstitutionalTempAboutImagePath(aboutImageSanitized),
-            newFilePath: buildInstitutionalAboutImagePath(aboutImageSanitized),
-          }),
-          error: new InstitutionalInfoImageStorageError(),
-        })
+      if (data.aboutImage) {
+        const aboutImageSanitized = sanitizeUrlFilename(data.aboutImage)
 
-        updateData.aboutImage = aboutImageSanitized
+        newAboutImage =
+          aboutImageSanitized && aboutImageSanitized !== currentInstitutionalInfo.aboutImage
+            ? aboutImageSanitized
+            : undefined
+
+        if (newAboutImage) {
+          updateData.aboutImage = newAboutImage
+        }
       }
 
-      const { institutionalInfo } = await this.dbContext.runInTransaction(async () => {
-        const currentInstitutionalInfo = ensureExists({
-          value: await this.institutionalInfoRepository.getInstitutionalInfo(),
-          error: new InstitutionalInfoNotFoundError(),
+      const shouldUpdate = Object.keys(updateData).length > 0
+
+      const updatedInstitutionalInfo = shouldUpdate
+        ? await this.institutionalInfoRepository.update({
+            id: currentInstitutionalInfo.id,
+            data: updateData,
+          })
+        : currentInstitutionalInfo
+
+      return { institutionalInfo: updatedInstitutionalInfo }
+    })
+
+    const institutionalAboutImagePaths = newAboutImage
+      ? {
+          oldFilePath: buildInstitutionalTempAboutImagePath(newAboutImage),
+          newFilePath: buildInstitutionalAboutImagePath(newAboutImage),
+        }
+      : undefined
+
+    try {
+      if (institutionalAboutImagePaths) {
+        ensureExists({
+          value: await moveFileEnqueued(institutionalAboutImagePaths),
+          error: new InstitutionalInfoImageStorageError(),
         })
-
-        const shouldUpdate = Object.keys(updateData).length > 0
-
-        const updatedInstitutionalInfo = shouldUpdate
-          ? await this.institutionalInfoRepository.update({
-              id: currentInstitutionalInfo.id,
-              data: updateData,
-            })
-          : currentInstitutionalInfo
-
-        return { institutionalInfo: updatedInstitutionalInfo }
-      })
+      }
 
       if (data.aboutDescription) {
         // Remove a chave do cache:
         await removeInstitutionalInfoHTMLCache({ institutionalInfoId: institutionalInfo.id, redis })
       }
-
-      return {
-        institutionalInfo: {
-          ...institutionalInfo,
-          electionNoticeFile: buildElectionNoticeUrl(institutionalInfo.electionNoticeFile),
-          statuteFile: buildStatuteUrl(institutionalInfo.statuteFile),
-          aboutImage: buildInstitutionalAboutImageUrl(institutionalInfo.aboutImage),
-        },
-      }
     } catch (error) {
       // Restaurando a imagem incorretamente persistida:
-      if (aboutImageSanitized) {
-        await moveFile({
-          oldFilePath: buildInstitutionalAboutImagePath(aboutImageSanitized),
-          newFilePath: buildInstitutionalTempAboutImagePath(aboutImageSanitized),
+      if (institutionalAboutImagePaths) {
+        await moveFileEnqueued({
+          oldFilePath: institutionalAboutImagePaths.newFilePath,
+          newFilePath: institutionalAboutImagePaths.oldFilePath,
         })
       }
 
       throw error
+    }
+
+    return {
+      institutionalInfo: {
+        ...institutionalInfo,
+        electionNoticeFile: buildElectionNoticeUrl(institutionalInfo.electionNoticeFile),
+        statuteFile: buildStatuteUrl(institutionalInfo.statuteFile),
+        aboutImage: buildInstitutionalAboutImageUrl(institutionalInfo.aboutImage),
+      },
     }
   }
 }

@@ -141,22 +141,6 @@ export class CreatePendingBlogUseCase {
           })
         }),
       )
-
-      logger.info(
-        {
-          blogPublicId: blog.publicId,
-          title: blog.title,
-          authorPublicId: author.publicId,
-        },
-        BLOG_CREATED_SUCCESSFULLY,
-      )
-
-      return {
-        blog: {
-          ...blog,
-          bannerImage: buildBlogBannerUrl(blog.bannerImage),
-        },
-      }
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 
@@ -174,6 +158,22 @@ export class CreatePendingBlogUseCase {
       }
 
       throw error
+    }
+
+    logger.info(
+      {
+        blogPublicId: blog.publicId,
+        title: blog.title,
+        authorPublicId: author.publicId,
+      },
+      BLOG_CREATED_SUCCESSFULLY,
+    )
+
+    return {
+      blog: {
+        ...blog,
+        bannerImage: buildBlogBannerUrl(blog.bannerImage),
+      },
     }
   }
 }

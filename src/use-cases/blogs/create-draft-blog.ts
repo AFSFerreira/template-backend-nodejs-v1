@@ -136,22 +136,6 @@ export class CreateDraftBlogUseCase {
           })
         }),
       )
-
-      logger.info(
-        {
-          blogPublicId: blog.publicId,
-          title: blog.title,
-          authorPublicId: author.publicId,
-        },
-        BLOG_CREATED_SUCCESSFULLY,
-      )
-
-      return {
-        blog: {
-          ...blog,
-          bannerImage: buildBlogBannerUrl(blog.bannerImage),
-        },
-      }
     } catch (error) {
       logError({ error, message: BLOG_CREATION_ERROR })
 
@@ -169,6 +153,22 @@ export class CreateDraftBlogUseCase {
       }
 
       throw error
+    }
+
+    logger.info(
+      {
+        blogPublicId: blog.publicId,
+        title: blog.title,
+        authorPublicId: author.publicId,
+      },
+      BLOG_CREATED_SUCCESSFULLY,
+    )
+
+    return {
+      blog: {
+        ...blog,
+        bannerImage: buildBlogBannerUrl(blog.bannerImage),
+      },
     }
   }
 }
