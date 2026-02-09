@@ -1,5 +1,4 @@
 import { resolve4, resolveMx } from 'node:dns/promises'
-import { EMAIL_REGEX } from '@constants/regex-constants'
 import { redis } from '@lib/redis'
 import { getMxRecordCached, setMxRecordCached } from '@services/cache/validate-mx-record-cache'
 import { isNodeSystemError } from '@services/guards/is-node-system-error'
