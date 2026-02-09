@@ -10,5 +10,3 @@ export const LOWERCASE_PASSWORD_CHARACTERS_REGEX = /[a-z]/
 export const PASSWORD_DIGIT_REGEX = /[0-9]/
 export const PASSWORD_SPECIAL_CHARACTER_REGEX = /[\W_]/
 export const DIGITS_ONLY_REGEX = /^\d+$/
-export const EMAIL_REGEX =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/

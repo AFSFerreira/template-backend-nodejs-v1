@@ -19,8 +19,6 @@ async function checkFallbackRecord(domain: string): Promise<boolean> {
 }
 
 export async function hasValidMxRecord(email: string) {
-  if (!email || !EMAIL_REGEX.test(email)) return false
-
   const domain = email.split('@')[1]
 
   const mxRecordCached = await getMxRecordCached({
