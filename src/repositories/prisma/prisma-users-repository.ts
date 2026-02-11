@@ -18,12 +18,12 @@ import { userWithDetails } from '@custom-types/validators/user-with-details'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/generated/enums'
 import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
-import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/build-list-all-users-simplified-query'
+import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/orchestrators/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { toPrismaCreateUser } from './mappers/users/create-user'
 import { toPrismaUpdateUser } from './mappers/users/update-user'
-import { buildListAllUsersDetailedQuery } from './queries/users/build-list-all-users-detailed-query'
+import { buildListAllUsersDetailedQuery } from './queries/users/orchestrators/build-list-all-users-detailed-query'
 
 @injectable()
 export class PrismaUsersRepository implements UsersRepository {

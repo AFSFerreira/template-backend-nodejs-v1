@@ -14,9 +14,9 @@ import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { blogDetailedAdapter } from './adapters/blogs/blog-detailed-adapter'
 import { blogSimplifiedAdapter } from './adapters/blogs/blog-simplified-adapter'
-import { buildListAllBlogsDetailedQuery } from './queries/blogs/build-list-all-blogs-detailed-query'
-import { buildListAllBlogsSimplifiedQuery } from './queries/blogs/build-list-all-blogs-simplified-query'
-import { buildListAllUserBlogsDetailedQuery } from './queries/blogs/build-list-all-user-blogs-detailed-query'
+import { buildListAllBlogsDetailedQuery } from './queries/blogs/orchestrators/build-list-all-blogs-detailed-query'
+import { buildListAllBlogsSimplifiedQuery } from './queries/blogs/orchestrators/build-list-all-blogs-simplified-query'
+import { buildListAllUserBlogsDetailedQuery } from './queries/blogs/orchestrators/build-list-all-user-blogs-detailed-query'
 
 @injectable()
 export class PrismaBlogsRepository implements BlogsRepository {

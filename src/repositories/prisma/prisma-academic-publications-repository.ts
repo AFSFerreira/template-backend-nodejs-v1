@@ -11,8 +11,8 @@ import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
 import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
 import { academicPublicationYearAdapter } from './adapters/academic-publications/academic-publication-year-adapter'
-import { buildListAcademicPublicationsYearsQuery } from './queries/academic-publications/build-list-academic-publications-years-query'
-import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/build-list-all-academic-publications-query'
+import { buildListAcademicPublicationsYearsQuery } from './queries/academic-publications/orchestrators/build-list-academic-publications-years-query'
+import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/orchestrators/build-list-all-academic-publications-query'
 
 @injectable()
 export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
