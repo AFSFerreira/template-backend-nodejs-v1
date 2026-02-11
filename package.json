@@ -54,7 +54,7 @@
     "@types/node": "25.2.3",
     "@types/nodemailer": "7.0.9",
     "@types/pg": "8.16.0",
-    "@typescript/native-preview": "7.0.0-dev.20260209.1",
+    "@typescript/native-preview": "7.0.0-dev.20260210.1",
     "commitlint": "20.4.1",
     "globals": "17.3.0",
     "husky": "9.1.7",
