@@ -1,6 +1,6 @@
 import type { FileJobLogging } from '@custom-types/custom/file-job-logging'
 import type { ICopyFile } from '@custom-types/services/files/copy-file'
-import type { IMoveFile } from '@custom-types/services/move-file'
+import type { IMoveFile } from '@custom-types/services/files/move-file'
 
 export interface MoveFileOperation extends IMoveFile {
   type: 'move'

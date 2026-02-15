@@ -106,7 +106,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     const { searchQuery, countQuery } = buildListAllBlogsDetailedQuery(query)
 
     const [countResult, blogs] = await Promise.all([
-      this.dbContext.client.$queryRaw<{ total: number }[]>(countQuery),
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
       this.dbContext.client.$queryRaw<BlogDetailedRaw[]>(searchQuery),
     ])
 
@@ -129,7 +129,7 @@ export class PrismaBlogsRepository implements BlogsRepository {
     const { searchQuery, countQuery } = buildListAllUserBlogsDetailedQuery(query)
 
     const [countResult, blogs] = await Promise.all([
-      this.dbContext.client.$queryRaw<{ total: number }[]>(countQuery),
+      this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
       this.dbContext.client.$queryRaw<BlogDetailedRaw[]>(searchQuery),
     ])
 
