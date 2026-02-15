@@ -75,6 +75,8 @@ export class ListUsersSimplifiedQueryBuilder {
       this.conditions.length > 0 ? Prisma.sql`WHERE ${Prisma.join(this.conditions, ' AND ')}` : Prisma.empty
     const orderByClause = Prisma.sql`ORDER BY ${Prisma.join(this.ordinations, ', ')}`
 
+    // NOTE: Uso de deferred join para paginar e ordenar
+    // primeiro pelos ids e so entao trazer o payload completo.
     const searchQuery = Prisma.sql`
       WITH paginated_users AS (
         SELECT u.id
