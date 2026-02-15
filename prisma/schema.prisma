@@ -1,6 +1,7 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/lib/prisma/generated"
+  output   = "../src/@types/lib/prisma/generated"
+  previewFeatures = ["partialIndexes"]
 }
 
 datasource db {
@@ -61,7 +62,7 @@ model User {
   activityAreaDescription        String?                  @map("activity_area_description")
   subActivityAreaDescription     String?                  @map("sub_activity_area_description")
   email                          String                   @unique
-  secondaryEmail                 String?                  @unique @map("secondary_email")
+  secondaryEmail                 String?                  @map("secondary_email")
   passwordHash                   String                   @map("password_hash")
   loginAttempts                  Int                      @default(0) @map("login_attempts")
   lastLogin                      DateTime?                @map("last_login") @db.Timestamptz(3)
@@ -70,11 +71,11 @@ model User {
   fullNameTsvPt                  Unsupported("tsvector")? @map("full_name_tsv_pt")
   fullNameUnaccent               String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(full_name, ''::text) FROM 1 FOR 255))")) @map("full_name_unaccent")
 
-  recoveryPasswordTokenHash      String?   @unique @map("recovery_password_token")
+  recoveryPasswordTokenHash      String?   @map("recovery_password_token")
   recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at") @db.Timestamptz(3)
 
   newEmail                        String?   @map("new_email")
-  emailVerificationTokenHash      String?   @unique @map("email_verification_token")
+  emailVerificationTokenHash      String?   @map("email_verification_token")
   emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at") @db.Timestamptz(3)
   emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
 
@@ -97,6 +98,9 @@ model User {
   Keyword               Keyword[]               @relation()
 
   @@unique([identityType, identityDocument])
+  @@unique([secondaryEmail], where: raw("membership_status IN ('ACTIVE', 'INACTIVE')"), map: "users_secondary_email_key")
+  @@unique([recoveryPasswordTokenHash], where: raw("recovery_password_token IS NOT NULL"))
+  @@unique([emailVerificationTokenHash], where: raw("email_verification_token IS NOT NULL"))
   @@index([membershipStatus])
   @@index([newEmail])
   @@index([role])
@@ -465,6 +469,7 @@ model SliderImage {
   isActive  Boolean  @default(true) @map("is_active")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
+  @@unique([order], where: { isActive: true }, map: "slider_images_order_key")
   @@map("slider_images")
 }
 

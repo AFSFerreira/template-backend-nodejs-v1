@@ -3,6 +3,7 @@
 
 # Prisma generated files:
 src/lib/prisma/generated
+src/@types/lib/prisma/generated
 
 # Uploads folder
 uploads/temp/**

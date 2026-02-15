@@ -414,7 +414,7 @@ CREATE UNIQUE INDEX "users_username_key" ON "public"."users"("username");
 CREATE UNIQUE INDEX "users_email_key" ON "public"."users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_recovery_password_token_key" ON "public"."users"("recovery_password_token");
+CREATE UNIQUE INDEX "users_recovery_password_token_key" ON "public"."users"("recovery_password_token") WHERE (recovery_password_token IS NOT NULL);
 
 -- CreateIndex
 CREATE INDEX "users_membership_status_idx" ON "public"."users"("membership_status");
@@ -423,7 +423,7 @@ CREATE INDEX "users_membership_status_idx" ON "public"."users"("membership_statu
 CREATE UNIQUE INDEX "users_identity_type_identity_document_key" ON "public"."users"("identity_type", "identity_document");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_secondary_email_key" ON "public"."users"("secondary_email");
+CREATE UNIQUE INDEX "users_secondary_email_key" ON "public"."users"("secondary_email") WHERE (membership_status IN ('ACTIVE', 'INACTIVE'));
 
 -- CreateIndex
 CREATE UNIQUE INDEX "addresses_user_id_key" ON "public"."addresses"("user_id");
@@ -525,13 +525,16 @@ CREATE UNIQUE INDEX "slider_images_public_id_key" ON "public"."slider_images"("p
 CREATE UNIQUE INDEX "slider_images_image_key" ON "public"."slider_images"("image");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "slider_images_order_key" ON "public"."slider_images"("order") WHERE ("is_active" = true);
+
+-- CreateIndex
 CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_key" ON "public"."user_meeting_enrollments"("meeting_enrollment_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_meeting_enrollments_meeting_enrollment_id_user_id_key" ON "public"."user_meeting_enrollments"("meeting_enrollment_id", "user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_email_verification_token_key" ON "public"."users"("email_verification_token");
+CREATE UNIQUE INDEX "users_email_verification_token_key" ON "public"."users"("email_verification_token") WHERE (email_verification_token IS NOT NULL);
 
 -- CreateIndex
 CREATE INDEX "users_new_email_idx" ON "public"."users"("new_email");
