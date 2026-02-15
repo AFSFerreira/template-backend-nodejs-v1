@@ -38,7 +38,8 @@
     "ci:lint": "run-p check:prisma:biome check:src:biome",
     "ci:format": "run-p check:prisma:biome check:src:biome",
     "ci:build": "run-s ci:generate build:tsgo build:tsdown",
-    "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist"
+    "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.14",
