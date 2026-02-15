@@ -42,27 +42,20 @@ export async function blogRoutes(app: FastifyInstance) {
     },
     getAllUserBlogsDetailed,
   )
-  app.get(
-    '/:publicId/html',
-    {
-      ...BLOGS_PAYLOAD_LIMIT_SIZE,
-    },
-    getBlogHtmlContent,
-  )
+  app.get('/:publicId/html', getBlogHtmlContent)
   app.get(
     '/restrict/:publicId/html',
     {
-      ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     getRestrictBlogHtmlContent,
   )
   app.get(
     '/restrict/:publicId',
-    { ...BLOGS_PAYLOAD_LIMIT_SIZE, preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)] },
+    { preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)] },
     findBlogByPublicIdRestricted,
   )
-  app.get('/:publicId', { ...BLOGS_PAYLOAD_LIMIT_SIZE }, findBlogByPublicId)
+  app.get('/:publicId', findBlogByPublicId)
 
   // POST
   app.post(
@@ -141,19 +134,19 @@ export async function blogRoutes(app: FastifyInstance) {
     submitPublishedToPending,
   )
   app.patch(
+    '/:publicId/submit-pending-to-review',
+    {
+      preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
+    },
+    submitPendingToReview,
+  )
+  app.patch(
     '/:publicId',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     updateBlog,
-  )
-  app.patch(
-    '/:publicId/submit-pending-to-review',
-    {
-      preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
-    },
-    submitPendingToReview,
   )
 
   // DELETE

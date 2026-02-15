@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -29,6 +30,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
+      ...DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateDirectorBoard,
@@ -54,6 +56,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
+      ...DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     createDirectorBoard,

@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -34,6 +35,7 @@ export async function institutionalInfoRoutes(app: FastifyInstance) {
   app.patch(
     '/',
     {
+      ...INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE,
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     updateInstitutionalInfo,

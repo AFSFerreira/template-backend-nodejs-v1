@@ -4,3 +4,11 @@ import { MB_IN_BYTES } from './size-constants'
 export const BLOGS_PAYLOAD_LIMIT_SIZE = {
   bodyLimit: 10 * MB_IN_BYTES,
 } satisfies RouteShorthandOptions
+
+export const DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE = {
+  bodyLimit: 10 * MB_IN_BYTES,
+} satisfies RouteShorthandOptions
+
+export const INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE = {
+  bodyLimit: 10 * MB_IN_BYTES,
+} satisfies RouteShorthandOptions
