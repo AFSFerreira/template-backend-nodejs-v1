@@ -13,7 +13,7 @@ export class ListUsersSimplifiedQueryBuilder {
     this.conditions.push(Prisma.sql`u.role != ${UserRoleType.MANAGER}::"UserRoleType"`)
   }
 
-  public withTextSearch(fullName?: string): this {
+  public withFullNameSearch(fullName?: string): this {
     if (!fullName) return this
 
     const searchContent = fullName.toUpperCase()

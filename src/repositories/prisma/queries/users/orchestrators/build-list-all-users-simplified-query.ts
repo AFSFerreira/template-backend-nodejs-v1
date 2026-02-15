@@ -6,7 +6,7 @@ export function buildListAllUsersSimplifiedQuery(query: IBuildListAllUsersSimpli
   const { limit, offset } = evalOffset(query)
 
   const builder = new ListUsersSimplifiedQueryBuilder()
-    .withTextSearch(query.fullName)
+    .withFullNameSearch(query.fullName)
     .withInstitution(query.institutionName)
     .withState(query.state)
     .withSorting(query.orderBy)
