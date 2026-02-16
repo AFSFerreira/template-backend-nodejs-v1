@@ -6,6 +6,9 @@ dev-down:
 dev-up:
 	docker compose up -d
 
+dev-type-generate:
+	pnpm db:generate || npm run db:generate
+
 wait-db:
 	@echo "Aguardando o banco de dados iniciar..."
 	@while [ "`docker inspect -f {{.State.Health.Status}} $(POSTGRES_CONTAINER_NAME)`" != "healthy" ]; do \
