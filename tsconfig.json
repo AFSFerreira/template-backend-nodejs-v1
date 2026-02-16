@@ -28,7 +28,7 @@
     "moduleDetection": "force",
     "typeRoots": ["./node_modules/@types", "./src/@types"],
     "paths": {
-      "@prisma/generated/*": ["./src/lib/prisma/generated/*"],
+      "@prisma/generated/*": ["./src/@types/lib/prisma/generated/*"],
       "@presenters/*": ["./src/http/presenters/*"],
       "@factories/*": ["./src/use-cases/factories/*"],
       "@middlewares/*": ["./src/http/middlewares/*"],
