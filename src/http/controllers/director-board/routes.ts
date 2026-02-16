@@ -4,6 +4,7 @@ import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
+import { rateLimit } from '@utils/http/rate-limit'
 import { createDirectorBoard } from './create-director-board.controller'
 import { deleteDirectorBoard } from './delete-director-board.controller'
 import { findDirectorBoardByPublicId } from './find-director-board-by-public-id.controller'
@@ -15,21 +16,41 @@ import { uploadDirectorBoardProfileImage } from './upload-director-board-profile
 
 export async function directorBoardRoutes(app: FastifyInstance) {
   // GET
-  app.get('/', getAllDirectorsBoard)
-  app.get('/:publicId/about-me/html', getDirectorBoardAboutHTML)
+  app.get(
+    '/',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    getAllDirectorsBoard,
+  )
+  app.get(
+    '/:publicId/about-me/html',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    getDirectorBoardAboutHTML,
+  )
   app.get(
     '/restrict/:publicId',
     {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     findDirectorBoardByPublicIdForAdmin,
   )
-  app.get('/:publicId', findDirectorBoardByPublicId)
+  app.get(
+    '/:publicId',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    findDirectorBoardByPublicId,
+  )
 
   // POST
   app.post(
     '/uploads/profile-image',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
     },
     uploadDirectorBoardProfileImage,
@@ -38,6 +59,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
     '/',
     {
       ...DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE,
+      ...rateLimit({ max: 15, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     createDirectorBoard,
@@ -48,6 +70,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
     '/:publicId',
     {
       ...DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE,
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateDirectorBoard,
@@ -57,6 +80,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     deleteDirectorBoard,

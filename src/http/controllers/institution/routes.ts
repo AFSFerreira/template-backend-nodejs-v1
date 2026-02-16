@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
+import { rateLimit } from '@utils/http/rate-limit'
 import { createInstitution } from './create-institution.controller'
 import { deleteInstitution } from './delete-institution.controller'
 import { getAllInstitutionsNames } from './get-all-institutions.controller'
@@ -11,14 +12,33 @@ import { updateInstitution } from './update-institution.controller'
 
 export async function institutionRoutes(app: FastifyInstance) {
   // GET
-  app.get('/users', getAllInstitutionsWithUsers)
-  app.get('/names', getAllInstitutionsNames)
-  app.get('/names/internal', getAllInternalInstitutionsNames)
+  app.get(
+    '/users',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    getAllInstitutionsWithUsers,
+  )
+  app.get(
+    '/names',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    getAllInstitutionsNames,
+  )
+  app.get(
+    '/names/internal',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    getAllInternalInstitutionsNames,
+  )
 
   // POST
   app.post(
     '/',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     createInstitution,
@@ -28,6 +48,7 @@ export async function institutionRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateInstitution,
@@ -37,6 +58,7 @@ export async function institutionRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     deleteInstitution,

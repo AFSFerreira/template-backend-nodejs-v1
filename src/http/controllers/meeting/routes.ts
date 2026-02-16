@@ -17,11 +17,24 @@ import { uploadMeetingBanner } from './upload-meeting-banner.controller'
 
 export async function meetingRoutes(app: FastifyInstance) {
   // GET
-  app.get('/', getAllMeetings)
-  app.get('/:publicId', findMeetingByPublicId)
+  app.get(
+    '/',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    getAllMeetings,
+  )
+  app.get(
+    '/:publicId',
+    {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
+    },
+    findMeetingByPublicId,
+  )
   app.get(
     '/:meetingPublicId/participants',
     {
+      ...rateLimit({ max: 100, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     getMeetingParticipants,
@@ -31,6 +44,7 @@ export async function meetingRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
+      ...rateLimit({ max: 15, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     createMeeting,
@@ -56,6 +70,7 @@ export async function meetingRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/banner',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadMeetingBanner,
@@ -63,6 +78,7 @@ export async function meetingRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/agenda',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadMeetingAgenda,
@@ -72,6 +88,7 @@ export async function meetingRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateMeeting,
@@ -81,6 +98,7 @@ export async function meetingRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
+      ...rateLimit({ max: 30, timeWindow: '1m' }),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     deleteMeeting,
