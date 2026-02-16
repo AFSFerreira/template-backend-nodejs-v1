@@ -8,7 +8,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { ActivityAreaType, EditorialStatusType } from '@prisma/generated/client'
+import { ActivityAreaType, EditorialStatusType, MembershipStatusType } from '@prisma/generated/client'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
@@ -164,7 +164,11 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
     const where: Prisma.ActivityAreaWhereInput = {
       type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       AcademicPublication: {
-        some: {},
+        some: {
+          User: {
+            membershipStatus: MembershipStatusType.ACTIVE,
+          },
+        },
       },
     }
 
