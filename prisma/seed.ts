@@ -175,14 +175,13 @@ async function main() {
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect()
-    await pool.end()
-  })
   .catch(async (error) => {
     // eslint-disable-next-line no-console
     // biome-ignore lint/suspicious/noConsole: <Console necessário. Impossível utilizar pino aqui>
     console.error('Erro ao executar seed:', error)
-    await prisma.$disconnect()
     process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+    await pool.end()
   })
