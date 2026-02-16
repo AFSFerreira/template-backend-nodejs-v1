@@ -26,7 +26,6 @@ import { reviewMembershipStatus } from './review-membership-status.controller'
 import { transferAdminRole } from './transfer-admin-role.controller'
 import { updateMembershipStatus } from './update-membership-status.controller'
 import { updateUser } from './update-user.controller'
-import { updateUserByPublicId } from './update-user-by-public-id.controller'
 import { updateUserPermissions } from './update-user-permissions.controller'
 import { uploadProfileImage } from './upload-profile-image.controller'
 import { verifyEmail } from './verify-email.controller'
@@ -172,14 +171,6 @@ export async function userRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt],
     },
     updateUser,
-  )
-  app.patch(
-    '/update/:publicId',
-    {
-      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
-      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
-    },
-    updateUserByPublicId,
   )
   app.patch(
     '/:publicId/review-membership-status',
