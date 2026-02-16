@@ -14,14 +14,9 @@ import { env } from '@env/index'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
-import {
-  EMAIL_VERIFICATION_SEND_ERROR,
-  SUCCESSFUL_USER_CREATION,
-  USER_CREATION_ERROR,
-} from '@messages/loggings/models/user-loggings'
+import { EMAIL_VERIFICATION_SEND_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
 import {
   buildUserProfileImagePath,
@@ -39,14 +34,12 @@ import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-do
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { InvalidSecondaryEmailDomainError } from '@use-cases/errors/user/invalid-secondary-email-domain-error'
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
-import { UserImageStorageError } from '@use-cases/errors/user/user-image-storage-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { generateToken } from '@utils/tokens/generate-token'
 import { hashToken } from '@utils/tokens/hash-token'
-import { ensureExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
@@ -246,54 +239,37 @@ export class CreateUserUseCase {
         }
       : undefined
 
-    try {
-      if (userProfileImagePaths) {
-        ensureExists({
-          value: await moveFileEnqueued(userProfileImagePaths),
-          error: new UserImageStorageError(),
-        })
-      }
+    if (userProfileImagePaths) {
+      await moveFileEnqueued(userProfileImagePaths)
+    }
 
-      const emailInfo = {
-        fullName: createdUser.fullName,
-        email: createdUser.email,
-        token: emailVerificationToken,
-      }
+    const emailInfo = {
+      fullName: createdUser.fullName,
+      email: createdUser.email,
+      token: emailVerificationToken,
+    }
 
-      const { html, attachments } = confirmAccountHtmlTemplate(emailInfo)
+    const { html, attachments } = confirmAccountHtmlTemplate(emailInfo)
 
-      await sendEmailEnqueued({
-        to: createdUser.email,
-        subject: EMAIL_VERIFICATION_SUBJECT,
-        message: confirmAccountTextTemplate(emailInfo),
-        html,
-        attachments,
-        logging: {
-          errorMessage: EMAIL_VERIFICATION_SEND_ERROR,
-          context: { userPublicId: createdUser.publicId, userEmail: createdUser.email },
-        },
-      })
+    await sendEmailEnqueued({
+      to: createdUser.email,
+      subject: EMAIL_VERIFICATION_SUBJECT,
+      message: confirmAccountTextTemplate(emailInfo),
+      html,
+      attachments,
+      logging: {
+        errorMessage: EMAIL_VERIFICATION_SEND_ERROR,
+        context: { userPublicId: createdUser.publicId, userEmail: createdUser.email },
+      },
+    })
 
-      logger.info({ userPublicId: createdUser.publicId, fullName: createdUser.fullName }, SUCCESSFUL_USER_CREATION)
+    logger.info({ userPublicId: createdUser.publicId, fullName: createdUser.fullName }, SUCCESSFUL_USER_CREATION)
 
-      return {
-        user: {
-          ...createdUser,
-          profileImage: buildUserProfileImageUrl(createdUser.profileImage),
-        },
-      }
-    } catch (error) {
-      logError({ error, message: USER_CREATION_ERROR })
-
-      // Restaurando a imagem incorretamente persistida:
-      if (userProfileImagePaths) {
-        await moveFileEnqueued({
-          oldFilePath: userProfileImagePaths.newFilePath,
-          newFilePath: userProfileImagePaths.oldFilePath,
-        })
-      }
-
-      throw error
+    return {
+      user: {
+        ...createdUser,
+        profileImage: buildUserProfileImageUrl(createdUser.profileImage),
+      },
     }
   }
 }

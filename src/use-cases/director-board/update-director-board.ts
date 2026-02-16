@@ -21,7 +21,6 @@ import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { removeDirectorBoardHTMLCache } from '@services/cache/director-board-html-cache'
 import { generateText } from '@tiptap/core'
-import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { ManagerCannotUpdateOtherDirectorBoardError } from '@use-cases/errors/director-board/manager-cannot-update-other-director-board-error'
@@ -138,28 +137,13 @@ export class UpdateDirectorBoardUseCase {
         }
       : undefined
 
-    try {
-      if (directorBoardProfileImagePaths) {
-        ensureExists({
-          value: await moveFileEnqueued(directorBoardProfileImagePaths),
-          error: new DirectorBoardImageStorageError(),
-        })
-      }
+    if (directorBoardProfileImagePaths) {
+      await moveFileEnqueued(directorBoardProfileImagePaths)
+    }
 
-      // Invalidando o cache HTML se o aboutMe foi atualizado:
-      if (data.aboutMe) {
-        await removeDirectorBoardHTMLCache({ directorBoardId: directorBoard.id, redis })
-      }
-    } catch (error) {
-      // Restaurando a imagem incorretamente persistida:
-      if (directorBoardProfileImagePaths) {
-        await moveFileEnqueued({
-          oldFilePath: directorBoardProfileImagePaths.newFilePath,
-          newFilePath: directorBoardProfileImagePaths.oldFilePath,
-        })
-      }
-
-      throw error
+    // Invalidando o cache HTML se o aboutMe foi atualizado:
+    if (data.aboutMe) {
+      await removeDirectorBoardHTMLCache({ directorBoardId: directorBoard.id, redis })
     }
 
     return {

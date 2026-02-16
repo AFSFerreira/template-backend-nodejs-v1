@@ -10,10 +10,8 @@ import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { DIRECTOR_BOARD_CREATION_ERROR } from '@messages/loggings/models/director-board-loggings'
 import { UserRoleType } from '@prisma/generated/enums'
 import {
   buildDirectorBoardProfileImagePath,
@@ -22,7 +20,6 @@ import {
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { generateText } from '@tiptap/core'
-import { DirectorBoardImageStorageError } from '@use-cases/errors/director-board/director-board-image-storage-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorBoardUserAlreadyExistsError } from '@use-cases/errors/director-board/director-board-user-already-exists-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
@@ -105,25 +102,8 @@ export class CreateDirectorBoardUseCase {
         }
       : undefined
 
-    try {
-      if (directorBoardProfileImagePaths) {
-        ensureExists({
-          value: await moveFileEnqueued(directorBoardProfileImagePaths),
-          error: new DirectorBoardImageStorageError(),
-        })
-      }
-    } catch (error) {
-      logError({ error, message: DIRECTOR_BOARD_CREATION_ERROR })
-
-      // Restaurando a imagem incorretamente persistida:
-      if (directorBoardProfileImagePaths) {
-        await moveFileEnqueued({
-          oldFilePath: directorBoardProfileImagePaths.newFilePath,
-          newFilePath: directorBoardProfileImagePaths.oldFilePath,
-        })
-      }
-
-      throw error
+    if (directorBoardProfileImagePaths) {
+      await moveFileEnqueued(directorBoardProfileImagePaths)
     }
 
     return {

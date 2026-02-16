@@ -10,11 +10,10 @@ import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_UPDATED_SUCCESSFULLY, BLOG_UPDATE_ERROR } from '@messages/loggings/models/blog-loggings'
+import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -27,7 +26,6 @@ import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mir
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogEditorialStatusChangeForbiddenError } from '@use-cases/errors/blog/blog-editorial-status-change-forbidden-error'
-import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { InvalidBlogContentError } from '@use-cases/errors/blog/invalid-blog-content-error'
@@ -36,8 +34,6 @@ import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { fileExists } from '@utils/files/file-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
-import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 
 @injectable()
 export class UpdateBlogUseCase {
@@ -203,65 +199,35 @@ export class UpdateBlogUseCase {
         }
       : undefined
 
-    try {
-      if (blogBannerPaths) {
-        ensureExists({
-          value: await moveFileEnqueued(blogBannerPaths),
-          error: new BlogBannerPersistError(),
-        })
+    if (blogBannerPaths) {
+      await moveFileEnqueued(blogBannerPaths)
 
-        await deleteFileEnqueued({
-          filePath: buildBlogBannerPath(blog.bannerImage),
-        })
-      }
-
-      if (formattedBlogImages) {
-        formattedBlogImages.forEach(async (imageInfo) => {
-          const fileAlreadyExists = await fileExists(imageInfo.newFilePath)
-
-          if (fileAlreadyExists) return
-
-          ensureExists({
-            value: await moveFileEnqueued(imageInfo),
-            error: new BlogImagePersistError(),
-          })
-        })
-      }
-
-      if (removedImages) {
-        // Enfileirando a remoção das imagens removidas do conteúdo do blog:
-        for (const imageName of removedImages) {
-          await deleteFileEnqueued({
-            filePath: buildBlogImagePath(imageName),
-          })
-        }
-      }
-
-      // Remover cache HTML do blog para forçar regeneração:
-      await removeBlogHTMLCache({ blogId: blog.id, redis })
-    } catch (error) {
-      logError({ error, message: BLOG_UPDATE_ERROR })
-
-      if (blogBannerPaths) {
-        // Restaurando a imagen de banner de blog previamente persistida:
-        await moveFileEnqueued({
-          oldFilePath: blogBannerPaths.newFilePath,
-          newFilePath: blogBannerPaths.oldFilePath,
-        })
-      }
-
-      if (formattedBlogImages) {
-        // Restaurando as novas imagens de blog previamente persistidas:
-        for (const imageInfo of formattedBlogImages) {
-          await moveFileEnqueued({
-            oldFilePath: imageInfo.newFilePath,
-            newFilePath: imageInfo.oldFilePath,
-          })
-        }
-      }
-
-      throw error
+      await deleteFileEnqueued({
+        filePath: buildBlogBannerPath(blog.bannerImage),
+      })
     }
+
+    if (formattedBlogImages) {
+      formattedBlogImages.forEach(async (imageInfo) => {
+        const fileAlreadyExists = await fileExists(imageInfo.newFilePath)
+
+        if (fileAlreadyExists) return
+
+        await moveFileEnqueued(imageInfo)
+      })
+    }
+
+    if (removedImages) {
+      // Enfileirando a remoção das imagens removidas do conteúdo do blog:
+      for (const imageName of removedImages) {
+        await deleteFileEnqueued({
+          filePath: buildBlogImagePath(imageName),
+        })
+      }
+    }
+
+    // Remover cache HTML do blog para forçar regeneração:
+    await removeBlogHTMLCache({ blogId: blog.id, redis })
 
     logger.info(
       {

@@ -10,10 +10,9 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { BLOG_CREATED_SUCCESSFULLY, BLOG_CREATION_ERROR } from '@messages/loggings/models/blog-loggings'
+import { BLOG_CREATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/generated/enums'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { buildBlogImagePath, buildBlogTempImagePath } from '@services/builders/paths/build-blog-image-path'
@@ -23,13 +22,11 @@ import { extractProseMirrorImages } from '@services/extractors/extract-prose-mir
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
-import { BlogImagePersistError } from '@use-cases/errors/blog/blog-image-persist-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { BlogBannerPersistError } from '../errors/blog/blog-banner-persist-error'
 import { InvalidBlogContentError } from '../errors/blog/invalid-blog-content-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
@@ -123,39 +120,14 @@ export class CreateAndPublishBlogUseCase {
       newFilePath: buildBlogBannerPath(publishBlogUseCaseInput.bannerImage),
     }
 
-    try {
-      // Persistir banner e imagens da pasta temporária para a pasta definitiva
-      ensureExists({
-        value: await moveFileEnqueued(blogBannerPaths),
-        error: new BlogBannerPersistError(),
-      })
+    // Persistir banner e imagens da pasta temporária para a pasta definitiva
+    await moveFileEnqueued(blogBannerPaths)
 
-      await Promise.all(
-        formatedBlogImages.map(async (imageInfo) => {
-          ensureExists({
-            value: await moveFileEnqueued(imageInfo),
-            error: new BlogImagePersistError(),
-          })
-        }),
-      )
-    } catch (error) {
-      logError({ error, message: BLOG_CREATION_ERROR })
-
-      // Restaurando as imagens de blog e a imagem de banner previamente persistida:
-      await moveFileEnqueued({
-        oldFilePath: blogBannerPaths.newFilePath,
-        newFilePath: blogBannerPaths.oldFilePath,
-      })
-
-      for (const imageInfo of formatedBlogImages) {
-        await moveFileEnqueued({
-          oldFilePath: imageInfo.newFilePath,
-          newFilePath: imageInfo.oldFilePath,
-        })
-      }
-
-      throw error
-    }
+    await Promise.all(
+      formatedBlogImages.map(async (imageInfo) => {
+        await moveFileEnqueued(imageInfo)
+      }),
+    )
 
     logger.info(
       {

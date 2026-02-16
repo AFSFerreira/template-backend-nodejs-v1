@@ -13,8 +13,6 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
-import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
-import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
@@ -120,45 +118,20 @@ export class UpdateMeetingUseCase {
         }
       : undefined
 
-    try {
-      if (meetingBannerPaths) {
-        ensureExists({
-          value: await moveFileEnqueued(meetingBannerPaths),
-          error: new MeetingBannerPersistError(),
-        })
+    if (meetingBannerPaths) {
+      await moveFileEnqueued(meetingBannerPaths)
 
-        await deleteFileEnqueued({
-          filePath: buildMeetingBannerPath(meeting.bannerImage),
-        })
-      }
+      await deleteFileEnqueued({
+        filePath: buildMeetingBannerPath(meeting.bannerImage),
+      })
+    }
 
-      if (meetingAgendaPaths) {
-        ensureExists({
-          value: await moveFileEnqueued(meetingAgendaPaths),
-          error: new MeetingAgendaPersistError(),
-        })
+    if (meetingAgendaPaths) {
+      await moveFileEnqueued(meetingAgendaPaths)
 
-        await deleteFileEnqueued({
-          filePath: buildMeetingAgendaPath(meeting.agenda),
-        })
-      }
-    } catch (error) {
-      // Enfileirando a restauração dos arquivos incorretamente persistidos:
-      if (meetingBannerPaths) {
-        await moveFileEnqueued({
-          oldFilePath: meetingBannerPaths.newFilePath,
-          newFilePath: meetingBannerPaths.oldFilePath,
-        })
-      }
-
-      if (meetingAgendaPaths) {
-        await moveFileEnqueued({
-          oldFilePath: meetingAgendaPaths.newFilePath,
-          newFilePath: meetingAgendaPaths.oldFilePath,
-        })
-      }
-
-      throw error
+      await deleteFileEnqueued({
+        filePath: buildMeetingAgendaPath(meeting.agenda),
+      })
     }
 
     logger.info(

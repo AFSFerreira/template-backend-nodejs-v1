@@ -6,18 +6,15 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { MEETING_CREATION_ERROR, MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
+import { MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
-import { MeetingAgendaPersistError } from '@use-cases/errors/meeting/meeting-agenda-persist-error'
-import { MeetingBannerPersistError } from '@use-cases/errors/meeting/meeting-banner-persist-error'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
-import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
+import { ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
 import { InvalidEmailDomainError } from '../errors/user/invalid-email-domain-error'
@@ -71,32 +68,9 @@ export class CreateMeetingUseCase {
       newFilePath: buildMeetingAgendaPath(data.agenda),
     }
 
-    try {
-      ensureExists({
-        value: await moveFileEnqueued(meetingBannerPaths),
-        error: new MeetingBannerPersistError(),
-      })
+    await moveFileEnqueued(meetingBannerPaths)
 
-      ensureExists({
-        value: await moveFileEnqueued(meetingAgendaPaths),
-        error: new MeetingAgendaPersistError(),
-      })
-    } catch (error) {
-      logError({ error, message: MEETING_CREATION_ERROR })
-
-      // Restaurando os arquivos incorretamente persistidos:
-      await moveFileEnqueued({
-        oldFilePath: meetingBannerPaths.newFilePath,
-        newFilePath: meetingBannerPaths.oldFilePath,
-      })
-
-      await moveFileEnqueued({
-        oldFilePath: meetingAgendaPaths.newFilePath,
-        newFilePath: meetingAgendaPaths.oldFilePath,
-      })
-
-      throw error
-    }
+    await moveFileEnqueued(meetingAgendaPaths)
 
     logger.info({ meetingId: createdMeeting.publicId }, MEETING_CREATION_SUCCESSFUL)
 

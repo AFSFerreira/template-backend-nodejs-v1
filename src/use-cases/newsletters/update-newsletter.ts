@@ -15,7 +15,6 @@ import {
 } from '@services/builders/paths/build-newsletter-html-path'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsletter-already-exists-error'
-import { NewsletterHtmlPersistError } from '@use-cases/errors/newsletter/newsletter-html-persist-error'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
@@ -107,27 +106,12 @@ export class UpdateNewsletterUseCase {
         }
       : undefined
 
-    try {
-      if (newsletterHtmlPaths) {
-        ensureExists({
-          value: await moveFileEnqueued(newsletterHtmlPaths),
-          error: new NewsletterHtmlPersistError(),
-        })
+    if (newsletterHtmlPaths) {
+      await moveFileEnqueued(newsletterHtmlPaths)
 
-        await deleteFileEnqueued({
-          filePath: buildNewsletterHtmlPath(newsletter.content),
-        })
-      }
-    } catch (error) {
-      // Enfileirando a restauração do arquivo incorretamente persistido:
-      if (newsletterHtmlPaths) {
-        await moveFileEnqueued({
-          oldFilePath: newsletterHtmlPaths.newFilePath,
-          newFilePath: newsletterHtmlPaths.oldFilePath,
-        })
-      }
-
-      throw error
+      await deleteFileEnqueued({
+        filePath: buildNewsletterHtmlPath(newsletter.content),
+      })
     }
 
     logger.info(

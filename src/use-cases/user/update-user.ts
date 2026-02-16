@@ -9,9 +9,8 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { USER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { USER_UPDATE_ERROR, USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
+import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
 import {
   buildUserProfileImagePath,
@@ -24,7 +23,6 @@ import { validateActivityAreas } from '@services/validators/validate-activity-ar
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
-import { UserProfileImagePersistenceError } from '@use-cases/errors/user/user-profile-image-persistence-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
@@ -187,32 +185,15 @@ export class UpdateUserUseCase {
         }
       : undefined
 
-    try {
-      if (userProfileImagePaths) {
-        ensureExists({
-          value: await moveFileEnqueued(userProfileImagePaths),
-          error: new UserProfileImagePersistenceError(),
-        })
-      }
+    if (userProfileImagePaths) {
+      await moveFileEnqueued(userProfileImagePaths)
+    }
 
-      // Enfileirando a remoção da imagem antiga somente após persistir a nova:
-      if (newProfileImage && user.profileImage !== USER_DEFAULT_PRESENTER_KEY) {
-        await deleteFileEnqueued({
-          filePath: buildUserProfileImagePath(user.profileImage),
-        })
-      }
-    } catch (error) {
-      logError({ error, message: USER_UPDATE_ERROR })
-
-      // Enfileirando a restauração da imagem de perfil previamente persistida:
-      if (userProfileImagePaths) {
-        await moveFileEnqueued({
-          oldFilePath: userProfileImagePaths.newFilePath,
-          newFilePath: userProfileImagePaths.oldFilePath,
-        })
-      }
-
-      throw error
+    // Enfileirando a remoção da imagem antiga somente após persistir a nova:
+    if (newProfileImage && user.profileImage !== USER_DEFAULT_PRESENTER_KEY) {
+      await deleteFileEnqueued({
+        filePath: buildUserProfileImagePath(user.profileImage),
+      })
     }
 
     logger.info({ publicId }, USER_UPDATE_SUCCESSFUL)

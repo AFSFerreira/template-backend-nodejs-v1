@@ -20,7 +20,6 @@ import { buildStatuteUrl } from '@services/builders/urls/build-statute-url'
 import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
-import { InstitutionalInfoImageStorageError } from '@use-cases/errors/institutional-info/institutional-info-image-storage-error'
 import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-info/institutional-info-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
@@ -90,28 +89,13 @@ export class UpdateInstitutionalInfoUseCase {
         }
       : undefined
 
-    try {
-      if (institutionalAboutImagePaths) {
-        ensureExists({
-          value: await moveFileEnqueued(institutionalAboutImagePaths),
-          error: new InstitutionalInfoImageStorageError(),
-        })
-      }
+    if (institutionalAboutImagePaths) {
+      await moveFileEnqueued(institutionalAboutImagePaths)
+    }
 
-      if (data.aboutDescription) {
-        // Remove a chave do cache:
-        await removeInstitutionalInfoHTMLCache({ institutionalInfoId: institutionalInfo.id, redis })
-      }
-    } catch (error) {
-      // Restaurando a imagem incorretamente persistida:
-      if (institutionalAboutImagePaths) {
-        await moveFileEnqueued({
-          oldFilePath: institutionalAboutImagePaths.newFilePath,
-          newFilePath: institutionalAboutImagePaths.oldFilePath,
-        })
-      }
-
-      throw error
+    if (data.aboutDescription) {
+      // Remove a chave do cache:
+      await removeInstitutionalInfoHTMLCache({ institutionalInfoId: institutionalInfo.id, redis })
     }
 
     return {
