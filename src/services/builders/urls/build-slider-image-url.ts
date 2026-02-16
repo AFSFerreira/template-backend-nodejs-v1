@@ -1,8 +1,8 @@
 import { STATIC_SLIDER_IMAGES_ROUTE } from '@constants/static-routes-constants'
-import { getBackendBaseUrl } from '@lib/logger/helpers/get-backend-base-url'
+import { getBackendBaseUrlStored } from '@lib/logger/helpers/get-backend-base-url-stored'
 import urlJoin from 'url-join'
 
 export function buildSliderImageUrl(filename: string, ...pathSegments: string[]): string {
-  const backendBaseUrl = getBackendBaseUrl()
+  const backendBaseUrl = getBackendBaseUrlStored()
   return urlJoin(backendBaseUrl, STATIC_SLIDER_IMAGES_ROUTE, ...pathSegments, filename)
 }

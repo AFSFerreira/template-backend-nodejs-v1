@@ -1,9 +1,9 @@
 import { STATIC_BLOG_IMAGE_ROUTE } from '@constants/static-routes-constants'
-import { getBackendBaseUrl } from '@lib/logger/helpers/get-backend-base-url'
+import { getBackendBaseUrlStored } from '@lib/logger/helpers/get-backend-base-url-stored'
 import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
 import urlJoin from 'url-join'
 
 export function buildBlogImageUrl(filename: string): string {
-  const backendBaseUrl = getBackendBaseUrl()
+  const backendBaseUrl = getBackendBaseUrlStored()
   return urlJoin(backendBaseUrl, STATIC_BLOG_IMAGE_ROUTE, buildShardFileFolder(filename), filename)
 }

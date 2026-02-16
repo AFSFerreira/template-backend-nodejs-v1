@@ -1,9 +1,9 @@
 import type { JSONContent } from '@tiptap/core'
-import { getBackendBaseUrl } from '@lib/logger/helpers/get-backend-base-url'
+import { getBackendBaseUrlStored } from '@lib/logger/helpers/get-backend-base-url-stored'
 
 export function extractProseMirrorImages(proseMirror: JSONContent) {
   const images = new Set<string>()
-  const backendBaseUrl = getBackendBaseUrl()
+  const backendBaseUrl = getBackendBaseUrlStored()
 
   function traverseNode(node: JSONContent) {
     if (node.type === 'image' && node.attrs?.src && (node.attrs.src as string).startsWith(backendBaseUrl)) {

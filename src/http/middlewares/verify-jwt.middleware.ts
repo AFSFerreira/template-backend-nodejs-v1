@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { logger } from '@lib/logger'
-import { setUserId } from '@lib/logger/helpers/set-user-id'
+import { setUserIdStored } from '@lib/logger/helpers/set-user-id-stored'
 import { UNAUTHORIZED } from '@messages/responses/common-responses/4xx'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { verifyUserMembershipStatus } from '@utils/http/verify-user-membership-status'
@@ -8,7 +8,7 @@ import { verifyUserMembershipStatus } from '@utils/http/verify-user-membership-s
 export async function verifyJwt(request: FastifyRequest, reply: FastifyReply) {
   try {
     await request.jwtVerify()
-    setUserId(getRequestUserPublicId(request))
+    setUserIdStored(getRequestUserPublicId(request))
   } catch (_error: unknown) {
     logger.debug(UNAUTHORIZED.body)
     return await reply.status(UNAUTHORIZED.status).send(UNAUTHORIZED.body)
