@@ -12,8 +12,6 @@ services:
       - "${POSTGRES_HOST:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/postgresql
-    # networks:
-    #   - app-network
     deploy:
       resources:
         limits:
@@ -22,6 +20,8 @@ services:
         reservations:
           cpus: "0.5"
           memory: 512M
+    # networks:
+    #   - app-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USERNAME"]
       interval: 10s
