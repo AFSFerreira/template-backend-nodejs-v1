@@ -43,6 +43,7 @@ export const tsyringeTokens = {
     activityArea: {
       activityAreaDefault: 'activity-area:default',
       activityAreaWithBlogsCount: 'activity-area:with-blogs-count',
+      activityAreaWithAcademicPublicationsCount: 'activity-area:with-academic-publications-count',
     },
 
     address: {

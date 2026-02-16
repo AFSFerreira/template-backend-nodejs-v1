@@ -1,5 +1,6 @@
 import type { OrderableType } from '@custom-types/custom/orderable'
 import type { QueryMode } from '@custom-types/custom/query-mode'
+import type { ListAllActivityAreasWithAcademicPublicationsQuery } from '@custom-types/repository/prisma/academic-publication/list-all-activity-areas-with-academic-publications-query'
 import type { ActivityAreaQuery } from '@custom-types/repository/prisma/activity-area/activity-area-query'
 import type { ListAllActivityAreasQuery } from '@custom-types/repository/prisma/activity-area/list-all-activity-areas-query'
 import type { ListAllActivityAreasWithBlogsQuery } from '@custom-types/repository/prisma/activity-area/list-all-activity-areas-with-blogs-query'
@@ -149,6 +150,63 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
       data: activityAreas.map((activityArea) => ({
         area: activityArea.area,
         blogsCount: activityArea._count.BlogSubCategory,
+      })),
+      meta: {
+        totalItems,
+        totalPages,
+        currentPage: query.page,
+        pageSize,
+      },
+    }
+  }
+
+  async listAllActivityAreasWithAcademicPublicationsCount(query: ListAllActivityAreasWithAcademicPublicationsQuery) {
+    const where: Prisma.ActivityAreaWhereInput = {
+      type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      AcademicPublication: {
+        some: {},
+      },
+    }
+
+    const orderBy: Prisma.ActivityAreaOrderByWithRelationInput[] = [
+      ...(query?.orderBy?.publicationsCountOrder
+        ? [
+            {
+              AcademicPublication: { _count: query.orderBy.publicationsCountOrder },
+            },
+          ]
+        : []),
+      { id: 'asc' },
+    ]
+
+    const include: Prisma.ActivityAreaInclude = {
+      _count: {
+        select: { AcademicPublication: true },
+      },
+    }
+
+    const { offset: skip, limit: take } = evalOffset({ page: query.page, limit: query.limit })
+
+    const [countResult, activityAreas] = await Promise.all([
+      this.dbContext.client.activityArea.count({ where }),
+      this.dbContext.client.activityArea.findMany({
+        where,
+        skip,
+        take,
+        orderBy,
+        include,
+      }),
+    ])
+
+    const pageSize = query.limit
+    const totalItems = countResult
+
+    const totalPages = evalTotalPages({ pageSize, totalItems })
+
+    return {
+      data: activityAreas.map((activityArea) => ({
+        area: activityArea.area,
+        publicationsCount: activityArea._count.AcademicPublication,
       })),
       meta: {
         totalItems,
