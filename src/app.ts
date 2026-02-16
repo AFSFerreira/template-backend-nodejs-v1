@@ -14,6 +14,7 @@ import { corsConfiguration } from './http/configuration/cors-configuration'
 import { fastifyConfiguration } from './http/configuration/fastify-configuration'
 import { jwtConfiguration } from './http/configuration/jwt-configuration'
 import { multipartConfiguration } from './http/configuration/multipart-configuration'
+import { rateLimitConfigurations } from './http/configuration/rate-limit-configuration'
 import { logRequest } from './http/plugins/request-logger'
 import { logResponse } from './http/plugins/response-logger'
 import { preSerialization } from './http/plugins/serializer'
@@ -29,7 +30,7 @@ registerAppSignals(app)
 app.register(multipart, multipartConfiguration)
 app.register(staticFileRoutes)
 app.register(fastifyCookie)
-app.register(rateLimit)
+app.register(rateLimit, rateLimitConfigurations)
 app.register(appRoutes)
 app.register(cors, corsConfiguration)
 app.register(fastifyJwt, jwtConfiguration)

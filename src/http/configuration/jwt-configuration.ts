@@ -10,4 +10,4 @@ export const jwtConfiguration = {
   sign: {
     expiresIn: env.JWT_EXPIRATION,
   },
-} satisfies FastifyJWTOptions
+} as const satisfies FastifyJWTOptions

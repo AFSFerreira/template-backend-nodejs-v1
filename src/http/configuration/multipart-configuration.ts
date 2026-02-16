@@ -7,4 +7,4 @@ export const multipartConfiguration = {
     parts: 20,
   },
   throwFileSizeLimit: true,
-} satisfies FastifyMultipartOptions
+} as const satisfies FastifyMultipartOptions

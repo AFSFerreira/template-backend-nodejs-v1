@@ -10,4 +10,4 @@ export const fastifyConfiguration = {
     ignoreTrailingSlash: true,
     maxParamLength: 256,
   },
-} satisfies FastifyServerOptions
+} as const satisfies FastifyServerOptions

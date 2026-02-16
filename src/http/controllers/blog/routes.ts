@@ -180,7 +180,7 @@ export async function blogRoutes(app: FastifyInstance) {
     '/:publicId',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
-      ...rateLimit(RATE_LIMIT_TIERS.BULK_UPDATE),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     updateBlog,

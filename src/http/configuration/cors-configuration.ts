@@ -9,4 +9,4 @@ export const corsConfiguration = {
   allowedHeaders: ['Authorization', 'Content-Type'],
   exposedHeaders: ['Authorization'],
   maxAge: CORS_MAX_AGE, // Cache de 2 horas
-} satisfies FastifyCorsOptions
+} as const satisfies FastifyCorsOptions

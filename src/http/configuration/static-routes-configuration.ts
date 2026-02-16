@@ -6,4 +6,4 @@ export const staticRouteConfigurations = {
   cacheControl: true,
   immutable: true,
   maxAge: '15m',
-} satisfies FastifyStaticOptions
+} as const satisfies FastifyStaticOptions
