@@ -2,23 +2,23 @@ import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
 
-export const getAllHomePageSlidersRestrictRawSchema = z
+export const listMeetingEnrollmentsQueryRawSchema = z
   .object({
+    meetingId: z.coerce.number().int().positive(),
     orderBy: z
       .object({
-        orderOrder: orderDirectionsEnumSchema.default('asc'),
+        createdAtOrder: orderDirectionsEnumSchema.default('desc'),
       })
       .partial(),
   })
-  .partial()
   .extend(paginatedSchema.shape)
 
-export const getAllHomePageSlidersRestrictSchema = z.preprocess(
+export const listMeetingEnrollmentsQuerySchema = z.preprocess(
   (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
-      ...(query.orderOrder ? { orderOrder: query.orderOrder } : {}),
+      ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),
     },
   }),
-  getAllHomePageSlidersRestrictRawSchema,
+  listMeetingEnrollmentsQueryRawSchema,
 )

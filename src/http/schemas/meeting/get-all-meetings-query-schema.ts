@@ -11,6 +11,8 @@ export const getAllMeetingsQueryRawSchema = z
     orderBy: z
       .object({
         createdAtOrder: orderDirectionsEnumSchema.default('desc'),
+        lastDateOrder: orderDirectionsEnumSchema.default('desc'),
+        titleOrder: orderDirectionsEnumSchema.default('asc'),
       })
       .partial(),
   })
@@ -22,6 +24,8 @@ export const getAllMeetingsQuerySchema = z.preprocess(
     ...query,
     orderBy: {
       ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),
+      ...(query.lastDateOrder ? { lastDateOrder: query.lastDateOrder } : {}),
+      ...(query.titleOrder ? { titleOrder: query.titleOrder } : {}),
     },
   }),
   getAllMeetingsQueryRawSchema,

@@ -134,7 +134,10 @@ export class PrismaMeetingEnrollmentsRepository implements MeetingEnrollmentsRep
       meetingId,
     }
 
-    const orderBy: Prisma.MeetingEnrollmentOrderByWithRelationInput[] = [{ createdAt: 'desc' }, { id: 'asc' }]
+    const orderBy: Prisma.MeetingEnrollmentOrderByWithRelationInput[] = [
+      ...(query.orderBy?.createdAtOrder ? [{ createdAt: query.orderBy.createdAtOrder }] : []),
+      { id: 'asc' },
+    ]
 
     const { offset: skip, limit: take } = evalOffset({ page, limit })
 

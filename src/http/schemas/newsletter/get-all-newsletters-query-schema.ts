@@ -10,6 +10,7 @@ export const getAllNewslettersQueryRawSchema = z
     volume: nonemptyTextSchema,
     orderBy: z
       .object({
+        createdAtOrder: orderDirectionsEnumSchema.default('desc'),
         sequenceNumberOrder: orderDirectionsEnumSchema.default('desc'),
       })
       .partial(),
@@ -21,6 +22,7 @@ export const getAllNewslettersQuerySchema = z.preprocess(
   (query: Record<string, unknown>) => ({
     ...query,
     orderBy: {
+      ...(query.createdAtOrder ? { createdAtOrder: query.createdAtOrder } : {}),
       ...(query.sequenceNumberOrder ? { sequenceNumberOrder: query.sequenceNumberOrder } : {}),
     },
   }),

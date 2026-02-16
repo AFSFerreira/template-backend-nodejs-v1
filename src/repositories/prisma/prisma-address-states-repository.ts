@@ -64,11 +64,15 @@ export class PrismaAddressStatesRepository implements AddressStatesRepository {
     }
 
     const orderBy: Prisma.AddressStateOrderByWithRelationInput[] = [
-      {
-        Address: {
-          _count: 'desc',
-        },
-      },
+      ...(query.orderBy?.usersCount
+        ? [
+            {
+              Address: {
+                _count: query.orderBy.usersCount,
+              },
+            },
+          ]
+        : []),
       { id: 'asc' },
     ]
 

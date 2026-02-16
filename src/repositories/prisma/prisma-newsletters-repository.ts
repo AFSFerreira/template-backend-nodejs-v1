@@ -51,12 +51,8 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
 
   async listAll(query: ListAllNewslettersQuery) {
     const orderBy: Prisma.NewsletterOrderByWithRelationInput[] = [
-      {
-        createdAt: 'desc',
-      },
-      {
-        id: 'desc',
-      },
+      ...(query.orderBy?.createdAtOrder ? [{ createdAt: query.orderBy.createdAtOrder }] : []),
+      { id: 'desc' },
       ...(query?.orderBy?.sequenceNumberOrder ? [{ sequenceNumber: query?.orderBy?.sequenceNumberOrder }] : []),
     ]
 

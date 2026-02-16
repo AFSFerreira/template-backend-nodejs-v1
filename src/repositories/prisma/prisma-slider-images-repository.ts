@@ -42,7 +42,10 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
   }
 
   async listAll(query: ListAllSliderImagesQuery) {
-    const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [{ order: 'asc' }, { id: 'asc' }]
+    const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [
+      ...(query.orderBy?.orderOrder ? [{ order: query.orderBy.orderOrder }] : []),
+      { id: 'asc' },
+    ]
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 
@@ -73,7 +76,10 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
 
   async listActive(query: ListAllSliderImagesQuery) {
     const where: Prisma.SliderImageWhereInput = { isActive: true }
-    const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [{ order: 'asc' }, { id: 'asc' }]
+    const orderBy: Prisma.SliderImageOrderByWithRelationInput[] = [
+      ...(query?.orderBy?.orderOrder ? [{ order: query.orderBy.orderOrder }] : [{ order: 'asc' as const }]),
+      { id: 'asc' },
+    ]
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 

@@ -70,8 +70,8 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
 
   async listAllMeetings(query: ListAllMeetingsQuery) {
     const orderBy: Prisma.MeetingOrderByWithRelationInput[] = [
-      { lastDate: 'desc' as OrderableType },
-      { title: 'asc' as OrderableType },
+      ...(query.orderBy?.lastDateOrder ? [{ lastDate: query.orderBy.lastDateOrder }] : []),
+      ...(query.orderBy?.titleOrder ? [{ title: query.orderBy.titleOrder }] : []),
       { id: 'asc' as OrderableType },
     ]
 

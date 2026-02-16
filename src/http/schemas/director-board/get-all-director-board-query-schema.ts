@@ -4,7 +4,12 @@ import z from 'zod'
 
 const getAllDirectorBoardRawSchema = z
   .object({
-    orderBy: z.object({ precedenceOrder: orderDirectionsEnumSchema.default('asc') }).partial(),
+    orderBy: z
+      .object({
+        precedenceOrder: orderDirectionsEnumSchema.default('asc'),
+        fullNameOrder: orderDirectionsEnumSchema.default('asc'),
+      })
+      .partial(),
   })
   .partial()
   .extend(paginatedSchema.shape)
@@ -14,6 +19,7 @@ export const getAllDirectorBoardSchema = z.preprocess(
     ...query,
     orderBy: {
       ...(query.precedenceOrder ? { precedenceOrder: query.precedenceOrder } : {}),
+      ...(query.fullNameOrder ? { fullNameOrder: query.fullNameOrder } : {}),
     },
   }),
   getAllDirectorBoardRawSchema,

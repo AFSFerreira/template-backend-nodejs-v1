@@ -61,7 +61,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
 
   async listAllInstitutionsNames(query: ListAllInstitutionsNamesQuery) {
     const orderBy: Prisma.InstitutionOrderByWithRelationInput[] = [
-      { name: 'asc' as OrderableType },
+      ...(query.orderBy?.nameOrder ? [{ name: query.orderBy.nameOrder }] : []),
       { id: 'asc' as OrderableType },
     ]
 

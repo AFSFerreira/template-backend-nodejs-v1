@@ -87,7 +87,7 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
 
   async listAllDirectorBoardMembers(query: listAllDirectorBoardMembers) {
     const orderBy: Prisma.DirectorBoardOrderByWithRelationInput[] = [
-      ...(query?.orderBy?.precedenceOrder
+      ...(query.orderBy?.precedenceOrder
         ? [
             {
               DirectorPosition: {
@@ -96,7 +96,7 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
             },
           ]
         : []),
-      { User: { fullName: 'asc' as OrderableType } },
+      ...(query.orderBy?.fullNameOrder ? [{ User: { fullName: query.orderBy.fullNameOrder } }] : []),
       { id: 'asc' as OrderableType },
     ]
 

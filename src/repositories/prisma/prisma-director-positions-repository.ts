@@ -36,7 +36,10 @@ export class PrismaDirectorPositionsRepository implements DirectorPositionsRepos
           }
         : {}),
     }
-    const orderBy: Prisma.DirectorPositionOrderByWithRelationInput[] = [{ precedence: 'asc' }, { id: 'asc' }]
+    const orderBy: Prisma.DirectorPositionOrderByWithRelationInput[] = [
+      ...(query.orderBy?.precedenceOrder ? [{ precedence: query.orderBy.precedenceOrder }] : []),
+      { id: 'asc' },
+    ]
 
     const { limit: take, offset: skip } = evalOffset({ page: query.page, limit: query.limit })
 
