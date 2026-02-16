@@ -26,6 +26,23 @@ export async function directorBoardRoutes(app: FastifyInstance) {
   )
   app.get('/:publicId', findDirectorBoardByPublicId)
 
+  // POST
+  app.post(
+    '/uploads/profile-image',
+    {
+      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
+    },
+    uploadDirectorBoardProfileImage,
+  )
+  app.post(
+    '/',
+    {
+      ...DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE,
+      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+    },
+    createDirectorBoard,
+  )
+
   // PATCH
   app.patch(
     '/:publicId',
@@ -43,22 +60,5 @@ export async function directorBoardRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     deleteDirectorBoard,
-  )
-
-  // POST
-  app.post(
-    '/uploads/profile-image',
-    {
-      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
-    },
-    uploadDirectorBoardProfileImage,
-  )
-  app.post(
-    '/',
-    {
-      ...DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE,
-      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
-    },
-    createDirectorBoard,
   )
 }
