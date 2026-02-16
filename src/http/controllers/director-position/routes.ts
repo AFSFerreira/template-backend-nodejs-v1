@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
@@ -13,7 +14,7 @@ export async function directorPositionRoutes(app: FastifyInstance) {
   app.get(
     '/',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     getAllDirectorPositions,
@@ -23,7 +24,7 @@ export async function directorPositionRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     createDirectorPosition,
@@ -33,7 +34,7 @@ export async function directorPositionRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     updateDirectorPosition,
@@ -43,7 +44,7 @@ export async function directorPositionRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     deleteDirectorPosition,

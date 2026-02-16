@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -35,7 +36,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/detailed',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     getAllUsersDetailed,
@@ -43,21 +44,21 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllUsersSimplified,
   )
   app.get(
     '/availability',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     checkAvailability,
   )
   app.get(
     '/export',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     exportUsersData,
@@ -65,7 +66,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/me',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
     },
     getUserProfile,
@@ -73,7 +74,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get(
     '/:publicId',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     findUserByPublicId,
@@ -83,21 +84,21 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      ...rateLimit({ max: 50, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_SECURITY),
     },
     createUser,
   )
   app.post(
     '/sessions',
     {
-      ...rateLimit({ max: 300, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
     },
     authenticate,
   )
   app.post(
     '/sessions/refresh-token',
     {
-      ...rateLimit({ max: 300, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
     },
     refreshToken,
@@ -105,7 +106,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/profile-image',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyMultipart],
     },
     uploadProfileImage,
@@ -113,14 +114,14 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/forgot-password',
     {
-      ...rateLimit({ max: 100, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_SECURITY),
     },
     forgotPassword,
   )
   app.post(
     '/verify-email',
     {
-      ...rateLimit({ max: 150, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
     },
     verifyEmail,
   )
@@ -129,14 +130,14 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/reset-password',
     {
-      ...rateLimit({ max: 150, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
     },
     resetPassword,
   )
   app.patch(
     '/change-password',
     {
-      ...rateLimit({ max: 300, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
       preHandler: [verifyJwt],
     },
     changePassword,
@@ -144,7 +145,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/request-email-change',
     {
-      ...rateLimit({ max: 100, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_SECURITY),
       preHandler: [verifyJwt],
     },
     requestEmailChange,
@@ -152,14 +153,14 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/confirm-email-change',
     {
-      ...rateLimit({ max: 150, timeWindow: '1h' }),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
     },
     confirmEmailChange,
   )
   app.patch(
     '/me',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
     },
     updateUser,
@@ -167,7 +168,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/update/me',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
     },
     updateUser,
@@ -175,7 +176,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/update/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateUserByPublicId,
@@ -183,7 +184,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/review-membership-status',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     reviewMembershipStatus,
@@ -191,7 +192,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/membership-status',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateMembershipStatus,
@@ -199,7 +200,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/permissions',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     updateUserPermissions,
@@ -207,7 +208,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/transfer-admin',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     transferAdminRole,
@@ -217,7 +218,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.delete(
     '/sessions',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
     },
     logout,
@@ -225,7 +226,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.delete(
     '/me',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
     },
     deleteUser,
@@ -233,7 +234,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     deleteUserByAdmin,

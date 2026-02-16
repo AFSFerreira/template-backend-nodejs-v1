@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { BLOGS_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
+import { BLOGS_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { CONTENT_LEADER_PERMISSIONS, CONTENT_PRODUCERS_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -31,14 +31,14 @@ export async function blogRoutes(app: FastifyInstance) {
   app.get(
     '/',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllBlogs,
   )
   app.get(
     '/detailed',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     getAllBlogsDetailed,
@@ -46,7 +46,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.get(
     '/detailed/me',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     getAllUserBlogsDetailed,
@@ -54,14 +54,14 @@ export async function blogRoutes(app: FastifyInstance) {
   app.get(
     '/:publicId/html',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getBlogHtmlContent,
   )
   app.get(
     '/restrict/:publicId/html',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     getRestrictBlogHtmlContent,
@@ -69,7 +69,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.get(
     '/restrict/:publicId',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     findBlogByPublicIdRestricted,
@@ -77,7 +77,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.get(
     '/:publicId',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     findBlogByPublicId,
   )
@@ -87,7 +87,7 @@ export async function blogRoutes(app: FastifyInstance) {
     '/create/pending',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
-      ...rateLimit({ max: 15, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     createPendingBlog,
@@ -96,7 +96,7 @@ export async function blogRoutes(app: FastifyInstance) {
     '/create/draft',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
-      ...rateLimit({ max: 15, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     createDraftBlog,
@@ -104,7 +104,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.post(
     '/:publicId/create-draft-copy',
     {
-      ...rateLimit({ max: 15, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     createDraftCopyBlog,
@@ -113,7 +113,7 @@ export async function blogRoutes(app: FastifyInstance) {
     '/create/publish',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
-      ...rateLimit({ max: 15, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     createAndPublishBlog,
@@ -121,7 +121,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/image',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS), verifyMultipart],
     },
     uploadBlogImage,
@@ -129,7 +129,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/banner',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS), verifyMultipart],
     },
     uploadBlogBanner,
@@ -139,7 +139,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/submit-draft-for-review',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     submitDraftForReview,
@@ -147,7 +147,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/submit-review-to-pending',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     submitReviewToPending,
@@ -155,7 +155,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/submit-pending-to-publish',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     submitPendingToPublish,
@@ -163,7 +163,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/submit-published-to-pending',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     submitPublishedToPending,
@@ -171,7 +171,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId/submit-pending-to-review',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
     },
     submitPendingToReview,
@@ -180,7 +180,7 @@ export async function blogRoutes(app: FastifyInstance) {
     '/:publicId',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
-      ...rateLimit({ max: 60, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.BULK_UPDATE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     updateBlog,
@@ -190,7 +190,7 @@ export async function blogRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
     },
     deleteBlog,

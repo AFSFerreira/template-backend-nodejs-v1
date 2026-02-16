@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
@@ -15,21 +16,21 @@ export async function institutionRoutes(app: FastifyInstance) {
   app.get(
     '/users',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllInstitutionsWithUsers,
   )
   app.get(
     '/names',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllInstitutionsNames,
   )
   app.get(
     '/names/internal',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllInternalInstitutionsNames,
   )
@@ -38,7 +39,7 @@ export async function institutionRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     createInstitution,
@@ -48,7 +49,7 @@ export async function institutionRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateInstitution,
@@ -58,7 +59,7 @@ export async function institutionRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     deleteInstitution,

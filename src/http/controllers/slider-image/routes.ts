@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -16,7 +17,7 @@ export async function sliderImageRoutes(app: FastifyInstance) {
   app.get(
     '/home-page/restrict',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     getAllHomePageSlidersRestrict,
@@ -24,7 +25,7 @@ export async function sliderImageRoutes(app: FastifyInstance) {
   app.get(
     '/home-page',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllHomePageSliders,
   )
@@ -33,7 +34,7 @@ export async function sliderImageRoutes(app: FastifyInstance) {
   app.post(
     '/home-page',
     {
-      ...rateLimit({ max: 15, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     createHomePageSliderImage,
@@ -41,7 +42,7 @@ export async function sliderImageRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/images',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadSliderImage,
@@ -51,7 +52,7 @@ export async function sliderImageRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     updateSliderImage,
@@ -61,7 +62,7 @@ export async function sliderImageRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     deleteSliderImage,

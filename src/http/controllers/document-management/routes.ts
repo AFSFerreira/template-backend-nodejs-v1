@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -14,14 +15,14 @@ export async function documentManagementRoutes(app: FastifyInstance) {
   app.get(
     '/statute',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getStatute,
   )
   app.get(
     '/election-notice',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getElectionNotice,
   )
@@ -30,7 +31,7 @@ export async function documentManagementRoutes(app: FastifyInstance) {
   app.post(
     '/statute',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadStatute,
@@ -38,7 +39,7 @@ export async function documentManagementRoutes(app: FastifyInstance) {
   app.post(
     '/election-notice',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadElectionNotice,

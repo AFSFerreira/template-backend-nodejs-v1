@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -16,14 +17,14 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.get(
     '/',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllNewsletters,
   )
   app.get(
     '/:publicId',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     findNewsletterByPublicId,
   )
@@ -32,7 +33,7 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/html',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS), verifyMultipart],
     },
     uploadNewsletterHtml,
@@ -40,7 +41,7 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      ...rateLimit({ max: 15, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
     },
     createNewsletter,
@@ -50,7 +51,7 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
     },
     updateNewsletter,
@@ -60,7 +61,7 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.delete(
     '/:publicId',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
     },
     deleteNewsletter,

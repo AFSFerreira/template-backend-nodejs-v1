@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE } from '@constants/route-configuration-constants'
+import { INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -16,21 +16,21 @@ export async function institutionalInfoRoutes(app: FastifyInstance) {
   app.get(
     '/',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getInstitutionalInfo,
   )
   app.get(
     '/about-description/html',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getInstitutionalInfoAboutDescriptionHTML,
   )
   app.get(
     '/restrict',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     getInstitutionalInfoForAdmin,
@@ -40,7 +40,7 @@ export async function institutionalInfoRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/about-image',
     {
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
     },
     uploadInstitutionalAboutImage,
@@ -51,7 +51,7 @@ export async function institutionalInfoRoutes(app: FastifyInstance) {
     '/',
     {
       ...INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE,
-      ...rateLimit({ max: 30, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     updateInstitutionalInfo,

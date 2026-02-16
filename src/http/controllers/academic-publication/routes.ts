@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify'
+import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { rateLimit } from '@utils/http/rate-limit'
 import { getAcademicPublicationsYearsController } from './get-academic-publications-years.controller'
 import { getAllAcademicPublicationsController } from './get-all-academic-publications.controller'
@@ -8,14 +9,14 @@ export async function academicPublicationRoutes(app: FastifyInstance) {
   app.get(
     '/',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAllAcademicPublicationsController,
   )
   app.get(
     '/years',
     {
-      ...rateLimit({ max: 100, timeWindow: '1m' }),
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
     },
     getAcademicPublicationsYearsController,
   )
