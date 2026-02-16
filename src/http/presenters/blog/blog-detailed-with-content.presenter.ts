@@ -17,7 +17,7 @@ export class BlogDetailedWithContentPresenter
       editorialStatus: input.editorialStatus,
       bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,
-      subCategories: input.Subcategories?.map((sc) => sc.area) ?? [],
+      subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       content: input.content,
     }
   }

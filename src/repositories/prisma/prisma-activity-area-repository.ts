@@ -104,7 +104,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
   async listAllActivityAreasWithBlogsCount(query: ListAllActivityAreasWithBlogsQuery) {
     const where: Prisma.ActivityAreaWhereInput = {
       type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-      BlogSubCategory: {
+      BlogSubcategory: {
         some: {
           editorialStatus: EditorialStatusType.PUBLISHED,
         },
@@ -115,7 +115,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
       ...(query?.orderBy?.blogsCountOrder
         ? [
             {
-              BlogSubCategory: { _count: query.orderBy.blogsCountOrder },
+              BlogSubcategory: { _count: query.orderBy.blogsCountOrder },
             },
           ]
         : []),
@@ -124,7 +124,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
 
     const include: Prisma.ActivityAreaInclude = {
       _count: {
-        select: { BlogSubCategory: true },
+        select: { BlogSubcategory: true },
       },
     }
 
@@ -149,7 +149,7 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
     return {
       data: activityAreas.map((activityArea) => ({
         area: activityArea.area,
-        blogsCount: activityArea._count.BlogSubCategory,
+        blogsCount: activityArea._count.BlogSubcategory,
       })),
       meta: {
         totalItems,

@@ -19,20 +19,19 @@ export class GetMeetingParticipantsUseCase {
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
   ) {}
 
-  async execute({
-    meetingPublicId,
-    page,
-    limit,
-  }: GetMeetingParticipantsUseCaseRequest): Promise<GetMeetingParticipantsUseCaseResponse> {
+  async execute(
+    getMeetingParticipantsUseCaseInput: GetMeetingParticipantsUseCaseRequest,
+  ): Promise<GetMeetingParticipantsUseCaseResponse> {
+    const { meetingPublicId, ...query } = getMeetingParticipantsUseCaseInput
+
     const meeting = ensureExists({
       value: await this.meetingsRepository.findByPublicId(meetingPublicId),
       error: new MeetingNotFoundError(),
     })
 
     const enrollmentsInfo = await this.meetingEnrollmentsRepository.listMeetingEnrollments({
+      ...query,
       meetingId: meeting.id,
-      page,
-      limit,
     })
 
     return enrollmentsInfo

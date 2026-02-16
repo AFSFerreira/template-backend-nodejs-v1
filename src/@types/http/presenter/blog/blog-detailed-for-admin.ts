@@ -14,5 +14,5 @@ export interface HTTPBlogDetailedForAdmin {
   accessCount: number
   createdAt: Date
   updatedAt: Date
-  subCategories: string[]
+  subcategories: string[]
 }

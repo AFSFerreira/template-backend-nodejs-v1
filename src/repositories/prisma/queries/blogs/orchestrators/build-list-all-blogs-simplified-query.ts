@@ -8,7 +8,7 @@ export function buildListAllBlogsSimplifiedQuery(query: IBuildListAllUserBlogsDe
   const builder = new ListBlogsSimplifiedQueryBuilder()
     .withTextSearch(query.searchContent)
     .withAuthor(query.authorId)
-    .withSubCategories(query.subCategories)
+    .withSubcategories(query.subcategories)
     .withSorting(query.orderBy)
 
   return builder.build(limit, offset)

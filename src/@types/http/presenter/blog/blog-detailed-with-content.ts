@@ -13,6 +13,6 @@ export interface HTTPBlogDetailedWithContent {
   accessCount: number
   createdAt: Date
   updatedAt: Date
-  subCategories: string[]
+  subcategories: string[]
   content: JsonValue
 }

@@ -9,7 +9,7 @@ export function buildListAllBlogsDetailedQuery(query: IBuildGetAllBlogsDetailedQ
     .withTextSearch(query.searchContent)
     .withAuthor(query.authorId)
     .withEditorialStatus(query.editorialStatus)
-    .withSubCategories(query.subCategories)
+    .withSubcategories(query.subcategories)
     .withSorting(query.orderBy)
 
   return builder.build(limit, offset)

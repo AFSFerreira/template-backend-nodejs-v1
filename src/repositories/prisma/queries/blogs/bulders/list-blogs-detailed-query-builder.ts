@@ -8,7 +8,7 @@ export class ListBlogsDetailedQueryBuilder {
 
   private scores: Prisma.Sql[] = []
   private ordinations: Prisma.Sql[] = []
-  private subCategoriesUnique: string[] = []
+  private subcategoriesUnique: string[] = []
   private subCatCount = 0
 
   public withTextSearch(searchContent?: string): this {
@@ -48,11 +48,11 @@ export class ListBlogsDetailedQueryBuilder {
     return this
   }
 
-  public withSubCategories(subCategories?: string[]): this {
-    if (!subCategories?.length) return this
+  public withSubcategories(subcategories?: string[]): this {
+    if (!subcategories?.length) return this
 
-    this.subCategoriesUnique = Array.from(new Set(subCategories))
-    this.subCatCount = this.subCategoriesUnique.length
+    this.subcategoriesUnique = Array.from(new Set(subcategories))
+    this.subCatCount = this.subcategoriesUnique.length
 
     return this
   }
@@ -85,7 +85,7 @@ export class ListBlogsDetailedQueryBuilder {
 
     const havingClause =
       this.subCatCount > 0
-        ? Prisma.sql`HAVING COUNT(DISTINCT sc.area) FILTER (WHERE sc.area = ANY(${this.subCategoriesUnique}::text[])) = ${this.subCatCount}`
+        ? Prisma.sql`HAVING COUNT(DISTINCT sc.area) FILTER (WHERE sc.area = ANY(${this.subcategoriesUnique}::text[])) = ${this.subCatCount}`
         : Prisma.empty
 
     // NOTE: Uso de deferred join para paginar e ordenar

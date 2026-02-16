@@ -1,7 +1,7 @@
 import { LONG_LIMITED_CHARACTERS_SIZE } from '@constants/validation-constants'
 import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
 import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
-import { subCategoriesSchema } from '@schemas/utils/generic-components/sub-categories-schema'
+import { subcategoriesSchema } from '@schemas/utils/generic-components/sub-categories-schema'
 import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
 import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
 import z from 'zod'
@@ -10,7 +10,7 @@ const getAllBlogsQueryRawSchema = z
   .object({
     searchContent: nonemptyTextSchema.max(LONG_LIMITED_CHARACTERS_SIZE),
     authorId: modelPublicIdSchema,
-    subCategories: subCategoriesSchema,
+    subcategories: subcategoriesSchema,
     orderBy: z
       .object({
         createdAtOrder: orderDirectionsEnumSchema.default('desc'),

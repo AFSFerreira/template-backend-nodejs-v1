@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client"
   output          = "../src/@types/lib/prisma/generated"
-  compilerBuild = "fast"
+  compilerBuild   = "fast"
   previewFeatures = ["partialIndexes"]
 }
 
@@ -231,7 +231,7 @@ model ActivityArea {
   AcademicPublication AcademicPublication[] @relation()
   UserActivityArea    User[]                @relation("activity_area")
   UserSubActivityArea User[]                @relation("sub_activity_area")
-  BlogSubCategory     Blog[]                @relation()
+  BlogSubcategory     Blog[]                @relation()
 
   @@unique([type, area])
   @@map("area_of_activity")

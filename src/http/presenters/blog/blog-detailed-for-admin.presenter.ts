@@ -15,7 +15,7 @@ export class BlogDetailedForAdminPresenter
       accessCount: input.accessCount,
       bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,
-      subCategories: input.Subcategories?.map((sc) => sc.area) ?? [],
+      subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
