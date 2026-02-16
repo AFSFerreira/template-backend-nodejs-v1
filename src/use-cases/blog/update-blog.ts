@@ -34,6 +34,7 @@ import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { fileExists } from '@utils/files/file-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UpdateBlogUseCase {

@@ -19,3 +19,6 @@ dev-reset-full:
 	make wait-db
 	pnpm db:reset || npm run db:reset
 
+dev-start:
+	pnpm start:dev || npm run start:dev
+
