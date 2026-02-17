@@ -5,7 +5,7 @@ import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
 import { deleteFile } from '@utils/files/delete-file'
-import { generateFileHash } from '@utils/tokens/generate-file-hash'
+import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import fs, { ensureDir } from 'fs-extra'
 
 export async function copyFile({

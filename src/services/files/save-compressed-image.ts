@@ -8,7 +8,7 @@ import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { generateFileHash } from '@utils/tokens/generate-file-hash'
+import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 

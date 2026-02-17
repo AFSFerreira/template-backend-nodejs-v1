@@ -10,7 +10,6 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
-import { env } from '@env/index'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -36,12 +35,12 @@ import { InvalidSecondaryEmailDomainError } from '@use-cases/errors/user/invalid
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
+import { generateToken } from '@utils/hashes/generate-token'
+import { hashPassword } from '@utils/hashes/hash-password'
+import { hashToken } from '@utils/hashes/hash-token'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
-import { generateToken } from '@utils/tokens/generate-token'
-import { hashToken } from '@utils/tokens/hash-token'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
-import { hash } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 import { UserWithSameSecondaryEmail } from '../errors/user/user-with-same-secondary-email-error'
@@ -87,7 +86,7 @@ export class CreateUserUseCase {
       isRegisterUserHighLevelEducation(registerUseCaseInput) ||
       isRegisterUserHighLevelStudentEducation(registerUseCaseInput)
 
-    const passwordHash = await hash(registerUseCaseInput.user.password, env.HASH_SALT_ROUNDS)
+    const passwordHash = await hashPassword(registerUseCaseInput.user.password)
 
     const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
     const emailVerificationTokenHash = hashToken(emailVerificationToken)

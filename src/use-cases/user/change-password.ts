@@ -4,14 +4,14 @@ import type {
 } from '@custom-types/use-cases/user/update-password'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
-import { env } from '@env/index'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { IncorrectOldPasswordError } from '@use-cases/errors/user/incorrect-old-password-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import { hashPassword } from '@utils/hashes/hash-password'
 import { ensureExists } from '@utils/validators/ensure'
-import { compare, hash } from 'bcryptjs'
+import { compare } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -29,7 +29,7 @@ export class ChangePasswordUseCase {
     oldPassword,
     newPassword,
   }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
-    const newPasswordHash = await hash(newPassword, env.HASH_SALT_ROUNDS)
+    const newPasswordHash = await hashPassword(newPassword)
 
     await this.dbContext.runInTransaction(async () => {
       const user = ensureExists({

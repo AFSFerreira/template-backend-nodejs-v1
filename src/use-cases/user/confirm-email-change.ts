@@ -10,7 +10,7 @@ import { EMAIL_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggi
 import { EmailChangeNotRequestedError } from '@use-cases/errors/user/email-change-not-requested-error'
 import { InvalidTokenError } from '@use-cases/errors/user/invalid-token-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { hashToken } from '@utils/tokens/hash-token'
+import { hashToken } from '@utils/hashes/hash-token'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 

@@ -9,7 +9,7 @@ import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
 import { renameFile } from '@utils/files/rename-file'
-import { generateFileHash } from '@utils/tokens/generate-file-hash'
+import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { ensureDir } from 'fs-extra'
 
 export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMultipartFile): Promise<FileInfo> {

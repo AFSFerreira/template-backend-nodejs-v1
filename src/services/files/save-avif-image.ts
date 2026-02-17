@@ -8,8 +8,8 @@ import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggin
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
+import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
-import { generateFileHash } from '@utils/tokens/generate-file-hash'
 import { ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 
