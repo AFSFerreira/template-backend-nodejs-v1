@@ -11,6 +11,7 @@ import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/u
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
+import type { HashedToken } from '@custom-types/utils/hashes/hashed-token'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { Prisma, User } from '@prisma/generated/client'
 
@@ -38,8 +39,8 @@ export interface UsersRepository {
   delete: (id: number) => Promise<void>
   update: (query: UpdateUserQuery) => Promise<UserWithDetails>
   updateRole: (query: UpdateRoleQuery) => Promise<void>
-  validateUserToken: (recoveryPasswordTokenHash: string) => Promise<User | null>
-  validateEmailVerificationToken: (emailVerificationTokenHash: string) => Promise<User | null>
+  validateUserToken: (recoveryPasswordTokenHash: HashedToken) => Promise<User | null>
+  validateEmailVerificationToken: (emailVerificationTokenHash: HashedToken) => Promise<User | null>
   confirmEmailVerification: (id: number) => Promise<User>
   changePassword: (query: ChangeUserPasswordQuery) => Promise<User>
   setPasswordToken: (query: SetPasswordTokenQuery) => Promise<User>

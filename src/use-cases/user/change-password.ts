@@ -9,9 +9,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { IncorrectOldPasswordError } from '@use-cases/errors/user/incorrect-old-password-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import { comparePassword } from '@utils/hashes/compare-password'
 import { hashPassword } from '@utils/hashes/hash-password'
 import { ensureExists } from '@utils/validators/ensure'
-import { compare } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -37,7 +37,10 @@ export class ChangePasswordUseCase {
         error: new UserNotFoundError(),
       })
 
-      const isOldPasswordCorrect = await compare(oldPassword, user.passwordHash)
+      const isOldPasswordCorrect = await comparePassword({
+        password: oldPassword,
+        hashedPassword: user.passwordHash,
+      })
 
       if (!isOldPasswordCorrect) {
         throw new IncorrectOldPasswordError()

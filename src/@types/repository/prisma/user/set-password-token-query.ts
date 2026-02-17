@@ -1,7 +1,9 @@
+import type { HashedToken } from '@custom-types/utils/hashes/hashed-token'
+
 export interface SetPasswordTokenQuery {
   id: number
   tokenData: {
-    recoveryPasswordTokenHash: string
+    recoveryPasswordTokenHash: HashedToken
     recoveryPasswordTokenExpiresAt: Date
   }
 }

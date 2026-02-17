@@ -10,6 +10,7 @@ import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/u
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
+import type { HashedToken } from '@custom-types/utils/hashes/hashed-token'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
@@ -230,14 +231,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async validateUserToken(recoveryPasswordTokenHash: string) {
+  async validateUserToken(recoveryPasswordTokenHash: HashedToken) {
     const user = await this.dbContext.client.user.findFirst({
       where: { recoveryPasswordTokenHash },
     })
     return user
   }
 
-  async validateEmailVerificationToken(emailVerificationTokenHash: string) {
+  async validateEmailVerificationToken(emailVerificationTokenHash: HashedToken) {
     const user = await this.dbContext.client.user.findFirst({
       where: { emailVerificationTokenHash },
     })
