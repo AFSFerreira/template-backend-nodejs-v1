@@ -20,7 +20,7 @@ const defaultConfig = {
     },
     swcrc: true,
   }
-} satisfies TsupOptions
+} as const satisfies TsupOptions
 
 export default defineConfig([
   {

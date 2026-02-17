@@ -6,4 +6,4 @@ export const redisConnection = {
   port: env.REDIS_PORT,
   db: env.REDIS_DB,
   password: env.REDIS_PASSWORD,
-} satisfies RedisOptions
+} as const satisfies RedisOptions
