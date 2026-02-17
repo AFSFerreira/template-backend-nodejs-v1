@@ -36,7 +36,7 @@ export async function blogRoutes(app: FastifyInstance) {
     getAllBlogs,
   )
   app.get(
-    '/detailed',
+    '/restrict',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
@@ -44,7 +44,7 @@ export async function blogRoutes(app: FastifyInstance) {
     getAllBlogsDetailed,
   )
   app.get(
-    '/detailed/me',
+    '/restrict/me',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
