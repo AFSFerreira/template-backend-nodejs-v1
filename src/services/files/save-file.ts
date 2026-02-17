@@ -8,8 +8,9 @@ import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
+import { renameFile } from '@utils/files/rename-file'
 import { generateFileHash } from '@utils/tokens/generate-file-hash'
-import fs, { ensureDir } from 'fs-extra'
+import { ensureDir } from 'fs-extra'
 
 export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMultipartFile): Promise<FileInfo> {
   const filename = `${newFilename ?? `${generateFileHash()}${path.extname(filePart.filename)}`}`
@@ -50,7 +51,11 @@ export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMulti
     }
 
     // Persiste o arquivo temporário final:
-    await fs.rename(tempFilePath, finalFilePath)
+    const renamed = await renameFile(tempFilePath, finalFilePath)
+
+    if (!renamed) {
+      throw new FileSaveError()
+    }
   } catch (error) {
     logError({ error, context: { filename, baseFolder }, message: SAVE_MULTIPART_FILE_ERROR })
 

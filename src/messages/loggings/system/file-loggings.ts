@@ -31,3 +31,5 @@ export const INVALID_FILESYSTEM_PATHS = 'Um ou mais caminhos configurados são i
 export const FILE_STREAM_CREATION_ERROR = 'Ocorreu um erro ao tentar criar o stream de um arquivo'
 
 export const FILE_WRITE_STREAM_CREATION_ERROR = 'Ocorreu um erro ao tentar criar o stream de escrita de um arquivo'
+
+export const FILE_RENAME_ERROR = 'Ocorreu um erro ao tentar renomear um arquivo'

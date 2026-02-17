@@ -83,3 +83,23 @@ CREATE TRIGGER academic_publications_search_data_trigger
 BEFORE INSERT OR UPDATE ON public.academic_publications
 FOR EACH ROW EXECUTE FUNCTION academic_publications_search_data_trigger();
 
+--------------------------------------------------------
+
+DROP TRIGGER IF EXISTS delete_orphan_keywords_data_trigger ON public."_KeywordToUser";
+DROP FUNCTION IF EXISTS delete_orphan_keywords_data_trigger;
+
+CREATE OR REPLACE FUNCTION delete_orphan_keywords_data_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM "public"."_KeywordToUser" WHERE "A" = OLD."A") THEN
+    DELETE FROM "public"."keywords" WHERE id = OLD."A";
+  END IF;
+
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER delete_orphan_keywords_data_trigger
+AFTER DELETE ON "public"."_KeywordToUser"
+FOR EACH ROW
+EXECUTE FUNCTION delete_orphan_keywords_data_trigger();

@@ -18,7 +18,7 @@ export interface UsersRepository {
   create: (data: CreateUserQuery) => Promise<UserWithDetails>
   findBy: (where: Prisma.UserWhereInput) => Promise<User | null>
   findUniqueBy: (where: Prisma.UserWhereUniqueInput) => Promise<User | null>
-  findByEmail: (email: string) => Promise<User | null>
+  findByPrimaryEmail: (email: string) => Promise<User | null>
   findByEmails: (email: string) => Promise<User | null>
   findByUsername: (username: string) => Promise<User | null>
   findById: (id: number) => Promise<UserWithDetails | null>

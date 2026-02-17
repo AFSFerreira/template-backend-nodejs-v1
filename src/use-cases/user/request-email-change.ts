@@ -56,7 +56,7 @@ export class RequestEmailChangeUseCase {
       })
 
       ensureNotExists({
-        value: await this.usersRepository.findByEmail(newEmail),
+        value: await this.usersRepository.findByPrimaryEmail(newEmail),
         error: new UserWithSameEmail(),
       })
 
