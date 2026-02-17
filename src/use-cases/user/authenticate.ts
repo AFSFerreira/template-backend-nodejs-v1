@@ -13,7 +13,7 @@ import { compare } from 'bcryptjs'
 import { inject, injectable } from 'tsyringe'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
-const DUMMY_HASH = 'CR7&YqVb9zXfK2n4uP3tLsWhJcEg1ABvZdTQMiN0oGpUeCyxLr5HaDmZjSXFkwEt'
+const DUMMY_HASH = '$2a$10$8.Bq25v1HMyW7ZJv.rG/u.z7jZ0r7Wj/69/x4O/E4QO5l4M/m.v/y'
 
 @injectable()
 export class AuthenticateUseCase {
@@ -35,68 +35,56 @@ export class AuthenticateUseCase {
     remotePort,
     browser,
   }: AuthenticateUseCaseRequest): Promise<AuthenticateUseCaseResponse> {
-    const authenticatedUser = await this.dbContext.runInTransaction(async () => {
-      const user = await this.usersRepository.findConflictingUser({
-        email: login,
-        username: login,
-      })
+    const user = await this.usersRepository.findConflictingUser({
+      email: login,
+      username: login,
+    })
 
-      // Comparação obrigatória para evitar timing attacks:
-      const hashToCompare = user?.passwordHash ?? DUMMY_HASH
-      const doesPasswordMatch = await compare(password, hashToCompare)
+    // Comparação obrigatória para evitar timing attacks:
+    const hashToCompare = user?.passwordHash ?? DUMMY_HASH
+    const doesPasswordMatch = await compare(password, hashToCompare)
 
-      const auditAuthenticateObject = {
-        browser: browser ?? null,
-        ipAddress: ipAddress ?? null,
-        remotePort: remotePort ?? null,
-        userId: user?.id ?? null,
-      }
+    const auditAuthenticateObject = {
+      browser: browser ?? null,
+      ipAddress: ipAddress ?? null,
+      remotePort: remotePort ?? null,
+      userId: user?.id ?? null,
+    }
 
-      if (!user) {
-        await this.AuthenticationAuditsRepository.create({
-          ...auditAuthenticateObject,
-          status: 'USER_NOT_EXISTS',
-        })
-
-        throw new InvalidCredentialsError()
-      }
-
-      if (user.membershipStatus === MembershipStatusType.PENDING) {
-        throw new MembershipStatusPendingError()
-      }
-
-      if (user.membershipStatus === MembershipStatusType.INACTIVE) {
-        throw new MembershipStatusInactiveError()
-      }
-
-      await this.usersRepository.incrementLoginAttempts(user.id)
-
-      if (!doesPasswordMatch) {
-        await this.AuthenticationAuditsRepository.create({
-          ...auditAuthenticateObject,
-          status: 'INCORRECT_PASSWORD',
-        })
-
-        throw new InvalidCredentialsError()
-      }
-
-      await this.usersRepository.setLastLogin(user.id)
-
+    if (!user || !doesPasswordMatch) {
       await this.AuthenticationAuditsRepository.create({
         ...auditAuthenticateObject,
-        status: 'SUCCESS',
-        userId: user.id,
+        status: !user ? 'USER_NOT_EXISTS' : 'INCORRECT_PASSWORD',
       })
 
-      return user
+      throw new InvalidCredentialsError()
+    }
+
+    if (user.membershipStatus === MembershipStatusType.PENDING) {
+      throw new MembershipStatusPendingError()
+    }
+
+    if (user.membershipStatus === MembershipStatusType.INACTIVE) {
+      throw new MembershipStatusInactiveError()
+    }
+
+    await this.dbContext.runInTransaction(async () => {
+      await Promise.all([
+        this.usersRepository.incrementLoginAttempts(user.id),
+        this.usersRepository.setLastLogin(user.id),
+        this.AuthenticationAuditsRepository.create({
+          ...auditAuthenticateObject,
+          status: 'SUCCESS',
+        }),
+      ])
     })
 
     logger.info(AUTHENTICATION_SUCCESSFUL)
 
     return {
       user: {
-        ...authenticatedUser,
-        profileImage: buildUserProfileImageUrl(authenticatedUser.profileImage),
+        ...user,
+        profileImage: buildUserProfileImageUrl(user.profileImage),
       },
     }
   }

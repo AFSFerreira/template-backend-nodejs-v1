@@ -1,17 +1,17 @@
 import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { env } from '@env/index'
 import { UserPresenter } from '@presenters/user-presenter'
 import { authenticateBodySchema } from '@schemas/user/authenticate-body-schema'
+import { authenticateConnectionInfoSchema } from '@schemas/user/authenticate-connection-info-schema'
+import { buildAuthTokens } from '@services/http/build-auth-tokens'
 import { AuthenticateUseCase } from '@use-cases/user/authenticate'
+import { getConnectionInfo } from '@utils/http/get-connection-info'
 import { container } from 'tsyringe'
 
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
   const { login, password } = authenticateBodySchema.parse(request.body)
-  const { ip: ipAddress } = request
-  const { 'user-agent': browser } = request.headers
-  const { remotePort } = request.socket
-  const browserName = Array.isArray(browser) ? browser[0] : browser
+
+  const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(getConnectionInfo(request))
 
   const useCase = container.resolve(AuthenticateUseCase)
 
@@ -19,43 +19,25 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
     login,
     password,
     ipAddress,
-    browser: browserName,
-    remotePort: `${remotePort}`,
+    browser,
+    remotePort,
   })
 
-  const tokenPayload = {
-    role: user.role,
-    status: user.membershipStatus,
-  }
-
-  const accessToken = await reply.jwtSign(tokenPayload, {
-    sign: {
-      sub: user.publicId,
-      expiresIn: env.JWT_EXPIRATION,
-    },
-  })
-
-  const refreshToken = await reply.jwtSign(tokenPayload, {
-    sign: {
-      sub: user.publicId,
-      expiresIn: env.JWT_REFRESH_EXPIRATION,
+  const { accessToken, reply: replyWithCookie } = await buildAuthTokens({
+    reply,
+    publicId: user.publicId,
+    payload: {
+      role: user.role,
+      status: user.membershipStatus,
     },
   })
 
   const formattedUser = UserPresenter.toHTTP<UserDefaultPresenterInput, HTTPUser>(user)
 
-  return await reply
-    .setCookie('refreshToken', refreshToken, {
-      path: '/',
-      secure: env.NODE_ENV === 'production',
-      sameSite: env.NODE_ENV === 'production' ? 'strict' : 'lax',
-      httpOnly: true,
-    })
-    .status(200)
-    .send({
-      data: {
-        accessToken,
-        user: formattedUser,
-      },
-    })
+  return await replyWithCookie.status(200).send({
+    data: {
+      accessToken,
+      user: formattedUser,
+    },
+  })
 }
