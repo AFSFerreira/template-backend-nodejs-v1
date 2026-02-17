@@ -1,5 +1,23 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 
+// ============= 400 Bad Request =============
+
+export const INVALID_PAYMENT_LIMIT_DATE: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'INVALID_PAYMENT_LIMIT_DATE',
+    message: 'A data limite de pagamento não pode ser anterior à data atual',
+  },
+}
+
+export const INVALID_MEETING_DATE: IApiResponse = {
+  status: 400,
+  body: {
+    code: 'INVALID_MEETING_DATE',
+    message: 'A data da reunião não pode ser anterior à data atual',
+  },
+}
+
 // ============= 403 Forbidden =============
 
 export const INACTIVE_MEETING_PAYMENT_INFO_UPDATE_FORBIDDEN: IApiResponse = {

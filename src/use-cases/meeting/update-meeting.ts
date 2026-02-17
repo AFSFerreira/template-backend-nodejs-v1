@@ -13,6 +13,8 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
+import { InvalidMeetingDateError } from '@use-cases/errors/meeting/invalid-meeting-date-error'
+import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
@@ -31,6 +33,27 @@ export class UpdateMeetingUseCase {
   ) {}
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    if (body.paymentMeetingInfo?.limitDate) {
+      body.paymentMeetingInfo.limitDate.setHours(0, 0, 0, 0)
+
+      if (body.paymentMeetingInfo.limitDate < today) {
+        throw new InvalidPaymentLimitDateError()
+      }
+    }
+
+    if (body.dates) {
+      body.dates.forEach((date) => {
+        date.setHours(0, 0, 0, 0)
+
+        if (date < today) {
+          throw new InvalidMeetingDateError()
+        }
+      })
+    }
+
     const updateData: Prisma.MeetingUpdateInput = {}
 
     let newBannerImage: string | undefined
@@ -55,8 +78,6 @@ export class UpdateMeetingUseCase {
         newAgenda = agendaSanitized && agendaSanitized !== meeting.agenda ? agendaSanitized : undefined
       }
 
-      const activeMeeting = await this.meetingsRepository.findActiveMeeting()
-
       if (body.title) {
         updateData.title = body.title
       }
@@ -74,7 +95,7 @@ export class UpdateMeetingUseCase {
 
         updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
 
-        if (activeMeeting && updateData.lastDate >= activeMeeting.lastDate) {
+        if (updateData.lastDate >= today) {
           throw new MeetingDateConflictError()
         }
 
