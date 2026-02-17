@@ -13,6 +13,11 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
       resources:
         limits:
           cpus: "0.5"
@@ -48,6 +53,11 @@ services:
       --bind 0.0.0.0
       --port $$REDIS_PORT"
     deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
       resources:
         limits:
           cpus: "0.5"
@@ -68,6 +78,7 @@ services:
   #   env_file: .env
   #   environment:
   #     - DATABASE_URL="postgresql://${POSTGRES_USERNAME:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/sbastrobiodb?schema=public"
+  #     - NODE_OPTIONS=--max-old-space-size=384
   #   build:
   #     context: .
   #     dockerfile: Dockerfile
