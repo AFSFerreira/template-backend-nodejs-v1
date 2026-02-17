@@ -1,15 +1,17 @@
-import 'reflect-metadata'
-import '@lib/tsyringe/index'
-import '@lib/zod/index'
+import { fastifyCompress } from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import { initSentry } from '@lib/sentry'
+import '@lib/tsyringe/index'
+import '@lib/zod/index'
 import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
 import { registerAppSignals } from '@services/system/register-app-signals'
 import fastify from 'fastify'
+import 'reflect-metadata'
+import { compressConfiguration } from './http/configuration/compress-configuration'
 import { corsConfiguration } from './http/configuration/cors-configuration'
 import { fastifyConfiguration } from './http/configuration/fastify-configuration'
 import { jwtConfiguration } from './http/configuration/jwt-configuration'
@@ -27,6 +29,7 @@ export const app = fastify(fastifyConfiguration)
 initSentry()
 registerAppSignals(app)
 
+app.register(fastifyCompress, compressConfiguration)
 app.register(multipart, multipartConfiguration)
 app.register(staticFileRoutes)
 app.register(fastifyCookie)
