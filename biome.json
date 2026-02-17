@@ -80,14 +80,7 @@
           "level": "on",
           "options": {
             "identifierOrder": "lexicographic",
-            "groups": [
-              ["reflect-metadata"],
-              { "type": true },
-              ["@custom-types/**"],
-              [":NODE:", ":PACKAGE:"],
-              [":ALIAS:"],
-              [":PATH:"]
-            ]
+            "groups": [{ "type": true }, ["@custom-types/**"], [":NODE:", ":PACKAGE:"], [":ALIAS:"], [":PATH:"]]
           }
         }
       }
