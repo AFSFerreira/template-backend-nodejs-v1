@@ -5,6 +5,6 @@ export const blogWithDetails = {
     Subcategories: true,
     User: true,
   },
-} satisfies Prisma.BlogDefaultArgs
+} as const satisfies Prisma.BlogDefaultArgs
 
 export type BlogWithDetails = Prisma.BlogGetPayload<typeof blogWithDetails>

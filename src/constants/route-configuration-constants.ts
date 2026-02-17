@@ -1,4 +1,4 @@
-import type { RouteShorthandOptions } from 'fastify'
+import type { RouteOptions, RouteShorthandOptions } from 'fastify'
 import { env } from '../env'
 import { MB_IN_BYTES } from './size-constants'
 
@@ -45,4 +45,4 @@ export const RATE_LIMIT_TIERS = {
     max: env.RATE_LIMIT_AUTH_VALIDATION_MAX,
     timeWindow: '1h',
   },
-} as const
+} as const satisfies Record<string, NonNullable<RouteOptions['config']>['rateLimit']>

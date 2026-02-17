@@ -19,6 +19,6 @@ export const meetingEnrollmentWithDetails = {
       },
     },
   },
-} satisfies Prisma.MeetingEnrollmentDefaultArgs
+} as const satisfies Prisma.MeetingEnrollmentDefaultArgs
 
 export type MeetingEnrollmentWithDetails = Prisma.MeetingEnrollmentGetPayload<typeof meetingEnrollmentWithDetails>

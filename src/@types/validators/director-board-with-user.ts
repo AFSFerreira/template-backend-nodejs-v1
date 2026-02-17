@@ -5,6 +5,6 @@ export const directorBoardWithUser = {
     User: true,
     DirectorPosition: true,
   },
-} satisfies Prisma.DirectorBoardDefaultArgs
+} as const satisfies Prisma.DirectorBoardDefaultArgs
 
 export type DirectorBoardWithUser = Prisma.DirectorBoardGetPayload<typeof directorBoardWithUser>

@@ -12,7 +12,7 @@ const defaultConfig = {
   skipNodeModulesBundle: true,
   treeshake: true,
   inlineOnly: false
-} satisfies TsdownConfig
+} as const satisfies TsdownConfig
 
 export default defineConfig([
   {

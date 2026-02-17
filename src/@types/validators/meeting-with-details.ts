@@ -5,6 +5,6 @@ export const meetingWithDetails = {
     MeetingPaymentInfo: true,
     MeetingDate: true,
   },
-} satisfies Prisma.MeetingDefaultArgs
+} as const satisfies Prisma.MeetingDefaultArgs
 
 export type MeetingWithDetails = Prisma.MeetingGetPayload<typeof meetingWithDetails>

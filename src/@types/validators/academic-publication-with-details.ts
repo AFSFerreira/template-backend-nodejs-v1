@@ -6,6 +6,6 @@ export const academicPublicationWithDetails = {
     ActivityArea: true,
     AcademicPublicationAuthors: true,
   },
-} satisfies Prisma.AcademicPublicationDefaultArgs
+} as const satisfies Prisma.AcademicPublicationDefaultArgs
 
 export type AcademicPublicationWithDetails = Prisma.AcademicPublicationGetPayload<typeof academicPublicationWithDetails>

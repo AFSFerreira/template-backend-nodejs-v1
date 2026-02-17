@@ -28,6 +28,6 @@ export const userWithDetails = {
       },
     },
   },
-} satisfies Prisma.UserDefaultArgs
+} as const satisfies Prisma.UserDefaultArgs
 
 export type UserWithDetails = Prisma.UserGetPayload<typeof userWithDetails>

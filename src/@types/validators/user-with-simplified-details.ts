@@ -5,6 +5,6 @@ export const userWithSimplifiedDetails = {
     Address: true,
     Institution: true,
   },
-} satisfies Prisma.UserDefaultArgs
+} as const satisfies Prisma.UserDefaultArgs
 
 export type UserWithSimplifiedDetails = Prisma.UserGetPayload<typeof userWithSimplifiedDetails>
