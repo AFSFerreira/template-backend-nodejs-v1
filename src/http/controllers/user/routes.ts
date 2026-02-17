@@ -33,7 +33,7 @@ import { verifyEmail } from './verify-email.controller'
 export async function userRoutes(app: FastifyInstance) {
   // GET
   app.get(
-    '/detailed',
+    '/restrict',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
