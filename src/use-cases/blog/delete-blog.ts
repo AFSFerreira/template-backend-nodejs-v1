@@ -3,10 +3,12 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, PENDING_APPROVAL_OR_PUBLISHED } from '@constants/sets'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
 import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_DELETION_SUCCESSFUL } from '@messages/loggings/models/blog-loggings'
+import { buildBlogBannerPath } from '@services/builders/paths/build-blog-banner-path'
 import { removeBlogHTMLCache } from '@services/cache/blogs-html-cache'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
@@ -56,6 +58,10 @@ export class DeleteBlogUseCase {
       await this.blogsRepository.delete(blog.id)
 
       return { blog }
+    })
+
+    await deleteFileEnqueued({
+      filePath: buildBlogBannerPath(blog.bannerImage),
     })
 
     // Removendo o cache HTML do blog:
