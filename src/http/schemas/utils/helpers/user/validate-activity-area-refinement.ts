@@ -1,44 +1,54 @@
 import type { ActivityAreaValidationData } from '@custom-types/http/schemas/utils/helpers/users/activity-area-validation-data'
-import type { RefinementCtx } from 'zod'
+import type { z } from 'zod'
 import { ACTIVITY_AREA_MISSING_DESCRIPTION } from '@messages/validations/user-validations'
-import { z } from 'zod'
 
-export function validateActivityAreaRefinement(data: ActivityAreaValidationData, ctx: RefinementCtx) {
-  if (!data.activityArea) return
+function validateDescriptionRule(
+  areaValue: string,
+  descriptionValue: string | null | undefined,
+  fieldPath: string[],
+  value: ActivityAreaValidationData,
+  issues: z.core.$ZodRawIssue[],
+) {
+  const isOther = areaValue === 'OUTRA'
+  const hasDescription = !!descriptionValue
 
-  if (data.activityArea.mainActivityArea === 'OUTRA' && !data.user?.activityAreaDescription) {
-    ctx.addIssue({
+  if (isOther !== hasDescription) {
+    issues.push({
       code: 'custom',
+      input: value,
+      continue: true,
       message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-      path: ['activityAreas', 'mainActivityArea'],
+      path: ['activityAreas', ...fieldPath],
     })
-    return z.NEVER
+  }
+}
+
+export function validateActivityAreaRefinement({
+  value,
+  issues,
+}: {
+  value: ActivityAreaValidationData
+  issues: z.core.$ZodRawIssue[]
+}) {
+  if (!value.activityArea) return
+
+  if (value.activityArea.mainActivityArea) {
+    validateDescriptionRule(
+      value.activityArea.mainActivityArea,
+      value.user?.activityAreaDescription,
+      ['mainActivityArea'],
+      value,
+      issues,
+    )
   }
 
-  if (data.activityArea.mainActivityArea !== 'OUTRA' && data.user?.activityAreaDescription) {
-    ctx.addIssue({
-      code: 'custom',
-      message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-      path: ['activityAreas', 'mainActivityArea'],
-    })
-    return z.NEVER
-  }
-
-  if (data.activityArea.subActivityArea === 'OUTRA' && !data.user?.subActivityAreaDescription) {
-    ctx.addIssue({
-      code: 'custom',
-      message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-      path: ['activityAreas', 'subActivityArea'],
-    })
-    return z.NEVER
-  }
-
-  if (data.activityArea.subActivityArea !== 'OUTRA' && data.user?.subActivityAreaDescription) {
-    ctx.addIssue({
-      code: 'custom',
-      message: ACTIVITY_AREA_MISSING_DESCRIPTION,
-      path: ['activityAreas', 'subActivityArea'],
-    })
-    return z.NEVER
+  if (value.activityArea.subActivityArea) {
+    validateDescriptionRule(
+      value.activityArea.subActivityArea,
+      value.user?.subActivityAreaDescription,
+      ['subActivityArea'],
+      value,
+      issues,
+    )
   }
 }

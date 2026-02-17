@@ -18,4 +18,4 @@ export const highLevelStudentRegisterBodySchema = z
       educationLevel: highLevelStudentEnumSchema,
     }),
   })
-  .superRefine(validateActivityAreaRefinement)
+  .check(validateActivityAreaRefinement)

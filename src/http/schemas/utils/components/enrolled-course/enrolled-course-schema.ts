@@ -16,26 +16,32 @@ export const enrolledCourseSchema = z
     scholarshipHolder: booleanSchema,
     sponsoringOrganization: upperCaseTextSchema.optional(),
   })
-  .superRefine((data, ctx) => {
-    if (data.startGraduationDate > data.expectedGraduationDate) {
-      ctx.addIssue({
+  .check(({ value, issues }) => {
+    if (value.startGraduationDate > value.expectedGraduationDate) {
+      issues.push({
+        input: value,
         code: 'custom',
+        continue: true,
         message: COMPLETION_DATE_BEFORE_START_DATE,
         path: ['expectedGraduationDate'],
       })
     }
 
-    if (data.scholarshipHolder && !data.sponsoringOrganization) {
-      ctx.addIssue({
+    if (value.scholarshipHolder && !value.sponsoringOrganization) {
+      issues.push({
+        input: value,
         code: 'custom',
+        continue: true,
         message: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
         path: ['sponsoringOrganization'],
       })
     }
 
-    if (!data.scholarshipHolder && data.sponsoringOrganization) {
-      ctx.addIssue({
+    if (!value.scholarshipHolder && value.sponsoringOrganization) {
+      issues.push({
+        input: value,
         code: 'custom',
+        continue: true,
         message: SCHOLARSHIP_HOLDER_AND_SPONSORING_ORGANIZATION,
         path: ['scholarshipHolder'],
       })
