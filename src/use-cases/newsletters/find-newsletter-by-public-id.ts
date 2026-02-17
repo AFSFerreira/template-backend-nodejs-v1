@@ -27,7 +27,7 @@ export class FindNewsletterByPublicIdUseCase {
     return {
       newsletter: {
         ...newsletter,
-        content: buildNewsletterHtmlUrl(newsletter.content),
+        content: buildNewsletterHtmlUrl(newsletter.publicId),
       },
     }
   }

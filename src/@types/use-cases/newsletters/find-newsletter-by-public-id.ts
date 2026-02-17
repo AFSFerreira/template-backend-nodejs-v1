@@ -1,8 +1,8 @@
+import type { NewsletterWithContent } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { FindNewsletterByPublicIdParamsSchemaType } from '@custom-types/http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
-import type { Newsletter } from '@prisma/generated/client'
 
 export interface FindNewsletterByPublicIdUseCaseRequest extends FindNewsletterByPublicIdParamsSchemaType {}
 
 export interface FindNewsletterByPublicIdUseCaseResponse {
-  newsletter: Newsletter
+  newsletter: NewsletterWithContent
 }

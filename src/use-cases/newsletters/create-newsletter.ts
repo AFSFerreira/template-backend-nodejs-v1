@@ -66,7 +66,7 @@ export class CreateNewsletterUseCase {
     return {
       newsletter: {
         ...newsletter,
-        content: buildNewsletterHtmlUrl(newsletter.content),
+        content: buildNewsletterHtmlUrl(newsletter.publicId),
       },
     }
   }
