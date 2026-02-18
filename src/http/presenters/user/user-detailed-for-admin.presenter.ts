@@ -3,6 +3,7 @@ import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
 } from '@custom-types/http/presenter/user/user-detailed-for-admin'
+import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 export class UserDetailedPresenterForAdmin
@@ -18,8 +19,11 @@ export class UserDetailedPresenterForAdmin
       email: input.email,
       emailIsPublic: input.emailIsPublic,
       fullName: input.fullName,
-      identityDocument: input.identityDocument,
       identityType: input.identityType,
+      identityDocument: maskIdentityDocument({
+        identityType: input.identityType,
+        identityDocument: input.identityDocument,
+      }),
       institutionComplement: input.institutionComplement,
       linkGoogleScholar: input.linkGoogleScholar,
       linkLattes: input.linkLattes,

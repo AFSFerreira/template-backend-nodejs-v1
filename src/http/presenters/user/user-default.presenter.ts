@@ -1,5 +1,6 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
+import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
 export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPresenterInput, HTTPUser> {
@@ -12,8 +13,11 @@ export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPrese
       email: input.email,
       emailIsPublic: input.emailIsPublic,
       fullName: input.fullName,
-      identityDocument: input.identityDocument,
       identityType: input.identityType,
+      identityDocument: maskIdentityDocument({
+        identityType: input.identityType,
+        identityDocument: input.identityDocument,
+      }),
       institutionComplement: input.institutionComplement,
       interestDescription: input.interestDescription,
       linkGoogleScholar: input.linkGoogleScholar,
