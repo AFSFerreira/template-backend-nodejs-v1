@@ -6,8 +6,10 @@ import {
   OccupationType,
   UserRoleType,
 } from '@prisma/generated/enums'
+import { HashService } from '@services/hashes/hash-service'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { hashSync } from 'bcryptjs'
+import { cpf } from 'cpf-cnpj-validator'
 import { env } from '../../src/env/index'
 import { academicPublicationsCreateUserDataArray1 } from './academic-publications'
 import { activityAreaData1, subActivityAreaData1 } from './activity-areas'
@@ -17,7 +19,19 @@ import { keywordsConnectOrCreateUserData1 } from './keywords'
 
 type PartialUserCreateInputInfo = Omit<
   Prisma.UserCreateInput,
-  'fullName' | 'username' | 'email' | 'identityType' | 'identityDocument' | 'role' | 'DirectorBoard'
+  | 'fullName'
+  | 'username'
+  | 'email'
+  | 'identityType'
+  | 'identityDocument'
+  | 'identityDocumentBlindIndex'
+  | 'role'
+  | 'DirectorBoard'
+>
+
+type UserWithoutIdentityDocument = Omit<
+  Prisma.UserCreateInput,
+  'identityType' | 'identityDocument' | 'identityDocumentBlindIndex'
 >
 
 const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
@@ -71,123 +85,101 @@ export const partialUserData1: PartialUserCreateInputInfo = {
   },
 }
 
-const adminUserData1: Prisma.UserCreateInput = {
+const adminUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   fullName: 'admin',
   email: 'admin@email.com',
   username: 'ADMIN.ADMIN',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-00',
   role: UserRoleType.ADMIN,
 }
 
-export const managerUserData1: Prisma.UserCreateInput = {
+export const managerUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/1918385364299862',
   fullName: 'Gustavo Porto de Mello',
   email: 'gustavo@email.com',
   username: 'gustavo.porto',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-01',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData2: Prisma.UserCreateInput = {
+export const managerUserData2: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/9117662545474146',
   fullName: 'Douglas Galante',
   email: 'douglas@email.com',
   username: 'douglas.galante',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-02',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData3: Prisma.UserCreateInput = {
+export const managerUserData3: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/5093103617210826',
   fullName: 'Beatriz Siffert',
   email: 'beatriz@email.com',
   username: 'beatriz.siffert',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-03',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData4: Prisma.UserCreateInput = {
+export const managerUserData4: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/7450204581620194',
   fullName: 'Amanda Bendia',
   email: 'amanda@email.com',
   username: 'amanda.bendia',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-04',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData5: Prisma.UserCreateInput = {
+export const managerUserData5: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/5822376591265210',
   fullName: 'Fábio Rodrigues',
   email: 'fabio@email.com',
   username: 'fabio.rodrigues',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-05',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData6: Prisma.UserCreateInput = {
+export const managerUserData6: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/1704175571734114',
   fullName: 'Flávia Callefo',
   email: 'flavia@email.com',
   username: 'flavia.callefo',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-06',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData7: Prisma.UserCreateInput = {
+export const managerUserData7: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/4916914753471904',
   fullName: 'Claudia Lage',
   email: 'claudia@email.com',
   username: 'claudia.lage',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-07',
   role: UserRoleType.MANAGER,
 }
 
-export const managerUserData8: Prisma.UserCreateInput = {
+export const managerUserData8: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'http://lattes.cnpq.br/123456789',
   fullName: 'Dummy Manager',
   email: 'dummy-manager@email.com',
   username: 'dummy.manager',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-08',
   role: UserRoleType.MANAGER,
 }
 
-export const contentLeaderUserData1: Prisma.UserCreateInput = {
+export const contentLeaderUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'https://lattes.cnpq.br/3390986971402979',
   fullName: 'Danilo Albergaria',
   email: 'danilo@gmail.com',
   username: 'danilo.albergaria',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-09',
   role: UserRoleType.CONTENT_LEADER,
 }
 
-export const contentProducerUserData1: Prisma.UserCreateInput = {
+export const contentProducerUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'https://lattes.cnpq.br/3390986971402979',
   fullName: 'Allber Ferreira',
   email: 'allber@gmail.com',
   username: 'allber.ferreira',
-  identityType: IdentityType.CPF,
-  identityDocument: '123.456.789-10',
   role: UserRoleType.CONTENT_PRODUCER,
 }
 
@@ -203,30 +195,34 @@ export const usersDataArray1: Prisma.UserCreateInput[] = [
   managerUserData8,
   contentLeaderUserData1,
   contentProducerUserData1,
-]
+].map((userWithoutIdentityDocument) => {
+  const identityDocument = cpf.generate(true)
+  const identityDocumentBlindIndex = HashService.generateBlindIndex(identityDocument)
 
-export const usersDataArray2: Prisma.UserCreateInput[] = [
-  {
-    ...partialUserData1,
-    fullName: 'ALÍCIA DOS SANTOS DA CONCEIÇÃO',
-    username: 'alicia123',
-    email: 'alicia@gmail.com',
+  return {
+    ...userWithoutIdentityDocument,
     identityType: IdentityType.CPF,
-    identityDocument: `100.000.000-00`,
-    receiveReports: false,
-  },
-]
+    identityDocument,
+    identityDocumentBlindIndex,
+  }
+})
+
+export const usersDataArray2: Prisma.UserCreateInput[] = []
 
 // Criando Usuários Dummy para Testar Paginações no Frontend:
 for (let idx = 0; idx <= 90; idx++) {
+  const identityDocument = cpf.generate(true)
+  const identityDocumentBlindIndex = HashService.generateBlindIndex(identityDocument)
+
   usersDataArray2.push({
     ...partialUserData1,
-    identityType: IdentityType.CPF,
-    identityDocument: `000.000.000-${idx.toString().padStart(2, '0')}`,
     fullName: `DUMMY USER ${idx}`,
     username: `DUMMY USER ${idx}`,
     email: `random-normal-dummy-user-${idx}@email.com`,
     wantsNewsletter: getRandomArrayElement([true, false]),
+    identityType: IdentityType.CPF,
+    identityDocument,
+    identityDocumentBlindIndex,
   })
 }
 
@@ -234,14 +230,19 @@ for (let idx = 0; idx <= 90; idx++) {
 export const usersDataArray3: Prisma.UserCreateInput[] = []
 
 for (let idx = 0; idx <= 90; idx++) {
+  const identityDocument = cpf.generate(true)
+  const identityDocumentBlindIndex = HashService.generateBlindIndex(identityDocument)
+
   usersDataArray3.push({
     ...partialUserData1,
     membershipStatus: MembershipStatusType.PENDING,
-    identityType: IdentityType.CPF,
-    identityDocument: `200.000.000-${idx.toString().padStart(2, '0')}`,
+
     fullName: `DUMMY USER PENDING ${idx}`,
     username: `DUMMY USER PENDING ${idx}`,
     email: `random-normal-pending-dummy-user-${idx}@email.com`,
     wantsNewsletter: getRandomArrayElement([true, false]),
+    identityType: IdentityType.CPF,
+    identityDocument,
+    identityDocumentBlindIndex,
   })
 }

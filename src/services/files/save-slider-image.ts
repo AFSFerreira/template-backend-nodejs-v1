@@ -4,16 +4,16 @@ import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { createWriteStream, ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 
 export async function saveSliderImage({ filePart, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
-  const finalName = `${generateFileHash()}.avif`
+  const finalName = `${HashService.generateFileHash()}.avif`
   const finalImagePath = path.resolve(folderPath, finalName)
 
   const partialReturnData = { finalImagePath, filename: finalName }

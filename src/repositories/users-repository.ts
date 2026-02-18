@@ -11,7 +11,7 @@ import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/u
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
-import type { HashedToken } from '@custom-types/utils/hashes/hashed-token'
+import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { Prisma, User } from '@prisma/generated/client'
 

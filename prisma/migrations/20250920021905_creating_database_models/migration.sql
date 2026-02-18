@@ -58,7 +58,7 @@ CREATE TABLE "public"."users" (
     "occupation" "public"."OccupationType",
     "education_level" "public"."EducationLevelType" NOT NULL,
     "identity_type" "public"."IdentityType" NOT NULL,
-    "identity_document" TEXT NOT NULL,
+    "identity_document_hash" TEXT NOT NULL,
     "email_is_public" BOOLEAN NOT NULL,
     "astrobiology_or_related_start_year" INTEGER,
     "interest_description" TEXT NOT NULL,
@@ -420,7 +420,7 @@ CREATE UNIQUE INDEX "users_recovery_password_token_key" ON "public"."users"("rec
 CREATE INDEX "users_membership_status_idx" ON "public"."users"("membership_status");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_identity_type_identity_document_key" ON "public"."users"("identity_type", "identity_document");
+CREATE UNIQUE INDEX "users_identity_type_identity_document_hash_key" ON "users"("identity_type", "identity_document_hash");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_secondary_email_key" ON "public"."users"("secondary_email") WHERE (membership_status IN ('ACTIVE', 'INACTIVE'));

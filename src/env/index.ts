@@ -1,6 +1,6 @@
 import ms from 'ms'
 import { z } from 'zod'
-import { TOKEN_DURATION_REGEX } from '../constants/regex-constants'
+import { BASE64_REGEX, HEXADECIMAL_REGEX, TOKEN_DURATION_REGEX } from '../constants/regex-constants'
 
 const envSchema = z.object({
   // Environment
@@ -10,7 +10,15 @@ const envSchema = z.object({
   // App:
   APP_NAME: z.string().trim().nonempty().default('SBAstrobio'),
   APP_PORT: z.coerce.number().default(3333),
+
   JWT_SECRET: z.string().trim().min(60, 'JWT secret must be at least 60 characters long'),
+  ENCRYPTION_KEY: z.string().trim().length(44).regex(BASE64_REGEX, 'O conteúdo da string deve ser em base64'),
+  BLIND_INDEX_SECRET: z
+    .string()
+    .trim()
+    .length(64)
+    .regex(HEXADECIMAL_REGEX, 'O conteúdo da string deve ser em formato hexadecimal'),
+
   HASH_SALT_ROUNDS: z.coerce.number().min(6).max(16).default(12),
   JWT_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('2h'),
   JWT_REFRESH_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('7d'),

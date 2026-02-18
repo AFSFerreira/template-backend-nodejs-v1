@@ -1,4 +1,4 @@
-import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import type { UserWithDetailsDecrypted } from '@custom-types/validators/user-with-details-decrypted'
 import type {
   EducationLevelType,
   IdentityType,
@@ -7,7 +7,7 @@ import type {
   UserRoleType,
 } from '@prisma/generated/enums'
 
-export interface UserDetailedPresenterForAdminInput extends UserWithDetails {}
+export type UserDetailedPresenterForAdminInput = UserWithDetailsDecrypted
 
 interface HTTPUserDetails {
   id: string

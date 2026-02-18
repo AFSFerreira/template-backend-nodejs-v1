@@ -14,10 +14,9 @@ import {
   CHANGE_PASSWORD_REQUEST_SUCCESSFUL,
   PASSWORD_RESET_EMAIL_FAILED,
 } from '@messages/loggings/models/user-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { forgotPasswordHtmlTemplate } from '@templates/user/forgot-password/forgot-password-html'
 import { forgotPasswordTextTemplate } from '@templates/user/forgot-password/forgot-password-text'
-import { generateToken } from '@utils/hashes/generate-token'
-import { hashToken } from '@utils/hashes/hash-token'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
@@ -33,8 +32,8 @@ export class ForgotPasswordUseCase {
   ) {}
 
   async execute({ login }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
-    const recoveryPasswordToken = generateToken(RANDOM_BYTES_NUMBER)
-    const recoveryPasswordTokenHash = hashToken(recoveryPasswordToken)
+    const recoveryPasswordToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
+    const recoveryPasswordTokenHash = HashService.hashToken(recoveryPasswordToken)
     const recoveryPasswordTokenExpiresAt = new Date(Date.now() + RECOVERY_PASSWORD_EXPIRATION_TIME)
 
     const user = await this.dbContext.runInTransaction(async () => {

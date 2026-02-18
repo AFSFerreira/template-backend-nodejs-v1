@@ -1,17 +1,17 @@
+import type { ExtendedPrismaClient } from '@custom-types/lib/prisma/extended-prisma-client'
 import type { PrismaTransactionClient } from '@custom-types/lib/prisma/prisma-transaction-client'
-import type { PrismaClient } from '@prisma/generated/client'
 import { asyncLocalStorage } from '@lib/async-local-storage'
 import { AsyncLocalStorageNotInitializedError } from '@services/errors/async-local-storage/async-local-storage-not-initialized-error'
 import { prisma } from '..'
 
 export class DatabaseContext {
-  private readonly prisma: PrismaClient
+  private readonly prisma: ExtendedPrismaClient
 
   constructor() {
     this.prisma = prisma
   }
 
-  get client(): PrismaTransactionClient | PrismaClient {
+  get client(): PrismaTransactionClient | ExtendedPrismaClient {
     const prismaTx = asyncLocalStorage.getStore()?.prismaTransaction
 
     return prismaTx ?? this.prisma

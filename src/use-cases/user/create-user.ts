@@ -24,6 +24,7 @@ import {
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
+import { HashService } from '@services/hashes/hash-service'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { confirmAccountHtmlTemplate } from '@templates/user/confirm-account/confirm-account-html'
@@ -35,9 +36,6 @@ import { InvalidSecondaryEmailDomainError } from '@use-cases/errors/user/invalid
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
-import { generateToken } from '@utils/hashes/generate-token'
-import { hashPassword } from '@utils/hashes/hash-password'
-import { hashToken } from '@utils/hashes/hash-token'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
@@ -86,10 +84,10 @@ export class CreateUserUseCase {
       isRegisterUserHighLevelEducation(registerUseCaseInput) ||
       isRegisterUserHighLevelStudentEducation(registerUseCaseInput)
 
-    const passwordHash = await hashPassword(registerUseCaseInput.user.password)
+    const passwordHash = await HashService.hashPassword(registerUseCaseInput.user.password)
 
-    const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
-    const emailVerificationTokenHash = hashToken(emailVerificationToken)
+    const emailVerificationToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
+    const emailVerificationTokenHash = HashService.hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_VALIDATION_EXPIRATION_TIME)
 
     let profileImage = DEFAULT_PROFILE_IMAGE_NAME
@@ -131,7 +129,10 @@ export class CreateUserUseCase {
           },
           {
             expression: objectDeepEqual(
-              { identityDocument: userAlreadyExists.identityDocument, identityType: userAlreadyExists.identityType },
+              {
+                identityDocument: userAlreadyExists.identityDocument,
+                identityType: userAlreadyExists.identityType,
+              },
               registerUseCaseInput.user.identity,
             ),
             value: new UserWithSameIdentityDocument(),
@@ -217,6 +218,7 @@ export class CreateUserUseCase {
           ...filteredUserInfo,
           identityType: identity.identityType,
           identityDocument: identity.identityDocument,
+          identityDocumentBlindIndex: HashService.generateBlindIndex(identity.identityDocument),
           profileImage,
           passwordHash,
           emailVerificationTokenHash,

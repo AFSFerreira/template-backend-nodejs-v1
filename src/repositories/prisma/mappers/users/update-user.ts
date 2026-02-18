@@ -40,11 +40,7 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
 
     keywordsConnectOrCreateData = data.keyword
       ? {
-          set: [],
-          connectOrCreate: data.keyword.map((value: string) => ({
-            where: { value },
-            create: { value },
-          })),
+          set: data.keyword.map((value) => ({ value })),
         }
       : undefined
 

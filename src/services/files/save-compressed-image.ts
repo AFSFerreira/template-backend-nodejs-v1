@@ -4,11 +4,11 @@ import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 
@@ -23,7 +23,7 @@ export async function saveCompressedImage({
     quality: 70,
   },
 }: SaveCompressedImage): Promise<CompressedImageInfo> {
-  const finalName = `${generateFileHash()}.webp`
+  const finalName = `${HashService.generateFileHash()}.webp`
 
   const finalImagePath = path.resolve(folderPath, finalName)
 

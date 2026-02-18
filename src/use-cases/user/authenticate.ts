@@ -7,9 +7,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType } from '@prisma/generated/enums'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { HashService } from '@services/hashes/hash-service'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
-import { comparePassword } from '@utils/hashes/compare-password'
 import { inject, injectable } from 'tsyringe'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
@@ -42,7 +42,7 @@ export class AuthenticateUseCase {
 
     // Comparação obrigatória para evitar timing attacks:
     const hashToCompare = user?.passwordHash ?? DUMMY_HASH
-    const doesPasswordMatch = await comparePassword({ password, hashedPassword: hashToCompare })
+    const doesPasswordMatch = await HashService.comparePassword({ password, hashedPassword: hashToCompare })
 
     const auditAuthenticateObject = {
       browser: browser ?? null,

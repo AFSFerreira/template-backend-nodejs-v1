@@ -5,10 +5,10 @@ import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
-import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dimensions'
 import { ensureDir } from 'fs-extra'
 import sharp from 'sharp'
@@ -19,7 +19,7 @@ export async function saveAvifImage({
   folderPath,
   options,
 }: ISaveAvifImage): Promise<ImageInfo> {
-  const filename = `${newFilename ?? generateFileHash()}.avif`
+  const filename = `${newFilename ?? HashService.generateFileHash()}.avif`
   const finalImagePath = path.resolve(folderPath, filename)
 
   const partialReturnData = { finalImagePath, filename }

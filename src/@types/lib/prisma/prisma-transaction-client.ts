@@ -1,6 +1,6 @@
-import type { PrismaClient } from '@prisma/generated/client'
+import type { ExtendedPrismaClient } from './extended-prisma-client'
 
 export type PrismaTransactionClient = Omit<
-  PrismaClient,
+  ExtendedPrismaClient,
   '$connect' | '$disconnect' | '$on' | '$transaction' | '$extends'
 >

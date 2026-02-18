@@ -4,6 +4,7 @@ import type {
 } from '@custom-types/use-cases/user/check-availability'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { HashService } from '@services/hashes/hash-service'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
 import { inject, injectable } from 'tsyringe'
 
@@ -40,7 +41,12 @@ export class CheckAvailabilityUseCase {
             [
               'identity',
               async () =>
-                !!(await this.usersRepository.findConflictingUser({ identityType_identityDocument: identity })),
+                !!(await this.usersRepository.findConflictingUser({
+                  identityType_identityDocumentBlindIndex: {
+                    identityType: identity.identityType,
+                    identityDocumentBlindIndex: HashService.generateBlindIndex(identity.identityDocument),
+                  },
+                })),
             ] as [string, () => Promise<boolean>],
           ]
         : []),

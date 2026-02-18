@@ -1,4 +1,4 @@
-import type { HashedToken } from '@custom-types/utils/hashes/hashed-token'
+import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
 
 export interface SetEmailChangeTokenQuery {
   id: number

@@ -1,4 +1,4 @@
-import type { HashedPassword } from '@custom-types/utils/hashes/hashed-password'
+import type { HashedPassword } from '@custom-types/services/hashes/hashed-password'
 
 export interface ChangeUserPasswordQuery {
   id: number

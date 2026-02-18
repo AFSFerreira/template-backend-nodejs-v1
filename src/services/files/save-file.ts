@@ -4,16 +4,16 @@ import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
 import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR, SAVE_MULTIPART_FILE_ERROR } from '@messages/loggings/system/file-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { CreateFileWriteSteam } from '@utils/files/create-file-write-steam'
 import { deleteFile } from '@utils/files/delete-file'
 import { fileExists } from '@utils/files/file-exists'
 import { renameFile } from '@utils/files/rename-file'
-import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import { ensureDir } from 'fs-extra'
 
 export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMultipartFile): Promise<FileInfo> {
-  const filename = `${newFilename ?? `${generateFileHash()}${path.extname(filePart.filename)}`}`
+  const filename = `${newFilename ?? `${HashService.generateFileHash()}${path.extname(filePart.filename)}`}`
 
   const baseFolderPath = path.resolve(baseFolder)
   const finalFilePath = path.resolve(baseFolderPath, filename)
@@ -38,7 +38,7 @@ export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMulti
   // NOTE: Cria um arquivo temporário auxiliar para não corromper
   // o original ao sobrescrever diretamente caso ocorra uma falha ou
   // a stream estoure o limite de tamanho durante a escrita:
-  const tempFileName = `temp-${generateFileHash()}`
+  const tempFileName = `temp-${HashService.generateFileHash()}`
   const tempFilePath = path.resolve(baseFolderPath, tempFileName)
 
   try {

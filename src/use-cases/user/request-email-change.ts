@@ -14,13 +14,12 @@ import {
   EMAIL_CHANGE_EMAIL_SEND_ERROR,
   EMAIL_CHANGE_REQUESTED_SUCCESSFULLY,
 } from '@messages/loggings/models/user-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { changeEmailHtmlTemplate } from '@templates/user/change-email/change-email-html'
 import { changeEmailTextTemplate } from '@templates/user/change-email/change-email-text'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
-import { generateToken } from '@utils/hashes/generate-token'
-import { hashToken } from '@utils/hashes/hash-token'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
@@ -45,8 +44,8 @@ export class RequestEmailChangeUseCase {
       throw new InvalidEmailDomainError()
     }
 
-    const emailVerificationToken = generateToken(RANDOM_BYTES_NUMBER)
-    const emailVerificationTokenHash = hashToken(emailVerificationToken)
+    const emailVerificationToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
+    const emailVerificationTokenHash = HashService.hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_CHANGE_EXPIRATION_TIME)
 
     const user = await this.dbContext.runInTransaction(async () => {

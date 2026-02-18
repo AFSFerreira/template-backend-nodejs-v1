@@ -4,7 +4,7 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
-import { hashToken } from '@utils/hashes/hash-token'
+import { HashService } from '@services/hashes/hash-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { EmailVerificationNotRequestedError } from '../errors/user/email-verification-not-requested-error'
@@ -22,7 +22,7 @@ export class VerifyEmailUseCase {
   ) {}
 
   async execute({ token }: VerifyEmailUseCaseRequest): Promise<VerifyEmailUseCaseResponse> {
-    const emailVerificationTokenHash = hashToken(token)
+    const emailVerificationTokenHash = HashService.hashToken(token)
 
     const { user } = await this.dbContext.runInTransaction(async () => {
       const userFound = ensureExists({

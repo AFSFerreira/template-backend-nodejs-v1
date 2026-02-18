@@ -7,10 +7,9 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { IncorrectOldPasswordError } from '@use-cases/errors/user/incorrect-old-password-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { comparePassword } from '@utils/hashes/compare-password'
-import { hashPassword } from '@utils/hashes/hash-password'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -29,7 +28,7 @@ export class ChangePasswordUseCase {
     oldPassword,
     newPassword,
   }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
-    const newPasswordHash = await hashPassword(newPassword)
+    const newPasswordHash = await HashService.hashPassword(newPassword)
 
     await this.dbContext.runInTransaction(async () => {
       const user = ensureExists({
@@ -37,7 +36,7 @@ export class ChangePasswordUseCase {
         error: new UserNotFoundError(),
       })
 
-      const isOldPasswordCorrect = await comparePassword({
+      const isOldPasswordCorrect = await HashService.comparePassword({
         password: oldPassword,
         hashedPassword: user.passwordHash,
       })

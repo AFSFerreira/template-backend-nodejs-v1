@@ -1,3 +1,4 @@
+import type { Prisma } from '@prisma/generated/client'
 import type { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/generated/enums'
 import banks from 'bancos-brasileiros/bancos.json' with { type: 'json' }
 import {
@@ -43,3 +44,19 @@ export const MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS = new Set<UserRoleType>(
 export const CONTENT_LEADER_PERMISSIONS = new Set<UserRoleType>(CONTENT_LEADER_PERMISSIONS_ARRAY)
 
 export const CONTENT_PRODUCERS_PERMISSIONS = new Set<UserRoleType>(CONTENT_PRODUCERS_PERMISSIONS_ARRAY)
+
+export const READ_OPERATIONS_SET = new Set<Prisma.PrismaAction>([
+  'findUnique',
+  'findFirst',
+  'findMany',
+  'findUniqueOrThrow',
+  'findFirstOrThrow',
+])
+
+export const CREATE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['create', 'createMany', 'createManyAndReturn'])
+
+export const UPDATE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['update', 'updateMany'])
+
+export const UPSERT_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['upsert'])
+
+export const DELETE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['delete', 'deleteMany'])

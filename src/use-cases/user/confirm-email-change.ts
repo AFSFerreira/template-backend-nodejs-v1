@@ -7,10 +7,10 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { EmailChangeNotRequestedError } from '@use-cases/errors/user/email-change-not-requested-error'
 import { InvalidTokenError } from '@use-cases/errors/user/invalid-token-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { hashToken } from '@utils/hashes/hash-token'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -25,7 +25,7 @@ export class ConfirmEmailChangeUseCase {
   ) {}
 
   async execute({ token }: ConfirmEmailChangeUseCaseRequest): Promise<ConfirmEmailChangeUseCaseResponse> {
-    const emailVerificationTokenHash = hashToken(token)
+    const emailVerificationTokenHash = HashService.hashToken(token)
 
     const user = await this.dbContext.runInTransaction(async () => {
       const userFound = ensureExists({

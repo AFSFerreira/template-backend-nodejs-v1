@@ -1,6 +1,6 @@
 import type { RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
-import type { HashedPassword } from '@custom-types/utils/hashes/hashed-password'
-import type { HashedToken } from '@custom-types/utils/hashes/hashed-token'
+import type { HashedPassword } from '@custom-types/services/hashes/hashed-password'
+import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
 import type { EducationLevelType, IdentityType, OccupationType } from '@prisma/generated/enums'
 
 export type CreateUserQuery = Omit<RegisterUserBodySchemaType, 'user' | 'address'> & {
@@ -9,8 +9,11 @@ export type CreateUserQuery = Omit<RegisterUserBodySchemaType, 'user' | 'address
     educationLevel: EducationLevelType
     profileImage: string
     occupation?: OccupationType
+
     identityType: IdentityType
     identityDocument: string
+    identityDocumentBlindIndex: string
+
     emailVerificationTokenHash: HashedToken
     emailVerificationTokenExpiresAt: Date
   }

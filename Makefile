@@ -7,10 +7,10 @@ dev-up:
 	docker compose up -d
 
 dev-type-generate:
-	pnpm db:generate || npm run db:generate
+	(command -v pnpm > /dev/null 2>&1 && pnpm db:generate) || npm run db:generate
 
 dev-install:
-	pnpm install || npm install
+	(command -v pnpm > /dev/null 2>&1 && pnpm install) || npm install
 
 # wait-db:
 # 	@echo "Aguardando o banco de dados iniciar..."
@@ -23,8 +23,8 @@ dev-reset-full:
 	make dev-down
 	make dev-up
 	make dev-install
-	pnpm db:reset || npm run db:reset
+	(command -v pnpm > /dev/null 2>&1 && pnpm db:reset) || npm run db:reset
 
 dev-start:
-	pnpm start:dev || npm run start:dev
+	(command -v pnpm > /dev/null 2>&1 && pnpm start:dev) || npm run start:dev
 

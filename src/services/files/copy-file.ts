@@ -3,9 +3,9 @@ import type { FileInfo } from '@custom-types/services/files/file-info'
 import path from 'node:path'
 import { logError } from '@lib/logger/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
+import { HashService } from '@services/hashes/hash-service'
 import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
 import { deleteFile } from '@utils/files/delete-file'
-import { generateFileHash } from '@utils/hashes/generate-file-hash'
 import fs, { ensureDir } from 'fs-extra'
 
 export async function copyFile({
@@ -14,7 +14,7 @@ export async function copyFile({
   destinationFolderPath,
   buildShard,
 }: ICopyFile): Promise<FileInfo> {
-  const filename = `${newFilename ?? generateFileHash()}${path.extname(sourceFilePath)}`
+  const filename = `${newFilename ?? HashService.generateFileHash()}${path.extname(sourceFilePath)}`
   const fileFolderShard = buildShard ? buildShardFileFolder(filename) : ''
   const finalFilePath = path.resolve(destinationFolderPath, fileFolderShard, filename)
 

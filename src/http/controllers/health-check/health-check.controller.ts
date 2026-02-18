@@ -1,4 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { prisma } from '@lib/prisma'
@@ -6,24 +7,33 @@ import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@m
 
 export async function healthCheck(_request: FastifyRequest, reply: FastifyReply) {
   const startTime = Date.now()
-  try {
-    await prisma.$queryRaw`SELECT 1`
 
-    const uptime = process.uptime()
-    const timestamp = new Date().toISOString()
-    const duration = Date.now() - startTime
+  const databaseStatus = await prisma.$healthCheck()
 
-    logger.info({ uptime, duration }, HEALTHCHECK_SUCESSFUL)
+  const duration = Date.now() - startTime
 
-    reply.status(200).send({ status: 'ok', uptime, timestamp })
-  } catch (error) {
-    const duration = Date.now() - startTime
-    logError({
-      error,
-      context: { duration },
-      message: HEALTHCHECK_FAILED,
-    })
+  const uptime = process.uptime()
+  const timestamp = new Date().toISOString()
 
-    reply.status(500).send({ status: 'error', message: HEALTHCHECK_ERROR })
+  switch (databaseStatus.status) {
+    case 'healthy': {
+      logger.info({ uptime, duration }, HEALTHCHECK_SUCESSFUL)
+
+      return reply.status(200).send({ status: 'ok', uptime, timestamp })
+    }
+
+    case 'unhealthy': {
+      logError({
+        error: databaseStatus.error,
+        context: { duration },
+        message: HEALTHCHECK_FAILED,
+      })
+
+      return reply.status(500).send({ status: 'error', message: HEALTHCHECK_ERROR })
+    }
+
+    default: {
+      throw new InvalidFileOperationTypeError(databaseStatus satisfies never)
+    }
   }
 }
