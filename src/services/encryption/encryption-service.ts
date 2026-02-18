@@ -5,7 +5,7 @@ import { logError } from '@lib/logger/helpers/log-error'
 import { DecryptionFailedError } from '@use-cases/errors/generic/decryption-failed-error'
 
 const ALGORITHM = 'aes-256-gcm'
-const SECRET_KEY_BUFFER = Buffer.from(env.ENCRYPTION_KEY, 'hex')
+const SECRET_KEY_BUFFER = Buffer.from(env.ENCRYPTION_KEY, 'base64')
 
 const IV_HEX_LENGTH = 32
 const AUTH_TAG_HEX_LENGTH = 32

@@ -14,7 +14,7 @@ export class HashService {
   }
 
   static generateBlindIndex(input: string): HashedToken {
-    const secret = Buffer.from(env.BLIND_INDEX_SECRET, 'hex')
+    const secret = Buffer.from(env.BLIND_INDEX_SECRET, 'base64')
 
     return crypto.createHmac('sha256', secret).update(input).digest('hex') as HashedToken
   }

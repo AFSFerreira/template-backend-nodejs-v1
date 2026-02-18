@@ -42,7 +42,7 @@ export class CheckAvailabilityUseCase {
               'identity',
               async () =>
                 !!(await this.usersRepository.findConflictingUser({
-                  identityType_identityDocumentBlindIndex: {
+                  identity: {
                     identityType: identity.identityType,
                     identityDocumentBlindIndex: HashService.generateBlindIndex(identity.identityDocument),
                   },

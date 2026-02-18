@@ -1,6 +1,6 @@
 import type { AddressState, Meeting, User } from '@prisma/generated/client'
-import { adapter, pool } from '@lib/prisma/helpers/configuration'
-import { PrismaClient } from '@prisma/generated/client'
+import { prisma } from '@lib/prisma'
+import { pool } from '@lib/prisma/helpers/configuration'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
 import { addressStatesDataArray1 } from './seed-data/address-states'
@@ -16,8 +16,6 @@ import { meetingDataArray1 } from './seed-data/meetings'
 import { newsletterDataArray1 } from './seed-data/newsletter'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2, usersDataArray3 } from './seed-data/users'
-
-const prisma = new PrismaClient({ adapter })
 
 async function main() {
   // Criando as áreas de atuação:

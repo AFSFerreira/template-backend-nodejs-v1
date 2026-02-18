@@ -1,4 +1,3 @@
-import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
 import type { CreateUserUseCaseRequest, CreateUserUseCaseResponse } from '@custom-types/use-cases/user/create-user'
 import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
@@ -97,7 +96,12 @@ export class CreateUserUseCase {
         email: registerUseCaseInput.user.email,
         secondaryEmail: registerUseCaseInput.user.secondaryEmail,
         username: registerUseCaseInput.user.username,
-        identity: registerUseCaseInput.user.identity as FindConflictingUserQuery['identity'],
+        identity: {
+          identityType: registerUseCaseInput.user.identity.identityType,
+          identityDocumentBlindIndex: HashService.generateBlindIndex(
+            registerUseCaseInput.user.identity.identityDocument,
+          ),
+        },
       })
 
       if (userAlreadyExists) {
