@@ -1,5 +1,6 @@
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
@@ -45,6 +46,9 @@ export class UpdateUserUseCase {
 
     @inject(tsyringeTokens.repositories.addressCountries)
     private readonly addressCountriesRepository: AddressCountryRepository,
+
+    @inject(tsyringeTokens.infra.database)
+    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, data }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
@@ -58,8 +62,6 @@ export class UpdateUserUseCase {
     })
 
     let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined
-
-    let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
 
     if (data.user) {
       if (data.user.username && data.user.username !== userExists.username) {
@@ -78,22 +80,6 @@ export class UpdateUserUseCase {
       }
 
       userUpdateInfo = data.user
-    }
-
-    if (data.address) {
-      const addressCountry = await this.addressCountriesRepository.findOrCreate(data.address.country)
-
-      const addressState = await this.addressStatesRepository.findOrCreate({
-        state: data.address.state,
-        countryId: addressCountry.id,
-      })
-
-      const { state, country, ...filteredAddressUpdateData } = data.address
-
-      addressUpdateInfo = {
-        ...filteredAddressUpdateData,
-        stateId: addressState.id,
-      }
     }
 
     if (isHighLevelEducation) {
@@ -153,17 +139,37 @@ export class UpdateUserUseCase {
     const nonRepeatingKeywords =
       isHighLevelEducation && data.keyword ? Array.from<string>(new Set<string>(data.keyword)) : undefined
 
-    const shouldUpdate = Object.keys(data).length > 0 || userUpdateInfo !== undefined || addressUpdateInfo !== undefined
+    const shouldUpdate = Object.keys(data).length > 0 || userUpdateInfo !== undefined || data.address !== undefined
 
     const user = shouldUpdate
-      ? await this.usersRepository.update({
-          id: userExists.id,
-          data: {
-            ...data,
-            ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
-            address: addressUpdateInfo,
-            user: userUpdateInfo,
-          },
+      ? await this.dbContext.runInTransaction(async () => {
+          let resolvedAddressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
+
+          if (data.address) {
+            const addressCountry = await this.addressCountriesRepository.findOrCreate(data.address.country)
+
+            const addressState = await this.addressStatesRepository.findOrCreate({
+              state: data.address.state,
+              countryId: addressCountry.id,
+            })
+
+            const { state, country, ...filteredAddressUpdateData } = data.address
+
+            resolvedAddressUpdateInfo = {
+              ...filteredAddressUpdateData,
+              stateId: addressState.id,
+            }
+          }
+
+          return this.usersRepository.update({
+            id: userExists.id,
+            data: {
+              ...data,
+              ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
+              address: resolvedAddressUpdateInfo,
+              user: userUpdateInfo,
+            },
+          })
         })
       : userExists
 
