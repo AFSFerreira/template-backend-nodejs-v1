@@ -1,9 +1,10 @@
 import type { JobFactory } from '@custom-types/lib/node-cron/job-factory'
 import type { JobFactoryContext } from '@custom-types/lib/node-cron/job-factory-context'
+import type { ScalableTaskOptions } from '@custom-types/lib/node-cron/scalable-task-options'
 import type { SchedulerOptions } from '@custom-types/lib/node-cron/scheduler-options'
 import type { IStartJob } from '@custom-types/lib/node-cron/start-job'
 import type Redis from 'ioredis'
-import type { ScheduledTask, TaskOptions } from 'node-cron'
+import type { ScheduledTask } from 'node-cron'
 import type { Logger } from 'pino'
 import { AVERAGE_CRON_JOB_TIME_EXECUTION } from '@constants/timing-constants'
 import { LOCK_SWAP_SCRIPT } from '@lib/redis/scripts/lock-swap-script'
@@ -60,7 +61,7 @@ export class SchedulerManager {
   //   })
   // }
 
-  register(jobName: string, cronExpr: string, factory: JobFactory, options?: TaskOptions) {
+  register(jobName: string, cronExpr: string, factory: JobFactory, options?: ScalableTaskOptions) {
     const isValidCron = cronSchema.safeParse(cronExpr)
 
     if (!isValidCron.success) {

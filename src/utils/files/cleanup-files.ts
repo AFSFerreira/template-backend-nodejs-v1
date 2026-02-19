@@ -14,16 +14,27 @@ import { listFiles } from './list-files'
 export interface CleanupFilesOptions {
   batchSize?: number
   ttlInMs?: number
+  ignoreFilenames?: string[]
 }
 
 export async function cleanupFiles(folderPath: string, options: CleanupFilesOptions = {}) {
-  const { batchSize = ERASE_FILES_CONCURRENCY, ttlInMs = ms('1d') } = options
+  const { batchSize = ERASE_FILES_CONCURRENCY, ttlInMs = ms('1d'), ignoreFilenames = ['.gitkeep'] } = options
 
   let fileNames: string[] | undefined
 
+  const ignoreFilenamesSet = new Set<string>(ignoreFilenames)
+
   try {
     const entries = await listFiles(folderPath)
-    fileNames = entries.filter((entry) => entry.isFile()).map((file) => file.name)
+
+    fileNames = entries
+      .filter((entry) => {
+        const isFile = entry.isFile()
+        const validFileName = !ignoreFilenamesSet.has(entry.name)
+
+        return isFile && validFileName
+      })
+      .map((file) => file.name)
   } catch (error) {
     logError({ error, context: { path: folderPath }, message: LISTING_FILES_ERROR })
     return false
