@@ -4,5 +4,5 @@ import type { JobFactory } from './job-factory'
 export interface JobFactoryContext {
   cronExpr: string
   factory: JobFactory
-  options?: TaskOptions
+  options: TaskOptions
 }

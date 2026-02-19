@@ -1,7 +1,3 @@
-import type { Worker } from 'bullmq'
-import { emailWorker } from '@jobs/queues/workers/email-worker'
-import { fileWorker } from '@jobs/queues/workers/file-worker'
+import { ApplicationWorkerManager } from './helpers/application-worker-manager'
 
-// NOTE: Manter esse array atualizado com todos os workers
-// do projeto para desligá-los no graceful shutdown:
-export const workers: Worker[] = [emailWorker, fileWorker]
+export const applicationWorkerManager = new ApplicationWorkerManager()

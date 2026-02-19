@@ -1,12 +1,14 @@
 import type { FastifyInstance } from 'fastify'
 import { SENTRY_CLOSE_TIMEOUT } from '@constants/timing-constants'
-import { workers } from '@lib/bullmq'
+import { applicationWorkerManager } from '@lib/bullmq'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
+import { applicationScheduler } from '@lib/node-cron'
 import { prisma } from '@lib/prisma'
 import { pool } from '@lib/prisma/helpers/configuration'
 import { redis } from '@lib/redis'
 import {
+  CRON_SHUTDOWN,
   DATABASE_SHUTDOWN,
   GRACEFUL_SHUTDOWN_ERROR,
   REDIS_SHUTDOWN,
@@ -35,7 +37,8 @@ export async function gracefulShutdown(_instance: FastifyInstance) {
         })
       }),
 
-    Promise.all(workers.map((worker) => worker.close()))
+    applicationWorkerManager
+      .closeAll()
       .then(() => {
         logger.info(WORKERS_SHUTDOWN)
       })
@@ -43,6 +46,18 @@ export async function gracefulShutdown(_instance: FastifyInstance) {
         logError({
           error,
           message: `${GRACEFUL_SHUTDOWN_ERROR} [BullMQ Workers]`,
+        })
+      }),
+
+    applicationScheduler
+      .stopAll()
+      .then(() => {
+        logger.info(CRON_SHUTDOWN)
+      })
+      .catch((error: unknown) => {
+        logError({
+          error,
+          message: `${GRACEFUL_SHUTDOWN_ERROR} [CronJobs]`,
         })
       }),
 

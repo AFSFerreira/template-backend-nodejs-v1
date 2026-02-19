@@ -17,7 +17,7 @@ import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
-import { toDateOnly } from '@utils/formatters/to-date-only'
+import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -30,7 +30,7 @@ export class UpdateMeetingUseCase {
   ) {}
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
-    const today = toDateOnly(new Date())
+    const today = toDateOnlyUTC(new Date())
 
     const updateData: UpdateMeetingQuery['data'] = {}
 
@@ -69,7 +69,7 @@ export class UpdateMeetingUseCase {
 
     if (body.paymentMeetingInfo) {
       if (body.paymentMeetingInfo?.limitDate) {
-        if (toDateOnly(body.paymentMeetingInfo.limitDate) < today) {
+        if (toDateOnlyUTC(body.paymentMeetingInfo.limitDate) < today) {
           throw new InvalidPaymentLimitDateError()
         }
       }
@@ -79,7 +79,7 @@ export class UpdateMeetingUseCase {
 
     if (body.dates) {
       body.dates.forEach((date) => {
-        if (toDateOnly(date) < today) {
+        if (toDateOnlyUTC(date) < today) {
           throw new InvalidMeetingDateError()
         }
       })

@@ -12,7 +12,7 @@ import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-foun
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/user-already-registered-in-meeting-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { toDateOnly } from '@utils/formatters/to-date-only'
+import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
@@ -42,7 +42,7 @@ export class RegisterUserMeetingUseCase {
       error: new MeetingNotFoundError(),
     })
 
-    if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
+    if (toDateOnlyUTC(new Date()) > toDateOnlyUTC(meeting.lastDate)) {
       throw new MeetingAlreadyFinishedError()
     }
 

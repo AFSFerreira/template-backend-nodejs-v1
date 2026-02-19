@@ -1,13 +1,5 @@
+import type { IDatabaseHealthCheck } from '@custom-types/lib/prisma/database-health-check'
 import { Prisma } from '@prisma/generated/client'
-
-type IDatabaseHealthCheck =
-  | {
-      status: 'healthy'
-    }
-  | {
-      status: 'unhealthy'
-      error: unknown
-    }
 
 export const healthCheckExtension = Prisma.defineExtension({
   name: 'HealthCheckExtension',

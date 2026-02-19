@@ -10,7 +10,7 @@ import { REGISTER_GUEST_MEETING } from '@messages/loggings/models/meeting-loggin
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
-import { toDateOnly } from '@utils/formatters/to-date-only'
+import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
@@ -40,7 +40,7 @@ export class RegisterGuestMeetingUseCase {
       error: new MeetingNotFoundError(),
     })
 
-    if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
+    if (toDateOnlyUTC(new Date()) > toDateOnlyUTC(meeting.lastDate)) {
       throw new MeetingAlreadyFinishedError()
     }
 

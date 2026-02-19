@@ -5,5 +5,5 @@ export interface IStartJob {
   name: string
   cronExpr: string
   factory: JobFactory
-  options?: TaskOptions
+  options: TaskOptions
 }

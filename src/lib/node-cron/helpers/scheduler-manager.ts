@@ -6,6 +6,7 @@ import type Redis from 'ioredis'
 import type { ScheduledTask, TaskOptions } from 'node-cron'
 import type { Logger } from 'pino'
 import { AVERAGE_CRON_JOB_TIME_EXECUTION } from '@constants/timing-constants'
+import { LOCK_SWAP_SCRIPT } from '@lib/redis/scripts/lock-swap-script'
 import {
   JOB_STARTED_SUCESSFUL,
   RUNNING_JOB_FAILED,
@@ -15,6 +16,7 @@ import {
 import { cronSchema } from '@schemas/utils/generic-components/cron-schema'
 import { InvalidCronExpressionError } from '@services/errors/cron/invalid-cron-expression-error'
 import { JobNameAlreadyExistsError } from '@services/errors/jobs/job-name-already-exists-error'
+import { HashService } from '@services/hashes/hash-service'
 import cron from 'node-cron'
 import z from 'zod'
 import { BASIC_JOB_CONFIGURATION } from '../configuration/base-configuration'
@@ -69,24 +71,29 @@ export class SchedulerManager {
       throw new JobNameAlreadyExistsError(jobName)
     }
 
-    this.factories.set(jobName, { cronExpr, factory, options })
+    this.factories.set(jobName, {
+      cronExpr,
+      factory,
+      options: {
+        ...BASIC_JOB_CONFIGURATION,
+        ...options,
+      },
+    })
 
-    if (this.logger) {
-      this.logger.info(`Job ${jobName} registrado -> ${cronExpr}`)
-    }
+    this.logger?.info(`[SchedulerManager] Job ${jobName} registrado -> ${cronExpr}`)
   }
 
   async startAll() {
-    for (const [name, { cronExpr, factory, options }] of this.factories.entries()) {
-      await this.startJob({ name, cronExpr, factory, options })
+    this.logger?.info('[SchedulerManager] Iniciando todas as tarefas...')
+
+    for (const [name, cronInfo] of this.factories.entries()) {
+      await this.startJob({ ...cronInfo, name })
     }
   }
 
   async startJob({ name, cronExpr, factory, options }: IStartJob) {
     if (this.tasks.has(name)) {
-      if (this.logger) {
-        this.logger.warn(`Job ${name} está inicializando`)
-      }
+      this.logger?.warn(`[SchedulerManager] Job ${name} está inicializando`)
       return
     }
 
@@ -94,82 +101,83 @@ export class SchedulerManager {
 
     const wrapped = async () => {
       const lockKey = `locks:scheduler:${name}`
+      const executionId = HashService.generateJobHash()
       let haveLock = true
 
       try {
         if (this.redis) {
-          haveLock =
-            (await this.redis.set(lockKey, process.pid.toString(), 'PX', AVERAGE_CRON_JOB_TIME_EXECUTION, 'NX')) !==
-            null
+          const result = await this.redis.set(lockKey, executionId, 'PX', AVERAGE_CRON_JOB_TIME_EXECUTION, 'NX')
+
+          haveLock = result !== null
         }
 
         if (!haveLock) {
-          if (this.logger) {
-            this.logger.debug(`Pulando job ${name} porque o lock não foi adquirido`)
-          }
+          this.logger?.debug(
+            `[SchedulerManager] Lock não adquirido para o job ${name}. Outra instância está processando.`,
+          )
+
           return
         }
 
         // this.runCounter.inc({ job: name }, 1)
 
-        if (this.logger) {
-          this.logger.info({ job: name }, RUNNING_SCHEDULED_JOB)
-        }
+        this.logger?.info({ job: name }, RUNNING_SCHEDULED_JOB)
 
         await jobFn()
       } catch (error) {
         // this.errorCounter.inc({ job: name }, 1)
 
-        if (this.logger) {
-          this.logger.error({ job: name, error }, RUNNING_JOB_FAILED)
-        }
+        this.logger?.error({ job: name, error }, RUNNING_JOB_FAILED)
       } finally {
         if (this.redis && haveLock) {
-          await this.redis.del(lockKey)
+          try {
+            await this.redis.eval(LOCK_SWAP_SCRIPT, 1, lockKey, executionId)
+          } catch (redisError) {
+            this.logger?.error({ job: name, error: redisError }, 'Falha ao liberar lock no Redis')
+          }
         }
       }
     }
 
     const task = cron.schedule(
       cronExpr,
-      () => {
-        wrapped().catch((error) => {
-          if (this.logger) {
-            this.logger.error({ jobName: name, error }, UNHANDLED_JOB_ERROR)
-          }
-        })
+      async () => {
+        try {
+          await wrapped()
+        } catch (error) {
+          this.logger?.error({ jobName: name, error }, UNHANDLED_JOB_ERROR)
+        }
       },
-      {
-        ...BASIC_JOB_CONFIGURATION,
-        ...(options ? options : {}),
-      },
+      options,
     )
 
     this.tasks.set(name, task)
 
-    if (this.logger) {
-      this.logger.info({ job: name, cronExpr }, JOB_STARTED_SUCESSFUL)
-    }
+    this.logger?.info({ job: name, cronExpr }, JOB_STARTED_SUCESSFUL)
+  }
+
+  async stopAll() {
+    this.logger?.info('[SchedulerManager] Parando todas as tarefas...')
+
+    const jobsNames = Array.from(this.tasks.keys())
+
+    jobsNames.forEach(async (jobName) => {
+      await this.stopJob(jobName)
+    })
   }
 
   async stopJob(name: string) {
     const task = this.tasks.get(name)
 
     if (!task) {
-      if (this.logger) {
-        this.logger.warn(`Job ${name} não está em execução`)
-      }
+      this.logger?.warn(`[SchedulerManager] Job ${name} não está em execução`)
       return
     }
 
     await task.stop()
-    await task.destroy()
-
     this.tasks.delete(name)
 
-    if (this.logger) {
-      this.logger.info(`O job ${name} parou`)
-    }
+    this.logger?.info(`[SchedulerManager] O job ${name} parou`)
   }
 
   status() {
