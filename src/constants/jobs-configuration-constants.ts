@@ -5,13 +5,18 @@ export const JOBS_TIMEZONE = 'America/Sao_Paulo'
 export const ERASE_FILES_CONCURRENCY = 10
 
 export const BASE_JOB_QUEUE_CONFIGURATION = {
-  removeOnComplete: true,
-  removeOnFail: false,
+  removeOnComplete: {
+    count: 100,
+    age: ms('1h'),
+  },
+  removeOnFail: {
+    count: 500,
+  },
   attempts: 3,
   backoff: {
     type: 'exponential',
     delay: ms('5s'),
-    jitter: ms('10s'),
+    jitter: 0.5,
   },
 } as const satisfies DefaultJobOptions
 

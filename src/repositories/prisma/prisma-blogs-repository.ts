@@ -8,6 +8,7 @@ import type { Prisma } from '@prisma/generated/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { blogWithDetails } from '@custom-types/validators/blog-with-details'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { InvalidQueryRawResultError } from '@messages/system/invalid-query-raw-result-error'
 import { blogDetailedAdapterSchema } from '@repositories/prisma/adapters/blogs/blog-detailed-adapter-schema'
 import { blogSimplifiedAdapterSchema } from '@repositories/prisma/adapters/blogs/blog-simplified-adapter-schema'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -81,10 +82,14 @@ export class PrismaBlogsRepository implements BlogsRepository {
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const blogs = z.array(blogSimplifiedAdapterSchema).parse(blogsRaw)
+    const parsedBlogs = z.array(blogSimplifiedAdapterSchema).safeParse(blogsRaw)
+
+    if (!parsedBlogs.success) {
+      throw new InvalidQueryRawResultError(parsedBlogs.error)
+    }
 
     return {
-      data: blogs,
+      data: parsedBlogs.data,
       meta: {
         totalItems,
         totalPages,
@@ -115,10 +120,14 @@ export class PrismaBlogsRepository implements BlogsRepository {
     const pageSize = query.limit
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const blogs = z.array(blogDetailedAdapterSchema).parse(blogsRaw)
+    const parsedBlogs = z.array(blogDetailedAdapterSchema).safeParse(blogsRaw)
+
+    if (!parsedBlogs.success) {
+      throw new InvalidQueryRawResultError(parsedBlogs.error)
+    }
 
     return {
-      data: blogs,
+      data: parsedBlogs.data,
       meta: {
         totalItems,
         totalPages,
@@ -140,10 +149,14 @@ export class PrismaBlogsRepository implements BlogsRepository {
     const pageSize = query.limit
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const blogs = z.array(blogDetailedAdapterSchema).parse(blogsRaw)
+    const parsedBlogs = z.array(blogDetailedAdapterSchema).safeParse(blogsRaw)
+
+    if (!parsedBlogs.success) {
+      throw new InvalidQueryRawResultError(parsedBlogs.error)
+    }
 
     return {
-      data: blogs,
+      data: parsedBlogs.data,
       meta: {
         totalItems,
         totalPages,

@@ -1,4 +1,5 @@
 import { dateSchema } from '@lib/zod/utils/primitives/date-schema'
+import { integerSchema } from '@lib/zod/utils/primitives/integer-schema'
 import { nonemptyTextArraySchema } from '@lib/zod/utils/primitives/nonempty-text-array-schema'
 import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
 import { positiveIntegerSchema } from '@lib/zod/utils/primitives/positive-integer-schema'
@@ -6,7 +7,7 @@ import z from 'zod'
 
 export const academicPublicationAdapterSchema = z
   .object({
-    id: positiveIntegerSchema,
+    id: integerSchema,
     title: nonemptyTextSchema,
     journal_name: nonemptyTextSchema,
     publication_year: positiveIntegerSchema,

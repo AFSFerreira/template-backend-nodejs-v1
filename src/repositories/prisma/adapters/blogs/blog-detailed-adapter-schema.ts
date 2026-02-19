@@ -1,16 +1,16 @@
 import { subcategoryArraySchema } from '@lib/zod/utils/database/subcategory-array-schema'
 import { editorialStatusEnumSchema } from '@lib/zod/utils/enums/editorial-status-enum-schema'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { dateSchema } from '@lib/zod/utils/primitives/date-schema'
 import { integerSchema } from '@lib/zod/utils/primitives/integer-schema'
 import { nonemptyNullableTextSchema } from '@lib/zod/utils/primitives/nonempty-nullable-text-schema'
 import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
-import { positiveIntegerSchema } from '@lib/zod/utils/primitives/positive-integer-schema'
 import z from 'zod'
 
 export const blogDetailedAdapterSchema = z
   .object({
-    id: positiveIntegerSchema,
-    public_id: nonemptyTextSchema,
+    id: integerSchema,
+    public_id: modelPublicIdSchema,
     title: nonemptyTextSchema,
     author_name: nonemptyTextSchema,
     editorial_status: editorialStatusEnumSchema,

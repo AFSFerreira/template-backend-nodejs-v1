@@ -16,6 +16,7 @@ import type { Prisma } from '@prisma/generated/client'
 import type { UsersRepository } from '../users-repository'
 import { userWithDetails } from '@custom-types/validators/user-with-details'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { InvalidQueryRawResultError } from '@messages/system/invalid-query-raw-result-error'
 import { MembershipStatusType } from '@prisma/generated/enums'
 import { userSimplifiedAdapterSchema } from '@repositories/prisma/adapters/users/user-simplified-adapter-schema'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/orchestrators/build-list-all-users-simplified-query'
@@ -152,7 +153,7 @@ export class PrismaUsersRepository implements UsersRepository {
   async listAllUsersDetailed(query: ListAllUsersDetailedQuery) {
     const { searchQuery, countQuery } = buildListAllUsersDetailedQuery(query)
 
-    const [countResult, users] = await Promise.all([
+    const [countResult, usersRaw] = await Promise.all([
       this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
       this.dbContext.client.$queryRaw<unknown[]>(searchQuery),
     ])
@@ -162,10 +163,14 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const parsedUsers = z.array(userSimplifiedAdapterSchema).parse(users)
+    const parsedUsers = z.array(userSimplifiedAdapterSchema).safeParse(usersRaw)
+
+    if (!parsedUsers.success) {
+      throw new InvalidQueryRawResultError(parsedUsers.error)
+    }
 
     return {
-      data: parsedUsers,
+      data: parsedUsers.data,
       meta: {
         totalItems,
         totalPages,
@@ -188,10 +193,14 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const users = z.array(userSimplifiedAdapterSchema).parse(usersRaw)
+    const parsedUsers = z.array(userSimplifiedAdapterSchema).safeParse(usersRaw)
+
+    if (!parsedUsers.success) {
+      throw new InvalidQueryRawResultError(parsedUsers.error)
+    }
 
     return {
-      data: users,
+      data: parsedUsers.data,
       meta: {
         totalItems,
         totalPages,

@@ -5,6 +5,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { InvalidQueryRawResultError } from '@messages/system/invalid-query-raw-result-error'
 import { academicPublicationAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-adapter-schema'
 import { academicPublicationYearAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-year-adapter-schema'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -59,10 +60,14 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const academicPublications = z.array(academicPublicationAdapterSchema).parse(academicPublicationsRaw)
+    const parsedAcademicPublications = z.array(academicPublicationAdapterSchema).safeParse(academicPublicationsRaw)
+
+    if (!parsedAcademicPublications.success) {
+      throw new InvalidQueryRawResultError(parsedAcademicPublications.error)
+    }
 
     return {
-      data: academicPublications,
+      data: parsedAcademicPublications.data,
       meta: {
         totalItems,
         totalPages,
@@ -85,10 +90,16 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
-    const academicPublicationYears = z.array(academicPublicationYearAdapterSchema).parse(academicPublicationYearsRaw)
+    const parsedAcademicPublicationYears = z
+      .array(academicPublicationYearAdapterSchema)
+      .safeParse(academicPublicationYearsRaw)
+
+    if (!parsedAcademicPublicationYears.success) {
+      throw new InvalidQueryRawResultError(parsedAcademicPublicationYears.error)
+    }
 
     return {
-      data: academicPublicationYears,
+      data: parsedAcademicPublicationYears.data,
       meta: {
         totalItems,
         totalPages,
