@@ -2,31 +2,31 @@ import type { JobFactory } from '@custom-types/lib/node-cron/job-factory'
 import type { JobFactoryContext } from '@custom-types/lib/node-cron/job-factory-context'
 import type { ScalableTaskOptions } from '@custom-types/lib/node-cron/scalable-task-options'
 import type { SchedulerOptions } from '@custom-types/lib/node-cron/scheduler-options'
-import type { IStartJob } from '@custom-types/lib/node-cron/start-job'
-import type Redis from 'ioredis'
-import type { ScheduledTask } from 'node-cron'
+import type { Job, WorkerOptions } from 'bullmq'
 import type { Logger } from 'pino'
-import { AVERAGE_CRON_JOB_TIME_EXECUTION } from '@constants/timing-constants'
-import { LOCK_SWAP_SCRIPT } from '@lib/redis/scripts/lock-swap-script'
+import { BASE_JOB_QUEUE_CONFIGURATION, BASE_JOB_WORKER_CONFIGURATION } from '@constants/jobs-configuration-constants'
+import { logError } from '@lib/logger/helpers/log-error'
 import {
   JOB_STARTED_SUCESSFUL,
-  RUNNING_JOB_FAILED,
   RUNNING_SCHEDULED_JOB,
-  UNHANDLED_JOB_ERROR,
+  SCHEDULER_JOB_ACTIVE,
+  SCHEDULER_JOB_COMPLETED,
+  SCHEDULER_JOB_PROCESSING_FAILED,
+  SCHEDULER_JOB_STALLED,
+  SCHEDULER_WORKER_ERROR,
 } from '@messages/loggings/system/scheduler-loggings'
 import { cronSchema } from '@schemas/utils/generic-components/cron-schema'
 import { InvalidCronExpressionError } from '@services/errors/cron/invalid-cron-expression-error'
 import { JobNameAlreadyExistsError } from '@services/errors/jobs/job-name-already-exists-error'
-import { HashService } from '@services/hashes/hash-service'
-import cron from 'node-cron'
+import { Queue, Worker } from 'bullmq'
 import z from 'zod'
 import { BASIC_JOB_CONFIGURATION } from '../configuration/base-configuration'
 
 export class SchedulerManager {
-  private tasks: Map<string, ScheduledTask>
+  private queue: Queue
+  private worker: Worker
   private factories: Map<string, JobFactoryContext>
   private logger?: Logger
-  private redis?: Redis
 
   // Métricas:
   // private metricsCtx: MetricsContext
@@ -34,17 +34,36 @@ export class SchedulerManager {
   // private errorCounter?: Counter<string>
 
   constructor(options: SchedulerOptions) {
-    this.tasks = new Map<string, ScheduledTask>()
     this.factories = new Map<string, JobFactoryContext>()
 
     if (options.logger) {
       this.logger = options.logger
     }
 
+    const connection = options.redis
+
+    this.queue = new Queue('scheduler-manager-cron-jobs-queue', {
+      connection,
+      defaultJobOptions: BASE_JOB_QUEUE_CONFIGURATION,
+    })
+
+    const workerOptions: WorkerOptions = {
+      ...BASE_JOB_WORKER_CONFIGURATION,
+      connection,
+    }
+
+    this.worker = new Worker(
+      'scheduler-manager-cron-jobs-worker',
+      async (job: Job) => this.processJob(job),
+      workerOptions,
+    )
+
     // if (options.promContext) {
     //   this.metricsCtx = { metricsClient: options.promContext.client, metricsPrefix: options.promContext.prefix ?? 'scheduler' }
     //   this.initMetrics()
     // }
+
+    this.setupWorkerEvents()
   }
 
   // private initMetrics() {
@@ -87,104 +106,101 @@ export class SchedulerManager {
   async startAll() {
     this.logger?.info('[SchedulerManager] Iniciando todas as tarefas...')
 
-    for (const [name, cronInfo] of this.factories.entries()) {
-      await this.startJob({ ...cronInfo, name })
+    await this.clearOrphanRepeatableJobs()
+
+    for (const [name, { cronExpr, options }] of this.factories.entries()) {
+      await this.queue.add(
+        name,
+        {},
+        {
+          ...options,
+          repeat: {
+            pattern: cronExpr,
+            tz: options.timezone,
+          },
+        },
+      )
+
+      this.logger?.info({ job: name, cronExpr }, JOB_STARTED_SUCESSFUL)
     }
   }
 
-  async startJob({ name, cronExpr, factory, options }: IStartJob) {
-    if (this.tasks.has(name)) {
-      this.logger?.warn(`[SchedulerManager] Job ${name} está inicializando`)
-      return
+  private async processJob(job: Job) {
+    const context = this.factories.get(job.name)
+
+    if (!context) {
+      throw new Error(`Nenhuma factory encontrada para o job: ${job.name}`)
     }
 
-    const jobFn = factory({ logger: this.logger })
+    this.logger?.info({ job: job.name, jobId: job.id }, RUNNING_SCHEDULED_JOB)
 
-    const wrapped = async () => {
-      const lockKey = `locks:scheduler:${name}`
-      const executionId = HashService.generateJobHash()
-      let haveLock = true
+    const jobFn = context.factory({ logger: this.logger })
+    await jobFn()
+  }
 
-      try {
-        if (this.redis) {
-          const result = await this.redis.set(lockKey, executionId, 'PX', AVERAGE_CRON_JOB_TIME_EXECUTION, 'NX')
+  private setupWorkerEvents() {
+    this.worker.on('active', (job) => {
+      this.logger?.info({ job: job.name, jobId: job.id }, SCHEDULER_JOB_ACTIVE)
+    })
 
-          haveLock = result !== null
-        }
+    this.worker.on('completed', (job) => {
+      this.logger?.info({ job: job.name, jobId: job.id }, SCHEDULER_JOB_COMPLETED)
+    })
 
-        if (!haveLock) {
-          this.logger?.debug(
-            `[SchedulerManager] Lock não adquirido para o job ${name}. Outra instância está processando.`,
-          )
+    this.worker.on('failed', (job, error) => {
+      logError({
+        context: {
+          job: job?.name,
+          jobId: job?.id,
+          error: error.message,
+        },
+        error,
+        message: SCHEDULER_JOB_PROCESSING_FAILED,
+      })
+    })
 
-          return
-        }
+    this.worker.on('stalled', (jobId) => {
+      this.logger?.warn({ jobId }, SCHEDULER_JOB_STALLED)
+    })
 
-        // this.runCounter.inc({ job: name }, 1)
-
-        this.logger?.info({ job: name }, RUNNING_SCHEDULED_JOB)
-
-        await jobFn()
-      } catch (error) {
-        // this.errorCounter.inc({ job: name }, 1)
-
-        this.logger?.error({ job: name, error }, RUNNING_JOB_FAILED)
-      } finally {
-        if (this.redis && haveLock) {
-          try {
-            await this.redis.eval(LOCK_SWAP_SCRIPT, 1, lockKey, executionId)
-          } catch (redisError) {
-            this.logger?.error({ job: name, error: redisError }, 'Falha ao liberar lock no Redis')
-          }
-        }
-      }
-    }
-
-    const task = cron.schedule(
-      cronExpr,
-      async () => {
-        try {
-          await wrapped()
-        } catch (error) {
-          this.logger?.error({ jobName: name, error }, UNHANDLED_JOB_ERROR)
-        }
-      },
-      options,
-    )
-
-    this.tasks.set(name, task)
-
-    this.logger?.info({ job: name, cronExpr }, JOB_STARTED_SUCESSFUL)
+    this.worker.on('error', (error) => {
+      logError({ error, message: SCHEDULER_WORKER_ERROR })
+    })
   }
 
   async stopAll() {
     this.logger?.info('[SchedulerManager] Parando todas as tarefas...')
 
-    const jobsNames = Array.from(this.tasks.keys())
+    await this.worker.close()
+    await this.queue.close()
 
-    jobsNames.forEach(async (jobName) => {
-      await this.stopJob(jobName)
-    })
+    this.logger?.info('[SchedulerManager] Scheduler encerrado com segurança.')
   }
 
-  async stopJob(name: string) {
-    const task = this.tasks.get(name)
+  private async clearOrphanRepeatableJobs() {
+    const repeatableJobs = await this.queue.getJobSchedulers()
 
-    if (!task) {
-      this.logger?.warn(`[SchedulerManager] Job ${name} não está em execução`)
-      return
+    for (const job of repeatableJobs) {
+      const registeredJob = this.factories.get(job.name)
+
+      // O job foi removido do código-fonte (não existe mais no Map)
+      const isOrphanByName = !registeredJob
+
+      // O job existe no código, mas a expressão cron (ou timezone) foi alterada.
+      const isOrphanByPattern =
+        registeredJob && (registeredJob.cronExpr !== job.pattern || registeredJob.options.timezone !== job.tz)
+
+      if (isOrphanByName || isOrphanByPattern) {
+        await this.queue.removeJobScheduler(job.key)
+        this.logger?.warn(`[SchedulerManager] Removido job órfão: ${job.name}`)
+      }
     }
-
-    await task.stop()
-    this.tasks.delete(name)
-
-    this.logger?.info(`[SchedulerManager] O job ${name} parou`)
   }
 
   status() {
-    return Array.from(this.factories.keys()).map((name) => ({
-      name,
-      running: this.tasks.has(name),
-    }))
+    return {
+      workerRunning: this.worker.isRunning,
+      registeredJobs: Array.from(this.factories.keys()),
+    }
   }
 }

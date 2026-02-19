@@ -1,13 +1,13 @@
 import type { SchedulerManager } from '@lib/node-cron/helpers/scheduler-manager'
+import { FileScheduler } from '@jobs/cron/schedulers/file-scheduler'
 import { logger } from '@lib/logger'
-import { redis } from '@lib/redis'
-import { FileScheduler } from '../../../jobs/cron/schedulers/file-scheduler'
+import { redisConnection } from '@lib/redis/helpers/configuration'
 
 export class ApplicationScheduler {
   private schedulers: SchedulerManager[] = []
 
   constructor() {
-    const options = { logger, redis }
+    const options = { logger, redis: redisConnection }
 
     this.schedulers.push(new FileScheduler(options))
   }

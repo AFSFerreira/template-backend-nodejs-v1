@@ -1,3 +1,5 @@
-import type { TaskOptions } from 'node-cron'
+import type { JobsOptions } from 'bullmq'
 
-export interface ScalableTaskOptions extends TaskOptions {}
+export interface ScalableTaskOptions extends JobsOptions {
+  timezone: string
+}
