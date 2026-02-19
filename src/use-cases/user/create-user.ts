@@ -91,110 +91,121 @@ export class CreateUserUseCase {
 
     let profileImage = DEFAULT_PROFILE_IMAGE_NAME
 
-    const createdUser = await this.dbContext.runInTransaction(async () => {
-      const userAlreadyExists = await this.usersRepository.findConflictingUser({
-        email: registerUseCaseInput.user.email,
-        secondaryEmail: registerUseCaseInput.user.secondaryEmail,
-        username: registerUseCaseInput.user.username,
-        identity: {
-          identityType: registerUseCaseInput.user.identity.identityType,
-          identityDocumentBlindIndex: HashService.generateBlindIndex(
-            registerUseCaseInput.user.identity.identityDocument,
-          ),
+    const userAlreadyExists = await this.usersRepository.findConflictingUser({
+      email: registerUseCaseInput.user.email,
+      secondaryEmail: registerUseCaseInput.user.secondaryEmail,
+      username: registerUseCaseInput.user.username,
+      identity: {
+        identityType: registerUseCaseInput.user.identity.identityType,
+        identityDocumentBlindIndex: HashService.generateBlindIndex(registerUseCaseInput.user.identity.identityDocument),
+      },
+    })
+
+    if (userAlreadyExists) {
+      const apiError = getTrueMapping<ApiError>([
+        {
+          expression: userAlreadyExists.email === registerUseCaseInput.user.email,
+          value: new UserWithSameEmail(),
         },
+        {
+          expression: userAlreadyExists.email === registerUseCaseInput.user.secondaryEmail,
+          value: new UserWithSameEmail(),
+        },
+        {
+          expression:
+            !!userAlreadyExists.secondaryEmail &&
+            !!registerUseCaseInput.user.secondaryEmail &&
+            userAlreadyExists.secondaryEmail === registerUseCaseInput.user.secondaryEmail,
+          value: new UserWithSameSecondaryEmail(),
+        },
+        {
+          expression:
+            !!registerUseCaseInput.user.secondaryEmail &&
+            userAlreadyExists.email === registerUseCaseInput.user.secondaryEmail,
+          value: new UserWithSameSecondaryEmail(),
+        },
+        {
+          expression: userAlreadyExists.username === registerUseCaseInput.user.username,
+          value: new UserWithSameUsername(),
+        },
+        {
+          expression: objectDeepEqual(
+            {
+              identityDocument: userAlreadyExists.identityDocument,
+              identityType: userAlreadyExists.identityType,
+            },
+            registerUseCaseInput.user.identity,
+          ),
+          value: new UserWithSameIdentityDocument(),
+        },
+      ])
+
+      if (!apiError) {
+        throw new UserAlreadyExistsError()
+      }
+
+      throw apiError
+    }
+
+    if (isHighLevelEducation) {
+      const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
+        area: academicPub.area,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      }))
+
+      const activityAreas = [
+        ...academicPublicationsActivityAreas,
+        {
+          area: registerUseCaseInput.activityArea.mainActivityArea,
+          type: ActivityAreaType.AREA_OF_ACTIVITY,
+        },
+        {
+          area: registerUseCaseInput.activityArea.subActivityArea,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        },
+      ]
+
+      // Removendo activity areas duplicadas:
+      const nonRepeatingActivityAreas = activityAreas.filter(
+        (activityArea, index, self) =>
+          index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
+      )
+
+      const { validatedActivityAreas, success } = await validateActivityAreas({
+        activityAreas: nonRepeatingActivityAreas,
+        activityAreasRepository: this.activityAreasRepository,
       })
 
-      if (userAlreadyExists) {
-        const apiError = getTrueMapping<ApiError>([
-          {
-            expression: userAlreadyExists.email === registerUseCaseInput.user.email,
-            value: new UserWithSameEmail(),
-          },
-          {
-            expression: userAlreadyExists.email === registerUseCaseInput.user.secondaryEmail,
-            value: new UserWithSameEmail(),
-          },
-          {
-            expression:
-              !!userAlreadyExists.secondaryEmail &&
-              !!registerUseCaseInput.user.secondaryEmail &&
-              userAlreadyExists.secondaryEmail === registerUseCaseInput.user.secondaryEmail,
-            value: new UserWithSameSecondaryEmail(),
-          },
-          {
-            expression:
-              !!registerUseCaseInput.user.secondaryEmail &&
-              userAlreadyExists.email === registerUseCaseInput.user.secondaryEmail,
-            value: new UserWithSameSecondaryEmail(),
-          },
-          {
-            expression: userAlreadyExists.username === registerUseCaseInput.user.username,
-            value: new UserWithSameUsername(),
-          },
-          {
-            expression: objectDeepEqual(
-              {
-                identityDocument: userAlreadyExists.identityDocument,
-                identityType: userAlreadyExists.identityType,
-              },
-              registerUseCaseInput.user.identity,
-            ),
-            value: new UserWithSameIdentityDocument(),
-          },
-        ])
-
-        if (!apiError) {
-          throw new UserAlreadyExistsError()
-        }
-
-        throw apiError
-      }
-
-      if (isHighLevelEducation) {
-        const academicPublicationsActivityAreas = registerUseCaseInput.academicPublication.map((academicPub) => ({
-          area: academicPub.area,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        }))
-
-        const activityAreas = [
-          ...academicPublicationsActivityAreas,
-          {
-            area: registerUseCaseInput.activityArea.mainActivityArea,
-            type: ActivityAreaType.AREA_OF_ACTIVITY,
-          },
-          {
-            area: registerUseCaseInput.activityArea.subActivityArea,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          },
-        ]
-
-        // Removendo activity areas duplicadas:
-        const nonRepeatingActivityAreas = activityAreas.filter(
-          (activityArea, index, self) =>
-            index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
+      if (!success) {
+        throw new InvalidActivityArea(
+          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
         )
-
-        const { validatedActivityAreas, success } = await validateActivityAreas({
-          activityAreas: nonRepeatingActivityAreas,
-          activityAreasRepository: this.activityAreasRepository,
-        })
-
-        if (!success) {
-          throw new InvalidActivityArea(
-            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-          )
-        }
-
-        const isValidInstitution = await validateInstitutionName({
-          institution: registerUseCaseInput.institution.name,
-          institutionsRepository: this.institutionsRepository,
-        })
-
-        if (!isValidInstitution) {
-          throw new InvalidInstitutionName()
-        }
       }
 
+      const isValidInstitution = await validateInstitutionName({
+        institution: registerUseCaseInput.institution.name,
+        institutionsRepository: this.institutionsRepository,
+      })
+
+      if (!isValidInstitution) {
+        throw new InvalidInstitutionName()
+      }
+    }
+
+    const { password, identity, ...filteredUserInfo } = registerUseCaseInput.user
+    const { state, country, ...filteredAddressInfo } = registerUseCaseInput.address
+
+    if (registerUseCaseInput.user.profileImage) {
+      profileImage = registerUseCaseInput.user.profileImage
+    }
+
+    // Removendo elementos duplicados de keywords:
+    const nonRepeatingKeywords =
+      isHighLevelEducation && registerUseCaseInput.keyword
+        ? Array.from<string>(new Set<string>(registerUseCaseInput.keyword))
+        : undefined
+
+    const createdUser = await this.dbContext.runInTransaction(async () => {
       const addressCountry = await this.addressCountriesRepository.findOrCreate(registerUseCaseInput.address.country)
 
       const addressState = await this.addressStatesRepository.findOrCreate({
@@ -202,20 +213,7 @@ export class CreateUserUseCase {
         countryId: addressCountry.id,
       })
 
-      const { password, identity, ...filteredUserInfo } = registerUseCaseInput.user
-      const { state, country, ...filteredAddressInfo } = registerUseCaseInput.address
-
-      if (registerUseCaseInput.user.profileImage) {
-        profileImage = registerUseCaseInput.user.profileImage
-      }
-
-      // Removendo elementos duplicados de keywords:
-      const nonRepeatingKeywords =
-        isHighLevelEducation && registerUseCaseInput.keyword
-          ? Array.from<string>(new Set<string>(registerUseCaseInput.keyword))
-          : undefined
-
-      const user = await this.usersRepository.create({
+      return this.usersRepository.create({
         ...registerUseCaseInput,
         ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
         user: {
@@ -233,8 +231,6 @@ export class CreateUserUseCase {
           stateId: addressState.id,
         },
       })
-
-      return user
     })
 
     const userProfileImagePaths = registerUseCaseInput.user.profileImage

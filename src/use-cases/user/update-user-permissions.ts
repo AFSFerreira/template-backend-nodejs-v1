@@ -26,23 +26,23 @@ export class UpdateUserPermissionsUseCase {
   ) {}
 
   async execute({ publicId, data }: UpdateUserPermissionsUseCaseRequest): Promise<void> {
-    const user = await this.dbContext.runInTransaction(async () => {
-      const foundUser = ensureExists({
-        value: await this.usersRepository.findByPublicId(publicId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(publicId),
+      error: new UserNotFoundError(),
+    })
 
-      if (foundUser.role === UserRoleType.ADMIN) {
-        throw new AdminCannotUpdateOwnRoleError()
+    if (user.role === UserRoleType.ADMIN) {
+      throw new AdminCannotUpdateOwnRoleError()
+    }
+
+    const isNotManagerPermissions = !isManagerPermissions(data)
+
+    await this.dbContext.runInTransaction(async () => {
+      await this.usersRepository.updateRole({ id: user.id, role: data.role })
+
+      if (isNotManagerPermissions) {
+        await this.directorBoardRepository.deleteByUserId(user.id)
       }
-
-      await this.usersRepository.updateRole({ id: foundUser.id, role: data.role })
-
-      if (!isManagerPermissions(data)) {
-        await this.directorBoardRepository.deleteByUserId(foundUser.id)
-      }
-
-      return foundUser
     })
 
     logger.info(

@@ -31,17 +31,17 @@ export class TransferAdminRoleUseCase {
       throw new CannotTransferAdminToSelfError()
     }
 
-    const { currentAdmin, newAdmin } = await this.dbContext.runInTransaction(async () => {
-      const currentAdmin = ensureExists({
-        value: await this.usersRepository.findByPublicId(currentAdminPublicId),
-        error: new UserNotFoundError(),
-      })
+    const currentAdmin = ensureExists({
+      value: await this.usersRepository.findByPublicId(currentAdminPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const newAdmin = ensureExists({
-        value: await this.usersRepository.findByPublicId(newAdminPublicId),
-        error: new UserNotFoundError(),
-      })
+    const newAdmin = ensureExists({
+      value: await this.usersRepository.findByPublicId(newAdminPublicId),
+      error: new UserNotFoundError(),
+    })
 
+    await this.dbContext.runInTransaction(async () => {
       await this.usersRepository.updateRole({
         id: currentAdmin.id,
         role: UserRoleType.MANAGER,
@@ -51,8 +51,6 @@ export class TransferAdminRoleUseCase {
         id: newAdmin.id,
         role: UserRoleType.ADMIN,
       })
-
-      return { currentAdmin, newAdmin }
     })
 
     logger.info(

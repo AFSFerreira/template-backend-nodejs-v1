@@ -57,31 +57,33 @@ export class CreateDirectorBoardUseCase {
       throw new InvalidProseMirrorError()
     }
 
-    const { directorBoard, user } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userId),
+      error: new UserNotFoundError(),
+    })
 
-      if (!MANAGER_PERMISSIONS.has(user.role)) {
+    ensureNotExists({
+      value: await this.directorBoardRepository.findByUserId(user.id),
+      error: new DirectorBoardUserAlreadyExistsError(),
+    })
+
+    const directorPosition = ensureExists({
+      value: await this.directorPositionsRepository.findUniqueBy({ publicId: positionId }),
+      error: new DirectorPositionNotFoundError(),
+    })
+
+    ensureNotExists({
+      value: await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id),
+      error: new DirectorBoardPositionAlreadyOccupiedError(),
+    })
+
+    const userIsNotManager = !MANAGER_PERMISSIONS.has(user.role)
+
+    const { directorBoard } = await this.dbContext.runInTransaction(async () => {
+      if (userIsNotManager) {
         // Atribui permissão de gestor do sistema automaticamente:
         await this.usersRepository.updateRole({ id: user.id, role: UserRoleType.MANAGER })
       }
-
-      ensureNotExists({
-        value: await this.directorBoardRepository.findByUserId(user.id),
-        error: new DirectorBoardUserAlreadyExistsError(),
-      })
-
-      const directorPosition = ensureExists({
-        value: await this.directorPositionsRepository.findUniqueBy({ publicId: positionId }),
-        error: new DirectorPositionNotFoundError(),
-      })
-
-      ensureNotExists({
-        value: await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id),
-        error: new DirectorBoardPositionAlreadyOccupiedError(),
-      })
 
       // Criar o registro no banco de dados
       const directorBoard = await this.directorBoardRepository.create({
@@ -92,7 +94,7 @@ export class CreateDirectorBoardUseCase {
         publicName,
       })
 
-      return { directorBoard, user }
+      return { directorBoard }
     })
 
     const directorBoardProfileImagePaths = profileImage
