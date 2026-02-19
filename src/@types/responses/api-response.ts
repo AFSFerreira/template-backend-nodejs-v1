@@ -1,7 +1,7 @@
 export interface IApiResponseBody {
   code: string
   message: string
-  issues?: Record<string, unknown>
+  issues?: string[]
 }
 
 export interface IApiResponse {
