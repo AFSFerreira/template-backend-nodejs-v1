@@ -1,5 +1,5 @@
+import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
 import { INVALID_AUTHENTICATION_INPUT } from '@messages/validations/user-validations'
-import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
 import { z } from 'zod'
 
 export const authenticateBodySchema = z.object(

@@ -1,5 +1,5 @@
-import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
-import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
+import { orderDirectionsEnumSchema } from '@lib/zod/utils/enums/order-directions-enum-schema'
+import { paginatedSchema } from '@lib/zod/utils/primitives/paginated-schema'
 import z from 'zod'
 
 export const getAllInstitutionsWithUsersQueryRawSchema = z

@@ -1,5 +1,5 @@
-import { numericIntegerStringSchema } from '@schemas/utils/generic-components/numeric-integer-string-schema'
-import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
+import { numericIntegerStringSchema } from '@lib/zod/utils/generic-components/numeric-integer-string-schema'
+import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
 import z from 'zod'
 
 export const createNewsletterBodySchema = z.object({

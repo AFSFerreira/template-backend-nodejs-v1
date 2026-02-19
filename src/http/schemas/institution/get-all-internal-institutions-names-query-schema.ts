@@ -1,5 +1,5 @@
-import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
-import { upperCaseTextSchema } from '@schemas/utils/primitives/uppercase-text-schema'
+import { paginatedSchema } from '@lib/zod/utils/primitives/paginated-schema'
+import { upperCaseTextSchema } from '@lib/zod/utils/primitives/uppercase-text-schema'
 import z from 'zod'
 
 export const getAllInternalInstitutionsNamesQuerySchema = z

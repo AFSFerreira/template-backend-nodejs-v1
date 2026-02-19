@@ -1,8 +1,8 @@
 import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { meetingAgendaMultipartFileConfig } from '@constants/multipart-configuration-constants'
+import { documentSchema } from '@lib/zod/utils/generic-components/document-schema'
 import { FilePresenter } from '@presenters/file-presenter'
-import { documentSchema } from '@schemas/utils/generic-components/document-schema'
 import { UploadMeetingAgendaUseCase } from '@use-cases/meeting/upload-meeting-agenda'
 import { container } from 'tsyringe'
 

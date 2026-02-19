@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { registerUserMeetingBodySchema } from '@schemas/meeting/register-user-meeting-body-schema'
 import { registerUserMeetingParamsSchema } from '@schemas/meeting/register-user-meeting-params-schema'
-import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { RegisterUserMeetingUseCase } from '@use-cases/meeting/register-user-meeting'
 import { container } from 'tsyringe'

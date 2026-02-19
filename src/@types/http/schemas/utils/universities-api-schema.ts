@@ -1,7 +1,7 @@
 import type {
   universitiesApiResponseSchema,
   universityApiResponseSchema,
-} from '@schemas/utils/external/universities-api-schema'
+} from '@lib/zod/utils/external/universities-api-schema'
 import type z from 'zod'
 
 export type UniversityApiResponseSchemaType = z.infer<typeof universityApiResponseSchema>

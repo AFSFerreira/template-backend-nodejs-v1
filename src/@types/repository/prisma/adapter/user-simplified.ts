@@ -1,4 +1,6 @@
 import type { UserRoleType } from '@prisma/generated/enums'
+import type { userSimplifiedAdapterSchema } from '@repositories/prisma/adapters/users/user-simplified-adapter-schema'
+import type z from 'zod'
 
 export interface UserWithSimplifiedDetailsRaw {
   id: number
@@ -9,17 +11,7 @@ export interface UserWithSimplifiedDetailsRaw {
   email: string
   email_is_public: boolean
   state: string
-  institution_name: string
+  institution_name: string | null
 }
 
-export interface CustomUserWithSimplifiedDetails {
-  id: number
-  publicId: string
-  role: UserRoleType
-  fullName: string
-  email: string
-  profileImage: string
-  emailIsPublic: boolean
-  state?: string
-  institutionName?: string
-}
+export type CustomUserWithSimplifiedDetails = z.infer<typeof userSimplifiedAdapterSchema>

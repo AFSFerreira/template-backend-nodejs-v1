@@ -1,7 +1,7 @@
-import { meetingStatusEnumSchema } from '@schemas/utils/enums/meeting-status-enum-schema'
-import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
-import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
-import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
+import { meetingStatusEnumSchema } from '@lib/zod/utils/enums/meeting-status-enum-schema'
+import { orderDirectionsEnumSchema } from '@lib/zod/utils/enums/order-directions-enum-schema'
+import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
+import { paginatedSchema } from '@lib/zod/utils/primitives/paginated-schema'
 import z from 'zod'
 
 export const getAllMeetingsQueryRawSchema = z

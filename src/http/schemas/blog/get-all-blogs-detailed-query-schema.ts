@@ -1,10 +1,10 @@
 import { LONG_LIMITED_CHARACTERS_SIZE } from '@constants/validation-constants'
-import { editorialStatusEnumSchema } from '@schemas/utils/enums/editorial-status-enum-schema'
-import { orderDirectionsEnumSchema } from '@schemas/utils/enums/order-directions-enum-schema'
-import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
-import { subcategoriesSchema } from '@schemas/utils/generic-components/sub-categories-schema'
-import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
-import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
+import { editorialStatusEnumSchema } from '@lib/zod/utils/enums/editorial-status-enum-schema'
+import { orderDirectionsEnumSchema } from '@lib/zod/utils/enums/order-directions-enum-schema'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
+import { subcategoriesSchema } from '@lib/zod/utils/generic-components/sub-categories-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
+import { paginatedSchema } from '@lib/zod/utils/primitives/paginated-schema'
 import z from 'zod'
 
 const getAllBlogsDetailedQueryRawSchema = z

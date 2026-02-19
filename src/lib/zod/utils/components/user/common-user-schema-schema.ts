@@ -1,5 +1,5 @@
 import { MAX_INTEREST_DESCRIPTION_SIZE } from '@constants/validation-constants'
-import { rangedDateSchema } from '@schemas/utils/primitives/ranged-date-schema'
+import { rangedDateSchema } from '@lib/zod/utils/primitives/ranged-date-schema'
 import z from 'zod'
 import { emailSchema } from '../../generic-components/email-schema'
 import { passwordSchema } from '../../generic-components/password-schema'

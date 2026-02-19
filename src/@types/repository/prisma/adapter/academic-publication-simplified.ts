@@ -1,3 +1,6 @@
+import type { academicPublicationAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-adapter-schema'
+import type z from 'zod'
+
 export interface AcademicPublicationSimplifiedRaw {
   id: number
   title: string
@@ -12,16 +15,4 @@ export interface AcademicPublicationSimplifiedRaw {
   main_category: string
 }
 
-export interface CustomAcademicPublicationWithSimplifiedDetails {
-  id: number
-  title: string
-  journalName: string
-  publicationYear: number
-  volume: string
-  editionNumber: string
-  startPage: string
-  linkDoi: string
-  createdAt: Date
-  authorsNames: string[]
-  mainCategory: string
-}
+export type CustomAcademicPublicationWithSimplifiedDetails = z.infer<typeof academicPublicationAdapterSchema>

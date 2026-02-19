@@ -1,7 +1,7 @@
-import { eraseEmptyFoldersJobFactory } from '@jobs/cron/functions/erase-empty-folders'
+import { eraseEmptyFoldersJobFactory } from '@jobs/cron/functions/files/erase-empty-folders'
 import { BaseScheduler } from '@lib/node-cron/helpers/base-scheduler'
 import { nodeCronTokens } from '@lib/node-cron/helpers/tokens'
-import { cleanupTempImagesJobFactory } from '../functions/cleanup-temp-images'
+import { cleanupTempImagesJobFactory } from '../functions/files/cleanup-temp-images'
 
 export class FileScheduler extends BaseScheduler {
   protected setupJobs() {

@@ -1,7 +1,7 @@
-import { identityDocumentSchema } from '@schemas/utils/components/user/identity-document-schema'
-import { emailSchema } from '@schemas/utils/generic-components/email-schema'
+import { identityDocumentSchema } from '@lib/zod/utils/components/user/identity-document-schema'
+import { emailSchema } from '@lib/zod/utils/generic-components/email-schema'
 import z from 'zod'
-import { usernameSchema } from '../utils/generic-components/username-schema'
+import { usernameSchema } from '../../../lib/zod/utils/generic-components/username-schema'
 
 const checkAvailabilityQueryRawSchema = z
   .object({

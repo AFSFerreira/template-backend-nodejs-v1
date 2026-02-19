@@ -1,8 +1,8 @@
-import { meetingPaymentInfo } from '@schemas/utils/components/meeting/meeting-payment-info'
-import { rangedDateArraySchema } from '@schemas/utils/generic-components/ranged-date-array-schema'
-import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
-import { longLimitedNonemptyTextSchema } from '@schemas/utils/primitives/long-limited-nonempty-text-schema'
-import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
+import { meetingPaymentInfo } from '@lib/zod/utils/components/meeting/meeting-payment-info'
+import { rangedDateArraySchema } from '@lib/zod/utils/generic-components/ranged-date-array-schema'
+import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
+import { longLimitedNonemptyTextSchema } from '@lib/zod/utils/primitives/long-limited-nonempty-text-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
 import z from 'zod'
 
 export const updateMeetingBodySchema = z

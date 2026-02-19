@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { modelPublicIdSchema } from '@schemas/utils/generic-components/model-public-id-schema'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteUserUseCase } from '@use-cases/user/delete-user'
 import { container } from 'tsyringe'

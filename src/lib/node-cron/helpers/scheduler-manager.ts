@@ -6,6 +6,7 @@ import type { Job, WorkerOptions } from 'bullmq'
 import type { Logger } from 'pino'
 import { BASE_JOB_QUEUE_CONFIGURATION, BASE_JOB_WORKER_CONFIGURATION } from '@constants/jobs-configuration-constants'
 import { logError } from '@lib/logger/helpers/log-error'
+import { cronSchema } from '@lib/zod/utils/generic-components/cron-schema'
 import {
   JOB_STARTED_SUCESSFUL,
   RUNNING_SCHEDULED_JOB,
@@ -15,7 +16,6 @@ import {
   SCHEDULER_JOB_STALLED,
   SCHEDULER_WORKER_ERROR,
 } from '@messages/loggings/system/scheduler-loggings'
-import { cronSchema } from '@schemas/utils/generic-components/cron-schema'
 import { InvalidCronExpressionError } from '@services/errors/cron/invalid-cron-expression-error'
 import { JobNameAlreadyExistsError } from '@services/errors/jobs/job-name-already-exists-error'
 import { Queue, Worker } from 'bullmq'

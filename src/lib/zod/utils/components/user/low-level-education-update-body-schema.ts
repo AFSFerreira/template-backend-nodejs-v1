@@ -1,4 +1,4 @@
-import { lowLevelEducationEnumSchema } from '@schemas/utils/enums/education-level-enum-schema'
+import { lowLevelEducationEnumSchema } from '@lib/zod/utils/enums/education-level-enum-schema'
 import z from 'zod'
 import { commonUpdateUserSchema } from './common-update-user-schema'
 import { otherRootFieldsSchema } from './other-root-fields-schema'

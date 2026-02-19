@@ -1,8 +1,8 @@
 import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { directorBoardProfilePictureFileConfig } from '@constants/multipart-configuration-constants'
+import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { FilePresenter } from '@presenters/file-presenter'
-import { imageSchema } from '@schemas/utils/generic-components/image-schema'
 import { UploadDirectorBoardProfileImageUseCase } from '@use-cases/director-board/upload-director-board-profile-image'
 import { container } from 'tsyringe'
 

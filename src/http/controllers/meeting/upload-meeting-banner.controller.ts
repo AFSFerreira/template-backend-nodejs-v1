@@ -1,8 +1,8 @@
 import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { meetingBannerMultipartFileConfig } from '@constants/multipart-configuration-constants'
+import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { FilePresenter } from '@presenters/file-presenter'
-import { imageSchema } from '@schemas/utils/generic-components/image-schema'
 import { UploadMeetingBannerUseCase } from '@use-cases/meeting/upload-meeting-banner'
 import { container } from 'tsyringe'
 

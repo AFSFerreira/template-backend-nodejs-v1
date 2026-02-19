@@ -1,16 +1,15 @@
 import type { GetAcademicPublicationsYearsQuerySchemaType } from '@custom-types/http/schemas/academic-pulication/get-academic-publications-years-query-schema'
 import type { ListAllAcademicPublicationsQuery } from '@custom-types/repository/prisma/academic-publication/list-all-academic-publications-query'
 import type { UpdateAcademicPublicationQuery } from '@custom-types/repository/prisma/academic-publication/update-academic-publication-query'
-import type { AcademicPublicationSimplifiedRaw } from '@custom-types/repository/prisma/adapter/academic-publication-simplified'
-import type { AcademicPublicationYearRaw } from '@custom-types/repository/prisma/adapter/academic-publication-year'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { academicPublicationAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-adapter-schema'
+import { academicPublicationYearAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-year-adapter-schema'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
-import { academicPublicationAdapter } from './adapters/academic-publications/academic-publication-adapter'
-import { academicPublicationYearAdapter } from './adapters/academic-publications/academic-publication-year-adapter'
+import z from 'zod'
 import { buildListAcademicPublicationsYearsQuery } from './queries/academic-publications/orchestrators/build-list-academic-publications-years-query'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/orchestrators/build-list-all-academic-publications-query'
 
@@ -50,9 +49,9 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
   async listAllAcademicPublications(query: ListAllAcademicPublicationsQuery) {
     const { searchQuery, countQuery } = buildListAllAcademicPublicationsQuery(query)
 
-    const [countResult, academicPublications] = await Promise.all([
+    const [countResult, academicPublicationsRaw] = await Promise.all([
       this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
-      this.dbContext.client.$queryRaw<AcademicPublicationSimplifiedRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<unknown[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -60,8 +59,10 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
+    const academicPublications = z.array(academicPublicationAdapterSchema).parse(academicPublicationsRaw)
+
     return {
-      data: academicPublications.map(academicPublicationAdapter),
+      data: academicPublications,
       meta: {
         totalItems,
         totalPages,
@@ -74,9 +75,9 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
   async getYearsWithCount(query: GetAcademicPublicationsYearsQuerySchemaType) {
     const { searchQuery, countQuery } = buildListAcademicPublicationsYearsQuery(query)
 
-    const [countResult, academicPublicationYears] = await Promise.all([
+    const [countResult, academicPublicationYearsRaw] = await Promise.all([
       this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
-      this.dbContext.client.$queryRaw<AcademicPublicationYearRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<unknown[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -84,8 +85,10 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
+    const academicPublicationYears = z.array(academicPublicationYearAdapterSchema).parse(academicPublicationYearsRaw)
+
     return {
-      data: academicPublicationYears.map(academicPublicationYearAdapter),
+      data: academicPublicationYears,
       meta: {
         totalItems,
         totalPages,

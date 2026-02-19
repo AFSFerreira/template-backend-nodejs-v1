@@ -1,8 +1,8 @@
-import { proseMirrorSchema } from '@schemas/utils/components/blog/prose-mirror-schema'
-import { editorialStatusEnumSchema } from '@schemas/utils/enums/editorial-status-enum-schema'
-import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
-import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
-import { uppercaseTextArraySchema } from '@schemas/utils/primitives/uppercase-text-array-schema'
+import { proseMirrorSchema } from '@lib/zod/utils/components/blog/prose-mirror-schema'
+import { editorialStatusEnumSchema } from '@lib/zod/utils/enums/editorial-status-enum-schema'
+import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
+import { uppercaseTextArraySchema } from '@lib/zod/utils/primitives/uppercase-text-array-schema'
 import z from 'zod'
 
 export const updateBlogBodySchema = z

@@ -1,6 +1,6 @@
-import { limitedNonemptyTextSchema } from '@schemas/utils/primitives/limited-nonempty-text-schema'
-import { nonemptyTextSchema } from '@schemas/utils/primitives/nonempty-text-schema'
-import { positiveIntegerSchema } from '@schemas/utils/primitives/positive-integer-schema'
+import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
+import { positiveIntegerSchema } from '@lib/zod/utils/primitives/positive-integer-schema'
 import z from 'zod'
 
 export const createDirectorPositionBodySchema = z.object({

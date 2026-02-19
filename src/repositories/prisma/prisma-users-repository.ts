@@ -1,4 +1,3 @@
-import type { UserWithSimplifiedDetailsRaw } from '@custom-types/repository/prisma/adapter/user-simplified'
 import type { ChangeUserPasswordQuery } from '@custom-types/repository/prisma/user/change-user-password-query'
 import type { ConfirmEmailChangeQuery } from '@custom-types/repository/prisma/user/confirm-email-change-query'
 import type { CreateUserQuery } from '@custom-types/repository/prisma/user/create-user-query'
@@ -18,10 +17,11 @@ import type { UsersRepository } from '../users-repository'
 import { userWithDetails } from '@custom-types/validators/user-with-details'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/generated/enums'
-import { userSimplifiedAdapter } from '@repositories/prisma/adapters/users/user-simplified-adapter'
+import { userSimplifiedAdapterSchema } from '@repositories/prisma/adapters/users/user-simplified-adapter-schema'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/orchestrators/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { inject, injectable } from 'tsyringe'
+import z from 'zod'
 import { toPrismaCreateUser } from './mappers/users/create-user'
 import { toPrismaUpdateUser } from './mappers/users/update-user'
 import { buildListAllUsersDetailedQuery } from './queries/users/orchestrators/build-list-all-users-detailed-query'
@@ -154,7 +154,7 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const [countResult, users] = await Promise.all([
       this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
-      this.dbContext.client.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<unknown[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -162,8 +162,10 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
+    const parsedUsers = z.array(userSimplifiedAdapterSchema).parse(users)
+
     return {
-      data: users.map(userSimplifiedAdapter),
+      data: parsedUsers,
       meta: {
         totalItems,
         totalPages,
@@ -176,9 +178,9 @@ export class PrismaUsersRepository implements UsersRepository {
   async listAllUsersSimplified(query: ListAllUsersSimplifiedQuery) {
     const { searchQuery, countQuery } = buildListAllUsersSimplifiedQuery(query)
 
-    const [countResult, users] = await Promise.all([
+    const [countResult, usersRaw] = await Promise.all([
       this.dbContext.client.$queryRaw<Array<{ total: number }>>(countQuery),
-      this.dbContext.client.$queryRaw<UserWithSimplifiedDetailsRaw[]>(searchQuery),
+      this.dbContext.client.$queryRaw<unknown[]>(searchQuery),
     ])
 
     const pageSize = query.limit
@@ -186,8 +188,10 @@ export class PrismaUsersRepository implements UsersRepository {
 
     const totalPages = evalTotalPages({ pageSize, totalItems })
 
+    const users = z.array(userSimplifiedAdapterSchema).parse(usersRaw)
+
     return {
-      data: users.map(userSimplifiedAdapter),
+      data: users,
       meta: {
         totalItems,
         totalPages,

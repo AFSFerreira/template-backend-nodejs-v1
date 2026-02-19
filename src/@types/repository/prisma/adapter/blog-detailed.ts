@@ -1,4 +1,6 @@
 import type { EditorialStatusType } from '@prisma/generated/enums'
+import type { blogDetailedAdapterSchema } from '@repositories/prisma/adapters/blogs/blog-detailed-adapter-schema'
+import type z from 'zod'
 
 export interface BlogDetailedRaw {
   id: number
@@ -18,21 +20,4 @@ export interface BlogDetailedRaw {
   }[]
 }
 
-export interface CustomBlogDetailed {
-  publicId: string
-  title: string
-  bannerImage: string
-  authorName: string
-  editorialStatus: EditorialStatusType
-  searchContent: string
-  accessCount: number
-  createdAt: Date
-  updatedAt: Date
-  User: {
-    fullName: string
-  } | null
-  Subcategories: {
-    id: number
-    area: string
-  }[]
-}
+export type CustomBlogDetailed = z.infer<typeof blogDetailedAdapterSchema>

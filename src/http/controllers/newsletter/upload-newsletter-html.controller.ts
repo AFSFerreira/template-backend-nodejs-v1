@@ -1,8 +1,8 @@
 import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { newsletterHtmlMultipartFileConfig } from '@constants/multipart-configuration-constants'
+import { fileSchema } from '@lib/zod/utils/generic-components/file-schema'
 import { FilePresenter } from '@presenters/file-presenter'
-import { fileSchema } from '@schemas/utils/generic-components/file-schema'
 import { UploadNewsletterHtmlUseCase } from '@use-cases/newsletters/upload-newsletter-html'
 import { container } from 'tsyringe'
 

@@ -1,7 +1,7 @@
-import { activityAreaEnumSchema } from '@schemas/utils/enums/activity-area-enum-schema'
-import { paginatedSchema } from '@schemas/utils/primitives/paginated-schema'
+import { activityAreaEnumSchema } from '@lib/zod/utils/enums/activity-area-enum-schema'
+import { paginatedSchema } from '@lib/zod/utils/primitives/paginated-schema'
 import z from 'zod'
-import { upperCaseTextSchema } from '../utils/primitives/uppercase-text-schema'
+import { upperCaseTextSchema } from '../../../lib/zod/utils/primitives/uppercase-text-schema'
 
 export const getAllActivityAreasSchema = z
   .object({
