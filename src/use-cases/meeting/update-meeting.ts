@@ -1,8 +1,8 @@
+import type { UpdateMeetingQuery } from '@custom-types/repository/prisma/meeting/update-meeting-query'
 import type {
   UpdateMeetingUseCaseRequest,
   UpdateMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/update-meeting'
-import type { Prisma } from '@prisma/generated/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -17,6 +17,7 @@ import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
+import { toDateOnly } from '@utils/formatters/to-date-only'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -29,28 +30,9 @@ export class UpdateMeetingUseCase {
   ) {}
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const today = toDateOnly(new Date())
 
-    if (body.paymentMeetingInfo?.limitDate) {
-      body.paymentMeetingInfo.limitDate.setHours(0, 0, 0, 0)
-
-      if (body.paymentMeetingInfo.limitDate < today) {
-        throw new InvalidPaymentLimitDateError()
-      }
-    }
-
-    if (body.dates) {
-      body.dates.forEach((date) => {
-        date.setHours(0, 0, 0, 0)
-
-        if (date < today) {
-          throw new InvalidMeetingDateError()
-        }
-      })
-    }
-
-    const updateData: Prisma.MeetingUpdateInput = {}
+    const updateData: UpdateMeetingQuery['data'] = {}
 
     let newBannerImage: string | undefined
     let newAgenda: string | undefined
@@ -85,7 +67,23 @@ export class UpdateMeetingUseCase {
       updateData.location = body.location
     }
 
+    if (body.paymentMeetingInfo) {
+      if (body.paymentMeetingInfo?.limitDate) {
+        if (toDateOnly(body.paymentMeetingInfo.limitDate) < today) {
+          throw new InvalidPaymentLimitDateError()
+        }
+      }
+
+      updateData.meetingPaymentInfo = body.paymentMeetingInfo
+    }
+
     if (body.dates) {
+      body.dates.forEach((date) => {
+        if (toDateOnly(date) < today) {
+          throw new InvalidMeetingDateError()
+        }
+      })
+
       const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
 
       updateData.lastDate = getArrayMaxDate(nonRepeatingDates)

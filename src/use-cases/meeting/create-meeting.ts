@@ -14,6 +14,7 @@ import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-ban
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
 import { InvalidMeetingDateError } from '@use-cases/errors/meeting/invalid-meeting-date-error'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
+import { toDateOnly } from '@utils/formatters/to-date-only'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
@@ -34,21 +35,16 @@ export class CreateMeetingUseCase {
       throw new InvalidEmailDomainError()
     }
 
-    data.meetingPaymentInfo.limitDate.setHours(0, 0, 0, 0)
+    const today = toDateOnly(new Date())
 
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    if (data.meetingPaymentInfo.limitDate < today) {
+    if (toDateOnly(data.meetingPaymentInfo.limitDate) < today) {
       throw new InvalidPaymentLimitDateError()
     }
 
     const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
 
     nonRepeatingDates.forEach((date) => {
-      date.setHours(0, 0, 0, 0)
-
-      if (date < today) {
+      if (toDateOnly(date) < today) {
         throw new InvalidMeetingDateError()
       }
     })

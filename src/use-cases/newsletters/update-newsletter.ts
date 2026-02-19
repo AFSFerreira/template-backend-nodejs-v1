@@ -1,8 +1,8 @@
+import type { UpdateNewsletterQuery } from '@custom-types/repository/prisma/newsletter/update-newsletter-query'
 import type {
   UpdateNewsletterUseCaseRequest,
   UpdateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/update-newsletter'
-import type { Prisma } from '@prisma/generated/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -27,7 +27,7 @@ export class UpdateNewsletterUseCase {
   ) {}
 
   async execute({ publicId, body }: UpdateNewsletterUseCaseRequest): Promise<UpdateNewsletterUseCaseResponse> {
-    const updateData: Prisma.NewsletterUpdateInput = {}
+    const updateData: UpdateNewsletterQuery['data'] = {}
 
     let newContentFilename: string | undefined
 

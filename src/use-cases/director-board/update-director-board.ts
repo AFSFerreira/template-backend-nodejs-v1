@@ -1,3 +1,4 @@
+import type { UpdateDirectorBoardQuery } from '@custom-types/repository/prisma/director-board/update-director-board-query'
 import type {
   UpdateDirectorBoardUseCaseRequest,
   UpdateDirectorBoardUseCaseResponse,
@@ -48,9 +49,7 @@ export class UpdateDirectorBoardUseCase {
     data,
     requestUserPublicId,
   }: UpdateDirectorBoardUseCaseRequest): Promise<UpdateDirectorBoardUseCaseResponse> {
-    const updateData: Prisma.DirectorBoardUpdateInput & {
-      directorPositionId?: number
-    } = {}
+    const updateData: UpdateDirectorBoardQuery['data'] = {}
 
     let newProfileImage: string | undefined
 

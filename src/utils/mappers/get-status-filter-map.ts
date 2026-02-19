@@ -1,6 +1,7 @@
+import { toDateOnly } from '@utils/formatters/to-date-only'
+
 export function getStatusFilterMap() {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
+  const today = toDateOnly(new Date())
 
   return new Map<string, Record<string, Date> | undefined>([
     ['ALL', undefined],

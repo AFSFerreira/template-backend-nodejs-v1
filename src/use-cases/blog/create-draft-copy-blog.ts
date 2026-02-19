@@ -56,6 +56,17 @@ export class CreateDraftCopyBlogUseCase {
       throw new BlogCopyForbiddenError()
     }
 
+    // Cria uma nova cópia da imagem do banner:
+    const newBannerImage = await copyFile({
+      sourceFilePath: buildBlogBannerPath(foundBlog.bannerImage),
+      destinationFolderPath: BLOG_BANNERS_PATH,
+      buildShard: true,
+    })
+
+    if (!newBannerImage.success) {
+      throw new BlogContentCopyError()
+    }
+
     // Extrai o conjunto de todos os nomes das imagens do blog em formato de link:
     const blogImages = extractProseMirrorImages(foundBlog.content as JSONContent)
 
@@ -91,22 +102,11 @@ export class CreateDraftCopyBlogUseCase {
       proseMirror: foundBlog.content as JSONContent,
     })
 
-    // Cria um novo searchContent por segurança:
+    // Cria um novo searchContent:
     const searchContent = ensureExists({
       value: getProseMirrorText({ proseMirror: newProseMirror as JSONContent, tiptapConfiguration }),
       error: new BlogContentCopyError(),
     })
-
-    // Cria uma nova cópia da imagem do banner:
-    const newBannerImage = await copyFile({
-      sourceFilePath: buildBlogBannerPath(foundBlog.bannerImage),
-      destinationFolderPath: BLOG_BANNERS_PATH,
-      buildShard: true,
-    })
-
-    if (!newBannerImage.success) {
-      throw new BlogContentCopyError()
-    }
 
     // Removendo elementos duplicados de subcategoriesIds:
     const nonRepeatingSubcategoriesIds = Array.from<number>(

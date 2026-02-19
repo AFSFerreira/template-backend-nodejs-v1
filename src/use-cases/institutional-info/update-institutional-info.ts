@@ -1,3 +1,4 @@
+import type { UpdateInstitutionalInfoQuery } from '@custom-types/repository/prisma/institutional-info/update-institutional-info-query'
 import type {
   UpdateInstitutionalInfoUseCaseRequest,
   UpdateInstitutionalInfoUseCaseResponse,
@@ -32,7 +33,7 @@ export class UpdateInstitutionalInfoUseCase {
   ) {}
 
   async execute({ data }: UpdateInstitutionalInfoUseCaseRequest): Promise<UpdateInstitutionalInfoUseCaseResponse> {
-    const updateData: Prisma.InstitutionalInfoUpdateInput = {}
+    const updateData: UpdateInstitutionalInfoQuery['data'] = {}
 
     let newAboutImage: string | undefined
 

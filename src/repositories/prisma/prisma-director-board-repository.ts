@@ -42,9 +42,18 @@ export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   }
 
   async update({ id, data }: UpdateDirectorBoardQuery) {
+    const { directorPositionId, ...filteredInfo } = data
+
     const directorBoard = await this.dbContext.client.directorBoard.update({
       where: { id },
-      data,
+      data: {
+        ...filteredInfo,
+        DirectorPosition: {
+          connect: {
+            id: directorPositionId,
+          },
+        },
+      },
       include: directorBoardWithUser.include,
     })
 

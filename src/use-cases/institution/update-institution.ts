@@ -1,8 +1,8 @@
+import type { UpdateInstitutionQuery } from '@custom-types/repository/prisma/institution/update-institution-query'
 import type {
   UpdateInstitutionUseCaseRequest,
   UpdateInstitutionUseCaseResponse,
 } from '@custom-types/use-cases/institution/update-institution'
-import type { Prisma } from '@prisma/generated/client'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -20,7 +20,7 @@ export class UpdateInstitutionUseCase {
   ) {}
 
   async execute({ publicId, data }: UpdateInstitutionUseCaseRequest): Promise<UpdateInstitutionUseCaseResponse> {
-    const updateData: Prisma.InstitutionUpdateInput = {}
+    const updateData: UpdateInstitutionQuery['data'] = {}
 
     const foundInstitution = ensureExists({
       value: await this.institutionsRepository.findByPublicId(publicId),

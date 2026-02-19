@@ -1,7 +1,7 @@
 import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
+import type { UpdateBlogQuery } from '@custom-types/repository/prisma/blog/update-blog-query'
 import type { UpdateBlogUseCaseRequest, UpdateBlogUseCaseResponse } from '@custom-types/use-cases/blogs/update-blog'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { Prisma } from '@prisma/generated/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
@@ -49,7 +49,7 @@ export class UpdateBlogUseCase {
   ) {}
 
   async execute({ publicId, userPublicId, body }: UpdateBlogUseCaseRequest): Promise<UpdateBlogUseCaseResponse> {
-    const updateData: Prisma.BlogUpdateInput = {}
+    const updateData: UpdateBlogQuery['data'] = {}
 
     let newBannerImage: string | undefined
 
