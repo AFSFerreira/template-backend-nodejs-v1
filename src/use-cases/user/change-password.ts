@@ -2,7 +2,6 @@ import type {
   ChangePasswordUseCaseRequest,
   ChangePasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/update-password'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -18,9 +17,6 @@ export class ChangePasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
@@ -30,27 +26,25 @@ export class ChangePasswordUseCase {
   }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
     const newPasswordHash = await HashService.hashPassword(newPassword)
 
-    await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const isOldPasswordCorrect = await HashService.comparePassword({
-        password: oldPassword,
-        hashedPassword: user.passwordHash,
-      })
+    const isOldPasswordCorrect = await HashService.comparePassword({
+      password: oldPassword,
+      hashedPassword: user.passwordHash,
+    })
 
-      if (!isOldPasswordCorrect) {
-        throw new IncorrectOldPasswordError()
-      }
+    if (!isOldPasswordCorrect) {
+      throw new IncorrectOldPasswordError()
+    }
 
-      if (oldPassword === newPassword) return
+    if (oldPassword === newPassword) return {}
 
-      await this.usersRepository.changePassword({
-        id: user.id,
-        passwordHash: newPasswordHash,
-      })
+    await this.usersRepository.changePassword({
+      id: user.id,
+      passwordHash: newPasswordHash,
     })
 
     logger.info({ userPublicId }, PASSWORD_UPDATED_SUCCESSFULLY)

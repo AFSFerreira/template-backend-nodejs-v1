@@ -3,7 +3,6 @@ import type {
   CreateDraftBlogUseCaseRequest,
   CreateDraftBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-blog-draft'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
@@ -41,9 +40,6 @@ export class CreateDraftBlogUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(createDraftBlogUseCaseInput: CreateDraftBlogUseCaseRequest): Promise<CreateDraftBlogUseCaseResponse> {
@@ -75,42 +71,38 @@ export class CreateDraftBlogUseCase {
       oldToNewImagesMap: oldToNewImagesLinkMap,
     })
 
-    const { author, blog } = await this.dbContext.runInTransaction(async () => {
-      const author = ensureExists({
-        value: await this.usersRepository.findByPublicId(createDraftBlogUseCaseInput.authorPublicId),
-        error: new UserNotFoundError(),
-      })
+    const author = ensureExists({
+      value: await this.usersRepository.findByPublicId(createDraftBlogUseCaseInput.authorPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const nonRepeatingSubcategories = Array.from<string>(new Set<string>(createDraftBlogUseCaseInput.subcategories))
+    const nonRepeatingSubcategories = Array.from<string>(new Set<string>(createDraftBlogUseCaseInput.subcategories))
 
-      const { validatedActivityAreas, success } = await validateActivityAreas({
-        activityAreasRepository: this.activityAreasRepository,
-        activityAreas: nonRepeatingSubcategories.map((subcategory) => ({
-          area: subcategory,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        })),
-      })
+    const { validatedActivityAreas, success } = await validateActivityAreas({
+      activityAreasRepository: this.activityAreasRepository,
+      activityAreas: nonRepeatingSubcategories.map((subcategory) => ({
+        area: subcategory,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      })),
+    })
 
-      if (!success) {
-        throw new InvalidActivityArea(
-          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-        )
-      }
+    if (!success) {
+      throw new InvalidActivityArea(
+        validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+      )
+    }
 
-      const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
+    const subcategoriesIds = validatedActivityAreas.map((subcategory) => subcategory.id)
 
-      const createdBlog = await this.blogsRepository.create({
-        title: createDraftBlogUseCaseInput.title,
-        bannerImage: createDraftBlogUseCaseInput.bannerImage,
-        editorialStatus: EditorialStatusType.DRAFT,
-        searchContent,
-        subcategoriesIds,
-        content: newProseMirror as InputJsonValue,
-        authorName: author.fullName,
-        userId: author.id,
-      })
-
-      return { author, blog: createdBlog }
+    const blog = await this.blogsRepository.create({
+      title: createDraftBlogUseCaseInput.title,
+      bannerImage: createDraftBlogUseCaseInput.bannerImage,
+      editorialStatus: EditorialStatusType.DRAFT,
+      searchContent,
+      subcategoriesIds,
+      content: newProseMirror as InputJsonValue,
+      authorName: author.fullName,
+      userId: author.id,
     })
 
     const blogBannerPaths = {

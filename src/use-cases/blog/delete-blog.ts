@@ -1,5 +1,4 @@
 import type { DeleteBlogUseCaseRequest, DeleteBlogUseCaseResponse } from '@custom-types/use-cases/blogs/delete-blog'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, PENDING_APPROVAL_OR_PUBLISHED } from '@constants/sets'
@@ -24,41 +23,33 @@ export class DeleteBlogUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, userPublicId }: DeleteBlogUseCaseRequest): Promise<DeleteBlogUseCaseResponse> {
-    const { blog } = await this.dbContext.runInTransaction(async () => {
-      const blog = ensureExists({
-        value: await this.blogsRepository.findByPublicId(publicId),
-        error: new BlogNotFoundError(),
-      })
-
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
-
-      // Se o usuário for um produtor de conteúdo e o usuário não é autor do blog:
-      const userHaveNoPermissionAndIsNoBlogAuthor =
-        !CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id
-
-      // Se o usuário for um produtor de conteúdo e o blog está publicado ou aguardando aprovação:
-      const userHaveNoPermissionAndBlogIsPosted =
-        PENDING_APPROVAL_OR_PUBLISHED.has(blog.editorialStatus) &&
-        !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
-        blog.userId === user.id
-
-      if (userHaveNoPermissionAndIsNoBlogAuthor || userHaveNoPermissionAndBlogIsPosted) {
-        throw new BlogDeletionForbiddenError()
-      }
-
-      await this.blogsRepository.delete(blog.id)
-
-      return { blog }
+    const blog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
     })
+
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
+    })
+
+    // Se o usuário for um produtor de conteúdo e o usuário não é autor do blog:
+    const userHaveNoPermissionAndIsNoBlogAuthor = !CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id
+
+    // Se o usuário for um produtor de conteúdo e o blog está publicado ou aguardando aprovação:
+    const userHaveNoPermissionAndBlogIsPosted =
+      PENDING_APPROVAL_OR_PUBLISHED.has(blog.editorialStatus) &&
+      !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
+      blog.userId === user.id
+
+    if (userHaveNoPermissionAndIsNoBlogAuthor || userHaveNoPermissionAndBlogIsPosted) {
+      throw new BlogDeletionForbiddenError()
+    }
+
+    await this.blogsRepository.delete(blog.id)
 
     await deleteFileEnqueued({
       filePath: buildBlogBannerPath(blog.bannerImage),

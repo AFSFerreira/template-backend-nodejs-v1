@@ -2,7 +2,6 @@ import type {
   DeleteUserByAdminUseCaseRequest,
   DeleteUserByAdminUseCaseResponse,
 } from '@custom-types/use-cases/user/delete-user-by-admin'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
@@ -20,34 +19,22 @@ export class DeleteUserByAdminUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     adminPublicId,
     targetUserPublicId,
   }: DeleteUserByAdminUseCaseRequest): Promise<DeleteUserByAdminUseCaseResponse> {
-    const deletedUser = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(targetUserPublicId),
-        error: new UserNotFoundError(),
-      })
-
-      const _admin = ensureExists({
-        value: this.usersRepository.findByPublicId(adminPublicId),
-        error: new UserNotFoundError(),
-      })
-
-      if (adminPublicId === targetUserPublicId) {
-        throw new AdminCannotDeleteSelfError()
-      }
-
-      await this.usersRepository.delete(user.id)
-
-      return user
+    const deletedUser = ensureExists({
+      value: await this.usersRepository.findByPublicId(targetUserPublicId),
+      error: new UserNotFoundError(),
     })
+
+    if (adminPublicId === targetUserPublicId) {
+      throw new AdminCannotDeleteSelfError()
+    }
+
+    await this.usersRepository.delete(deletedUser.id)
 
     // Enfileirando a remoção da antiga foto de perfil do usuário:
     if (deletedUser.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {

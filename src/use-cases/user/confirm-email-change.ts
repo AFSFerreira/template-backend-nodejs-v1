@@ -2,7 +2,6 @@ import type {
   ConfirmEmailChangeUseCaseRequest,
   ConfirmEmailChangeUseCaseResponse,
 } from '@custom-types/use-cases/user/confirm-email-change'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -19,34 +18,27 @@ export class ConfirmEmailChangeUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ token }: ConfirmEmailChangeUseCaseRequest): Promise<ConfirmEmailChangeUseCaseResponse> {
     const emailVerificationTokenHash = HashService.hashToken(token)
 
-    const user = await this.dbContext.runInTransaction(async () => {
-      const userFound = ensureExists({
-        value: await this.usersRepository.validateEmailVerificationToken(emailVerificationTokenHash),
-        error: new UserNotFoundError(),
-      })
+    const userFound = ensureExists({
+      value: await this.usersRepository.validateEmailVerificationToken(emailVerificationTokenHash),
+      error: new UserNotFoundError(),
+    })
 
-      if (!userFound.emailVerificationTokenHash || !userFound.emailVerificationTokenExpiresAt || !userFound.newEmail) {
-        throw new EmailChangeNotRequestedError()
-      }
+    if (!userFound.emailVerificationTokenHash || !userFound.emailVerificationTokenExpiresAt || !userFound.newEmail) {
+      throw new EmailChangeNotRequestedError()
+    }
 
-      if (new Date() > userFound.emailVerificationTokenExpiresAt) {
-        throw new InvalidTokenError()
-      }
+    if (new Date() > userFound.emailVerificationTokenExpiresAt) {
+      throw new InvalidTokenError()
+    }
 
-      const updatedUser = await this.usersRepository.confirmEmailChange({
-        id: userFound.id,
-        newEmail: userFound.newEmail,
-      })
-
-      return updatedUser
+    const user = await this.usersRepository.confirmEmailChange({
+      id: userFound.id,
+      newEmail: userFound.newEmail,
     })
 
     logger.info(

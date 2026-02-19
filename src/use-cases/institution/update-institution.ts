@@ -2,7 +2,6 @@ import type {
   UpdateInstitutionUseCaseRequest,
   UpdateInstitutionUseCaseResponse,
 } from '@custom-types/use-cases/institution/update-institution'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { logger } from '@lib/logger'
@@ -18,40 +17,33 @@ export class UpdateInstitutionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, data }: UpdateInstitutionUseCaseRequest): Promise<UpdateInstitutionUseCaseResponse> {
     const updateData: Prisma.InstitutionUpdateInput = {}
 
-    const { institution } = await this.dbContext.runInTransaction(async () => {
-      const institution = ensureExists({
-        value: await this.institutionsRepository.findByPublicId(publicId),
-        error: new InstitutionNotFoundError(),
+    const foundInstitution = ensureExists({
+      value: await this.institutionsRepository.findByPublicId(publicId),
+      error: new InstitutionNotFoundError(),
+    })
+
+    if (data.name) {
+      ensureNotExists({
+        value: await this.institutionsRepository.findByName(data.name),
+        error: new InstitutionAlreadyExistsError(),
       })
 
-      if (data.name) {
-        ensureNotExists({
-          value: await this.institutionsRepository.findByName(data.name),
-          error: new InstitutionAlreadyExistsError(),
+      updateData.name = data.name
+    }
+
+    const shouldUpdate = Object.keys(updateData).length > 0
+
+    const institution = shouldUpdate
+      ? await this.institutionsRepository.update({
+          id: foundInstitution.id,
+          data: updateData,
         })
-
-        updateData.name = data.name
-      }
-
-      const shouldUpdate = Object.keys(updateData).length > 0
-
-      const updatedInstitution = shouldUpdate
-        ? await this.institutionsRepository.update({
-            id: institution.id,
-            data: updateData,
-          })
-        : institution
-
-      return { institution: updatedInstitution }
-    })
+      : foundInstitution
 
     logger.info({ publicId, ...data }, INSTITUTION_UPDATED_SUCCESSFULLY)
 

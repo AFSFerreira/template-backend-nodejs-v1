@@ -2,7 +2,6 @@ import type {
   UpdateDirectorBoardUseCaseRequest,
   UpdateDirectorBoardUseCaseResponse,
 } from '@custom-types/use-cases/director-board/update-director-board'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
@@ -42,9 +41,6 @@ export class UpdateDirectorBoardUseCase {
 
     @inject(tsyringeTokens.repositories.directorPositions)
     private readonly directorPositionsRepository: DirectorPositionsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
@@ -58,77 +54,71 @@ export class UpdateDirectorBoardUseCase {
 
     let newProfileImage: string | undefined
 
-    const { directorBoard } = await this.dbContext.runInTransaction(async () => {
-      const currentDirectorBoard = ensureExists({
-        value: await this.directorBoardRepository.findByPublicId(publicId),
-        error: new DirectorBoardNotFoundError(),
-      })
-
-      const requestUser = ensureExists({
-        value: await this.usersRepository.findByPublicId(requestUserPublicId),
-        error: new UserNotFoundError(),
-      })
-
-      // Validação: Manager só pode atualizar seu próprio perfil
-      if (requestUser.role === UserRoleType.MANAGER && currentDirectorBoard.User.publicId !== requestUser.publicId) {
-        throw new ManagerCannotUpdateOtherDirectorBoardError()
-      }
-
-      if (data.profileImage) {
-        const profileImageSanitized = sanitizeUrlFilename(data.profileImage)
-
-        newProfileImage =
-          profileImageSanitized && profileImageSanitized !== currentDirectorBoard.profileImage
-            ? profileImageSanitized
-            : undefined
-
-        if (newProfileImage) {
-          updateData.profileImage = newProfileImage
-        }
-      }
-
-      if (data.positionId) {
-        const directorPosition = ensureExists({
-          value: await this.directorPositionsRepository.findUniqueBy({ publicId: data.positionId }),
-          error: new DirectorPositionNotFoundError(),
-        })
-
-        const existingDirectorBoard = await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id)
-
-        if (existingDirectorBoard && existingDirectorBoard.id !== currentDirectorBoard.id) {
-          throw new DirectorBoardPositionAlreadyOccupiedError()
-        }
-
-        updateData.directorPositionId = directorPosition.id
-      }
-
-      if (data.aboutMe) {
-        try {
-          generateText(data.aboutMe as JSONContent, tiptapConfiguration)
-        } catch (_error) {
-          throw new InvalidProseMirrorError()
-        }
-
-        updateData.aboutMe = data.aboutMe as Prisma.InputJsonValue
-      }
-
-      if (data.publicName) {
-        updateData.publicName = data.publicName
-      }
-
-      const shouldUpdate = Object.keys(updateData).length > 0
-
-      const updatedDirectorBoard = shouldUpdate
-        ? await this.directorBoardRepository.update({
-            id: currentDirectorBoard.id,
-            data: updateData,
-          })
-        : currentDirectorBoard
-
-      return {
-        directorBoard: updatedDirectorBoard,
-      }
+    const currentDirectorBoard = ensureExists({
+      value: await this.directorBoardRepository.findByPublicId(publicId),
+      error: new DirectorBoardNotFoundError(),
     })
+
+    const requestUser = ensureExists({
+      value: await this.usersRepository.findByPublicId(requestUserPublicId),
+      error: new UserNotFoundError(),
+    })
+
+    // Validação: Manager só pode atualizar seu próprio perfil
+    if (requestUser.role === UserRoleType.MANAGER && currentDirectorBoard.User.publicId !== requestUser.publicId) {
+      throw new ManagerCannotUpdateOtherDirectorBoardError()
+    }
+
+    if (data.profileImage) {
+      const profileImageSanitized = sanitizeUrlFilename(data.profileImage)
+
+      newProfileImage =
+        profileImageSanitized && profileImageSanitized !== currentDirectorBoard.profileImage
+          ? profileImageSanitized
+          : undefined
+
+      if (newProfileImage) {
+        updateData.profileImage = newProfileImage
+      }
+    }
+
+    if (data.positionId) {
+      const directorPosition = ensureExists({
+        value: await this.directorPositionsRepository.findUniqueBy({ publicId: data.positionId }),
+        error: new DirectorPositionNotFoundError(),
+      })
+
+      const existingDirectorBoard = await this.directorBoardRepository.findByDirectorPositionId(directorPosition.id)
+
+      if (existingDirectorBoard && existingDirectorBoard.id !== currentDirectorBoard.id) {
+        throw new DirectorBoardPositionAlreadyOccupiedError()
+      }
+
+      updateData.directorPositionId = directorPosition.id
+    }
+
+    if (data.aboutMe) {
+      try {
+        generateText(data.aboutMe as JSONContent, tiptapConfiguration)
+      } catch (_error) {
+        throw new InvalidProseMirrorError()
+      }
+
+      updateData.aboutMe = data.aboutMe as Prisma.InputJsonValue
+    }
+
+    if (data.publicName) {
+      updateData.publicName = data.publicName
+    }
+
+    const shouldUpdate = Object.keys(updateData).length > 0
+
+    const directorBoard = shouldUpdate
+      ? await this.directorBoardRepository.update({
+          id: currentDirectorBoard.id,
+          data: updateData,
+        })
+      : currentDirectorBoard
 
     const directorBoardProfileImagePaths = newProfileImage
       ? {

@@ -2,7 +2,6 @@ import type {
   DeleteDirectorBoardUseCaseRequest,
   DeleteDirectorBoardUseCaseResponse,
 } from '@custom-types/use-cases/director-board/delete-director-board'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -20,22 +19,15 @@ export class DeleteDirectorBoardUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId }: DeleteDirectorBoardUseCaseRequest): Promise<DeleteDirectorBoardUseCaseResponse> {
-    const { directorBoard } = await this.dbContext.runInTransaction(async () => {
-      const directorBoard = ensureExists({
-        value: await this.directorBoardRepository.findByPublicId(publicId),
-        error: new DirectorBoardNotFoundError(),
-      })
-
-      await this.directorBoardRepository.delete(directorBoard.id)
-
-      return { directorBoard }
+    const directorBoard = ensureExists({
+      value: await this.directorBoardRepository.findByPublicId(publicId),
+      error: new DirectorBoardNotFoundError(),
     })
+
+    await this.directorBoardRepository.delete(directorBoard.id)
 
     if (directorBoard.profileImage) {
       await deleteFileEnqueued({

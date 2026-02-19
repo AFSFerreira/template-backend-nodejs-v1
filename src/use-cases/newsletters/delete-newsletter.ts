@@ -2,7 +2,6 @@ import type {
   DeleteNewsletterUseCaseRequest,
   DeleteNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/delete-newsletter'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -18,22 +17,15 @@ export class DeleteNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId }: DeleteNewsletterUseCaseRequest): Promise<DeleteNewsletterUseCaseResponse> {
-    const { newsletter } = await this.dbContext.runInTransaction(async () => {
-      const newsletter = ensureExists({
-        value: await this.newslettersRepository.findByPublicId(publicId),
-        error: new NewsletterNotFoundError(),
-      })
-
-      await this.newslettersRepository.delete(newsletter.id)
-
-      return { newsletter }
+    const newsletter = ensureExists({
+      value: await this.newslettersRepository.findByPublicId(publicId),
+      error: new NewsletterNotFoundError(),
     })
+
+    await this.newslettersRepository.delete(newsletter.id)
 
     await deleteFileEnqueued({
       filePath: buildNewsletterHtmlPath(newsletter.content),

@@ -2,7 +2,6 @@ import type {
   ForgotPasswordUseCaseRequest,
   ForgotPasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/forgot-password'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { RECOVERY_PASSWORD_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
@@ -26,9 +25,6 @@ export class ForgotPasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ login }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
@@ -36,23 +32,19 @@ export class ForgotPasswordUseCase {
     const recoveryPasswordTokenHash = HashService.hashToken(recoveryPasswordToken)
     const recoveryPasswordTokenExpiresAt = new Date(Date.now() + RECOVERY_PASSWORD_EXPIRATION_TIME)
 
-    const user = await this.dbContext.runInTransaction(async () => {
-      const userAlreadyExists = ensureExists({
-        value: await this.usersRepository.findByEmails(login),
-        error: new UserNotFoundForPasswordResetError(),
-      })
+    const userAlreadyExists = ensureExists({
+      value: await this.usersRepository.findByEmails(login),
+      error: new UserNotFoundForPasswordResetError(),
+    })
 
-      const tokenData = {
-        recoveryPasswordTokenHash,
-        recoveryPasswordTokenExpiresAt,
-      }
+    const tokenData = {
+      recoveryPasswordTokenHash,
+      recoveryPasswordTokenExpiresAt,
+    }
 
-      const updatedUser = await this.usersRepository.setPasswordToken({
-        id: userAlreadyExists.id,
-        tokenData,
-      })
-
-      return updatedUser
+    const user = await this.usersRepository.setPasswordToken({
+      id: userAlreadyExists.id,
+      tokenData,
     })
 
     const emailInfo = {

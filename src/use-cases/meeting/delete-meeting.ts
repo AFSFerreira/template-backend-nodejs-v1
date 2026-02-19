@@ -2,7 +2,6 @@ import type {
   DeleteMeetingUseCaseRequest,
   DeleteMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/delete-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -19,22 +18,15 @@ export class DeleteMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId }: DeleteMeetingUseCaseRequest): Promise<DeleteMeetingUseCaseResponse> {
-    const { meeting } = await this.dbContext.runInTransaction(async () => {
-      const meeting = ensureExists({
-        value: await this.meetingsRepository.findByPublicId(publicId),
-        error: new MeetingNotFoundError(),
-      })
-
-      await this.meetingsRepository.delete(meeting.id)
-
-      return { meeting }
+    const meeting = ensureExists({
+      value: await this.meetingsRepository.findByPublicId(publicId),
+      error: new MeetingNotFoundError(),
     })
+
+    await this.meetingsRepository.delete(meeting.id)
 
     // Enfileirando a remoção da imagem de banner da reunião:
     await deleteFileEnqueued({

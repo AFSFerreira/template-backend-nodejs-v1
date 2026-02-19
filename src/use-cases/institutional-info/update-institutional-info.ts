@@ -2,7 +2,6 @@ import type {
   UpdateInstitutionalInfoUseCaseRequest,
   UpdateInstitutionalInfoUseCaseResponse,
 } from '@custom-types/use-cases/institutional-info/update-institutional-info'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import type { JSONContent } from '@tiptap/core'
@@ -30,9 +29,6 @@ export class UpdateInstitutionalInfoUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutionalInfo)
     private readonly institutionalInfoRepository: InstitutionalInfoRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ data }: UpdateInstitutionalInfoUseCaseRequest): Promise<UpdateInstitutionalInfoUseCaseResponse> {
@@ -51,36 +47,32 @@ export class UpdateInstitutionalInfoUseCase {
       updateData.aboutDescription = data.aboutDescription as Prisma.InputJsonValue
     }
 
-    const { institutionalInfo } = await this.dbContext.runInTransaction(async () => {
-      const currentInstitutionalInfo = ensureExists({
-        value: await this.institutionalInfoRepository.getInstitutionalInfo(),
-        error: new InstitutionalInfoNotFoundError(),
-      })
-
-      if (data.aboutImage) {
-        const aboutImageSanitized = sanitizeUrlFilename(data.aboutImage)
-
-        newAboutImage =
-          aboutImageSanitized && aboutImageSanitized !== currentInstitutionalInfo.aboutImage
-            ? aboutImageSanitized
-            : undefined
-
-        if (newAboutImage) {
-          updateData.aboutImage = newAboutImage
-        }
-      }
-
-      const shouldUpdate = Object.keys(updateData).length > 0
-
-      const updatedInstitutionalInfo = shouldUpdate
-        ? await this.institutionalInfoRepository.update({
-            id: currentInstitutionalInfo.id,
-            data: updateData,
-          })
-        : currentInstitutionalInfo
-
-      return { institutionalInfo: updatedInstitutionalInfo }
+    const currentInstitutionalInfo = ensureExists({
+      value: await this.institutionalInfoRepository.getInstitutionalInfo(),
+      error: new InstitutionalInfoNotFoundError(),
     })
+
+    if (data.aboutImage) {
+      const aboutImageSanitized = sanitizeUrlFilename(data.aboutImage)
+
+      newAboutImage =
+        aboutImageSanitized && aboutImageSanitized !== currentInstitutionalInfo.aboutImage
+          ? aboutImageSanitized
+          : undefined
+
+      if (newAboutImage) {
+        updateData.aboutImage = newAboutImage
+      }
+    }
+
+    const shouldUpdate = Object.keys(updateData).length > 0
+
+    const institutionalInfo = shouldUpdate
+      ? await this.institutionalInfoRepository.update({
+          id: currentInstitutionalInfo.id,
+          data: updateData,
+        })
+      : currentInstitutionalInfo
 
     const institutionalAboutImagePaths = newAboutImage
       ? {

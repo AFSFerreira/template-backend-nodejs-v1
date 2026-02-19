@@ -2,7 +2,6 @@ import type {
   UpdateMembershipStatusUseCaseRequest,
   UpdateMembershipStatusUseCaseResponse,
 } from '@custom-types/use-cases/user/update-membership-status'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, UserRoleType } from '@prisma/generated/enums'
@@ -18,40 +17,33 @@ export class UpdateMembershipStatusUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     membershipStatus,
   }: UpdateMembershipStatusUseCaseRequest): Promise<UpdateMembershipStatusUseCaseResponse> {
-    const user = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(publicId),
-        error: new UserNotFoundError(),
-      })
+    const foundUser = ensureExists({
+      value: await this.usersRepository.findByPublicId(publicId),
+      error: new UserNotFoundError(),
+    })
 
-      if (
-        user.membershipStatus === MembershipStatusType.VERIFYING ||
-        user.membershipStatus === MembershipStatusType.PENDING
-      ) {
-        throw new CannotUpdateMembershipStatusVerifyingOrPendingError()
-      }
+    if (
+      foundUser.membershipStatus === MembershipStatusType.VERIFYING ||
+      foundUser.membershipStatus === MembershipStatusType.PENDING
+    ) {
+      throw new CannotUpdateMembershipStatusVerifyingOrPendingError()
+    }
 
-      if (user.role === UserRoleType.ADMIN && membershipStatus === MembershipStatusType.INACTIVE) {
-        throw new AdminCannotBeInactivatedError()
-      }
+    if (foundUser.role === UserRoleType.ADMIN && membershipStatus === MembershipStatusType.INACTIVE) {
+      throw new AdminCannotBeInactivatedError()
+    }
 
-      const updatedUser = await this.usersRepository.update({
-        id: user.id,
-        data: {
-          user: { membershipStatus },
-        },
-      })
-
-      return updatedUser
+    const user = await this.usersRepository.update({
+      id: foundUser.id,
+      data: {
+        user: { membershipStatus },
+      },
     })
 
     return {

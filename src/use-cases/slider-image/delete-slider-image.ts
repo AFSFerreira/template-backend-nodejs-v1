@@ -2,7 +2,6 @@ import type {
   DeleteSliderImageUseCaseRequest,
   DeleteSliderImageUseCaseResponse,
 } from '@custom-types/use-cases/slider-image/delete-slider-image'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -18,22 +17,15 @@ export class DeleteSliderImageUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.sliderImages)
     private readonly sliderImagesRepository: SliderImagesRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId }: DeleteSliderImageUseCaseRequest): Promise<DeleteSliderImageUseCaseResponse> {
-    const { sliderImage } = await this.dbContext.runInTransaction(async () => {
-      const sliderImage = ensureExists({
-        value: await this.sliderImagesRepository.findByPublicId(publicId),
-        error: new SliderImageNotFoundError(),
-      })
-
-      await this.sliderImagesRepository.delete(sliderImage.id)
-
-      return { sliderImage }
+    const sliderImage = ensureExists({
+      value: await this.sliderImagesRepository.findByPublicId(publicId),
+      error: new SliderImageNotFoundError(),
     })
+
+    await this.sliderImagesRepository.delete(sliderImage.id)
 
     await deleteFileEnqueued({
       filePath: buildHomePageSliderImagePath(sliderImage.image),

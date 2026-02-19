@@ -2,9 +2,9 @@ import type {
   ReviewMembershipStatusUseCaseRequest,
   ReviewMembershipStatusUseCaseResponse,
 } from '@custom-types/use-cases/user/review-membership-status'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
+import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -30,83 +30,85 @@ export class ReviewMembershipStatusUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     membershipStatusReview,
   }: ReviewMembershipStatusUseCaseRequest): Promise<ReviewMembershipStatusUseCaseResponse> {
-    const user = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(publicId),
-        error: new UserNotFoundError(),
-      })
-
-      if (user.membershipStatus !== MembershipStatusType.PENDING) {
-        throw new MembershipStatusNotPending()
-      }
-
-      if (membershipStatusReview === 'REJECTED') {
-        await this.usersRepository.delete(user.id)
-        return user
-      }
-
-      // Aprova o pedido de associação
-      await this.usersRepository.update({
-        id: user.id,
-        data: {
-          user: {
-            membershipStatus: MembershipStatusType.ACTIVE,
-          },
-        },
-      })
-
-      return user
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(publicId),
+      error: new UserNotFoundError(),
     })
+
+    if (user.membershipStatus !== MembershipStatusType.PENDING) {
+      throw new MembershipStatusNotPending()
+    }
 
     const emailInfo = {
       fullName: user.fullName,
       email: user.email,
     }
 
-    if (membershipStatusReview === 'REJECTED') {
-      const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
-
-      await sendEmailEnqueued({
-        to: user.email,
-        subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
-        message: membershipRejectedTextTemplate(emailInfo),
-        html,
-        attachments,
-        logging: {
-          errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
-          context: { userPublicId: user.publicId, userEmail: user.email },
-        },
-      })
-
-      // Removendo a imagem de perfil do usuário
-      if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
-        await deleteFileEnqueued({
-          filePath: buildUserProfileImagePath(user.profileImage),
+    switch (membershipStatusReview) {
+      case 'ACTIVE': {
+        // Aprova o pedido de associação
+        await this.usersRepository.update({
+          id: user.id,
+          data: {
+            user: {
+              membershipStatus: MembershipStatusType.ACTIVE,
+            },
+          },
         })
-      }
-    } else {
-      const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
 
-      await sendEmailEnqueued({
-        to: user.email,
-        subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
-        message: membershipApprovedTextTemplate(emailInfo),
-        html,
-        attachments,
-        logging: {
-          errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
-          context: { userPublicId: user.publicId, userEmail: user.email },
-        },
-      })
+        const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
+
+        await sendEmailEnqueued({
+          to: user.email,
+          subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
+          message: membershipApprovedTextTemplate(emailInfo),
+          html,
+          attachments,
+          logging: {
+            errorMessage: MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
+            context: { userPublicId: user.publicId, userEmail: user.email },
+          },
+        })
+
+        break
+      }
+
+      case 'REJECTED': {
+        await this.usersRepository.delete(user.id)
+
+        if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
+          // Removendo a imagem de perfil do usuário
+          await deleteFileEnqueued({
+            filePath: buildUserProfileImagePath(user.profileImage),
+          })
+        }
+
+        const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
+
+        await sendEmailEnqueued({
+          to: user.email,
+          subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
+          message: membershipRejectedTextTemplate(emailInfo),
+          html,
+          attachments,
+          logging: {
+            errorMessage: MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
+            context: { userPublicId: user.publicId, userEmail: user.email },
+          },
+        })
+
+        break
+      }
+
+      default: {
+        throw new InvalidFileOperationTypeError(membershipStatusReview satisfies never)
+      }
     }
 
     return {

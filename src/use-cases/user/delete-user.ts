@@ -2,7 +2,6 @@ import type {
   DeleteUserUseCaseRequest,
   DeleteUserUseCaseResponse,
 } from '@custom-types/use-cases/user/delete-own-account'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
@@ -25,26 +24,19 @@ export class DeleteUserUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId }: DeleteUserUseCaseRequest): Promise<DeleteUserUseCaseResponse> {
-    const { deletedUser } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(publicId),
-        error: new UserNotFoundError(),
-      })
-
-      if (user.role === UserRoleType.ADMIN) {
-        throw new AdminCannotDeleteSelfError()
-      }
-
-      await this.usersRepository.delete(user.id)
-
-      return { deletedUser: user }
+    const deletedUser = ensureExists({
+      value: await this.usersRepository.findByPublicId(publicId),
+      error: new UserNotFoundError(),
     })
+
+    if (deletedUser.role === UserRoleType.ADMIN) {
+      throw new AdminCannotDeleteSelfError()
+    }
+
+    await this.usersRepository.delete(deletedUser.id)
 
     const emailInfo = {
       fullName: deletedUser.fullName,

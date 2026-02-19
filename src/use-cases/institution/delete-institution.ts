@@ -2,7 +2,6 @@ import type {
   DeleteInstitutionUseCaseRequest,
   DeleteInstitutionUseCaseResponse,
 } from '@custom-types/use-cases/institution/delete-institution'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -16,20 +15,15 @@ export class DeleteInstitutionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId }: DeleteInstitutionUseCaseRequest): Promise<DeleteInstitutionUseCaseResponse> {
-    await this.dbContext.runInTransaction(async () => {
-      const institution = ensureExists({
-        value: await this.institutionsRepository.findByPublicId(publicId),
-        error: new InstitutionNotFoundError(),
-      })
-
-      await this.institutionsRepository.delete(institution.id)
+    const institution = ensureExists({
+      value: await this.institutionsRepository.findByPublicId(publicId),
+      error: new InstitutionNotFoundError(),
     })
+
+    await this.institutionsRepository.delete(institution.id)
 
     logger.info({ institutionPublicId: publicId }, INSTITUTION_DELETED_SUCCESSFULLY)
 

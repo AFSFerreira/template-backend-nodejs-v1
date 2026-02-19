@@ -2,7 +2,6 @@ import type {
   UpdateMeetingUseCaseRequest,
   UpdateMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/update-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
@@ -27,9 +26,6 @@ export class UpdateMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
@@ -59,71 +55,67 @@ export class UpdateMeetingUseCase {
     let newBannerImage: string | undefined
     let newAgenda: string | undefined
 
-    const { meeting } = await this.dbContext.runInTransaction(async () => {
-      const meeting = ensureExists({
-        value: await this.meetingsRepository.findByPublicId(publicId),
-        error: new MeetingNotFoundError(),
-      })
-
-      if (body.bannerImage) {
-        const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
-
-        newBannerImage =
-          bannerImageSanitized && bannerImageSanitized !== meeting.bannerImage ? bannerImageSanitized : undefined
-      }
-
-      if (body.agenda) {
-        const agendaSanitized = sanitizeUrlFilename(body.agenda)
-
-        newAgenda = agendaSanitized && agendaSanitized !== meeting.agenda ? agendaSanitized : undefined
-      }
-
-      if (body.title) {
-        updateData.title = body.title
-      }
-
-      if (body.description) {
-        updateData.description = body.description
-      }
-
-      if (body.location) {
-        updateData.location = body.location
-      }
-
-      if (body.dates) {
-        const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
-
-        updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
-
-        if (updateData.lastDate >= today) {
-          throw new MeetingDateConflictError()
-        }
-
-        updateData.MeetingDate = {
-          deleteMany: {},
-          create: nonRepeatingDates.map((date) => ({ date })),
-        }
-      }
-
-      if (newBannerImage) {
-        updateData.bannerImage = newBannerImage
-      }
-
-      if (newAgenda) {
-        updateData.agenda = newAgenda
-      }
-
-      const shouldUpdate = Object.keys(updateData).length > 0
-
-      const updatedMeeting = shouldUpdate
-        ? await this.meetingsRepository.update({
-            id: meeting.id,
-            data: updateData,
-          })
-        : meeting
-
-      return { meeting: updatedMeeting }
+    const foundMeeting = ensureExists({
+      value: await this.meetingsRepository.findByPublicId(publicId),
+      error: new MeetingNotFoundError(),
     })
+
+    if (body.bannerImage) {
+      const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
+
+      newBannerImage =
+        bannerImageSanitized && bannerImageSanitized !== foundMeeting.bannerImage ? bannerImageSanitized : undefined
+    }
+
+    if (body.agenda) {
+      const agendaSanitized = sanitizeUrlFilename(body.agenda)
+
+      newAgenda = agendaSanitized && agendaSanitized !== foundMeeting.agenda ? agendaSanitized : undefined
+    }
+
+    if (body.title) {
+      updateData.title = body.title
+    }
+
+    if (body.description) {
+      updateData.description = body.description
+    }
+
+    if (body.location) {
+      updateData.location = body.location
+    }
+
+    if (body.dates) {
+      const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
+
+      updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
+
+      if (updateData.lastDate >= today) {
+        throw new MeetingDateConflictError()
+      }
+
+      updateData.MeetingDate = {
+        deleteMany: {},
+        create: nonRepeatingDates.map((date) => ({ date })),
+      }
+    }
+
+    if (newBannerImage) {
+      updateData.bannerImage = newBannerImage
+    }
+
+    if (newAgenda) {
+      updateData.agenda = newAgenda
+    }
+
+    const shouldUpdate = Object.keys(updateData).length > 0
+
+    const meeting = shouldUpdate
+      ? await this.meetingsRepository.update({
+          id: foundMeeting.id,
+          data: updateData,
+        })
+      : foundMeeting
 
     const meetingBannerPaths = newBannerImage
       ? {

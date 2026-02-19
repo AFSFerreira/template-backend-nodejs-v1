@@ -1,6 +1,5 @@
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { UpdateUserUseCaseRequest, UpdateUserUseCaseResponse } from '@custom-types/use-cases/user/update-user'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
@@ -46,9 +45,6 @@ export class UpdateUserUseCase {
 
     @inject(tsyringeTokens.repositories.addressCountries)
     private readonly addressCountriesRepository: AddressCountryRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, data }: UpdateUserUseCaseRequest): Promise<UpdateUserUseCaseResponse> {
@@ -56,127 +52,120 @@ export class UpdateUserUseCase {
 
     const isHighLevelEducation = isUpdateUserHighLevelStudentEducation(data) || isUpdateUserHighLevelEducation(data)
 
-    const { user } = await this.dbContext.runInTransaction(async () => {
-      const userExists = ensureExists({
-        value: await this.usersRepository.findByPublicId(publicId),
-        error: new UserNotFoundError(),
+    const userExists = ensureExists({
+      value: await this.usersRepository.findByPublicId(publicId),
+      error: new UserNotFoundError(),
+    })
+
+    let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined
+
+    let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
+
+    if (data.user) {
+      if (data.user.username && data.user.username !== userExists.username) {
+        const userConflictingUpdateInfo = await this.usersRepository.findByUsername(data.user.username)
+
+        if (userConflictingUpdateInfo) {
+          throw new UserWithSameUsername()
+        }
+      }
+
+      if (data.user.profileImage) {
+        const profileImageSanitized = sanitizeUrlFilename(data.user.profileImage)
+
+        newProfileImage =
+          profileImageSanitized && profileImageSanitized !== userExists.profileImage ? profileImageSanitized : undefined
+      }
+
+      userUpdateInfo = data.user
+    }
+
+    if (data.address) {
+      const addressCountry = await this.addressCountriesRepository.findOrCreate(data.address.country)
+
+      const addressState = await this.addressStatesRepository.findOrCreate({
+        state: data.address.state,
+        countryId: addressCountry.id,
       })
 
-      let userUpdateInfo: UpdateUserQuery['data']['user'] | undefined
+      const { state, country, ...filteredAddressUpdateData } = data.address
 
-      let addressUpdateInfo: UpdateUserQuery['data']['address'] | undefined
-
-      if (data.user) {
-        if (data.user.username && data.user.username !== userExists.username) {
-          const userConflictingUpdateInfo = await this.usersRepository.findByUsername(data.user.username)
-
-          if (userConflictingUpdateInfo) {
-            throw new UserWithSameUsername()
-          }
-        }
-
-        if (data.user.profileImage) {
-          const profileImageSanitized = sanitizeUrlFilename(data.user.profileImage)
-
-          newProfileImage =
-            profileImageSanitized && profileImageSanitized !== userExists.profileImage
-              ? profileImageSanitized
-              : undefined
-        }
-
-        userUpdateInfo = data.user
+      addressUpdateInfo = {
+        ...filteredAddressUpdateData,
+        stateId: addressState.id,
       }
+    }
 
-      if (data.address) {
-        const addressCountry = await this.addressCountriesRepository.findOrCreate(data.address.country)
+    if (isHighLevelEducation) {
+      if (data.academicPublication) {
+        const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
+          area: academicPub.area,
+          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+        }))
 
-        const addressState = await this.addressStatesRepository.findOrCreate({
-          state: data.address.state,
-          countryId: addressCountry.id,
+        const activityAreas = [
+          ...academicPublicationsActivityAreas,
+          ...(data.activityArea
+            ? [
+                {
+                  area: data.activityArea.mainActivityArea,
+                  type: ActivityAreaType.AREA_OF_ACTIVITY,
+                },
+                {
+                  area: data.activityArea.subActivityArea,
+                  type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+                },
+              ]
+            : []),
+        ]
+
+        // Removendo activity areas duplicadas:
+        const nonRepeatingActivityAreas = activityAreas.filter(
+          (activityArea, index, self) =>
+            index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
+        )
+
+        const { validatedActivityAreas, success } = await validateActivityAreas({
+          activityAreas: nonRepeatingActivityAreas,
+          activityAreasRepository: this.activityAreasRepository,
         })
 
-        const { state, country, ...filteredAddressUpdateData } = data.address
-
-        addressUpdateInfo = {
-          ...filteredAddressUpdateData,
-          stateId: addressState.id,
-        }
-      }
-
-      if (isHighLevelEducation) {
-        if (data.academicPublication) {
-          const academicPublicationsActivityAreas = data.academicPublication.map((academicPub) => ({
-            area: academicPub.area,
-            type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-          }))
-
-          const activityAreas = [
-            ...academicPublicationsActivityAreas,
-            ...(data.activityArea
-              ? [
-                  {
-                    area: data.activityArea.mainActivityArea,
-                    type: ActivityAreaType.AREA_OF_ACTIVITY,
-                  },
-                  {
-                    area: data.activityArea.subActivityArea,
-                    type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-                  },
-                ]
-              : []),
-          ]
-
-          // Removendo activity areas duplicadas:
-          const nonRepeatingActivityAreas = activityAreas.filter(
-            (activityArea, index, self) =>
-              index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
+        if (!success) {
+          throw new InvalidActivityArea(
+            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
           )
-
-          const { validatedActivityAreas, success } = await validateActivityAreas({
-            activityAreas: nonRepeatingActivityAreas,
-            activityAreasRepository: this.activityAreasRepository,
-          })
-
-          if (!success) {
-            throw new InvalidActivityArea(
-              validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-            )
-          }
-        }
-
-        if (data.institution) {
-          const isValidInstitution = await validateInstitutionName({
-            institution: data.institution.name,
-            institutionsRepository: this.institutionsRepository,
-          })
-
-          if (!isValidInstitution) {
-            throw new InvalidInstitutionName()
-          }
         }
       }
 
-      // Removendo elementos duplicados de keywords:
-      const nonRepeatingKeywords =
-        isHighLevelEducation && data.keyword ? Array.from<string>(new Set<string>(data.keyword)) : undefined
+      if (data.institution) {
+        const isValidInstitution = await validateInstitutionName({
+          institution: data.institution.name,
+          institutionsRepository: this.institutionsRepository,
+        })
 
-      const shouldUpdate =
-        Object.keys(data).length > 0 || userUpdateInfo !== undefined || addressUpdateInfo !== undefined
+        if (!isValidInstitution) {
+          throw new InvalidInstitutionName()
+        }
+      }
+    }
 
-      const user = shouldUpdate
-        ? await this.usersRepository.update({
-            id: userExists.id,
-            data: {
-              ...data,
-              ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
-              address: addressUpdateInfo,
-              user: userUpdateInfo,
-            },
-          })
-        : userExists
+    // Removendo elementos duplicados de keywords:
+    const nonRepeatingKeywords =
+      isHighLevelEducation && data.keyword ? Array.from<string>(new Set<string>(data.keyword)) : undefined
 
-      return { user }
-    })
+    const shouldUpdate = Object.keys(data).length > 0 || userUpdateInfo !== undefined || addressUpdateInfo !== undefined
+
+    const user = shouldUpdate
+      ? await this.usersRepository.update({
+          id: userExists.id,
+          data: {
+            ...data,
+            ...(isHighLevelEducation ? { keyword: nonRepeatingKeywords } : {}),
+            address: addressUpdateInfo,
+            user: userUpdateInfo,
+          },
+        })
+      : userExists
 
     const userProfileImagePaths = newProfileImage
       ? {

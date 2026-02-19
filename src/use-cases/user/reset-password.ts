@@ -2,7 +2,6 @@ import type {
   ResetPasswordUseCaseRequest,
   ResetPasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/reset-password'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -19,35 +18,28 @@ export class ResetPasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ newPassword, token }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
     const tokenHash = HashService.hashToken(token)
     const passwordHash = await HashService.hashPassword(newPassword)
 
-    const user = await this.dbContext.runInTransaction(async () => {
-      const userFound = ensureExists({
-        value: await this.usersRepository.validateUserToken(tokenHash),
-        error: new UserNotFoundError(),
-      })
+    const userFound = ensureExists({
+      value: await this.usersRepository.validateUserToken(tokenHash),
+      error: new UserNotFoundError(),
+    })
 
-      if (!userFound.recoveryPasswordTokenExpiresAt) {
-        throw new PasswordRecoveryNotRequestedByUserError()
-      }
+    if (!userFound.recoveryPasswordTokenExpiresAt) {
+      throw new PasswordRecoveryNotRequestedByUserError()
+    }
 
-      if (userFound.recoveryPasswordTokenExpiresAt < new Date()) {
-        throw new InvalidTokenError()
-      }
+    if (userFound.recoveryPasswordTokenExpiresAt < new Date()) {
+      throw new InvalidTokenError()
+    }
 
-      const updatedUser = await this.usersRepository.changePassword({
-        id: userFound.id,
-        passwordHash,
-      })
-
-      return updatedUser
+    const user = await this.usersRepository.changePassword({
+      id: userFound.id,
+      passwordHash,
     })
 
     logger.info(RESET_PASSWORD_SUCCESSFUL)

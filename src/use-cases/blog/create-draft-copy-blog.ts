@@ -2,7 +2,6 @@ import type {
   CreateDraftCopyBlogUseCaseRequest,
   CreateDraftCopyBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-draft-copy-blog'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
@@ -37,99 +36,92 @@ export class CreateDraftCopyBlogUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     userPublicId,
   }: CreateDraftCopyBlogUseCaseRequest): Promise<CreateDraftCopyBlogUseCaseResponse> {
-    const { blog, user } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const blog = ensureExists({
-        value: await this.blogsRepository.findByPublicId(publicId),
-        error: new BlogNotFoundError(),
-      })
+    const foundBlog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
+    })
 
-      if (!CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id) {
-        throw new BlogCopyForbiddenError()
-      }
+    if (!CONTENT_LEADER_PERMISSIONS.has(user.role) && foundBlog.userId !== user.id) {
+      throw new BlogCopyForbiddenError()
+    }
 
-      // Extrai o conjunto de todos os nomes das imagens do blog em formato de link:
-      const blogImages = extractProseMirrorImages(blog.content as JSONContent)
+    // Extrai o conjunto de todos os nomes das imagens do blog em formato de link:
+    const blogImages = extractProseMirrorImages(foundBlog.content as JSONContent)
 
-      const oldToNewImagesLinkMap = new Map<string, string>()
+    const oldToNewImagesLinkMap = new Map<string, string>()
 
-      // Cria um map para transformar cada link de imagem antigo para o novo:
-      await Promise.all(
-        Array.from(blogImages).map(async (imageLink) => {
-          logger.fatal(imageLink)
-          const imageName = ensureExists({
-            value: sanitizeUrlFilename(imageLink),
-            error: new BlogContentCopyError(),
-          })
+    // Cria um map para transformar cada link de imagem antigo para o novo:
+    await Promise.all(
+      Array.from(blogImages).map(async (imageLink) => {
+        logger.fatal(imageLink)
+        const imageName = ensureExists({
+          value: sanitizeUrlFilename(imageLink),
+          error: new BlogContentCopyError(),
+        })
 
-          const imageCopyInfo = await copyFile({
-            sourceFilePath: buildBlogImagePath(imageName),
-            destinationFolderPath: BLOG_IMAGES_PATH,
-          })
+        const imageCopyInfo = await copyFile({
+          sourceFilePath: buildBlogImagePath(imageName),
+          destinationFolderPath: BLOG_IMAGES_PATH,
+        })
 
-          if (!imageCopyInfo.success) {
-            throw new BlogContentCopyError()
-          }
+        if (!imageCopyInfo.success) {
+          throw new BlogContentCopyError()
+        }
 
-          const copyImageNewUrl = buildBlogImageUrl(imageCopyInfo.filename)
+        const copyImageNewUrl = buildBlogImageUrl(imageCopyInfo.filename)
 
-          oldToNewImagesLinkMap.set(imageLink, copyImageNewUrl)
-        }),
-      )
+        oldToNewImagesLinkMap.set(imageLink, copyImageNewUrl)
+      }),
+    )
 
-      // Substitui os links do antigo prose mirror pelo novo:
-      const newProseMirror = replaceProseMirrorImages({
-        oldToNewImagesMap: oldToNewImagesLinkMap,
-        proseMirror: blog.content as JSONContent,
-      })
+    // Substitui os links do antigo prose mirror pelo novo:
+    const newProseMirror = replaceProseMirrorImages({
+      oldToNewImagesMap: oldToNewImagesLinkMap,
+      proseMirror: foundBlog.content as JSONContent,
+    })
 
-      // Cria um novo searchContent por segurança:
-      const searchContent = ensureExists({
-        value: getProseMirrorText({ proseMirror: newProseMirror as JSONContent, tiptapConfiguration }),
-        error: new BlogContentCopyError(),
-      })
+    // Cria um novo searchContent por segurança:
+    const searchContent = ensureExists({
+      value: getProseMirrorText({ proseMirror: newProseMirror as JSONContent, tiptapConfiguration }),
+      error: new BlogContentCopyError(),
+    })
 
-      // Cria uma nova cópia da imagem do banner:
-      const newBannerImage = await copyFile({
-        sourceFilePath: buildBlogBannerPath(blog.bannerImage),
-        destinationFolderPath: BLOG_BANNERS_PATH,
-        buildShard: true,
-      })
+    // Cria uma nova cópia da imagem do banner:
+    const newBannerImage = await copyFile({
+      sourceFilePath: buildBlogBannerPath(foundBlog.bannerImage),
+      destinationFolderPath: BLOG_BANNERS_PATH,
+      buildShard: true,
+    })
 
-      if (!newBannerImage.success) {
-        throw new BlogContentCopyError()
-      }
+    if (!newBannerImage.success) {
+      throw new BlogContentCopyError()
+    }
 
-      // Removendo elementos duplicados de subcategoriesIds:
-      const nonRepeatingSubcategoriesIds = Array.from<number>(
-        new Set<number>(blog.Subcategories.map((subcategory) => subcategory.id)),
-      )
+    // Removendo elementos duplicados de subcategoriesIds:
+    const nonRepeatingSubcategoriesIds = Array.from<number>(
+      new Set<number>(foundBlog.Subcategories.map((subcategory) => subcategory.id)),
+    )
 
-      const createdBlog = await this.blogsRepository.create({
-        editorialStatus: EditorialStatusType.DRAFT,
-        title: `${blog.title} - Cópia`,
-        bannerImage: newBannerImage.filename,
-        searchContent,
-        subcategoriesIds: nonRepeatingSubcategoriesIds,
-        content: newProseMirror as InputJsonValue,
-        authorName: user.fullName,
-        userId: user.id,
-      })
-
-      return { blog: createdBlog, user }
+    const blog = await this.blogsRepository.create({
+      editorialStatus: EditorialStatusType.DRAFT,
+      title: `${foundBlog.title} - Cópia`,
+      bannerImage: newBannerImage.filename,
+      searchContent,
+      subcategoriesIds: nonRepeatingSubcategoriesIds,
+      content: newProseMirror as InputJsonValue,
+      authorName: user.fullName,
+      userId: user.id,
     })
 
     logger.info(

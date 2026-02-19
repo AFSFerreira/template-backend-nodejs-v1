@@ -2,7 +2,6 @@ import type {
   SubmitPendingToPublishUseCaseRequest,
   SubmitPendingToPublishUseCaseResponse,
 } from '@custom-types/use-cases/blogs/submit-review-to-publish'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
@@ -24,36 +23,29 @@ export class SubmitPendingToPublishUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     userPublicId,
   }: SubmitPendingToPublishUseCaseRequest): Promise<SubmitPendingToPublishUseCaseResponse> {
-    const { blog, user } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const blog = ensureExists({
-        value: await this.blogsRepository.findByPublicId(publicId),
-        error: new BlogNotFoundError(),
-      })
+    const foundBlog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
+    })
 
-      if (blog.editorialStatus !== EditorialStatusType.PENDING_APPROVAL) {
-        throw new BlogNotInPendingApprovalStatusError()
-      }
+    if (foundBlog.editorialStatus !== EditorialStatusType.PENDING_APPROVAL) {
+      throw new BlogNotInPendingApprovalStatusError()
+    }
 
-      const updatedBlog = await this.blogsRepository.updateStatus({
-        id: blog.id,
-        status: EditorialStatusType.PUBLISHED,
-      })
-
-      return { blog: updatedBlog, user }
+    const blog = await this.blogsRepository.updateStatus({
+      id: foundBlog.id,
+      status: EditorialStatusType.PUBLISHED,
     })
 
     logger.info(

@@ -1,6 +1,5 @@
 import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 import type { UpdateBlogUseCaseRequest, UpdateBlogUseCaseResponse } from '@custom-types/use-cases/blogs/update-blog'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { Prisma } from '@prisma/generated/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
@@ -47,9 +46,6 @@ export class UpdateBlogUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, userPublicId, body }: UpdateBlogUseCaseRequest): Promise<UpdateBlogUseCaseResponse> {
@@ -62,136 +58,133 @@ export class UpdateBlogUseCase {
     let newImages: Array<string> | undefined
     let removedImages: Array<string> | undefined
 
-    const { blog, user } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
-
-      const blog = ensureExists({
-        value: await this.blogsRepository.findByPublicId(publicId),
-        error: new BlogNotFoundError(),
-      })
-
-      if (body.bannerImage) {
-        const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
-
-        newBannerImage =
-          bannerImageSanitized && bannerImageSanitized !== blog.bannerImage ? bannerImageSanitized : undefined
-      }
-
-      // Se o usuário é um produtor de conteúdo e o blog não for de autoria dele:
-      const userIsContentProducerAndIsNotAuthor = !CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id
-
-      // Se o usuário é um produtor de conteúdo e o blog não está em estado de rascunho ou mudanças solicitadas:
-      const userIsContentProducerAndBlogIsUnavailable =
-        !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
-        blog.userId === user.id &&
-        !DRAFT_OR_PENDING_OR_CHANGES_REQUESTED.has(blog.editorialStatus)
-
-      if (userIsContentProducerAndIsNotAuthor || userIsContentProducerAndBlogIsUnavailable) {
-        throw new BlogAccessForbiddenError()
-      }
-
-      if (body.title) {
-        updateData.title = body.title
-      }
-
-      if (body.editorialStatus) {
-        if (!CONTENT_LEADER_PERMISSIONS.has(user.role)) {
-          throw new BlogEditorialStatusChangeForbiddenError()
-        }
-
-        updateData.editorialStatus = body.editorialStatus
-      }
-
-      if (body.content) {
-        const searchContent = ensureExists({
-          value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
-          error: new InvalidBlogContentError(),
-        })
-
-        const oldBlogImages = extractProseMirrorImages(blog.content as JSONContent)
-        const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
-
-        newImages = Array.from<string>(newBlogImages.difference(oldBlogImages)).map((imageLink) => {
-          return ensureExists({
-            value: sanitizeUrlFilename(imageLink),
-            error: new BlogInvalidImageLinkError(),
-          })
-        })
-
-        removedImages = Array.from<string>(oldBlogImages.difference(newBlogImages)).map((imageLink) => {
-          return ensureExists({
-            value: sanitizeUrlFilename(imageLink),
-            error: new BlogInvalidImageLinkError(),
-          })
-        })
-
-        const oldToNewImagesLinkMap = new Map<string, string>()
-
-        formattedBlogImages = newImages.map((imageName) => {
-          oldToNewImagesLinkMap.set(imageName, buildBlogImageUrl(imageName))
-
-          return {
-            oldFilePath: buildBlogTempImagePath(imageName),
-            newFilePath: buildBlogImagePath(imageName),
-          }
-        })
-
-        const newProseMirror = replaceProseMirrorImages({
-          proseMirror: body.content,
-          oldToNewImagesMap: oldToNewImagesLinkMap,
-        })
-
-        updateData.content = newProseMirror as InputJsonValue
-        updateData.searchContent = searchContent
-      }
-
-      if (newBannerImage) {
-        updateData.bannerImage = newBannerImage
-      }
-
-      if (body.subcategories) {
-        const nonRepeatingSubcategories = Array.from<string>(new Set<string>(body.subcategories))
-
-        const formattedSubcategories = nonRepeatingSubcategories.map((subcategory) => ({
-          area: subcategory,
-          type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
-        }))
-
-        // Valida as novas subcategorias:
-        const { validatedActivityAreas, success } = await validateActivityAreas({
-          activityAreas: formattedSubcategories,
-          activityAreasRepository: this.activityAreasRepository,
-        })
-
-        if (!success) {
-          throw new InvalidActivityArea(
-            validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
-          )
-        }
-
-        updateData.Subcategories = {
-          set: [],
-          connectOrCreate: formattedSubcategories.map((formattedSubcategory) => ({
-            where: { type_area: formattedSubcategory },
-            create: formattedSubcategory,
-          })),
-        }
-      }
-
-      const shouldUpdate = Object.keys(updateData).length > 0
-
-      const updatedBlog = shouldUpdate
-        ? await this.blogsRepository.update({
-            id: blog.id,
-            data: updateData,
-          })
-        : blog
-
-      return { blog: updatedBlog, user }
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
     })
+
+    const foundBlog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
+    })
+
+    if (body.bannerImage) {
+      const bannerImageSanitized = sanitizeUrlFilename(body.bannerImage)
+
+      newBannerImage =
+        bannerImageSanitized && bannerImageSanitized !== foundBlog.bannerImage ? bannerImageSanitized : undefined
+    }
+
+    // Se o usuário é um produtor de conteúdo e o blog não for de autoria dele:
+    const userIsContentProducerAndIsNotAuthor =
+      !CONTENT_LEADER_PERMISSIONS.has(user.role) && foundBlog.userId !== user.id
+
+    // Se o usuário é um produtor de conteúdo e o blog não está em estado de rascunho ou mudanças solicitadas:
+    const userIsContentProducerAndBlogIsUnavailable =
+      !CONTENT_LEADER_PERMISSIONS.has(user.role) &&
+      foundBlog.userId === user.id &&
+      !DRAFT_OR_PENDING_OR_CHANGES_REQUESTED.has(foundBlog.editorialStatus)
+
+    if (userIsContentProducerAndIsNotAuthor || userIsContentProducerAndBlogIsUnavailable) {
+      throw new BlogAccessForbiddenError()
+    }
+
+    if (body.title) {
+      updateData.title = body.title
+    }
+
+    if (body.editorialStatus) {
+      if (!CONTENT_LEADER_PERMISSIONS.has(user.role)) {
+        throw new BlogEditorialStatusChangeForbiddenError()
+      }
+
+      updateData.editorialStatus = body.editorialStatus
+    }
+
+    if (body.content) {
+      const searchContent = ensureExists({
+        value: getProseMirrorText({ proseMirror: body.content, tiptapConfiguration }),
+        error: new InvalidBlogContentError(),
+      })
+
+      const oldBlogImages = extractProseMirrorImages(foundBlog.content as JSONContent)
+      const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
+
+      newImages = Array.from<string>(newBlogImages.difference(oldBlogImages)).map((imageLink) => {
+        return ensureExists({
+          value: sanitizeUrlFilename(imageLink),
+          error: new BlogInvalidImageLinkError(),
+        })
+      })
+
+      removedImages = Array.from<string>(oldBlogImages.difference(newBlogImages)).map((imageLink) => {
+        return ensureExists({
+          value: sanitizeUrlFilename(imageLink),
+          error: new BlogInvalidImageLinkError(),
+        })
+      })
+
+      const oldToNewImagesLinkMap = new Map<string, string>()
+
+      formattedBlogImages = newImages.map((imageName) => {
+        oldToNewImagesLinkMap.set(imageName, buildBlogImageUrl(imageName))
+
+        return {
+          oldFilePath: buildBlogTempImagePath(imageName),
+          newFilePath: buildBlogImagePath(imageName),
+        }
+      })
+
+      const newProseMirror = replaceProseMirrorImages({
+        proseMirror: body.content,
+        oldToNewImagesMap: oldToNewImagesLinkMap,
+      })
+
+      updateData.content = newProseMirror as InputJsonValue
+      updateData.searchContent = searchContent
+    }
+
+    if (newBannerImage) {
+      updateData.bannerImage = newBannerImage
+    }
+
+    if (body.subcategories) {
+      const nonRepeatingSubcategories = Array.from<string>(new Set<string>(body.subcategories))
+
+      const formattedSubcategories = nonRepeatingSubcategories.map((subcategory) => ({
+        area: subcategory,
+        type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
+      }))
+
+      // Valida as novas subcategorias:
+      const { validatedActivityAreas, success } = await validateActivityAreas({
+        activityAreas: formattedSubcategories,
+        activityAreasRepository: this.activityAreasRepository,
+      })
+
+      if (!success) {
+        throw new InvalidActivityArea(
+          validatedActivityAreas.map((activityArea) => JSON.stringify(activityArea, null, 2)).toString(),
+        )
+      }
+
+      updateData.Subcategories = {
+        set: [],
+        connectOrCreate: formattedSubcategories.map((formattedSubcategory) => ({
+          where: { type_area: formattedSubcategory },
+          create: formattedSubcategory,
+        })),
+      }
+    }
+
+    const shouldUpdate = Object.keys(updateData).length > 0
+
+    const blog = shouldUpdate
+      ? await this.blogsRepository.update({
+          id: foundBlog.id,
+          data: updateData,
+        })
+      : foundBlog
 
     const blogBannerPaths = newBannerImage
       ? {

@@ -2,7 +2,6 @@ import type {
   SubmitDraftForReviewUseCaseRequest,
   SubmitDraftForReviewUseCaseResponse,
 } from '@custom-types/use-cases/blogs/submit-draft-for-review'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
@@ -24,40 +23,33 @@ export class SubmitDraftForReviewUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     userPublicId,
   }: SubmitDraftForReviewUseCaseRequest): Promise<SubmitDraftForReviewUseCaseResponse> {
-    const { blog, user } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const blog = ensureExists({
-        value: await this.blogsRepository.findByPublicId(publicId),
-        error: new BlogNotFoundError(),
-      })
+    const foundBlog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
+    })
 
-      if (blog.editorialStatus !== EditorialStatusType.DRAFT) {
-        throw new BlogNotInDraftStatusError()
-      }
+    if (foundBlog.editorialStatus !== EditorialStatusType.DRAFT) {
+      throw new BlogNotInDraftStatusError()
+    }
 
-      if (blog.userId !== user.id) {
-        throw new BlogNotFoundError()
-      }
+    if (foundBlog.userId !== user.id) {
+      throw new BlogNotFoundError()
+    }
 
-      const updatedBlog = await this.blogsRepository.updateStatus({
-        id: blog.id,
-        status: EditorialStatusType.PENDING_APPROVAL,
-      })
-
-      return { blog: updatedBlog, user }
+    const blog = await this.blogsRepository.updateStatus({
+      id: foundBlog.id,
+      status: EditorialStatusType.PENDING_APPROVAL,
     })
 
     logger.info(
