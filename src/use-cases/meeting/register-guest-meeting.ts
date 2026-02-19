@@ -2,7 +2,6 @@ import type {
   RegisterGuestMeetingUseCaseRequest,
   RegisterGuestMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-guest-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { logger } from '@lib/logger'
@@ -25,9 +24,6 @@ export class RegisterGuestMeetingUseCase {
 
     @inject(tsyringeTokens.repositories.meetingEnrollments)
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(
@@ -39,30 +35,26 @@ export class RegisterGuestMeetingUseCase {
       throw new InvalidEmailDomainError()
     }
 
-    const meetingEnrollment = await this.dbContext.runInTransaction(async () => {
-      const meeting = ensureExists({
-        value: await this.meetingsRepository.findByPublicId(registerGuestMeetingUseCaseInput.meetingId),
-        error: new MeetingNotFoundError(),
-      })
+    const meeting = ensureExists({
+      value: await this.meetingsRepository.findByPublicId(registerGuestMeetingUseCaseInput.meetingId),
+      error: new MeetingNotFoundError(),
+    })
 
-      if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
-        throw new MeetingAlreadyFinishedError()
-      }
+    if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
+      throw new MeetingAlreadyFinishedError()
+    }
 
-      ensureNotExists({
-        value: await this.meetingEnrollmentsRepository.findByGuestEmailAndMeetingId({
-          email: registerGuestMeetingUseCaseInput.email,
-          meetingId: meeting.id,
-        }),
-        error: new GuestAlreadyRegisteredInMeetingError(),
-      })
-
-      const enrollment = await this.meetingEnrollmentsRepository.createForGuest({
-        ...registerGuestMeetingUseCaseInput,
+    ensureNotExists({
+      value: await this.meetingEnrollmentsRepository.findByGuestEmailAndMeetingId({
+        email: registerGuestMeetingUseCaseInput.email,
         meetingId: meeting.id,
-      })
+      }),
+      error: new GuestAlreadyRegisteredInMeetingError(),
+    })
 
-      return enrollment
+    const meetingEnrollment = await this.meetingEnrollmentsRepository.createForGuest({
+      ...registerGuestMeetingUseCaseInput,
+      meetingId: meeting.id,
     })
 
     logger.info(

@@ -2,7 +2,6 @@ import type {
   CreateMeetingUseCaseRequest,
   CreateMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/create-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -26,9 +25,6 @@ export class CreateMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(data: CreateMeetingUseCaseRequest): Promise<CreateMeetingUseCaseResponse> {
@@ -57,24 +53,20 @@ export class CreateMeetingUseCase {
       }
     })
 
-    const createdMeeting = await this.dbContext.runInTransaction(async () => {
-      ensureNotExists({
-        value: await this.meetingsRepository.findActiveMeeting(),
-        error: new ActiveMeetingAlreadyExistsError(),
-      })
+    ensureNotExists({
+      value: await this.meetingsRepository.findActiveMeeting(),
+      error: new ActiveMeetingAlreadyExistsError(),
+    })
 
-      const meeting = await this.meetingsRepository.create({
-        title: data.title,
-        bannerImage: data.bannerImage,
-        agenda: data.agenda,
-        description: data.description,
-        location: data.location,
-        lastDate: getArrayMaxDate(nonRepeatingDates),
-        dates: nonRepeatingDates,
-        meetingPaymentInfo: data.meetingPaymentInfo,
-      })
-
-      return meeting
+    const createdMeeting = await this.meetingsRepository.create({
+      title: data.title,
+      bannerImage: data.bannerImage,
+      agenda: data.agenda,
+      description: data.description,
+      location: data.location,
+      lastDate: getArrayMaxDate(nonRepeatingDates),
+      dates: nonRepeatingDates,
+      meetingPaymentInfo: data.meetingPaymentInfo,
     })
 
     const meetingBannerPaths = {

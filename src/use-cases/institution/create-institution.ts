@@ -2,7 +2,6 @@ import type {
   CreateInstitutionUseCaseRequest,
   CreateInstitutionUseCaseResponse,
 } from '@custom-types/use-cases/institution/create-institution'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -16,24 +15,17 @@ export class CreateInstitutionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutions)
     private readonly institutionsRepository: InstitutionsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(
     createInstitutionUseCaseInput: CreateInstitutionUseCaseRequest,
   ): Promise<CreateInstitutionUseCaseResponse> {
-    const { institution } = await this.dbContext.runInTransaction(async () => {
-      ensureNotExists({
-        value: await this.institutionsRepository.findByName(createInstitutionUseCaseInput.name),
-        error: new InstitutionAlreadyExistsError(),
-      })
-
-      const createdInstitution = await this.institutionsRepository.create(createInstitutionUseCaseInput)
-
-      return { institution: createdInstitution }
+    ensureNotExists({
+      value: await this.institutionsRepository.findByName(createInstitutionUseCaseInput.name),
+      error: new InstitutionAlreadyExistsError(),
     })
+
+    const institution = await this.institutionsRepository.create(createInstitutionUseCaseInput)
 
     logger.info(createInstitutionUseCaseInput, INSTITUTION_CREATED_SUCCESSFULLY)
 

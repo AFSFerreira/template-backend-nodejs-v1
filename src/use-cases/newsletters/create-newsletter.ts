@@ -2,7 +2,6 @@ import type {
   CreateNewsletterUseCaseRequest,
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/logger'
@@ -22,30 +21,23 @@ export class CreateNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
     const { contentFilename, ...filteredCreatedNewsletterInput } = createNewsletterInput
 
-    const { newsletter } = await this.dbContext.runInTransaction(async () => {
-      ensureNotExists({
-        value: await this.newslettersRepository.findConflictingNewsletter({
-          editionNumber: createNewsletterInput.editionNumber,
-          sequenceNumber: createNewsletterInput.sequenceNumber,
-          volume: createNewsletterInput.volume,
-        }),
-        error: new NewsletterAlreadyExistsError(),
-      })
+    ensureNotExists({
+      value: await this.newslettersRepository.findConflictingNewsletter({
+        editionNumber: createNewsletterInput.editionNumber,
+        sequenceNumber: createNewsletterInput.sequenceNumber,
+        volume: createNewsletterInput.volume,
+      }),
+      error: new NewsletterAlreadyExistsError(),
+    })
 
-      const newsletter = await this.newslettersRepository.create({
-        ...filteredCreatedNewsletterInput,
-        content: contentFilename,
-      })
-
-      return { newsletter }
+    const newsletter = await this.newslettersRepository.create({
+      ...filteredCreatedNewsletterInput,
+      content: contentFilename,
     })
 
     const newsletterHtmlPaths = {

@@ -2,7 +2,6 @@ import type {
   RequestEmailChangeUseCaseRequest,
   RequestEmailChangeUseCaseResponse,
 } from '@custom-types/use-cases/user/request-email-change'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UsersRepository } from '@repositories/users-repository'
 import { EMAIL_CHANGE_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
@@ -29,9 +28,6 @@ export class RequestEmailChangeUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
@@ -48,25 +44,21 @@ export class RequestEmailChangeUseCase {
     const emailVerificationTokenHash = HashService.hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_CHANGE_EXPIRATION_TIME)
 
-    const user = await this.dbContext.runInTransaction(async () => {
-      const userFound = ensureExists({
-        value: await this.usersRepository.findByPublicId(userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const userFound = ensureExists({
+      value: await this.usersRepository.findByPublicId(userPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      ensureNotExists({
-        value: await this.usersRepository.findByPrimaryEmail(newEmail),
-        error: new UserWithSameEmail(),
-      })
+    ensureNotExists({
+      value: await this.usersRepository.findByPrimaryEmail(newEmail),
+      error: new UserWithSameEmail(),
+    })
 
-      const updatedUser = await this.usersRepository.setEmailChangeToken({
-        id: userFound.id,
-        newEmail,
-        emailVerificationTokenHash,
-        emailVerificationTokenExpiresAt,
-      })
-
-      return updatedUser
+    const user = await this.usersRepository.setEmailChangeToken({
+      id: userFound.id,
+      newEmail,
+      emailVerificationTokenHash,
+      emailVerificationTokenExpiresAt,
     })
 
     const emailInfo = {

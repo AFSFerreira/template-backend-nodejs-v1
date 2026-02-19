@@ -2,7 +2,6 @@ import type {
   RegisterUserMeetingUseCaseRequest,
   RegisterUserMeetingUseCaseResponse,
 } from '@custom-types/use-cases/meeting/register-user-meeting'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { UsersRepository } from '@repositories/users-repository'
@@ -28,44 +27,37 @@ export class RegisterUserMeetingUseCase {
 
     @inject(tsyringeTokens.repositories.meetingEnrollments)
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute(
     registerUserMeetingUseCaseInput: RegisterUserMeetingUseCaseRequest,
   ): Promise<RegisterUserMeetingUseCaseResponse> {
-    const { enrollment: meetingEnrollment } = await this.dbContext.runInTransaction(async () => {
-      const user = ensureExists({
-        value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userPublicId),
-        error: new UserNotFoundError(),
-      })
+    const user = ensureExists({
+      value: await this.usersRepository.findByPublicId(registerUserMeetingUseCaseInput.userPublicId),
+      error: new UserNotFoundError(),
+    })
 
-      const meeting = ensureExists({
-        value: await this.meetingsRepository.findByPublicId(registerUserMeetingUseCaseInput.meetingId),
-        error: new MeetingNotFoundError(),
-      })
+    const meeting = ensureExists({
+      value: await this.meetingsRepository.findByPublicId(registerUserMeetingUseCaseInput.meetingId),
+      error: new MeetingNotFoundError(),
+    })
 
-      if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
-        throw new MeetingAlreadyFinishedError()
-      }
+    if (toDateOnly(new Date()) > toDateOnly(meeting.lastDate)) {
+      throw new MeetingAlreadyFinishedError()
+    }
 
-      ensureNotExists({
-        value: await this.meetingEnrollmentsRepository.findByUserIdAndMeetingId({
-          meetingId: meeting.id,
-          userId: user.id,
-        }),
-        error: new UserAlreadyRegisteredInMeetingError(),
-      })
-
-      const enrollment = await this.meetingEnrollmentsRepository.createForUser({
-        ...registerUserMeetingUseCaseInput,
+    ensureNotExists({
+      value: await this.meetingEnrollmentsRepository.findByUserIdAndMeetingId({
         meetingId: meeting.id,
         userId: user.id,
-      })
+      }),
+      error: new UserAlreadyRegisteredInMeetingError(),
+    })
 
-      return { enrollment }
+    const meetingEnrollment = await this.meetingEnrollmentsRepository.createForUser({
+      ...registerUserMeetingUseCaseInput,
+      meetingId: meeting.id,
+      userId: user.id,
     })
 
     logger.info({ meetingId: registerUserMeetingUseCaseInput.meetingId }, REGISTER_USER_MEETING)
