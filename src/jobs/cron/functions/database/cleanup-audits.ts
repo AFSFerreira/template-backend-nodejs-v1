@@ -10,10 +10,13 @@ export const cleanupAuditsJobFactory: JobFactory = (ctx) => {
       throw new JobDatabaseContextNotProvidedError()
     }
 
+    const thresholdDate = new Date()
+    thresholdDate.setMonth(thresholdDate.getMonth() - 6)
+
     while (true) {
       const result = await databaseContext.client.authenticationAudit.deleteOldRecordsInBatches(
         'createdAt',
-        '6 months',
+        thresholdDate,
         1000,
       )
 

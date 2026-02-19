@@ -9,7 +9,7 @@ export interface HTTPSimplifiedUserDetailsForAdmin {
   id: string
   fullName: string
   profileImage: string
-  institutionName?: string
+  institutionName: string | null
   state?: string
   email: string
   role: UserRoleType

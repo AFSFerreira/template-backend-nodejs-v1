@@ -8,7 +8,7 @@ export interface HTTPSimplifiedUserDetails {
   id: string
   fullName: string
   profileImage: string
-  institutionName?: string
-  state?: string
-  email?: string | null
+  institutionName: string | null
+  state: string | null
+  email: string | null
 }

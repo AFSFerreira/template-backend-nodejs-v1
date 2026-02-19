@@ -1,3 +1,4 @@
+import type { Document } from '@prisma/dmmf'
 import { Prisma } from '@prisma/generated/client'
 import { PrismaModelNameNotResolvedError } from '@services/errors/prisma/prisma-model-name-not-resolved-error'
 
@@ -8,7 +9,7 @@ export const chunkedDeletionExtension = Prisma.defineExtension((client) => {
         async deleteOldRecordsInBatches<T>(
           this: T,
           dateColumn: string,
-          olderThan: string,
+          olderThanDate: Date,
           limit: number = 1000,
         ): Promise<number> {
           const context = Prisma.getExtensionContext(this)
@@ -18,7 +19,9 @@ export const chunkedDeletionExtension = Prisma.defineExtension((client) => {
             throw new PrismaModelNameNotResolvedError()
           }
 
-          const modelMeta = Prisma.dmmf.datamodel.models.find((model) => model.name === modelName)
+          const dmmf = Reflect.get(Prisma, 'dmmf') as Document
+
+          const modelMeta = dmmf.datamodel.models.find((model) => model.name === modelName)
 
           const actualTableName = modelMeta?.dbName || modelName
 
@@ -32,7 +35,7 @@ export const chunkedDeletionExtension = Prisma.defineExtension((client) => {
             DELETE FROM ${safeTableName}
             WHERE id IN (
               SELECT id FROM ${safeTableName}
-              WHERE ${safeColumnName} < NOW() - INTERVAL ${olderThan}
+              WHERE ${safeColumnName} < ${olderThanDate}
               LIMIT ${limit}
             )
           `
