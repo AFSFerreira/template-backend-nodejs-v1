@@ -1,4 +1,4 @@
-import type { JobFactory } from '@custom-types/lib/node-cron/job-factory'
+import type { JobFactory } from '@custom-types/lib/bullmq/job-factory'
 import { setTimeout } from 'node:timers/promises'
 import { JobDatabaseContextNotProvidedError } from '@services/errors/jobs/job-database-context-not-provided-error'
 

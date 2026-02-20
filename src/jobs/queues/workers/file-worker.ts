@@ -1,4 +1,4 @@
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { redisConnection } from '@lib/redis/helpers/configuration'
@@ -13,7 +13,7 @@ import { Worker } from 'bullmq'
 import ms from 'ms'
 import { fileProcessor } from '../processors/file-processor'
 
-export const fileWorker = new Worker(bullmqTokens.files.management, fileProcessor, {
+export const fileWorker = new Worker(bullmqTokens.queues.files.management, fileProcessor, {
   connection: redisConnection,
   concurrency: 10,
   lockDuration: ms('2m'),

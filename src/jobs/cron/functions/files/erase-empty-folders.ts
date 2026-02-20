@@ -1,4 +1,4 @@
-import type { JobFactory } from '@custom-types/lib/node-cron/job-factory'
+import type { JobFactory } from '@custom-types/lib/bullmq/job-factory'
 import { UPLOADS_DIR } from '@constants/dynamic-file-constants'
 import { eraseEmptyFolders } from '@utils/files/erase-empty-folders'
 

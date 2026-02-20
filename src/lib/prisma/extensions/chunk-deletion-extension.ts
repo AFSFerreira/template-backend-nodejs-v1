@@ -1,8 +1,10 @@
-import type { Document } from '@prisma/dmmf'
+import type { RuntimeDataModel } from '@prisma/client/runtime/client'
 import { Prisma } from '@prisma/generated/client'
 import { PrismaModelNameNotResolvedError } from '@services/errors/prisma/prisma-model-name-not-resolved-error'
 
 export const chunkedDeletionExtension = Prisma.defineExtension((client) => {
+  const runtimeDataModel = (client as unknown as { _runtimeDataModel: RuntimeDataModel })._runtimeDataModel
+
   return client.$extends({
     model: {
       $allModels: {
@@ -19,9 +21,7 @@ export const chunkedDeletionExtension = Prisma.defineExtension((client) => {
             throw new PrismaModelNameNotResolvedError()
           }
 
-          const dmmf = Reflect.get(Prisma, 'dmmf') as Document
-
-          const modelMeta = dmmf.datamodel.models.find((model) => model.name === modelName)
+          const modelMeta = runtimeDataModel.models[modelName]
 
           const actualTableName = modelMeta?.dbName || modelName
 

@@ -1,16 +1,15 @@
-import type { SchedulerManager } from '@lib/node-cron/helpers/scheduler-manager'
+// import { DatabaseScheduler } from '@jobs/cron/schedulers/dabatase-scheduler'
+
+import type { SchedulerManager } from '@lib/bullmq/helpers/scheduler-manager'
 import { DatabaseScheduler } from '@jobs/cron/schedulers/dabatase-scheduler'
 import { FileScheduler } from '@jobs/cron/schedulers/file-scheduler'
 import { logger } from '@lib/logger'
-import { redisConnection } from '@lib/redis/helpers/configuration'
 
 export class ApplicationScheduler {
   private schedulers: SchedulerManager[] = []
 
   constructor() {
-    const options = { logger, redis: redisConnection }
-
-    this.schedulers.push(new FileScheduler(options), new DatabaseScheduler(options))
+    this.schedulers.push(new FileScheduler(), new DatabaseScheduler())
   }
 
   async startAll() {

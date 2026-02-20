@@ -1,10 +1,10 @@
 import type { EmailJobData } from '@custom-types/jobs/queues/definitions/email-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { redisConnection } from '@lib/redis/helpers/configuration'
 import { Queue } from 'bullmq'
 import ms from 'ms'
 
-export const emailQueue = new Queue<EmailJobData>(bullmqTokens.emails.user, {
+export const emailQueue = new Queue<EmailJobData>(bullmqTokens.queues.emails.user, {
   connection: redisConnection,
   defaultJobOptions: {
     attempts: 5,

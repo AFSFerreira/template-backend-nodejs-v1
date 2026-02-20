@@ -1,9 +1,9 @@
-import type { JobFactory } from '@custom-types/lib/node-cron/job-factory'
-import type { JobFactoryContext } from '@custom-types/lib/node-cron/job-factory-context'
-import type { ScalableTaskOptions } from '@custom-types/lib/node-cron/scalable-task-options'
-import type { SchedulerOptions } from '@custom-types/lib/node-cron/scheduler-options'
+import type { JobContext } from '@custom-types/lib/bullmq/job-context'
+import type { JobFactory } from '@custom-types/lib/bullmq/job-factory'
+import type { JobFactoryContext } from '@custom-types/lib/bullmq/job-factory-context'
+import type { ScalableTaskOptions } from '@custom-types/lib/bullmq/scalable-task-options'
+import type { SchedulerOptions } from '@custom-types/lib/bullmq/scheduler-options'
 import type { Job, WorkerOptions } from 'bullmq'
-import type { Logger } from 'pino'
 import { BASE_JOB_QUEUE_CONFIGURATION, BASE_JOB_WORKER_CONFIGURATION } from '@constants/jobs-configuration-constants'
 import { logError } from '@lib/logger/helpers/log-error'
 import { cronSchema } from '@lib/zod/utils/generic-components/cron-schema'
@@ -26,7 +26,7 @@ export class SchedulerManager {
   private queue: Queue
   private worker: Worker
   private factories: Map<string, JobFactoryContext>
-  private logger?: Logger
+  private jobsContext: JobContext
 
   // Métricas:
   // private metricsCtx: MetricsContext
@@ -36,13 +36,11 @@ export class SchedulerManager {
   constructor(options: SchedulerOptions) {
     this.factories = new Map<string, JobFactoryContext>()
 
-    if (options.logger) {
-      this.logger = options.logger
-    }
+    this.jobsContext = options.jobsContext
 
     const connection = options.redis
 
-    this.queue = new Queue('scheduler-manager-cron-jobs-queue', {
+    this.queue = new Queue(options.queueName, {
       connection,
       defaultJobOptions: BASE_JOB_QUEUE_CONFIGURATION,
     })
@@ -52,11 +50,7 @@ export class SchedulerManager {
       connection,
     }
 
-    this.worker = new Worker(
-      'scheduler-manager-cron-jobs-worker',
-      async (job: Job) => this.processJob(job),
-      workerOptions,
-    )
+    this.worker = new Worker(options.queueName, async (job: Job) => this.processJob(job), workerOptions)
 
     // if (options.promContext) {
     //   this.metricsCtx = { metricsClient: options.promContext.client, metricsPrefix: options.promContext.prefix ?? 'scheduler' }
@@ -100,11 +94,11 @@ export class SchedulerManager {
       },
     })
 
-    this.logger?.info(`[SchedulerManager] Job ${jobName} registrado -> ${cronExpr}`)
+    this.jobsContext.logger?.info(`[SchedulerManager] Job ${jobName} registrado -> ${cronExpr}`)
   }
 
   async startAll() {
-    this.logger?.info('[SchedulerManager] Iniciando todas as tarefas...')
+    this.jobsContext.logger?.info('[SchedulerManager] Iniciando todas as tarefas...')
 
     await this.clearOrphanRepeatableJobs()
 
@@ -121,7 +115,7 @@ export class SchedulerManager {
         },
       )
 
-      this.logger?.info({ job: name, cronExpr }, JOB_STARTED_SUCESSFUL)
+      this.jobsContext.logger?.info({ job: name, cronExpr }, JOB_STARTED_SUCESSFUL)
     }
   }
 
@@ -132,19 +126,20 @@ export class SchedulerManager {
       throw new Error(`Nenhuma factory encontrada para o job: ${job.name}`)
     }
 
-    this.logger?.info({ job: job.name, jobId: job.id }, RUNNING_SCHEDULED_JOB)
+    this.jobsContext.logger?.info({ job: job.name, jobId: job.id }, RUNNING_SCHEDULED_JOB)
 
-    const jobFn = context.factory({ logger: this.logger })
+    const jobFn = context.factory(this.jobsContext)
+
     await jobFn()
   }
 
   private setupWorkerEvents() {
     this.worker.on('active', (job) => {
-      this.logger?.info({ job: job.name, jobId: job.id }, SCHEDULER_JOB_ACTIVE)
+      this.jobsContext.logger?.info({ job: job.name, jobId: job.id }, SCHEDULER_JOB_ACTIVE)
     })
 
     this.worker.on('completed', (job) => {
-      this.logger?.info({ job: job.name, jobId: job.id }, SCHEDULER_JOB_COMPLETED)
+      this.jobsContext.logger?.info({ job: job.name, jobId: job.id }, SCHEDULER_JOB_COMPLETED)
     })
 
     this.worker.on('failed', (job, error) => {
@@ -160,7 +155,7 @@ export class SchedulerManager {
     })
 
     this.worker.on('stalled', (jobId) => {
-      this.logger?.warn({ jobId }, SCHEDULER_JOB_STALLED)
+      this.jobsContext.logger?.warn({ jobId }, SCHEDULER_JOB_STALLED)
     })
 
     this.worker.on('error', (error) => {
@@ -169,12 +164,12 @@ export class SchedulerManager {
   }
 
   async stopAll() {
-    this.logger?.info('[SchedulerManager] Parando todas as tarefas...')
+    this.jobsContext.logger?.info('[SchedulerManager] Parando todas as tarefas...')
 
     await this.worker.close()
     await this.queue.close()
 
-    this.logger?.info('[SchedulerManager] Scheduler encerrado com segurança.')
+    this.jobsContext.logger?.info('[SchedulerManager] Scheduler encerrado com segurança.')
   }
 
   private async clearOrphanRepeatableJobs() {
@@ -192,7 +187,7 @@ export class SchedulerManager {
 
       if (isOrphanByName || isOrphanByPattern) {
         await this.queue.removeJobScheduler(job.key)
-        this.logger?.warn(`[SchedulerManager] Removido job órfão: ${job.name}`)
+        this.jobsContext.logger?.warn(`[SchedulerManager] Removido job órfão: ${job.name}`)
       }
     }
   }

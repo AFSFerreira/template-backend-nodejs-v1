@@ -3,7 +3,7 @@ import type {
   DeleteFileEnqueuedInput,
   MoveFileEnqueuedInput,
 } from '@custom-types/jobs/queues/facades/file-queue-facade'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import {
@@ -21,7 +21,7 @@ export async function deleteFileEnqueued(input: DeleteFileEnqueuedInput) {
   logger.info(ENQUEUING_DELETE_FILE_JOB)
 
   try {
-    const job = await fileQueue.add(bullmqTokens.tasksNames.file.delete, {
+    const job = await fileQueue.add(bullmqTokens.tasks.file.delete, {
       ...input,
       type: 'delete',
     })
@@ -48,7 +48,7 @@ export async function moveFileEnqueued(input: MoveFileEnqueuedInput) {
   logger.info(ENQUEUING_MOVE_FILE_JOB)
 
   try {
-    const job = await fileQueue.add(bullmqTokens.tasksNames.file.move, {
+    const job = await fileQueue.add(bullmqTokens.tasks.file.move, {
       ...input,
       type: 'move',
     })
@@ -75,7 +75,7 @@ export async function copyFileEnqueued(input: CopyFileEnqueuedInput) {
   logger.info(ENQUEUING_COPY_FILE_JOB)
 
   try {
-    const job = await fileQueue.add(bullmqTokens.tasksNames.file.copy, {
+    const job = await fileQueue.add(bullmqTokens.tasks.file.copy, {
       ...input,
       type: 'copy',
     })

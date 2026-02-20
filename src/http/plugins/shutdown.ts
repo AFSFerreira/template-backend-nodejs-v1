@@ -1,9 +1,8 @@
 import type { FastifyInstance } from 'fastify'
 import { SENTRY_CLOSE_TIMEOUT } from '@constants/timing-constants'
-import { applicationWorkerManager } from '@lib/bullmq'
+import { applicationScheduler, applicationWorkerManager } from '@lib/bullmq'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
-import { applicationScheduler } from '@lib/node-cron'
 import { prisma } from '@lib/prisma'
 import { pool } from '@lib/prisma/helpers/configuration'
 import { redis } from '@lib/redis'
@@ -21,67 +20,46 @@ import * as Sentry from '@sentry/node'
 export async function gracefulShutdown(_instance: FastifyInstance) {
   logger.info(STARTING_GRACEFUL_SHUTDOWN)
 
-  await Promise.allSettled([
-    prisma
-      .$disconnect()
-      .then(async () => {
-        await pool.end()
-      })
-      .then(() => {
-        logger.info(DATABASE_SHUTDOWN)
-      })
-      .catch((error: unknown) => {
-        logError({
-          error,
-          message: `${GRACEFUL_SHUTDOWN_ERROR} [Postgres]`,
-        })
-      }),
+  // 1. Para de agendar novos jobs no BullMQ
+  try {
+    await applicationScheduler.stopAll()
+    logger.info(CRON_SHUTDOWN)
+  } catch (error: unknown) {
+    logError({ error, message: `${GRACEFUL_SHUTDOWN_ERROR} [CronJobs]` })
+  }
 
-    applicationWorkerManager
-      .closeAll()
-      .then(() => {
-        logger.info(WORKERS_SHUTDOWN)
-      })
-      .catch((error: unknown) => {
-        logError({
-          error,
-          message: `${GRACEFUL_SHUTDOWN_ERROR} [BullMQ Workers]`,
-        })
-      }),
+  // 2. Drena e fecha os workers (dependem do Redis/BullMQ)
+  try {
+    await applicationWorkerManager.closeAll()
+    logger.info(WORKERS_SHUTDOWN)
+  } catch (error: unknown) {
+    logError({ error, message: `${GRACEFUL_SHUTDOWN_ERROR} [BullMQ Workers]` })
+  }
 
-    applicationScheduler
-      .stopAll()
-      .then(() => {
-        logger.info(CRON_SHUTDOWN)
-      })
-      .catch((error: unknown) => {
-        logError({
-          error,
-          message: `${GRACEFUL_SHUTDOWN_ERROR} [CronJobs]`,
-        })
-      }),
+  // 3. Desconecta do Postgres (nenhum worker ativo para fazer queries)
+  try {
+    await prisma.$disconnect()
+    await pool.end()
+    logger.info(DATABASE_SHUTDOWN)
+  } catch (error: unknown) {
+    logError({ error, message: `${GRACEFUL_SHUTDOWN_ERROR} [Postgres]` })
+  }
 
-    redis
-      .quit()
-      .then(() => {
-        logger.info(REDIS_SHUTDOWN)
-      })
-      .catch((error: unknown) => {
-        logError({
-          error,
-          message: `${GRACEFUL_SHUTDOWN_ERROR} [Redis]`,
-        })
-      }),
+  // 4. Fecha o Redis (schedulers e workers já encerrados)
+  try {
+    await redis.quit()
+    logger.info(REDIS_SHUTDOWN)
+  } catch (error: unknown) {
+    logError({ error, message: `${GRACEFUL_SHUTDOWN_ERROR} [Redis]` })
+  }
 
-    Sentry.close(SENTRY_CLOSE_TIMEOUT)
-      .then(() => {
-        logger.info(SENTRY_SHUTDOWN)
-      })
-      .catch((error: unknown) => {
-        logError({
-          error,
-          message: `${GRACEFUL_SHUTDOWN_ERROR} [Sentry]`,
-        })
-      }),
-  ])
+  // 5. Fecha o Sentry por último, garantindo que erros anteriores sejam enviados
+  try {
+    await Sentry.close(SENTRY_CLOSE_TIMEOUT)
+    logger.info(SENTRY_SHUTDOWN)
+  } catch (error: unknown) {
+    logError({ error, message: `${GRACEFUL_SHUTDOWN_ERROR} [Sentry]` })
+  }
+
+  process.exit(0)
 }

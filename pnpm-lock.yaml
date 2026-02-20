@@ -150,9 +150,6 @@ importers:
       '@commitlint/types':
         specifier: 20.4.0
         version: 20.4.0
-      '@prisma/dmmf':
-        specifier: 7.4.1
-        version: 7.4.1
       '@sentry/cli':
         specifier: 3.2.0
         version: 3.2.0
@@ -1117,9 +1114,6 @@ packages:
 
   '@prisma/dev@0.20.0':
     resolution: {integrity: sha512-ovlBYwWor0OzG+yH4J3Ot+AneD818BttLA+Ii7wjbcLHUrnC4tbUPVGyNd3c/+71KETPKZfjhkTSpdS15dmXNQ==}
-
-  '@prisma/dmmf@7.4.1':
-    resolution: {integrity: sha512-805aCBILKe+l3A/z3JF/X9cH0ZZZegTOfKzm8zRpoBcOhLy+SRM2kGJ4aIXp5a6ENdAh6FN2u7ikZ16UDCI9Kg==}
 
   '@prisma/driver-adapter-utils@7.4.0':
     resolution: {integrity: sha512-jEyE5LkqZ27Ba/DIOfCGOQl6nKMLxuwJNRceCfh7/LRs46UkIKn3bmkI97MEH2t7zkYV3PGBrUr+6sMJaHvc0A==}
@@ -4653,8 +4647,6 @@ snapshots:
       zeptomatch: 2.1.0
     transitivePeerDependencies:
       - typescript
-
-  '@prisma/dmmf@7.4.1': {}
 
   '@prisma/driver-adapter-utils@7.4.0':
     dependencies:

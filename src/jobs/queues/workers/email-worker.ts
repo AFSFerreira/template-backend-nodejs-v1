@@ -1,5 +1,5 @@
 import type { FileJobLogging } from '@custom-types/custom/file-job-logging'
-import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { logger } from '@lib/logger'
 import { logError } from '@lib/logger/helpers/log-error'
 import { redisConnection } from '@lib/redis/helpers/configuration'
@@ -14,7 +14,7 @@ import { Worker } from 'bullmq'
 import ms from 'ms'
 import { emailProcessor } from '../processors/email-processor'
 
-export const emailWorker = new Worker(bullmqTokens.emails.user, emailProcessor, {
+export const emailWorker = new Worker(bullmqTokens.queues.emails.user, emailProcessor, {
   connection: redisConnection,
   concurrency: 25,
   lockDuration: ms('30s'),

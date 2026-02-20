@@ -4,6 +4,7 @@ import type { HashedPassword } from '@custom-types/services/hashes/hashed-passwo
 import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
 import type { JobHash } from '@custom-types/services/hashes/job-hash'
 import type { Token } from '@custom-types/services/hashes/token'
+import type { UuidHash } from '@custom-types/services/hashes/uuid-hash'
 import crypto from 'node:crypto'
 import { env } from '@env/index'
 import bcrypt from 'bcryptjs'
@@ -36,6 +37,10 @@ export class HashService {
 
   static generateJobHash(): JobHash {
     return uuidv4() as JobHash
+  }
+
+  static generateUuidHash(): UuidHash {
+    return uuidv4() as UuidHash
   }
 
   static async comparePassword({ password, hashedPassword }: IComparePassword): Promise<boolean> {
