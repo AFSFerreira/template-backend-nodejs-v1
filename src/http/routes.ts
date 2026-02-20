@@ -7,7 +7,7 @@ import { dashboardMetricsRoutes } from './controllers/dashboard-metrics/routes'
 import { directorBoardRoutes } from './controllers/director-board/routes'
 import { directorPositionRoutes } from './controllers/director-position/routes'
 import { documentManagementRoutes } from './controllers/document-management/routes'
-import { healthCheck } from './controllers/health-check/health-check.controller'
+import { healthCheckRoutes } from './controllers/health-check/routes'
 import { institutionRoutes } from './controllers/institution/routes'
 import { institutionalInfoRoutes } from './controllers/institutional-info/routes'
 import { meetingRoutes } from './controllers/meeting/routes'
@@ -32,6 +32,5 @@ export async function appRoutes(app: FastifyInstance) {
   app.register(sliderImageRoutes, { prefix: '/slider-images' })
   app.register(newsletterRoutes, { prefix: '/newsletters' })
   app.register(dashboardMetricsRoutes, { prefix: '/dashboard-metrics' })
-
-  app.get('/health', healthCheck)
+  app.register(healthCheckRoutes, { prefix: '/health' })
 }
