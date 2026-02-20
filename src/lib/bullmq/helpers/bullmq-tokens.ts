@@ -28,6 +28,7 @@ export const bullmqTokens = {
     },
     databaseTasks: {
       auditCleanup: 'cleanup-audits',
+      userActionAuditCleanup: 'cleanup-user-action-audits',
     },
   },
 } as const
