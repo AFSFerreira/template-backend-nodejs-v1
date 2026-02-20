@@ -46,4 +46,5 @@ export interface UsersRepository {
   setPasswordToken: (query: SetPasswordTokenQuery) => Promise<User>
   setEmailChangeToken: (query: SetEmailChangeTokenQuery) => Promise<User>
   confirmEmailChange: (query: ConfirmEmailChangeQuery) => Promise<User>
+  deleteExpiredVerifyingUsers: (thresholdDate: Date, batchSize?: number) => Promise<number>
 }

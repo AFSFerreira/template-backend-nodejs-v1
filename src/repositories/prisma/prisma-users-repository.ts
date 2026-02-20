@@ -325,4 +325,25 @@ export class PrismaUsersRepository implements UsersRepository {
     const totalUsers = await this.dbContext.client.user.count({ where })
     return totalUsers
   }
+
+  async deleteExpiredVerifyingUsers(thresholdDate: Date, batchSize = 1000): Promise<number> {
+    const expiredUsers = await this.dbContext.client.user.findMany({
+      where: {
+        membershipStatus: MembershipStatusType.VERIFYING,
+        createdAt: { lt: thresholdDate },
+      },
+      select: { id: true },
+      take: batchSize,
+    })
+
+    if (expiredUsers.length === 0) return 0
+
+    const ids = expiredUsers.map((user) => user.id)
+
+    const { count } = await this.dbContext.client.user.deleteMany({
+      where: { id: { in: ids } },
+    })
+
+    return count
+  }
 }

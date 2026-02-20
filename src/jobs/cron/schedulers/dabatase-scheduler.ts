@@ -1,6 +1,7 @@
 import type { BaseScheduler } from '@lib/bullmq/helpers/base-scheduler'
 import { cleanupAuditsJobFactory } from '@jobs/cron/functions/database/cleanup-audits'
 import { cleanupUserActionAuditsJobFactory } from '@jobs/cron/functions/database/cleanup-user-action-audits'
+import { cleanupVerifyingUsersJobFactory } from '@jobs/cron/functions/database/cleanup-verifying-users'
 import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { SchedulerManager } from '@lib/bullmq/helpers/scheduler-manager'
 import { logger } from '@lib/logger'
@@ -29,5 +30,6 @@ export class DatabaseScheduler extends SchedulerManager implements BaseScheduler
       '0 3 1 1 *',
       cleanupUserActionAuditsJobFactory,
     )
+    this.register(bullmqTokens.cron.databaseTasks.verifyingUsersCleanup, '0 3 * * *', cleanupVerifyingUsersJobFactory)
   }
 }
