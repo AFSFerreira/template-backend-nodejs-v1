@@ -27,7 +27,7 @@ export class DatabaseScheduler extends SchedulerManager implements BaseScheduler
     this.register(bullmqTokens.cron.databaseTasks.auditCleanup, '0 3 1 * *', cleanupAuditsJobFactory)
     this.register(
       bullmqTokens.cron.databaseTasks.userActionAuditCleanup,
-      '0 3 1 1 *',
+      '20 3 1 * *',
       cleanupUserActionAuditsJobFactory,
     )
     this.register(bullmqTokens.cron.databaseTasks.verifyingUsersCleanup, '0 3 * * *', cleanupVerifyingUsersJobFactory)

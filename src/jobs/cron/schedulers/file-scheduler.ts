@@ -19,6 +19,6 @@ export class FileScheduler extends SchedulerManager implements BaseScheduler {
 
   setupJobs() {
     this.register(bullmqTokens.cron.fileTasks.tempImagesCleanup, '0 3 * * *', cleanupTempImagesJobFactory)
-    this.register(bullmqTokens.cron.fileTasks.emptyFoldersCleanup, '0 4 1 * *', eraseEmptyFoldersJobFactory)
+    this.register(bullmqTokens.cron.fileTasks.emptyFoldersCleanup, '10 3 * * *', eraseEmptyFoldersJobFactory)
   }
 }
