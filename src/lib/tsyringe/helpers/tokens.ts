@@ -6,6 +6,7 @@ export const tsyringeTokens = {
     addressStates: 'AddressStatesRepository',
     addresses: 'AddressesRepository',
     authenticationAudits: 'AuthenticationAuditsRepository',
+    userActionAudits: 'UserActionAuditsRepository',
     blogs: 'BlogsRepository',
     institutionalInfo: 'InstitutionalInfoRepository',
     directorsBoard: 'DirectorsBoardRepository',

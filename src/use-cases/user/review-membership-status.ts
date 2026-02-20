@@ -2,6 +2,8 @@ import type {
   ReviewMembershipStatusUseCaseRequest,
   ReviewMembershipStatusUseCaseResponse,
 } from '@custom-types/use-cases/user/review-membership-status'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
@@ -13,7 +15,7 @@ import {
   MEMBERSHIP_ACCEPTED_EMAIL_SEND_ERROR,
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
 } from '@messages/loggings/models/user-loggings'
-import { MembershipStatusType } from '@prisma/generated/enums'
+import { MembershipStatusType, SystemActionType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
@@ -30,11 +32,18 @@ export class ReviewMembershipStatusUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(tsyringeTokens.repositories.userActionAudits)
+    private readonly userActionAuditsRepository: UserActionAuditsRepository,
+
+    @inject(tsyringeTokens.infra.database)
+    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
     publicId,
     membershipStatusReview,
+    audit,
   }: ReviewMembershipStatusUseCaseRequest): Promise<ReviewMembershipStatusUseCaseResponse> {
     const user = ensureExists({
       value: await this.usersRepository.findByPublicId(publicId),
@@ -45,6 +54,11 @@ export class ReviewMembershipStatusUseCase {
       throw new MembershipStatusNotPending()
     }
 
+    const actor = ensureExists({
+      value: await this.usersRepository.findByPublicId(audit.actorPublicId),
+      error: new UserNotFoundError(),
+    })
+
     const emailInfo = {
       fullName: user.fullName,
       email: user.email,
@@ -53,13 +67,22 @@ export class ReviewMembershipStatusUseCase {
     switch (membershipStatusReview) {
       case 'ACTIVE': {
         // Aprova o pedido de associação
-        await this.usersRepository.update({
-          id: user.id,
-          data: {
-            user: {
-              membershipStatus: MembershipStatusType.ACTIVE,
+        await this.dbContext.runInTransaction(async () => {
+          await this.usersRepository.update({
+            id: user.id,
+            data: {
+              user: {
+                membershipStatus: MembershipStatusType.ACTIVE,
+              },
             },
-          },
+          })
+
+          await this.userActionAuditsRepository.create({
+            actionType: SystemActionType.MEMBERSHIP_APPROVED,
+            actorId: actor.id,
+            targetId: user.id,
+            ipAddress: audit.ipAddress,
+          })
         })
 
         const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
@@ -80,7 +103,16 @@ export class ReviewMembershipStatusUseCase {
       }
 
       case 'REJECTED': {
-        await this.usersRepository.delete(user.id)
+        await this.dbContext.runInTransaction(async () => {
+          await this.usersRepository.delete(user.id)
+
+          await this.userActionAuditsRepository.create({
+            actionType: SystemActionType.MEMBERSHIP_REJECTED,
+            actorId: actor.id,
+            targetId: user.id,
+            ipAddress: audit.ipAddress,
+          })
+        })
 
         if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
           // Removendo a imagem de perfil do usuário

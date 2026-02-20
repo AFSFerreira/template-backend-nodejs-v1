@@ -4,7 +4,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserPresenter } from '@presenters/user-presenter'
 import { reviewMembershipStatusBodySchema } from '@schemas/user/review-membership-status-body-schema'
 import { reviewMembershipStatusParamsSchema } from '@schemas/user/review-membership-status-params-schema'
+import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { ReviewMembershipStatusUseCase } from '@use-cases/user/review-membership-status'
+import { getClientIp } from '@utils/http/get-client-ip'
 import { container } from 'tsyringe'
 
 export async function reviewMembershipStatus(request: FastifyRequest, reply: FastifyReply) {
@@ -16,6 +18,10 @@ export async function reviewMembershipStatus(request: FastifyRequest, reply: Fas
   const { user } = await useCase.execute({
     ...parsedBody,
     publicId,
+    audit: {
+      actorPublicId: getRequestUserPublicId(request),
+      ipAddress: getClientIp(request),
+    },
   })
 
   const formattedReply = user

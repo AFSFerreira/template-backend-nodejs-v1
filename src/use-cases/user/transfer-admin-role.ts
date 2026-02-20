@@ -3,11 +3,12 @@ import type {
   TransferAdminRoleUseCaseResponse,
 } from '@custom-types/use-cases/user/transfer-admin-role'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
+import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
-import { UserRoleType } from '@prisma/generated/enums'
+import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { CannotTransferAdminToSelfError } from '../errors/user/cannot-transfer-admin-to-self-error'
@@ -19,6 +20,9 @@ export class TransferAdminRoleUseCase {
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
+    @inject(tsyringeTokens.repositories.userActionAudits)
+    private readonly userActionAuditsRepository: UserActionAuditsRepository,
+
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
@@ -26,6 +30,7 @@ export class TransferAdminRoleUseCase {
   async execute({
     currentAdminPublicId,
     newAdminPublicId,
+    audit,
   }: TransferAdminRoleUseCaseRequest): Promise<TransferAdminRoleUseCaseResponse> {
     if (currentAdminPublicId === newAdminPublicId) {
       throw new CannotTransferAdminToSelfError()
@@ -50,6 +55,13 @@ export class TransferAdminRoleUseCase {
       await this.usersRepository.updateRole({
         id: newAdmin.id,
         role: UserRoleType.ADMIN,
+      })
+
+      await this.userActionAuditsRepository.create({
+        actionType: SystemActionType.ADMIN_ROLE_TRANSFERRED,
+        actorId: currentAdmin.id,
+        targetId: newAdmin.id,
+        ipAddress: audit.ipAddress,
       })
     })
 

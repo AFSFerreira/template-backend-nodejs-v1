@@ -5,7 +5,9 @@ import type {
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
 import { createDirectorBoardBodySchema } from '@schemas/director-board/create-director-board-body-schema'
+import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
+import { getClientIp } from '@utils/http/get-client-ip'
 import { container } from 'tsyringe'
 
 export async function createDirectorBoard(request: FastifyRequest, reply: FastifyReply) {
@@ -13,7 +15,13 @@ export async function createDirectorBoard(request: FastifyRequest, reply: Fastif
 
   const useCase = container.resolve(CreateDirectorBoardUseCase)
 
-  const { directorBoard } = await useCase.execute(parsedBody)
+  const { directorBoard } = await useCase.execute({
+    ...parsedBody,
+    audit: {
+      actorPublicId: getRequestUserPublicId(request),
+      ipAddress: getClientIp(request),
+    },
+  })
 
   const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>(
     directorBoard,

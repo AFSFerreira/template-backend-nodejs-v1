@@ -3,6 +3,7 @@ import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-pub
 import { deleteUserByAdminParamsSchema } from '@schemas/user/delete-user-by-admin-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteUserByAdminUseCase } from '@use-cases/user/delete-user-by-admin'
+import { getClientIp } from '@utils/http/get-client-ip'
 import { container } from 'tsyringe'
 
 export async function deleteUserByAdmin(request: FastifyRequest, reply: FastifyReply) {
@@ -14,6 +15,10 @@ export async function deleteUserByAdmin(request: FastifyRequest, reply: FastifyR
   await useCase.execute({
     adminPublicId,
     targetUserPublicId: publicId,
+    audit: {
+      actorPublicId: adminPublicId,
+      ipAddress: getClientIp(request),
+    },
   })
 
   return await reply.status(204).send()

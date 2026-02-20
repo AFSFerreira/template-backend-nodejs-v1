@@ -21,6 +21,24 @@ model InstitutionalInfo {
   @@map("institutional_info")
 }
 
+model UserActionAudit {
+  id         Int              @id @default(autoincrement())
+  actionType SystemActionType @map("action_type")
+  ipAddress  String?          @map("ip_address") @db.Inet
+  createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  actorId Int?  @map("actor_id")
+  Actor   User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  targetId Int?  @map("target_id")
+  Target   User? @relation("AuditTarget", fields: [targetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([actionType])
+  @@index([actorId])
+  @@index([targetId])
+  @@map("user_action_audits")
+}
+
 model AuthenticationAudit {
   id         Int                      @id @default(autoincrement())
   ipAddress  String?                  @map("ip_address") @db.Inet
@@ -100,6 +118,8 @@ model User {
   EnrolledCourse        EnrolledCourse?         @relation()
   UserMeetingEnrollment UserMeetingEnrollment[] @relation()
   Keyword               Keyword[]               @relation()
+  UserActionAuditActor  UserActionAudit[]       @relation("AuditActor")
+  UserActionAuditTarget UserActionAudit[]       @relation("AuditTarget")
 
   @@unique([identityType, identityDocumentBlindIndex])
   @@unique([secondaryEmail], where: raw("membership_status = ANY (ARRAY['ACTIVE'::\"MembershipStatusType\", 'INACTIVE'::\"MembershipStatusType\"])"), map: "users_secondary_email_key")
@@ -285,11 +305,11 @@ model DirectorPosition {
 
 model MeetingPaymentInfo {
   id           Int      @id @default(autoincrement())
-  pixKey       String   @map("pix_key")
+  pixKey       String   @map("pix_key_encrypted")
   bank         String
   code         String
   agency       String
-  account      String
+  account      String   @map("account_encrypted")
   billingEmail String   @map("billing_email")
   value        Decimal  @db.Decimal(10, 2)
   limitDate    DateTime @map("limit_date") @db.Date
@@ -546,6 +566,18 @@ enum EditorialStatusType {
   CHANGES_REQUESTED
   // APPROVED
   // ARCHIVED
+}
+
+enum SystemActionType {
+  MEMBERSHIP_APPROVED
+  MEMBERSHIP_REJECTED
+  ACCOUNT_ACTIVATED
+  ACCOUNT_INACTIVATED
+  ACCOUNT_DELETED
+  ROLE_CHANGED
+  DIRECTOR_BOARD_CREATED
+  DIRECTOR_BOARD_DELETED
+  ADMIN_ROLE_TRANSFERRED
 }
 
 // enum SliderPageType {

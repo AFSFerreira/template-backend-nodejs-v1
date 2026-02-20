@@ -6,13 +6,14 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
+import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { UserRoleType } from '@prisma/generated/enums'
+import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
 import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
@@ -40,6 +41,9 @@ export class CreateDirectorBoardUseCase {
     @inject(tsyringeTokens.repositories.directorPositions)
     private readonly directorPositionsRepository: DirectorPositionsRepository,
 
+    @inject(tsyringeTokens.repositories.userActionAudits)
+    private readonly userActionAuditsRepository: UserActionAuditsRepository,
+
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
@@ -50,6 +54,7 @@ export class CreateDirectorBoardUseCase {
     profileImage,
     aboutMe,
     publicName,
+    audit,
   }: CreateDirectorBoardUseCaseRequest): Promise<CreateDirectorBoardUseCaseResponse> {
     try {
       generateText(aboutMe as JSONContent, tiptapConfiguration)
@@ -79,10 +84,22 @@ export class CreateDirectorBoardUseCase {
 
     const userIsNotManager = !MANAGER_PERMISSIONS.has(user.role)
 
+    const actor = ensureExists({
+      value: await this.usersRepository.findByPublicId(audit.actorPublicId),
+      error: new UserNotFoundError(),
+    })
+
     const { directorBoard } = await this.dbContext.runInTransaction(async () => {
       if (userIsNotManager) {
         // Atribui permissão de gestor do sistema automaticamente:
         await this.usersRepository.updateRole({ id: user.id, role: UserRoleType.MANAGER })
+
+        await this.userActionAuditsRepository.create({
+          actionType: SystemActionType.ROLE_CHANGED,
+          actorId: actor.id,
+          targetId: user.id,
+          ipAddress: audit.ipAddress,
+        })
       }
 
       // Criar o registro no banco de dados
@@ -92,6 +109,13 @@ export class CreateDirectorBoardUseCase {
         profileImage,
         aboutMe: aboutMe as Prisma.InputJsonValue,
         publicName,
+      })
+
+      await this.userActionAuditsRepository.create({
+        actionType: SystemActionType.DIRECTOR_BOARD_CREATED,
+        actorId: actor.id,
+        targetId: user.id,
+        ipAddress: audit.ipAddress,
       })
 
       return { directorBoard }

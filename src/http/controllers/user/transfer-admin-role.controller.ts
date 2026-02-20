@@ -2,6 +2,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { transferAdminRoleBodySchema } from '@schemas/user/transfer-admin-role-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { TransferAdminRoleUseCase } from '@use-cases/user/transfer-admin-role'
+import { getClientIp } from '@utils/http/get-client-ip'
 import { container } from 'tsyringe'
 
 export async function transferAdminRole(request: FastifyRequest, reply: FastifyReply) {
@@ -13,6 +14,10 @@ export async function transferAdminRole(request: FastifyRequest, reply: FastifyR
   await useCase.execute({
     currentAdminPublicId,
     newAdminPublicId,
+    audit: {
+      actorPublicId: currentAdminPublicId,
+      ipAddress: getClientIp(request),
+    },
   })
 
   return await reply.status(204).send()

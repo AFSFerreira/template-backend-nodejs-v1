@@ -25,6 +25,9 @@ CREATE TYPE "public"."ActivityAreaType" AS ENUM ('AREA_OF_ACTIVITY', 'SUB_AREA_O
 -- CreateEnum
 CREATE TYPE "public"."EditorialStatusType" AS ENUM ('PENDING_APPROVAL', 'DRAFT', 'PUBLISHED', 'CHANGES_REQUESTED');
 
+-- CreateEnum
+CREATE TYPE "public"."SystemActionType" AS ENUM ('MEMBERSHIP_APPROVED', 'MEMBERSHIP_REJECTED', 'ACCOUNT_ACTIVATED', 'ACCOUNT_INACTIVATED', 'ACCOUNT_DELETED');
+
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
     "id" SERIAL NOT NULL,
@@ -36,6 +39,18 @@ CREATE TABLE "public"."authentication_audits" (
     "user_id" INTEGER,
 
     CONSTRAINT "authentication_audits_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "user_action_audits" (
+    "id" SERIAL NOT NULL,
+    "action_type" "SystemActionType" NOT NULL,
+    "ip_address" INET,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "actor_id" INTEGER,
+    "target_id" INTEGER,
+
+    CONSTRAINT "user_action_audits_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -223,12 +238,12 @@ CREATE TABLE "public"."director_positions" (
 -- CreateTable
 CREATE TABLE "public"."meeting_payment_information" (
     "id" SERIAL NOT NULL,
-    "account" TEXT NOT NULL,
     "agency" TEXT NOT NULL,
+    "account_encrypted" TEXT NOT NULL,
     "bank" TEXT NOT NULL,
     "code" TEXT NOT NULL,
+    "pix_key_encrypted" TEXT NOT NULL,
     "billing_email" TEXT NOT NULL,
-    "pix_key" TEXT NOT NULL,
     "value" DECIMAL(10,2) NOT NULL,
     "limit_date" DATE NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -406,6 +421,15 @@ CREATE TABLE "public"."_KeywordToUser" (
 );
 
 -- CreateIndex
+CREATE INDEX "user_action_audits_action_type_idx" ON "user_action_audits"("action_type");
+
+-- CreateIndex
+CREATE INDEX "user_action_audits_actor_id_idx" ON "user_action_audits"("actor_id");
+
+-- CreateIndex
+CREATE INDEX "user_action_audits_target_id_idx" ON "user_action_audits"("target_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "users_public_id_key" ON "public"."users"("public_id");
 
 -- CreateIndex
@@ -557,6 +581,12 @@ CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
 
 -- CreateIndex
 CREATE INDEX "_ActivityAreaToBlog_B_index" ON "public"."_ActivityAreaToBlog"("B");
+
+-- AddForeignKey
+ALTER TABLE "user_action_audits" ADD CONSTRAINT "user_action_audits_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "user_action_audits" ADD CONSTRAINT "user_action_audits_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;

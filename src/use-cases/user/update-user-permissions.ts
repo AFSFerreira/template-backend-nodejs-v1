@@ -1,11 +1,12 @@
 import type { UpdateUserPermissionsUseCaseRequest } from '@custom-types/use-cases/user/update-user-permissions'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
+import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/logger'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_PERMISSIONS_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
-import { UserRoleType } from '@prisma/generated/enums'
+import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
 import { isManagerPermissions } from '@services/guards/is-manager-permissions'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -21,11 +22,14 @@ export class UpdateUserPermissionsUseCase {
     @inject(tsyringeTokens.repositories.directorsBoard)
     private readonly directorBoardRepository: DirectorBoardRepository,
 
+    @inject(tsyringeTokens.repositories.userActionAudits)
+    private readonly userActionAuditsRepository: UserActionAuditsRepository,
+
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
   ) {}
 
-  async execute({ publicId, data }: UpdateUserPermissionsUseCaseRequest): Promise<void> {
+  async execute({ publicId, data, audit }: UpdateUserPermissionsUseCaseRequest): Promise<void> {
     const user = ensureExists({
       value: await this.usersRepository.findByPublicId(publicId),
       error: new UserNotFoundError(),
@@ -35,6 +39,11 @@ export class UpdateUserPermissionsUseCase {
       throw new AdminCannotUpdateOwnRoleError()
     }
 
+    const actor = ensureExists({
+      value: await this.usersRepository.findByPublicId(audit.actorPublicId),
+      error: new UserNotFoundError(),
+    })
+
     const isNotManagerPermissions = !isManagerPermissions(data)
 
     await this.dbContext.runInTransaction(async () => {
@@ -43,6 +52,13 @@ export class UpdateUserPermissionsUseCase {
       if (isNotManagerPermissions) {
         await this.directorBoardRepository.deleteByUserId(user.id)
       }
+
+      await this.userActionAuditsRepository.create({
+        actionType: SystemActionType.ROLE_CHANGED,
+        actorId: actor.id,
+        targetId: user.id,
+        ipAddress: audit.ipAddress,
+      })
     })
 
     logger.info(
