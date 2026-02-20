@@ -3,7 +3,7 @@ import type {
   DeleteMeetingEnrollmentUseCaseResponse,
 } from '@custom-types/use-cases/meeting-enrollment/delete-meeting-enrollment'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_ENROLLMENT_DELETION_SUCCESSFUL } from '@messages/loggings/models/meeting-enrollment-loggings'
 import { MeetingEnrollmentNotFoundError } from '@use-cases/errors/meeting-enrollment/meeting-enrollment-not-found-error'

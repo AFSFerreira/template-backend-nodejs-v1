@@ -4,7 +4,7 @@ import type {
   ISetDirectorBoardHTMLCache,
 } from '@custom-types/services/cache/director-board-html-cache'
 import { DIRECTOR_BOARD_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import {
   GET_DIRECTOR_BOARD_HTML_CACHED_INFO,
   SET_DIRECTOR_BOARD_HTML_CACHE_INFO,

@@ -6,7 +6,7 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { EMAIL_CHANGE_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_CHANGE_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
 import {

@@ -1,7 +1,7 @@
 import type { ICopyFile } from '@custom-types/services/files/copy-file'
 import type { FileInfo } from '@custom-types/services/files/file-info'
 import path from 'node:path'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 import { HashService } from '@services/hashes/hash-service'
 import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'

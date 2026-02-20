@@ -7,7 +7,7 @@ import type { DirectorBoardRepository } from '@repositories/directors-board-repo
 import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_BOARD_DELETION_SUCCESSFUL } from '@messages/loggings/models/director-board-loggings'

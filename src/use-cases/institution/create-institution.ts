@@ -3,7 +3,7 @@ import type {
   CreateInstitutionUseCaseResponse,
 } from '@custom-types/use-cases/institution/create-institution'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { INSTITUTION_CREATED_SUCCESSFULLY } from '@messages/loggings/models/institution-loggings'
 import { InstitutionAlreadyExistsError } from '@use-cases/errors/institution/institution-already-exists-error'

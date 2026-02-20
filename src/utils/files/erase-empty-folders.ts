@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs'
 import * as path from 'node:path'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 
 export interface CleanFolderOptions {
   preserveRoot?: boolean

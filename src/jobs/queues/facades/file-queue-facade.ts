@@ -4,8 +4,8 @@ import type {
   MoveFileEnqueuedInput,
 } from '@custom-types/jobs/queues/facades/file-queue-facade'
 import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
-import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logger } from '@lib/pino'
+import { logError } from '@lib/pino/helpers/log-error'
 import {
   COPY_FILE_JOB_ENQUEUED_SUCCESSFULLY,
   DELETE_FILE_JOB_ENQUEUED_SUCCESSFULLY,

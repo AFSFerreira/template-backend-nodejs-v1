@@ -1,7 +1,7 @@
 import type { universityApiResponseSchema } from '@lib/zod/utils/external/universities-api-schema'
 import type { z } from 'zod'
 import { ALL_UNIVERSITIES_API, UNIVERSITIES_API } from '@constants/url-constants'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { universitiesApiResponseSchema } from '@lib/zod/utils/external/universities-api-schema'
 import { UNIVERSITIES_API_PARSE_ERROR } from '@messages/loggings/services/external-api'
 

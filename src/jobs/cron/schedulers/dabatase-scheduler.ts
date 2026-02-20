@@ -4,7 +4,7 @@ import { cleanupUserActionAuditsJobFactory } from '@jobs/cron/functions/database
 import { cleanupVerifyingUsersJobFactory } from '@jobs/cron/functions/database/cleanup-verifying-users'
 import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { SchedulerManager } from '@lib/bullmq/helpers/scheduler-manager'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { redisConnection } from '@lib/redis/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { container } from 'tsyringe'

@@ -7,7 +7,7 @@ import type { UserActionAuditsRepository } from '@repositories/user-action-audit
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_DELETION_BY_ADMIN_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { SystemActionType } from '@prisma/generated/enums'

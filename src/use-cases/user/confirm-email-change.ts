@@ -3,7 +3,7 @@ import type {
   ConfirmEmailChangeUseCaseResponse,
 } from '@custom-types/use-cases/user/confirm-email-change'
 import type { UsersRepository } from '@repositories/users-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'

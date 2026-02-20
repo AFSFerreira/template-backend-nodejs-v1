@@ -3,7 +3,7 @@ import { emailQueue } from '@jobs/queues/definitions/email-queue'
 import { fileQueue } from '@jobs/queues/definitions/file-queue'
 import { emailWorker } from '@jobs/queues/workers/email-worker'
 import { fileWorker } from '@jobs/queues/workers/file-worker'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 
 interface WorkerEntry {
   worker: Worker

@@ -3,7 +3,7 @@ import type {
   UploadNewsletterHtmlUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/upload-newsletter-html'
 import { NEWSLETTER_TEMP_HTML_PATH } from '@constants/dynamic-file-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { NEWSLETTER_HTML_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import { saveFile } from '@services/files/save-file'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'

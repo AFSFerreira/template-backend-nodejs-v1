@@ -8,7 +8,7 @@ import type { InstitutionsRepository } from '@repositories/institutions-reposito
 import type { UsersRepository } from '@repositories/users-repository'
 import { USER_DEFAULT_PRESENTER_KEY } from '@constants/presenters-constants'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'

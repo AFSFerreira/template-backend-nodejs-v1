@@ -1,5 +1,5 @@
 import { STATIC_INSTITUTIONAL_INFO_DOCUMENTS_ROUTE } from '@constants/static-routes-constants'
-import { getBackendBaseUrlStored } from '@lib/logger/helpers/get-backend-base-url-stored'
+import { getBackendBaseUrlStored } from '@lib/pino/helpers/get-backend-base-url-stored'
 import urlJoin from 'url-join'
 
 export function buildElectionNoticeUrl(filename: string): string {

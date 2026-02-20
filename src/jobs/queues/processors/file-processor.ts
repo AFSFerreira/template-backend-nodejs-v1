@@ -1,6 +1,6 @@
 import type { FileJobData } from '@custom-types/jobs/queues/definitions/file-processor'
 import type { Job } from 'bullmq'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import {
   FILE_COPIED_SUCCESSFULLY,
   FILE_DELETED_SUCCESSFULLY,

@@ -1,6 +1,6 @@
 import type { Dirent } from 'node:fs'
 import path from 'node:path'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { LISTING_FILES_ERROR } from '@messages/loggings/system/file-loggings'
 import { listFiles } from './list-files'
 

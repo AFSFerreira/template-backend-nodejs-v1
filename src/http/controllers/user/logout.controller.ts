@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { env } from '@env/index'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { LOGOUT } from '@messages/responses/user-responses/2xx'
 import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses/4xx'
 

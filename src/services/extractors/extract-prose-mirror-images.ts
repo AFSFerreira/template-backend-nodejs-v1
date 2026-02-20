@@ -1,5 +1,5 @@
 import type { JSONContent } from '@tiptap/core'
-import { getBackendBaseUrlStored } from '@lib/logger/helpers/get-backend-base-url-stored'
+import { getBackendBaseUrlStored } from '@lib/pino/helpers/get-backend-base-url-stored'
 
 export function extractProseMirrorImages(proseMirror: JSONContent) {
   const images = new Set<string>()

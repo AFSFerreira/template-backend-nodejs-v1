@@ -1,5 +1,5 @@
 import { glob } from 'node:fs/promises'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { FILE_RETRIEVAL_ERROR } from '@messages/loggings/system/file-loggings'
 
 export async function getFiles(filePattern: string) {

@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { ERASE_FILES_CONCURRENCY } from '@constants/jobs-configuration-constants'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import {
   FILE_LIFETIME_CALCULATION_ERROR,
   FILE_REMOVAL_ERROR,

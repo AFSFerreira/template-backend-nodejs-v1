@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/document-management/upload-document'
 import path from 'node:path'
 import { STATUTE_FILE_NAME } from '@constants/static-file-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { STATUTE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/document-management-loggings'
 import { swapFiles } from '@services/files/swap-files'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'

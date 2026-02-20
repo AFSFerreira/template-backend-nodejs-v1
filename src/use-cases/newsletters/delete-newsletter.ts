@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/newsletters/delete-newsletter'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_DELETION_SUCCESSFUL } from '@messages/loggings/models/newsletter-loggings'
 import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'

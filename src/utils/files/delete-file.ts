@@ -1,4 +1,4 @@
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { FILE_DELETION_ERROR } from '@messages/loggings/system/file-loggings'
 import fs from 'fs-extra'
 

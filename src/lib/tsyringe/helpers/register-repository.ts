@@ -1,5 +1,5 @@
 import type { IRegisterRepository } from '@custom-types/lib/tsyringe/register-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { RepositoryAlreadyExistsError } from '@lib/tsyringe/errors/repositories/repository-already-exists-error'
 import { PRESENTER_STRATEGY_ALREADY_EXISTS_LOG } from '@messages/loggings/system/system-loggings'
 

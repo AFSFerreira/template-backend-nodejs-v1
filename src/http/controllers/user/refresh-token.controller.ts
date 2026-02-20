@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses/4xx'
 import { buildAuthTokens } from '@services/http/build-auth-tokens'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'

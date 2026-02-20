@@ -8,7 +8,7 @@ import type { ActivityAreasRepository } from '@repositories/activity-areas-repos
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_CREATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'

@@ -1,7 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
-import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logger } from '@lib/pino'
+import { logError } from '@lib/pino/helpers/log-error'
 import { prisma } from '@lib/prisma'
 import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@messages/loggings/system/server-loggings'
 

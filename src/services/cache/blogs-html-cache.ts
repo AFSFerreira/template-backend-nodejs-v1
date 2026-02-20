@@ -4,7 +4,7 @@ import type {
   ISetBlogHTMLCache,
 } from '@custom-types/services/cache/blogs-html-cache'
 import { BLOG_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/services/cache'
 
 const generateBlogHtmlKey = (blogId: number) => `cache:blog:${blogId}:contentHtml`

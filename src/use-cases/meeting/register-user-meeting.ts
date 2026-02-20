@@ -5,7 +5,7 @@ import type {
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { REGISTER_USER_MEETING } from '@messages/loggings/models/meeting-loggings'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'

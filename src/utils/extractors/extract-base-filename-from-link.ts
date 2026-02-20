@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { INVALID_URL_FALLBACK } from '@messages/loggings/system/file-loggings'
 
 export function extractBaseFilenameFromLink(link: string): string | null {

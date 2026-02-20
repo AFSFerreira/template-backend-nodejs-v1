@@ -2,7 +2,7 @@ import type { AuthenticateUseCaseRequest, AuthenticateUseCaseResponse } from '@c
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType } from '@prisma/generated/enums'

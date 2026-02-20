@@ -4,7 +4,7 @@ import type {
   MxRecordResult,
 } from '@custom-types/services/cache/validate-mx-record-cache'
 import { MX_RECORD_VERIFY_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { GET_MX_RECORD_CACHED_INFO, SET_MX_RECORD_CACHE_INFO } from '@messages/loggings/services/cache'
 
 const generateMxRecordKey = (mxRecord: string) => `mx-record:verify:${mxRecord}`

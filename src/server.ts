@@ -1,5 +1,5 @@
-import { logger } from '@lib/logger'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logger } from '@lib/pino'
+import { logError } from '@lib/pino/helpers/log-error'
 import { START_SERVER_MESSAGE } from '@messages/loggings/system/server-loggings'
 import { app } from './app'
 import { env } from './env'

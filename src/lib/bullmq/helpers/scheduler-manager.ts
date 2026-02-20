@@ -5,7 +5,7 @@ import type { ScalableTaskOptions } from '@custom-types/lib/bullmq/scalable-task
 import type { SchedulerOptions } from '@custom-types/lib/bullmq/scheduler-options'
 import type { Job, WorkerOptions } from 'bullmq'
 import { BASE_JOB_QUEUE_CONFIGURATION, BASE_JOB_WORKER_CONFIGURATION } from '@constants/jobs-configuration-constants'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { cronSchema } from '@lib/zod/utils/generic-components/cron-schema'
 import {
   JOB_STARTED_SUCESSFUL,

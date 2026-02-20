@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/system/file-loggings'
 import { InvalidFilesystemPathsError } from '@services/errors/files/invalid-filesystem-paths-error'
 import { folderExistsSync } from '@utils/files/folder-exists-sync'

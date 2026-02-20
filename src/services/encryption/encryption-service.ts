@@ -1,7 +1,7 @@
 import type { EncryptedData } from '@custom-types/services/hashes/encrypted-data'
 import crypto from 'node:crypto'
 import { env } from '@env/index'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { DecryptionFailedError } from '@use-cases/errors/generic/decryption-failed-error'
 
 const ALGORITHM = 'aes-256-gcm'

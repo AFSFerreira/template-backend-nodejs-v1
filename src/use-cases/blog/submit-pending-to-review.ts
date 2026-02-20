@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/blogs/submit-pending-to-review'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_SUBMITTED_PENDING_TO_REVIEW } from '@messages/loggings/models/blog-loggings'
 import { EditorialStatusType } from '@prisma/generated/enums'

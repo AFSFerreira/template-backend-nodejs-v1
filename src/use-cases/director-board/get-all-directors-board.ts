@@ -3,7 +3,7 @@ import type {
   GetAllDirectorBoardUseCaseResponse,
 } from '@custom-types/use-cases/director-board/get-all-directors-board'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_BOARD_LIST_ERROR } from '@messages/loggings/models/director-board-loggings'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'

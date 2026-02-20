@@ -1,7 +1,7 @@
 import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify'
 import { HAS_SENTRY } from '@constants/env-constants'
 import { SystemError } from '@errors/system-error'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { UNHANDLED_ERROR } from '@messages/loggings/system/common-loggings'
 import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 import * as Sentry from '@sentry/node'

@@ -3,7 +3,7 @@ import type {
   CreateDirectorPositionUseCaseResponse,
 } from '@custom-types/use-cases/director-position/create-director-position'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_POSITION_CREATED_SUCCESSFULLY } from '@messages/loggings/models/director-position-loggings'
 import { DirectorPositionAlreadyExistsError } from '@use-cases/errors/director-position/director-position-already-exists-error'

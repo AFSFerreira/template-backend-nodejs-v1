@@ -3,7 +3,7 @@ import type {
   UploadMeetingBannerUseCaseResponse,
 } from '@custom-types/use-cases/meeting/upload-meeting-banner'
 import { MEETING_TEMP_BANNERS_PATH } from '@constants/dynamic-file-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { MEETING_BANNER_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
 import { saveAvifImage } from '@services/files/save-avif-image'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'

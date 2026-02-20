@@ -3,7 +3,7 @@ import type {
   UploadBlogBannerUseCaseResponse,
 } from '@custom-types/use-cases/blogs/upload-blog-banner'
 import { BLOG_TEMP_BANNERS_PATH } from '@constants/dynamic-file-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { BLOG_BANNER_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { saveAvifImage } from '@services/files/save-avif-image'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'

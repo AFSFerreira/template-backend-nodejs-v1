@@ -2,7 +2,7 @@ import type { ExportUsersDataUseCaseResponse } from '@custom-types/use-cases/use
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import type { UsersRepository } from '@repositories/users-repository'
 import { Readable } from 'node:stream'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings/models/user-loggings'
 import { flattenUser } from '@services/transformers/flatten-user'

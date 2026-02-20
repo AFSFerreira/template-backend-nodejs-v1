@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/meeting/delete-meeting'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_DELETED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'

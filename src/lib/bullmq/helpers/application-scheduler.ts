@@ -3,7 +3,7 @@
 import type { SchedulerManager } from '@lib/bullmq/helpers/scheduler-manager'
 import { DatabaseScheduler } from '@jobs/cron/schedulers/dabatase-scheduler'
 import { FileScheduler } from '@jobs/cron/schedulers/file-scheduler'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 
 export class ApplicationScheduler {
   private schedulers: SchedulerManager[] = []

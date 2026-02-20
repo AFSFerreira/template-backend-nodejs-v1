@@ -1,4 +1,4 @@
-import type { ILogError } from '@custom-types/lib/logger/log-error'
+import type { ILogError } from '@custom-types/lib/pino/log-error'
 import { logger } from '..'
 
 export function logError({ error, context = {}, message = 'Unexpected error' }: ILogError) {

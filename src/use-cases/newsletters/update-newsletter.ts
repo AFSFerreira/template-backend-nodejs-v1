@@ -5,7 +5,7 @@ import type {
 } from '@custom-types/use-cases/newsletters/update-newsletter'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import {

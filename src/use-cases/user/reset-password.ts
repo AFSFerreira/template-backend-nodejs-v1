@@ -3,7 +3,7 @@ import type {
   ResetPasswordUseCaseResponse,
 } from '@custom-types/use-cases/user/reset-password'
 import type { UsersRepository } from '@repositories/users-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { RESET_PASSWORD_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'

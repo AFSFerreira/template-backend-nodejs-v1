@@ -3,7 +3,7 @@ import type { ISaveAvifImage } from '@custom-types/services/files/save-avif-imag
 import { createWriteStream } from 'node:fs'
 import path from 'node:path'
 import { pipeline } from 'node:stream/promises'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggings'
 import { HashService } from '@services/hashes/hash-service'
 import { FileSaveError } from '@use-cases/errors/generic/file-save-error'

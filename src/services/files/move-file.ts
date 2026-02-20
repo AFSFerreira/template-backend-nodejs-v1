@@ -1,5 +1,5 @@
 import type { IMoveFile } from '@custom-types/services/files/move-file'
-import { logError } from '@lib/logger/helpers/log-error'
+import { logError } from '@lib/pino/helpers/log-error'
 import { FILE_PERSIST_ERROR } from '@messages/loggings/system/file-loggings'
 import { fileExists } from '@utils/files/file-exists'
 import fs from 'fs-extra'

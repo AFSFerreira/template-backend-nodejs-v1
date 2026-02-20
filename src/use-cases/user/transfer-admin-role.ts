@@ -5,7 +5,7 @@ import type {
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { SystemActionType, UserRoleType } from '@prisma/generated/enums'

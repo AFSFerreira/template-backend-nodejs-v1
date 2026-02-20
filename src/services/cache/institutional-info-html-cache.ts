@@ -4,7 +4,7 @@ import type {
   ISetInstitutionalInfoHTMLCache,
 } from '@custom-types/services/cache/institutional-info-html-cache'
 import { INSTITUTIONAL_INFO_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/logger'
+import { logger } from '@lib/pino'
 import {
   GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO,
   SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO,
