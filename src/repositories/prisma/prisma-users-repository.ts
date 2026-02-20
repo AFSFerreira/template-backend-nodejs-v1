@@ -330,7 +330,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const expiredUsers = await this.dbContext.client.user.findMany({
       where: {
         membershipStatus: MembershipStatusType.VERIFYING,
-        createdAt: { lt: thresholdDate },
+        createdAt: { lte: thresholdDate },
       },
       select: { id: true },
       take: batchSize,
