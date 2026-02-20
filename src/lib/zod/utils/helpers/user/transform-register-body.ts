@@ -46,9 +46,9 @@ export function transformRegisterBodySchema(data: EducationLevelTransformData, c
   const result = targetSchema.safeParse(data)
 
   if (!result.success) {
-    result.error.issues.forEach((issue) => {
+    for (const issue of result.error.issues) {
       ctx.addIssue({ ...issue })
-    })
+    }
     return z.NEVER
   }
 

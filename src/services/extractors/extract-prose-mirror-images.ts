@@ -11,7 +11,9 @@ export function extractProseMirrorImages(proseMirror: JSONContent) {
     }
 
     if (node.content && Array.isArray(node.content)) {
-      node.content.forEach(traverseNode)
+      for (const child of node.content) {
+        traverseNode(child)
+      }
     }
   }
 

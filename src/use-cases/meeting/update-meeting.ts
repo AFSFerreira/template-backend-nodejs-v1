@@ -78,11 +78,11 @@ export class UpdateMeetingUseCase {
     }
 
     if (body.dates) {
-      body.dates.forEach((date) => {
+      for (const date of body.dates) {
         if (toDateOnlyUTC(date) < today) {
           throw new InvalidMeetingDateError()
         }
-      })
+      }
 
       const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
 

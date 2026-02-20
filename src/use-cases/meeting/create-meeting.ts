@@ -43,11 +43,11 @@ export class CreateMeetingUseCase {
 
     const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
 
-    nonRepeatingDates.forEach((date) => {
+    for (const date of nonRepeatingDates) {
       if (toDateOnlyUTC(date) < today) {
         throw new InvalidMeetingDateError()
       }
-    })
+    }
 
     ensureNotExists({
       value: await this.meetingsRepository.findActiveMeeting(),

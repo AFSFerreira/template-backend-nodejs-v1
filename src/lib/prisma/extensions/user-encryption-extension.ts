@@ -28,7 +28,9 @@ export const userEncryptionExtension = Prisma.defineExtension({
       async $allOperations({ operation, args, query }) {
         if (CREATE_OPERATIONS_SET.has(operation) && hasPrismaDataArgs(args)) {
           if (Array.isArray(args.data)) {
-            args.data.forEach(encryptSensitiveFields)
+            for (const item of args.data) {
+              encryptSensitiveFields(item)
+            }
           } else {
             encryptSensitiveFields(args.data)
           }

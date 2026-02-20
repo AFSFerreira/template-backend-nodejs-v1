@@ -202,13 +202,13 @@ export class UpdateBlogUseCase {
     }
 
     if (formattedBlogImages) {
-      formattedBlogImages.forEach(async (imageInfo) => {
+      for (const imageInfo of formattedBlogImages) {
         const fileAlreadyExists = await fileExists(imageInfo.newFilePath)
 
-        if (fileAlreadyExists) return
+        if (fileAlreadyExists) continue
 
         await moveFileEnqueued(imageInfo)
-      })
+      }
     }
 
     if (removedImages) {

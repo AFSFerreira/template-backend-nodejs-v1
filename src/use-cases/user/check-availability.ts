@@ -62,9 +62,9 @@ export class CheckAvailabilityUseCase {
 
     const availabilities: Record<string, boolean> = {}
 
-    activeChecks.forEach(([key], idx) => {
+    for (const [idx, [key]] of activeChecks.entries()) {
       availabilities[key] = !results[idx]
-    })
+    }
 
     return { availabilities }
   }

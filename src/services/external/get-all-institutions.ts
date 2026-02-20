@@ -12,11 +12,11 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
 
   const externalInstitutions = await getExternalInstitutions(universityName)
 
-  externalInstitutions.forEach((externalInstitution) => {
-    if (allInstitutions.includes(externalInstitution)) return
+  for (const externalInstitution of externalInstitutions) {
+    if (allInstitutions.includes(externalInstitution)) continue
 
     allInstitutions.push(externalInstitution)
-  })
+  }
 
   const allSystemInstitutions = await institutionsRepository.listAllInstitutionsNames({
     name: universityName,
@@ -24,13 +24,13 @@ export async function getAllInstitutions({ institutionsRepository, query }: IGet
     page,
   })
 
-  allSystemInstitutions.data.forEach((institution) => {
+  for (const institution of allSystemInstitutions.data) {
     const formattedName = institution.name.trim().toUpperCase()
 
-    if (allInstitutions.includes(formattedName)) return
+    if (allInstitutions.includes(formattedName)) continue
 
     allInstitutions.push(formattedName)
-  })
+  }
 
   return allInstitutions
 }
