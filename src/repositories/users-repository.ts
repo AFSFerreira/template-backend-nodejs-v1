@@ -7,6 +7,7 @@ import type { FindByIdentityDocumentQuery } from '@custom-types/repository/prism
 import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
 import type { ListAllUsersDetailedQuery } from '@custom-types/repository/prisma/user/list-all-users-detailed-query'
 import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
+import type { ListExpiredVerifyingUsersQuery } from '@custom-types/repository/prisma/user/list-expired-verifying-users-query'
 import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/user/set-email-change-token-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
@@ -46,5 +47,6 @@ export interface UsersRepository {
   setPasswordToken: (query: SetPasswordTokenQuery) => Promise<User>
   setEmailChangeToken: (query: SetEmailChangeTokenQuery) => Promise<User>
   confirmEmailChange: (query: ConfirmEmailChangeQuery) => Promise<User>
-  deleteExpiredVerifyingUsers: (thresholdDate: Date, batchSize?: number) => Promise<number>
+  listExpiredVerifyingUsers: (query: ListExpiredVerifyingUsersQuery) => Promise<number[]>
+  deleteManyById: (ids: number[]) => Promise<number>
 }

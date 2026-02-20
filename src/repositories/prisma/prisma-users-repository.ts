@@ -5,6 +5,7 @@ import type { FindByIdentityDocumentQuery } from '@custom-types/repository/prism
 import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
 import type { ListAllUsersDetailedQuery } from '@custom-types/repository/prisma/user/list-all-users-detailed-query'
 import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
+import type { ListExpiredVerifyingUsersQuery } from '@custom-types/repository/prisma/user/list-expired-verifying-users-query'
 import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/user/set-email-change-token-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
@@ -326,7 +327,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return totalUsers
   }
 
-  async deleteExpiredVerifyingUsers(thresholdDate: Date, batchSize = 1000): Promise<number> {
+  async listExpiredVerifyingUsers({ thresholdDate, batchSize }: ListExpiredVerifyingUsersQuery): Promise<number[]> {
     const expiredUsers = await this.dbContext.client.user.findMany({
       where: {
         membershipStatus: MembershipStatusType.VERIFYING,
@@ -336,10 +337,10 @@ export class PrismaUsersRepository implements UsersRepository {
       take: batchSize,
     })
 
-    if (expiredUsers.length === 0) return 0
+    return expiredUsers.map((user) => user.id)
+  }
 
-    const ids = expiredUsers.map((user) => user.id)
-
+  async deleteManyById(ids: number[]): Promise<number> {
     const { count } = await this.dbContext.client.user.deleteMany({
       where: { id: { in: ids } },
     })
