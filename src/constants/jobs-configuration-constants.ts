@@ -1,7 +1,6 @@
 import type { DefaultJobOptions, WorkerOptions } from 'bullmq'
 import ms from 'ms'
 
-export const JOBS_TIMEZONE = 'America/Sao_Paulo'
 export const ERASE_FILES_CONCURRENCY = 10
 
 export const BASE_JOB_QUEUE_CONFIGURATION = {

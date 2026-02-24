@@ -167,6 +167,26 @@ export class PrismaMeetingEnrollmentsRepository implements MeetingEnrollmentsRep
     }
   }
 
+  async *streamAllEnrollments(batchSize = 500) {
+    let cursor: number | undefined
+
+    while (true) {
+      const batch = await this.dbContext.client.meetingEnrollment.findMany({
+        take: batchSize,
+        skip: cursor ? 1 : 0,
+        cursor: cursor ? { id: cursor } : undefined,
+        include: meetingEnrollmentWithDetails.include,
+        orderBy: { id: 'asc' },
+      })
+
+      if (batch.length === 0) break
+
+      for (const enrollment of batch) yield enrollment
+
+      cursor = batch.at(-1)?.id
+    }
+  }
+
   async deleteById(id: number) {
     await this.dbContext.client.meetingEnrollment.delete({
       where: {

@@ -16,5 +16,6 @@ export interface MeetingEnrollmentsRepository {
   listMeetingEnrollments: (
     query: ListMeetingEnrollmentsQuery,
   ) => Promise<PaginatedResult<MeetingEnrollmentWithDetails[]>>
+  streamAllEnrollments: (batchSize?: number) => AsyncIterable<MeetingEnrollmentWithDetails>
   deleteById: (id: number) => Promise<void>
 }
