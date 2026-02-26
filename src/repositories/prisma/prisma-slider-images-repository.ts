@@ -122,4 +122,27 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
       where: { id },
     })
   }
+
+  async swapOrders(firstOrder: number, secondOrder: number) {
+    const tempOrder = (await this.totalCount()) + 1
+
+    await this.dbContext.runInTransaction(async () => {
+      await this.dbContext.client.sliderImage.update({
+        where: { order: firstOrder },
+        data: { order: tempOrder },
+      })
+
+      await this.dbContext.client.sliderImage.update({
+        where: { order: secondOrder },
+        data: { order: firstOrder },
+      })
+
+      await this.dbContext.client.sliderImage.update({
+        where: { order: tempOrder },
+        data: { order: secondOrder },
+      })
+    })
+
+    return true
+  }
 }

@@ -24,12 +24,14 @@ export class UpdateSliderImageUseCase {
       error: new SliderImageNotFoundError(),
     })
 
-    if (data.order) {
+    if (data.order && data.order !== foundSliderImage.order) {
       const sliderImageQuanty = await this.sliderImagesRepository.totalCount()
 
       if (data.order < 1 || data.order > sliderImageQuanty || data.order > MAX_SLIDER_IMAGES_QUANTITY) {
         throw new SliderImageInvalidOrderError()
       }
+
+      await this.sliderImagesRepository.swapOrders(foundSliderImage.order, data.order)
     }
 
     const shouldUpdate = Object.keys(data).length > 0

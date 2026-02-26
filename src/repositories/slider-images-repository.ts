@@ -12,4 +12,5 @@ export interface SliderImagesRepository {
   delete: (id: number) => Promise<void>
   listAll: (query: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
   listActive: (query: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
+  swapOrders: (firstId: number, secondId: number) => Promise<boolean>
 }
