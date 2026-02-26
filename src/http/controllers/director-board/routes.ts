@@ -51,7 +51,7 @@ export async function directorBoardRoutes(app: FastifyInstance) {
     '/uploads/profile-image',
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
-      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
     },
     uploadDirectorBoardProfileImage,
   )
