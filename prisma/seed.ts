@@ -7,7 +7,7 @@ import { addressStatesDataArray1 } from './seed-data/address-states'
 import { partialAddressDataArray1 } from './seed-data/addresses'
 import { blogDataArray1 } from './seed-data/blogs'
 import { directorPositionsArray1 } from './seed-data/director-positions'
-import { directorBoardWithoutUserDataArray1 } from './seed-data/directors-board'
+import { directorBoardDataArray1 } from './seed-data/directors-board'
 import { institutionalInfoData1 } from './seed-data/institutional-info'
 import { institutionsDataArray1 } from './seed-data/institutions'
 import { meetingEnrollmentDataArray1 } from './seed-data/meeting-enrollments'
@@ -63,11 +63,6 @@ async function main() {
       update: {},
       create: {
         ...user,
-        DirectorBoard: {
-          create: directorBoardWithoutUserDataArray1.find(
-            (directorBoard) => directorBoard.publicName === user.fullName,
-          ),
-        },
         Address: {
           create: {
             ...getRandomArrayElement(partialAddressDataArray1),
@@ -80,6 +75,23 @@ async function main() {
     })
 
     createdUsers.push(createdUser)
+  }
+
+  // Criação de Perfis do Corpo Diretivo:
+  for (const directorBoard of directorBoardDataArray1) {
+    const existingDirectorBoard = await prisma.directorBoard.findFirst({
+      where: {
+        User: {
+          email: directorBoard.User.connect?.email,
+        },
+      },
+    })
+
+    if (!existingDirectorBoard) {
+      await prisma.directorBoard.create({
+        data: directorBoard,
+      })
+    }
   }
 
   // Criação de Blogs Dummy:

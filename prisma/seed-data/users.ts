@@ -85,7 +85,7 @@ export const partialUserData1: PartialUserCreateInputInfo = {
   },
 }
 
-const adminUserData1: UserWithoutIdentityDocument = {
+export const adminUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   fullName: 'admin',
   email: 'admin@email.com',

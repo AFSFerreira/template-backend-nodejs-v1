@@ -44,7 +44,7 @@ export const guestMeetingEnrollmentDataArray1: Prisma.GuestMeetingEnrollmentCrea
 export const guestMeetingEnrollmentDataArray2: Prisma.GuestMeetingEnrollmentCreateNestedOneWithoutMeetingEnrollmentInput[] =
   []
 
-for (let i = 1; i <= 700; i++) {
+for (let i = 1; i <= 70; i++) {
   guestMeetingEnrollmentDataArray2.push({
     create: {
       email: `random-meeting-guest-${i}@email.com`,
