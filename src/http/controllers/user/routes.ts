@@ -184,7 +184,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/:publicId/membership-status',
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
-      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     updateMembershipStatus,
   )
@@ -226,7 +226,7 @@ export async function userRoutes(app: FastifyInstance) {
     '/:publicId',
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
-      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
     },
     deleteUserByAdmin,
   )
