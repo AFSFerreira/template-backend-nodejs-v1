@@ -6,7 +6,7 @@ export const INVALID_PAYMENT_LIMIT_DATE: IApiResponse = {
   status: 400,
   body: {
     code: 'INVALID_PAYMENT_LIMIT_DATE',
-    message: 'A data limite de pagamento não pode ser anterior à data atual',
+    message: 'A data limite de pagamento não pode ser anterior à primeira data da reunião',
   },
 }
 

@@ -1,13 +1,6 @@
 import type { Prisma } from '@prisma/generated/client'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import {
-  subActivityAreaData1,
-  subActivityAreaData11,
-  subActivityAreaData12,
-  subActivityAreaData15,
-  subActivityAreaData4,
-  subActivityAreaData9,
-} from './activity-areas'
+import { subActivityAreaData1, subActivityAreaData9 } from './activity-areas'
 import { blogSearchContent1, blogSearchContent2, blogSearchContent3 } from './blog-contents'
 import { contentLeaderUserData1 } from './users'
 
@@ -47,9 +40,6 @@ const blogData2: Prisma.BlogCreateInput = {
       {
         type_area: subActivityAreaData9,
       },
-      {
-        type_area: subActivityAreaData12,
-      },
     ],
   },
 }
@@ -69,15 +59,6 @@ const blogData3: Prisma.BlogCreateInput = {
     connect: [
       {
         type_area: subActivityAreaData1,
-      },
-      {
-        type_area: subActivityAreaData4,
-      },
-      {
-        type_area: subActivityAreaData11,
-      },
-      {
-        type_area: subActivityAreaData15,
       },
     ],
   },

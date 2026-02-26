@@ -12,7 +12,6 @@ import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/bu
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
-import { InvalidMeetingDateError } from '@use-cases/errors/meeting/invalid-meeting-date-error'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
@@ -35,18 +34,14 @@ export class CreateMeetingUseCase {
       throw new InvalidEmailDomainError()
     }
 
-    const today = toDateOnlyUTC(new Date())
-
-    if (toDateOnlyUTC(data.meetingPaymentInfo.limitDate) < today) {
-      throw new InvalidPaymentLimitDateError()
-    }
-
     const nonRepeatingDates = Array.from<Date>(new Set<Date>(data.dates))
 
-    for (const date of nonRepeatingDates) {
-      if (toDateOnlyUTC(date) < today) {
-        throw new InvalidMeetingDateError()
-      }
+    const firstMeetingDayValue = Math.min(...nonRepeatingDates.map((date) => date.valueOf()))
+
+    const firstMeetingDay = new Date(firstMeetingDayValue)
+
+    if (toDateOnlyUTC(data.meetingPaymentInfo.limitDate) < toDateOnlyUTC(firstMeetingDay)) {
+      throw new InvalidPaymentLimitDateError()
     }
 
     ensureNotExists({

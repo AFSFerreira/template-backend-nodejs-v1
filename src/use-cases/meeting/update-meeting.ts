@@ -12,7 +12,6 @@ import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/bu
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
-import { InvalidMeetingDateError } from '@use-cases/errors/meeting/invalid-meeting-date-error'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
 import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
@@ -36,6 +35,7 @@ export class UpdateMeetingUseCase {
 
     let newBannerImage: string | undefined
     let newAgenda: string | undefined
+    let newMeetingDates: Date[] | undefined
 
     const foundMeeting = ensureExists({
       value: await this.meetingsRepository.findByPublicId(publicId),
@@ -67,23 +67,7 @@ export class UpdateMeetingUseCase {
       updateData.location = body.location
     }
 
-    if (body.paymentMeetingInfo) {
-      if (body.paymentMeetingInfo?.limitDate) {
-        if (toDateOnlyUTC(body.paymentMeetingInfo.limitDate) < today) {
-          throw new InvalidPaymentLimitDateError()
-        }
-      }
-
-      updateData.meetingPaymentInfo = body.paymentMeetingInfo
-    }
-
     if (body.dates) {
-      for (const date of body.dates) {
-        if (toDateOnlyUTC(date) < today) {
-          throw new InvalidMeetingDateError()
-        }
-      }
-
       const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
 
       updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
@@ -92,10 +76,28 @@ export class UpdateMeetingUseCase {
         throw new MeetingDateConflictError()
       }
 
+      newMeetingDates = nonRepeatingDates
+
       updateData.MeetingDate = {
         deleteMany: {},
         create: nonRepeatingDates.map((date) => ({ date })),
       }
+    }
+
+    if (body.paymentMeetingInfo) {
+      if (body.paymentMeetingInfo?.limitDate) {
+        const meetingDates = newMeetingDates ?? foundMeeting.MeetingDate.map((dateInfo) => dateInfo.date)
+
+        const firstMeetingDayValue = Math.min(...meetingDates.map((date) => date.valueOf()))
+
+        const firstMeetingDay = new Date(firstMeetingDayValue)
+
+        if (toDateOnlyUTC(body.paymentMeetingInfo.limitDate) < toDateOnlyUTC(firstMeetingDay)) {
+          throw new InvalidPaymentLimitDateError()
+        }
+      }
+
+      updateData.meetingPaymentInfo = body.paymentMeetingInfo
     }
 
     if (newBannerImage) {
