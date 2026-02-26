@@ -62,7 +62,7 @@ export function membershipApprovedHtmlTemplate({
 
               <ul style="list-style: none; padding-left: 0; margin: 0 0 24px;">
                 <li style="color: #555; font-size: 16px; line-height: 1.6;">
-                  <span style="font-weight: bold; color: #1976d2;">•</span> ${email}
+                  <span style="font-weight: bold; color: #1976d2;">•</span> email: ${email}
                 </li>
               </ul>
 

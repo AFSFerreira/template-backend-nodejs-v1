@@ -73,7 +73,7 @@ export function changeEmailHtmlTemplate({
 
             <ul style="list-style: none; padding-left: 0; margin: 0 0 24px;">
               <li style="color: #555; font-size: 16px; line-height: 1.6; margin-bottom: 8px;">
-                <span style="font-weight: bold; color: #888;">E-mail antigo:</span> ${oldEmail}
+                <span style="font-weight: bold; color: #888;">Antigo e-mail:</span> ${oldEmail}
               </li>
               <li style="color: #555; font-size: 16px; line-height: 1.6;">
                 <span style="font-weight: bold; color: #1976d2;">Novo e-mail:</span> ${newEmail}
