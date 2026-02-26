@@ -13,7 +13,6 @@ import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/bu
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
-import { MeetingDateConflictError } from '@use-cases/errors/meeting/meeting-date-conflict-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
@@ -29,8 +28,6 @@ export class UpdateMeetingUseCase {
   ) {}
 
   async execute({ publicId, body }: UpdateMeetingUseCaseRequest): Promise<UpdateMeetingUseCaseResponse> {
-    const today = toDateOnlyUTC(new Date())
-
     const updateData: UpdateMeetingQuery['data'] = {}
 
     let newBannerImage: string | undefined
@@ -71,10 +68,6 @@ export class UpdateMeetingUseCase {
       const nonRepeatingDates = Array.from<Date>(new Set<Date>(body.dates))
 
       updateData.lastDate = getArrayMaxDate(nonRepeatingDates)
-
-      if (updateData.lastDate >= today) {
-        throw new MeetingDateConflictError()
-      }
 
       newMeetingDates = nonRepeatingDates
 
