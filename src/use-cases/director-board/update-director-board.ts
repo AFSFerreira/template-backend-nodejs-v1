@@ -81,6 +81,8 @@ export class UpdateDirectorBoardUseCase {
       }
     }
 
+    updateData.directorPositionId = currentDirectorBoard.DirectorPosition.id
+
     if (data.positionId) {
       const directorPosition = ensureExists({
         value: await this.directorPositionsRepository.findUniqueBy({ publicId: data.positionId }),
