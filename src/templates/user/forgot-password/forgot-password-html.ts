@@ -33,7 +33,9 @@ export function forgotPasswordHtmlTemplate({
 						<tr>
 							<td align="center"
 								style="padding: 30px 20px 20px; background-color: #000000; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-						<img src="cid:${EMAIL_LOGO_CID}" alt="Logo da Empresa"
+								<img src="cid:${EMAIL_LOGO_CID}"
+									alt="Logo da Empresa"
+									style="display: block; width: 150px; height: auto; background-color: black;">
 
 						<tr>
 							<td style="padding: 0 40px 40px;">
