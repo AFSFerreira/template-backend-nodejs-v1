@@ -14,10 +14,10 @@ import {
   PASSWORD_RESET_EMAIL_FAILED,
 } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
-import { forgotPasswordHtmlTemplate } from '@templates/user/forgot-password/forgot-password-html'
-import { forgotPasswordTextTemplate } from '@templates/user/forgot-password/forgot-password-text'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
+import { forgotPasswordHtmlTemplate } from '../../emails/templates/user/forgot-password/forgot-password-html'
+import { forgotPasswordTextTemplate } from '../../emails/templates/user/forgot-password/forgot-password-text'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
 @injectable()

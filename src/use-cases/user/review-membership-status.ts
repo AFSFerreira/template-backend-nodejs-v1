@@ -18,14 +18,14 @@ import {
 import { MembershipStatusType, SystemActionType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
-import { membershipApprovedHtmlTemplate } from '@templates/user/membership-accepted/membership-accepted-html'
-import { membershipApprovedTextTemplate } from '@templates/user/membership-accepted/membership-accepted-text'
-import { membershipRejectedHtmlTemplate } from '@templates/user/membership-rejected/membership-rejected-html'
-import { membershipRejectedTextTemplate } from '@templates/user/membership-rejected/membership-rejected-text'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
+import { membershipApprovedHtmlTemplate } from '../../emails/templates/user/membership-accepted/membership-accepted-html'
+import { membershipApprovedTextTemplate } from '../../emails/templates/user/membership-accepted/membership-accepted-text'
+import { membershipRejectedHtmlTemplate } from '../../emails/templates/user/membership-rejected/membership-rejected-html'
+import { membershipRejectedTextTemplate } from '../../emails/templates/user/membership-rejected/membership-rejected-text'
 
 @injectable()
 export class ReviewMembershipStatusUseCase {

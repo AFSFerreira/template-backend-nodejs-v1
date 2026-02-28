@@ -14,14 +14,14 @@ import {
   EMAIL_CHANGE_REQUESTED_SUCCESSFULLY,
 } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
-import { changeEmailHtmlTemplate } from '@templates/user/change-email/change-email-html'
-import { changeEmailTextTemplate } from '@templates/user/change-email/change-email-text'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
+import { changeEmailHtmlTemplate } from '../../emails/templates/user/change-email/change-email-html'
+import { changeEmailTextTemplate } from '../../emails/templates/user/change-email/change-email-text'
 
 @injectable()
 export class RequestEmailChangeUseCase {
