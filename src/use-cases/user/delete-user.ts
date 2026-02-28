@@ -12,10 +12,9 @@ import { USER_DELETION_EMAIL_SUBJECT } from '@messages/emails/user-emails'
 import { USER_DELETION_EMAIL_SEND_ERROR, USER_DELETION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { UserRoleType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
+import { DeleteUserRenderer } from '@services/renderers/emails/delete-user-renderer'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { deleteUserHtmlTemplate } from '../../templates/user/delete-user/delete-user-html'
-import { deleteUserTextTemplate } from '../../templates/user/delete-user/delete-user-text'
 import { AdminCannotDeleteSelfError } from '../errors/user/admin-cannot-delete-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
@@ -38,17 +37,15 @@ export class DeleteUserUseCase {
 
     await this.usersRepository.delete(deletedUser.id)
 
-    const emailInfo = {
+    const { html, text, attachments } = new DeleteUserRenderer().render({
       fullName: deletedUser.fullName,
       email: deletedUser.email,
-    }
-
-    const { html, attachments } = deleteUserHtmlTemplate(emailInfo)
+    })
 
     await sendEmailEnqueued({
       to: deletedUser.email,
       subject: USER_DELETION_EMAIL_SUBJECT,
-      message: deleteUserTextTemplate(emailInfo),
+      message: text,
       html,
       attachments,
       logging: {

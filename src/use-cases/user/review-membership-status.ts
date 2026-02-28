@@ -18,14 +18,12 @@ import {
 import { MembershipStatusType, SystemActionType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { MembershipApprovedRenderer } from '@services/renderers/emails/membership-approved-renderer'
+import { MembershipRejectedRenderer } from '@services/renderers/emails/membership-rejected-renderer'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { membershipApprovedHtmlTemplate } from '../../templates/user/membership-accepted/membership-accepted-html'
-import { membershipApprovedTextTemplate } from '../../templates/user/membership-accepted/membership-accepted-text'
-import { membershipRejectedHtmlTemplate } from '../../templates/user/membership-rejected/membership-rejected-html'
-import { membershipRejectedTextTemplate } from '../../templates/user/membership-rejected/membership-rejected-text'
 
 @injectable()
 export class ReviewMembershipStatusUseCase {
@@ -85,12 +83,12 @@ export class ReviewMembershipStatusUseCase {
           })
         })
 
-        const { html, attachments } = membershipApprovedHtmlTemplate(emailInfo)
+        const { html, text, attachments } = new MembershipApprovedRenderer().render(emailInfo)
 
         await sendEmailEnqueued({
           to: user.email,
           subject: MEMBERSHIP_ACCEPTED_EMAIL_SUBJECT,
-          message: membershipApprovedTextTemplate(emailInfo),
+          message: text,
           html,
           attachments,
           logging: {
@@ -121,12 +119,12 @@ export class ReviewMembershipStatusUseCase {
           })
         }
 
-        const { html, attachments } = membershipRejectedHtmlTemplate(emailInfo)
+        const { html, text, attachments } = new MembershipRejectedRenderer().render(emailInfo)
 
         await sendEmailEnqueued({
           to: user.email,
           subject: MEMBERSHIP_REJECTED_EMAIL_SUBJECT,
-          message: membershipRejectedTextTemplate(emailInfo),
+          message: text,
           html,
           attachments,
           logging: {

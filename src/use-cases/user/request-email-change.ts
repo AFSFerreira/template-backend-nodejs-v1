@@ -14,14 +14,13 @@ import {
   EMAIL_CHANGE_REQUESTED_SUCCESSFULLY,
 } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
+import { ChangeEmailRenderer } from '@services/renderers/emails/change-email-renderer'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
-import { changeEmailHtmlTemplate } from '../../templates/user/change-email/change-email-html'
-import { changeEmailTextTemplate } from '../../templates/user/change-email/change-email-text'
 
 @injectable()
 export class RequestEmailChangeUseCase {
@@ -61,19 +60,17 @@ export class RequestEmailChangeUseCase {
       emailVerificationTokenExpiresAt,
     })
 
-    const emailInfo = {
+    const { html, text, attachments } = new ChangeEmailRenderer().render({
       fullName: user.fullName,
       oldEmail: user.email,
       newEmail,
       token: emailVerificationToken,
-    }
-
-    const { html, attachments } = changeEmailHtmlTemplate(emailInfo)
+    })
 
     await sendEmailEnqueued({
       to: newEmail,
       subject: EMAIL_CHANGE_VERIFICATION_SUBJECT,
-      message: changeEmailTextTemplate(emailInfo),
+      message: text,
       html,
       attachments,
       logging: {

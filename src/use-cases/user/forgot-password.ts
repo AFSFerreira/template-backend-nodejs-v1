@@ -14,10 +14,9 @@ import {
   PASSWORD_RESET_EMAIL_FAILED,
 } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
+import { ForgotPasswordRenderer } from '@services/renderers/emails/forgot-password-renderer'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { forgotPasswordHtmlTemplate } from '../../templates/user/forgot-password/forgot-password-html'
-import { forgotPasswordTextTemplate } from '../../templates/user/forgot-password/forgot-password-text'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
 @injectable()
@@ -47,22 +46,20 @@ export class ForgotPasswordUseCase {
       tokenData,
     })
 
-    const emailInfo = {
+    // Recuperação de senha enviada para o email escolhido pelo usuário
+    const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
+
+    const { html, text, attachments } = new ForgotPasswordRenderer().render({
       email: user.email,
       username: user.username,
       fullName: user.fullName,
       token: recoveryPasswordToken,
-    }
-
-    // Recuperação de senha enviada para o email escolhido pelo usuário
-    const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
-
-    const { html, attachments } = forgotPasswordHtmlTemplate(emailInfo)
+    })
 
     await sendEmailEnqueued({
       to: userChosenEmail,
       subject: PASSWORD_RESET_SUBJECT,
-      message: forgotPasswordTextTemplate(emailInfo),
+      message: text,
       html,
       attachments,
       logging: {

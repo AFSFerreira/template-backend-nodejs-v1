@@ -24,7 +24,7 @@ interface NewsletterRendererInfo {
 }
 
 export class NewsletterRenderer extends BaseRenderer<NewsletterRendererInfo> {
-  protected readonly templatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, NEWSLETTER_TEMPLATE)
+  protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, NEWSLETTER_TEMPLATE)
 
   protected mapPayload(input: NewsletterRendererInfo) {
     const { newsletterInfo, meetingInfo } = input

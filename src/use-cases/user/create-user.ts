@@ -24,6 +24,7 @@ import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-pro
 import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
 import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { HashService } from '@services/hashes/hash-service'
+import { ConfirmAccountRenderer } from '@services/renderers/emails/confirm-account-renderer'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
@@ -37,8 +38,6 @@ import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
-import { confirmAccountHtmlTemplate } from '../../templates/user/confirm-account/confirm-account-html'
-import { confirmAccountTextTemplate } from '../../templates/user/confirm-account/confirm-account-text'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 import { UserWithSameSecondaryEmail } from '../errors/user/user-with-same-secondary-email-error'
 
@@ -244,18 +243,16 @@ export class CreateUserUseCase {
       await moveFileEnqueued(userProfileImagePaths)
     }
 
-    const emailInfo = {
+    const { html, text, attachments } = new ConfirmAccountRenderer().render({
       fullName: createdUser.fullName,
       email: createdUser.email,
       token: emailVerificationToken,
-    }
-
-    const { html, attachments } = confirmAccountHtmlTemplate(emailInfo)
+    })
 
     await sendEmailEnqueued({
       to: createdUser.email,
       subject: EMAIL_VERIFICATION_SUBJECT,
-      message: confirmAccountTextTemplate(emailInfo),
+      message: text,
       html,
       attachments,
       logging: {

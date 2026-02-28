@@ -5,6 +5,41 @@ export const DEFAULT_PROFILE_IMAGE_NAME = 'default.png'
 // Caminhos para templates de renderer a partir da pasta de `src/templates`:
 export const NEWSLETTER_TEMPLATE = path.join('newsletter', 'template-1', 'template.njk')
 
+// Caminhos de templates Nunjucks de e-mails de usuário (HTML e texto):
+export const CONFIRM_ACCOUNT_HTML_TEMPLATE = path.join('user', 'confirm-account', 'confirm-account.html.njk')
+export const CONFIRM_ACCOUNT_TEXT_TEMPLATE = path.join('user', 'confirm-account', 'confirm-account.text.njk')
+
+export const CHANGE_EMAIL_HTML_TEMPLATE = path.join('user', 'change-email', 'change-email.html.njk')
+export const CHANGE_EMAIL_TEXT_TEMPLATE = path.join('user', 'change-email', 'change-email.text.njk')
+
+export const FORGOT_PASSWORD_HTML_TEMPLATE = path.join('user', 'forgot-password', 'forgot-password.html.njk')
+export const FORGOT_PASSWORD_TEXT_TEMPLATE = path.join('user', 'forgot-password', 'forgot-password.text.njk')
+
+export const MEMBERSHIP_ACCEPTED_HTML_TEMPLATE = path.join(
+  'user',
+  'membership-accepted',
+  'membership-accepted.html.njk',
+)
+export const MEMBERSHIP_ACCEPTED_TEXT_TEMPLATE = path.join(
+  'user',
+  'membership-accepted',
+  'membership-accepted.text.njk',
+)
+
+export const MEMBERSHIP_REJECTED_HTML_TEMPLATE = path.join(
+  'user',
+  'membership-rejected',
+  'membership-rejected.html.njk',
+)
+export const MEMBERSHIP_REJECTED_TEXT_TEMPLATE = path.join(
+  'user',
+  'membership-rejected',
+  'membership-rejected.text.njk',
+)
+
+export const DELETE_USER_HTML_TEMPLATE = path.join('user', 'delete-user', 'delete-user.html.njk')
+export const DELETE_USER_TEXT_TEMPLATE = path.join('user', 'delete-user', 'delete-user.text.njk')
+
 // NOTE: Apenas para centralizar o nome da logo utilizada no attachment dos emails,
 // isto não é um arquivo presente fisicamente no backend:
 export const EMAIL_LOGO_NAME = 'logo-header.png'

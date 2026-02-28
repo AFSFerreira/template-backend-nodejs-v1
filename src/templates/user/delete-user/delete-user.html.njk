@@ -1,22 +1,4 @@
-import type { HtmlTemplateOutput } from '@custom-types/templates/html-template-output'
-import type { IDeleteUserHtmlTemplate } from '@custom-types/templates/user/delete-user'
-import type { Attachment } from 'nodemailer/lib/mailer'
-import { EMAIL_LOGO_PATH } from '@constants/dynamic-file-constants'
-import { APP_NAME } from '@constants/env-constants'
-import { EMAIL_LOGO_CID, EMAIL_LOGO_NAME } from '@constants/static-file-constants'
-import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
-
-export function deleteUserHtmlTemplate({ fullName, email }: IDeleteUserHtmlTemplate): HtmlTemplateOutput {
-  const attachments: Attachment[] = [
-    {
-      filename: EMAIL_LOGO_NAME,
-      path: EMAIL_LOGO_PATH,
-      cid: EMAIL_LOGO_CID,
-    },
-  ]
-
-  const html = `
-  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 0; padding: 0; background-color: transparent; border: 0;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 0; padding: 0; background-color: transparent; border: 0;">
   <tr>
     <td style="padding: 20px 0;">
       <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
@@ -25,7 +7,7 @@ export function deleteUserHtmlTemplate({ fullName, email }: IDeleteUserHtmlTempl
         <tr>
           <td align="center"
             style="padding: 30px 20px 20px; background-color: #000000; border-top-left-radius: 8px; border-top-right-radius: 8px;">
-            <img src="cid:${EMAIL_LOGO_CID}"
+            <img src="cid:{{ email_logo_cid }}"
               alt="Logo da Empresa"
               style="display: block; width: 150px; height: auto; background-color: black;">
           </td>
@@ -35,11 +17,11 @@ export function deleteUserHtmlTemplate({ fullName, email }: IDeleteUserHtmlTempl
           <td style="padding: 0 40px 40px;">
             <br>
             <h2 style="color: #222; font-size: 24px; margin: 0 0 16px;">
-              Obrigado, ${toTitleCasePortuguese(fullName)}
+              Obrigado, {{ full_name }}
             </h2>
 
             <p style="color: #555; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">
-              Confirmamos que a sua conta associada ao e-mail <strong>${email}</strong> foi excluída com sucesso do
+              Confirmamos que a sua conta associada ao e-mail <strong>{{ email }}</strong> foi excluída com sucesso do
               nosso sistema.
             </p>
 
@@ -54,7 +36,7 @@ export function deleteUserHtmlTemplate({ fullName, email }: IDeleteUserHtmlTempl
 
             <p style="color: #555; font-size: 16px; line-height: 1.6; margin: 0;">
               Atenciosamente,<br>
-              <span style="font-weight: bold;">Equipe ${APP_NAME}</span>
+              <span style="font-weight: bold;">Equipe {{ app_name }}</span>
             </p>
           </td>
         </tr>
@@ -62,7 +44,3 @@ export function deleteUserHtmlTemplate({ fullName, email }: IDeleteUserHtmlTempl
     </td>
   </tr>
 </table>
-`.trim()
-
-  return { html, attachments }
-}
