@@ -97,6 +97,7 @@ export const tsyringeTokens = {
 
     newsletter: {
       newsletterDefault: 'newsletter:default',
+      newsletterDetailedWithContent: 'newsletter:detailed-with-content',
     },
 
     sliderImage: {

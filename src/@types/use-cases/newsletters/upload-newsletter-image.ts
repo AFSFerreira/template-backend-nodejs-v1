@@ -6,4 +6,5 @@ export interface UploadNewsletterImageUseCaseRequest {
 
 export interface UploadNewsletterImageUseCaseResponse {
   filename: string
+  publicUrl: string
 }

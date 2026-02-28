@@ -11,6 +11,7 @@ import {
   INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
   MEETING_AGENDAS_PATH,
   MEETING_BANNERS_PATH,
+  NEWSLETTER_TEMP_IMAGES_PATH,
   REGISTER_PROFILE_IMAGES_PATH,
   SLIDER_IMAGES_PATH,
 } from '@constants/dynamic-file-constants'
@@ -26,6 +27,7 @@ import {
   STATIC_TEMP_BLOG_IMAGES_ROUTE,
   STATIC_TEMP_DIRECTOR_BOARD_PROFILE_IMAGES_ROUTE,
   STATIC_TEMP_INSTITUTIONAL_ABOUT_IMAGE_ROUTE,
+  STATIC_TEMP_NEWSLETTER_IMAGES_ROUTE,
   STATIC_USER_PROFILE_IMAGE_ROUTE,
 } from '@constants/static-routes-constants'
 import fastifyStatic from '@fastify/static'
@@ -80,6 +82,10 @@ export async function staticFileRoutes(app: FastifyInstance) {
     {
       prefix: STATIC_TEMP_INSTITUTIONAL_ABOUT_IMAGE_ROUTE,
       root: INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
+    },
+    {
+      prefix: STATIC_TEMP_NEWSLETTER_IMAGES_ROUTE,
+      root: NEWSLETTER_TEMP_IMAGES_PATH,
     },
   ]
 

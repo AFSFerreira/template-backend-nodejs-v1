@@ -17,6 +17,7 @@ export const STATIC_SLIDER_IMAGES_ROUTE = '/slider-banner/'
 
 export const STATIC_NEWSLETTER_HTML_ROUTE = '/static/newsletters/html/'
 export const STATIC_NEWSLETTER_IMAGES_ROUTE = '/static/newsletters/images/'
+export const STATIC_TEMP_NEWSLETTER_IMAGES_ROUTE = '/static/newsletters/temp-images/'
 
 // NOTE: Esta rota fornece tanto a imagem do corpo diretivo quanto os documentos institucionais:
 export const STATIC_INSTITUTIONAL_INFO_DOCUMENTS_ROUTE = '/static/institutional-info/'

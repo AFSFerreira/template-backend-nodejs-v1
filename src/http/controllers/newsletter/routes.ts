@@ -8,6 +8,7 @@ import { rateLimit } from '@utils/http/rate-limit'
 import { createNewsletter } from './create-newsletter.controller'
 import { deleteNewsletter } from './delete-newsletter.controller'
 import { findNewsletterByPublicId } from './find-newsletter-by-public-id.controller'
+import { findNewsletterByPublicIdRestricted } from './find-newsletter-by-public-id-restricted.controller'
 import { getAllNewsletters } from './get-all-newsletters.controller'
 import { getNewsletterHtmlContent } from './get-newsletter-html-content.controller'
 import { updateNewsletter } from './update-newsletter.controller'
@@ -23,6 +24,14 @@ export async function newsletterRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt],
     },
     getAllNewsletters,
+  )
+  app.get(
+    '/restrict/:publicId',
+    {
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+    },
+    findNewsletterByPublicIdRestricted,
   )
   app.get(
     '/:publicId',

@@ -5,6 +5,7 @@ import type {
 import { NEWSLETTER_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/pino'
 import { NEWSLETTER_IMAGE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
+import { buildNewsletterTempImageUrl } from '@services/builders/urls/build-newsletter-image-url'
 import { saveAvifImage } from '@services/files/save-avif-image'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
@@ -42,6 +43,9 @@ export class UploadNewsletterImageUseCase {
       NEWSLETTER_IMAGE_UPLOADED_SUCCESSFULLY,
     )
 
-    return { filename }
+    return {
+      filename,
+      publicUrl: buildNewsletterTempImageUrl(filename),
+    }
   }
 }
