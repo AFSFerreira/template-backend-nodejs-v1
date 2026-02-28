@@ -189,6 +189,9 @@ importers:
       '@types/nodemailer':
         specifier: 7.0.11
         version: 7.0.11
+      '@types/nunjucks':
+        specifier: 3.2.6
+        version: 3.2.6
       '@types/pg':
         specifier: 8.16.0
         version: 8.16.0
@@ -1677,6 +1680,9 @@ packages:
 
   '@types/nodemailer@7.0.11':
     resolution: {integrity: sha512-E+U4RzR2dKrx+u3N4DlsmLaDC6mMZOM/TPROxA0UAPiTgI0y4CEFBmZE+coGWTjakDriRsXG368lNk1u9Q0a2g==}
+
+  '@types/nunjucks@3.2.6':
+    resolution: {integrity: sha512-pHiGtf83na1nCzliuAdq8GowYiXvH5l931xZ0YEHaLMNFgynpEqx+IPStlu7UaDkehfvl01e4x/9Tpwhy7Ue3w==}
 
   '@types/pg-pool@2.0.7':
     resolution: {integrity: sha512-U4CwmGVQcbEuqpyju8/ptOKg6gEC+Tqsvj2xS9o1g71bUh8twxnC6ZL5rZKCsGN0iyH0CwgUyc9VR5owNQF9Ng==}
@@ -5461,6 +5467,8 @@ snapshots:
   '@types/nodemailer@7.0.11':
     dependencies:
       '@types/node': 25.3.0
+
+  '@types/nunjucks@3.2.6': {}
 
   '@types/pg-pool@2.0.7':
     dependencies:

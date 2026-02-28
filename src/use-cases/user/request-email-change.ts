@@ -20,8 +20,8 @@ import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-e
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
-import { changeEmailHtmlTemplate } from '../../emails/templates/user/change-email/change-email-html'
-import { changeEmailTextTemplate } from '../../emails/templates/user/change-email/change-email-text'
+import { changeEmailHtmlTemplate } from '../../templates/emails/user/change-email/change-email-html'
+import { changeEmailTextTemplate } from '../../templates/emails/user/change-email/change-email-text'
 
 @injectable()
 export class RequestEmailChangeUseCase {

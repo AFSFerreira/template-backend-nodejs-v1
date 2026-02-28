@@ -22,10 +22,10 @@ import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-st
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { membershipApprovedHtmlTemplate } from '../../emails/templates/user/membership-accepted/membership-accepted-html'
-import { membershipApprovedTextTemplate } from '../../emails/templates/user/membership-accepted/membership-accepted-text'
-import { membershipRejectedHtmlTemplate } from '../../emails/templates/user/membership-rejected/membership-rejected-html'
-import { membershipRejectedTextTemplate } from '../../emails/templates/user/membership-rejected/membership-rejected-text'
+import { membershipApprovedHtmlTemplate } from '../../templates/emails/user/membership-accepted/membership-accepted-html'
+import { membershipApprovedTextTemplate } from '../../templates/emails/user/membership-accepted/membership-accepted-text'
+import { membershipRejectedHtmlTemplate } from '../../templates/emails/user/membership-rejected/membership-rejected-html'
+import { membershipRejectedTextTemplate } from '../../templates/emails/user/membership-rejected/membership-rejected-text'
 
 @injectable()
 export class ReviewMembershipStatusUseCase {
