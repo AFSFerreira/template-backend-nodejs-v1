@@ -9,7 +9,7 @@ import { createNewsletter } from './create-newsletter.controller'
 import { deleteNewsletter } from './delete-newsletter.controller'
 import { findNewsletterByPublicId } from './find-newsletter-by-public-id.controller'
 import { getAllNewsletters } from './get-all-newsletters.controller'
-import { getNewsletterContent } from './get-newsletter-content.controller'
+import { getNewsletterHtmlContent } from './get-newsletter-html-content.controller'
 import { updateNewsletter } from './update-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
 
@@ -37,7 +37,7 @@ export async function newsletterRoutes(app: FastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
     },
-    getNewsletterContent,
+    getNewsletterHtmlContent,
   )
 
   // POST

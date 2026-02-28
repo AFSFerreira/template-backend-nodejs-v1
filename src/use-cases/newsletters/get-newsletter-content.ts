@@ -1,6 +1,6 @@
 import type {
-  GetNewsletterContentUseCaseRequest,
-  GetNewsletterContentUseCaseResponse,
+  GetNewsletterHtmlContentUseCaseRequest,
+  GetNewsletterHtmlContentUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/get-newsletter-content'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { JSONContent } from '@tiptap/core'
@@ -20,13 +20,15 @@ import { NewsletterHtmlReadError } from '../errors/newsletter/newsletter-html-re
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
 
 @injectable()
-export class GetNewsletterContentUseCase {
+export class GetNewsletterHtmlContentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
   ) {}
 
-  async execute({ publicId }: GetNewsletterContentUseCaseRequest): Promise<GetNewsletterContentUseCaseResponse> {
+  async execute({
+    publicId,
+  }: GetNewsletterHtmlContentUseCaseRequest): Promise<GetNewsletterHtmlContentUseCaseResponse> {
     const newsletter = ensureExists({
       value: await this.newslettersRepository.findByPublicId(publicId),
       error: new NewsletterNotFoundError(),
