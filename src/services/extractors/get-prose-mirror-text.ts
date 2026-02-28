@@ -1,9 +1,8 @@
 import type { IGetProseMirrorText } from '@custom-types/services/extractors/get-prose-mirror-text'
-import { SEARCH_CONTENT_TEXT_LIMIT } from '@constants/size-constants'
 import { generateText } from '@tiptap/core'
 
 export function getProseMirrorText({ proseMirror, tiptapConfiguration, limit }: IGetProseMirrorText) {
-  const textLimit = limit ?? SEARCH_CONTENT_TEXT_LIMIT
+  const textLimit = limit ?? 600
 
   try {
     const extractedText = generateText(proseMirror, tiptapConfiguration, { blockSeparator: '\n' }).trim()

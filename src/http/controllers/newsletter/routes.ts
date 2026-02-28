@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify'
-import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
+import { NEWSLETTER_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@middlewares/verify-multipart.middleware'
@@ -12,6 +12,7 @@ import { getAllNewsletters } from './get-all-newsletters.controller'
 import { getNewsletterHtmlContent } from './get-newsletter-html-content.controller'
 import { updateNewsletter } from './update-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
+import { uploadNewsletterImage } from './upload-newsletter-image.controller'
 
 export async function newsletterRoutes(app: FastifyInstance) {
   // GET
@@ -44,14 +45,24 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.post(
     '/uploads/html',
     {
+      ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS), verifyMultipart],
     },
     uploadNewsletterHtml,
   )
   app.post(
+    '/uploads/image',
+    {
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS), verifyMultipart],
+    },
+    uploadNewsletterImage,
+  )
+  app.post(
     '/',
     {
+      ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
     },
@@ -62,6 +73,7 @@ export async function newsletterRoutes(app: FastifyInstance) {
   app.patch(
     '/:publicId',
     {
+      ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
     },
