@@ -28,6 +28,9 @@ CREATE TYPE "public"."EditorialStatusType" AS ENUM ('PENDING_APPROVAL', 'DRAFT',
 -- CreateEnum
 CREATE TYPE "public"."SystemActionType" AS ENUM ('MEMBERSHIP_APPROVED', 'MEMBERSHIP_REJECTED', 'ACCOUNT_ACTIVATED', 'ACCOUNT_INACTIVATED', 'ACCOUNT_DELETED', 'ROLE_CHANGED', 'DIRECTOR_BOARD_CREATED', 'DIRECTOR_BOARD_DELETED', 'ADMIN_ROLE_TRANSFERRED');
 
+-- CreateEnum
+CREATE TYPE "NewsletterFormatType" AS ENUM ('HTML_FILE', 'PROSEMIRROR');
+
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
     "id" SERIAL NOT NULL,
@@ -332,7 +335,9 @@ CREATE TABLE "public"."blogs" (
 CREATE TABLE "public"."newsletters" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "content" TEXT NOT NULL,
+    "format" "NewsletterFormatType" NOT NULL,
+    "file_content" TEXT,
+    "prose_content" JSON,
     "sequence_number" TEXT NOT NULL,
     "edition_number" TEXT NOT NULL,
     "volume" TEXT NOT NULL,
