@@ -104,6 +104,7 @@
     "ms": "2.1.3",
     "node-cron": "4.2.1",
     "nodemailer": "8.0.1",
+    "nunjucks": "3.2.4",
     "orcid-utils": "1.2.3",
     "pg": "8.18.0",
     "pino": "10.3.1",
