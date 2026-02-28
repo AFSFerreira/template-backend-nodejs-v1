@@ -1,5 +1,12 @@
-import type { CreateNewsletterBodySchemaType } from '@custom-types/http/schemas/newsletter/create-newsletter-body-schema'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { Prisma } from '@prisma/generated/client'
+import type { NewsletterFormatType } from '@prisma/generated/enums'
 
-export interface CreateNewsletterQuery extends Omit<CreateNewsletterBodySchemaType, 'contentFilename'> {
-  content: string
+export interface CreateNewsletterQuery {
+  sequenceNumber: string
+  editionNumber: string
+  volume: string
+  format: NewsletterFormatType
+  fileContent?: string | null
+  proseContent?: InputJsonValue | typeof Prisma.DbNull
 }

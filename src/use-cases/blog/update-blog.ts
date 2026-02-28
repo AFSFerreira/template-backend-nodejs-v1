@@ -7,7 +7,7 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
-import { deleteFileEnqueued, moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
+import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
@@ -30,7 +30,7 @@ import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { InvalidBlogContentError } from '@use-cases/errors/blog/invalid-blog-content-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
-import { fileExists } from '@utils/files/file-exists'
+import { moveFilesIfNotExists } from '@utils/files/move-files-if-not-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -55,8 +55,8 @@ export class UpdateBlogUseCase {
 
     let formattedBlogImages: ImagePathInfo[] | undefined
 
-    let newImages: Array<string> | undefined
-    let removedImages: Array<string> | undefined
+    let addedImageLinks: Array<string> | undefined
+    let imagesToDelete: Array<string> | undefined
 
     const user = ensureExists({
       value: await this.usersRepository.findByPublicId(userPublicId),
@@ -110,14 +110,14 @@ export class UpdateBlogUseCase {
       const oldBlogImages = extractProseMirrorImages(foundBlog.content as JSONContent)
       const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
 
-      newImages = Array.from<string>(newBlogImages.difference(oldBlogImages)).map((imageLink) => {
+      addedImageLinks = Array.from<string>(newBlogImages.difference(oldBlogImages)).map((imageLink) => {
         return ensureExists({
           value: sanitizeUrlFilename(imageLink),
           error: new BlogInvalidImageLinkError(),
         })
       })
 
-      removedImages = Array.from<string>(oldBlogImages.difference(newBlogImages)).map((imageLink) => {
+      imagesToDelete = Array.from<string>(oldBlogImages.difference(newBlogImages)).map((imageLink) => {
         return ensureExists({
           value: sanitizeUrlFilename(imageLink),
           error: new BlogInvalidImageLinkError(),
@@ -126,7 +126,7 @@ export class UpdateBlogUseCase {
 
       const oldToNewImagesLinkMap = new Map<string, string>()
 
-      formattedBlogImages = newImages.map((imageName) => {
+      formattedBlogImages = addedImageLinks.map((imageName) => {
         oldToNewImagesLinkMap.set(imageName, buildBlogImageUrl(imageName))
 
         return {
@@ -194,7 +194,7 @@ export class UpdateBlogUseCase {
       : undefined
 
     if (blogBannerPaths) {
-      await moveFileEnqueued(blogBannerPaths)
+      await moveFilesIfNotExists(blogBannerPaths)
 
       await deleteFileEnqueued({
         filePath: buildBlogBannerPath(blog.bannerImage),
@@ -202,22 +202,19 @@ export class UpdateBlogUseCase {
     }
 
     if (formattedBlogImages) {
-      for (const imageInfo of formattedBlogImages) {
-        const fileAlreadyExists = await fileExists(imageInfo.newFilePath)
-
-        if (fileAlreadyExists) continue
-
-        await moveFileEnqueued(imageInfo)
-      }
+      await moveFilesIfNotExists(formattedBlogImages)
     }
 
-    if (removedImages) {
+    if (imagesToDelete) {
       // Enfileirando a remoção das imagens removidas do conteúdo do blog:
-      for (const imageName of removedImages) {
-        await deleteFileEnqueued({
-          filePath: buildBlogImagePath(imageName),
-        })
-      }
+      await Promise.all(
+        imagesToDelete.map(
+          async (imageName) =>
+            await deleteFileEnqueued({
+              filePath: buildBlogImagePath(imageName),
+            }),
+        ),
+      )
     }
 
     // Remover cache HTML do blog para forçar regeneração:

@@ -9,4 +9,6 @@ export const DIRECTOR_BOARD_HTML_CACHE_TTL = ms('3m')
 
 export const INSTITUTIONAL_INFO_HTML_CACHE_TTL = ms('3m')
 
+export const NEWSLETTER_HTML_CACHE_TTL = ms('3m')
+
 export const TEMP_PROFILE_IMAGES_TTL_IN_MS = ms('1d')

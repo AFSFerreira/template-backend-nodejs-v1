@@ -1,3 +1,4 @@
+import { newsletterContentSchema } from '@lib/zod/utils/components/newsletter/newsletter-content-schema'
 import { numericIntegerStringSchema } from '@lib/zod/utils/generic-components/numeric-integer-string-schema'
 import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
 import z from 'zod'
@@ -6,5 +7,5 @@ export const createNewsletterBodySchema = z.object({
   sequenceNumber: numericIntegerStringSchema,
   editionNumber: limitedNonemptyTextSchema,
   volume: limitedNonemptyTextSchema,
-  contentFilename: limitedNonemptyTextSchema,
+  content: newsletterContentSchema,
 })

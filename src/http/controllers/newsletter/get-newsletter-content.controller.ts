@@ -9,7 +9,7 @@ export async function getNewsletterContent(request: FastifyRequest, reply: Fasti
 
   const useCase = container.resolve(GetNewsletterContentUseCase)
 
-  const { stream } = await useCase.execute({ publicId })
+  const { content } = await useCase.execute({ publicId })
 
-  return await reply.type(HTML_HEADER).send(stream)
+  return await reply.type(HTML_HEADER).send(content)
 }

@@ -8,7 +8,7 @@ export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter
   public toHTTP(input: NewsletterDefaultPresenterInput): HTTPNewsletter {
     return {
       id: input.publicId,
-      content: input.content,
+      content: input.contentUrl,
       sequenceNumber: input.sequenceNumber,
       editionNumber: input.editionNumber,
       volume: input.volume,

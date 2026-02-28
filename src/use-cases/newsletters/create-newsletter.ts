@@ -1,18 +1,34 @@
+import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 import type {
   CreateNewsletterUseCaseRequest,
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
+import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
+import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
+import { Prisma } from '@prisma/generated/client'
+import { NewsletterFormatType } from '@prisma/generated/enums'
 import {
   buildNewsletterHtmlPath,
   buildNewsletterTempHtmlPath,
 } from '@services/builders/paths/build-newsletter-html-path'
+import {
+  buildNewsletterImagePath,
+  buildNewsletterTempImagePath,
+} from '@services/builders/paths/build-newsletter-image-path'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
-import { ensureNotExists } from '@utils/validators/ensure'
+import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
+import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
+import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
+import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
+import { NewsletterInvalidImageLinkError } from '@use-cases/errors/newsletter/newsletter-invalid-image-link-error'
+import { moveFilesIfNotExists } from '@utils/files/move-files-if-not-exists'
+import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
+import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { NewsletterAlreadyExistsError } from '../errors/newsletter/newsletter-already-exists-error'
 
@@ -24,41 +40,90 @@ export class CreateNewsletterUseCase {
   ) {}
 
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
-    const { contentFilename, ...filteredCreatedNewsletterInput } = createNewsletterInput
+    const { content, ...filteredContent } = createNewsletterInput
 
     ensureNotExists({
       value: await this.newslettersRepository.findConflictingNewsletter({
-        editionNumber: createNewsletterInput.editionNumber,
-        sequenceNumber: createNewsletterInput.sequenceNumber,
-        volume: createNewsletterInput.volume,
+        editionNumber: filteredContent.editionNumber,
+        sequenceNumber: filteredContent.sequenceNumber,
+        volume: filteredContent.volume,
       }),
       error: new NewsletterAlreadyExistsError(),
     })
 
-    const newsletter = await this.newslettersRepository.create({
-      ...filteredCreatedNewsletterInput,
-      content: contentFilename,
-    })
+    if (content.format === NewsletterFormatType.HTML_FILE) {
+      const newsletter = await this.newslettersRepository.create({
+        ...filteredContent,
+        format: NewsletterFormatType.HTML_FILE,
+        fileContent: content.contentFilename,
+        proseContent: Prisma.DbNull,
+      })
 
-    const newsletterHtmlPaths = {
-      oldFilePath: buildNewsletterTempHtmlPath(contentFilename),
-      newFilePath: buildNewsletterHtmlPath(contentFilename),
+      await moveFilesIfNotExists({
+        oldFilePath: buildNewsletterTempHtmlPath(content.contentFilename),
+        newFilePath: buildNewsletterHtmlPath(content.contentFilename),
+      })
+
+      logger.info(
+        { newsletterPublicId: newsletter.publicId, sequenceNumber: newsletter.sequenceNumber },
+        NEWSLETTER_CREATED_SUCCESSFULLY,
+      )
+
+      return {
+        newsletter: {
+          ...newsletter,
+          contentUrl: buildNewsletterHtmlUrl(newsletter.publicId),
+        },
+      }
     }
 
-    await moveFileEnqueued(newsletterHtmlPaths)
+    // Formato ProseMirror:
+    ensureExists({
+      value: getProseMirrorText({ proseMirror: content.proseContent, tiptapConfiguration }),
+      error: new InvalidNewsletterContentError(),
+    })
+
+    const oldToNewImagesLinkMap = new Map<string, string>()
+
+    const formattedNewsletterImages: ImagePathInfo[] = Array.from(extractProseMirrorImages(content.proseContent)).map(
+      (imageLink) => {
+        const imageName = ensureExists({
+          value: sanitizeUrlFilename(imageLink),
+          error: new NewsletterInvalidImageLinkError(),
+        })
+
+        oldToNewImagesLinkMap.set(imageLink, buildNewsletterImageUrl(imageName))
+
+        return {
+          oldFilePath: buildNewsletterTempImagePath(imageName),
+          newFilePath: buildNewsletterImagePath(imageName),
+        }
+      },
+    )
+
+    const newProseMirror = replaceProseMirrorImages({
+      proseMirror: content.proseContent,
+      oldToNewImagesMap: oldToNewImagesLinkMap,
+    })
+
+    const newsletter = await this.newslettersRepository.create({
+      ...filteredContent,
+      format: NewsletterFormatType.PROSEMIRROR,
+      fileContent: null,
+      proseContent: newProseMirror as InputJsonValue,
+    })
+
+    await moveFilesIfNotExists(formattedNewsletterImages)
 
     logger.info(
-      {
-        newsletterPublicId: newsletter.publicId,
-        sequenceNumber: newsletter.sequenceNumber,
-      },
+      { newsletterPublicId: newsletter.publicId, sequenceNumber: newsletter.sequenceNumber },
       NEWSLETTER_CREATED_SUCCESSFULLY,
     )
 
     return {
       newsletter: {
         ...newsletter,
-        content: buildNewsletterHtmlUrl(newsletter.publicId),
+        contentUrl: buildNewsletterHtmlUrl(newsletter.publicId),
       },
     }
   }

@@ -11,7 +11,7 @@ datasource db {
 
 model InstitutionalInfo {
   id                 Int       @id @default(autoincrement())
-  aboutDescription   Json      @map("about_description") @db.Json // Descrição da página Sobre em formato prose mirror
+  aboutDescription   Json      @map("about_description") @db.Json // Descrição da página Sobre em formato ProseMirror
   aboutImage         String    @map("about_image")
   statuteFile        String    @default("estatuto.pdf") @map("statute_file")
   electionNoticeFile String    @default("edital-eleição.pdf") @map("election_notice_file")
@@ -467,9 +467,13 @@ model Blog {
 }
 
 model Newsletter {
-  id             Int      @id @default(autoincrement())
-  publicId       String   @unique @default(uuid(7)) @map("public_id")
-  content        String // Arquivo contendo o conteúdo em HTML da Newsletter
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @default(uuid(7)) @map("public_id")
+
+  format       NewsletterFormatType
+  fileContent  String?              @map("file_content") // Nome do arquivo HTML
+  proseContent Json?                @map("prose_content") @db.Json // Conteúdo da Newsletter em formato ProseMirror
+
   sequenceNumber String   @unique @map("sequence_number") // Número absoluto de sequência
   editionNumber  String   @map("edition_number") // Número de edição do ano
   volume         String // Ano de publicação
@@ -559,15 +563,6 @@ enum ActivityAreaType {
   SUB_AREA_OF_ACTIVITY
 }
 
-enum EditorialStatusType {
-  PENDING_APPROVAL
-  DRAFT
-  PUBLISHED
-  CHANGES_REQUESTED
-  // APPROVED
-  // ARCHIVED
-}
-
 enum SystemActionType {
   MEMBERSHIP_APPROVED
   MEMBERSHIP_REJECTED
@@ -578,6 +573,20 @@ enum SystemActionType {
   DIRECTOR_BOARD_CREATED
   DIRECTOR_BOARD_DELETED
   ADMIN_ROLE_TRANSFERRED
+}
+
+enum NewsletterFormatType {
+  HTML_FILE
+  PROSEMIRROR
+}
+
+enum EditorialStatusType {
+  PENDING_APPROVAL
+  DRAFT
+  PUBLISHED
+  CHANGES_REQUESTED
+  // APPROVED
+  // ARCHIVED
 }
 
 // enum SliderPageType {

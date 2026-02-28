@@ -4,5 +4,5 @@ import type { ReadStream } from 'fs-extra'
 export interface GetNewsletterContentUseCaseRequest extends FindNewsletterByPublicIdParamsSchemaType {}
 
 export interface GetNewsletterContentUseCaseResponse {
-  stream: ReadStream
+  content: string | ReadStream
 }

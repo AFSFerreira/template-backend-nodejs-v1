@@ -60,6 +60,8 @@ export const INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH = path.resolve(UPLOADS_DIR, 't
 // Caminhos relativos de newsletters:
 export const NEWSLETTER_HTML_PATH = path.resolve(UPLOADS_DIR, 'newsletter', 'html')
 export const NEWSLETTER_TEMP_HTML_PATH = path.resolve(UPLOADS_DIR, 'temp', 'newsletter', 'html')
+export const NEWSLETTER_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'newsletter', 'images')
+export const NEWSLETTER_TEMP_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'temp', 'newsletter', 'images')
 
 // Padrão glob para identificar todos os arquivos de estatuto independentemente da extensão:
 export const STATUTE_FILE_NAME_PATTERN = path.resolve(INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH, `${STATUTE_FILE_NAME}*`)
@@ -92,6 +94,8 @@ const verifiedPaths = [
   INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
   NEWSLETTER_HTML_PATH,
   NEWSLETTER_TEMP_HTML_PATH,
+  NEWSLETTER_IMAGES_PATH,
+  NEWSLETTER_TEMP_IMAGES_PATH,
 ].map((path) => ({ path, exists: folderExistsSync(path) }))
 
 const failedVerifiedPaths = verifiedPaths.filter((pathStatus) => !pathStatus.exists)

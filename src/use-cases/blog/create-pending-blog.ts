@@ -7,7 +7,6 @@ import type { InputJsonValue } from '@prisma/client/runtime/client'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -23,6 +22,7 @@ import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mir
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
+import { moveFilesIfNotExists } from '@utils/files/move-files-if-not-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -116,13 +116,7 @@ export class CreatePendingBlogUseCase {
     }
 
     // Persistindo banner e imagens da pasta temporária para a pasta definitiva:
-    await moveFileEnqueued(blogBannerPaths)
-
-    await Promise.all(
-      formatedBlogImages.map(async (imageInfo) => {
-        await moveFileEnqueued(imageInfo)
-      }),
-    )
+    await moveFilesIfNotExists([...formatedBlogImages, blogBannerPaths])
 
     logger.info(
       {

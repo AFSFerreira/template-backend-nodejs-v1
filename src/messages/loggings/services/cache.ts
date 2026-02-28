@@ -16,3 +16,7 @@ export const GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO =
   'Página de informações institucionais recuperada do cache com sucesso'
 
 export const SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO = 'HTML de informações institucionais armazenado no cache'
+
+export const GET_NEWSLETTER_HTML_CACHED_INFO = 'Página de newsletter recuperada do cache com sucesso'
+
+export const SET_NEWSLETTER_HTML_CACHE_INFO = 'Página de newsletter adicionada ao cache com sucesso'

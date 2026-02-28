@@ -1,8 +1,8 @@
 import type { Newsletter } from '@prisma/generated/client'
 
-export type NewsletterWithContent = Omit<Newsletter, 'content'> & { content: string }
+export type NewsletterWithContentUrl = Newsletter & { contentUrl: string }
 
-export interface NewsletterDefaultPresenterInput extends NewsletterWithContent {}
+export interface NewsletterDefaultPresenterInput extends NewsletterWithContentUrl {}
 
 export interface HTTPNewsletter {
   id: string

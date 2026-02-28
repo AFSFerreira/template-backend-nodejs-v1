@@ -21,7 +21,7 @@ export class GetAllNewslettersUseCase {
       ...newslettersInfo,
       data: newslettersInfo.data.map((newsletter) => ({
         ...newsletter,
-        content: buildNewsletterHtmlUrl(newsletter.publicId),
+        contentUrl: buildNewsletterHtmlUrl(newsletter.publicId),
       })),
     }
   }
