@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import '@lib/dayjs/index'
 import '@lib/tsyringe/index'
 import '@lib/zod/index'
 import { fastifyCompress } from '@fastify/compress'

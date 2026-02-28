@@ -2,6 +2,9 @@ import path from 'node:path'
 
 export const DEFAULT_PROFILE_IMAGE_NAME = 'default.png'
 
+// Caminhos para templates de renderer a partir da pasta de `src/templates`:
+export const NEWSLETTER_TEMPLATE = path.join('newsletter', 'template-1', 'template.njk')
+
 // NOTE: Apenas para centralizar o nome da logo utilizada no attachment dos emails,
 // isto não é um arquivo presente fisicamente no backend:
 export const EMAIL_LOGO_NAME = 'logo-header.png'

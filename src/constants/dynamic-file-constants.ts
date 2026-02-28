@@ -19,7 +19,7 @@ export const TEMP_FILES_DIR = path.resolve(UPLOADS_DIR, 'temp')
 export const EMAIL_LOGO_PATH = path.resolve(UPLOADS_DIR, 'documents', 'private', 'logo.png')
 
 // Caminhos relativos de templates nunjucks:
-export const NUNJUCKS_TEMPLATES_ROOT_PATH = path.resolve(BASE_PROJECT_PATH, 'src', 'templates', 'nunjucks')
+export const NUNJUCKS_TEMPLATES_ROOT_PATH = path.resolve(BASE_PROJECT_PATH, 'src', 'templates')
 
 // Caminhos relativos de imagens de perfil de usuários:
 export const REGISTER_PROFILE_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'user', 'profile-images')

@@ -77,6 +77,9 @@ importers:
       date-fns-tz:
         specifier: 3.2.0
         version: 3.2.0(date-fns@4.1.0)
+      dayjs:
+        specifier: 1.11.19
+        version: 1.11.19
       doi-utils:
         specifier: 2.0.6
         version: 2.0.6

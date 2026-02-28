@@ -41,7 +41,7 @@
       "@utils/*": ["./src/utils/*"],
       "@services/*": ["./src/services/*"],
       "@constants/*": ["./src/constants/*"],
-      "@templates/*": ["src/templates/*"],
+      "@templates/*": ["./src/templates/*"],
       "@messages/*": ["./src/messages/*"],
       "@errors/*": ["./src/errors/*"],
       "@env/*": ["./src/env/*"],

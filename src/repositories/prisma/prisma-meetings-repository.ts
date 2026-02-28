@@ -47,6 +47,7 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
           gte: new Date(),
         },
       },
+      include: meetingWithDetails.include,
     })
     return meeting
   }
