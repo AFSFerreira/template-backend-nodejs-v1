@@ -3,7 +3,8 @@ import path from 'node:path'
 export const DEFAULT_PROFILE_IMAGE_NAME = 'default.png'
 
 // Caminhos para templates de renderer a partir da pasta de `src/templates`:
-export const NEWSLETTER_TEMPLATE = path.join('newsletter', 'template-1', 'template.njk')
+export const NEWSLETTER_EMAIL_HTML_TEMPLATE = path.join('newsletter', 'newsletter-email', 'template.njk')
+export const NEWSLETTER_EMAIL_TEXT_TEMPLATE = path.join('newsletter', 'newsletter-email', 'template.text.njk')
 
 // Caminhos de templates Nunjucks de e-mails de usuário (HTML e texto):
 export const CONFIRM_ACCOUNT_HTML_TEMPLATE = path.join('user', 'confirm-account', 'confirm-account.html.njk')

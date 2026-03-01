@@ -1,0 +1,10 @@
+{% autoescape false %}
+{% include "./partials/header.text.njk" %}
+
+{{ newsletter_body | safe }}
+{% if newsletter_event_title and newsletter_event_dates and newsletter_event_location %}
+{% include "./partials/event.text.njk" %}
+{% endif %}
+
+{% include "./partials/footer.text.njk" %}
+{% endautoescape %}

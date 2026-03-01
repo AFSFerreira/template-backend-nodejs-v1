@@ -12,7 +12,6 @@
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>3I/ATLAS, oceano estranho de Titã e uma nova super-Terra: Comunicações da SBAstrobio 251</title>
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
       <!--[if !mso]><!-->
@@ -100,7 +99,7 @@
       </style>
    </head>
    <body>
-      {% include "./partials/header.njk" %}
+      {% include "./partials/header.html.njk" %}
 
 
       <!---->
@@ -164,10 +163,10 @@
 
       {% if newsletter_event_title and newsletter_event_dates and newsletter_event_location %}
 
-         {% include "./partials/event.njk" %}
+         {% include "./partials/event.html.njk" %}
 
       {% endif %}
 
-      {% include "./partials/footer.njk" %}
+      {% include "./partials/footer.html.njk" %}
    </body>
 </html>
