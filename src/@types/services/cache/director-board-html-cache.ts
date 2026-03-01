@@ -1,17 +1,17 @@
 import type Redis from 'ioredis'
 
 export interface IGetDirectorBoardHTMLCached {
-  directorBoardId: number
+  publicId: string
   redis: Redis
 }
 
 export interface ISetDirectorBoardHTMLCache {
-  directorBoardId: number
+  publicId: string
   htmlContent: string
   redis: Redis
 }
 
 export interface IRemoveDirectorBoardHTMLCache {
-  directorBoardId: number
+  publicId: string
   redis: Redis
 }

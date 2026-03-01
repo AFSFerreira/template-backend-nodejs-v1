@@ -132,10 +132,8 @@ export class UpdateDirectorBoardUseCase {
       await moveFileEnqueued(directorBoardProfileImagePaths)
     }
 
-    // Invalidando o cache HTML se o aboutMe foi atualizado:
-    if (data.aboutMe) {
-      await removeDirectorBoardHTMLCache({ directorBoardId: directorBoard.id, redis })
-    }
+    // Removendo o cache HTML do director board:
+    await removeDirectorBoardHTMLCache({ publicId: directorBoard.publicId, redis })
 
     return {
       directorBoard: {

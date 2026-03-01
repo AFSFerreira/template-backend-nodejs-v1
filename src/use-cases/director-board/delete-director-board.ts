@@ -64,7 +64,7 @@ export class DeleteDirectorBoardUseCase {
     }
 
     // Removendo o cache HTML do director board:
-    await removeDirectorBoardHTMLCache({ directorBoardId: directorBoard.id, redis })
+    await removeDirectorBoardHTMLCache({ publicId: directorBoard.publicId, redis })
 
     logger.info({ directorBoardPublicId: directorBoard.publicId }, DIRECTOR_BOARD_DELETION_SUCCESSFUL)
 

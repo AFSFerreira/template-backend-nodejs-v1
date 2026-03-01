@@ -7,10 +7,10 @@ import { BLOG_HTML_CACHE_TTL } from '@constants/cache-constants'
 import { logger } from '@lib/pino'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/services/cache'
 
-const generateBlogHtmlKey = (blogId: number) => `cache:blog:${blogId}:contentHtml`
+const generateBlogHtmlKey = (publicId: string) => `cache:blog:${publicId}:contentHtml`
 
-export async function getBlogHTMLCached({ blogId, redis }: IGetBlogHTMLCached) {
-  const key = generateBlogHtmlKey(blogId)
+export async function getBlogHTMLCached({ publicId, redis }: IGetBlogHTMLCached) {
+  const key = generateBlogHtmlKey(publicId)
   const htmlCached: string | null = await redis.get(key)
 
   if (htmlCached) {
@@ -23,8 +23,8 @@ export async function getBlogHTMLCached({ blogId, redis }: IGetBlogHTMLCached) {
   return htmlCached
 }
 
-export async function setBlogHTMLCache({ blogId, htmlContent, redis }: ISetBlogHTMLCache) {
-  const key = generateBlogHtmlKey(blogId)
+export async function setBlogHTMLCache({ publicId, htmlContent, redis }: ISetBlogHTMLCache) {
+  const key = generateBlogHtmlKey(publicId)
   const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', BLOG_HTML_CACHE_TTL, 'NX')
 
   if (!wasCached) {
@@ -37,7 +37,7 @@ export async function setBlogHTMLCache({ blogId, htmlContent, redis }: ISetBlogH
   return wasCached
 }
 
-export async function removeBlogHTMLCache({ blogId, redis }: IRemoveBlogHTMLCache) {
-  const key = generateBlogHtmlKey(blogId)
+export async function removeBlogHTMLCache({ publicId, redis }: IRemoveBlogHTMLCache) {
+  const key = generateBlogHtmlKey(publicId)
   await redis.del(key)
 }

@@ -23,20 +23,20 @@ export class GetDirectorBoardAboutHTMLUseCase {
   async execute({
     publicId,
   }: GetDirectorBoardAboutHTMLUseCaseRequest): Promise<GetDirectorBoardAboutHTMLUseCaseResponse> {
+    const cachedHtml = await getDirectorBoardHTMLCached({ publicId, redis })
+
+    if (cachedHtml) return { htmlContent: cachedHtml }
+
     const directorBoard = ensureExists({
       value: await this.directorBoardRepository.findByPublicId(publicId),
       error: new DirectorBoardNotFoundError(),
     })
 
-    const cachedHtml = await getDirectorBoardHTMLCached({ directorBoardId: directorBoard.id, redis })
-
-    if (cachedHtml) return { htmlContent: cachedHtml }
-
     const proseMirror = directorBoard.aboutMe as JSONContent
 
     const htmlContent = generateHTML(proseMirror, tiptapConfiguration)
 
-    await setDirectorBoardHTMLCache({ directorBoardId: directorBoard.id, htmlContent, redis })
+    await setDirectorBoardHTMLCache({ publicId, htmlContent, redis })
 
     return { htmlContent }
   }

@@ -1,17 +1,17 @@
 import type Redis from 'ioredis'
 
 export interface IGetBlogHTMLCached {
-  blogId: number
+  publicId: string
   redis: Redis
 }
 
 export interface ISetBlogHTMLCache {
-  blogId: number
+  publicId: string
   htmlContent: string
   redis: Redis
 }
 
 export interface IRemoveBlogHTMLCache {
-  blogId: number
+  publicId: string
   redis: Redis
 }

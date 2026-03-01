@@ -19,17 +19,17 @@ export class GetInstitutionalInfoAboutHTMLUseCase {
   ) {}
 
   async execute(): Promise<GetInstitutionalInfoAboutHTMLUseCaseResponse> {
-    const institutionalInfo = await this.institutionalInfoRepository.getInstitutionalInfo()
-
-    const cachedHtml = await getInstitutionalInfoHTMLCached({ institutionalInfoId: institutionalInfo.id, redis })
+    const cachedHtml = await getInstitutionalInfoHTMLCached({ redis })
 
     if (cachedHtml) return { htmlContent: cachedHtml }
+
+    const institutionalInfo = await this.institutionalInfoRepository.getInstitutionalInfo()
 
     const proseMirror = institutionalInfo.aboutDescription as JSONContent
 
     const htmlContent = generateHTML(proseMirror, tiptapConfiguration)
 
-    await setInstitutionalInfoHTMLCache({ institutionalInfoId: institutionalInfo.id, htmlContent, redis })
+    await setInstitutionalInfoHTMLCache({ htmlContent, redis })
 
     return { htmlContent }
   }

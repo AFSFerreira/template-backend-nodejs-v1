@@ -31,29 +31,29 @@ export class GetRestrictBlogHTMLContentUseCase {
     publicId,
     userPublicId,
   }: GetRestrictBlogHTMLContentUseCaseRequest): Promise<GetRestrictBlogHTMLContentUseCaseResponse> {
-    const blog = ensureExists({
-      value: await this.blogsRepository.findByPublicId(publicId),
-      error: new BlogNotFoundError(),
-    })
-
     const user = ensureExists({
       value: await this.usersRepository.findByPublicId(userPublicId),
       error: new UserNotFoundError(),
+    })
+
+    const cachedBlogHtml = await getBlogHTMLCached({ publicId, redis })
+
+    if (cachedBlogHtml) return { htmlContent: cachedBlogHtml }
+
+    const blog = ensureExists({
+      value: await this.blogsRepository.findByPublicId(publicId),
+      error: new BlogNotFoundError(),
     })
 
     if (!CONTENT_LEADER_PERMISSIONS.has(user.role) && blog.userId !== user.id) {
       throw new BlogAccessForbiddenError()
     }
 
-    const cachedBlogHtml = await getBlogHTMLCached({ blogId: blog.id, redis })
-
-    if (cachedBlogHtml) return { htmlContent: cachedBlogHtml }
-
     const blogProseMirror = blog.content as JSONContent
 
     const htmlContent = generateHTML(blogProseMirror, tiptapConfiguration)
 
-    await setBlogHTMLCache({ blogId: blog.id, htmlContent, redis })
+    await setBlogHTMLCache({ publicId, htmlContent, redis })
 
     return { htmlContent }
   }

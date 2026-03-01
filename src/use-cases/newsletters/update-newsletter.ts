@@ -275,8 +275,7 @@ export class UpdateNewsletterUseCase {
       )
     }
 
-    // Remover cache HTML da newsletter para forçar regeneração:
-    await removeNewsletterHTMLCache({ newsletterId: foundNewsletter.id, redis })
+    await removeNewsletterHTMLCache({ publicId: foundNewsletter.publicId, redis })
 
     logger.info(
       { newsletterPublicId: newsletter.publicId, sequenceNumber: newsletter.sequenceNumber },

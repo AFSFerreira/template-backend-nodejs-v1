@@ -74,7 +74,7 @@ export class DeleteNewsletterUseCase {
     }
 
     // Removendo o cache HTML da newsletter:
-    await removeNewsletterHTMLCache({ newsletterId: newsletter.id, redis })
+    await removeNewsletterHTMLCache({ publicId: newsletter.publicId, redis })
 
     logger.info({ newsletterPublicId: newsletter.publicId }, NEWSLETTER_DELETION_SUCCESSFUL)
 

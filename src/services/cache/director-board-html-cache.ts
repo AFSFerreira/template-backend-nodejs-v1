@@ -10,10 +10,10 @@ import {
   SET_DIRECTOR_BOARD_HTML_CACHE_INFO,
 } from '@messages/loggings/services/cache'
 
-const generateDirectorBoardHtmlKey = (directorBoardId: number) => `cache:directorBoard:${directorBoardId}:aboutMeHtml`
+const generateDirectorBoardHtmlKey = (publicId: string) => `cache:directorBoard:${publicId}:aboutMeHtml`
 
-export async function getDirectorBoardHTMLCached({ directorBoardId, redis }: IGetDirectorBoardHTMLCached) {
-  const key = generateDirectorBoardHtmlKey(directorBoardId)
+export async function getDirectorBoardHTMLCached({ publicId, redis }: IGetDirectorBoardHTMLCached) {
+  const key = generateDirectorBoardHtmlKey(publicId)
   const htmlCached: string | null = await redis.get(key)
 
   if (!htmlCached) {
@@ -26,8 +26,8 @@ export async function getDirectorBoardHTMLCached({ directorBoardId, redis }: IGe
   return htmlCached
 }
 
-export async function setDirectorBoardHTMLCache({ directorBoardId, htmlContent, redis }: ISetDirectorBoardHTMLCache) {
-  const key = generateDirectorBoardHtmlKey(directorBoardId)
+export async function setDirectorBoardHTMLCache({ publicId, htmlContent, redis }: ISetDirectorBoardHTMLCache) {
+  const key = generateDirectorBoardHtmlKey(publicId)
   const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', DIRECTOR_BOARD_HTML_CACHE_TTL, 'NX')
 
   if (!wasCached) {
@@ -40,7 +40,7 @@ export async function setDirectorBoardHTMLCache({ directorBoardId, htmlContent, 
   return wasCached
 }
 
-export async function removeDirectorBoardHTMLCache({ directorBoardId, redis }: IRemoveDirectorBoardHTMLCache) {
-  const key = generateDirectorBoardHtmlKey(directorBoardId)
+export async function removeDirectorBoardHTMLCache({ publicId, redis }: IRemoveDirectorBoardHTMLCache) {
+  const key = generateDirectorBoardHtmlKey(publicId)
   await redis.del(key)
 }

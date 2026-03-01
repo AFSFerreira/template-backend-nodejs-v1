@@ -56,7 +56,7 @@ export class DeleteBlogUseCase {
     })
 
     // Removendo o cache HTML do blog:
-    await removeBlogHTMLCache({ blogId: blog.id, redis })
+    await removeBlogHTMLCache({ publicId: blog.publicId, redis })
 
     logger.info({ blogId: blog.id, title: blog.title }, BLOG_DELETION_SUCCESSFUL)
 

@@ -86,10 +86,7 @@ export class UpdateInstitutionalInfoUseCase {
       await moveFileEnqueued(institutionalAboutImagePaths)
     }
 
-    if (data.aboutDescription) {
-      // Remove a chave do cache:
-      await removeInstitutionalInfoHTMLCache({ institutionalInfoId: institutionalInfo.id, redis })
-    }
+    await removeInstitutionalInfoHTMLCache({ redis })
 
     return {
       institutionalInfo: {

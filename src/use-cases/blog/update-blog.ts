@@ -218,7 +218,7 @@ export class UpdateBlogUseCase {
     }
 
     // Remover cache HTML do blog para forçar regeneração:
-    await removeBlogHTMLCache({ blogId: blog.id, redis })
+    await removeBlogHTMLCache({ publicId: blog.publicId, redis })
 
     logger.info(
       {

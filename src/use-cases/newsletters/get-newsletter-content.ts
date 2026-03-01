@@ -34,6 +34,10 @@ export class GetNewsletterHtmlContentUseCase {
   async execute({
     publicId,
   }: GetNewsletterHtmlContentUseCaseRequest): Promise<GetNewsletterHtmlContentUseCaseResponse> {
+    const cachedHtml = await getNewsletterHTMLCached({ publicId, redis })
+
+    if (cachedHtml) return { content: cachedHtml }
+
     const newsletter = ensureExists({
       value: await this.newslettersRepository.findByPublicId(publicId),
       error: new NewsletterNotFoundError(),
@@ -41,10 +45,6 @@ export class GetNewsletterHtmlContentUseCase {
 
     switch (newsletter.format) {
       case NewsletterFormatType.PROSEMIRROR: {
-        const cachedHtml = await getNewsletterHTMLCached({ newsletterId: newsletter.id, redis })
-
-        if (cachedHtml) return { content: cachedHtml }
-
         const proseContent = ensureExists({
           value: newsletter.proseContent,
           error: new InvalidNewsletterContentError(),
@@ -71,7 +71,7 @@ export class GetNewsletterHtmlContentUseCase {
             : undefined,
         })
 
-        await setNewsletterHTMLCache({ newsletterId: newsletter.id, htmlContent: newsletterContent, redis })
+        await setNewsletterHTMLCache({ publicId, htmlContent: newsletterContent, redis })
 
         return { content: newsletterContent }
       }

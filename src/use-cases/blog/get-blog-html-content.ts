@@ -22,6 +22,10 @@ export class GetBlogHTMLContentUseCase {
   ) {}
 
   async execute({ publicId }: GetBlogHTMLContentUseCaseRequest): Promise<GetBlogHTMLContentUseCaseResponse> {
+    const cachedBlogHtml = await getBlogHTMLCached({ publicId, redis })
+
+    if (cachedBlogHtml) return { htmlContent: cachedBlogHtml }
+
     const blog = ensureExists({
       value: await this.blogsRepository.findByPublicId(publicId),
       error: new BlogNotFoundError(),
@@ -33,15 +37,11 @@ export class GetBlogHTMLContentUseCase {
       throw new BlogNotFoundError()
     }
 
-    const cachedBlogHtml = await getBlogHTMLCached({ blogId: blog.id, redis })
-
-    if (cachedBlogHtml) return { htmlContent: cachedBlogHtml }
-
     const blogProseMirror = blog.content as JSONContent
 
     const htmlContent = generateHTML(blogProseMirror, tiptapConfiguration)
 
-    await setBlogHTMLCache({ blogId: blog.id, htmlContent, redis })
+    await setBlogHTMLCache({ publicId, htmlContent, redis })
 
     return { htmlContent }
   }
