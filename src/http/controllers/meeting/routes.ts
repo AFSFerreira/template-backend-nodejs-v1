@@ -7,6 +7,7 @@ import { verifyUserRole } from '@middlewares/verify-user-role.middleware'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createMeeting } from './create-meeting.controller'
 import { deleteMeeting } from './delete-meeting.controller'
+import { exportMeetingEnrollments } from './export-meeting-enrollments.controller'
 import { findMeetingByPublicId } from './find-meeting-by-public-id.controller'
 import { getAllMeetings } from './get-all-meetings.controller'
 import { getMeetingParticipants } from './get-meeting-participants.controller'
@@ -39,6 +40,14 @@ export async function meetingRoutes(app: FastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     getMeetingParticipants,
+  )
+  app.get(
+    '/:publicId/export-enrollments',
+    {
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      // preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+    },
+    exportMeetingEnrollments,
   )
 
   // POST
