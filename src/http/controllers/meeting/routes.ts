@@ -45,7 +45,7 @@ export async function meetingRoutes(app: FastifyInstance) {
     '/:publicId/export-enrollments',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
-      // preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     exportMeetingEnrollments,
   )

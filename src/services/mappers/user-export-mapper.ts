@@ -33,9 +33,9 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
   const receiveReports = user.receiveReports
 
   // Timestamps:
-  const lastLogin = user.lastLogin ? dayjs(user.lastLogin).tz(targetTimezone).toISOString() : ''
-  const createdAt = dayjs(user.createdAt).tz(targetTimezone).toISOString()
-  const updatedAt = dayjs(user.updatedAt).tz(targetTimezone).toISOString()
+  const lastLogin = user.lastLogin ? dayjs(user.lastLogin).tz(targetTimezone).format('DD/MM/YYYY HH:mm') : ''
+  const createdAt = dayjs(user.createdAt).tz(targetTimezone).format('DD/MM/YYYY HH:mm')
+  const updatedAt = dayjs(user.updatedAt).tz(targetTimezone).format('DD/MM/YYYY HH:mm')
 
   // Endereço:
   const zip = user.Address?.zip ?? ''

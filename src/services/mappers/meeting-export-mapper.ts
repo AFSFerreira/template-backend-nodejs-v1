@@ -14,7 +14,7 @@ export function meetingExportMapper(
 
   const email = meetingEnrollment.UserDetails?.User.email || meetingEnrollment.GuestDetails?.email || ''
 
-  const createdAt = dayjs(meetingEnrollment.createdAt).tz(targetTimezone).toDate().toISOString()
+  const createdAt = dayjs(meetingEnrollment.createdAt).tz(targetTimezone).format('DD/MM/YYYY HH:mm')
 
   const institutionName =
     meetingEnrollment.UserDetails?.User.Institution?.name || meetingEnrollment.GuestDetails?.institutionName || ''
