@@ -3,8 +3,6 @@ import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
-import { setTimeout } from 'node:timers/promises'
-import { BATCH_PROCESSING_DELAY } from '@constants/timing-constants'
 import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { logger } from '@lib/pino'
@@ -17,9 +15,10 @@ import {
 } from '@messages/loggings/models/newsletter-loggings'
 import { MembershipStatusType, NewsletterFormatType } from '@prisma/generated/enums'
 import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
+import { generateProseMirrorHtmlEmail } from '@services/formatters/generate-prose-mirror-html'
+import { HtmlOptimizationService } from '@services/formatters/html-optimization'
 import { PlainTextService } from '@services/formatters/plain-text-service'
 import { NewsletterRenderer } from '@services/renderers/newsletters/newsletter-renderer'
-import { generateHTML } from '@tiptap/html'
 import { readFile } from '@utils/files/read-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -58,26 +57,29 @@ export class SendNewsletterEmailUseCase {
           error: new InvalidNewsletterContentError(),
         })
 
-        const bodyContent = generateHTML(proseContent as JSONContent, tiptapConfiguration)
+        const bodyContent = await generateProseMirrorHtmlEmail(proseContent as JSONContent, tiptapConfiguration)
 
         const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
-        const rendered = new NewsletterRenderer().render({
-          newsletterInfo: {
-            htmlBody: bodyContent,
-            createdAt: newsletter.createdAt,
-            editionNumber: newsletter.editionNumber,
-            sequenceNumber: newsletter.sequenceNumber,
-            volume: newsletter.volume,
+        const rendered = await new NewsletterRenderer().render(
+          {
+            newsletterInfo: {
+              htmlBody: bodyContent,
+              createdAt: newsletter.createdAt,
+              editionNumber: newsletter.editionNumber,
+              sequenceNumber: newsletter.sequenceNumber,
+              volume: newsletter.volume,
+            },
+            meetingInfo: activeMeeting
+              ? {
+                  title: activeMeeting.title,
+                  location: activeMeeting.location,
+                  dates: activeMeeting.MeetingDate.map((meetingDate) => meetingDate.date),
+                }
+              : undefined,
           },
-          meetingInfo: activeMeeting
-            ? {
-                title: activeMeeting.title,
-                location: activeMeeting.location,
-                dates: activeMeeting.MeetingDate.map((meetingDate) => meetingDate.date),
-              }
-            : undefined,
-        })
+          { minify: 'email' },
+        )
 
         html = rendered.html
         text = rendered.text
@@ -95,6 +97,7 @@ export class SendNewsletterEmailUseCase {
           error: new NewsletterHtmlReadError(),
         })
 
+        html = await HtmlOptimizationService.minifyForEmail(html)
         text = PlainTextService.fromHtml(html)
         break
       }
@@ -106,10 +109,7 @@ export class SendNewsletterEmailUseCase {
 
     const subject = `${NEWSLETTER_EMAIL_SUBJECT} ${newsletter.sequenceNumber}`
 
-    const batchSize = 500
-
     const usersStream = this.usersRepository.streamAllUsers({
-      batchSize,
       where: {
         membershipStatus: MembershipStatusType.ACTIVE,
         wantsNewsletter: true,
@@ -117,9 +117,6 @@ export class SendNewsletterEmailUseCase {
     })
 
     logger.info({ newsletterPublicId: publicId }, NEWSLETTER_EMAIL_DISPATCH_STARTED)
-
-    let emailCount = 0
-    let batchCount = 0
 
     for await (const user of usersStream) {
       await sendEmailEnqueued({
@@ -132,16 +129,8 @@ export class SendNewsletterEmailUseCase {
           context: { newsletterPublicId: publicId, userPublicId: user.publicId },
         },
       })
-
-      emailCount++
-      batchCount++
-
-      if (batchCount >= batchSize) {
-        await setTimeout(BATCH_PROCESSING_DELAY)
-        batchCount = 0
-      }
     }
 
-    logger.info({ newsletterPublicId: publicId, totalEmails: emailCount }, NEWSLETTER_EMAIL_DISPATCH_COMPLETED)
+    logger.info({ newsletterPublicId: publicId }, NEWSLETTER_EMAIL_DISPATCH_COMPLETED)
   }
 }

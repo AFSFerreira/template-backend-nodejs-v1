@@ -10,7 +10,7 @@ import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getBlogHTMLCached, setBlogHTMLCache } from '@services/cache/blogs-html-cache'
-import { generateHTML } from '@tiptap/html'
+import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -51,7 +51,7 @@ export class GetRestrictBlogHTMLContentUseCase {
 
     const blogProseMirror = blog.content as JSONContent
 
-    const htmlContent = generateHTML(blogProseMirror, tiptapConfiguration)
+    const htmlContent = await generateProseMirrorHtmlWeb(blogProseMirror, tiptapConfiguration)
 
     await setBlogHTMLCache({ publicId, htmlContent, redis })
 

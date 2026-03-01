@@ -37,10 +37,13 @@ export class DeleteUserUseCase {
 
     await this.usersRepository.delete(deletedUser.id)
 
-    const { html, text, attachments } = new DeleteUserRenderer().render({
-      fullName: deletedUser.fullName,
-      email: deletedUser.email,
-    })
+    const { html, text, attachments } = await new DeleteUserRenderer().render(
+      {
+        fullName: deletedUser.fullName,
+        email: deletedUser.email,
+      },
+      { minify: 'email' },
+    )
 
     await sendEmailEnqueued({
       to: deletedUser.email,

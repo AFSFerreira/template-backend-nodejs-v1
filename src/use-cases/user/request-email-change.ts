@@ -60,12 +60,15 @@ export class RequestEmailChangeUseCase {
       emailVerificationTokenExpiresAt,
     })
 
-    const { html, text, attachments } = new ChangeEmailRenderer().render({
-      fullName: user.fullName,
-      oldEmail: user.email,
-      newEmail,
-      token: emailVerificationToken,
-    })
+    const { html, text, attachments } = await new ChangeEmailRenderer().render(
+      {
+        fullName: user.fullName,
+        oldEmail: user.email,
+        newEmail,
+        token: emailVerificationToken,
+      },
+      { minify: 'email' },
+    )
 
     await sendEmailEnqueued({
       to: newEmail,

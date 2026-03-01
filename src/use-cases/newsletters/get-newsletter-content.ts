@@ -12,8 +12,8 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NewsletterFormatType } from '@prisma/generated/enums'
 import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
 import { getNewsletterHTMLCached, setNewsletterHTMLCache } from '@services/cache/newsletters-html-cache'
+import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { NewsletterRenderer } from '@services/renderers/newsletters/newsletter-renderer'
-import { generateHTML } from '@tiptap/html'
 import { createFileReadStream } from '@utils/files/create-file-read-stream'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -50,26 +50,29 @@ export class GetNewsletterHtmlContentUseCase {
           error: new InvalidNewsletterContentError(),
         })
 
-        const bodyContent = generateHTML(proseContent as JSONContent, tiptapConfiguration)
+        const bodyContent = await generateProseMirrorHtmlWeb(proseContent as JSONContent, tiptapConfiguration)
 
         const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
-        const { html: newsletterContent } = new NewsletterRenderer().render({
-          newsletterInfo: {
-            htmlBody: bodyContent,
-            createdAt: newsletter.createdAt,
-            editionNumber: newsletter.editionNumber,
-            sequenceNumber: newsletter.sequenceNumber,
-            volume: newsletter.volume,
+        const { html: newsletterContent } = await new NewsletterRenderer().render(
+          {
+            newsletterInfo: {
+              htmlBody: bodyContent,
+              createdAt: newsletter.createdAt,
+              editionNumber: newsletter.editionNumber,
+              sequenceNumber: newsletter.sequenceNumber,
+              volume: newsletter.volume,
+            },
+            meetingInfo: activeMeeting
+              ? {
+                  title: activeMeeting.title,
+                  location: activeMeeting.location,
+                  dates: activeMeeting.MeetingDate.map((meetingDate) => meetingDate.date),
+                }
+              : undefined,
           },
-          meetingInfo: activeMeeting
-            ? {
-                title: activeMeeting.title,
-                location: activeMeeting.location,
-                dates: activeMeeting.MeetingDate.map((meetingDate) => meetingDate.date),
-              }
-            : undefined,
-        })
+          { minify: 'web' },
+        )
 
         await setNewsletterHTMLCache({ publicId, htmlContent: newsletterContent, redis })
 

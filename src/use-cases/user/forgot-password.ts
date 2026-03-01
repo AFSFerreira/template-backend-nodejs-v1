@@ -49,12 +49,15 @@ export class ForgotPasswordUseCase {
     // Recuperação de senha enviada para o email escolhido pelo usuário
     const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
 
-    const { html, text, attachments } = new ForgotPasswordRenderer().render({
-      email: user.email,
-      username: user.username,
-      fullName: user.fullName,
-      token: recoveryPasswordToken,
-    })
+    const { html, text, attachments } = await new ForgotPasswordRenderer().render(
+      {
+        email: user.email,
+        username: user.username,
+        fullName: user.fullName,
+        token: recoveryPasswordToken,
+      },
+      { minify: 'email' },
+    )
 
     await sendEmailEnqueued({
       to: userChosenEmail,

@@ -8,7 +8,7 @@ import {
   getInstitutionalInfoHTMLCached,
   setInstitutionalInfoHTMLCache,
 } from '@services/cache/institutional-info-html-cache'
-import { generateHTML } from '@tiptap/html'
+import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -27,7 +27,7 @@ export class GetInstitutionalInfoAboutHTMLUseCase {
 
     const proseMirror = institutionalInfo.aboutDescription as JSONContent
 
-    const htmlContent = generateHTML(proseMirror, tiptapConfiguration)
+    const htmlContent = await generateProseMirrorHtmlWeb(proseMirror, tiptapConfiguration)
 
     await setInstitutionalInfoHTMLCache({ htmlContent, redis })
 

@@ -243,11 +243,14 @@ export class CreateUserUseCase {
       await moveFileEnqueued(userProfileImagePaths)
     }
 
-    const { html, text, attachments } = new ConfirmAccountRenderer().render({
-      fullName: createdUser.fullName,
-      email: createdUser.email,
-      token: emailVerificationToken,
-    })
+    const { html, text, attachments } = await new ConfirmAccountRenderer().render(
+      {
+        fullName: createdUser.fullName,
+        email: createdUser.email,
+        token: emailVerificationToken,
+      },
+      { minify: 'email' },
+    )
 
     await sendEmailEnqueued({
       to: createdUser.email,

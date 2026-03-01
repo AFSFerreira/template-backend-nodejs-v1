@@ -8,7 +8,7 @@ import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getDirectorBoardHTMLCached, setDirectorBoardHTMLCache } from '@services/cache/director-board-html-cache'
-import { generateHTML } from '@tiptap/html'
+import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -34,7 +34,7 @@ export class GetDirectorBoardAboutHTMLUseCase {
 
     const proseMirror = directorBoard.aboutMe as JSONContent
 
-    const htmlContent = generateHTML(proseMirror, tiptapConfiguration)
+    const htmlContent = await generateProseMirrorHtmlWeb(proseMirror, tiptapConfiguration)
 
     await setDirectorBoardHTMLCache({ publicId, htmlContent, redis })
 

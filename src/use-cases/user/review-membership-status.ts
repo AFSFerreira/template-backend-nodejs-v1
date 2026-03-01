@@ -83,7 +83,9 @@ export class ReviewMembershipStatusUseCase {
           })
         })
 
-        const { html, text, attachments } = new MembershipApprovedRenderer().render(emailInfo)
+        const { html, text, attachments } = await new MembershipApprovedRenderer().render(emailInfo, {
+          minify: 'email',
+        })
 
         await sendEmailEnqueued({
           to: user.email,
@@ -119,7 +121,9 @@ export class ReviewMembershipStatusUseCase {
           })
         }
 
-        const { html, text, attachments } = new MembershipRejectedRenderer().render(emailInfo)
+        const { html, text, attachments } = await new MembershipRejectedRenderer().render(emailInfo, {
+          minify: 'email',
+        })
 
         await sendEmailEnqueued({
           to: user.email,

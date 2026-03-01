@@ -9,7 +9,7 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
 import { getBlogHTMLCached, setBlogHTMLCache } from '@services/cache/blogs-html-cache'
-import { generateHTML } from '@tiptap/html'
+import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -39,7 +39,7 @@ export class GetBlogHTMLContentUseCase {
 
     const blogProseMirror = blog.content as JSONContent
 
-    const htmlContent = generateHTML(blogProseMirror, tiptapConfiguration)
+    const htmlContent = await generateProseMirrorHtmlWeb(blogProseMirror, tiptapConfiguration)
 
     await setBlogHTMLCache({ publicId, htmlContent, redis })
 
