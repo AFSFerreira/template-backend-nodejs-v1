@@ -11,7 +11,7 @@ const defaultConfig = {
   shims: true,
   skipNodeModulesBundle: true,
   treeshake: true,
-  inlineOnly: false
+  inlineOnly: false,
 } as const satisfies TsdownConfig
 
 export default defineConfig([
