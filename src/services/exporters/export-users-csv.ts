@@ -1,5 +1,5 @@
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
-import { flattenUser } from '@services/transformers/flatten-user'
+import { flattenUser } from '@services/formatters/flatten-user'
 import { toCsv } from '@utils/formatters/csv'
 
 export function exportUsersAsCsv(users: UserWithDetails[]): string {

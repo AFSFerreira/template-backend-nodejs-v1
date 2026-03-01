@@ -6,7 +6,7 @@ import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollm
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_ENROLLMENTS_EXPORT_STARTED } from '@messages/loggings/models/meeting-enrollment-loggings'
-import { ExcelExportService } from '@services/transformers/excel-export-service'
+import { ExcelExportService } from '@services/exporters/excel-export-service'
 import { generateTimestamp } from '@utils/dates/generate-timestamp'
 import { inject, injectable } from 'tsyringe'
 

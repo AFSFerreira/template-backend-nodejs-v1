@@ -5,7 +5,7 @@ import { Readable } from 'node:stream'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ALL_USERS_INFO_EXPORTED } from '@messages/loggings/models/user-loggings'
-import { flattenUser } from '@services/transformers/flatten-user'
+import { flattenUser } from '@services/formatters/flatten-user'
 import { Transform } from 'json2csv'
 import { inject, injectable } from 'tsyringe'
 
