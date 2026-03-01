@@ -30,12 +30,14 @@ export class CsvExportService {
       },
     })
 
+    // NOTE: Injetando o BOM (Byte Order Mark) para garantir que
+    // o Excel leia os acentos em UTF-8 corretamente:
+    passThrough.write('\uFEFF')
+
     csvStringifier.pipe(passThrough)
 
     const backgroundLineProcessing = async () => {
       try {
-        csvStringifier.write('\uFEFF')
-
         for await (const meetingEnrollment of meetingEnrollmentStream) {
           const row = meetingExportMapper(meetingEnrollment)
 
@@ -108,12 +110,14 @@ export class CsvExportService {
       },
     })
 
+    // NOTE: Injetando o BOM (Byte Order Mark) para garantir que
+    // o Excel leia os acentos em UTF-8 corretamente:
+    passThrough.write('\uFEFF')
+
     csvStringifier.pipe(passThrough)
 
     const backgroundLineProcessing = async () => {
       try {
-        csvStringifier.write('\uFEFF')
-
         for await (const user of usersStream) {
           const row = userExportMapper(user)
 
