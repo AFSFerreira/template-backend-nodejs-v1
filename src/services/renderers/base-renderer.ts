@@ -1,6 +1,6 @@
 import type { RendererOutput } from '@custom-types/services/renderers/renderer-output'
 import type { Attachment } from 'nodemailer/lib/mailer'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
 import { TemplateEngine } from './template-engine'
 
@@ -42,7 +42,7 @@ export abstract class BaseRenderer<TInput> {
           }
 
           default: {
-            throw new InvalidFileOperationTypeError(minifyOption satisfies never)
+            throw new UnreachableCaseError(minifyOption satisfies never)
           }
         }
       }

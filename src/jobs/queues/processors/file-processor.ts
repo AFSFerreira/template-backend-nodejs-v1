@@ -1,5 +1,6 @@
 import type { FileJobData } from '@custom-types/jobs/queues/definitions/file-processor'
 import type { Job } from 'bullmq'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { logger } from '@lib/pino'
 import {
   FILE_COPIED_SUCCESSFULLY,
@@ -9,7 +10,6 @@ import {
 import { copyFile } from '@services/files/copy-file'
 import { moveFile } from '@services/files/move-file'
 import { deleteFile } from '@utils/files/delete-file'
-import { InvalidFileOperationTypeError } from '../errors/invalid-file-operation-type-error'
 
 export async function fileProcessor(job: Job<FileJobData>): Promise<void> {
   const data = job.data
@@ -41,7 +41,7 @@ export async function fileProcessor(job: Job<FileJobData>): Promise<void> {
     }
 
     default: {
-      throw new InvalidFileOperationTypeError(data satisfies never)
+      throw new UnreachableCaseError(data satisfies never)
     }
   }
 }

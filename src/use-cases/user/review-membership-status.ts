@@ -6,7 +6,7 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { UserActionAuditsRepository } from '@repositories/user-action-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -141,7 +141,7 @@ export class ReviewMembershipStatusUseCase {
       }
 
       default: {
-        throw new InvalidFileOperationTypeError(membershipStatusReview satisfies never)
+        throw new UnreachableCaseError(membershipStatusReview satisfies never)
       }
     }
 

@@ -3,7 +3,7 @@ import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { logger } from '@lib/pino'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
@@ -103,7 +103,7 @@ export class SendNewsletterEmailUseCase {
       }
 
       default: {
-        throw new InvalidFileOperationTypeError(newsletterFormat satisfies never)
+        throw new UnreachableCaseError(newsletterFormat satisfies never)
       }
     }
 

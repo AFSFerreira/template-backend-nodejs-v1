@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { logger } from '@lib/pino'
 import { logError } from '@lib/pino/helpers/log-error'
 import { prisma } from '@lib/prisma'
@@ -33,7 +33,7 @@ export async function healthCheck(_request: FastifyRequest, reply: FastifyReply)
     }
 
     default: {
-      throw new InvalidFileOperationTypeError(databaseStatus satisfies never)
+      throw new UnreachableCaseError(databaseStatus satisfies never)
     }
   }
 }

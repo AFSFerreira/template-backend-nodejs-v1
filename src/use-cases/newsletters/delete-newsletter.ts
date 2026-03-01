@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/newsletters/delete-newsletter'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { JSONContent } from '@tiptap/core'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
 import { redis } from '@lib/redis'
@@ -69,7 +69,7 @@ export class DeleteNewsletterUseCase {
       }
 
       default: {
-        throw new InvalidFileOperationTypeError(newsletterFormat satisfies never)
+        throw new UnreachableCaseError(newsletterFormat satisfies never)
       }
     }
 

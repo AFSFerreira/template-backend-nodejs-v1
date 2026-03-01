@@ -1,12 +1,17 @@
+import type { PassThrough } from 'node:stream'
 import type {
   ExportMeetingEnrollmentsUseCaseRequest,
   ExportMeetingEnrollmentsUseCaseResponse,
 } from '@custom-types/use-cases/meeting-enrollment/export-meeting-enrollments'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
+import { EXPORT_CONTENT_TYPE_HEADERS } from '@constants/header-constants'
+import { EXPORT_FILE_EXTENSIONS } from '@constants/static-file-constants'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_ENROLLMENTS_EXPORT_STARTED } from '@messages/loggings/models/meeting-enrollment-loggings'
+import { CsvExportService } from '@services/exporters/csv-export-service'
 import { ExcelExportService } from '@services/exporters/excel-export-service'
 import { generateTimestamp } from '@utils/dates/generate-timestamp'
 import { ensureExists } from '@utils/validators/ensure'
@@ -25,6 +30,7 @@ export class ExportMeetingEnrollmentsUseCase {
 
   async execute({
     meetingPublicId,
+    format,
   }: ExportMeetingEnrollmentsUseCaseRequest): Promise<ExportMeetingEnrollmentsUseCaseResponse> {
     const meeting = ensureExists({
       value: await this.meetingsRepository.findByPublicId(meetingPublicId),
@@ -35,14 +41,29 @@ export class ExportMeetingEnrollmentsUseCase {
       where: { meetingId: meeting.id },
     })
 
-    const excelService = new ExcelExportService()
+    let reportStream: PassThrough
 
-    const passThrough = excelService.generateMeetingEnrollmentReport(enrollmentStream)
+    switch (format) {
+      case 'excel': {
+        reportStream = new ExcelExportService().generateMeetingEnrollmentReport(enrollmentStream)
+        break
+      }
+      case 'csv': {
+        reportStream = new CsvExportService().generateMeetingEnrollmentReport(enrollmentStream)
+        break
+      }
+      default: {
+        throw new UnreachableCaseError(format satisfies never)
+      }
+    }
 
-    const filename = `inscricoes-${meeting.title.replaceAll(' ', '-')}_${generateTimestamp()}.xlsx`
+    const extension = EXPORT_FILE_EXTENSIONS[format]
+    const filename = `inscricoes-${meeting.title.replaceAll(' ', '-')}_${generateTimestamp()}.${extension}`
+
+    const contentTypeHeader = EXPORT_CONTENT_TYPE_HEADERS[format]
 
     logger.info(MEETING_ENROLLMENTS_EXPORT_STARTED)
 
-    return { reportStream: passThrough, filename }
+    return { reportStream, filename, contentTypeHeader }
   }
 }

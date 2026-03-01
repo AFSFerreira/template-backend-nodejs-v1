@@ -72,5 +72,14 @@ export const PRESENTERS_OUTPUT_FILE = path.resolve(PRESENTERS_DIR, 'load-present
 export const PRESENTERS_AUTO_GENERATED_WARNING = `//⚠️ ARQUIVO GERADO AUTOMATICAMENTE - NÃO EDITE MANUALMENTE\n//⚠️ AUTO-GENERATED FILE - DO NOT EDIT MANUALLY`
 export const PRESENTERS_REGENERATE_COMMAND = `// Execute 'npm run generate:presenters' para atualizar\n// Run 'npm run generate:presenters' to update`
 
-// Limite de imagens ativas no slider
+// Limite de imagens ativas no slider:
 export const MAX_SLIDER_IMAGES_QUANTITY = 15
+
+// Tipos de formatos de arquivo de exportações:
+export const EXPORT_FILE_FORMATS = ['excel', 'csv'] as const
+
+// Formatos de arquivo de exportações:
+export const EXPORT_FILE_EXTENSIONS: Record<(typeof EXPORT_FILE_FORMATS)[number], string> = {
+  excel: 'xlsx',
+  csv: 'csv',
+} as const

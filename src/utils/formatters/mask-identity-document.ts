@@ -1,5 +1,5 @@
 import type { MaskIdentityDocumentInput } from '@custom-types/utils/formatters/mask-identity-document'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { IdentityType } from '@prisma/generated/enums'
 import { cpf } from 'cpf-cnpj-validator'
 
@@ -28,7 +28,7 @@ export function maskIdentityDocument({ identityType, identityDocument }: MaskIde
     }
 
     default: {
-      throw new InvalidFileOperationTypeError(identityType satisfies never)
+      throw new UnreachableCaseError(identityType satisfies never)
     }
   }
 }

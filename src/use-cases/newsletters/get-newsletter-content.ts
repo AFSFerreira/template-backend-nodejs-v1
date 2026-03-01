@@ -5,7 +5,7 @@ import type {
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { JSONContent } from '@tiptap/core'
-import { InvalidFileOperationTypeError } from '@jobs/queues/errors/invalid-file-operation-type-error'
+import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -94,7 +94,7 @@ export class GetNewsletterHtmlContentUseCase {
       }
 
       default: {
-        throw new InvalidFileOperationTypeError(newsletter.format satisfies never)
+        throw new UnreachableCaseError(newsletter.format satisfies never)
       }
     }
   }
