@@ -10,6 +10,7 @@ import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prism
 import type { ListExpiredVerifyingUsersQuery } from '@custom-types/repository/prisma/user/list-expired-verifying-users-query'
 import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/user/set-email-change-token-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
+import type { StreamAllUsersQuery } from '@custom-types/repository/prisma/user/stream-all-users-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
@@ -27,7 +28,7 @@ export interface UsersRepository {
   findByPublicId: (publicId: string) => Promise<UserWithDetails | null>
   findByIdentityDocument: (query: FindByIdentityDocumentQuery) => Promise<User | null>
   findConflictingUser: (query: FindConflictingUserQuery) => Promise<User | null>
-  streamAllUsers: (batchSize?: number) => AsyncIterable<UserWithDetails>
+  streamAllUsers: (query?: StreamAllUsersQuery) => AsyncIterable<UserWithDetails>
   listAllUsersDetailed: (
     query: ListAllUsersDetailedQuery,
   ) => Promise<PaginatedResult<CustomUserWithSimplifiedDetails[]>>

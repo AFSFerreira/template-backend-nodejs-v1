@@ -8,6 +8,7 @@ import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prism
 import type { ListExpiredVerifyingUsersQuery } from '@custom-types/repository/prisma/user/list-expired-verifying-users-query'
 import type { SetEmailChangeTokenQuery } from '@custom-types/repository/prisma/user/set-email-change-token-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
+import type { StreamAllUsersQuery } from '@custom-types/repository/prisma/user/stream-all-users-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
@@ -131,11 +132,14 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async *streamAllUsers(batchSize = 500) {
+  async *streamAllUsers(query?: StreamAllUsersQuery) {
+    const { where, batchSize = 500 } = query ?? {}
+
     let cursor: number | undefined
 
     while (true) {
       const batch: UserWithDetails[] = await this.dbContext.client.user.findMany({
+        where,
         take: batchSize,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,
