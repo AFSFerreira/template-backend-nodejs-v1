@@ -17,6 +17,10 @@ export class ExcelExportService {
 
   private static DATE_FORMAT = 'dd/mm/yyyy hh:mm'
 
+  private static SMALL_COLUMN_SIZE = 25
+  private static MEDIUM_COLUMN_SIZE = 40
+  private static LARGE_COLUMN_SIZE = 60
+
   generateMeetingEnrollmentReport(
     meetingEnrollmentStream: AsyncIterable<MeetingEnrollmentWithDetails>,
     targetTimezone: string = SYSTEM_TIMEZONE,
@@ -51,28 +55,24 @@ export class ExcelExportService {
 
     const middleAlignment: Partial<Style> = { alignment: { horizontal: 'center', vertical: 'middle' } }
 
-    const smallColumnSize = 25
-    const mediumColumnSize = 40
-    const largeColumnSize = 60
-
     const worksheetColumns = [
-      { key: 'name', width: mediumColumnSize },
-      { key: 'email', width: mediumColumnSize },
+      { key: 'name', width: ExcelExportService.MEDIUM_COLUMN_SIZE },
+      { key: 'email', width: ExcelExportService.MEDIUM_COLUMN_SIZE },
       {
         key: 'createdAt',
-        width: smallColumnSize,
+        width: ExcelExportService.SMALL_COLUMN_SIZE,
         style: { ...middleAlignment, numFmt: ExcelExportService.DATE_FORMAT },
       },
-      { key: 'institutionName', width: mediumColumnSize, style: { ...middleAlignment } },
-      { key: 'departmentName', width: mediumColumnSize, style: { ...middleAlignment } },
-      { key: 'educationLevel', width: mediumColumnSize, style: { ...middleAlignment } },
-      { key: 'wantsNewsletter', width: mediumColumnSize, style: { ...middleAlignment } },
-      { key: 'hasPresentation', width: smallColumnSize, style: { ...middleAlignment } },
-      { key: 'presentationType', width: smallColumnSize, style: { ...middleAlignment } },
-      { key: 'title', width: largeColumnSize },
-      { key: 'description', width: largeColumnSize },
-      { key: 'affiliations', width: largeColumnSize },
-      { key: 'authors', width: largeColumnSize },
+      { key: 'institutionName', width: ExcelExportService.MEDIUM_COLUMN_SIZE, style: { ...middleAlignment } },
+      { key: 'departmentName', width: ExcelExportService.MEDIUM_COLUMN_SIZE, style: { ...middleAlignment } },
+      { key: 'educationLevel', width: ExcelExportService.MEDIUM_COLUMN_SIZE, style: { ...middleAlignment } },
+      { key: 'wantsNewsletter', width: ExcelExportService.MEDIUM_COLUMN_SIZE, style: { ...middleAlignment } },
+      { key: 'hasPresentation', width: ExcelExportService.SMALL_COLUMN_SIZE, style: { ...middleAlignment } },
+      { key: 'presentationType', width: ExcelExportService.SMALL_COLUMN_SIZE, style: { ...middleAlignment } },
+      { key: 'title', width: ExcelExportService.LARGE_COLUMN_SIZE },
+      { key: 'description', width: ExcelExportService.LARGE_COLUMN_SIZE },
+      { key: 'affiliations', width: ExcelExportService.LARGE_COLUMN_SIZE },
+      { key: 'authors', width: ExcelExportService.LARGE_COLUMN_SIZE },
     ]
 
     // Definição estrita de Colunas:
