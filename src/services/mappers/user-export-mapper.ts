@@ -3,7 +3,13 @@ import type { Keyword } from '@prisma/generated/client'
 import type { JSONContent } from '@tiptap/core'
 import { SYSTEM_TIMEZONE } from '@constants/timezone-constants'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
+import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { mapEducationLevel } from '@utils/mappers/map-education-level'
+import { mapIdentityType } from '@utils/mappers/map-identity-type'
+import { mapMembershipStatus } from '@utils/mappers/map-membership-status'
+import { mapOccupation } from '@utils/mappers/map-occupation'
 import dayjs from 'dayjs'
 
 export function userExportMapper(user: UserWithDetails, targetTimezone: string = SYSTEM_TIMEZONE) {
@@ -12,14 +18,14 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
   const username = user.username
   const email = user.email
   const birthDate = dayjs(user.birthdate).tz(targetTimezone).format('YYYY-MM-DD')
-  const identityType = user.identityType
+  const identityType = mapIdentityType(user.identityType)
   const identityDocument = user.identityDocument
 
   // Dados profissionais/acadêmicos:
   const institutionName = user.Institution?.name ?? ''
   const departmentName = user.departmentName ?? ''
-  const occupation = user.occupation
-  const educationLevel = user.educationLevel
+  const occupation = mapOccupation(user.occupation)
+  const educationLevel = mapEducationLevel(user.educationLevel)
   const activityAreaDescription = user.activityAreaDescription ?? ''
   const subActivityAreaDescription = user.subActivityAreaDescription ?? ''
   const interestDescription = user.interestDescription
@@ -27,10 +33,10 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
   const mainAreaActivity = user.ActivityArea?.area ?? ''
 
   // Dados de associação e preferências:
-  const membershipStatus = user.membershipStatus
+  const membershipStatus = mapMembershipStatus(user.membershipStatus)
   const publicInformation = user.publicInformation
-  const emailIsPublic = user.emailIsPublic
-  const receiveReports = user.receiveReports
+  const emailIsPublic = user.emailIsPublic ? 'sim' : 'não'
+  const receiveReports = user.receiveReports ? 'sim' : 'não'
 
   // Timestamps:
   const lastLogin = user.lastLogin ? dayjs(user.lastLogin).tz(targetTimezone).format('DD/MM/YYYY HH:mm') : ''
@@ -59,6 +65,10 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
   const scholarshipHolder = user.EnrolledCourse?.scholarshipHolder ?? false
   const sponsoringOrganization = user.EnrolledCourse?.sponsoringOrganization ?? ''
 
+  // Áreas de atuação:
+  const activityArea = user.ActivityArea?.area ?? ''
+  const subActivityArea = user.SubActivityArea?.area ?? ''
+
   // Palavras-chave e publicações:
   const keywords =
     user.Keyword?.map((k: Keyword) => k.value)
@@ -69,7 +79,9 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
     user.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(' | ') ?? ''
 
   // Diretoria:
-  const directorBoardProfileImage = user.DirectorBoard?.profileImage ?? ''
+  const directorBoardProfileImage = user.DirectorBoard?.profileImage
+    ? buildDirectorBoardProfileImageUrl(user.DirectorBoard?.profileImage)
+    : buildUserProfileImageUrl(user.profileImage)
 
   const aboutMe = user.DirectorBoard
     ? (getProseMirrorText({
@@ -92,7 +104,9 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
     membershipStatus,
     identityType,
     identityDocument,
+    activityArea,
     activityAreaDescription,
+    subActivityArea,
     subActivityAreaDescription,
     interestDescription,
     publicInformation,

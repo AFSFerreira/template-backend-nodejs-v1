@@ -14,7 +14,7 @@ const EDUCATION_LEVEL_LABELS: Record<EducationLevelType, string> = {
   OTHER: 'Outro',
 }
 
-export function formatEducationLevel(educationLevel: EducationLevelType | null | undefined): string {
+export function mapEducationLevel(educationLevel: EducationLevelType | null | undefined): string {
   if (!educationLevel) return ''
   return EDUCATION_LEVEL_LABELS[educationLevel]
 }

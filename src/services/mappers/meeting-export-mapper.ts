@@ -2,8 +2,8 @@
 
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
 import { SYSTEM_TIMEZONE } from '@constants/timezone-constants'
-import { formatEducationLevel } from '@utils/formatters/education-level-label'
 import { formatPresentationType } from '@utils/formatters/presentation-type-label'
+import { mapEducationLevel } from '@utils/mappers/map-education-level'
 import dayjs from 'dayjs'
 
 export function meetingExportMapper(
@@ -22,7 +22,7 @@ export function meetingExportMapper(
   const departmentName =
     meetingEnrollment.UserDetails?.User.departmentName || meetingEnrollment.GuestDetails?.departmentName || ''
 
-  const educationLevel = formatEducationLevel(
+  const educationLevel = mapEducationLevel(
     meetingEnrollment.UserDetails?.User.educationLevel ?? meetingEnrollment.GuestDetails?.educationLevel,
   )
 
