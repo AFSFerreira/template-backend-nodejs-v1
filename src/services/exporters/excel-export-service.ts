@@ -4,6 +4,7 @@ import { SYSTEM_TIMEZONE } from '@constants/timezone-constants'
 import { env } from '@env/index'
 import { logError } from '@lib/pino/helpers/log-error'
 import { meetingExportMapper } from '@services/mappers/meeting-export-mapper'
+import { getExcelCellAddress } from '@utils/excel/get-excel-cell-address'
 import dayjs from 'dayjs'
 import ExcelJS from 'exceljs'
 
@@ -47,8 +48,7 @@ export class ExcelExportService {
       ],
     })
 
-    // Definição estrita de Colunas:
-    worksheet.columns = [
+    const worksheetColumns = [
       { key: 'name', width: 40 },
       { key: 'email', width: 40 },
       { key: 'createdAt', width: 25, style: { numFmt: ExcelExportService.DATE_FORMAT } },
@@ -63,6 +63,9 @@ export class ExcelExportService {
       { key: 'affiliations', width: 25 },
       { key: 'authors', width: 25 },
     ]
+
+    // Definição estrita de Colunas:
+    worksheet.columns = worksheetColumns
 
     // 5. Estilização do Cabeçalho:
     const headerRow = worksheet.addRow({
@@ -92,12 +95,11 @@ export class ExcelExportService {
     headerRow.alignment = { vertical: 'middle', horizontal: 'center' }
 
     // Adiciona o AutoFiltro nativo do Excel em todas as colunas:
-    worksheet.autoFilter = 'A1:M1'
+    worksheet.autoFilter = `A1:${getExcelCellAddress({ row: 1, col: worksheetColumns.length })}`
 
     headerRow.commit()
 
-    // O processamento assíncrono começa em background,
-    // envolvemos em uma função assíncrona:
+    // O processamento assíncrono começa em background:
     const backgroundLineProcessing = async () => {
       try {
         for await (const meetingEnrollment of meetingEnrollmentStream) {

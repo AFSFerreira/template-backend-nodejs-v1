@@ -3,6 +3,7 @@ import type { CreateUserMeetingEnrollmentQuery } from '@custom-types/repository/
 import type { FindByGuestEmailAndMeetingIdQuery } from '@custom-types/repository/prisma/meeting-enrollment/find-by-guest-email-and-meeting-id-query'
 import type { FindByUserIdAndMeetingIdQuery } from '@custom-types/repository/prisma/meeting-enrollment/find-by-user-id-and-meeting-id-query'
 import type { ListMeetingEnrollmentsQuery } from '@custom-types/repository/prisma/meeting-enrollment/list-meeting-enrollments-query'
+import type { StreamAllEnrollmentsQuery } from '@custom-types/repository/prisma/meeting-enrollment/stream-all-enrollments-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
@@ -167,11 +168,14 @@ export class PrismaMeetingEnrollmentsRepository implements MeetingEnrollmentsRep
     }
   }
 
-  async *streamAllEnrollments(batchSize = 500) {
+  async *streamAllEnrollments(query?: StreamAllEnrollmentsQuery) {
+    const { where, batchSize = 500 } = query ?? {}
+
     let cursor: number | undefined
 
     while (true) {
       const batch = await this.dbContext.client.meetingEnrollment.findMany({
+        where,
         take: batchSize,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,

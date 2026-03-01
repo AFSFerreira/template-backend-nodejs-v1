@@ -11,14 +11,13 @@ import { getMeetingEnrollment } from './get-meeting-enrollment.controller'
 export async function meetingEnrollmentRoutes(app: FastifyInstance) {
   // GET
   app.get(
-    '/export',
+    '/:publicId/export',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       // preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
     },
     exportMeetingEnrollments,
   )
-
   app.get(
     '/:publicId',
     {

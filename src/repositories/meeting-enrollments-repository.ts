@@ -4,6 +4,7 @@ import type { CreateUserMeetingEnrollmentQuery } from '@custom-types/repository/
 import type { FindByGuestEmailAndMeetingIdQuery } from '@custom-types/repository/prisma/meeting-enrollment/find-by-guest-email-and-meeting-id-query'
 import type { FindByUserIdAndMeetingIdQuery } from '@custom-types/repository/prisma/meeting-enrollment/find-by-user-id-and-meeting-id-query'
 import type { ListMeetingEnrollmentsQuery } from '@custom-types/repository/prisma/meeting-enrollment/list-meeting-enrollments-query'
+import type { StreamAllEnrollmentsQuery } from '@custom-types/repository/prisma/meeting-enrollment/stream-all-enrollments-query'
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
 import type { MeetingEnrollment } from '@prisma/generated/client'
 
@@ -16,6 +17,6 @@ export interface MeetingEnrollmentsRepository {
   listMeetingEnrollments: (
     query: ListMeetingEnrollmentsQuery,
   ) => Promise<PaginatedResult<MeetingEnrollmentWithDetails[]>>
-  streamAllEnrollments: (batchSize?: number) => AsyncIterable<MeetingEnrollmentWithDetails>
+  streamAllEnrollments: (query?: StreamAllEnrollmentsQuery) => AsyncIterable<MeetingEnrollmentWithDetails>
   deleteById: (id: number) => Promise<void>
 }

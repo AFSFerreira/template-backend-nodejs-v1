@@ -1,0 +1,26 @@
+import { InvalidExcelCoordinateError } from '@services/errors/excel/invalid-excel-coordinate-error'
+
+interface ExcelCoordinate {
+  col: number
+  row: number
+}
+
+export function getExcelCellAddress({ col, row }: ExcelCoordinate): string {
+  if (col < 1 || row < 1) {
+    throw new InvalidExcelCoordinateError()
+  }
+
+  let columnName = ''
+  let currentCol = col
+
+  // Algoritmo de conversão Base-26:
+  while (currentCol > 0) {
+    const modulo = (currentCol - 1) % 26
+
+    columnName = String.fromCharCode(65 + modulo) + columnName
+
+    currentCol = Math.floor((currentCol - 1) / 26)
+  }
+
+  return `${columnName}${row}`
+}
