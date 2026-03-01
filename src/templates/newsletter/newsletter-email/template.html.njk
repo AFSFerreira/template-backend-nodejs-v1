@@ -99,7 +99,7 @@
       </style>
    </head>
    <body>
-      {% include "./partials/header.html.njk" %}
+      {% include "./partials/html/header.html.njk" %}
 
 
       <!---->
@@ -163,10 +163,10 @@
 
       {% if newsletter_event_title and newsletter_event_dates and newsletter_event_location %}
 
-         {% include "./partials/event.html.njk" %}
+         {% include "./partials/html/event.html.njk" %}
 
       {% endif %}
 
-      {% include "./partials/footer.html.njk" %}
+      {% include "./partials/html/footer.html.njk" %}
    </body>
 </html>
