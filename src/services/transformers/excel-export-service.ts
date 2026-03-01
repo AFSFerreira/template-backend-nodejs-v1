@@ -5,7 +5,7 @@ import { env } from '@env/index'
 import { logError } from '@lib/pino/helpers/log-error'
 import { formatEducationLevel } from '@utils/formatters/education-level-label'
 import { formatPresentationType } from '@utils/formatters/presentation-type-label'
-import { toZonedTime } from 'date-fns-tz'
+import dayjs from 'dayjs'
 import ExcelJS from 'exceljs'
 
 interface WorkbookStreamOptions extends Partial<ExcelJS.stream.xlsx.WorkbookStreamWriterOptions> {}
@@ -34,7 +34,7 @@ export class ExcelExportService {
     // Metadados do documento:
     workbook.creator = env.APP_NAME
     workbook.lastModifiedBy = env.APP_NAME
-    workbook.created = toZonedTime(new Date(), targetTimezone)
+    workbook.created = dayjs(new Date()).tz(targetTimezone).toDate()
 
     // Criação da aba (Worksheet):
     // WARNING: Por causa da OOXML (Office Open XML), o nome do worksheet não deve
@@ -105,7 +105,7 @@ export class ExcelExportService {
 
           const email = meetingEnrollment.UserDetails?.User.email || meetingEnrollment.GuestDetails?.email || ''
 
-          const createdAt = toZonedTime(meetingEnrollment.createdAt, targetTimezone)
+          const createdAt = dayjs(meetingEnrollment.createdAt).tz(targetTimezone).toDate()
 
           const institutionName =
             meetingEnrollment.UserDetails?.User.Institution?.name ||

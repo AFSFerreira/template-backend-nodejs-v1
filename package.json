@@ -90,8 +90,6 @@
     "bullmq": "5.70.1",
     "cpf-cnpj-validator": "1.0.3",
     "cron-validator": "1.4.0",
-    "date-fns": "4.1.0",
-    "date-fns-tz": "3.2.0",
     "dayjs": "1.11.19",
     "doi-utils": "2.0.6",
     "dotenv": "17.3.1",

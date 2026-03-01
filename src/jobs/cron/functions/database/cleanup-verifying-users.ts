@@ -1,7 +1,7 @@
 import type { JobFactory } from '@custom-types/lib/bullmq/job-factory'
 import type { UsersRepository } from '@repositories/users-repository'
 import { setTimeout } from 'node:timers/promises'
-import { VERIFYNG_ACCOUNT_ERASE_TIME_WINDOW } from '@constants/timing-constants'
+import { BATCH_PROCESSING_DELAY, VERIFYNG_ACCOUNT_ERASE_TIME_WINDOW } from '@constants/timing-constants'
 import { logError } from '@lib/pino/helpers/log-error'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FAILED_TO_DELETE_EXPIRED_VERIFYING_USERS_BATCH } from '@messages/loggings/jobs/cron/database'
@@ -30,7 +30,7 @@ export const cleanupVerifyingUsersJobFactory: JobFactory = () => {
         break
       }
 
-      await setTimeout(1000)
+      await setTimeout(BATCH_PROCESSING_DELAY)
     }
   }
 }

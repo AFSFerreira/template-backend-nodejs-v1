@@ -1,6 +1,8 @@
 import type { JobFactory } from '@custom-types/lib/bullmq/job-factory'
 import { setTimeout } from 'node:timers/promises'
+import { BATCH_PROCESSING_DELAY } from '@constants/timing-constants'
 import { JobDatabaseContextNotProvidedError } from '@services/errors/jobs/job-database-context-not-provided-error'
+import dayjs from 'dayjs'
 
 export const cleanupAuditsJobFactory: JobFactory = (ctx) => {
   return async () => {
@@ -10,8 +12,7 @@ export const cleanupAuditsJobFactory: JobFactory = (ctx) => {
       throw new JobDatabaseContextNotProvidedError()
     }
 
-    const thresholdDate = new Date()
-    thresholdDate.setMonth(thresholdDate.getMonth() - 6)
+    const thresholdDate = dayjs().subtract(6, 'month').toDate()
 
     while (true) {
       const result = await databaseContext.client.authenticationAudit.deleteOldRecordsInBatches(
@@ -22,7 +23,7 @@ export const cleanupAuditsJobFactory: JobFactory = (ctx) => {
 
       if (result === 0) break
 
-      await setTimeout(1000)
+      await setTimeout(BATCH_PROCESSING_DELAY)
     }
   }
 }

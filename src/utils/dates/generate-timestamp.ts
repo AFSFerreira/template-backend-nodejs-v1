@@ -1,7 +1,5 @@
-export function generateTimestamp(date: Date = new Date()) {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
+import dayjs from 'dayjs'
 
-  return `${year}-${month}-${day}`
+export function generateTimestamp(date: Date = new Date()) {
+  return dayjs(date).format('YYYY-MM-DD')
 }
