@@ -56,7 +56,7 @@ export const partialUserData1: PartialUserCreateInputInfo = {
   loginAttempts: 0,
   lastLogin: null,
   publicInformation: 'ASTROBIÓLOGO',
-  wantsNewsletter: true,
+  wantsNewsletter: false,
 
   EnrolledCourse: enrolledCourseNestedUserData1,
 
@@ -169,7 +169,7 @@ export const contentLeaderUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'https://lattes.cnpq.br/3390986971402979',
   fullName: 'Danilo Albergaria',
-  email: 'danilo@gmail.com',
+  email: 'danilo@email.com',
   username: 'danilo.albergaria',
   role: UserRoleType.CONTENT_LEADER,
 }
@@ -178,9 +178,10 @@ export const contentProducerUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
   linkLattes: 'https://lattes.cnpq.br/3390986971402979',
   fullName: 'Allber Ferreira',
-  email: 'allber@gmail.com',
+  email: 'allber@email.com',
   username: 'allber.ferreira',
   role: UserRoleType.CONTENT_PRODUCER,
+  wantsNewsletter: true,
 }
 
 export const usersDataArray1: Prisma.UserCreateInput[] = [
