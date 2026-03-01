@@ -6,15 +6,16 @@ import { logError } from '@lib/pino/helpers/log-error'
 import { meetingExportMapper } from '@services/mappers/meeting-export-mapper'
 import { getExcelCellAddress } from '@utils/excel/get-excel-cell-address'
 import dayjs from 'dayjs'
-import ExcelJS from 'exceljs'
+import ExcelJS, { type Style } from 'exceljs'
 
 interface WorkbookStreamOptions extends Partial<ExcelJS.stream.xlsx.WorkbookStreamWriterOptions> {}
 
 export class ExcelExportService {
-  static WHITE_HEX_COLOR = 'FFFFFFFF'
-  static DEEP_BLUE_HEX_COLOR = '073292FF'
+  private static WHITE_HEX_COLOR = 'FFFFFFFF'
+  // private static DEEP_BLUE_HEX_COLOR = '073292FF'
+  private static DARK_HEX_COLOR = 'FF000000'
 
-  static DATE_FORMAT = 'dd/mm/yyyy hh:mm'
+  private static DATE_FORMAT = 'dd/mm/yyyy hh:mm'
 
   generateMeetingEnrollmentReport(
     meetingEnrollmentStream: AsyncIterable<MeetingEnrollmentWithDetails>,
@@ -48,20 +49,30 @@ export class ExcelExportService {
       ],
     })
 
+    const middleAlignment: Partial<Style> = { alignment: { horizontal: 'center', vertical: 'middle' } }
+
+    const smallColumnSize = 25
+    const mediumColumnSize = 40
+    const largeColumnSize = 60
+
     const worksheetColumns = [
-      { key: 'name', width: 40 },
-      { key: 'email', width: 40 },
-      { key: 'createdAt', width: 25, style: { numFmt: ExcelExportService.DATE_FORMAT } },
-      { key: 'institutionName', width: 25 },
-      { key: 'departmentName', width: 25 },
-      { key: 'educationLevel', width: 25 },
-      { key: 'wantsNewsletter', width: 25 },
-      { key: 'hasPresentation', width: 15 },
-      { key: 'presentationType', width: 25 },
-      { key: 'title', width: 25 },
-      { key: 'description', width: 25 },
-      { key: 'affiliations', width: 25 },
-      { key: 'authors', width: 25 },
+      { key: 'name', width: mediumColumnSize },
+      { key: 'email', width: mediumColumnSize },
+      {
+        key: 'createdAt',
+        width: smallColumnSize,
+        style: { ...middleAlignment, numFmt: ExcelExportService.DATE_FORMAT },
+      },
+      { key: 'institutionName', width: mediumColumnSize, style: { ...middleAlignment } },
+      { key: 'departmentName', width: mediumColumnSize, style: { ...middleAlignment } },
+      { key: 'educationLevel', width: mediumColumnSize, style: { ...middleAlignment } },
+      { key: 'wantsNewsletter', width: mediumColumnSize, style: { ...middleAlignment } },
+      { key: 'hasPresentation', width: smallColumnSize, style: { ...middleAlignment } },
+      { key: 'presentationType', width: smallColumnSize, style: { ...middleAlignment } },
+      { key: 'title', width: largeColumnSize },
+      { key: 'description', width: largeColumnSize },
+      { key: 'affiliations', width: largeColumnSize },
+      { key: 'authors', width: largeColumnSize },
     ]
 
     // Definição estrita de Colunas:
@@ -89,7 +100,7 @@ export class ExcelExportService {
     headerRow.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: ExcelExportService.DEEP_BLUE_HEX_COLOR },
+      fgColor: { argb: ExcelExportService.DARK_HEX_COLOR },
     }
 
     headerRow.alignment = { vertical: 'middle', horizontal: 'center' }

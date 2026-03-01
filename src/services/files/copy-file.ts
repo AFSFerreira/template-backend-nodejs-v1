@@ -6,6 +6,7 @@ import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggin
 import { HashService } from '@services/hashes/hash-service'
 import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
 import { deleteFile } from '@utils/files/delete-file'
+import { getFileExtension } from '@utils/files/get-file-extension'
 import fs, { ensureDir } from 'fs-extra'
 
 export async function copyFile({
@@ -14,7 +15,7 @@ export async function copyFile({
   destinationFolderPath,
   buildShard,
 }: ICopyFile): Promise<FileInfo> {
-  const filename = `${newFilename ?? HashService.generateFileHash()}${path.extname(sourceFilePath)}`
+  const filename = `${newFilename ?? HashService.generateFileHash()}.${getFileExtension(sourceFilePath)}`
   const fileFolderShard = buildShard ? buildShardFileFolder(filename) : ''
   const finalFilePath = path.resolve(destinationFolderPath, fileFolderShard, filename)
 

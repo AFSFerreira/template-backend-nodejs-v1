@@ -2,13 +2,13 @@ import type {
   UploadDocumentUseCaseRequest,
   UploadDocumentUseCaseResponse,
 } from '@custom-types/use-cases/document-management/upload-document'
-import path from 'node:path'
 import { ELECTION_NOTICE_FILE_NAME } from '@constants/static-file-constants'
 import { logger } from '@lib/pino'
 import { ELECTION_NOTICE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/document-management-loggings'
 import { swapFiles } from '@services/files/swap-files'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
+import { getFileExtension } from '@utils/files/get-file-extension'
 import { injectable } from 'tsyringe'
 
 @injectable()
@@ -27,7 +27,7 @@ export class UploadElectionNoticeUseCase {
       throw new FileTooBigError()
     }
 
-    const filename = `${ELECTION_NOTICE_FILE_NAME}${path.extname(originalFilename)}`
+    const filename = `${ELECTION_NOTICE_FILE_NAME}.${getFileExtension(originalFilename)}`
 
     const persistImageIsSuccessful = await swapFiles([
       {

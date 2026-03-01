@@ -6,7 +6,7 @@ import { formatEducationLevel } from '@utils/formatters/education-level-label'
 import { formatPresentationType } from '@utils/formatters/presentation-type-label'
 import dayjs from 'dayjs'
 
-export async function meetingExportMapper(
+export function meetingExportMapper(
   meetingEnrollment: MeetingEnrollmentWithDetails,
   targetTimezone: string = SYSTEM_TIMEZONE,
 ) {

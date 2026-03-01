@@ -9,9 +9,7 @@ export function mapMimeTypeToExtension(mimeType: string) {
 }
 
 export function mapExtensionToMimeType(extension: string) {
-  const cleanExtension = extension.replace('.', '').toLowerCase()
-
-  const mimeType = EXTENSION_TO_MIME_MAP.get(cleanExtension)
+  const mimeType = EXTENSION_TO_MIME_MAP.get(extension)
 
   return mimeType
 }
