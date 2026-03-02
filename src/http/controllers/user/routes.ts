@@ -83,7 +83,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_SECURITY),
+      ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
     },
     createUser,
   )
@@ -113,14 +113,14 @@ export async function userRoutes(app: FastifyInstance) {
   app.post(
     '/forgot-password',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_SECURITY),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
     },
     forgotPassword,
   )
   app.post(
     '/verify-email',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
     },
     verifyEmail,
   )
@@ -129,14 +129,14 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/reset-password',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
     },
     resetPassword,
   )
   app.patch(
     '/change-password',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
     },
     changePassword,
@@ -144,7 +144,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/request-email-change',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_SECURITY),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
     },
     requestEmailChange,
@@ -152,7 +152,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.patch(
     '/confirm-email-change',
     {
-      ...rateLimit(RATE_LIMIT_TIERS.AUTH_VALIDATION),
+      ...rateLimit(RATE_LIMIT_TIERS.AUTH),
     },
     confirmEmailChange,
   )
