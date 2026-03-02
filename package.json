@@ -17,20 +17,15 @@
     "start:dev": "run-s start:tsx:watch",
     "start:prod": "node --enable-source-maps --env-file=.env dist/server.mjs",
     "start:prod:docker": "node --enable-source-maps dist/server.mjs",
-
     "build:tsc": "tsc",
     "build:tsgo": "tsgo",
     "build:tsdown": "tsdown --config ./tsdown.config.ts",
-
     "lint:src:biome": "biome lint --write src",
     "lint:prisma:biome": "biome lint --write prisma",
-
     "format:src:biome": "biome format --write src",
     "format:prisma:biome": "biome format --write prisma",
-
     "check:src:biome": "biome check --write src",
     "check:prisma:biome": "biome check --write prisma",
-
     "db:generate": "prisma generate",
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:dev:default": "prisma migrate dev --name creating_database_models",
@@ -39,17 +34,13 @@
     "db:reset": "run-s db:generate db:migrate:reset db:seed",
     "db:migrate-deploy": "prisma migrate deploy",
     "db:deploy": "run-s db:migrate-deploy db:generate db:seed",
-
     "ci:generate": "run-p db:generate",
     "ci:lint": "run-p check:prisma:biome check:src:biome",
     "ci:format": "run-p check:prisma:biome check:src:biome",
     "ci:build": "run-s ci:generate build:tsgo build:tsdown",
-
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist",
-
     "test:load:local": "BASE_URL=http://localhost:3000 envsubst < ./load-tests/targets.local.txt | vegeta attack -duration=10s -rate=50 | vegeta report",
     "test:load:stg": "BASE_URL=https://api-astrobiologia.injunior.com.br envsubst < load-tests/targets.stg.txt | vegeta attack -duration=10s -rate=10 | vegeta report",
-
     "prepare": "husky"
   },
   "devDependencies": {
@@ -69,6 +60,7 @@
     "@types/nodemailer": "7.0.11",
     "@types/nunjucks": "3.2.6",
     "@types/pg": "8.18.0",
+    "@types/ws": "8.18.1",
     "@typescript/native-preview": "7.0.0-dev.20260301.1",
     "commitlint": "20.4.2",
     "globals": "17.4.0",
@@ -89,6 +81,7 @@
     "@fastify/multipart": "9.4.0",
     "@fastify/rate-limit": "10.3.0",
     "@fastify/static": "9.0.0",
+    "@fastify/websocket": "11.2.0",
     "@prisma/adapter-pg": "7.4.2",
     "@prisma/client": "7.4.2",
     "@sentry/node": "10.40.0",
