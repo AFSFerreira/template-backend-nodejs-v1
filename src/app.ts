@@ -20,11 +20,12 @@ import { logResponse } from '@http/plugins/response-logger'
 import { preSerialization } from '@http/plugins/serializer'
 import { gracefulShutdown } from '@http/plugins/shutdown'
 import { staticFileRoutes } from '@http/plugins/static-files'
-import { appRoutes } from '@http/routes'
+import { httpRoutes } from '@http/routes'
 import { initSentry } from '@lib/sentry'
 import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
 import { registerAppSignals } from '@services/system/register-app-signals'
 import { wsConfiguration } from '@ws/configurations/ws-configuration'
+import { websocketRoutes } from '@ws/routes'
 import fastify from 'fastify'
 
 export const app = fastify(fastifyConfiguration)
@@ -32,15 +33,17 @@ export const app = fastify(fastifyConfiguration)
 initSentry()
 registerAppSignals(app)
 
+app.register(fastifyWebsocket, wsConfiguration)
 app.register(fastifyCompress, compressConfiguration)
 app.register(multipart, multipartConfiguration)
 app.register(staticFileRoutes)
 app.register(fastifyCookie)
 app.register(rateLimit, rateLimitConfigurations)
-app.register(appRoutes)
 app.register(cors, corsConfiguration)
 app.register(fastifyJwt, jwtConfiguration)
-app.register(fastifyWebsocket, wsConfiguration)
+
+app.register(httpRoutes)
+app.register(websocketRoutes)
 
 app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)

@@ -48,7 +48,8 @@
       "@errors/*": ["./src/errors/*"],
       "@messages/*": ["./src/messages/*"],
       "@templates/*": ["./src/templates/*"],
-      "@uploads/*": ["./src/uploads/*"]
+      "@uploads/*": ["./src/uploads/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["./**/*.ts", "tsup.config.ts"],

@@ -16,7 +16,7 @@ import { newsletterRoutes } from './controllers/newsletter/routes'
 import { sliderImageRoutes } from './controllers/slider-image/routes'
 import { userRoutes } from './controllers/user/routes'
 
-export async function appRoutes(app: FastifyInstance) {
+export async function httpRoutes(app: FastifyInstance) {
   app.register(academicPublicationRoutes, { prefix: '/academic-publications' })
   app.register(activityAreaRoutes, { prefix: '/activity-areas' })
   app.register(addressRoutes, { prefix: '/addresses' })
