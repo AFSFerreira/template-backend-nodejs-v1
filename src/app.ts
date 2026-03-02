@@ -8,6 +8,7 @@ import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
+import fastifyWebsocket from '@fastify/websocket'
 import { compressConfiguration } from '@http/configurations/compress-configuration'
 import { corsConfiguration } from '@http/configurations/cors-configuration'
 import { fastifyConfiguration } from '@http/configurations/fastify-configuration'
@@ -23,6 +24,7 @@ import { appRoutes } from '@http/routes'
 import { initSentry } from '@lib/sentry'
 import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
 import { registerAppSignals } from '@services/system/register-app-signals'
+import { wsConfiguration } from '@ws/configurations/ws-configuration'
 import fastify from 'fastify'
 
 export const app = fastify(fastifyConfiguration)
@@ -38,6 +40,7 @@ app.register(rateLimit, rateLimitConfigurations)
 app.register(appRoutes)
 app.register(cors, corsConfiguration)
 app.register(fastifyJwt, jwtConfiguration)
+app.register(fastifyWebsocket, wsConfiguration)
 
 app.addHook('onRequest', logRequest)
 app.addHook('onResponse', logResponse)
