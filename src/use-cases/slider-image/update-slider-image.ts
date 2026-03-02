@@ -2,6 +2,7 @@ import type {
   UpdateSliderImageUseCaseRequest,
   UpdateSliderImageUseCaseResponse,
 } from '@custom-types/use-cases/slider-image/update-slider-image'
+import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -16,9 +17,14 @@ export class UpdateSliderImageUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.sliderImages)
     private readonly sliderImagesRepository: SliderImagesRepository,
+
+    @inject(tsyringeTokens.infra.database)
+    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({ publicId, data }: UpdateSliderImageUseCaseRequest): Promise<UpdateSliderImageUseCaseResponse> {
+    let shouldSwapOrders = false
+
     const foundSliderImage = ensureExists({
       value: await this.sliderImagesRepository.findByPublicId(publicId),
       error: new SliderImageNotFoundError(),
@@ -31,24 +37,32 @@ export class UpdateSliderImageUseCase {
         throw new SliderImageInvalidOrderError()
       }
 
-      await this.sliderImagesRepository.swapOrders(foundSliderImage.order, data.order)
+      shouldSwapOrders = true
     }
 
     const { order, ...filteredInfo } = data
 
     const shouldUpdate = Object.keys(filteredInfo).length > 0
 
-    const sliderImage = shouldUpdate
-      ? await this.sliderImagesRepository.update({
-          id: foundSliderImage.id,
-          data: filteredInfo,
-        })
-      : foundSliderImage
+    const updatedSliderImage = await this.dbContext.runInTransaction(async () => {
+      if (shouldSwapOrders && data.order) {
+        await this.sliderImagesRepository.swapOrders(foundSliderImage.order, data.order)
+      }
+
+      const sliderImage = shouldUpdate
+        ? await this.sliderImagesRepository.update({
+            id: foundSliderImage.id,
+            data: filteredInfo,
+          })
+        : foundSliderImage
+
+      return sliderImage
+    })
 
     return {
       sliderImage: {
-        ...sliderImage,
-        image: buildSliderImageUrl(sliderImage.image, 'home-page'),
+        ...updatedSliderImage,
+        image: buildSliderImageUrl(updatedSliderImage.image, 'home-page'),
       },
     }
   }
