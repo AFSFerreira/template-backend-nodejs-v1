@@ -29,10 +29,10 @@
     "typeRoots": ["./node_modules/@types", "./src/@types"],
     "paths": {
       "@prisma/generated/*": ["./src/@types/lib/prisma/generated/*"],
-      "@presenters/*": ["./src/http/presenters/*"],
+      "@presenters/*": ["./src/entrypoints/http/presenters/*"],
       "@factories/*": ["./src/use-cases/factories/*"],
-      "@middlewares/*": ["./src/http/middlewares/*"],
-      "@schemas/*": ["./src/http/schemas/*"],
+      "@middlewares/*": ["./src/entrypoints/http/middlewares/*"],
+      "@schemas/*": ["./src/entrypoints/http/schemas/*"],
       "@uploads/*": ["./src/uploads/*"],
       "@use-cases/*": ["./src/use-cases/*"],
       "@jobs/*": ["./src/jobs/*"],
