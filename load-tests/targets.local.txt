@@ -1,0 +1,5 @@
+GET ${BASE_URL}/blogs
+Accept: application/json
+
+GET ${BASE_URL}/users
+Accept: application/json

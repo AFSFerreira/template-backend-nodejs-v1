@@ -1,0 +1,12 @@
+GET ${BASE_URL}/blogs
+Accept: application/json
+
+GET ${BASE_URL}/users
+Accept: application/json
+
+GET ${BASE_URL}/blogs/019cabd0-e33f-758b-9721-a62df5209fef/html
+Accept: application/json
+
+POST ${BASE_URL}/users/sessions
+Content-Type: application/json
+@load-tests/auth-payload.json
