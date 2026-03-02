@@ -7,4 +7,5 @@ export interface HTTPDirectorBoard {
   profileImage: string
   publicName: string
   position: string
+  linkLattes: string | null
 }

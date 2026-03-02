@@ -13,6 +13,7 @@ export class DirectorBoardDefaultPresenter
       profileImage: input.profileImage,
       position: input.DirectorPosition.position,
       publicName: input.publicName,
+      linkLattes: input.User.linkLattes ?? null,
     }
   }
 }
