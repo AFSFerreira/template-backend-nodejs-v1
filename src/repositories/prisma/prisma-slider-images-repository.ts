@@ -123,6 +123,13 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     })
   }
 
+  async decrementOrdersStartingFrom(minOrder: number) {
+    await this.dbContext.client.sliderImage.updateMany({
+      where: { order: { gte: minOrder } },
+      data: { order: { decrement: 1 } },
+    })
+  }
+
   async swapOrders(firstOrder: number, secondOrder: number) {
     const tempOrder = (await this.totalCount()) + 1
 
