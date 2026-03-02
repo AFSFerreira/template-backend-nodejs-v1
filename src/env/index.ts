@@ -41,15 +41,11 @@ const envSchema = z.object({
 
   // Rate Limiting (per minute):
   RATE_LIMIT_STANDARD_MAX: z.coerce.number().int().positive().default(100),
-  RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(300),
+  RATE_LIMIT_AUTH_MAX: z.coerce.number().int().positive().default(10),
   RATE_LIMIT_MUTATION_MAX: z.coerce.number().int().positive().default(30),
   RATE_LIMIT_HEAVY_MAX: z.coerce.number().int().positive().default(10),
   RATE_LIMIT_CREATE_RESOURCE_MAX: z.coerce.number().int().positive().default(15),
   RATE_LIMIT_BULK_UPDATE_MAX: z.coerce.number().int().positive().default(60),
-
-  // Rate Limiting (per hour):
-  RATE_LIMIT_AUTH_SECURITY_MAX: z.coerce.number().int().positive().default(75),
-  RATE_LIMIT_AUTH_VALIDATION_MAX: z.coerce.number().int().positive().default(200),
 
   // SMTP:
   SMTP_EMAIL: z.email(),

@@ -41,12 +41,4 @@ export const RATE_LIMIT_TIERS = {
     max: env.RATE_LIMIT_CREATE_RESOURCE_MAX,
     timeWindow: '1m',
   },
-  AUTH_SECURITY: {
-    max: env.RATE_LIMIT_AUTH_SECURITY_MAX,
-    timeWindow: '1h',
-  },
-  AUTH_VALIDATION: {
-    max: env.RATE_LIMIT_AUTH_VALIDATION_MAX,
-    timeWindow: '1h',
-  },
 } as const satisfies Record<string, NonNullable<RouteOptions['config']>['rateLimit']>
