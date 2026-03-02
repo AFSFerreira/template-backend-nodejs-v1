@@ -34,12 +34,14 @@ export class UpdateSliderImageUseCase {
       await this.sliderImagesRepository.swapOrders(foundSliderImage.order, data.order)
     }
 
+    const { order, ...filteredInfo } = data
+
     const shouldUpdate = Object.keys(data).length > 0
 
     const sliderImage = shouldUpdate
       ? await this.sliderImagesRepository.update({
           id: foundSliderImage.id,
-          data,
+          data: filteredInfo,
         })
       : foundSliderImage
 
