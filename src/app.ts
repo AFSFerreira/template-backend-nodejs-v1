@@ -1,3 +1,7 @@
+import 'reflect-metadata'
+import '@lib/dayjs/index'
+import '@lib/tsyringe/index'
+import '@lib/zod/index'
 import { fastifyCompress } from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
@@ -16,14 +20,10 @@ import { preSerialization } from '@http/plugins/serializer'
 import { gracefulShutdown } from '@http/plugins/shutdown'
 import { staticFileRoutes } from '@http/plugins/static-files'
 import { appRoutes } from '@http/routes'
-import '@lib/dayjs/index'
 import { initSentry } from '@lib/sentry'
-import '@lib/tsyringe/index'
-import '@lib/zod/index'
 import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
 import { registerAppSignals } from '@services/system/register-app-signals'
 import fastify from 'fastify'
-import 'reflect-metadata'
 
 export const app = fastify(fastifyConfiguration)
 
