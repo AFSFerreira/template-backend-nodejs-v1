@@ -36,7 +36,7 @@ export class UpdateSliderImageUseCase {
 
     const { order, ...filteredInfo } = data
 
-    const shouldUpdate = Object.keys(data).length > 0
+    const shouldUpdate = Object.keys(filteredInfo).length > 0
 
     const sliderImage = shouldUpdate
       ? await this.sliderImagesRepository.update({
