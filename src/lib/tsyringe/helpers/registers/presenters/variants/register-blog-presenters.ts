@@ -1,11 +1,11 @@
 import type { DependencyContainer } from 'tsyringe'
+import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
+import { BlogDetailedPresenter } from '@http/presenters/blog/blog-detailed.presenter'
+import { BlogDetailedForAdminPresenter } from '@http/presenters/blog/blog-detailed-for-admin.presenter'
+import { BlogDetailedWithContentPresenter } from '@http/presenters/blog/blog-detailed-with-content.presenter'
+import { BlogSimplifiedPresenter } from '@http/presenters/blog/blog-simplified.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { BlogDefaultPresenter } from '@presenters/blog/blog-default.presenter'
-import { BlogDetailedPresenter } from '@presenters/blog/blog-detailed.presenter'
-import { BlogDetailedForAdminPresenter } from '@presenters/blog/blog-detailed-for-admin.presenter'
-import { BlogDetailedWithContentPresenter } from '@presenters/blog/blog-detailed-with-content.presenter'
-import { BlogSimplifiedPresenter } from '@presenters/blog/blog-simplified.presenter'
 
 export function registerBlogPresenters(container: DependencyContainer) {
   registerPresenter({

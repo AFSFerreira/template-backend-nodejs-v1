@@ -3,9 +3,9 @@ import type {
   HTTPAcademicPublicationYear,
 } from '@custom-types/http/presenter/academic-publication/academic-publication-year'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { AcademicPublicationPresenter } from '@http/presenters/academic-publication-presenter'
+import { getAcademicPublicationsYearsQuerySchema } from '@http/schemas/academic-publication/get-academic-publications-years-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { AcademicPublicationPresenter } from '@presenters/academic-publication-presenter'
-import { getAcademicPublicationsYearsQuerySchema } from '@schemas/academic-publication/get-academic-publications-years-query-schema'
 import { GetAcademicPublicationsYearsUseCase } from '@use-cases/academic-publication/get-academic-publications-years'
 import { container } from 'tsyringe'
 

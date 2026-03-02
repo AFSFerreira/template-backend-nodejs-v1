@@ -3,8 +3,8 @@ import type {
   HTTPDashboardUsersMetrics,
 } from '@custom-types/http/presenter/dashboard-metrics/dashboard-users-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { DashboardPresenter } from '@http/presenters/dashboard-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { DashboardPresenter } from '@presenters/dashboard-presenter'
 import { GetUsersMetricsUseCase } from '@use-cases/dashboard-metrics/get-users-metrics'
 import { container } from 'tsyringe'
 

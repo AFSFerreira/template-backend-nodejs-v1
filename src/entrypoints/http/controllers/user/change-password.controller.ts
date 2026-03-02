@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { changePasswordBodySchema } from '@http/schemas/user/update-password-body-schema'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/responses/user-responses/2xx'
-import { changePasswordBodySchema } from '@schemas/user/update-password-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { ChangePasswordUseCase } from '@use-cases/user/change-password'
 import { container } from 'tsyringe'

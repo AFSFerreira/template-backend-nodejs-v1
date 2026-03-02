@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteInstitutionParamsSchema } from '@schemas/institution/delete-institution-params-schema'
+import { deleteInstitutionParamsSchema } from '@http/schemas/institution/delete-institution-params-schema'
 import { DeleteInstitutionUseCase } from '@use-cases/institution/delete-institution'
 import { container } from 'tsyringe'
 

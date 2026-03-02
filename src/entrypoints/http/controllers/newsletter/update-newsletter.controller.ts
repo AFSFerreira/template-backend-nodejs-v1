@@ -3,9 +3,9 @@ import type {
   NewsletterDefaultPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { NewsletterPresenter } from '@presenters/newsletter-presenter'
-import { updateNewsletterBodySchema } from '@schemas/newsletter/update-newsletter-body-schema'
-import { updateNewsletterParamsSchema } from '@schemas/newsletter/update-newsletter-params-schema'
+import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
+import { updateNewsletterBodySchema } from '@http/schemas/newsletter/update-newsletter-body-schema'
+import { updateNewsletterParamsSchema } from '@http/schemas/newsletter/update-newsletter-params-schema'
 import { UpdateNewsletterUseCase } from '@use-cases/newsletters/update-newsletter'
 import { container } from 'tsyringe'
 

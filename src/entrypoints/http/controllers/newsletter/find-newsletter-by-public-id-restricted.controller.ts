@@ -3,9 +3,9 @@ import type {
   NewsletterDetailedWithContentPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-detailed-with-content'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
+import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { NewsletterPresenter } from '@presenters/newsletter-presenter'
-import { findNewsletterByPublicIdParamsSchema } from '@schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import { FindNewsletterByPublicIdRestrictedUseCase } from '@use-cases/newsletters/find-newsletter-by-public-id-restricted'
 import { container } from 'tsyringe'
 

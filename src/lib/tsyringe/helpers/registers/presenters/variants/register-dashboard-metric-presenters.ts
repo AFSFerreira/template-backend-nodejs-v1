@@ -1,10 +1,10 @@
 import type { DependencyContainer } from 'tsyringe'
+import { DashboardBlogsMetricsPresenter } from '@http/presenters/dashboard-metrics/dashboard-blogs-metrics.presenter'
+import { DashboardMetricsDefaultPresenter } from '@http/presenters/dashboard-metrics/dashboard-metrics-default.presenter'
+import { DashboardNewslettersMetricsPresenter } from '@http/presenters/dashboard-metrics/dashboard-newsletters-metrics.presenter'
+import { UsersMetricsPresenter } from '@http/presenters/dashboard-metrics/dashboard-users-metrics.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { DashboardBlogsMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-blogs-metrics.presenter'
-import { DashboardMetricsDefaultPresenter } from '@presenters/dashboard-metrics/dashboard-metrics-default.presenter'
-import { DashboardNewslettersMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-newsletters-metrics.presenter'
-import { UsersMetricsPresenter } from '@presenters/dashboard-metrics/dashboard-users-metrics.presenter'
 
 export function registerDashboardMetricsPresenters(container: DependencyContainer) {
   registerPresenter({

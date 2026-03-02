@@ -3,8 +3,8 @@ import type {
   NewsletterDefaultPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { NewsletterPresenter } from '@presenters/newsletter-presenter'
-import { findNewsletterByPublicIdParamsSchema } from '@schemas/newsletter/find-newsletter-by-public-id-params-schema'
+import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
+import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import { FindNewsletterByPublicIdUseCase } from '@use-cases/newsletters/find-newsletter-by-public-id'
 import { container } from 'tsyringe'
 

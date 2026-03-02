@@ -3,9 +3,9 @@ import type {
   HTTPDirectorPosition,
 } from '@custom-types/http/presenter/director-position/director-position-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DirectorPositionPresenter } from '@presenters/director-position-presenter'
-import { updateDirectorPositionBodySchema } from '@schemas/director-position/update-director-position-body-schema'
-import { updateDirectorPositionParamsSchema } from '@schemas/director-position/update-director-position-params-schema'
+import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
+import { updateDirectorPositionBodySchema } from '@http/schemas/director-position/update-director-position-body-schema'
+import { updateDirectorPositionParamsSchema } from '@http/schemas/director-position/update-director-position-params-schema'
 import { UpdateDirectorPositionUseCase } from '@use-cases/director-position/update-director-position'
 import { container } from 'tsyringe'
 

@@ -1,7 +1,7 @@
-import type { MeetingEnrollmentDetailedWithPresentationPresenter } from '@presenters/meeting-enrollment/meeting-enrollment-detailed-with-presentation.presenter'
+import type { MeetingEnrollmentDetailedWithPresentationPresenter } from '@http/presenters/meeting-enrollment/meeting-enrollment-detailed-with-presentation.presenter'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { getMeetingEnrollmentParamsSchema } from '@http/schemas/meeting-enrollment/get-meeting-enrollment-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getMeetingEnrollmentParamsSchema } from '@schemas/meeting-enrollment/get-meeting-enrollment-params-schema'
 import { GetMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/get-meeting-enrollment'
 import { container } from 'tsyringe'
 

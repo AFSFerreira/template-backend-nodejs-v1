@@ -3,9 +3,9 @@ import type {
   HTTPBlogDetailedForAdmin,
 } from '@custom-types/http/presenter/blog/blog-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { BlogPresenter } from '@http/presenters/blog-presenter'
+import { getAllBlogsDetailedQuerySchema } from '@http/schemas/blog/get-all-blogs-detailed-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { BlogPresenter } from '@presenters/blog-presenter'
-import { getAllBlogsDetailedQuerySchema } from '@schemas/blog/get-all-blogs-detailed-query-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetAllBlogsDetailedUseCase } from '@use-cases/blog/get-all-blogs-detailed'
 import { container } from 'tsyringe'

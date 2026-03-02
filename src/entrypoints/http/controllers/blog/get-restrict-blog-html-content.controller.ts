@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { getRestrictBlogHtmlContentParamsSchema } from '@schemas/blog/get-restrict-blog-html-content-params-schema'
+import { getRestrictBlogHtmlContentParamsSchema } from '@http/schemas/blog/get-restrict-blog-html-content-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetRestrictBlogHTMLContentUseCase } from '@use-cases/blog/get-restrict-blog-html-content'
 import { container } from 'tsyringe'

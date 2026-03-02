@@ -1,9 +1,9 @@
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
 import type { RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { UserPresenter } from '@http/presenters/user-presenter'
+import { registerBodySchema } from '@http/schemas/user/register-body-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { UserPresenter } from '@presenters/user-presenter'
-import { registerBodySchema } from '@schemas/user/register-body-schema'
 import { CreateUserUseCase } from '@use-cases/user/create-user'
 import { container } from 'tsyringe'
 

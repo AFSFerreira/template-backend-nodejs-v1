@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { getDirectorBoardAboutHTMLParamsSchema } from '@schemas/director-board/get-director-board-about-html-params-schema'
+import { getDirectorBoardAboutHTMLParamsSchema } from '@http/schemas/director-board/get-director-board-about-html-params-schema'
 import { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
 import { container } from 'tsyringe'
 

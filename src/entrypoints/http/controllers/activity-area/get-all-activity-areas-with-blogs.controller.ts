@@ -3,9 +3,9 @@ import type {
   HTTPActivityAreaWithBlogsCount,
 } from '@custom-types/http/presenter/activity-area/activity-area-with-blogs-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
+import { getAllActivityAreasWithBlogsQuerySchema } from '@http/schemas/activity-area/get-all-activity-areas-with-blogs-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { ActivityAreaPresenter } from '@presenters/activity-area-presenter'
-import { getAllActivityAreasWithBlogsQuerySchema } from '@schemas/activity-area/get-all-activity-areas-with-blogs-query-schema'
 import { GetAllActivityAreasWithBlogsUseCase } from '@use-cases/activity-area/get-all-activity-areas-with-blogs-use-case'
 import { container } from 'tsyringe'
 

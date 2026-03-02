@@ -29,23 +29,26 @@
     "typeRoots": ["./node_modules/@types", "./src/@types"],
     "paths": {
       "@prisma/generated/*": ["./src/@types/lib/prisma/generated/*"],
-      "@presenters/*": ["./src/entrypoints/http/presenters/*"],
-      "@factories/*": ["./src/use-cases/factories/*"],
-      "@middlewares/*": ["./src/entrypoints/http/middlewares/*"],
-      "@schemas/*": ["./src/entrypoints/http/schemas/*"],
-      "@uploads/*": ["./src/uploads/*"],
-      "@use-cases/*": ["./src/use-cases/*"],
-      "@jobs/*": ["./src/jobs/*"],
-      "@repositories/*": ["./src/repositories/*"],
       "@custom-types/*": ["./src/@types/*"],
-      "@utils/*": ["./src/utils/*"],
+
+      "@http/*": ["./src/entrypoints/http/*"],
+      "@ws/*": ["./src/entrypoints/ws/*"],
+
+      "@use-cases/*": ["./src/use-cases/*"],
+      "@repositories/*": ["./src/repositories/*"],
+
       "@services/*": ["./src/services/*"],
+      "@jobs/*": ["./src/jobs/*"],
+      "@lib/*": ["./src/lib/*"],
+
+
+      "@utils/*": ["./src/utils/*"],
       "@constants/*": ["./src/constants/*"],
-      "@templates/*": ["./src/templates/*"],
-      "@messages/*": ["./src/messages/*"],
-      "@errors/*": ["./src/errors/*"],
       "@env/*": ["./src/env/*"],
-      "@lib/*": ["./src/lib/*"]
+      "@errors/*": ["./src/errors/*"],
+      "@messages/*": ["./src/messages/*"],
+      "@templates/*": ["./src/templates/*"],
+      "@uploads/*": ["./src/uploads/*"]
     }
   },
   "include": ["./**/*.ts", "tsup.config.ts"],

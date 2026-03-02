@@ -3,9 +3,9 @@ import type {
   HTTPActivityAreaWithAcademicPublicationsCount,
 } from '@custom-types/http/presenter/academic-publication/activity-area-with-academic-publications-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
+import { getAllActivityAreasWithAcademicPublicationsQuerySchema } from '@http/schemas/academic-publication/get-all-activity-areas-with-academic-publications-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { ActivityAreaPresenter } from '@presenters/activity-area-presenter'
-import { getAllActivityAreasWithAcademicPublicationsQuerySchema } from '@schemas/academic-publication/get-all-activity-areas-with-academic-publications-query-schema'
 import { GetAllActivityAreasWithAcademicPublicationsUseCase } from '@use-cases/academic-publication/get-all-activity-areas-with-academic-publications-use-case'
 import { container } from 'tsyringe'
 

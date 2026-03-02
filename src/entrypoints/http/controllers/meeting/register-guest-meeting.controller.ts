@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { registerGuestMeetingBodySchema } from '@schemas/meeting/register-guest-meeting-body-schema'
-import { registerGuestMeetingParamsSchema } from '@schemas/meeting/register-guest-meeting-params-schema'
+import { registerGuestMeetingBodySchema } from '@http/schemas/meeting/register-guest-meeting-body-schema'
+import { registerGuestMeetingParamsSchema } from '@http/schemas/meeting/register-guest-meeting-params-schema'
 import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
 import { container } from 'tsyringe'
 

@@ -3,9 +3,9 @@ import type {
   UserDetailedPresenterForAdminInput,
 } from '@custom-types/http/presenter/user/user-detailed-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { UserPresenter } from '@http/presenters/user-presenter'
+import { findUserByPublicIdParamsSchema } from '@http/schemas/user/find-by-public-id-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { UserPresenter } from '@presenters/user-presenter'
-import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-params-schema'
 import { FindUserByPublicIdUseCase } from '@use-cases/user/find-by-public-id'
 import { container } from 'tsyringe'
 

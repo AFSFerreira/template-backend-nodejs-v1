@@ -3,10 +3,10 @@ import type {
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { MeetingPresenter } from '@http/presenters/meeting-presenter'
+import { updateMeetingBodySchema } from '@http/schemas/meeting/update-meeting-body-schema'
+import { updateMeetingParamsSchema } from '@http/schemas/meeting/update-meeting-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingPresenter } from '@presenters/meeting-presenter'
-import { updateMeetingBodySchema } from '@schemas/meeting/update-meeting-body-schema'
-import { updateMeetingParamsSchema } from '@schemas/meeting/update-meeting-params-schema'
 import { UpdateMeetingUseCase } from '@use-cases/meeting/update-meeting'
 import { container } from 'tsyringe'
 

@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteMeetingParamsSchema } from '@schemas/meeting/delete-meeting-params-schema'
+import { deleteMeetingParamsSchema } from '@http/schemas/meeting/delete-meeting-params-schema'
 import { DeleteMeetingUseCase } from '@use-cases/meeting/delete-meeting'
 import { container } from 'tsyringe'
 

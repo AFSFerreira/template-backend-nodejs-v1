@@ -3,9 +3,9 @@ import type {
   HTTPAddressStates,
 } from '@custom-types/http/presenter/address/address-with-users-count'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { AddressPresenter } from '@http/presenters/address-presenter'
+import { getAllStatesQuerySchema } from '@http/schemas/address/get-all-states-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { AddressPresenter } from '@presenters/address-presenter'
-import { getAllStatesQuerySchema } from '@schemas/address/get-all-states-query-schema'
 import { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
 import { container } from 'tsyringe'
 

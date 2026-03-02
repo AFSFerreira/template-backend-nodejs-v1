@@ -3,9 +3,9 @@ import type {
   SliderImageDefaultPresenterInput,
 } from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { SliderImagePresenter } from '@http/presenters/slider-image-presenter'
+import { getAllHomePageSlidersRestrictSchema } from '@http/schemas/slider-image/get-all-home-page-sliders-restrict-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { SliderImagePresenter } from '@presenters/slider-image-presenter'
-import { getAllHomePageSlidersRestrictSchema } from '@schemas/slider-image/get-all-home-page-sliders-restrict-schema'
 import { GetAllHomePageSlidersRestrictUseCase } from '@use-cases/slider-image/get-all-home-page-sliders-restrict'
 import { container } from 'tsyringe'
 

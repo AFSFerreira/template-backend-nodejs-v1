@@ -3,9 +3,9 @@ import type {
   HTTPSimplifiedBlog,
 } from '@custom-types/http/presenter/blog/blog-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { BlogPresenter } from '@http/presenters/blog-presenter'
+import { getAllBlogsQuerySchema } from '@http/schemas/blog/get-all-blogs-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { BlogPresenter } from '@presenters/blog-presenter'
-import { getAllBlogsQuerySchema } from '@schemas/blog/get-all-blogs-query-schema'
 import { GetAllBlogsUseCase } from '@use-cases/blog/get-all-blogs'
 import { container } from 'tsyringe'
 

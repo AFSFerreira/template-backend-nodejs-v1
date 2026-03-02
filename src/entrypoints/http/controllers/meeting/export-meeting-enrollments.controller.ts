@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { exportMeetingEnrollmentsParamsSchema } from '@schemas/meeting/export-meeting-enrollments-params-schema'
-import { exportMeetingEnrollmentsQuerySchema } from '@schemas/meeting/export-meeting-enrollments-query-schema'
+import { exportMeetingEnrollmentsParamsSchema } from '@http/schemas/meeting/export-meeting-enrollments-params-schema'
+import { exportMeetingEnrollmentsQuerySchema } from '@http/schemas/meeting/export-meeting-enrollments-query-schema'
 import { ExportMeetingEnrollmentsUseCase } from '@use-cases/meeting-enrollment/export-meeting-enrollments'
 import { container } from 'tsyringe'
 

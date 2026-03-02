@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { updateDirectorPositionParamsSchema } from '@schemas/director-position/update-director-position-params-schema'
+import { updateDirectorPositionParamsSchema } from '@http/schemas/director-position/update-director-position-params-schema'
 import { DeleteDirectorPositionUseCase } from '@use-cases/director-position/delete-director-position'
 import { container } from 'tsyringe'
 

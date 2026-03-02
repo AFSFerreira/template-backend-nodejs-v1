@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { resetPasswordBodySchema } from '@http/schemas/user/reset-password-body-schema'
 import { PASSWORD_RESET_SUCCESSFUL } from '@messages/responses/user-responses/2xx'
-import { resetPasswordBodySchema } from '@schemas/user/reset-password-body-schema'
 import { ResetPasswordUseCase } from '@use-cases/user/reset-password'
 import { container } from 'tsyringe'
 

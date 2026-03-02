@@ -1,8 +1,8 @@
 import type { DependencyContainer } from 'tsyringe'
+import { InstitutionalInfoDefaultPresenter } from '@http/presenters/institutional-info/institutional-info.presenter'
+import { InstitutionalInfoForAdminPresenter } from '@http/presenters/institutional-info/institutional-info-for-admin.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { InstitutionalInfoDefaultPresenter } from '@presenters/institutional-info/institutional-info.presenter'
-import { InstitutionalInfoForAdminPresenter } from '@presenters/institutional-info/institutional-info-for-admin.presenter'
 
 export function registerInstitutionalInfoPresenters(container: DependencyContainer) {
   registerPresenter({

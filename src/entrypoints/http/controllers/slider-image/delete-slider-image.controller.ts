@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { updateSliderImageParamsSchema } from '@schemas/slider-image/update-slider-image-params-schema'
+import { updateSliderImageParamsSchema } from '@http/schemas/slider-image/update-slider-image-params-schema'
 import { DeleteSliderImageUseCase } from '@use-cases/slider-image/delete-slider-image'
 import { container } from 'tsyringe'
 

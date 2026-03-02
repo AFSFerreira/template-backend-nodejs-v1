@@ -1,9 +1,9 @@
 import type { DependencyContainer } from 'tsyringe'
+import { ActivityAreaDefaultPresenter } from '@http/presenters/activity-area/activity-area-default.presenter'
+import { ActivityAreaWithAcademicPublicationsCountPresenter } from '@http/presenters/activity-area/activity-area-with-academic-publications-count.presenter'
+import { ActivityAreaWithBlogsCountPresenter } from '@http/presenters/activity-area/activity-area-with-blogs-count.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { ActivityAreaDefaultPresenter } from '@presenters/activity-area/activity-area-default.presenter'
-import { ActivityAreaWithAcademicPublicationsCountPresenter } from '@presenters/activity-area/activity-area-with-academic-publications-count.presenter'
-import { ActivityAreaWithBlogsCountPresenter } from '@presenters/activity-area/activity-area-with-blogs-count.presenter'
 
 export function registerActivityAreaPresenters(container: DependencyContainer) {
   registerPresenter({

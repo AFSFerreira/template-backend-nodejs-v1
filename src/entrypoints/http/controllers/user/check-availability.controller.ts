@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { checkAvailabilityQuerySchema } from '@schemas/user/check-availability-query-schema'
+import { checkAvailabilityQuerySchema } from '@http/schemas/user/check-availability-query-schema'
 import { CheckAvailabilityUseCase } from '@use-cases/user/check-availability'
 import { container } from 'tsyringe'
 

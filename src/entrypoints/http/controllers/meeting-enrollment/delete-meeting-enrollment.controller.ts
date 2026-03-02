@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteMeetingEnrollmentParamsSchema } from '@schemas/meeting-enrollment/delete-meeting-enrollment-params-schema'
+import { deleteMeetingEnrollmentParamsSchema } from '@http/schemas/meeting-enrollment/delete-meeting-enrollment-params-schema'
 import { DeleteMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/delete-meeting-enrollment'
 import { container } from 'tsyringe'
 

@@ -3,8 +3,8 @@ import type {
   HTTPDirectorBoard,
 } from '@custom-types/http/presenter/director-board/director-board-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
-import { createDirectorBoardBodySchema } from '@schemas/director-board/create-director-board-body-schema'
+import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
+import { createDirectorBoardBodySchema } from '@http/schemas/director-board/create-director-board-body-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
 import { getClientIp } from '@utils/http/get-client-ip'

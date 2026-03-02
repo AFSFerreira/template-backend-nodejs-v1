@@ -1,8 +1,8 @@
 import type { DependencyContainer } from 'tsyringe'
+import { HomePageSliderImagePresenter } from '@http/presenters/slider-image/home-page-slider-image.presenter'
+import { SliderImageDefaultPresenter } from '@http/presenters/slider-image/slider-image-default.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { HomePageSliderImagePresenter } from '@presenters/slider-image/home-page-slider-image.presenter'
-import { SliderImageDefaultPresenter } from '@presenters/slider-image/slider-image-default.presenter'
 
 export function registerSliderImagePresenters(container: DependencyContainer) {
   registerPresenter({

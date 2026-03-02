@@ -3,9 +3,9 @@ import type {
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { MeetingPresenter } from '@http/presenters/meeting-presenter'
+import { createMeetingBodySchema } from '@http/schemas/meeting/create-meeting-body-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingPresenter } from '@presenters/meeting-presenter'
-import { createMeetingBodySchema } from '@schemas/meeting/create-meeting-body-schema'
 import { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
 import { container } from 'tsyringe'
 

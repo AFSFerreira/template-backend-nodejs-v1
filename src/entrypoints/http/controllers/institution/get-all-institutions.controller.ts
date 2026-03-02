@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { getAllInstitutionsQuerySchema } from '@schemas/institution/get-all-institutions-query-schema'
+import { getAllInstitutionsQuerySchema } from '@http/schemas/institution/get-all-institutions-query-schema'
 import { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
 import { container } from 'tsyringe'
 

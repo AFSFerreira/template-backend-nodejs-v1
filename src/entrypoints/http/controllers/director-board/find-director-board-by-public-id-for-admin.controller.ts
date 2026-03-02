@@ -3,9 +3,9 @@ import type {
   HTTPDirectorBoardWithUserForAdmin,
 } from '@custom-types/http/presenter/director-board/director-board-with-user-for-admin'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
+import { findDirectorBoardByPublicIdForAdminParamsSchema } from '@http/schemas/director-board/find-director-board-by-public-id-for-admin-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
-import { findDirectorBoardByPublicIdForAdminParamsSchema } from '@schemas/director-board/find-director-board-by-public-id-for-admin-params-schema'
 import { FindDirectorBoardByPublicIdForAdminUseCase } from '@use-cases/director-board/find-by-public-id-for-admin'
 import { container } from 'tsyringe'
 

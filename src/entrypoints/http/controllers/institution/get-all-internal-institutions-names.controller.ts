@@ -3,8 +3,8 @@ import type {
   InstitutionDefaultPresenterInput,
 } from '@custom-types/http/presenter/institution/institution-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { InstitutionPresenter } from '@presenters/institution-presenter'
-import { getAllInternalInstitutionsNamesQuerySchema } from '@schemas/institution/get-all-internal-institutions-names-query-schema'
+import { InstitutionPresenter } from '@http/presenters/institution-presenter'
+import { getAllInternalInstitutionsNamesQuerySchema } from '@http/schemas/institution/get-all-internal-institutions-names-query-schema'
 import { GetAllInternalInstitutionsNamesUseCase } from '@use-cases/institution/get-all-internal-institutions-names'
 import { container } from 'tsyringe'
 

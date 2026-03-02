@@ -3,8 +3,8 @@ import type {
   HTTPActivityArea,
 } from '@custom-types/http/presenter/activity-area/activity-area-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { ActivityAreaPresenter } from '@presenters/activity-area-presenter'
-import { getAllActivityAreasSchema } from '@schemas/activity-area/get-all-activity-areas-schema'
+import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
+import { getAllActivityAreasSchema } from '@http/schemas/activity-area/get-all-activity-areas-schema'
 import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-case'
 import { container } from 'tsyringe'
 

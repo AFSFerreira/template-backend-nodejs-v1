@@ -3,8 +3,8 @@ import type {
   HTTPDirectorPosition,
 } from '@custom-types/http/presenter/director-position/director-position-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DirectorPositionPresenter } from '@presenters/director-position-presenter'
-import { getAllDirectorPositionsSchema } from '@schemas/director-position/get-all-director-positions-schema'
+import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
+import { getAllDirectorPositionsSchema } from '@http/schemas/director-position/get-all-director-positions-schema'
 import { GetAllDirectorPositionsUseCase } from '@use-cases/director-position/get-all-director-positions'
 import { container } from 'tsyringe'
 

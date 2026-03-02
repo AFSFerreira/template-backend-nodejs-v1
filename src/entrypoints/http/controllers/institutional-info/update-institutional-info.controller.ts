@@ -3,9 +3,9 @@ import type {
   InstitutionalInfoPresenterInput,
 } from '@custom-types/http/presenter/institutional-info/institutional-info'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
+import { updateInstitutionalInfoBodySchema } from '@http/schemas/institutional-info/update-institutional-info-body-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { InstitutionalInfoPresenter } from '@presenters/institutional-info-presenter'
-import { updateInstitutionalInfoBodySchema } from '@schemas/institutional-info/update-institutional-info-body-schema'
 import { UpdateInstitutionalInfoUseCase } from '@use-cases/institutional-info/update-institutional-info'
 import { container } from 'tsyringe'
 

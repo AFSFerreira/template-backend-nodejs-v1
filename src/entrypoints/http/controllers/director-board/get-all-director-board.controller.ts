@@ -3,8 +3,8 @@ import type {
   HTTPDirectorBoard,
 } from '@custom-types/http/presenter/director-board/director-board-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DirectorBoardPresenter } from '@presenters/director-board-presenter'
-import { getAllDirectorBoardSchema } from '@schemas/director-board/get-all-director-board-query-schema'
+import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
+import { getAllDirectorBoardSchema } from '@http/schemas/director-board/get-all-director-board-query-schema'
 import { GetAllDirectorsBoard } from '@use-cases/director-board/get-all-directors-board'
 import { container } from 'tsyringe'
 

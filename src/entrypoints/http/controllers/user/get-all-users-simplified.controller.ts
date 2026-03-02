@@ -3,9 +3,9 @@ import type {
   UserSimplifiedPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { UserPresenter } from '@http/presenters/user-presenter'
+import { getAllUsersSimplifiedQuerySchema } from '@http/schemas/user/get-all-users-simplified-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { UserPresenter } from '@presenters/user-presenter'
-import { getAllUsersSimplifiedQuerySchema } from '@schemas/user/get-all-users-simplified-query-schema'
 import { GetAllUsersSimplifiedUseCase } from '@use-cases/user/get-all-users-simplified'
 import { container } from 'tsyringe'
 

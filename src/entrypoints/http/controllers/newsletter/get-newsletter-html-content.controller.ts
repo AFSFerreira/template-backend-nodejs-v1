@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { findNewsletterByPublicIdParamsSchema } from '@schemas/newsletter/find-newsletter-by-public-id-params-schema'
+import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import { GetNewsletterHtmlContentUseCase } from '@use-cases/newsletters/get-newsletter-content'
 import { container } from 'tsyringe'
 

@@ -1,11 +1,11 @@
 import type { DependencyContainer } from 'tsyringe'
+import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
+import { UserDetailedPresenterForAdmin } from '@http/presenters/user/user-detailed-for-admin.presenter'
+import { UserSimplifiedPresenter } from '@http/presenters/user/user-simplified.presenter'
+import { UserSimplifiedPresenterForAdmin } from '@http/presenters/user/user-simplified-for-admin.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { UserDefaultPresenter } from '@presenters/user/user-default.presenter'
-import { UserDetailedPresenter } from '@presenters/user/user-detailed.presenter'
-import { UserDetailedPresenterForAdmin } from '@presenters/user/user-detailed-for-admin.presenter'
-import { UserSimplifiedPresenter } from '@presenters/user/user-simplified.presenter'
-import { UserSimplifiedPresenterForAdmin } from '@presenters/user/user-simplified-for-admin.presenter'
 
 export function registerUserPresenters(container: DependencyContainer) {
   registerPresenter({

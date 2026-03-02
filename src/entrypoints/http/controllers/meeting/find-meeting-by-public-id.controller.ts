@@ -3,9 +3,9 @@ import type {
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { MeetingPresenter } from '@http/presenters/meeting-presenter'
+import { findUserByPublicIdParamsSchema } from '@http/schemas/user/find-by-public-id-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingPresenter } from '@presenters/meeting-presenter'
-import { findUserByPublicIdParamsSchema } from '@schemas/user/find-by-public-id-params-schema'
 import { FindMeetingByPublicIdUseCase } from '@use-cases/meeting/find-by-public-id'
 import { container } from 'tsyringe'
 

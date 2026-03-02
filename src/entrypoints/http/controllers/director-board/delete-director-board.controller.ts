@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteDirectorBoardParamsSchema } from '@schemas/director-board/delete-director-board-params-schema'
+import { deleteDirectorBoardParamsSchema } from '@http/schemas/director-board/delete-director-board-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteDirectorBoardUseCase } from '@use-cases/director-board/delete-director-board'
 import { getClientIp } from '@utils/http/get-client-ip'

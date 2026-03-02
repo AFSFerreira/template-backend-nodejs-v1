@@ -1,8 +1,8 @@
 import type { DependencyContainer } from 'tsyringe'
+import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
+import { MeetingDetailedPresenter } from '@http/presenters/meeting/meeting-detailed.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { MeetingDefaultPresenter } from '@presenters/meeting/meeting-default.presenter'
-import { MeetingDetailedPresenter } from '@presenters/meeting/meeting-detailed.presenter'
 
 export function registerMeetingPresenters(container: DependencyContainer) {
   registerPresenter({

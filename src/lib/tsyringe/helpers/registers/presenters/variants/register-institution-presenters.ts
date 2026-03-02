@@ -1,8 +1,8 @@
 import type { DependencyContainer } from 'tsyringe'
+import { InstitutionDefaultPresenter } from '@http/presenters/institution/institution-default.presenter'
+import { InstitutionWithUsersCountPresenter } from '@http/presenters/institution/institution-with-users-count.presenter'
 import { registerPresenter } from '@lib/tsyringe/helpers/register-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { InstitutionDefaultPresenter } from '@presenters/institution/institution-default.presenter'
-import { InstitutionWithUsersCountPresenter } from '@presenters/institution/institution-with-users-count.presenter'
 
 export function registerInstitutionPresenters(container: DependencyContainer) {
   registerPresenter({

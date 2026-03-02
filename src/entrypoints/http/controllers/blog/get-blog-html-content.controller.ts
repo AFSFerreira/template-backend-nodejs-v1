@@ -1,6 +1,6 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { getBlogHtmlContentParamsSchema } from '@schemas/blog/get-blog-html-content-params-schema'
+import { getBlogHtmlContentParamsSchema } from '@http/schemas/blog/get-blog-html-content-params-schema'
 import { GetBlogHTMLContentUseCase } from '@use-cases/blog/get-blog-html-content'
 import { container } from 'tsyringe'
 

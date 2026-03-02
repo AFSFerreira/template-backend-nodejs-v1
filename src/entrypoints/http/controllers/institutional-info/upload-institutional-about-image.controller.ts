@@ -1,8 +1,8 @@
 import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { institutionalAboutImageFileConfig } from '@constants/multipart-configuration-constants'
+import { FilePresenter } from '@http/presenters/file-presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
-import { FilePresenter } from '@presenters/file-presenter'
 import { UploadInstitutionalAboutImageUseCase } from '@use-cases/institutional-info/upload-institutional-about-image'
 import { container } from 'tsyringe'
 
