@@ -31,7 +31,7 @@ import {
   STATIC_USER_PROFILE_IMAGE_ROUTE,
 } from '@constants/static-routes-constants'
 import fastifyStatic from '@fastify/static'
-import { staticRouteConfigurations } from '../configuration/static-routes-configuration'
+import { staticRouteConfigurations } from '../configurations/static-routes-configuration'
 
 export async function staticFileRoutes(app: FastifyInstance) {
   const fileRoutes: StaticFileRoute[] = [
