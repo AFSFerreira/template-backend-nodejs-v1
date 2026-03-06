@@ -1,7 +1,7 @@
-import { proseMirrorSchema } from '@lib/zod/utils/components/blog/prose-mirror-schema'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
 import z from 'zod'
+import { proseMirrorSchema } from '../utils/components/blog/prose-mirror-schema'
 
 export const createDirectorBoardBodySchema = z.object({
   userId: modelPublicIdSchema,

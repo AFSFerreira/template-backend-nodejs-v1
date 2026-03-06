@@ -1,4 +1,3 @@
-import { keywordSchema } from '@lib/zod/utils/components/keyword/keyword-schema'
 import { comparableEnumSchema } from '@lib/zod/utils/enums/comparable-enum-schema'
 import { educationLevelSchema } from '@lib/zod/utils/enums/education-level-enum-schema'
 import { occupationEnumSchema } from '@lib/zod/utils/enums/occupation-enum-schema'
@@ -13,6 +12,7 @@ import { positiveIntegerSchema } from '@lib/zod/utils/primitives/positive-intege
 import { rangedDateSchema } from '@lib/zod/utils/primitives/ranged-date-schema'
 import { upperCaseTextSchema } from '@lib/zod/utils/primitives/uppercase-text-schema'
 import { z } from 'zod'
+import { keywordSchema } from '../utils/components/keyword/keyword-schema'
 
 const getAllUsersDetailedQueryRawSchema = z
   .object({

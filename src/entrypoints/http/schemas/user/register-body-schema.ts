@@ -1,6 +1,6 @@
 import { educationLevelSchema } from '@lib/zod/utils/enums/education-level-enum-schema'
-import { transformRegisterBodySchema } from '@lib/zod/utils/helpers/user/transform-register-body'
 import { z } from 'zod'
+import { transformRegisterBodySchema } from '../utils/helpers/user/transform-register-body'
 
 const registerBodyRawSchema = z
   .object({
