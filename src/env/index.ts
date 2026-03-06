@@ -11,13 +11,19 @@ const envSchema = z.object({
   APP_NAME: z.string().trim().nonempty().default('SBAstrobio'),
   APP_PORT: z.coerce.number().default(3333),
 
+  // JWT Token setup:
   JWT_SECRET: z.string().trim().min(60, 'JWT secret must be at least 60 characters long'),
+  JWT_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('2h'),
+  JWT_REFRESH_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('7d'),
+
   ENCRYPTION_KEY: z.string().trim().length(44).regex(BASE64_REGEX, 'O conteúdo da string deve ser em base64'),
   BLIND_INDEX_SECRET: z.string().trim().length(44).regex(BASE64_REGEX, 'O conteúdo da string deve ser em base64'),
 
-  HASH_SALT_ROUNDS: z.coerce.number().min(6).max(16).default(12),
-  JWT_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('2h'),
-  JWT_REFRESH_EXPIRATION: z.string().trim().nonempty().regex(TOKEN_DURATION_REGEX).default('7d'),
+  // Argon2 Configuration:
+  ARGON_MEMORY_COST: z.coerce.number().min(4096).max(262144),
+  ARGON_TIME_COST: z.coerce.number().min(1).max(10),
+  ARGON_PARALLELISM: z.coerce.number().min(1).max(8),
+  ARGON_SECRET: z.string().trim().nonempty().min(32).max(64),
 
   // Sentry:
   SENTRY_DSN: z.url().trim().nonempty().optional(),

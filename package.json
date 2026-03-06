@@ -91,6 +91,7 @@
     "@tiptap/extension-text-align": "3.20.0",
     "@tiptap/html": "3.20.0",
     "@tiptap/starter-kit": "3.20.0",
+    "argon2": "0.44.0",
     "bancos-brasileiros": "6.2.187",
     "bcryptjs": "3.0.3",
     "bullmq": "5.70.1",
