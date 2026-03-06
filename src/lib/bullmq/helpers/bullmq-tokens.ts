@@ -1,10 +1,11 @@
 export const bullmqTokens = {
   queues: {
-    emails: {
-      user: 'userEmailQueue',
+    user: {
+      emails: 'user-email-queue',
+      security: 'user-security-jobs',
     },
     files: {
-      management: 'managementFileQueue',
+      management: 'management-file-queue',
     },
     schedulers: {
       fileTasks: 'file-tasks-queue',

@@ -14,7 +14,7 @@ import { Worker } from 'bullmq'
 import ms from 'ms'
 import { emailProcessor } from '../processors/email-processor'
 
-export const emailWorker = new Worker(bullmqTokens.queues.emails.user, emailProcessor, {
+export const emailWorker = new Worker(bullmqTokens.queues.user.emails, emailProcessor, {
   connection: redisConnection,
   concurrency: 25,
   lockDuration: ms('30s'),
