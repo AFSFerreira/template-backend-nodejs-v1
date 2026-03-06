@@ -7,7 +7,7 @@ module.exports = {
       max_memory_restart: '512M',
 
       // Node flags + Environment:
-      node_args: '--env-file=.env',
+      node_args: '--env-file=.env --max-old-space-size=512',
 
       // Logging:
       out_file: './logs/out.log',
@@ -25,10 +25,14 @@ module.exports = {
       name: 'astrobiologia',
       script: './dist/server.mjs',
       cwd: '/home/astrobiologia-infra/infra/astrobio-infra/projects/astrobiologia-backend',
-      max_memory_restart: '512M',
+
+      // Cluster mode:
+      instances: 'max',
+      exec_mode: 'cluster',
+      max_memory_restart: '1.5G',
 
       // Node flags + Environment:
-      node_args: '--env-file=.env',
+      node_args: '--env-file=.env --max-old-space-size=1536',
 
       // Logging:
       out_file: './logs/out.log',
@@ -41,6 +45,11 @@ module.exports = {
       restart_delay: 4000,
       min_uptime: '5s',
       max_restarts: 10,
+
+      // Graceful Shutdown:
+      wait_ready: true,
+      listen_timeout: 10000, // 10s to "ready"
+      kill_timeout: 5000,    // 5s to kill process
     },
   ],
 }
