@@ -1,8 +1,10 @@
 import type { Queue, Worker } from 'bullmq'
 import { emailQueue } from '@jobs/queues/definitions/email-queue'
 import { fileQueue } from '@jobs/queues/definitions/file-queue'
+import { securityQueue } from '@jobs/queues/definitions/security-queue'
 import { emailWorker } from '@jobs/queues/workers/email-worker'
 import { fileWorker } from '@jobs/queues/workers/file-worker'
+import { securityWorker } from '@jobs/queues/workers/security-worker'
 import { logger } from '@lib/pino'
 
 interface WorkerEntry {
@@ -16,6 +18,7 @@ export class ApplicationWorkerManager {
   constructor() {
     this.register(emailWorker, emailQueue)
     this.register(fileWorker, fileQueue)
+    this.register(securityWorker, securityQueue)
   }
 
   private register(worker: Worker, queue: Queue): void {

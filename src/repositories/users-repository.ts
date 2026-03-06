@@ -38,6 +38,7 @@ export interface UsersRepository {
   totalCount: (where?: Prisma.UserWhereInput) => Promise<number>
   setLastLogin: (id: number) => Promise<void>
   incrementLoginAttempts: (id: number) => Promise<void>
+  resetLoginAttempts: (id: number) => Promise<void>
   delete: (id: number) => Promise<void>
   update: (query: UpdateUserQuery) => Promise<UserWithDetails>
   updateRole: (query: UpdateRoleQuery) => Promise<void>
@@ -45,6 +46,7 @@ export interface UsersRepository {
   validateEmailVerificationToken: (emailVerificationTokenHash: HashedToken) => Promise<User | null>
   confirmEmailVerification: (id: number) => Promise<User>
   changePassword: (query: ChangeUserPasswordQuery) => Promise<User>
+  upgradePasswordHash: (query: ChangeUserPasswordQuery) => Promise<void>
   setPasswordToken: (query: SetPasswordTokenQuery) => Promise<User>
   setEmailChangeToken: (query: SetEmailChangeTokenQuery) => Promise<User>
   confirmEmailChange: (query: ConfirmEmailChangeQuery) => Promise<User>

@@ -9,9 +9,11 @@ const defaultConfig = {
   minify: true,
   sourcemap: true,
   shims: true,
-  skipNodeModulesBundle: true,
   treeshake: true,
-  inlineOnly: false,
+  deps: {
+    onlyAllowBundle: false,
+    skipNodeModulesBundle: true,
+  }
 } as const satisfies TsdownConfig
 
 export default defineConfig([

@@ -224,6 +224,15 @@ export class PrismaUsersRepository implements UsersRepository {
     })
   }
 
+  async resetLoginAttempts(id: number) {
+    await this.dbContext.client.user.update({
+      where: { id },
+      data: {
+        loginAttempts: 0,
+      },
+    })
+  }
+
   async delete(id: number) {
     await this.dbContext.client.user.delete({
       where: { id },
@@ -286,6 +295,13 @@ export class PrismaUsersRepository implements UsersRepository {
       },
     })
     return user
+  }
+
+  async upgradePasswordHash({ id, passwordHash }: ChangeUserPasswordQuery): Promise<void> {
+    await this.dbContext.client.user.update({
+      where: { id },
+      data: { passwordHash },
+    })
   }
 
   async setPasswordToken({ id, tokenData }: SetPasswordTokenQuery) {

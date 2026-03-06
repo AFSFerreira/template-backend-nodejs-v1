@@ -11,6 +11,7 @@ import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
 import { RANDOM_BYTES_NUMBER } from '@constants/validation-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
+import { upgradeUserPasswordHashEnqueued } from '@jobs/queues/facades/security-queue-facade'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
@@ -83,6 +84,7 @@ export class CreateUserUseCase {
       isRegisterUserHighLevelStudentEducation(registerUseCaseInput)
 
     const passwordHash = await HashService.hashPassword(registerUseCaseInput.user.password)
+    const needPasswordUpgrade = await HashService.needsUpgrade(registerUseCaseInput.user.password)
 
     const emailVerificationToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
     const emailVerificationTokenHash = HashService.hashToken(emailVerificationToken)
@@ -231,6 +233,13 @@ export class CreateUserUseCase {
         },
       })
     })
+
+    if (needPasswordUpgrade) {
+      await upgradeUserPasswordHashEnqueued({
+        userId: createdUser.id,
+        password: registerUseCaseInput.user.password,
+      })
+    }
 
     const userProfileImagePaths = registerUseCaseInput.user.profileImage
       ? {

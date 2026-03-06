@@ -1,7 +1,11 @@
 import type { AuthenticateUseCaseRequest, AuthenticateUseCaseResponse } from '@custom-types/use-cases/user/authenticate'
-import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { AuthenticationAuditsRepository } from '@repositories/authentication-audits-repository'
 import type { UsersRepository } from '@repositories/users-repository'
+import {
+  createAuthenticationAuditEnqueued,
+  incrementLoginAttemptsEnqueued,
+  resetLoginAttemptsEnqueued,
+  setLastLoginEnqueued,
+} from '@jobs/queues/facades/security-queue-facade'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
@@ -13,19 +17,11 @@ import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-
 import { inject, injectable } from 'tsyringe'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
-const DUMMY_HASH = '$2a$10$8.Bq25v1HMyW7ZJv.rG/u.z7jZ0r7Wj/69/x4O/E4QO5l4M/m.v/y'
-
 @injectable()
 export class AuthenticateUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
-
-    @inject(tsyringeTokens.repositories.authenticationAudits)
-    private readonly AuthenticationAuditsRepository: AuthenticationAuditsRepository,
-
-    @inject(tsyringeTokens.infra.database)
-    private readonly dbContext: DatabaseContext,
   ) {}
 
   async execute({
@@ -41,7 +37,7 @@ export class AuthenticateUseCase {
     })
 
     // Comparação obrigatória para evitar timing attacks:
-    const hashToCompare = user?.passwordHash ?? DUMMY_HASH
+    const hashToCompare = user?.passwordHash ?? (await HashService.getDummyHash())
     const doesPasswordMatch = await HashService.comparePassword({ password, hashedPassword: hashToCompare })
 
     const auditAuthenticateObject = {
@@ -52,10 +48,16 @@ export class AuthenticateUseCase {
     }
 
     if (!user || !doesPasswordMatch) {
-      await this.AuthenticationAuditsRepository.create({
-        ...auditAuthenticateObject,
-        status: !user ? 'USER_NOT_EXISTS' : 'INCORRECT_PASSWORD',
+      await createAuthenticationAuditEnqueued({
+        audit: {
+          ...auditAuthenticateObject,
+          status: !user ? 'USER_NOT_EXISTS' : 'INCORRECT_PASSWORD',
+        },
       })
+
+      if (user) {
+        await incrementLoginAttemptsEnqueued({ userId: user.id })
+      }
 
       throw new InvalidCredentialsError()
     }
@@ -68,16 +70,14 @@ export class AuthenticateUseCase {
       throw new MembershipStatusInactiveError()
     }
 
-    await this.dbContext.runInTransaction(async () => {
-      await Promise.all([
-        this.usersRepository.incrementLoginAttempts(user.id),
-        this.usersRepository.setLastLogin(user.id),
-        this.AuthenticationAuditsRepository.create({
-          ...auditAuthenticateObject,
-          status: 'SUCCESS',
-        }),
-      ])
+    await createAuthenticationAuditEnqueued({
+      audit: {
+        ...auditAuthenticateObject,
+        status: 'SUCCESS',
+      },
     })
+    await setLastLoginEnqueued({ userId: user.id })
+    await resetLoginAttemptsEnqueued({ userId: user.id })
 
     logger.info(AUTHENTICATION_SUCCESSFUL)
 

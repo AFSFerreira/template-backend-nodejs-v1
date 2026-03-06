@@ -55,3 +55,5 @@ export const USER_PERMISSIONS_UPDATED_SUCCESSFULLY = 'Permissões do usuário at
 export const PROFILE_IMAGE_UPDATED_SUCCESSFULLY = 'Foto de perfil atualizada com sucesso'
 
 export const ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY = 'Role de administrador transferida com sucesso'
+
+export const PASSWORD_HASH_UPGRADED_SUCCESSFULLY = 'Hash de senha do usuário atualizado com sucesso'

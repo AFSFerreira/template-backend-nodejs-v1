@@ -20,6 +20,8 @@ export class HashService {
     secret: Buffer.from(env.ARGON_SECRET),
   } satisfies ArgonOptions
 
+  private static cachedDummyHash: string | null = null
+
   static hashToken(input: string): HashedToken {
     return crypto.hash('sha256', input) as HashedToken
   }
@@ -54,7 +56,15 @@ export class HashService {
     return uuidv4() as UuidHash
   }
 
-  needsUpgrade(hash: string): boolean {
+  static needsUpgrade(hash: string): boolean {
     return needsRehash(hash, HashService.argonConfig)
+  }
+
+  static async getDummyHash(): Promise<string> {
+    if (!HashService.cachedDummyHash) {
+      HashService.cachedDummyHash = await argonHash('dummy_password_for_timing_attacks', HashService.argonConfig)
+    }
+
+    return HashService.cachedDummyHash
   }
 }

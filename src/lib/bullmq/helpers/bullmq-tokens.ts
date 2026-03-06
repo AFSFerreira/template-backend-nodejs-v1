@@ -20,6 +20,13 @@ export const bullmqTokens = {
       delete: 'delete-file',
       move: 'move-file',
     },
+    security: {
+      upgradePasswordHash: 'upgrade-password-hash',
+      incrementLoginAttempts: 'increment-login-attempts',
+      resetLoginAttempts: 'reset-login-attempts',
+      setLastLogin: 'set-last-login',
+      createAuthenticationAudit: 'create-authentication-audit',
+    },
   },
 
   cron: {
