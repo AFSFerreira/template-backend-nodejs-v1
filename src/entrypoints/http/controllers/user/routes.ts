@@ -1,9 +1,30 @@
-import type { FastifyInstance } from 'fastify'
+import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@http/middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
+import { authenticateBodySchema } from '@http/schemas/user/authenticate-body-schema'
+import { checkAvailabilityQuerySchema } from '@http/schemas/user/check-availability-query-schema'
+import { confirmEmailChangeBodySchema } from '@http/schemas/user/confirm-email-change-body-schema'
+import { deleteUserByAdminParamsSchema } from '@http/schemas/user/delete-user-by-admin-params-schema'
+import { findUserByPublicIdParamsSchema } from '@http/schemas/user/find-by-public-id-params-schema'
+import { forgotPasswordBodySchema } from '@http/schemas/user/forgot-password-body-schema'
+import { getAllUsersDetailedQuerySchema } from '@http/schemas/user/get-all-users-detailed-query-schema'
+import { getAllUsersSimplifiedQuerySchema } from '@http/schemas/user/get-all-users-simplified-query-schema'
+import { registerBodySchema } from '@http/schemas/user/register-body-schema'
+import { requestEmailChangeBodySchema } from '@http/schemas/user/request-email-change-body-schema'
+import { resetPasswordBodySchema } from '@http/schemas/user/reset-password-body-schema'
+import { reviewMembershipStatusBodySchema } from '@http/schemas/user/review-membership-status-body-schema'
+import { reviewMembershipStatusParamsSchema } from '@http/schemas/user/review-membership-status-params-schema'
+import { transferAdminRoleBodySchema } from '@http/schemas/user/transfer-admin-role-body-schema'
+import { updateMembershipStatusBodySchema } from '@http/schemas/user/update-membership-status-body-schema'
+import { updateMembershipStatusParamsSchema } from '@http/schemas/user/update-membership-status-params-schema'
+import { changePasswordBodySchema } from '@http/schemas/user/update-password-body-schema'
+import { updateBodySchema } from '@http/schemas/user/update-user-body-schema'
+import { updateUserPermissionsBodySchema } from '@http/schemas/user/update-user-permissions-body-schema'
+import { updateUserPermissionsParamsSchema } from '@http/schemas/user/update-user-permissions-params-schema'
+import { verifyEmailBodySchema } from '@http/schemas/user/verify-email-body-schema'
 import { rateLimit } from '@utils/http/rate-limit'
 import { authenticate } from './authenticate.controller'
 import { changePassword } from './change-password.controller'
@@ -30,13 +51,16 @@ import { updateUserPermissions } from './update-user-permissions.controller'
 import { uploadProfileImage } from './upload-profile-image.controller'
 import { verifyEmail } from './verify-email.controller'
 
-export async function userRoutes(app: FastifyInstance) {
+export async function userRoutes(app: ZodFastifyInstance) {
   // GET
   app.get(
     '/restrict',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        querystring: getAllUsersDetailedQuerySchema,
+      },
     },
     getAllUsersDetailed,
   )
@@ -44,6 +68,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        querystring: getAllUsersSimplifiedQuerySchema,
+      },
     },
     getAllUsersSimplified,
   )
@@ -51,6 +78,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/availability',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        querystring: checkAvailabilityQuerySchema,
+      },
     },
     checkAvailability,
   )
@@ -75,6 +105,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        params: findUserByPublicIdParamsSchema,
+      },
     },
     findUserByPublicId,
   )
@@ -84,6 +117,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/',
     {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
+      schema: {
+        body: registerBodySchema,
+      },
     },
     createUser,
   )
@@ -91,6 +127,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/sessions',
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
+      schema: {
+        body: authenticateBodySchema,
+      },
     },
     authenticate,
   )
@@ -114,6 +153,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/forgot-password',
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
+      schema: {
+        body: forgotPasswordBodySchema,
+      },
     },
     forgotPassword,
   )
@@ -121,6 +163,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/verify-email',
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
+      schema: {
+        body: verifyEmailBodySchema,
+      },
     },
     verifyEmail,
   )
@@ -130,6 +175,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/reset-password',
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
+      schema: {
+        body: resetPasswordBodySchema,
+      },
     },
     resetPassword,
   )
@@ -138,6 +186,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
+      schema: {
+        body: changePasswordBodySchema,
+      },
     },
     changePassword,
   )
@@ -146,6 +197,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
+      schema: {
+        body: requestEmailChangeBodySchema,
+      },
     },
     requestEmailChange,
   )
@@ -153,6 +207,9 @@ export async function userRoutes(app: FastifyInstance) {
     '/confirm-email-change',
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
+      schema: {
+        body: confirmEmailChangeBodySchema,
+      },
     },
     confirmEmailChange,
   )
@@ -161,6 +218,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
+      schema: {
+        body: updateBodySchema,
+      },
     },
     updateUser,
   )
@@ -169,6 +229,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
+      schema: {
+        body: updateBodySchema,
+      },
     },
     updateUser,
   )
@@ -177,6 +240,10 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        params: reviewMembershipStatusParamsSchema,
+        body: reviewMembershipStatusBodySchema,
+      },
     },
     reviewMembershipStatus,
   )
@@ -185,6 +252,10 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      schema: {
+        params: updateMembershipStatusParamsSchema,
+        body: updateMembershipStatusBodySchema,
+      },
     },
     updateMembershipStatus,
   )
@@ -193,6 +264,10 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      schema: {
+        params: updateUserPermissionsParamsSchema,
+        body: updateUserPermissionsBodySchema,
+      },
     },
     updateUserPermissions,
   )
@@ -201,6 +276,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      schema: {
+        body: transferAdminRoleBodySchema,
+      },
     },
     transferAdminRole,
   )
@@ -227,6 +305,9 @@ export async function userRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      schema: {
+        params: deleteUserByAdminParamsSchema,
+      },
     },
     deleteUserByAdmin,
   )

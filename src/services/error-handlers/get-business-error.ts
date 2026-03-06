@@ -4,15 +4,15 @@ import { SystemError } from '@errors/system-error'
 import { SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses/common-responses/4xx'
 import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 import { isFastifyError } from '@services/guards/is-fastify-error'
-import { collectZodErrors } from '@utils/validators/collect-errors'
-// import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
-import z, { ZodError } from 'zod'
+import { collectFastifyValidationErrors } from '@utils/validators/collect-fastify-validation-errors'
+import { collectZodErrors } from '@utils/validators/collect-zod-errors'
+import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
+import { ZodError } from 'zod'
 import { getFastifyError } from './get-fastify-error'
 
 export function getBusinessError(error: Error): IApiResponse | SystemError {
   if (error instanceof ZodError) {
-    const treeifiedError = z.treeifyError(error)
-    const issues = collectZodErrors(treeifiedError)
+    const issues = collectZodErrors(error)
 
     return {
       ...VALIDATION_ERROR,
@@ -23,18 +23,17 @@ export function getBusinessError(error: Error): IApiResponse | SystemError {
     }
   }
 
-  // if (hasZodFastifySchemaValidationErrors(error)) {
-  //   const treeifiedError = z.treeifyError(error.validation)
-  //   const issues = collectZodErrors(treeifiedError)
+  if (hasZodFastifySchemaValidationErrors(error)) {
+    const issues = collectFastifyValidationErrors(error.validation)
 
-  //   return {
-  //     ...VALIDATION_ERROR,
-  //     body: {
-  //       ...VALIDATION_ERROR.body,
-  //       issues: error.validation,
-  //     },
-  //   }
-  // }
+    return {
+      ...VALIDATION_ERROR,
+      body: {
+        ...VALIDATION_ERROR.body,
+        issues,
+      },
+    }
+  }
 
   if (isFastifyError(error)) {
     return getFastifyError(error)

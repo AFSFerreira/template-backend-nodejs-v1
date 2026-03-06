@@ -1,16 +1,20 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPMeetingWithDetails,
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllMeetingsQueryType } from '@custom-types/http/schemas/meeting/get-all-meetings-query-schema'
+import type { FastifyReply } from 'fastify'
 import { MeetingPresenter } from '@http/presenters/meeting-presenter'
-import { getAllMeetingsQuerySchema } from '@http/schemas/meeting/get-all-meetings-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllMeetingsUseCase } from '@use-cases/meeting/get-all-meetings'
 import { container } from 'tsyringe'
 
-export async function getAllMeetings(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllMeetingsQuerySchema.parse(request.query)
+export async function getAllMeetings(
+  request: ZodRequest<{ querystring: GetAllMeetingsQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllMeetingsUseCase)
 

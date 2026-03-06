@@ -2,9 +2,9 @@ import type { WebSocket } from '@fastify/websocket'
 import type { FastifyRequest } from 'fastify'
 import { logError } from '@lib/pino/helpers/log-error'
 import { getSocketUserPublicId } from '@services/ws/get-socket-user-public-id'
+import { verifyTokenIsolated } from '@utils/http/verify-jwt-token'
 import { wsDispatcher } from '@ws/dispatcher'
 import { wsMessageSchema } from '@ws/schemas/ws-message-schema'
-import { app } from '@/app'
 
 export async function wsConnectionHandler(socket: WebSocket, _req: FastifyRequest) {
   let isAuthenticated = false
@@ -31,7 +31,7 @@ export async function wsConnectionHandler(socket: WebSocket, _req: FastifyReques
 
       if (action === 'authenticate' && token) {
         try {
-          const decoded = app.jwt.verify(token)
+          const decoded = verifyTokenIsolated(token)
 
           userId = getSocketUserPublicId(decoded)
 

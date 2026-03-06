@@ -1,15 +1,19 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   DirectorPositionDefaultPresenterInput,
   HTTPDirectorPosition,
 } from '@custom-types/http/presenter/director-position/director-position-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllDirectorPositionsType } from '@custom-types/http/schemas/director-position/get-all-director-positions-schema'
+import type { FastifyReply } from 'fastify'
 import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
-import { getAllDirectorPositionsSchema } from '@http/schemas/director-position/get-all-director-positions-schema'
 import { GetAllDirectorPositionsUseCase } from '@use-cases/director-position/get-all-director-positions'
 import { container } from 'tsyringe'
 
-export async function getAllDirectorPositions(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllDirectorPositionsSchema.parse(request.query)
+export async function getAllDirectorPositions(
+  request: ZodRequest<{ querystring: GetAllDirectorPositionsType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllDirectorPositionsUseCase)
 

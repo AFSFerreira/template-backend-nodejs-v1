@@ -1,17 +1,17 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
-import type { UpdateUserBodySchemaType } from '@custom-types/http/schemas/user/update-user-body-schema'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { UpdateBodyType, UpdateUserBodySchemaType } from '@custom-types/http/schemas/user/update-user-body-schema'
+import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
-import { updateBodySchema } from '@http/schemas/user/update-user-body-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateUserUseCase } from '@use-cases/user/update-user'
 import { container } from 'tsyringe'
 
-export async function updateUser(request: FastifyRequest, reply: FastifyReply) {
+export async function updateUser(request: ZodRequest<{ body: UpdateBodyType }>, reply: FastifyReply) {
   const publicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
-  const parsedBody = updateBodySchema.parse(request.body) as UpdateUserBodySchemaType
+  const parsedBody = request.body as UpdateUserBodySchemaType
 
   const useCase = container.resolve(UpdateUserUseCase)
 

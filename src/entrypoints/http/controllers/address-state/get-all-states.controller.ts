@@ -1,16 +1,17 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   AddressWithUsersCountPresenterInput,
   HTTPAddressStates,
 } from '@custom-types/http/presenter/address/address-with-users-count'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllStatesQueryType } from '@custom-types/http/schemas/address/get-all-states-query-schema'
+import type { FastifyReply } from 'fastify'
 import { AddressPresenter } from '@http/presenters/address-presenter'
-import { getAllStatesQuerySchema } from '@http/schemas/address/get-all-states-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
 import { container } from 'tsyringe'
 
-export async function getAllStates(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllStatesQuerySchema.parse(request.query)
+export async function getAllStates(request: ZodRequest<{ querystring: GetAllStatesQueryType }>, reply: FastifyReply) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllStatesUseCase)
 

@@ -1,4 +1,4 @@
-import type { FastifyInstance } from 'fastify'
+import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { academicPublicationRoutes } from './controllers/academic-publication/routes'
 import { activityAreaRoutes } from './controllers/activity-area/routes'
 import { addressRoutes } from './controllers/address-state/routes'
@@ -16,7 +16,7 @@ import { newsletterRoutes } from './controllers/newsletter/routes'
 import { sliderImageRoutes } from './controllers/slider-image/routes'
 import { userRoutes } from './controllers/user/routes'
 
-export async function httpRoutes(app: FastifyInstance) {
+export async function httpRoutes(app: ZodFastifyInstance) {
   app.register(academicPublicationRoutes, { prefix: '/academic-publications' })
   app.register(activityAreaRoutes, { prefix: '/activity-areas' })
   app.register(addressRoutes, { prefix: '/addresses' })

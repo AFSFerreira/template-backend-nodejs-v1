@@ -1,10 +1,14 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteNewsletterParamsSchema } from '@http/schemas/newsletter/delete-newsletter-params-schema'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { DeleteNewsletterParamsType } from '@custom-types/http/schemas/newsletter/delete-newsletter-params-schema'
+import type { FastifyReply } from 'fastify'
 import { DeleteNewsletterUseCase } from '@use-cases/newsletters/delete-newsletter'
 import { container } from 'tsyringe'
 
-export async function deleteNewsletter(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = deleteNewsletterParamsSchema.parse(request.params)
+export async function deleteNewsletter(
+  request: ZodRequest<{ params: DeleteNewsletterParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
 
   const useCase = container.resolve(DeleteNewsletterUseCase)
 

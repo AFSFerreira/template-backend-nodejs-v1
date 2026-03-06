@@ -1,18 +1,22 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPMeetingWithDetails,
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { UpdateMeetingBodyType } from '@custom-types/http/schemas/meeting/update-meeting-body-schema'
+import type { UpdateMeetingParamsType } from '@custom-types/http/schemas/meeting/update-meeting-params-schema'
+import type { FastifyReply } from 'fastify'
 import { MeetingPresenter } from '@http/presenters/meeting-presenter'
-import { updateMeetingBodySchema } from '@http/schemas/meeting/update-meeting-body-schema'
-import { updateMeetingParamsSchema } from '@http/schemas/meeting/update-meeting-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UpdateMeetingUseCase } from '@use-cases/meeting/update-meeting'
 import { container } from 'tsyringe'
 
-export async function updateMeeting(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = updateMeetingParamsSchema.parse(request.params)
-  const parsedBody = updateMeetingBodySchema.parse(request.body)
+export async function updateMeeting(
+  request: ZodRequest<{ body: UpdateMeetingBodyType; params: UpdateMeetingParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
+  const parsedBody = request.body
 
   const useCase = container.resolve(UpdateMeetingUseCase)
 

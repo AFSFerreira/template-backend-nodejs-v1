@@ -1,10 +1,14 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteMeetingEnrollmentParamsSchema } from '@http/schemas/meeting-enrollment/delete-meeting-enrollment-params-schema'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { DeleteMeetingEnrollmentParamsType } from '@custom-types/http/schemas/meeting-enrollment/delete-meeting-enrollment-params-schema'
+import type { FastifyReply } from 'fastify'
 import { DeleteMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/delete-meeting-enrollment'
 import { container } from 'tsyringe'
 
-export async function deleteMeetingEnrollment(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = deleteMeetingEnrollmentParamsSchema.parse(request.params)
+export async function deleteMeetingEnrollment(
+  request: ZodRequest<{ params: DeleteMeetingEnrollmentParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
 
   const useCase = container.resolve(DeleteMeetingEnrollmentUseCase)
 

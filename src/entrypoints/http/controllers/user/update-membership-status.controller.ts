@@ -1,17 +1,21 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { UpdateMembershipStatusBodyType } from '@custom-types/http/schemas/user/update-membership-status-body-schema'
+import type { UpdateMembershipStatusParamsType } from '@custom-types/http/schemas/user/update-membership-status-params-schema'
+import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
-import { updateMembershipStatusBodySchema } from '@http/schemas/user/update-membership-status-body-schema'
-import { updateMembershipStatusParamsSchema } from '@http/schemas/user/update-membership-status-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateMembershipStatusUseCase } from '@use-cases/user/update-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { container } from 'tsyringe'
 
-export async function updateMembershipStatus(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = updateMembershipStatusParamsSchema.parse(request.params)
-  const parsedBody = updateMembershipStatusBodySchema.parse(request.body)
+export async function updateMembershipStatus(
+  request: ZodRequest<{ body: UpdateMembershipStatusBodyType; params: UpdateMembershipStatusParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
+  const parsedBody = request.body
 
   const useCase = container.resolve(UpdateMembershipStatusUseCase)
 

@@ -1,12 +1,16 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { registerGuestMeetingBodySchema } from '@http/schemas/meeting/register-guest-meeting-body-schema'
-import { registerGuestMeetingParamsSchema } from '@http/schemas/meeting/register-guest-meeting-params-schema'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { RegisterGuestMeetingBodyType } from '@custom-types/http/schemas/meeting/register-guest-meeting-body-schema'
+import type { RegisterGuestMeetingParamsType } from '@custom-types/http/schemas/meeting/register-guest-meeting-params-schema'
+import type { FastifyReply } from 'fastify'
 import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
 import { container } from 'tsyringe'
 
-export async function registerGuestMeeting(request: FastifyRequest, reply: FastifyReply) {
-  const { meetingId } = registerGuestMeetingParamsSchema.parse(request.params)
-  const parsedBody = registerGuestMeetingBodySchema.parse(request.body)
+export async function registerGuestMeeting(
+  request: ZodRequest<{ body: RegisterGuestMeetingBodyType; params: RegisterGuestMeetingParamsType }>,
+  reply: FastifyReply,
+) {
+  const { meetingId } = request.params
+  const parsedBody = request.body
 
   const useCase = container.resolve(RegisterGuestMeetingUseCase)
 

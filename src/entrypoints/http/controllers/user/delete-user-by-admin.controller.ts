@@ -1,14 +1,18 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { deleteUserByAdminParamsSchema } from '@http/schemas/user/delete-user-by-admin-params-schema'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { DeleteUserByAdminParamsType } from '@custom-types/http/schemas/user/delete-user-by-admin-params-schema'
+import type { FastifyReply } from 'fastify'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteUserByAdminUseCase } from '@use-cases/user/delete-user-by-admin'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { container } from 'tsyringe'
 
-export async function deleteUserByAdmin(request: FastifyRequest, reply: FastifyReply) {
+export async function deleteUserByAdmin(
+  request: ZodRequest<{ params: DeleteUserByAdminParamsType }>,
+  reply: FastifyReply,
+) {
   const adminPublicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
-  const { publicId } = deleteUserByAdminParamsSchema.parse(request.params)
+  const { publicId } = request.params
 
   const useCase = container.resolve(DeleteUserByAdminUseCase)
 

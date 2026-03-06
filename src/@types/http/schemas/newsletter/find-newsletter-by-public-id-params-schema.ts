@@ -1,4 +1,6 @@
 import type { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import type z from 'zod'
 
-export type FindNewsletterByPublicIdParamsSchemaType = z.infer<typeof findNewsletterByPublicIdParamsSchema>
+export type FindNewsletterByPublicIdParamsType = typeof findNewsletterByPublicIdParamsSchema
+
+export type FindNewsletterByPublicIdParamsSchemaType = z.infer<FindNewsletterByPublicIdParamsType>

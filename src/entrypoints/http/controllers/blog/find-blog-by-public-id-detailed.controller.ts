@@ -1,18 +1,22 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   BlogDetailedWithContentPresenterInput,
   HTTPBlogDetailedWithContent,
 } from '@custom-types/http/presenter/blog/blog-detailed-with-content'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { FindBlogByPublicIdParamsType } from '@custom-types/http/schemas/blog/find-blog-by-public-id-query-schema'
+import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { findBlogByPublicIdParamsSchema } from '@http/schemas/blog/find-blog-by-public-id-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blog/find-blog-by-public-id-detailed'
 import { container } from 'tsyringe'
 
-export async function findBlogByPublicIdRestricted(request: FastifyRequest, reply: FastifyReply) {
+export async function findBlogByPublicIdRestricted(
+  request: ZodRequest<{ params: FindBlogByPublicIdParamsType }>,
+  reply: FastifyReply,
+) {
   const userPublicId = getRequestUserPublicId(request)
-  const { publicId } = findBlogByPublicIdParamsSchema.parse(request.params)
+  const { publicId } = request.params
 
   const useCase = container.resolve(FindBlogByPublicIdRestrictedUseCase)
 

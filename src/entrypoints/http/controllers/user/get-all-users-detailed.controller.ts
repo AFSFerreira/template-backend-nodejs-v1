@@ -1,16 +1,20 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPSimplifiedUserDetailsForAdmin,
   UserSimplifiedForAdminPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified-for-admin'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllUsersDetailedQueryType } from '@custom-types/http/schemas/user/get-all-users-detailed-query-schema'
+import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
-import { getAllUsersDetailedQuerySchema } from '@http/schemas/user/get-all-users-detailed-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
 import { container } from 'tsyringe'
 
-export async function getAllUsersDetailed(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllUsersDetailedQuerySchema.parse(request.query)
+export async function getAllUsersDetailed(
+  request: ZodRequest<{ querystring: GetAllUsersDetailedQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllUsersDetailedUseCase)
 

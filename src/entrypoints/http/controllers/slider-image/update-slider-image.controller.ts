@@ -1,17 +1,21 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPSliderImage,
   SliderImageDefaultPresenterInput,
 } from '@custom-types/http/presenter/slider-image/slider-image-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { UpdateSliderImageBodyType } from '@custom-types/http/schemas/slider-image/update-slider-image-body-schema'
+import type { UpdateSliderImageParamsType } from '@custom-types/http/schemas/slider-image/update-slider-image-params-schema'
+import type { FastifyReply } from 'fastify'
 import { SliderImagePresenter } from '@http/presenters/slider-image-presenter'
-import { updateSliderImageBodySchema } from '@http/schemas/slider-image/update-slider-image-body-schema'
-import { updateSliderImageParamsSchema } from '@http/schemas/slider-image/update-slider-image-params-schema'
 import { UpdateSliderImageUseCase } from '@use-cases/slider-image/update-slider-image'
 import { container } from 'tsyringe'
 
-export async function updateSliderImage(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = updateSliderImageParamsSchema.parse(request.params)
-  const parsedBody = updateSliderImageBodySchema.parse(request.body)
+export async function updateSliderImage(
+  request: ZodRequest<{ body: UpdateSliderImageBodyType; params: UpdateSliderImageParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
+  const parsedBody = request.body
 
   const useCase = container.resolve(UpdateSliderImageUseCase)
 

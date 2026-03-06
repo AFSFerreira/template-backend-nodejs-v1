@@ -1,9 +1,15 @@
-import type { FastifyInstance } from 'fastify'
+import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { NEWSLETTER_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@http/middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
+import { createNewsletterBodySchema } from '@http/schemas/newsletter/create-newsletter-body-schema'
+import { deleteNewsletterParamsSchema } from '@http/schemas/newsletter/delete-newsletter-params-schema'
+import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
+import { getAllNewslettersQuerySchema } from '@http/schemas/newsletter/get-all-newsletters-query-schema'
+import { updateNewsletterBodySchema } from '@http/schemas/newsletter/update-newsletter-body-schema'
+import { updateNewsletterParamsSchema } from '@http/schemas/newsletter/update-newsletter-params-schema'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createNewsletter } from './create-newsletter.controller'
 import { deleteNewsletter } from './delete-newsletter.controller'
@@ -16,13 +22,16 @@ import { updateNewsletter } from './update-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
 import { uploadNewsletterImage } from './upload-newsletter-image.controller'
 
-export async function newsletterRoutes(app: FastifyInstance) {
+export async function newsletterRoutes(app: ZodFastifyInstance) {
   // GET
   app.get(
     '/',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
+      schema: {
+        querystring: getAllNewslettersQuerySchema,
+      },
     },
     getAllNewsletters,
   )
@@ -31,6 +40,9 @@ export async function newsletterRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+      schema: {
+        params: findNewsletterByPublicIdParamsSchema,
+      },
     },
     findNewsletterByPublicIdRestricted,
   )
@@ -39,6 +51,9 @@ export async function newsletterRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
+      schema: {
+        params: findNewsletterByPublicIdParamsSchema,
+      },
     },
     findNewsletterByPublicId,
   )
@@ -47,6 +62,9 @@ export async function newsletterRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
+      schema: {
+        params: findNewsletterByPublicIdParamsSchema,
+      },
     },
     getNewsletterHtmlContent,
   )
@@ -75,6 +93,9 @@ export async function newsletterRoutes(app: FastifyInstance) {
       ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+      schema: {
+        body: createNewsletterBodySchema,
+      },
     },
     createNewsletter,
   )
@@ -83,6 +104,9 @@ export async function newsletterRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+      schema: {
+        params: findNewsletterByPublicIdParamsSchema,
+      },
     },
     sendNewsletterEmail,
   )
@@ -94,6 +118,10 @@ export async function newsletterRoutes(app: FastifyInstance) {
       ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+      schema: {
+        params: updateNewsletterParamsSchema,
+        body: updateNewsletterBodySchema,
+      },
     },
     updateNewsletter,
   )
@@ -104,6 +132,9 @@ export async function newsletterRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+      schema: {
+        params: deleteNewsletterParamsSchema,
+      },
     },
     deleteNewsletter,
   )

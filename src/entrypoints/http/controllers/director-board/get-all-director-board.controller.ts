@@ -1,15 +1,19 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   DirectorBoardDefaultPresenterInput,
   HTTPDirectorBoard,
 } from '@custom-types/http/presenter/director-board/director-board-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllDirectorBoardType } from '@custom-types/http/schemas/director-board/get-all-director-board-query-schema'
+import type { FastifyReply } from 'fastify'
 import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
-import { getAllDirectorBoardSchema } from '@http/schemas/director-board/get-all-director-board-query-schema'
 import { GetAllDirectorsBoard } from '@use-cases/director-board/get-all-directors-board'
 import { container } from 'tsyringe'
 
-export async function getAllDirectorsBoard(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllDirectorBoardSchema.parse(request.query)
+export async function getAllDirectorsBoard(
+  request: ZodRequest<{ querystring: GetAllDirectorBoardType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllDirectorsBoard)
 

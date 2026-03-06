@@ -216,5 +216,3 @@ npm run start:dev
 - **Product Owner**: <a href="https://github.com/DougCristiano" target="_blank">Douglas Cristiano</a>
 - **Dev Backend**: <a href="https://github.com/zfrekey" target="_blank">Filype Abreu</a>
 - **Dev Backend**: <a href="https://github.com/AFSFerreira" target="_blank">Allber Ferreira</a>
-- **DevOps**: <a href="https://github.com/AyrtonSur" target="_blank">Ayrton Surica</a>
-- **Designer**: <a href="https://github.com/carlosjr04" target="_blank">Carlos Alberto</a>

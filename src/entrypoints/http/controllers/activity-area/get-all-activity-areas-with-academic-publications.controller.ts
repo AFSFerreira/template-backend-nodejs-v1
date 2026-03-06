@@ -1,19 +1,20 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   ActivityAreaWithAcademicPublicationsCountPresenterInput,
   HTTPActivityAreaWithAcademicPublicationsCount,
 } from '@custom-types/http/presenter/academic-publication/activity-area-with-academic-publications-count'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllActivityAreasWithAcademicPublicationsQueryType } from '@custom-types/http/schemas/academic-publication/get-all-activity-areas-with-academic-publications-query-schema'
+import type { FastifyReply } from 'fastify'
 import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
-import { getAllActivityAreasWithAcademicPublicationsQuerySchema } from '@http/schemas/academic-publication/get-all-activity-areas-with-academic-publications-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllActivityAreasWithAcademicPublicationsUseCase } from '@use-cases/academic-publication/get-all-activity-areas-with-academic-publications-use-case'
 import { container } from 'tsyringe'
 
 export async function getAllActivityAreasWithAcademicPublicationsController(
-  request: FastifyRequest,
+  request: ZodRequest<{ querystring: GetAllActivityAreasWithAcademicPublicationsQueryType }>,
   reply: FastifyReply,
 ) {
-  const parsedQuery = getAllActivityAreasWithAcademicPublicationsQuerySchema.parse(request.query)
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllActivityAreasWithAcademicPublicationsUseCase)
 

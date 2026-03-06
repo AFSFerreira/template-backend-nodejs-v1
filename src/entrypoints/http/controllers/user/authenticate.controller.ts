@@ -1,15 +1,16 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { AuthenticateType } from '@custom-types/http/schemas/user/authenticate-body-schema'
+import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
-import { authenticateBodySchema } from '@http/schemas/user/authenticate-body-schema'
 import { authenticateConnectionInfoSchema } from '@http/schemas/user/authenticate-connection-info-schema'
 import { buildAuthTokens } from '@services/http/build-auth-tokens'
 import { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import { getConnectionInfo } from '@utils/http/get-connection-info'
 import { container } from 'tsyringe'
 
-export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
-  const { login, password } = authenticateBodySchema.parse(request.body)
+export async function authenticate(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
+  const { login, password } = request.body
 
   const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(getConnectionInfo(request))
 

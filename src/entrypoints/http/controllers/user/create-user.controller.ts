@@ -1,14 +1,14 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
-import type { RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { RegisterBodyType, RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
+import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
-import { registerBodySchema } from '@http/schemas/user/register-body-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { CreateUserUseCase } from '@use-cases/user/create-user'
 import { container } from 'tsyringe'
 
-export async function createUser(request: FastifyRequest, reply: FastifyReply) {
-  const parsedBody = registerBodySchema.parse(request.body) as RegisterUserBodySchemaType
+export async function createUser(request: ZodRequest<{ body: RegisterBodyType }>, reply: FastifyReply) {
+  const parsedBody = request.body as RegisterUserBodySchemaType
 
   const useCase = container.resolve(CreateUserUseCase)
 

@@ -1,11 +1,15 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { GetDirectorBoardAboutHTMLParamsType } from '@custom-types/http/schemas/director-board/get-director-board-about-html-params-schema'
+import type { FastifyReply } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { getDirectorBoardAboutHTMLParamsSchema } from '@http/schemas/director-board/get-director-board-about-html-params-schema'
 import { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
 import { container } from 'tsyringe'
 
-export async function getDirectorBoardAboutHTML(request: FastifyRequest, reply: FastifyReply) {
-  const parsedParams = getDirectorBoardAboutHTMLParamsSchema.parse(request.params)
+export async function getDirectorBoardAboutHTML(
+  request: ZodRequest<{ params: GetDirectorBoardAboutHTMLParamsType }>,
+  reply: FastifyReply,
+) {
+  const parsedParams = request.params
 
   const useCase = container.resolve(GetDirectorBoardAboutHTMLUseCase)
 

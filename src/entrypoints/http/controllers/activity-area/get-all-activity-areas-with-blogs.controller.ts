@@ -1,16 +1,20 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   ActivityAreaWithBlogsCountPresenterInput,
   HTTPActivityAreaWithBlogsCount,
 } from '@custom-types/http/presenter/activity-area/activity-area-with-blogs-count'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllActivityAreasWithBlogsQueryType } from '@custom-types/http/schemas/activity-area/get-all-activity-areas-with-blogs-query-schema'
+import type { FastifyReply } from 'fastify'
 import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
-import { getAllActivityAreasWithBlogsQuerySchema } from '@http/schemas/activity-area/get-all-activity-areas-with-blogs-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllActivityAreasWithBlogsUseCase } from '@use-cases/activity-area/get-all-activity-areas-with-blogs-use-case'
 import { container } from 'tsyringe'
 
-export async function getAllActivityAreasWithBlogs(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllActivityAreasWithBlogsQuerySchema.parse(request.query)
+export async function getAllActivityAreasWithBlogs(
+  request: ZodRequest<{ querystring: GetAllActivityAreasWithBlogsQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllActivityAreasWithBlogsUseCase)
 

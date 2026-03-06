@@ -1,16 +1,20 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPInstitutionWithUsersCount,
   InstitutionWithUsersCountPresenterInput,
 } from '@custom-types/http/presenter/institution/institution-with-users-count'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllInstitutionsWithUsersQueryType } from '@custom-types/http/schemas/institution/get-all-institutions-with-users-query-schema'
+import type { FastifyReply } from 'fastify'
 import { InstitutionPresenter } from '@http/presenters/institution-presenter'
-import { getAllInstitutionsWithUsersQuerySchema } from '@http/schemas/institution/get-all-institutions-with-users-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllInstitutionsWithUsersUseCase } from '@use-cases/institution/get-all-institutions-with-user'
 import { container } from 'tsyringe'
 
-export async function getAllInstitutionsWithUsers(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllInstitutionsWithUsersQuerySchema.parse(request.query)
+export async function getAllInstitutionsWithUsers(
+  request: ZodRequest<{ querystring: GetAllInstitutionsWithUsersQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllInstitutionsWithUsersUseCase)
 

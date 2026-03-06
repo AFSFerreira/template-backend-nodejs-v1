@@ -1,11 +1,15 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { FindNewsletterByPublicIdParamsType } from '@custom-types/http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
+import type { FastifyReply } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import { GetNewsletterHtmlContentUseCase } from '@use-cases/newsletters/get-newsletter-content'
 import { container } from 'tsyringe'
 
-export async function getNewsletterHtmlContent(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = findNewsletterByPublicIdParamsSchema.parse(request.params)
+export async function getNewsletterHtmlContent(
+  request: ZodRequest<{ params: FindNewsletterByPublicIdParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
 
   const useCase = container.resolve(GetNewsletterHtmlContentUseCase)
 

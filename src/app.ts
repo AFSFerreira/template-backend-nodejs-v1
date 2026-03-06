@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import '@lib/dayjs/index'
 import '@lib/tsyringe/index'
 import '@lib/zod/index'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { IS_DEV } from '@constants/env-constants'
 import { fastifyCompress } from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
@@ -29,58 +30,64 @@ import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-hand
 import { registerAppSignals } from '@services/system/register-app-signals'
 import { wsConfiguration } from '@ws/configurations/ws-configuration'
 import { websocketRoutes } from '@ws/routes'
-import fastify from 'fastify'
+import fastify, { type FastifyInstance } from 'fastify'
 import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 
-export const app = fastify(fastifyConfiguration)
+export async function buildApp(): Promise<FastifyInstance> {
+  const app = fastify(fastifyConfiguration).withTypeProvider<ZodTypeProvider>()
 
-initSentry()
-registerAppSignals(app)
+  initSentry()
+  registerAppSignals(app)
 
-app.register(swagger, {
-  openapi: {
-    info: {
-      title: 'Astrobiologia API',
-      description: 'Documentação do sistema',
-      version: '1.0.0',
-    },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
+  app.register(swagger, {
+    openapi: {
+      info: {
+        title: 'Astrobiologia API',
+        description: 'Documentação do sistema',
+        version: '1.0.0',
+      },
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: 'http',
+            scheme: 'bearer',
+            bearerFormat: 'JWT',
+          },
         },
       },
     },
-  },
-  transform: jsonSchemaTransform,
-})
-
-if (IS_DEV) {
-  app.register(swaggerUi, {
-    routePrefix: '/docs',
+    transform: jsonSchemaTransform,
   })
+
+  if (IS_DEV) {
+    app.register(swaggerUi, {
+      routePrefix: '/docs',
+    })
+  }
+
+  app.setValidatorCompiler(validatorCompiler)
+  app.setSerializerCompiler(serializerCompiler)
+
+  app.register(fastifyWebsocket, wsConfiguration)
+  app.register(fastifyCompress, compressConfiguration)
+  app.register(multipart, multipartConfiguration)
+  app.register(staticFileRoutes)
+  app.register(fastifyCookie)
+  app.register(rateLimit, rateLimitConfigurations)
+  app.register(cors, corsConfiguration)
+  app.register(fastifyJwt, jwtConfiguration)
+
+  app.register(httpRoutes)
+  app.register(websocketRoutes)
+
+  app.addHook('onRequest', logRequest)
+  app.addHook('onResponse', logResponse)
+  app.addHook('preSerialization', preSerialization)
+  app.addHook('onClose', gracefulShutdown)
+
+  app.setErrorHandler(fastifyErrorHandler)
+
+  await app.ready()
+
+  return app
 }
-
-app.setValidatorCompiler(validatorCompiler)
-app.setSerializerCompiler(serializerCompiler)
-
-app.register(fastifyWebsocket, wsConfiguration)
-app.register(fastifyCompress, compressConfiguration)
-app.register(multipart, multipartConfiguration)
-app.register(staticFileRoutes)
-app.register(fastifyCookie)
-app.register(rateLimit, rateLimitConfigurations)
-app.register(cors, corsConfiguration)
-app.register(fastifyJwt, jwtConfiguration)
-
-app.register(httpRoutes)
-app.register(websocketRoutes)
-
-app.addHook('onRequest', logRequest)
-app.addHook('onResponse', logResponse)
-app.addHook('preSerialization', preSerialization)
-app.addHook('onClose', gracefulShutdown)
-
-app.setErrorHandler(fastifyErrorHandler)

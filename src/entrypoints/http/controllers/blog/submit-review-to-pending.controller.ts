@@ -1,14 +1,18 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { SubmitReviewToPendingParamsType } from '@custom-types/http/schemas/blog/submit-review-to-pending-params-schema'
+import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { submitReviewToPendingParamsSchema } from '@http/schemas/blog/submit-review-to-pending-params-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { SubmitReviewToPendingUseCase } from '@use-cases/blog/submit-review-to-pending'
 import { container } from 'tsyringe'
 
-export async function submitReviewToPending(request: FastifyRequest, reply: FastifyReply) {
+export async function submitReviewToPending(
+  request: ZodRequest<{ params: SubmitReviewToPendingParamsType }>,
+  reply: FastifyReply,
+) {
   const userPublicId = getRequestUserPublicId(request)
-  const parsedParams = submitReviewToPendingParamsSchema.parse(request.params)
+  const parsedParams = request.params
 
   const useCase = container.resolve(SubmitReviewToPendingUseCase)
 

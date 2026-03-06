@@ -1,8 +1,15 @@
-import type { FastifyInstance } from 'fastify'
+import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
+import { createInstitutionBodySchema } from '@http/schemas/institution/create-institution-body-schema'
+import { deleteInstitutionParamsSchema } from '@http/schemas/institution/delete-institution-params-schema'
+import { getAllInstitutionsQuerySchema } from '@http/schemas/institution/get-all-institutions-query-schema'
+import { getAllInstitutionsWithUsersQuerySchema } from '@http/schemas/institution/get-all-institutions-with-users-query-schema'
+import { getAllInternalInstitutionsNamesQuerySchema } from '@http/schemas/institution/get-all-internal-institutions-names-query-schema'
+import { updateInstitutionBodySchema } from '@http/schemas/institution/update-institution-body-schema'
+import { updateInstitutionParamsSchema } from '@http/schemas/institution/update-institution-params-schema'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createInstitution } from './create-institution.controller'
 import { deleteInstitution } from './delete-institution.controller'
@@ -11,12 +18,15 @@ import { getAllInstitutionsWithUsers } from './get-all-institutions-with-users.c
 import { getAllInternalInstitutionsNames } from './get-all-internal-institutions-names.controller'
 import { updateInstitution } from './update-institution.controller'
 
-export async function institutionRoutes(app: FastifyInstance) {
+export async function institutionRoutes(app: ZodFastifyInstance) {
   // GET
   app.get(
     '/users',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        querystring: getAllInstitutionsWithUsersQuerySchema,
+      },
     },
     getAllInstitutionsWithUsers,
   )
@@ -24,6 +34,9 @@ export async function institutionRoutes(app: FastifyInstance) {
     '/names',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        querystring: getAllInstitutionsQuerySchema,
+      },
     },
     getAllInstitutionsNames,
   )
@@ -31,6 +44,9 @@ export async function institutionRoutes(app: FastifyInstance) {
     '/names/internal',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        querystring: getAllInternalInstitutionsNamesQuerySchema,
+      },
     },
     getAllInternalInstitutionsNames,
   )
@@ -41,6 +57,9 @@ export async function institutionRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        body: createInstitutionBodySchema,
+      },
     },
     createInstitution,
   )
@@ -51,6 +70,10 @@ export async function institutionRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        params: updateInstitutionParamsSchema,
+        body: updateInstitutionBodySchema,
+      },
     },
     updateInstitution,
   )
@@ -61,6 +84,9 @@ export async function institutionRoutes(app: FastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        params: deleteInstitutionParamsSchema,
+      },
     },
     deleteInstitution,
   )

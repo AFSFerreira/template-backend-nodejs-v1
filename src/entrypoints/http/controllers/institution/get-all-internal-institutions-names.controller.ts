@@ -1,15 +1,19 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPInstitution,
   InstitutionDefaultPresenterInput,
 } from '@custom-types/http/presenter/institution/institution-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllInternalInstitutionsNamesQueryType } from '@custom-types/http/schemas/institution/get-all-internal-institutions-names-query-schema'
+import type { FastifyReply } from 'fastify'
 import { InstitutionPresenter } from '@http/presenters/institution-presenter'
-import { getAllInternalInstitutionsNamesQuerySchema } from '@http/schemas/institution/get-all-internal-institutions-names-query-schema'
 import { GetAllInternalInstitutionsNamesUseCase } from '@use-cases/institution/get-all-internal-institutions-names'
 import { container } from 'tsyringe'
 
-export async function getAllInternalInstitutionsNames(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllInternalInstitutionsNamesQuerySchema.parse(request.query)
+export async function getAllInternalInstitutionsNames(
+  request: ZodRequest<{ querystring: GetAllInternalInstitutionsNamesQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllInternalInstitutionsNamesUseCase)
 

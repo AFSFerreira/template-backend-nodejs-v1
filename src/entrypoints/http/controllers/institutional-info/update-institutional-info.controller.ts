@@ -1,16 +1,20 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPInstitutionalInfo,
   InstitutionalInfoPresenterInput,
 } from '@custom-types/http/presenter/institutional-info/institutional-info'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { UpdateInstitutionalInfoBodyType } from '@custom-types/http/schemas/institutional-info/update-institutional-info-body-schema'
+import type { FastifyReply } from 'fastify'
 import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
-import { updateInstitutionalInfoBodySchema } from '@http/schemas/institutional-info/update-institutional-info-body-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UpdateInstitutionalInfoUseCase } from '@use-cases/institutional-info/update-institutional-info'
 import { container } from 'tsyringe'
 
-export async function updateInstitutionalInfo(request: FastifyRequest, reply: FastifyReply) {
-  const parsedBody = updateInstitutionalInfoBodySchema.parse(request.body)
+export async function updateInstitutionalInfo(
+  request: ZodRequest<{ body: UpdateInstitutionalInfoBodyType }>,
+  reply: FastifyReply,
+) {
+  const parsedBody = request.body
 
   const useCase = container.resolve(UpdateInstitutionalInfoUseCase)
 

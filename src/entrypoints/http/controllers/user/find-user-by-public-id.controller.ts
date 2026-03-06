@@ -1,16 +1,17 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
 } from '@custom-types/http/presenter/user/user-detailed-for-admin'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { FindUserByIdParamsType } from '@custom-types/http/schemas/user/find-by-public-id-params-schema'
+import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
-import { findUserByPublicIdParamsSchema } from '@http/schemas/user/find-by-public-id-params-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindUserByPublicIdUseCase } from '@use-cases/user/find-by-public-id'
 import { container } from 'tsyringe'
 
-export async function findUserByPublicId(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = findUserByPublicIdParamsSchema.parse(request.params)
+export async function findUserByPublicId(request: ZodRequest<{ params: FindUserByIdParamsType }>, reply: FastifyReply) {
+  const { publicId } = request.params
 
   const useCase = container.resolve(FindUserByPublicIdUseCase)
 

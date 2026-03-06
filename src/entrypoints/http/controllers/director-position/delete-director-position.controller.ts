@@ -1,10 +1,14 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
-import { updateDirectorPositionParamsSchema } from '@http/schemas/director-position/update-director-position-params-schema'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { DeleteDirectorPositionParamsType } from '@custom-types/http/schemas/director-position/delete-director-position-params-schema'
+import type { FastifyReply } from 'fastify'
 import { DeleteDirectorPositionUseCase } from '@use-cases/director-position/delete-director-position'
 import { container } from 'tsyringe'
 
-export async function deleteDirectorPosition(request: FastifyRequest, reply: FastifyReply) {
-  const { publicId } = updateDirectorPositionParamsSchema.parse(request.params)
+export async function deleteDirectorPosition(
+  request: ZodRequest<{ params: DeleteDirectorPositionParamsType }>,
+  reply: FastifyReply,
+) {
+  const { publicId } = request.params
 
   const useCase = container.resolve(DeleteDirectorPositionUseCase)
 

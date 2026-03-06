@@ -1,14 +1,18 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
 import type { AcademicPublicationSimplifiedPresenterInput } from '@custom-types/http/presenter/academic-publication/academic-publication-simplified'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllAcademicPublicationsQueryType } from '@custom-types/http/schemas/academic-pulication/get-all-academic-publications-query-schema'
+import type { FastifyReply } from 'fastify'
 import { AcademicPublicationPresenter } from '@http/presenters/academic-publication-presenter'
-import { getAllAcademicPublicationsQuerySchema } from '@http/schemas/academic-publication/get-all-academic-publications-query-schema'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllAcademicPublicationsUseCase } from '@use-cases/academic-publication/get-all-academic-publications'
 import { container } from 'tsyringe'
 
-export async function getAllAcademicPublicationsController(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllAcademicPublicationsQuerySchema.parse(request.query)
+export async function getAllAcademicPublicationsController(
+  request: ZodRequest<{ querystring: GetAllAcademicPublicationsQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllAcademicPublicationsUseCase)
 

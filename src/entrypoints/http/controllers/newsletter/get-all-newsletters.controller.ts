@@ -1,15 +1,19 @@
+import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type {
   HTTPNewsletter,
   NewsletterDefaultPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-default'
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { GetAllNewslettersQueryType } from '@custom-types/http/schemas/newsletter/get-all-newsletters-query-schema'
+import type { FastifyReply } from 'fastify'
 import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
-import { getAllNewslettersQuerySchema } from '@http/schemas/newsletter/get-all-newsletters-query-schema'
 import { GetAllNewslettersUseCase } from '@use-cases/newsletters/get-all-newsletters'
 import { container } from 'tsyringe'
 
-export async function getAllNewsletters(request: FastifyRequest, reply: FastifyReply) {
-  const parsedQuery = getAllNewslettersQuerySchema.parse(request.query)
+export async function getAllNewsletters(
+  request: ZodRequest<{ querystring: GetAllNewslettersQueryType }>,
+  reply: FastifyReply,
+) {
+  const parsedQuery = request.query
 
   const useCase = container.resolve(GetAllNewslettersUseCase)
 

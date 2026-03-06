@@ -1,11 +1,15 @@
-import type { FastifyReply, FastifyRequest } from 'fastify'
+import type { ZodRequest } from '@custom-types/custom/zod-request'
+import type { GetBlogHtmlContentParamsType } from '@custom-types/http/schemas/blog/get-blog-html-content-params-schema'
+import type { FastifyReply } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
-import { getBlogHtmlContentParamsSchema } from '@http/schemas/blog/get-blog-html-content-params-schema'
 import { GetBlogHTMLContentUseCase } from '@use-cases/blog/get-blog-html-content'
 import { container } from 'tsyringe'
 
-export async function getBlogHtmlContent(request: FastifyRequest, reply: FastifyReply) {
-  const parsedParams = getBlogHtmlContentParamsSchema.parse(request.params)
+export async function getBlogHtmlContent(
+  request: ZodRequest<{ params: GetBlogHtmlContentParamsType }>,
+  reply: FastifyReply,
+) {
+  const parsedParams = request.params
 
   const useCase = container.resolve(GetBlogHTMLContentUseCase)
 

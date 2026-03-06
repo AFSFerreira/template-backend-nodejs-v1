@@ -5,4 +5,6 @@ export const updateBlogParamsSchema = z.object({
   publicId: modelPublicIdSchema,
 })
 
-export type UpdateBlogParamsSchemaType = z.infer<typeof updateBlogParamsSchema>
+export type UpdateBlogParamsType = typeof updateBlogParamsSchema
+
+export type UpdateBlogParamsSchemaType = z.infer<UpdateBlogParamsType>
