@@ -2,12 +2,15 @@ import 'reflect-metadata'
 import '@lib/dayjs/index'
 import '@lib/tsyringe/index'
 import '@lib/zod/index'
+import { IS_DEV } from '@constants/env-constants'
 import { fastifyCompress } from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
+import swagger from '@fastify/swagger'
+import swaggerUi from '@fastify/swagger-ui'
 import fastifyWebsocket from '@fastify/websocket'
 import { compressConfiguration } from '@http/configurations/compress-configuration'
 import { corsConfiguration } from '@http/configurations/cors-configuration'
@@ -27,11 +30,41 @@ import { registerAppSignals } from '@services/system/register-app-signals'
 import { wsConfiguration } from '@ws/configurations/ws-configuration'
 import { websocketRoutes } from '@ws/routes'
 import fastify from 'fastify'
+import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 
 export const app = fastify(fastifyConfiguration)
 
 initSentry()
 registerAppSignals(app)
+
+app.register(swagger, {
+  openapi: {
+    info: {
+      title: 'Astrobiologia API',
+      description: 'Documentação do sistema',
+      version: '1.0.0',
+    },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+  },
+  transform: jsonSchemaTransform,
+})
+
+if (IS_DEV) {
+  app.register(swaggerUi, {
+    routePrefix: '/docs',
+  })
+}
+
+app.setValidatorCompiler(validatorCompiler)
+app.setSerializerCompiler(serializerCompiler)
 
 app.register(fastifyWebsocket, wsConfiguration)
 app.register(fastifyCompress, compressConfiguration)

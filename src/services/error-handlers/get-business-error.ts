@@ -5,6 +5,7 @@ import { SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses/common-respo
 import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 import { isFastifyError } from '@services/guards/is-fastify-error'
 import { collectZodErrors } from '@utils/validators/collect-errors'
+// import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod'
 import z, { ZodError } from 'zod'
 import { getFastifyError } from './get-fastify-error'
 
@@ -21,6 +22,19 @@ export function getBusinessError(error: Error): IApiResponse | SystemError {
       },
     }
   }
+
+  // if (hasZodFastifySchemaValidationErrors(error)) {
+  //   const treeifiedError = z.treeifyError(error.validation)
+  //   const issues = collectZodErrors(treeifiedError)
+
+  //   return {
+  //     ...VALIDATION_ERROR,
+  //     body: {
+  //       ...VALIDATION_ERROR.body,
+  //       issues: error.validation,
+  //     },
+  //   }
+  // }
 
   if (isFastifyError(error)) {
     return getFastifyError(error)

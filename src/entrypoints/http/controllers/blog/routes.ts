@@ -1,9 +1,12 @@
 import type { FastifyInstance } from 'fastify'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { BLOGS_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { CONTENT_LEADER_PERMISSIONS, CONTENT_PRODUCERS_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@http/middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
+import { createBlogBodySchema } from '@http/schemas/blog/create-blog-body-schema'
+import { getAllBlogsDetailedQuerySchema } from '@http/schemas/blog/get-all-blogs-detailed-query-schema'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createDraftBlog } from './create-draft-blog.controller'
 import { createDraftCopyBlog } from './create-draft-copy-blog.controller'
@@ -27,6 +30,8 @@ import { uploadBlogBanner } from './upload-blog-banner.controller'
 import { uploadBlogImage } from './upload-blog-image.controller'
 
 export async function blogRoutes(app: FastifyInstance) {
+  const appCast = app.withTypeProvider<ZodTypeProvider>()
+
   // GET
   app.get(
     '/',
@@ -35,11 +40,14 @@ export async function blogRoutes(app: FastifyInstance) {
     },
     getAllBlogs,
   )
-  app.get(
+  appCast.get(
     '/restrict',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
+      schema: {
+        querystring: getAllBlogsDetailedQuerySchema,
+      },
     },
     getAllBlogsDetailed,
   )
@@ -83,12 +91,15 @@ export async function blogRoutes(app: FastifyInstance) {
   )
 
   // POST
-  app.post(
+  appCast.post(
     '/create/pending',
     {
       ...BLOGS_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
+      schema: {
+        body: createBlogBodySchema,
+      },
     },
     createPendingBlog,
   )

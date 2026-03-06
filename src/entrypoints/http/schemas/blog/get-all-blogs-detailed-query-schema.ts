@@ -7,7 +7,7 @@ import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-sche
 import { paginatedSchema } from '@lib/zod/utils/primitives/paginated-schema'
 import z from 'zod'
 
-const getAllBlogsDetailedQueryRawSchema = z
+export const getAllBlogsDetailedQueryRawSchema = z
   .object({
     searchContent: nonemptyTextSchema.max(LONG_LIMITED_CHARACTERS_SIZE),
     authorId: modelPublicIdSchema,
