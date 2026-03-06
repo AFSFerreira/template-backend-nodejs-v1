@@ -8,9 +8,7 @@ import {
 } from '@prisma/generated/enums'
 import { HashService } from '@services/hashes/hash-service'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
-import { hashSync } from 'bcryptjs'
 import { cpf } from 'cpf-cnpj-validator'
-import { env } from '../../src/env/index'
 import { academicPublicationsCreateUserDataArray1 } from './academic-publications'
 import { activityAreaData1, subActivityAreaData1 } from './activity-areas'
 import { enrolledCourseNestedUserData1 } from './enrolled-courses'
@@ -34,7 +32,7 @@ type UserWithoutIdentityDocument = Omit<
   'identityType' | 'identityDocument' | 'identityDocumentBlindIndex'
 >
 
-const passwordHash = hashSync('123456789Az#', env.HASH_SALT_ROUNDS)
+const passwordHash = await HashService.hashPassword('123456789Az#')
 
 export const partialUserData1: PartialUserCreateInputInfo = {
   passwordHash,
