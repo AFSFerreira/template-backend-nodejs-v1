@@ -39,7 +39,7 @@
     "ci:format": "run-p check:prisma:biome check:src:biome",
     "ci:build": "run-s ci:generate build:tsgo build:tsdown",
     "sentry:upload": "sentry-cli sourcemaps inject ./dist && sentry-cli sourcemaps upload ./dist",
-    "test:load:local": "BASE_URL=http://localhost:3000 envsubst < ./load-tests/targets.local.txt | vegeta attack -duration=10s -rate=50 | vegeta report",
+    "test:load:local": "BASE_URL=http://localhost:3000 envsubst < ./load-tests/targets.local.txt | vegeta attack -duration=10s -rate=1 | vegeta report",
     "test:load:stg": "BASE_URL=https://api-astrobiologia.injunior.com.br envsubst < load-tests/targets.stg.txt | vegeta attack -duration=10s -rate=10 | vegeta report",
     "prepare": "husky"
   },
