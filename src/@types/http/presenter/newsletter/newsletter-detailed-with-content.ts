@@ -1,18 +1,25 @@
 import type { NewsletterWithContentUrl } from '@custom-types/http/presenter/newsletter/newsletter-default'
-import type { NewsletterFormatType } from '@prisma/generated/enums'
-import type { JsonValue } from '@prisma/generated/internal/prismaNamespace'
+import { proseMirrorSchema } from '@http/schemas/utils/components/blog/prose-mirror-schema'
+import { newsletterFormatTypeEnumSchema } from '@lib/zod/utils/enums/newsletter-format-type-enum-schema'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
+import { dateSchema } from '@lib/zod/utils/primitives/date-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
+import { nullableTextSchema } from '@lib/zod/utils/primitives/nullable-text-schema'
+import z from 'zod'
 
 export interface NewsletterDetailedWithContentPresenterInput extends NewsletterWithContentUrl {}
 
-export interface HTTPNewsletterDetailedWithContent {
-  id: string
-  editionNumber: string
-  sequenceNumber: string
-  content: string
-  format: NewsletterFormatType
-  volume: string
-  createdAt: Date
-  updatedAt: Date
-  proseContent: JsonValue | null
-  fileContent: string | null
-}
+const httpNewsletterDetailedWithContentSchema = z.object({
+  id: modelPublicIdSchema,
+  editionNumber: nonemptyTextSchema,
+  sequenceNumber: nonemptyTextSchema,
+  content: nonemptyTextSchema,
+  format: newsletterFormatTypeEnumSchema,
+  volume: nonemptyTextSchema,
+  createdAt: dateSchema,
+  updatedAt: dateSchema,
+  proseContent: proseMirrorSchema.nullable(),
+  fileContent: nullableTextSchema,
+})
+
+export type HTTPNewsletterDetailedWithContent = z.infer<typeof httpNewsletterDetailedWithContentSchema>

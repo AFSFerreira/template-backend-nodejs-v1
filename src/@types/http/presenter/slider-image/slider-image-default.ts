@@ -1,11 +1,19 @@
 import type { SliderImage } from '@prisma/generated/client'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
+import { booleanSchema } from '@lib/zod/utils/primitives/boolean-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
+import { nullableTextSchema } from '@lib/zod/utils/primitives/nullable-text-schema'
+import { numberSchema } from '@lib/zod/utils/primitives/number-schema'
+import z from 'zod'
 
 export interface SliderImageDefaultPresenterInput extends SliderImage {}
 
-export interface HTTPSliderImage {
-  id: string
-  image: string
-  link: string | null
-  order: number
-  isActive: boolean
-}
+const httpSliderImageSchema = z.object({
+  id: modelPublicIdSchema,
+  image: nonemptyTextSchema,
+  link: nullableTextSchema,
+  order: numberSchema,
+  isActive: booleanSchema,
+})
+
+export type HTTPSliderImage = z.infer<typeof httpSliderImageSchema>

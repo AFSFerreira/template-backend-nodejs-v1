@@ -1,35 +1,45 @@
-import type { MeetingEnrollmentPresenterInput as MEPresenterInput } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
-import type { EducationLevelType, OccupationType } from '@prisma/generated/enums'
+import { educationLevelSchema } from '@lib/zod/utils/enums/education-level-enum-schema'
+import { occupationEnumSchema } from '@lib/zod/utils/enums/occupation-enum-schema'
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
+import { booleanSchema } from '@lib/zod/utils/primitives/boolean-schema'
+import { dateSchema } from '@lib/zod/utils/primitives/date-schema'
+import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
+import { nullableTextSchema } from '@lib/zod/utils/primitives/nullable-text-schema'
+import { optionalNonemptyTextSchema } from '@lib/zod/utils/primitives/optional-nonempty-text-schema'
+import z from 'zod'
 
 export interface MeetingEnrollmentPresenterInput extends MeetingEnrollmentWithDetails {}
+export interface MeetingEnrollmentDetailedPresenterInput extends MeetingEnrollmentPresenterInput {}
 
-export interface UserParticipantInfo {
-  id: string
-  fullName: string
-  email: string
-  institutionName?: string
-  departmentName: string | null
-  educationLevel: EducationLevelType
-  occupation?: OccupationType | null
-  wantsNewsletter: boolean
-}
+const userParticipantInfoSchema = z.object({
+  id: modelPublicIdSchema,
+  fullName: nonemptyTextSchema,
+  email: nonemptyTextSchema,
+  institutionName: optionalNonemptyTextSchema,
+  departmentName: nullableTextSchema,
+  educationLevel: educationLevelSchema,
+  occupation: occupationEnumSchema.nullable().optional(),
+  wantsNewsletter: booleanSchema,
+})
 
-export interface GuestParticipantInfo {
-  fullName: string
-  email: string
-  institutionName: string
-  departmentName: string
-  occupation: OccupationType
-  educationLevel: EducationLevelType
-  wantsNewsletter: boolean
-}
+const guestParticipantInfoSchema = z.object({
+  fullName: nonemptyTextSchema,
+  email: nonemptyTextSchema,
+  institutionName: nonemptyTextSchema,
+  departmentName: nonemptyTextSchema,
+  occupation: occupationEnumSchema,
+  educationLevel: educationLevelSchema,
+  wantsNewsletter: booleanSchema,
+})
 
-export interface HTTPMeetingEnrollmentDetailed {
-  id: string
-  createdAt: Date
-  user: UserParticipantInfo | null
-  guest: GuestParticipantInfo | null
-}
+const httpMeetingEnrollmentDetailedSchema = z.object({
+  id: modelPublicIdSchema,
+  createdAt: dateSchema,
+  user: userParticipantInfoSchema.nullable(),
+  guest: guestParticipantInfoSchema.nullable(),
+})
 
-export interface MeetingEnrollmentDetailedPresenterInput extends MEPresenterInput {}
+export type UserParticipantInfo = z.infer<typeof userParticipantInfoSchema>
+export type GuestParticipantInfo = z.infer<typeof guestParticipantInfoSchema>
+export type HTTPMeetingEnrollmentDetailed = z.infer<typeof httpMeetingEnrollmentDetailedSchema>

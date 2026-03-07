@@ -3,7 +3,7 @@ import type {
   HTTPInstitutionalInfoForAdmin,
   InstitutionalInfoForAdminPresenterInput,
 } from '@custom-types/http/presenter/institutional-info/institutional-info-for-admin'
-import type { JSONContent } from '@tiptap/core'
+import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
 
 export class InstitutionalInfoForAdminPresenter
   implements IPresenterStrategy<InstitutionalInfoForAdminPresenterInput, HTTPInstitutionalInfoForAdmin>
@@ -11,7 +11,7 @@ export class InstitutionalInfoForAdminPresenter
   public toHTTP(input: InstitutionalInfoForAdminPresenterInput): HTTPInstitutionalInfoForAdmin {
     return {
       aboutImage: input.aboutImage,
-      aboutDescription: input.aboutDescription as JSONContent,
+      aboutDescription: input.aboutDescription as ProseMirrorSchemaType,
       statuteFile: input.statuteFile,
       electionNoticeFile: input.electionNoticeFile,
     }

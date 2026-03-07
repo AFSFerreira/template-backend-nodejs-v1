@@ -3,6 +3,7 @@ import type {
   HTTPNewsletterDetailedWithContent,
   NewsletterDetailedWithContentPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-detailed-with-content'
+import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
 
 export class NewsletterDetailedWithContentPresenter
   implements IPresenterStrategy<NewsletterDetailedWithContentPresenterInput, HTTPNewsletterDetailedWithContent>
@@ -17,7 +18,7 @@ export class NewsletterDetailedWithContentPresenter
       volume: input.volume,
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
-      proseContent: input.proseContent,
+      proseContent: input.proseContent as ProseMirrorSchemaType,
       fileContent: input.fileContent,
     }
   }

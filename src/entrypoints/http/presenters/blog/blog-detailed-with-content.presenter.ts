@@ -3,6 +3,7 @@ import type {
   BlogDetailedWithContentPresenterInput,
   HTTPBlogDetailedWithContent,
 } from '@custom-types/http/presenter/blog/blog-detailed-with-content'
+import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
 
 export class BlogDetailedWithContentPresenter
   implements IPresenterStrategy<BlogDetailedWithContentPresenterInput, HTTPBlogDetailedWithContent>
@@ -18,7 +19,7 @@ export class BlogDetailedWithContentPresenter
       bannerImage: input.bannerImage,
       authorName: input.User?.fullName ?? input.authorName,
       subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
-      content: input.content,
+      content: input.content as ProseMirrorSchemaType,
     }
   }
 }

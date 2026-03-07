@@ -1,3 +1,7 @@
-export interface HTTPDashboardMetricsDefault {}
+import z from 'zod'
 
-export interface DashboardMetricsDefaultPresenterInput extends Record<string, unknown> {}
+export type DashboardMetricsDefaultPresenterInput = Record<string, unknown>
+
+const httpDashboardMetricsDefaultSchema = z.object({})
+
+export type HTTPDashboardMetricsDefault = z.infer<typeof httpDashboardMetricsDefaultSchema>

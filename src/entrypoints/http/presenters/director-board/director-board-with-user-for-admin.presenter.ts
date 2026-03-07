@@ -3,7 +3,7 @@ import type {
   DirectorBoardWithUserForAdminPresenterInput,
   HTTPDirectorBoardWithUserForAdmin,
 } from '@custom-types/http/presenter/director-board/director-board-with-user-for-admin'
-import type { JSONContent } from '@tiptap/core'
+import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
 
 export class DirectorBoardWithUserForAdminPresenter
   implements IPresenterStrategy<DirectorBoardWithUserForAdminPresenterInput, HTTPDirectorBoardWithUserForAdmin>
@@ -15,7 +15,7 @@ export class DirectorBoardWithUserForAdminPresenter
       profileImage: input.profileImage,
       position: input.DirectorPosition.position,
       linkLattes: input.User.linkLattes,
-      aboutMe: input.aboutMe as JSONContent,
+      aboutMe: input.aboutMe as ProseMirrorSchemaType,
     }
   }
 }

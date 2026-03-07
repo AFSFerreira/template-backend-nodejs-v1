@@ -1,9 +1,12 @@
-export interface DashboardNewslettersMetrics {
+import { numberSchema } from '@lib/zod/utils/primitives/number-schema'
+import z from 'zod'
+
+export interface DashboardNewslettersMetricsPresenterInput {
   totalNewsletters: number
 }
 
-export interface HTTPDashboardNewslettersMetrics {
-  totalNewsletters: number
-}
+const dashboardNewslettersMetricsSchema = z.object({
+  totalNewsletters: numberSchema,
+})
 
-export interface DashboardNewslettersMetricsPresenterInput extends DashboardNewslettersMetrics {}
+export type HTTPDashboardNewslettersMetrics = z.infer<typeof dashboardNewslettersMetricsSchema>
