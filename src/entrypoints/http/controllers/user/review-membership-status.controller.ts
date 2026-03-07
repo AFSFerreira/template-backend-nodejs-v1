@@ -27,12 +27,10 @@ export async function reviewMembershipStatus(
     },
   })
 
-  const formattedReply = user
-    ? UserPresenter.toHTTP<UserDetailedPresenterInput, HTTPUserWithDetails>(
-        user,
-        tsyringeTokens.presenters.user.userDetailed,
-      )
-    : undefined
+  const formattedReply = UserPresenter.toHTTP<UserDetailedPresenterInput, HTTPUserWithDetails>(
+    user,
+    tsyringeTokens.presenters.user.userDetailed,
+  )
 
   return await reply.status(200).send({ data: formattedReply })
 }

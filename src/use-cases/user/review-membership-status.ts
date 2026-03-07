@@ -62,7 +62,7 @@ export class ReviewMembershipStatusUseCase {
     }
 
     switch (membershipStatusReview) {
-      case 'ACTIVE': {
+      case MembershipStatusType.ACTIVE: {
         // Aprova o pedido de associação
         await this.dbContext.runInTransaction(async () => {
           await this.usersRepository.update({
@@ -103,14 +103,13 @@ export class ReviewMembershipStatusUseCase {
 
       case 'REJECTED': {
         await this.dbContext.runInTransaction(async () => {
-          await this.usersRepository.delete(user.id)
-
           await this.userActionAuditsRepository.create({
             actionType: SystemActionType.MEMBERSHIP_REJECTED,
             actorId: actor.id,
-            targetId: user.id,
             ipAddress: audit.ipAddress,
           })
+
+          await this.usersRepository.delete(user.id)
         })
 
         if (user.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
