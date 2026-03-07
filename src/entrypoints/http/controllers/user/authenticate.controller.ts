@@ -12,7 +12,9 @@ import { container } from 'tsyringe'
 export async function authenticate(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
   const { login, password } = request.body
 
-  const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(getConnectionInfo(request))
+  const info = getConnectionInfo(request)
+
+  const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(info)
 
   const useCase = container.resolve(AuthenticateUseCase)
 
