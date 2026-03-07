@@ -12,6 +12,7 @@ import { getAllDirectorBoardSchema } from '@http/schemas/director-board/get-all-
 import { getDirectorBoardAboutHTMLParamsSchema } from '@http/schemas/director-board/get-director-board-about-html-params-schema'
 import { updateDirectorBoardBodySchema } from '@http/schemas/director-board/update-director-board-body-schema'
 import { updateDirectorBoardParamsSchema } from '@http/schemas/director-board/update-director-board-params-schema'
+import { directorBoardSwaggerDocs } from '@lib/swagger/models/director-board'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createDirectorBoard } from './create-director-board.controller'
 import { deleteDirectorBoard } from './delete-director-board.controller'
@@ -29,6 +30,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...directorBoardSwaggerDocs.getAllDirectorsBoard,
         querystring: getAllDirectorBoardSchema,
       },
     },
@@ -39,6 +41,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...directorBoardSwaggerDocs.getDirectorBoardAboutHTML,
         params: getDirectorBoardAboutHTMLParamsSchema,
       },
     },
@@ -50,6 +53,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...directorBoardSwaggerDocs.findDirectorBoardByPublicIdForAdmin,
         params: findDirectorBoardByPublicIdForAdminParamsSchema,
       },
     },
@@ -60,6 +64,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...directorBoardSwaggerDocs.findDirectorBoardByPublicId,
         params: findDirectorBoardByPublicIdParamsSchema,
       },
     },
@@ -72,6 +77,9 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...directorBoardSwaggerDocs.uploadDirectorBoardProfileImage,
+      },
     },
     uploadDirectorBoardProfileImage,
   )
@@ -82,6 +90,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...directorBoardSwaggerDocs.createDirectorBoard,
         body: createDirectorBoardBodySchema,
       },
     },
@@ -96,6 +105,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...directorBoardSwaggerDocs.updateDirectorBoard,
         params: updateDirectorBoardParamsSchema,
         body: updateDirectorBoardBodySchema,
       },
@@ -110,6 +120,7 @@ export async function directorBoardRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...directorBoardSwaggerDocs.deleteDirectorBoard,
         params: deleteDirectorBoardParamsSchema,
       },
     },

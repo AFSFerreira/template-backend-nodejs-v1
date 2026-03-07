@@ -10,6 +10,7 @@ import { getAllInstitutionsWithUsersQuerySchema } from '@http/schemas/institutio
 import { getAllInternalInstitutionsNamesQuerySchema } from '@http/schemas/institution/get-all-internal-institutions-names-query-schema'
 import { updateInstitutionBodySchema } from '@http/schemas/institution/update-institution-body-schema'
 import { updateInstitutionParamsSchema } from '@http/schemas/institution/update-institution-params-schema'
+import { institutionSwaggerDocs } from '@lib/swagger/models/institution'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createInstitution } from './create-institution.controller'
 import { deleteInstitution } from './delete-institution.controller'
@@ -25,6 +26,7 @@ export async function institutionRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...institutionSwaggerDocs.getAllInstitutionsWithUsers,
         querystring: getAllInstitutionsWithUsersQuerySchema,
       },
     },
@@ -35,6 +37,7 @@ export async function institutionRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...institutionSwaggerDocs.getAllInstitutionsNames,
         querystring: getAllInstitutionsQuerySchema,
       },
     },
@@ -45,6 +48,7 @@ export async function institutionRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...institutionSwaggerDocs.getAllInternalInstitutionsNames,
         querystring: getAllInternalInstitutionsNamesQuerySchema,
       },
     },
@@ -58,6 +62,7 @@ export async function institutionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...institutionSwaggerDocs.createInstitution,
         body: createInstitutionBodySchema,
       },
     },
@@ -71,6 +76,7 @@ export async function institutionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...institutionSwaggerDocs.updateInstitution,
         params: updateInstitutionParamsSchema,
         body: updateInstitutionBodySchema,
       },
@@ -85,6 +91,7 @@ export async function institutionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...institutionSwaggerDocs.deleteInstitution,
         params: deleteInstitutionParamsSchema,
       },
     },

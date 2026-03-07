@@ -8,6 +8,7 @@ import { deleteDirectorPositionParamsSchema } from '@http/schemas/director-posit
 import { getAllDirectorPositionsSchema } from '@http/schemas/director-position/get-all-director-positions-schema'
 import { updateDirectorPositionBodySchema } from '@http/schemas/director-position/update-director-position-body-schema'
 import { updateDirectorPositionParamsSchema } from '@http/schemas/director-position/update-director-position-params-schema'
+import { directorPositionSwaggerDocs } from '@lib/swagger/models/director-position'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createDirectorPosition } from './create-director-position.controller'
 import { deleteDirectorPosition } from './delete-director-position.controller'
@@ -22,6 +23,7 @@ export async function directorPositionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...directorPositionSwaggerDocs.getAllDirectorPositions,
         querystring: getAllDirectorPositionsSchema,
       },
     },
@@ -35,6 +37,7 @@ export async function directorPositionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...directorPositionSwaggerDocs.createDirectorPosition,
         body: createDirectorPositionBodySchema,
       },
     },
@@ -48,6 +51,7 @@ export async function directorPositionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...directorPositionSwaggerDocs.updateDirectorPosition,
         params: updateDirectorPositionParamsSchema,
         body: updateDirectorPositionBodySchema,
       },
@@ -62,6 +66,7 @@ export async function directorPositionRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...directorPositionSwaggerDocs.deleteDirectorPosition,
         params: deleteDirectorPositionParamsSchema,
       },
     },

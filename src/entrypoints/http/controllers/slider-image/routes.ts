@@ -10,6 +10,7 @@ import { getAllHomePageSlidersRestrictSchema } from '@http/schemas/slider-image/
 import { getAllHomePageSlidersSchema } from '@http/schemas/slider-image/get-all-home-page-sliders-schema'
 import { updateSliderImageBodySchema } from '@http/schemas/slider-image/update-slider-image-body-schema'
 import { updateSliderImageParamsSchema } from '@http/schemas/slider-image/update-slider-image-params-schema'
+import { sliderImageSwaggerDocs } from '@lib/swagger/models/slider-image'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createHomePageSliderImage } from './create-home-page-slider-image.controller'
 import { deleteSliderImage } from './delete-slider-image.controller'
@@ -26,6 +27,7 @@ export async function sliderImageRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...sliderImageSwaggerDocs.getAllHomePageSlidersRestrict,
         querystring: getAllHomePageSlidersRestrictSchema,
       },
     },
@@ -36,6 +38,7 @@ export async function sliderImageRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...sliderImageSwaggerDocs.getAllHomePageSliders,
         querystring: getAllHomePageSlidersSchema,
       },
     },
@@ -49,6 +52,7 @@ export async function sliderImageRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...sliderImageSwaggerDocs.createHomePageSliderImage,
         body: createHomePageSliderImageBodySchema,
       },
     },
@@ -59,6 +63,9 @@ export async function sliderImageRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...sliderImageSwaggerDocs.uploadSliderImage,
+      },
     },
     uploadSliderImage,
   )
@@ -70,6 +77,7 @@ export async function sliderImageRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...sliderImageSwaggerDocs.updateSliderImage,
         params: updateSliderImageParamsSchema,
         body: updateSliderImageBodySchema,
       },
@@ -84,6 +92,7 @@ export async function sliderImageRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...sliderImageSwaggerDocs.deleteSliderImage,
         params: deleteSliderImageParamsSchema,
       },
     },

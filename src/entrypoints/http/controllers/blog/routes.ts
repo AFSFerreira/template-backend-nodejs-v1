@@ -20,6 +20,7 @@ import { submitReviewToPendingParamsSchema } from '@http/schemas/blog/submit-rev
 import { submitPendingToPublishParamsSchema } from '@http/schemas/blog/submit-review-to-publish-params-schema'
 import { updateBlogBodySchema } from '@http/schemas/blog/update-blog-body-schema'
 import { updateBlogParamsSchema } from '@http/schemas/blog/update-blog-params-schema'
+import { blogSwaggerDocs } from '@lib/swagger/models/blog'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createDraftBlog } from './create-draft-blog.controller'
 import { createDraftCopyBlog } from './create-draft-copy-blog.controller'
@@ -49,6 +50,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...blogSwaggerDocs.getAllBlogs,
         querystring: getAllBlogsQuerySchema,
       },
     },
@@ -60,6 +62,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.getAllBlogsDetailed,
         querystring: getAllBlogsDetailedQuerySchema,
       },
     },
@@ -71,6 +74,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.getAllUserBlogsDetailed,
         querystring: getAllUserBlogsDetailedQuerySchema,
       },
     },
@@ -81,6 +85,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...blogSwaggerDocs.getBlogHtmlContent,
         params: getBlogHtmlContentParamsSchema,
       },
     },
@@ -92,6 +97,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.getRestrictBlogHtmlContent,
         params: getRestrictBlogHtmlContentParamsSchema,
       },
     },
@@ -103,6 +109,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.findBlogByPublicIdRestricted,
         params: findBlogByPublicIdParamsSchema,
       },
     },
@@ -113,6 +120,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...blogSwaggerDocs.findBlogByPublicId,
         params: findBlogByPublicIdParamsSchema,
       },
     },
@@ -127,6 +135,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.createPendingBlog,
         body: createBlogBodySchema,
       },
     },
@@ -139,6 +148,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.createDraftBlog,
         body: createBlogBodySchema,
       },
     },
@@ -150,6 +160,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.createDraftCopyBlog,
         params: createDraftCopyBlogParamsSchema,
       },
     },
@@ -162,6 +173,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.createAndPublishBlog,
         body: createBlogBodySchema,
       },
     },
@@ -172,6 +184,9 @@ export async function blogRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...blogSwaggerDocs.uploadBlogImage,
+      },
     },
     uploadBlogImage,
   )
@@ -180,6 +195,9 @@ export async function blogRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...blogSwaggerDocs.uploadBlogBanner,
+      },
     },
     uploadBlogBanner,
   )
@@ -191,6 +209,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.submitDraftForReview,
         params: submitDraftForReviewParamsSchema,
       },
     },
@@ -202,6 +221,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.submitReviewToPending,
         params: submitReviewToPendingParamsSchema,
       },
     },
@@ -213,6 +233,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.submitPendingToPublish,
         params: submitPendingToPublishParamsSchema,
       },
     },
@@ -224,6 +245,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.submitPublishedToPending,
         params: submitPublishedToPendingParamsSchema,
       },
     },
@@ -235,6 +257,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_LEADER_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.submitPendingToReview,
         params: submitPendingToReviewParamsSchema,
       },
     },
@@ -247,6 +270,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.updateBlog,
         params: updateBlogParamsSchema,
         body: updateBlogBodySchema,
       },
@@ -261,6 +285,7 @@ export async function blogRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(CONTENT_PRODUCERS_PERMISSIONS)],
       schema: {
+        ...blogSwaggerDocs.deleteBlog,
         params: deleteBlogParamsSchema,
       },
     },

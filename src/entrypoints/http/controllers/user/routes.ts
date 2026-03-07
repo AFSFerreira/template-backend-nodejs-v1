@@ -25,6 +25,7 @@ import { updateBodySchema } from '@http/schemas/user/update-user-body-schema'
 import { updateUserPermissionsBodySchema } from '@http/schemas/user/update-user-permissions-body-schema'
 import { updateUserPermissionsParamsSchema } from '@http/schemas/user/update-user-permissions-params-schema'
 import { verifyEmailBodySchema } from '@http/schemas/user/verify-email-body-schema'
+import { userSwaggerDocs } from '@lib/swagger/models/user'
 import { rateLimit } from '@utils/http/rate-limit'
 import { authenticate } from './authenticate.controller'
 import { changePassword } from './change-password.controller'
@@ -59,6 +60,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.getAllUsersDetailed,
         querystring: getAllUsersDetailedQuerySchema,
       },
     },
@@ -69,6 +71,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...userSwaggerDocs.getAllUsersSimplified,
         querystring: getAllUsersSimplifiedQuerySchema,
       },
     },
@@ -79,6 +82,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...userSwaggerDocs.checkAvailability,
         querystring: checkAvailabilityQuerySchema,
       },
     },
@@ -89,6 +93,9 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
+      schema: {
+        ...userSwaggerDocs.exportUsersData,
+      },
     },
     exportUsersData,
   )
@@ -97,6 +104,9 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
+      schema: {
+        ...userSwaggerDocs.getUserProfile,
+      },
     },
     getUserProfile,
   )
@@ -106,6 +116,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.findUserByPublicId,
         params: findUserByPublicIdParamsSchema,
       },
     },
@@ -118,6 +129,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       schema: {
+        ...userSwaggerDocs.createUser,
         body: registerBodySchema,
       },
     },
@@ -128,6 +140,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       schema: {
+        ...userSwaggerDocs.authenticate,
         body: authenticateBodySchema,
       },
     },
@@ -138,6 +151,9 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
+      schema: {
+        ...userSwaggerDocs.refreshToken,
+      },
     },
     refreshToken,
   )
@@ -146,6 +162,9 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyMultipart],
+      schema: {
+        ...userSwaggerDocs.uploadProfileImage,
+      },
     },
     uploadProfileImage,
   )
@@ -154,6 +173,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       schema: {
+        ...userSwaggerDocs.forgotPassword,
         body: forgotPasswordBodySchema,
       },
     },
@@ -164,6 +184,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       schema: {
+        ...userSwaggerDocs.verifyEmail,
         body: verifyEmailBodySchema,
       },
     },
@@ -176,6 +197,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       schema: {
+        ...userSwaggerDocs.resetPassword,
         body: resetPasswordBodySchema,
       },
     },
@@ -187,6 +209,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
       schema: {
+        ...userSwaggerDocs.changePassword,
         body: changePasswordBodySchema,
       },
     },
@@ -198,6 +221,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       preHandler: [verifyJwt],
       schema: {
+        ...userSwaggerDocs.requestEmailChange,
         body: requestEmailChangeBodySchema,
       },
     },
@@ -208,6 +232,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.AUTH),
       schema: {
+        ...userSwaggerDocs.confirmEmailChange,
         body: confirmEmailChangeBodySchema,
       },
     },
@@ -219,6 +244,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
       schema: {
+        ...userSwaggerDocs.updateUser,
         body: updateBodySchema,
       },
     },
@@ -230,6 +256,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
       schema: {
+        ...userSwaggerDocs.updateUser,
         body: updateBodySchema,
       },
     },
@@ -241,6 +268,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.reviewMembershipStatus,
         params: reviewMembershipStatusParamsSchema,
         body: reviewMembershipStatusBodySchema,
       },
@@ -253,6 +281,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.updateMembershipStatus,
         params: updateMembershipStatusParamsSchema,
         body: updateMembershipStatusBodySchema,
       },
@@ -265,6 +294,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.updateUserPermissions,
         params: updateUserPermissionsParamsSchema,
         body: updateUserPermissionsBodySchema,
       },
@@ -277,6 +307,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.transferAdminRole,
         body: transferAdminRoleBodySchema,
       },
     },
@@ -289,6 +320,9 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
+      schema: {
+        ...userSwaggerDocs.logout,
+      },
     },
     logout,
   )
@@ -297,6 +331,9 @@ export async function userRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt],
+      schema: {
+        ...userSwaggerDocs.deleteUser,
+      },
     },
     deleteUser,
   )
@@ -306,6 +343,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...userSwaggerDocs.deleteUserByAdmin,
         params: deleteUserByAdminParamsSchema,
       },
     },

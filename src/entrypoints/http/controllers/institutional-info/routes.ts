@@ -5,6 +5,7 @@ import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@http/middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { updateInstitutionalInfoBodySchema } from '@http/schemas/institutional-info/update-institutional-info-body-schema'
+import { institutionalInfoSwaggerDocs } from '@lib/swagger/models/institutional-info'
 import { rateLimit } from '@utils/http/rate-limit'
 import { getInstitutionalInfo } from './get-institutional-info.controller'
 import { getInstitutionalInfoAboutDescriptionHTML } from './get-institutional-info-about-html.controller'
@@ -18,6 +19,9 @@ export async function institutionalInfoRoutes(app: ZodFastifyInstance) {
     '/',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        ...institutionalInfoSwaggerDocs.getInstitutionalInfo,
+      },
     },
     getInstitutionalInfo,
   )
@@ -25,6 +29,9 @@ export async function institutionalInfoRoutes(app: ZodFastifyInstance) {
     '/about-description/html',
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        ...institutionalInfoSwaggerDocs.getInstitutionalInfoAboutDescriptionHTML,
+      },
     },
     getInstitutionalInfoAboutDescriptionHTML,
   )
@@ -33,6 +40,9 @@ export async function institutionalInfoRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
+      schema: {
+        ...institutionalInfoSwaggerDocs.getInstitutionalInfoForAdmin,
+      },
     },
     getInstitutionalInfoForAdmin,
   )
@@ -43,6 +53,9 @@ export async function institutionalInfoRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...institutionalInfoSwaggerDocs.uploadInstitutionalAboutImage,
+      },
     },
     uploadInstitutionalAboutImage,
   )
@@ -55,6 +68,7 @@ export async function institutionalInfoRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(ADMIN_PERMISSIONS)],
       schema: {
+        ...institutionalInfoSwaggerDocs.updateInstitutionalInfo,
         body: updateInstitutionalInfoBodySchema,
       },
     },

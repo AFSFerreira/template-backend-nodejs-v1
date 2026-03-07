@@ -10,6 +10,7 @@ import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/f
 import { getAllNewslettersQuerySchema } from '@http/schemas/newsletter/get-all-newsletters-query-schema'
 import { updateNewsletterBodySchema } from '@http/schemas/newsletter/update-newsletter-body-schema'
 import { updateNewsletterParamsSchema } from '@http/schemas/newsletter/update-newsletter-params-schema'
+import { newsletterSwaggerDocs } from '@lib/swagger/models/newsletter'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createNewsletter } from './create-newsletter.controller'
 import { deleteNewsletter } from './delete-newsletter.controller'
@@ -30,6 +31,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
       schema: {
+        ...newsletterSwaggerDocs.getAllNewsletters,
         querystring: getAllNewslettersQuerySchema,
       },
     },
@@ -41,6 +43,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
       schema: {
+        ...newsletterSwaggerDocs.findNewsletterByPublicIdRestricted,
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
@@ -52,6 +55,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
       schema: {
+        ...newsletterSwaggerDocs.findNewsletterByPublicId,
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
@@ -63,6 +67,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
       schema: {
+        ...newsletterSwaggerDocs.getNewsletterHtmlContent,
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
@@ -76,6 +81,9 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...newsletterSwaggerDocs.uploadNewsletterHtml,
+      },
     },
     uploadNewsletterHtml,
   )
@@ -84,6 +92,9 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...newsletterSwaggerDocs.uploadNewsletterImage,
+      },
     },
     uploadNewsletterImage,
   )
@@ -94,6 +105,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
       schema: {
+        ...newsletterSwaggerDocs.createNewsletter,
         body: createNewsletterBodySchema,
       },
     },
@@ -105,6 +117,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
       schema: {
+        ...newsletterSwaggerDocs.sendNewsletterEmail,
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
@@ -119,6 +132,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
       schema: {
+        ...newsletterSwaggerDocs.updateNewsletter,
         params: updateNewsletterParamsSchema,
         body: updateNewsletterBodySchema,
       },
@@ -133,6 +147,7 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
       schema: {
+        ...newsletterSwaggerDocs.deleteNewsletter,
         params: deleteNewsletterParamsSchema,
       },
     },

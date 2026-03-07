@@ -18,6 +18,7 @@ import { registerUserMeetingBodySchema } from '@http/schemas/meeting/register-us
 import { registerUserMeetingParamsSchema } from '@http/schemas/meeting/register-user-meeting-params-schema'
 import { updateMeetingBodySchema } from '@http/schemas/meeting/update-meeting-body-schema'
 import { updateMeetingParamsSchema } from '@http/schemas/meeting/update-meeting-params-schema'
+import { meetingSwaggerDocs } from '@lib/swagger/models/meeting'
 import { rateLimit } from '@utils/http/rate-limit'
 import { createMeeting } from './create-meeting.controller'
 import { deleteMeeting } from './delete-meeting.controller'
@@ -38,6 +39,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...meetingSwaggerDocs.getAllMeetings,
         querystring: getAllMeetingsQuerySchema,
       },
     },
@@ -48,6 +50,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...meetingSwaggerDocs.findMeetingByPublicId,
         params: findMeetingByPublicIdParamsSchema,
       },
     },
@@ -59,6 +62,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...meetingSwaggerDocs.getMeetingParticipants,
         params: getMeetingParticipantsParamsSchema,
         querystring: getMeetingParticipantsQuerySchema,
       },
@@ -71,6 +75,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...meetingSwaggerDocs.exportMeetingEnrollments,
         params: exportMeetingEnrollmentsParamsSchema,
         querystring: exportMeetingEnrollmentsQuerySchema,
       },
@@ -85,6 +90,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.CREATE_RESOURCE),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...meetingSwaggerDocs.createMeeting,
         body: createMeetingBodySchema,
       },
     },
@@ -96,6 +102,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       preHandler: [verifyJwt],
       schema: {
+        ...meetingSwaggerDocs.registerUserMeeting,
         params: registerUserMeetingParamsSchema,
         body: registerUserMeetingBodySchema,
       },
@@ -107,6 +114,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
+        ...meetingSwaggerDocs.registerGuestMeeting,
         params: registerGuestMeetingParamsSchema,
         body: registerGuestMeetingBodySchema,
       },
@@ -118,6 +126,9 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...meetingSwaggerDocs.uploadMeetingBanner,
+      },
     },
     uploadMeetingBanner,
   )
@@ -126,6 +137,9 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS), verifyMultipart],
+      schema: {
+        ...meetingSwaggerDocs.uploadMeetingAgenda,
+      },
     },
     uploadMeetingAgenda,
   )
@@ -137,6 +151,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...meetingSwaggerDocs.updateMeeting,
         params: updateMeetingParamsSchema,
         body: updateMeetingBodySchema,
       },
@@ -151,6 +166,7 @@ export async function meetingRoutes(app: ZodFastifyInstance) {
       ...rateLimit(RATE_LIMIT_TIERS.MUTATION),
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
+        ...meetingSwaggerDocs.deleteMeeting,
         params: deleteMeetingParamsSchema,
       },
     },
