@@ -123,9 +123,9 @@ export class PrismaSliderImagesRepository implements SliderImagesRepository {
     })
   }
 
-  async decrementOrdersStartingFrom(minOrder: number) {
-    await this.dbContext.client.sliderImage.updateMany({
-      where: { order: { gte: minOrder } },
+  async shiftOrderDown(order: number) {
+    await this.dbContext.client.sliderImage.update({
+      where: { order },
       data: { order: { decrement: 1 } },
     })
   }

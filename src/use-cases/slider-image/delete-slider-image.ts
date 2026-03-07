@@ -29,9 +29,16 @@ export class DeleteSliderImageUseCase {
       error: new SliderImageNotFoundError(),
     })
 
+    const totalBlogImages = await this.sliderImagesRepository.totalCount()
+
     await this.dbContext.runInTransaction(async () => {
       await this.sliderImagesRepository.delete(sliderImage.id)
-      await this.sliderImagesRepository.decrementOrdersStartingFrom(sliderImage.order)
+
+      // NOTE: Não é possível utilizar update many aqui porque não podemos
+      // garantir a ordem de execução dos decrementos, e isto pode causar conflitos
+      for (let order = sliderImage.order + 1; order <= totalBlogImages; order++) {
+        await this.sliderImagesRepository.shiftOrderDown(order)
+      }
     })
 
     await deleteFileEnqueued({

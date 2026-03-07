@@ -83,7 +83,7 @@ export class UpdateMeetingUseCase {
 
         const firstMeetingDay = new Date(firstMeetingDayValue)
 
-        if (toDateOnlyUTC(body.paymentMeetingInfo.limitDate) < toDateOnlyUTC(firstMeetingDay)) {
+        if (toDateOnlyUTC(body.paymentMeetingInfo.limitDate) > toDateOnlyUTC(firstMeetingDay)) {
           throw new InvalidPaymentLimitDateError()
         }
       }

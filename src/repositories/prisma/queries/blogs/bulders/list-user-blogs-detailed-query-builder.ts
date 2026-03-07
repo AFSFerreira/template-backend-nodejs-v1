@@ -111,6 +111,7 @@ export class ListUserBlogsDetailedQueryBuilder {
         b.public_id,
         b.banner_image,
         b.editorial_status,
+        b.author_name,
         b.title,
         b.access_count,
         b.search_content,

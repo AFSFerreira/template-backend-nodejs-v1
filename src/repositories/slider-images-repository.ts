@@ -10,7 +10,7 @@ export interface SliderImagesRepository {
   totalCount: () => Promise<number>
   update: (query: UpdateSliderImageQuery) => Promise<SliderImage>
   delete: (id: number) => Promise<void>
-  decrementOrdersStartingFrom: (minOrder: number) => Promise<void>
+  shiftOrderDown: (order: number) => Promise<void>
   listAll: (query: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
   listActive: (query: ListAllSliderImagesQuery) => Promise<PaginatedResult<SliderImage[]>>
   swapOrders: (firstId: number, secondId: number) => Promise<boolean>
