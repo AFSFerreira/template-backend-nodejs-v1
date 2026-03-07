@@ -19,6 +19,7 @@ import { fastifyConfiguration } from '@http/configurations/fastify-configuration
 import { jwtConfiguration } from '@http/configurations/jwt-configuration'
 import { multipartConfiguration } from '@http/configurations/multipart-configuration'
 import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
+import { swaggerConfiguration } from '@http/configurations/swagger-configuration'
 import { logRequest } from '@http/plugins/request-logger'
 import { logResponse } from '@http/plugins/response-logger'
 import { preSerialization } from '@http/plugins/serializer'
@@ -31,7 +32,7 @@ import { registerAppSignals } from '@services/system/register-app-signals'
 import { wsConfiguration } from '@ws/configurations/ws-configuration'
 import { websocketRoutes } from '@ws/routes'
 import fastify, { type FastifyInstance } from 'fastify'
-import { jsonSchemaTransform, serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
+import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = fastify(fastifyConfiguration).withTypeProvider<ZodTypeProvider>()
@@ -39,25 +40,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   initSentry()
   registerAppSignals(app)
 
-  app.register(swagger, {
-    openapi: {
-      info: {
-        title: 'Astrobiologia API',
-        description: 'Documentação do sistema',
-        version: '1.0.0',
-      },
-      components: {
-        securitySchemes: {
-          bearerAuth: {
-            type: 'http',
-            scheme: 'bearer',
-            bearerFormat: 'JWT',
-          },
-        },
-      },
-    },
-    transform: jsonSchemaTransform,
-  })
+  app.register(swagger, swaggerConfiguration)
 
   if (IS_DEV) {
     app.register(swaggerUi, {
