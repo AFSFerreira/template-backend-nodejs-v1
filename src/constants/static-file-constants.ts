@@ -2,9 +2,13 @@ import path from 'node:path'
 
 export const DEFAULT_PROFILE_IMAGE_NAME = 'default.png'
 
+// TIP: Considerar adotar a convenção de sempre nomear as variantes de templates com 'template.html.njk' e 'template.text.njk'
+// e apenas atribuir o nome do novo template à pasta que irá conter o template em si (e.g.: 'template-evento', 'template-natal', etc)
+
 // Caminhos para templates de renderer a partir da pasta de `src/templates`:
-export const NEWSLETTER_EMAIL_HTML_TEMPLATE = path.join('newsletter', 'newsletter-email', 'template.html.njk')
-export const NEWSLETTER_EMAIL_TEXT_TEMPLATE = path.join('newsletter', 'newsletter-email', 'template.text.njk')
+export const NEWSLETTER_BASE_TEMPLATE_FOLDER = path.join('newsletter', 'newsletter-email', 'default')
+export const NEWSLETTER_EMAIL_HTML_TEMPLATE = path.join(NEWSLETTER_BASE_TEMPLATE_FOLDER, 'template.html.njk')
+export const NEWSLETTER_EMAIL_TEXT_TEMPLATE = path.join(NEWSLETTER_BASE_TEMPLATE_FOLDER, 'template.text.njk')
 
 // Caminhos de templates Nunjucks de e-mails de usuário (HTML e texto):
 export const CONFIRM_ACCOUNT_HTML_TEMPLATE = path.join('user', 'confirm-account', 'confirm-account.html.njk')

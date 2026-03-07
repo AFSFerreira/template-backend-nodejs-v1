@@ -173,9 +173,6 @@ importers:
       slash:
         specifier: 5.1.0
         version: 5.1.0
-      swagger-themes:
-        specifier: 1.4.3
-        version: 1.4.3
       tsyringe:
         specifier: 4.10.0
         version: 4.10.0
@@ -3971,9 +3968,6 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
-
-  swagger-themes@1.4.3:
-    resolution: {integrity: sha512-1G0CqJC1IBbNxkAOyJoREd9hfwXH1R6+3GOFxLhQho2w2i+AbaJqkF4mTJhkce4yhaEMUXvv4KKu1YO/qpe6nQ==}
 
   tar-stream@2.2.0:
     resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}
@@ -8201,8 +8195,6 @@ snapshots:
       has-flag: 3.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
-
-  swagger-themes@1.4.3: {}
 
   tar-stream@2.2.0:
     dependencies:

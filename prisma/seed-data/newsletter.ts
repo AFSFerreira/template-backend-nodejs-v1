@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/generated/client'
 import { NewsletterFormatType } from '@prisma/generated/client'
 
-export const newsletterDataArray1: Prisma.NewsletterCreateInput[] = []
+export const newsletterDataArray1: Prisma.NewsletterCreateWithoutNewsletterTemplateInput[] = []
 
 for (let idx = 0; idx <= 70; idx++) {
   newsletterDataArray1.push({

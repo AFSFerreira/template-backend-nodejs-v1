@@ -480,11 +480,24 @@ model Newsletter {
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
+  newsletterTemplateId Int                @map("newsletter_template_id")
+  NewsletterTemplate   NewsletterTemplate @relation(fields: [newsletterTemplateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
   @@unique([editionNumber, volume])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
   @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
   @@index([volume(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_volume_trgm_gin", type: Gin)
   @@map("newsletters")
+}
+
+model NewsletterTemplate {
+  id             Int    @id @default(autoincrement())
+  publicId       String @unique @default(uuid(7)) @map("public_id")
+  templateFolder String @unique // Caminho relativo da pasta do template com relação ao diretório ./src/templates
+
+  Newsletter Newsletter[] @relation()
+
+  @@map("newsletter_templates")
 }
 
 model SliderImage {

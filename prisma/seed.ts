@@ -14,6 +14,7 @@ import { meetingEnrollmentDataArray1 } from './seed-data/meeting-enrollments'
 import { meetingPresentationNestedMeetingEnrollmentDataArray1 } from './seed-data/meeting-presentations'
 import { meetingDataArray1 } from './seed-data/meetings'
 import { newsletterDataArray1 } from './seed-data/newsletter'
+import { newsletterTemplateDataArray1 } from './seed-data/newsletter-template'
 import { sliderImageDataArray1 } from './seed-data/slider-image'
 import { usersDataArray1, usersDataArray2, usersDataArray3 } from './seed-data/users'
 
@@ -171,9 +172,22 @@ async function main() {
     skipDuplicates: true,
   })
 
+  // NOTE: Se precisar introduzir novos templates de Newsletters, basta
+  // povoar o array newsletterTemplateDataArray1 com os inputs e rodar o seed
+  // já que ele é projetado pra ser idempotente
+
+  // Criação dos Templates de Newsletters:
+  const createdNewsletterTemplates = await prisma.newsletterTemplate.createManyAndReturn({
+    data: newsletterTemplateDataArray1,
+    skipDuplicates: true,
+  })
+
   // Criação de Newsletters:
   await prisma.newsletter.createMany({
-    data: newsletterDataArray1,
+    data: newsletterDataArray1.map((newsletter) => ({
+      ...newsletter,
+      newsletterTemplateId: createdNewsletterTemplates[0].id,
+    })),
     skipDuplicates: true,
   })
 
