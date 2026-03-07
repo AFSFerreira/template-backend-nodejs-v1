@@ -4,21 +4,43 @@ import { IS_DEV } from '@constants/env-constants'
 import nunjucks from 'nunjucks'
 
 export class TemplateEngine {
-  private static instance: Environment | undefined
+  private static htmlInstance: Environment | undefined
+  private static textInstance: Environment | undefined
+  private static loader: nunjucks.FileSystemLoader | undefined
 
   private constructor() {}
 
-  public static getInstance(): Environment {
-    if (!TemplateEngine.instance) {
-      TemplateEngine.instance = nunjucks.configure(NUNJUCKS_TEMPLATES_ROOT_PATH, {
-        autoescape: true,
+  private static getLoader(): nunjucks.FileSystemLoader {
+    if (!TemplateEngine.loader) {
+      TemplateEngine.loader = new nunjucks.FileSystemLoader(NUNJUCKS_TEMPLATES_ROOT_PATH, {
+        watch: IS_DEV,
         noCache: IS_DEV,
+      })
+    }
+    return TemplateEngine.loader
+  }
+
+  public static getHtmlInstance(): Environment {
+    if (!TemplateEngine.htmlInstance) {
+      TemplateEngine.htmlInstance = new nunjucks.Environment(TemplateEngine.getLoader(), {
+        autoescape: true,
         throwOnUndefined: true,
         trimBlocks: true,
         lstripBlocks: true,
       })
     }
+    return TemplateEngine.htmlInstance
+  }
 
-    return TemplateEngine.instance
+  public static getTextInstance(): Environment {
+    if (!TemplateEngine.textInstance) {
+      TemplateEngine.textInstance = new nunjucks.Environment(TemplateEngine.getLoader(), {
+        autoescape: false,
+        throwOnUndefined: true,
+        trimBlocks: true,
+        lstripBlocks: true,
+      })
+    }
+    return TemplateEngine.textInstance
   }
 }

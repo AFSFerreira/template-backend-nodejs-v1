@@ -21,10 +21,10 @@ export abstract class BaseRenderer<TInput> {
   }
 
   public async render(input: TInput, options?: RenderOptions): Promise<RendererOutput> {
-    const engine = TemplateEngine.getInstance()
     const payload = this.mapPayload(input)
 
-    let html = engine.render(this.htmlTemplatePath, payload)
+    const htmlEngine = TemplateEngine.getHtmlInstance()
+    let html = htmlEngine.render(this.htmlTemplatePath, payload)
 
     if (options) {
       if (options.minify) {
@@ -48,9 +48,12 @@ export abstract class BaseRenderer<TInput> {
       }
     }
 
+    const textEngine = TemplateEngine.getTextInstance()
+    const text = this.textTemplatePath ? textEngine.render(this.textTemplatePath, payload) : ''
+
     return {
       html,
-      text: this.textTemplatePath ? engine.render(this.textTemplatePath, payload) : '',
+      text,
       attachments: this.getAttachments(),
     }
   }
