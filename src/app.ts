@@ -41,7 +41,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   registerAppSignals(app)
 
   // REVIEW: Vale a pena expôr o JSON para o frontend
-  // consumir com um Orval ou um Kubb?
+  // consumir com um Orval ou Kubb?
   if (IS_DEV) {
     app.register(swagger, swaggerConfiguration)
 
