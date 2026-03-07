@@ -40,9 +40,11 @@ export async function buildApp(): Promise<FastifyInstance> {
   initSentry()
   registerAppSignals(app)
 
-  app.register(swagger, swaggerConfiguration)
-
+  // REVIEW: Vale a pena expôr o JSON para o frontend
+  // consumir com um Orval ou um Kubb?
   if (IS_DEV) {
+    app.register(swagger, swaggerConfiguration)
+
     app.register(swaggerUi, {
       routePrefix: '/docs',
     })
