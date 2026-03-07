@@ -18,6 +18,14 @@ export const MANAGER_CANNOT_UPDATE_OTHER_DIRECTOR_BOARD: IApiResponse = {
   },
 }
 
+export const ONLY_ADMIN_CAN_CHANGE_DIRECTOR_BOARD_POSITION: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'ONLY_ADMIN_CAN_CHANGE_DIRECTOR_BOARD_POSITION',
+    message: 'Apenas administradores podem alterar o cargo de membros do corpo diretivo',
+  },
+}
+
 // ============= 404 Not Found =============
 
 export const DIRECTOR_BOARD_NOT_FOUND: IApiResponse = {

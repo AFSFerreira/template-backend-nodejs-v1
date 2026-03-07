@@ -22,6 +22,7 @@ import { generateText } from '@tiptap/core'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { ManagerCannotUpdateOtherDirectorBoardError } from '@use-cases/errors/director-board/manager-cannot-update-other-director-board-error'
+import { OnlyAdminCanChangeDirectorBoardPositionError } from '@use-cases/errors/director-board/only-admin-can-change-director-board-position-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -61,8 +62,10 @@ export class UpdateDirectorBoardUseCase {
       error: new UserNotFoundError(),
     })
 
-    // Validação: Manager só pode atualizar seu próprio perfil
-    if (requestUser.role === UserRoleType.MANAGER && currentDirectorBoard.User.publicId !== requestUser.publicId) {
+    const requestUserIsManager = requestUser.role === UserRoleType.MANAGER
+
+    // NOTE: Manager só pode atualizar seu próprio perfil
+    if (requestUserIsManager && currentDirectorBoard.User.publicId !== requestUser.publicId) {
       throw new ManagerCannotUpdateOtherDirectorBoardError()
     }
 
@@ -82,6 +85,10 @@ export class UpdateDirectorBoardUseCase {
     updateData.directorPositionId = currentDirectorBoard.DirectorPosition.id
 
     if (data.positionId) {
+      if (requestUserIsManager) {
+        throw new OnlyAdminCanChangeDirectorBoardPositionError()
+      }
+
       const directorPosition = ensureExists({
         value: await this.directorPositionsRepository.findUniqueBy({ publicId: data.positionId }),
         error: new DirectorPositionNotFoundError(),

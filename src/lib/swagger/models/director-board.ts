@@ -99,7 +99,9 @@ export const directorBoardSwaggerDocs = {
       200: z.object({ data: httpDirectorBoardWithUserSchema }).describe('Membro atualizado com sucesso'),
       400: apiErrorResponseSchema.describe('Conteúdo ProseMirror inválido'),
       401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Gestores só podem atualizar seu próprio perfil'),
+      403: apiErrorResponseSchema.describe(
+        'Gestores só podem atualizar seu próprio perfil / Apenas administradores podem alterar o cargo',
+      ),
       404: apiErrorResponseSchema.describe('Membro do corpo diretivo não encontrado'),
       409: apiErrorResponseSchema.describe('Cargo já ocupado por outro membro'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
