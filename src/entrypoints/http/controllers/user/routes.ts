@@ -8,6 +8,7 @@ import { authenticateBodySchema } from '@http/schemas/user/authenticate-body-sch
 import { checkAvailabilityQuerySchema } from '@http/schemas/user/check-availability-query-schema'
 import { confirmEmailChangeBodySchema } from '@http/schemas/user/confirm-email-change-body-schema'
 import { deleteUserByAdminParamsSchema } from '@http/schemas/user/delete-user-by-admin-params-schema'
+import { exportUsersDataQuerySchema } from '@http/schemas/user/export-users-data-query-schema'
 import { findUserByPublicIdParamsSchema } from '@http/schemas/user/find-by-public-id-params-schema'
 import { forgotPasswordBodySchema } from '@http/schemas/user/forgot-password-body-schema'
 import { getAllUsersDetailedQuerySchema } from '@http/schemas/user/get-all-users-detailed-query-schema'
@@ -95,6 +96,7 @@ export async function userRoutes(app: ZodFastifyInstance) {
       preHandler: [verifyJwt, verifyUserRole(MANAGER_PERMISSIONS)],
       schema: {
         ...userSwaggerDocs.exportUsersData,
+        querystring: exportUsersDataQuerySchema,
       },
     },
     exportUsersData,

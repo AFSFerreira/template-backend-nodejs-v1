@@ -111,7 +111,7 @@ export class SendNewsletterEmailUseCase {
 
     const usersStream = this.usersRepository.streamAllUsers({
       where: {
-        membershipStatus: MembershipStatusType.ACTIVE,
+        membershipStatus: [MembershipStatusType.ACTIVE],
         wantsNewsletter: true,
       },
     })

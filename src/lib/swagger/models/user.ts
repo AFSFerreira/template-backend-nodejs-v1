@@ -261,10 +261,11 @@ export const userSwaggerDocs = {
 
   exportUsersData: {
     summary: 'Exportar dados de usuários',
-    description: 'Exporta os dados dos usuários em formato CSV para download.',
+    description:
+      'Exporta os dados dos usuários para download no formato especificado pelo parâmetro `format` (excel ou csv). O padrão é excel.',
     tags: [swaggerTokens.tags.user.restricted],
     response: {
-      200: z.string().describe('Arquivo CSV com dados dos usuários'),
+      200: z.string().describe('Arquivo Excel ou CSV com dados dos usuários'),
       204: z.void().describe('Nenhuma informação de usuários disponível para exportação'),
       401: apiErrorResponseSchema.describe('Usuário não autenticado'),
       403: apiErrorResponseSchema.describe('Sem permissão de acesso'),

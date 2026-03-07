@@ -135,11 +135,22 @@ export class PrismaUsersRepository implements UsersRepository {
   async *streamAllUsers(query?: StreamAllUsersQuery) {
     const { where, batchSize = 500 } = query ?? {}
 
+    let filteredWhere: Prisma.UserWhereInput | undefined
+
+    if (where) {
+      const { membershipStatus, ...filteredInfo } = where
+
+      filteredWhere = filteredInfo
+    }
+
     let cursor: number | undefined
 
     while (true) {
       const batch: UserWithDetails[] = await this.dbContext.client.user.findMany({
-        where,
+        where: {
+          ...filteredWhere,
+          membershipStatus: where?.membershipStatus ? { in: where.membershipStatus } : undefined,
+        },
         take: batchSize,
         skip: cursor ? 1 : 0,
         cursor: cursor ? { id: cursor } : undefined,
