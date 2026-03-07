@@ -43,7 +43,7 @@ export class AuthenticateUseCase {
     const auditAuthenticateObject = {
       browser: browser ?? null,
       ipAddress: ipAddress ?? null,
-      remotePort: remotePort ?? null,
+      remotePort: String(remotePort) ?? null,
       userId: user?.id ?? null,
     }
 

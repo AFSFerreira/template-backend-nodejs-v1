@@ -20,6 +20,7 @@ import { jwtConfiguration } from '@http/configurations/jwt-configuration'
 import { multipartConfiguration } from '@http/configurations/multipart-configuration'
 import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
 import { swaggerConfiguration } from '@http/configurations/swagger-configuration'
+import { swaggerUiConfiguration } from '@http/configurations/swagger-ui-configuration'
 import { logRequest } from '@http/plugins/request-logger'
 import { logResponse } from '@http/plugins/response-logger'
 import { preSerialization } from '@http/plugins/serializer'
@@ -45,9 +46,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   if (IS_DEV) {
     app.register(swagger, swaggerConfiguration)
 
-    app.register(swaggerUi, {
-      routePrefix: '/docs',
-    })
+    app.register(swaggerUi, swaggerUiConfiguration)
   }
 
   app.setValidatorCompiler(validatorCompiler)
