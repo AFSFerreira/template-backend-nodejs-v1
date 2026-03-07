@@ -11,7 +11,7 @@ export type { BlogWithDetails } from '@custom-types/validators/blog-with-details
 
 export interface BlogDetailedForAdminPresenterInput extends CustomBlogDetailed {}
 
-const httpBlogDetailedForAdminSchema = z.object({
+export const httpBlogDetailedForAdminSchema = z.object({
   id: modelPublicIdSchema,
   title: nonemptyTextSchema,
   bannerImage: nonemptyTextSchema,

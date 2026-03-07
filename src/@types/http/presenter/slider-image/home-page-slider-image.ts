@@ -8,7 +8,7 @@ import z from 'zod'
 
 export interface HomePageSliderImagePresenterInput extends SliderImage {}
 
-const httpHomePageSliderImageSchema = z.object({
+export const httpHomePageSliderImageSchema = z.object({
   id: modelPublicIdSchema,
   image: nonemptyTextSchema,
   link: nullableTextSchema,

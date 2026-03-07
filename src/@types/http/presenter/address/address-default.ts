@@ -5,7 +5,7 @@ import z from 'zod'
 
 export interface AddressDefaultPresenterInput extends Address {}
 
-const httpAddressSchema = z.object({
+export const httpAddressSchema = z.object({
   zip: nonemptyTextSchema,
   number: nonemptyTextSchema,
   street: nonemptyTextSchema,

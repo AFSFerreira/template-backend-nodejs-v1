@@ -11,7 +11,7 @@ export interface UserSimplifiedForAdminPresenterInput extends CustomUserWithSimp
   role: UserRoleType
 }
 
-const httpSimplifiedUserDetailsForAdminSchema = z.object({
+export const httpSimplifiedUserDetailsForAdminSchema = z.object({
   id: modelPublicIdSchema,
   fullName: nonemptyTextSchema,
   profileImage: nonemptyTextSchema,

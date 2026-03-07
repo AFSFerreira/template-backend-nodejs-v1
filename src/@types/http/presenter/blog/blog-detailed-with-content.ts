@@ -10,7 +10,7 @@ import z from 'zod'
 
 export interface BlogDetailedWithContentPresenterInput extends BlogWithDetails {}
 
-const httpBlogDetailedWithContentSchema = z.object({
+export const httpBlogDetailedWithContentSchema = z.object({
   id: modelPublicIdSchema,
   title: nonemptyTextSchema,
   editorialStatus: editorialStatusEnumSchema,

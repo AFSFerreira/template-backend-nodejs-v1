@@ -5,7 +5,7 @@ import z from 'zod'
 
 export interface InstitutionDefaultPresenterInput extends Institution {}
 
-const httpInstitutionSchema = z.object({
+export const httpInstitutionSchema = z.object({
   id: modelPublicIdSchema,
   name: nonemptyTextSchema,
 })

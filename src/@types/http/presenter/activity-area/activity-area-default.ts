@@ -5,7 +5,7 @@ import z from 'zod'
 
 export interface ActivityAreaDefaultPresenterInput extends ActivityArea {}
 
-const httpActivityAreaSchema = z.object({
+export const httpActivityAreaSchema = z.object({
   area: nonemptyTextSchema,
   type: activityAreaEnumSchema,
 })

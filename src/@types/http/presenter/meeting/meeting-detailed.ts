@@ -7,7 +7,7 @@ import z from 'zod'
 
 export interface MeetingDetailedPresenterInput extends MeetingWithDetails {}
 
-const httpMeetingPaymentInfoSchema = z.object({
+export const httpMeetingPaymentInfoSchema = z.object({
   code: nonemptyTextSchema,
   pixKey: nonemptyTextSchema,
   bank: nonemptyTextSchema,
@@ -18,7 +18,7 @@ const httpMeetingPaymentInfoSchema = z.object({
   limitDate: dateSchema,
 })
 
-const httpMeetingWithDetailsSchema = z.object({
+export const httpMeetingWithDetailsSchema = z.object({
   id: modelPublicIdSchema,
   title: nonemptyTextSchema,
   bannerImage: nonemptyTextSchema,

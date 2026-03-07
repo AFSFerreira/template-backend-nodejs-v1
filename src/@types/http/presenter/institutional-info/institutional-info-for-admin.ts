@@ -5,7 +5,7 @@ import z from 'zod'
 
 export interface InstitutionalInfoForAdminPresenterInput extends InstitutionalInfo {}
 
-const httpInstitutionalInfoForAdminSchema = z.object({
+export const httpInstitutionalInfoForAdminSchema = z.object({
   aboutImage: nonemptyTextSchema,
   aboutDescription: proseMirrorSchema,
   statuteFile: nonemptyTextSchema,

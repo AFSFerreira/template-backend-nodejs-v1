@@ -7,7 +7,7 @@ export interface ActivityAreaWithBlogsCountPresenterInput {
   blogsCount: number
 }
 
-const httpActivityAreaWithBlogsCountSchema = z.object({
+export const httpActivityAreaWithBlogsCountSchema = z.object({
   area: nonemptyTextSchema,
   blogsCount: numberSchema,
 })

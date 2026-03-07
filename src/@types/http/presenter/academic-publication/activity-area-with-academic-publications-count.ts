@@ -7,7 +7,7 @@ export interface ActivityAreaWithAcademicPublicationsCountPresenterInput {
   publicationsCount: number
 }
 
-const httpActivityAreaWithAcademicPublicationsCountSchema = z.object({
+export const httpActivityAreaWithAcademicPublicationsCountSchema = z.object({
   area: nonemptyTextSchema,
   publicationsCount: numberSchema,
 })

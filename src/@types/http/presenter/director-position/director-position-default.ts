@@ -7,7 +7,7 @@ import z from 'zod'
 
 export interface DirectorPositionDefaultPresenterInput extends DirectorPosition {}
 
-const httpDirectorPositionSchema = z.object({
+export const httpDirectorPositionSchema = z.object({
   id: modelPublicIdSchema,
   position: nonemptyTextSchema,
   precedence: numberSchema,

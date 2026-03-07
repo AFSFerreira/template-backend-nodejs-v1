@@ -8,7 +8,7 @@ import z from 'zod'
 
 export interface BlogSimplifiedPresenterInput extends CustomBlogWithSimplifiedDetails {}
 
-const httpSimplifiedBlogSchema = z.object({
+export const httpSimplifiedBlogSchema = z.object({
   id: modelPublicIdSchema,
   title: nonemptyTextSchema,
   bannerImage: nonemptyTextSchema,

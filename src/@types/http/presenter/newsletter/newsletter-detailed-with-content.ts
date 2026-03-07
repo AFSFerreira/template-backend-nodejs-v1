@@ -9,7 +9,7 @@ import z from 'zod'
 
 export interface NewsletterDetailedWithContentPresenterInput extends NewsletterWithContentUrl {}
 
-const httpNewsletterDetailedWithContentSchema = z.object({
+export const httpNewsletterDetailedWithContentSchema = z.object({
   id: modelPublicIdSchema,
   editionNumber: nonemptyTextSchema,
   sequenceNumber: nonemptyTextSchema,

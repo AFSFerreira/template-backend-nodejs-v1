@@ -2,7 +2,7 @@ import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-sche
 import { nullableTextSchema } from '@lib/zod/utils/primitives/nullable-text-schema'
 import z from 'zod'
 
-const httpAddressSchema = z.object({
+export const httpAddressSchema = z.object({
   zip: nonemptyTextSchema,
   number: nonemptyTextSchema,
   street: nonemptyTextSchema,

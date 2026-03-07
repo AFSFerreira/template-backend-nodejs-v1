@@ -8,7 +8,7 @@ export type NewsletterWithContentUrl = Newsletter & { contentUrl: string }
 
 export interface NewsletterDefaultPresenterInput extends NewsletterWithContentUrl {}
 
-const httpNewsletterSchema = z.object({
+export const httpNewsletterSchema = z.object({
   id: modelPublicIdSchema,
   editionNumber: nonemptyTextSchema,
   sequenceNumber: nonemptyTextSchema,

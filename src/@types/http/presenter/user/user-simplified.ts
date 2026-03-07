@@ -7,7 +7,7 @@ import z from 'zod'
 export interface UserSimplifiedPresenterInput extends CustomUserWithSimplifiedDetails {}
 export type UserWithSimplifiedDetails = CustomUserWithSimplifiedDetails
 
-const httpSimplifiedUserDetailsSchema = z.object({
+export const httpSimplifiedUserDetailsSchema = z.object({
   id: modelPublicIdSchema,
   fullName: nonemptyTextSchema,
   profileImage: nonemptyTextSchema,

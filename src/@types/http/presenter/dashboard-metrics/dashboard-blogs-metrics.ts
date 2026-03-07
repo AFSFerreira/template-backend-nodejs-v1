@@ -5,7 +5,7 @@ export interface DashboardBlogsMetricsPresenterInput {
   totalBlogs: number
 }
 
-const dashboardBlogsMetricsSchema = z.object({
+export const dashboardBlogsMetricsSchema = z.object({
   totalBlogs: numberSchema,
 })
 

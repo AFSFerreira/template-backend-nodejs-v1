@@ -6,7 +6,7 @@ export interface AcademicPublicationYearPresenterInput {
   count: number
 }
 
-const httpAcademicPublicationYearSchema = z.object({
+export const httpAcademicPublicationYearSchema = z.object({
   year: numberSchema,
   count: numberSchema,
 })

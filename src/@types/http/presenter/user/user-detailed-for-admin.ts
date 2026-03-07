@@ -20,7 +20,7 @@ import z from 'zod'
 
 export type UserDetailedPresenterForAdminInput = UserWithDetailsDecrypted
 
-const httpAddressSchema = z.object({
+export const httpAddressSchema = z.object({
   zip: textSchema,
   number: textSchema,
   street: textSchema,
@@ -31,7 +31,7 @@ const httpAddressSchema = z.object({
   complement: optionalNullableTextSchema,
 })
 
-const httpEnrolledCourseSchema = z.object({
+export const httpEnrolledCourseSchema = z.object({
   courseName: optionalNullableTextSchema,
   startGraduationDate: optionalNullableTextSchema,
   expectedGraduationDate: optionalNullableTextSchema,
@@ -40,7 +40,7 @@ const httpEnrolledCourseSchema = z.object({
   sponsoringOrganization: optionalNullableTextSchema,
 })
 
-const httpAcademicPublicationSchema = z.object({
+export const httpAcademicPublicationSchema = z.object({
   title: nonemptyTextSchema,
   authors: nonemptyTextArraySchema,
   publicationYear: optionalNullableNumberSchema,
@@ -52,14 +52,14 @@ const httpAcademicPublicationSchema = z.object({
   area: nonemptyTextSchema,
 })
 
-const httpDirectorBoardInfoSchema = z.object({
+export const httpDirectorBoardInfoSchema = z.object({
   profileImage: nonemptyTextSchema,
   name: nonemptyTextSchema,
   position: nonemptyTextSchema,
   linkLattes: optionalNullableTextSchema,
 })
 
-const httpUserDetailsForAdminSchema = z.object({
+export const httpUserDetailsForAdminSchema = z.object({
   id: modelPublicIdSchema,
   fullName: nonemptyTextSchema,
   profileImage: nonemptyTextSchema,
@@ -92,7 +92,7 @@ const httpUserDetailsForAdminSchema = z.object({
   academicPublications: z.array(httpAcademicPublicationSchema).optional(),
 })
 
-const httpUserWithDetailsForAdminSchema = httpUserDetailsForAdminSchema.extend({
+export const httpUserWithDetailsForAdminSchema = httpUserDetailsForAdminSchema.extend({
   directorBoardInfo: httpDirectorBoardInfoSchema.nullable().optional(),
 })
 

@@ -12,7 +12,7 @@ import z from 'zod'
 
 export interface MeetingEnrollmentDetailedWithPresentationPresenterInput extends MeetingEnrollmentWithDetails {}
 
-const userParticipantInfoSchema = z.object({
+export const userParticipantInfoSchema = z.object({
   id: modelPublicIdSchema,
   fullName: nonemptyTextSchema,
   email: nonemptyTextSchema,
@@ -23,7 +23,7 @@ const userParticipantInfoSchema = z.object({
   wantsNewsletter: booleanSchema,
 })
 
-const guestParticipantInfoSchema = z.object({
+export const guestParticipantInfoSchema = z.object({
   fullName: nonemptyTextSchema,
   email: nonemptyTextSchema,
   institutionName: nonemptyTextSchema,
@@ -33,15 +33,15 @@ const guestParticipantInfoSchema = z.object({
   wantsNewsletter: booleanSchema,
 })
 
-const presentationAuthorInfoSchema = z.object({
+export const presentationAuthorInfoSchema = z.object({
   name: nonemptyTextSchema,
 })
 
-const presentationAffiliationInfoSchema = z.object({
+export const presentationAffiliationInfoSchema = z.object({
   name: nonemptyTextSchema,
 })
 
-const presentationInfoSchema = z.object({
+export const presentationInfoSchema = z.object({
   title: nonemptyTextSchema,
   description: nonemptyTextSchema,
   presentationType: presentationTypeEnumSchema,
@@ -49,7 +49,7 @@ const presentationInfoSchema = z.object({
   affiliations: z.array(presentationAffiliationInfoSchema),
 })
 
-const httpMeetingEnrollmentDetailedWithPresentationSchema = z.object({
+export const httpMeetingEnrollmentDetailedWithPresentationSchema = z.object({
   id: modelPublicIdSchema,
   createdAt: dateSchema,
   user: userParticipantInfoSchema.nullable(),

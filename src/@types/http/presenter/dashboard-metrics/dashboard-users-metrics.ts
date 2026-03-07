@@ -8,7 +8,7 @@ export interface DashboardUsersMetricsPresenterInput {
   totalUsers: number
 }
 
-const dashboardUsersMetricsSchema = z.object({
+export const dashboardUsersMetricsSchema = z.object({
   totalActiveUsers: numberSchema,
   totalPendingUsers: numberSchema,
   totalInactiveUsers: numberSchema,

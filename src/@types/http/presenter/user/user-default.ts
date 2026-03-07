@@ -13,7 +13,7 @@ import z from 'zod'
 
 export interface UserDefaultPresenterInput extends User {}
 
-const httpUserSchema = z.object({
+export const httpUserSchema = z.object({
   id: modelPublicIdSchema,
   fullName: nonemptyTextSchema,
   email: nonemptyTextSchema,

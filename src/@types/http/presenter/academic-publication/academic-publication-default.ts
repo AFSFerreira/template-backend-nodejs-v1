@@ -6,7 +6,7 @@ import z from 'zod'
 
 export interface AcademicPublicationDefaultPresenterInput extends AcademicPublicationWithDetails {}
 
-const httpAcademicPublicationSchema = z.object({
+export const httpAcademicPublicationSchema = z.object({
   title: nonemptyTextSchema,
   journalName: nonemptyTextSchema,
   publicationYear: numberSchema,

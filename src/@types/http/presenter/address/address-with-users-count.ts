@@ -7,7 +7,7 @@ export interface AddressWithUsersCountPresenterInput {
   usersCount: number
 }
 
-const httpAddressStatesSchema = z.object({
+export const httpAddressStatesSchema = z.object({
   state: nonemptyTextSchema,
   usersCount: numberSchema,
 })

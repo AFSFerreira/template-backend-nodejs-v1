@@ -7,7 +7,7 @@ export interface InstitutionWithUsersCountPresenterInput {
   usersCount: number
 }
 
-const httpInstitutionWithUsersCountSchema = z.object({
+export const httpInstitutionWithUsersCountSchema = z.object({
   name: nonemptyTextSchema,
   usersCount: numberSchema,
 })

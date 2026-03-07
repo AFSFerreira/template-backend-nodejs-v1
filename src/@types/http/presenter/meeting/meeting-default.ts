@@ -6,7 +6,7 @@ import z from 'zod'
 
 export interface MeetingDefaultPresenterInput extends Meeting {}
 
-const httpMeetingSchema = z.object({
+export const httpMeetingSchema = z.object({
   id: modelPublicIdSchema,
   title: nonemptyTextSchema,
   bannerImage: nonemptyTextSchema,

@@ -6,7 +6,7 @@ import z from 'zod'
 
 export interface DirectorBoardDefaultPresenterInput extends DirectorBoardWithUserRefactored {}
 
-const httpDirectorBoardSchema = z.object({
+export const httpDirectorBoardSchema = z.object({
   id: modelPublicIdSchema,
   profileImage: nonemptyTextSchema,
   publicName: nonemptyTextSchema,

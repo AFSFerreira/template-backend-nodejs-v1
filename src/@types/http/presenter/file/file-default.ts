@@ -7,7 +7,7 @@ export interface FileInput {
   publicUrl?: string
 }
 
-const httpFileSchema = z.object({
+export const httpFileSchema = z.object({
   filename: nonemptyTextSchema,
   publicUrl: optionalNonemptyTextSchema,
 })

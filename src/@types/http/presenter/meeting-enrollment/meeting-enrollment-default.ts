@@ -6,7 +6,7 @@ import z from 'zod'
 
 export interface MeetingEnrollmentDefaultPresenterInput extends MeetingEnrollment {}
 
-const httpMeetingEnrollmentSchema = z.object({
+export const httpMeetingEnrollmentSchema = z.object({
   id: modelPublicIdSchema,
   meetingId: numberSchema,
   createdAt: dateSchema,
