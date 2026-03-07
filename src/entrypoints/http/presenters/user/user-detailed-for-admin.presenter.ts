@@ -3,6 +3,8 @@ import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
 } from '@custom-types/http/presenter/user/user-detailed-for-admin'
+import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
@@ -34,7 +36,7 @@ export class UserDetailedPresenterForAdmin
       publicInformation: input.publicInformation,
       receiveReports: input.receiveReports,
       username: input.username,
-      profileImage: input.profileImage,
+      profileImage: buildUserProfileImageUrl(input.profileImage),
       interestDescription: input.interestDescription,
       birthdate: truncateDate(input.birthdate),
 
@@ -88,7 +90,9 @@ export class UserDetailedPresenterForAdmin
         ? {
             linkLattes: input.linkLattes,
             name: input.fullName,
-            profileImage: input.DirectorBoard.profileImage ?? input.profileImage,
+            profileImage: input.DirectorBoard.profileImage
+              ? buildDirectorBoardProfileImageUrl(input.DirectorBoard.profileImage)
+              : buildUserProfileImageUrl(input.profileImage),
             position: input.DirectorBoard.DirectorPosition.position,
           }
         : undefined,

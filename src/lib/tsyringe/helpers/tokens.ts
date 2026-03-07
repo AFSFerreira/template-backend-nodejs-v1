@@ -17,6 +17,7 @@ export const tsyringeTokens = {
     meetings: 'MeetingsRepository',
     meetingEnrollments: 'MeetingEnrollmentsRepository',
     newsletters: 'NewslettersRepository',
+    newsletterTemplates: 'NewsletterTemplatesRepository',
     paymentInfo: 'PaymentInfoRepository',
     sliderImages: 'SliderImagesRepository',
     users: 'UsersRepository',
@@ -98,6 +99,10 @@ export const tsyringeTokens = {
     newsletter: {
       newsletterDefault: 'newsletter:default',
       newsletterDetailedWithContent: 'newsletter:detailed-with-content',
+    },
+
+    newsletterTemplate: {
+      newsletterTemplateDefault: 'newsletter-template:default',
     },
 
     sliderImage: {

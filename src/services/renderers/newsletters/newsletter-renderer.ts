@@ -1,6 +1,5 @@
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
-import { NEWSLETTER_EMAIL_HTML_TEMPLATE, NEWSLETTER_EMAIL_TEXT_TEMPLATE } from '@constants/static-file-constants'
 import { DateFormatter } from '@utils/formatters/date-formatter'
 import { BaseRenderer } from '../base-renderer'
 
@@ -24,8 +23,14 @@ interface NewsletterRendererInfo {
 }
 
 export class NewsletterRenderer extends BaseRenderer<NewsletterRendererInfo> {
-  protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, NEWSLETTER_EMAIL_HTML_TEMPLATE)
-  protected readonly textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, NEWSLETTER_EMAIL_TEXT_TEMPLATE)
+  protected readonly htmlTemplatePath: string
+  protected readonly textTemplatePath: string
+
+  constructor(templateFolder: string) {
+    super()
+    this.htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, templateFolder, 'template.html.njk')
+    this.textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, templateFolder, 'template.text.njk')
+  }
 
   protected mapPayload(input: NewsletterRendererInfo) {
     const { newsletterInfo, meetingInfo } = input

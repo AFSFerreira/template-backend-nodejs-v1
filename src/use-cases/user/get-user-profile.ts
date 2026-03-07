@@ -4,7 +4,6 @@ import type {
 } from '@custom-types/use-cases/user/get-user-profile'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
@@ -22,11 +21,6 @@ export class GetUserProfileUseCase {
       error: new UserNotFoundError(),
     })
 
-    return {
-      user: {
-        ...user,
-        profileImage: buildUserProfileImageUrl(user.profileImage),
-      },
-    }
+    return { user }
   }
 }

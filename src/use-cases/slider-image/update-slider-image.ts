@@ -6,7 +6,6 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 import { SliderImageInvalidOrderError } from '@use-cases/errors/slider-image/slider-image-invalid-order-error'
 import { SliderImageNotFoundError } from '@use-cases/errors/slider-image/slider-image-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
@@ -59,11 +58,6 @@ export class UpdateSliderImageUseCase {
       return sliderImage
     })
 
-    return {
-      sliderImage: {
-        ...updatedSliderImage,
-        image: buildSliderImageUrl(updatedSliderImage.image, 'home-page'),
-      },
-    }
+    return { sliderImage: updatedSliderImage }
   }
 }

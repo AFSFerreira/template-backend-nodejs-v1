@@ -17,7 +17,6 @@ import {
 } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType, SystemActionType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { MembershipApprovedRenderer } from '@services/renderers/emails/membership-approved-renderer'
 import { MembershipRejectedRenderer } from '@services/renderers/emails/membership-rejected-renderer'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
@@ -145,11 +144,6 @@ export class ReviewMembershipStatusUseCase {
       }
     }
 
-    return {
-      user: {
-        ...user,
-        profileImage: buildUserProfileImageUrl(user.profileImage),
-      },
-    }
+    return { user }
   }
 }

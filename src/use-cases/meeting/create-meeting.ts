@@ -9,8 +9,6 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
-import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
-import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
@@ -76,12 +74,6 @@ export class CreateMeetingUseCase {
 
     logger.info({ meetingId: createdMeeting.publicId }, MEETING_CREATION_SUCCESSFUL)
 
-    return {
-      meeting: {
-        ...createdMeeting,
-        agenda: buildMeetingAgendaUrl(createdMeeting.agenda),
-        bannerImage: buildMeetingBannerUrl(createdMeeting.bannerImage),
-      },
-    }
+    return { meeting: createdMeeting }
   }
 }

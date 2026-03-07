@@ -3,6 +3,7 @@ import type {
   HTTPSimplifiedUserDetails,
   UserSimplifiedPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 
 export class UserSimplifiedPresenter
   implements IPresenterStrategy<UserSimplifiedPresenterInput, HTTPSimplifiedUserDetails>
@@ -11,7 +12,7 @@ export class UserSimplifiedPresenter
     return {
       id: input.publicId,
       fullName: input.fullName,
-      profileImage: input.profileImage,
+      profileImage: buildUserProfileImageUrl(input.profileImage),
       institutionName: input.institutionName,
       state: input.state,
       email: input.emailIsPublic ? input.email : null,

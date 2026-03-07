@@ -9,4 +9,5 @@ export interface CreateNewsletterQuery {
   format: NewsletterFormatType
   fileContent?: string | null
   proseContent?: InputJsonValue | typeof Prisma.DbNull
+  newsletterTemplateId: number
 }

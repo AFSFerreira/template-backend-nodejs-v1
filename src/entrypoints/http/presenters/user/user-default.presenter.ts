@@ -1,5 +1,6 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
@@ -29,7 +30,7 @@ export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPrese
       receiveReports: input.receiveReports,
       role: input.role,
       username: input.username,
-      profileImage: input.profileImage,
+      profileImage: buildUserProfileImageUrl(input.profileImage),
       birthdate: truncateDate(input.birthdate),
     }
   }

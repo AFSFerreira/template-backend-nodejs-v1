@@ -297,7 +297,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async upgradePasswordHash({ id, passwordHash }: ChangeUserPasswordQuery): Promise<void> {
+  async upgradePasswordHash({ id, passwordHash }: ChangeUserPasswordQuery) {
     await this.dbContext.client.user.update({
       where: { id },
       data: { passwordHash },
@@ -347,7 +347,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return totalUsers
   }
 
-  async listExpiredVerifyingUsers({ thresholdDate, batchSize }: ListExpiredVerifyingUsersQuery): Promise<number[]> {
+  async listExpiredVerifyingUsers({ thresholdDate, batchSize }: ListExpiredVerifyingUsersQuery) {
     const expiredUsers = await this.dbContext.client.user.findMany({
       where: {
         membershipStatus: MembershipStatusType.VERIFYING,
@@ -360,7 +360,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return expiredUsers.map((user) => user.id)
   }
 
-  async deleteManyById(ids: number[]): Promise<number> {
+  async deleteManyById(ids: number[]) {
     const { count } = await this.dbContext.client.user.deleteMany({
       where: { id: { in: ids } },
     })

@@ -3,8 +3,9 @@ import type { FindConflictingNewsletterQuery } from '@custom-types/repository/pr
 import type { ListAllNewslettersQuery } from '@custom-types/repository/prisma/newsletter/list-all-newsletters-query'
 import type { UpdateNewsletterQuery } from '@custom-types/repository/prisma/newsletter/update-newsletter-query'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { Newsletter, Prisma } from '@prisma/generated/client'
+import type { Prisma } from '@prisma/generated/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
+import { newsletterWithDetails } from '@custom-types/validators/newsletter-with-template'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -17,13 +18,16 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
     private readonly dbContext: DatabaseContext,
   ) {}
 
-  async create(data: CreateNewsletterQuery): Promise<Newsletter> {
+  async create(data: CreateNewsletterQuery) {
     const newsletter = await this.dbContext.client.newsletter.create({ data })
     return newsletter
   }
 
-  async findByPublicId(publicId: string): Promise<Newsletter | null> {
-    const newsletter = await this.dbContext.client.newsletter.findUnique({ where: { publicId } })
+  async findByPublicId(publicId: string) {
+    const newsletter = await this.dbContext.client.newsletter.findUnique({
+      where: { publicId },
+      include: newsletterWithDetails.include,
+    })
     return newsletter
   }
 
@@ -37,9 +41,18 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
   }
 
   async update(query: UpdateNewsletterQuery) {
+    const { newsletterTemplateId, ...filteredData } = query.data
+
     const newsletter = await this.dbContext.client.newsletter.update({
       where: { id: query.id },
-      data: query.data,
+      data: {
+        ...filteredData,
+        NewsletterTemplate: {
+          connect: {
+            id: newsletterTemplateId,
+          },
+        },
+      },
     })
     return newsletter
   }
@@ -99,7 +112,7 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number) {
     await this.dbContext.client.newsletter.delete({ where: { id } })
   }
 }

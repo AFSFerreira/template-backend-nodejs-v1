@@ -64,6 +64,10 @@ export const swaggerTokens = {
       restricted: 'Newsletters (Restrito)',
     },
 
+    newsletterTemplate: {
+      restricted: 'Templates de Newsletter',
+    },
+
     sliderImage: {
       public: 'Imagens do Slider',
       restricted: 'Imagens do Slider (Restrito)',

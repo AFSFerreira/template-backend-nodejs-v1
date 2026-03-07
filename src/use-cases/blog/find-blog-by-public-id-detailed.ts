@@ -7,7 +7,6 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -54,11 +53,6 @@ export class FindBlogByPublicIdRestrictedUseCase {
       throw new BlogAccessForbiddenError()
     }
 
-    return {
-      blog: {
-        ...blog,
-        bannerImage: buildBlogBannerUrl(blog.bannerImage),
-      },
-    }
+    return { blog }
   }
 }

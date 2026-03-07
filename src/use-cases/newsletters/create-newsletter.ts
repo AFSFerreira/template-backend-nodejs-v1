@@ -4,6 +4,7 @@ import type {
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { NewsletterTemplatesRepository } from '@repositories/newsletter-templates-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { logger } from '@lib/pino'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
@@ -19,13 +20,13 @@ import {
   buildNewsletterImagePath,
   buildNewsletterTempImagePath,
 } from '@services/builders/paths/build-newsletter-image-path'
-import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
 import { NewsletterInvalidImageLinkError } from '@use-cases/errors/newsletter/newsletter-invalid-image-link-error'
+import { NewsletterTemplateNotFoundError } from '@use-cases/errors/newsletter/newsletter-template-not-found-error'
 import { moveFilesIfNotExists } from '@utils/files/move-files-if-not-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
@@ -37,10 +38,13 @@ export class CreateNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
+
+    @inject(tsyringeTokens.repositories.newsletterTemplates)
+    private readonly newsletterTemplatesRepository: NewsletterTemplatesRepository,
   ) {}
 
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
-    const { content, ...filteredContent } = createNewsletterInput
+    const { content, templateId, ...filteredContent } = createNewsletterInput
 
     ensureNotExists({
       value: await this.newslettersRepository.findConflictingNewsletter({
@@ -51,12 +55,18 @@ export class CreateNewsletterUseCase {
       error: new NewsletterAlreadyExistsError(),
     })
 
+    const newsletterTemplate = ensureExists({
+      value: await this.newsletterTemplatesRepository.findByPublicId(templateId),
+      error: new NewsletterTemplateNotFoundError(),
+    })
+
     if (content.format === NewsletterFormatType.HTML_FILE) {
       const newsletter = await this.newslettersRepository.create({
         ...filteredContent,
         format: NewsletterFormatType.HTML_FILE,
         fileContent: content.contentFilename,
         proseContent: Prisma.DbNull,
+        newsletterTemplateId: newsletterTemplate.id,
       })
 
       await moveFilesIfNotExists({
@@ -70,10 +80,7 @@ export class CreateNewsletterUseCase {
       )
 
       return {
-        newsletter: {
-          ...newsletter,
-          contentUrl: buildNewsletterHtmlUrl(newsletter.publicId),
-        },
+        newsletter,
       }
     }
 
@@ -111,6 +118,7 @@ export class CreateNewsletterUseCase {
       format: NewsletterFormatType.PROSEMIRROR,
       fileContent: null,
       proseContent: newProseMirror as InputJsonValue,
+      newsletterTemplateId: newsletterTemplate.id,
     })
 
     await moveFilesIfNotExists(formattedNewsletterImages)
@@ -121,10 +129,7 @@ export class CreateNewsletterUseCase {
     )
 
     return {
-      newsletter: {
-        ...newsletter,
-        contentUrl: buildNewsletterHtmlUrl(newsletter.publicId),
-      },
+      newsletter,
     }
   }
 }

@@ -10,8 +10,6 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/meeting-loggings'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@services/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@services/builders/paths/build-meeting-banner-path'
-import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
-import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
@@ -148,12 +146,6 @@ export class UpdateMeetingUseCase {
       MEETING_UPDATED_SUCCESSFULLY,
     )
 
-    return {
-      meeting: {
-        ...meeting,
-        agenda: buildMeetingAgendaUrl(meeting.agenda),
-        bannerImage: buildMeetingBannerUrl(meeting.bannerImage),
-      },
-    }
+    return { meeting }
   }
 }

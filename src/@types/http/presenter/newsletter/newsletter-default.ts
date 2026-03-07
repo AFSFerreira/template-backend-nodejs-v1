@@ -4,7 +4,7 @@ import { dateSchema } from '@lib/zod/utils/primitives/date-schema'
 import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
 import z from 'zod'
 
-export type NewsletterWithContentUrl = Newsletter & { contentUrl: string }
+export type NewsletterWithContentUrl = Newsletter
 
 export interface NewsletterDefaultPresenterInput extends NewsletterWithContentUrl {}
 

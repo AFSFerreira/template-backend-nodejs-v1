@@ -61,7 +61,7 @@ export class SendNewsletterEmailUseCase {
 
         const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
-        const rendered = await new NewsletterRenderer().render(
+        const rendered = await new NewsletterRenderer(newsletter.NewsletterTemplate.templateFolder).render(
           {
             newsletterInfo: {
               htmlBody: bodyContent,

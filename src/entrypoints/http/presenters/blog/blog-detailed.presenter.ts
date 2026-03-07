@@ -1,5 +1,6 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { BlogDetailedPresenterInput, HTTPBlogDetailed } from '@custom-types/http/presenter/blog/blog-detailed'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 export class BlogDetailedPresenter implements IPresenterStrategy<BlogDetailedPresenterInput, HTTPBlogDetailed> {
   public toHTTP(input: BlogDetailedPresenterInput): HTTPBlogDetailed {
@@ -10,7 +11,7 @@ export class BlogDetailedPresenter implements IPresenterStrategy<BlogDetailedPre
       updatedAt: input.updatedAt,
       title: input.title,
       editorialStatus: input.editorialStatus,
-      bannerImage: input.bannerImage,
+      bannerImage: buildBlogBannerUrl(input.bannerImage),
       authorName: input.User?.fullName ?? input.authorName,
       subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
     }

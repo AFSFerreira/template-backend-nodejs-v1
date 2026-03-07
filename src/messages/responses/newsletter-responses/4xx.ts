@@ -36,6 +36,14 @@ export const NEWSLETTER_NOT_FOUND: IApiResponse = {
   },
 }
 
+export const NEWSLETTER_TEMPLATE_NOT_FOUND: IApiResponse = {
+  status: 404,
+  body: {
+    code: 'NEWSLETTER_TEMPLATE_NOT_FOUND',
+    message: 'O template de newsletter solicitado não foi encontrado',
+  },
+}
+
 // ============= 409 Conflict =============
 
 export const NEWSLETTER_ALREADY_EXISTS: IApiResponse = {

@@ -3,6 +3,8 @@ import type {
   HTTPMeetingWithDetails,
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
+import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
+import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
 export class MeetingDetailedPresenter
   implements IPresenterStrategy<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>
@@ -11,8 +13,8 @@ export class MeetingDetailedPresenter
     return {
       id: input.publicId,
       title: input.title,
-      agenda: input.agenda,
-      bannerImage: input.bannerImage,
+      agenda: buildMeetingAgendaUrl(input.agenda),
+      bannerImage: buildMeetingBannerUrl(input.bannerImage),
       description: input.description,
       location: input.location,
       lastDate: input.lastDate,

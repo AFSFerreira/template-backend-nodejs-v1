@@ -3,12 +3,13 @@ import type {
   HTTPNewsletter,
   NewsletterDefaultPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-default'
+import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 
 export class NewsletterDefaultPresenter implements IPresenterStrategy<NewsletterDefaultPresenterInput, HTTPNewsletter> {
   public toHTTP(input: NewsletterDefaultPresenterInput): HTTPNewsletter {
     return {
       id: input.publicId,
-      content: input.contentUrl,
+      content: buildNewsletterHtmlUrl(input.publicId),
       sequenceNumber: input.sequenceNumber,
       editionNumber: input.editionNumber,
       volume: input.volume,

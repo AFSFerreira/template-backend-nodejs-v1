@@ -493,7 +493,7 @@ model Newsletter {
 model NewsletterTemplate {
   id             Int    @id @default(autoincrement())
   publicId       String @unique @default(uuid(7)) @map("public_id")
-  templateFolder String @unique // Caminho relativo da pasta do template com relação ao diretório ./src/templates
+  templateFolder String @unique // Caminho relativo da pasta do template (e.g.: '/newsletter/newsletter-email/default/') com relação ao diretório /src/templates
 
   Newsletter Newsletter[] @relation()
 

@@ -1,5 +1,7 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
+import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
+import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
@@ -28,7 +30,7 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPre
       publicInformation: input.publicInformation,
       receiveReports: input.receiveReports,
       username: input.username,
-      profileImage: input.profileImage,
+      profileImage: buildUserProfileImageUrl(input.profileImage),
       birthdate: truncateDate(input.birthdate),
 
       institutionName: input.Institution?.name,
@@ -81,7 +83,9 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPre
         ? {
             linkLattes: input.linkLattes,
             name: input.fullName,
-            profileImage: input.DirectorBoard.profileImage ?? input.profileImage,
+            profileImage: input.DirectorBoard.profileImage
+              ? buildDirectorBoardProfileImageUrl(input.DirectorBoard.profileImage)
+              : buildUserProfileImageUrl(input.profileImage),
             position: input.DirectorBoard.DirectorPosition.position,
           }
         : undefined,

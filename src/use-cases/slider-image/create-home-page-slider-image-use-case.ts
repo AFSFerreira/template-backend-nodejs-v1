@@ -10,7 +10,6 @@ import {
   buildHomePageSliderImagePath,
   buildTempSliderImagePath,
 } from '@services/builders/paths/build-slider-image-path'
-import { buildSliderImageUrl } from '@services/builders/urls/build-slider-image-url'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
 import { inject, injectable } from 'tsyringe'
 
@@ -43,11 +42,6 @@ export class CreateHomePageSliderImageUseCase {
 
     await moveFileEnqueued(homePageSliderImagePaths)
 
-    return {
-      sliderImage: {
-        ...createdSliderImage,
-        image: buildSliderImageUrl(createdSliderImage.image, 'home-page'),
-      },
-    }
+    return { sliderImage: createdSliderImage }
   }
 }

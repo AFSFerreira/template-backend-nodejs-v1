@@ -14,9 +14,6 @@ import {
   buildInstitutionalAboutImagePath,
   buildInstitutionalTempAboutImagePath,
 } from '@services/builders/paths/build-institutional-about-image-path'
-import { buildElectionNoticeUrl } from '@services/builders/urls/build-election-notice-url'
-import { buildInstitutionalAboutImageUrl } from '@services/builders/urls/build-institutional-about-image-url'
-import { buildStatuteUrl } from '@services/builders/urls/build-statute-url'
 import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
@@ -88,13 +85,6 @@ export class UpdateInstitutionalInfoUseCase {
 
     await removeInstitutionalInfoHTMLCache({ redis })
 
-    return {
-      institutionalInfo: {
-        ...institutionalInfo,
-        electionNoticeFile: buildElectionNoticeUrl(institutionalInfo.electionNoticeFile),
-        statuteFile: buildStatuteUrl(institutionalInfo.statuteFile),
-        aboutImage: buildInstitutionalAboutImageUrl(institutionalInfo.aboutImage),
-      },
-    }
+    return { institutionalInfo }
   }
 }

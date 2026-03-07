@@ -18,8 +18,6 @@ import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
 } from '@services/builders/paths/build-director-board-profile-image-path'
-import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorBoardUserAlreadyExistsError } from '@use-cases/errors/director-board/director-board-user-already-exists-error'
@@ -133,12 +131,7 @@ export class CreateDirectorBoardUseCase {
     }
 
     return {
-      directorBoard: {
-        ...directorBoard,
-        profileImage: profileImage
-          ? buildDirectorBoardProfileImageUrl(profileImage)
-          : buildUserProfileImageUrl(user.profileImage),
-      },
+      directorBoard,
     }
   }
 }

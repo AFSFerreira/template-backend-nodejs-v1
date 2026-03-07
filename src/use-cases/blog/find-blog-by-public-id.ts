@@ -6,7 +6,6 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { registerBlogViews } from '@services/cache/register-blog-views-cache'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
@@ -43,7 +42,6 @@ export class FindBlogByPublicIdUseCase {
 
     const blog = {
       ...foundBlog,
-      bannerImage: buildBlogBannerUrl(foundBlog.bannerImage),
       accessCount: foundBlog.accessCount + (blogWasNotRecentlyViewed ? 1 : 0),
     }
 

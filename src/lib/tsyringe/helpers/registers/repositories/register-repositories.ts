@@ -14,6 +14,7 @@ import { PrismaInstitutionsRepository } from '@repositories/prisma/prisma-instit
 import { PrismaKeywordsRepository } from '@repositories/prisma/prisma-keywords-repository'
 import { PrismaMeetingEnrollmentsRepository } from '@repositories/prisma/prisma-meeting-enrollments-repository'
 import { PrismaMeetingsRepository } from '@repositories/prisma/prisma-meetings-repository'
+import { PrismaNewsletterTemplatesRepository } from '@repositories/prisma/prisma-newsletter-templates-repository'
 import { PrismaNewslettersRepository } from '@repositories/prisma/prisma-newsletters-repository'
 import { PrismaSliderImagesRepository } from '@repositories/prisma/prisma-slider-images-repository'
 import { PrismaUserActionAuditsRepository } from '@repositories/prisma/prisma-user-action-audits-repository'
@@ -122,6 +123,12 @@ export function registerRepositories(container: DependencyContainer) {
     contextKey: tsyringeTokens.repositories.newsletters,
     container,
     target: PrismaNewslettersRepository,
+  })
+
+  registerRepository({
+    contextKey: tsyringeTokens.repositories.newsletterTemplates,
+    container,
+    target: PrismaNewsletterTemplatesRepository,
   })
 
   registerRepository({

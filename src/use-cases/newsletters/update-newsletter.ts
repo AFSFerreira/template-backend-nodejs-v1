@@ -5,6 +5,7 @@ import type {
   UpdateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/update-newsletter'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { NewsletterTemplatesRepository } from '@repositories/newsletter-templates-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { JSONContent } from '@tiptap/core'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
@@ -24,7 +25,6 @@ import {
   buildNewsletterImagePath,
   buildNewsletterTempImagePath,
 } from '@services/builders/paths/build-newsletter-image-path'
-import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
 import { removeNewsletterHTMLCache } from '@services/cache/newsletters-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
@@ -35,6 +35,7 @@ import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsl
 import { NewsletterInvalidFilenameError } from '@use-cases/errors/newsletter/newsletter-invalid-filename-error'
 import { NewsletterInvalidImageLinkError } from '@use-cases/errors/newsletter/newsletter-invalid-image-link-error'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
+import { NewsletterTemplateNotFoundError } from '@use-cases/errors/newsletter/newsletter-template-not-found-error'
 import { moveFilesIfNotExists } from '@utils/files/move-files-if-not-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
@@ -45,6 +46,9 @@ export class UpdateNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
+
+    @inject(tsyringeTokens.repositories.newsletterTemplates)
+    private readonly newsletterTemplatesRepository: NewsletterTemplatesRepository,
   ) {}
 
   async execute({ publicId, body }: UpdateNewsletterUseCaseRequest): Promise<UpdateNewsletterUseCaseResponse> {
@@ -59,6 +63,16 @@ export class UpdateNewsletterUseCase {
       value: await this.newslettersRepository.findByPublicId(publicId),
       error: new NewsletterNotFoundError(),
     })
+
+    // Validação e atualização do template:
+    if (body.templateId) {
+      const newsletterTemplate = ensureExists({
+        value: await this.newsletterTemplatesRepository.findByPublicId(body.templateId),
+        error: new NewsletterTemplateNotFoundError(),
+      })
+
+      updateData.newsletterTemplateId = newsletterTemplate.id
+    }
 
     // Validação de conflito de sequência/edição/volume:
     if (body.sequenceNumber || body.editionNumber || body.volume) {
@@ -283,10 +297,7 @@ export class UpdateNewsletterUseCase {
     )
 
     return {
-      newsletter: {
-        ...newsletter,
-        contentUrl: buildNewsletterHtmlUrl(newsletter.publicId),
-      },
+      newsletter,
     }
   }
 }

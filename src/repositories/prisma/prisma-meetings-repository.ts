@@ -115,7 +115,7 @@ export class PrismaMeetingsRepository implements MeetingsRepository {
     }
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number) {
     await this.dbContext.client.meeting.delete({
       where: { id },
     })

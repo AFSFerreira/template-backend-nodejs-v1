@@ -10,7 +10,6 @@ import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType } from '@prisma/generated/enums'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { HashService } from '@services/hashes/hash-service'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
@@ -81,11 +80,6 @@ export class AuthenticateUseCase {
 
     logger.info(AUTHENTICATION_SUCCESSFUL)
 
-    return {
-      user: {
-        ...user,
-        profileImage: buildUserProfileImageUrl(user.profileImage),
-      },
-    }
+    return { user }
   }
 }

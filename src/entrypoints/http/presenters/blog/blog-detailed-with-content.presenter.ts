@@ -4,6 +4,7 @@ import type {
   HTTPBlogDetailedWithContent,
 } from '@custom-types/http/presenter/blog/blog-detailed-with-content'
 import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
+import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
 export class BlogDetailedWithContentPresenter
   implements IPresenterStrategy<BlogDetailedWithContentPresenterInput, HTTPBlogDetailedWithContent>
@@ -16,7 +17,7 @@ export class BlogDetailedWithContentPresenter
       updatedAt: input.updatedAt,
       title: input.title,
       editorialStatus: input.editorialStatus,
-      bannerImage: input.bannerImage,
+      bannerImage: buildBlogBannerUrl(input.bannerImage),
       authorName: input.User?.fullName ?? input.authorName,
       subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       content: input.content as ProseMirrorSchemaType,

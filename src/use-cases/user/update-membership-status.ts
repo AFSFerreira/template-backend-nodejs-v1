@@ -7,7 +7,6 @@ import type { UserActionAuditsRepository } from '@repositories/user-action-audit
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType, SystemActionType, UserRoleType } from '@prisma/generated/enums'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { AdminCannotBeInactivatedError } from '@use-cases/errors/user/admin-cannot-be-inactivated-error'
 import { CannotUpdateMembershipStatusVerifyingOrPendingError } from '@use-cases/errors/user/cannot-update-membership-status-verifying-or-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -76,11 +75,6 @@ export class UpdateMembershipStatusUseCase {
       return user
     })
 
-    return {
-      user: {
-        ...user,
-        profileImage: buildUserProfileImageUrl(user.profileImage),
-      },
-    }
+    return { user }
   }
 }

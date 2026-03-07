@@ -8,7 +8,6 @@ import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_SUBMITTED_FOR_REVIEW } from '@messages/loggings/models/blog-loggings'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { BlogNotInDraftStatusError } from '@use-cases/errors/blog/blog-not-in-draft-status-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -61,11 +60,6 @@ export class SubmitDraftForReviewUseCase {
       BLOG_SUBMITTED_FOR_REVIEW,
     )
 
-    return {
-      blog: {
-        ...blog,
-        bannerImage: buildBlogBannerUrl(blog.bannerImage),
-      },
-    }
+    return { blog }
   }
 }

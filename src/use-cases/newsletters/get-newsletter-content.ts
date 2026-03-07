@@ -54,7 +54,9 @@ export class GetNewsletterHtmlContentUseCase {
 
         const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
-        const { html: newsletterContent } = await new NewsletterRenderer().render(
+        const { html: newsletterContent } = await new NewsletterRenderer(
+          newsletter.NewsletterTemplate.templateFolder,
+        ).render(
           {
             newsletterInfo: {
               htmlBody: bodyContent,

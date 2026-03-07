@@ -13,6 +13,7 @@ import { institutionalInfoRoutes } from './controllers/institutional-info/routes
 import { meetingRoutes } from './controllers/meeting/routes'
 import { meetingEnrollmentRoutes } from './controllers/meeting-enrollment/routes'
 import { newsletterRoutes } from './controllers/newsletter/routes'
+import { newsletterTemplateRoutes } from './controllers/newsletter-template/routes'
 import { sliderImageRoutes } from './controllers/slider-image/routes'
 import { userRoutes } from './controllers/user/routes'
 
@@ -31,6 +32,7 @@ export async function httpRoutes(app: ZodFastifyInstance) {
   app.register(documentManagementRoutes, { prefix: '/document-management' })
   app.register(sliderImageRoutes, { prefix: '/slider-images' })
   app.register(newsletterRoutes, { prefix: '/newsletters' })
+  app.register(newsletterTemplateRoutes, { prefix: '/newsletter-templates' })
   app.register(dashboardMetricsRoutes, { prefix: '/dashboard-metrics' })
   app.register(healthCheckRoutes, { prefix: '/health' })
 }

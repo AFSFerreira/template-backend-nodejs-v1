@@ -17,8 +17,6 @@ import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
 } from '@services/builders/paths/build-director-board-profile-image-path'
-import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { removeDirectorBoardHTMLCache } from '@services/cache/director-board-html-cache'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -136,12 +134,7 @@ export class UpdateDirectorBoardUseCase {
     await removeDirectorBoardHTMLCache({ publicId: directorBoard.publicId, redis })
 
     return {
-      directorBoard: {
-        ...directorBoard,
-        profileImage: directorBoard.profileImage
-          ? buildDirectorBoardProfileImageUrl(directorBoard.profileImage)
-          : buildUserProfileImageUrl(directorBoard.User.profileImage),
-      },
+      directorBoard,
     }
   }
 }
