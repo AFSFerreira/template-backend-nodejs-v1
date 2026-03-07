@@ -9,6 +9,10 @@ export function buildListAllUsersDetailedQuery(query: IBuildListAllUsersDetailed
     .withBasicFilters(query)
     .withFullNameSearch(query.fullName)
     .withRolesAndStatus(query.role, query.membershipStatus)
+    .withInstitutionFilter(query.institutionName)
+    .withStateFilter(query.state)
+    .withActivityAreaFilters(query.mainActivityArea, query.subActivityArea)
+    .withDateFilters(query.birthdate, query.astrobiologyOrRelatedStartYear)
     .withKeywords(query.keywords)
     .withSorting(query.orderBy)
 

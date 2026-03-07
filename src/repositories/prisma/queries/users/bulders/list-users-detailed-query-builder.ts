@@ -1,3 +1,4 @@
+import type { ComparableType } from '@custom-types/custom/orderable'
 import type { IBuildListAllUsersDetailedQuery } from '@custom-types/repository/prisma/query/users/user-detailed'
 import { Prisma } from '@prisma/generated/client'
 
@@ -66,6 +67,69 @@ export class ListUsersDetailedQueryBuilder {
     if (statuses?.length) {
       const statusesSql = statuses.map((s) => Prisma.sql`u.membership_status = ${s}::"MembershipStatusType"`)
       this.conditions.push(Prisma.sql`(${Prisma.join(statusesSql, ' OR ')})`)
+    }
+
+    return this
+  }
+
+  private toSqlOperator(op: ComparableType): string {
+    const map: Record<ComparableType, string> = {
+      equals: '=',
+      gt: '>',
+      gte: '>=',
+      lt: '<',
+      lte: '<=',
+    }
+    return map[op]
+  }
+
+  public withInstitutionFilter(institutionName?: string): this {
+    if (!institutionName) return this
+
+    this.innerJoins.push(Prisma.sql`LEFT JOIN institutions fi ON fi.id = u.institution_id`)
+    this.conditions.push(Prisma.sql`fi.name ILIKE ${`%${institutionName}%`}`)
+
+    return this
+  }
+
+  public withStateFilter(state?: string): this {
+    if (!state) return this
+
+    this.innerJoins.push(Prisma.sql`LEFT JOIN addresses fa ON fa.user_id = u.id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN address_states fast ON fa.state_id = fast.id`)
+    this.conditions.push(Prisma.sql`fast.name ILIKE ${`%${state}%`}`)
+
+    return this
+  }
+
+  public withActivityAreaFilters(mainActivityArea?: string, subActivityArea?: string): this {
+    if (mainActivityArea) {
+      this.innerJoins.push(Prisma.sql`LEFT JOIN area_of_activity aoa ON aoa.id = u.activity_area_id`)
+      this.conditions.push(Prisma.sql`aoa.area ILIKE ${`%${mainActivityArea}%`}`)
+    }
+
+    if (subActivityArea) {
+      this.innerJoins.push(Prisma.sql`LEFT JOIN area_of_activity saoa ON saoa.id = u.sub_activity_area_id`)
+      this.conditions.push(Prisma.sql`saoa.area ILIKE ${`%${subActivityArea}%`}`)
+    }
+
+    return this
+  }
+
+  public withDateFilters(
+    birthdate?: IBuildListAllUsersDetailedQuery['birthdate'],
+    astrobiologyOrRelatedStartYear?: IBuildListAllUsersDetailedQuery['astrobiologyOrRelatedStartYear'],
+  ): this {
+    if (birthdate) {
+      const op = Prisma.raw(this.toSqlOperator(birthdate.birthdateComparison))
+      this.conditions.push(Prisma.sql`u.birthdate ${op} ${birthdate.date}::date`)
+    }
+
+    if (astrobiologyOrRelatedStartYear) {
+      const op = Prisma.raw(this.toSqlOperator(astrobiologyOrRelatedStartYear.astrobiologyOrRelatedStartYearComparison))
+      this.conditions.push(
+        Prisma.sql`u.astrobiology_or_related_start_year ${op} ${astrobiologyOrRelatedStartYear.year}`,
+      )
     }
 
     return this
