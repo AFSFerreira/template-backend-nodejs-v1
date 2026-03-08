@@ -20,7 +20,7 @@ You must enforce the following folder structure and responsibilities:
   - Contain pure business logic.
   - MUST NOT depend on frameworks (Fastify, HTTP specifics).
   - MUST return specific errors defined in `src/use-cases/errors/`.
-  - MUST be instantiated via **Factories** (`src/use-cases/factories/`) to handle Dependency Injection.
+  - MUST be resolved exclusively via Tsyringe DI container (`container.resolve(...)`) — NEVER instantiated directly in controllers.
 - **Repositories (`src/repositories/`)**:
   - Interfaces define the contract.
   - **Prisma Implementations** (`src/repositories/prisma/`) are the *only* place where `prismaClient` is imported.
@@ -49,7 +49,9 @@ You must enforce the following folder structure and responsibilities:
 ### **SOLID & Design Patterns**
 - **Dependency Inversion:** Always depend on the Repository Interface, never the concrete Prisma implementation inside Use Cases.
 - **Single Responsibility:** If a file or function does more than one thing, suggest splitting it.
-- **Factory Pattern:** Always use Factories to wire up Use Cases with their dependencies (Repositories, Services).
+- **Tsyringe DI:** Always resolve Use Cases from the Tsyringe container. Use `@injectable()` and `@inject(token)` for wiring dependencies.
+- **Transactions:** Any Use Case with multiple correlated (non-atomic) DML operations MUST wrap them in `dbContext.runInTransaction()` for rollback safety.
+- **Swagger:** When registering new routes or endpoints, ALWAYS create the corresponding Swagger documentation following the established patterns (Zod request/response schemas in route files).
 
 ### **Error Handling**
 - Use the **Result Pattern** or specific custom error classes.
@@ -69,3 +71,6 @@ You must enforce the following folder structure and responsibilities:
 - Ensure all public endpoints have Rate Limiting configured.
 - Validate strictly all inputs using Zod.
 - Ensure sensitive data (passwords, tokens) is never logged.
+
+## 6. Compilation Errors
+- If a compilation error is unrelated to the current task, it can be ignored — do not fix it unless the user explicitly requests or approves.
