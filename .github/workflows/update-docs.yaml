@@ -11,6 +11,7 @@ jobs:
 
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout do repositório
@@ -39,7 +40,10 @@ jobs:
             const newContent = `${startTag}\n\`\`\`bash\n${tree}\`\`\`\n${endTag}`;
 
             readme = readme.replace(regex, newContent);
+            
             fs.writeFileSync(readmePath, readme);
+
+            fs.unlinkSync('tree.txt');
 
       - name: Criar Pull Request Automático
         if: ${{ !env.ACT }}
