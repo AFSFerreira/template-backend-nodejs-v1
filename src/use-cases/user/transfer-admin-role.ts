@@ -9,6 +9,7 @@ import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
+import { CurrentUserIsNotAdminError } from '@use-cases/errors/user/current-user-is-not-admin-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { CannotTransferAdminToSelfError } from '../errors/user/cannot-transfer-admin-to-self-error'
@@ -40,6 +41,10 @@ export class TransferAdminRoleUseCase {
       value: await this.usersRepository.findByPublicId(currentAdminPublicId),
       error: new UserNotFoundError(),
     })
+
+    if (currentAdmin.role !== UserRoleType.ADMIN) {
+      throw new CurrentUserIsNotAdminError()
+    }
 
     const newAdmin = ensureExists({
       value: await this.usersRepository.findByPublicId(newAdminPublicId),

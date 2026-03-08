@@ -324,7 +324,7 @@ export const userSwaggerDocs = {
       204: z.void().describe('Role de administrador transferida com sucesso'),
       400: apiErrorResponseSchema.describe('Não é possível transferir para si mesmo'),
       401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
+      403: apiErrorResponseSchema.describe('Sem permissão de acesso ou usuário não é administrador'),
       404: apiErrorResponseSchema.describe('Usuário não encontrado'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
     },

@@ -2,6 +2,7 @@
 
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
 import { SYSTEM_TIMEZONE } from '@constants/timezone-constants'
+import { booleanToPtLabel } from '@utils/formatters/boolean-to-pt-label'
 import { formatPresentationType } from '@utils/formatters/presentation-type-label'
 import { mapEducationLevel } from '@utils/mappers/map-education-level'
 import dayjs from 'dayjs'
@@ -26,15 +27,11 @@ export function meetingExportMapper(
     meetingEnrollment.UserDetails?.User.educationLevel ?? meetingEnrollment.GuestDetails?.educationLevel,
   )
 
-  const wantsNewsletter = (
-    meetingEnrollment.UserDetails?.User.wantsNewsletter !== undefined
-      ? meetingEnrollment.UserDetails?.User.wantsNewsletter
-      : meetingEnrollment.GuestDetails?.wantsNewsletter
+  const wantsNewsletter = booleanToPtLabel(
+    meetingEnrollment.UserDetails?.User.wantsNewsletter ?? meetingEnrollment.GuestDetails?.wantsNewsletter,
   )
-    ? 'sim'
-    : 'não'
 
-  const hasPresentation = !!meetingEnrollment.MeetingPresentation ? 'sim' : 'não'
+  const hasPresentation = booleanToPtLabel(!!meetingEnrollment.MeetingPresentation)
 
   const presentationType = formatPresentationType(meetingEnrollment.MeetingPresentation?.presentationType)
 

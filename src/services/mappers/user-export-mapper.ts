@@ -6,6 +6,7 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
+import { booleanToPtLabel } from '@utils/formatters/boolean-to-pt-label'
 import { mapEducationLevel } from '@utils/mappers/map-education-level'
 import { mapIdentityType } from '@utils/mappers/map-identity-type'
 import { mapMembershipStatus } from '@utils/mappers/map-membership-status'
@@ -35,8 +36,8 @@ export function userExportMapper(user: UserWithDetails, targetTimezone: string =
   // Dados de associação e preferências:
   const membershipStatus = mapMembershipStatus(user.membershipStatus)
   const publicInformation = user.publicInformation
-  const emailIsPublic = user.emailIsPublic ? 'sim' : 'não'
-  const receiveReports = user.receiveReports ? 'sim' : 'não'
+  const emailIsPublic = booleanToPtLabel(user.emailIsPublic)
+  const receiveReports = booleanToPtLabel(user.receiveReports)
 
   // Timestamps:
   const lastLogin = user.lastLogin ? dayjs(user.lastLogin).tz(targetTimezone).format('DD/MM/YYYY HH:mm') : ''

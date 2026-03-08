@@ -136,6 +136,14 @@ export const PASSWORD_RECOVERY_NOT_REQUESTED_BY_USER: IApiResponse = {
 
 // ============= 403 Forbidden =============
 
+export const CURRENT_USER_IS_NOT_ADMIN: IApiResponse = {
+  status: 403,
+  body: {
+    code: 'CURRENT_USER_IS_NOT_ADMIN',
+    message: 'O usuário atual não possui a role de administrador',
+  },
+}
+
 export const ADMIN_CANNOT_BE_INACTIVATED: IApiResponse = {
   status: 403,
   body: {
