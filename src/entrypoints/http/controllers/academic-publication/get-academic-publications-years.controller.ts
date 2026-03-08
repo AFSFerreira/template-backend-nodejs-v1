@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { AcademicPublicationPresenter } from '@http/presenters/academic-publication-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAcademicPublicationsYearsUseCase } from '@use-cases/academic-publication/get-academic-publications-years'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAcademicPublicationsYearsController(
@@ -26,5 +25,5 @@ export async function getAcademicPublicationsYearsController(
     HTTPAcademicPublicationYear
   >(data, tsyringeTokens.presenters.academicPublication.academicPublicationYear)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

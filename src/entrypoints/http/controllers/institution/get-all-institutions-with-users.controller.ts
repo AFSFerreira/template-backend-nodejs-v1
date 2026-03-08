@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { InstitutionPresenter } from '@http/presenters/institution-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllInstitutionsWithUsersUseCase } from '@use-cases/institution/get-all-institutions-with-user'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllInstitutionsWithUsers(
@@ -26,5 +25,5 @@ export async function getAllInstitutionsWithUsers(
     HTTPInstitutionWithUsersCount
   >(data, tsyringeTokens.presenters.institution.institutionWithUsersCount)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

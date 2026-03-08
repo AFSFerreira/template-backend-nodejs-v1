@@ -6,7 +6,6 @@ import type { FastifyReply } from 'fastify'
 import { AcademicPublicationPresenter } from '@http/presenters/academic-publication-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllAcademicPublicationsUseCase } from '@use-cases/academic-publication/get-all-academic-publications'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllAcademicPublicationsController(
@@ -24,5 +23,5 @@ export async function getAllAcademicPublicationsController(
     HTTPAcademicPublication
   >(data, tsyringeTokens.presenters.academicPublication.academicPublicationSimplified)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

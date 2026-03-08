@@ -7,7 +7,6 @@ import type { GetAllDirectorBoardType } from '@custom-types/http/schemas/directo
 import type { FastifyReply } from 'fastify'
 import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
 import { GetAllDirectorsBoard } from '@use-cases/director-board/get-all-directors-board'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllDirectorsBoard(
@@ -22,5 +21,5 @@ export async function getAllDirectorsBoard(
 
   const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>(data)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

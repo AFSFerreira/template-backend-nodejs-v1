@@ -9,7 +9,6 @@ import type { FastifyReply } from 'fastify'
 import { MeetingEnrollmentPresenter } from '@http/presenters/meeting-enrollment-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetMeetingParticipantsUseCase } from '@use-cases/meeting/get-meeting-participants'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getMeetingParticipants(
@@ -31,5 +30,5 @@ export async function getMeetingParticipants(
     HTTPMeetingEnrollmentDetailed
   >(data, tsyringeTokens.presenters.meetingEnrollment.meetingEnrollmentDetailedWithPresentation)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

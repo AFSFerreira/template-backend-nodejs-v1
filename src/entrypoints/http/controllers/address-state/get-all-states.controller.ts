@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { AddressPresenter } from '@http/presenters/address-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllStates(request: ZodRequest<{ querystring: GetAllStatesQueryType }>, reply: FastifyReply) {
@@ -23,5 +22,5 @@ export async function getAllStates(request: ZodRequest<{ querystring: GetAllStat
     tsyringeTokens.presenters.address.addressWithUsersCount,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

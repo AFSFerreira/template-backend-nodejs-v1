@@ -7,7 +7,6 @@ import type { GetAllNewslettersQueryType } from '@custom-types/http/schemas/news
 import type { FastifyReply } from 'fastify'
 import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
 import { GetAllNewslettersUseCase } from '@use-cases/newsletters/get-all-newsletters'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllNewsletters(
@@ -22,5 +21,5 @@ export async function getAllNewsletters(
 
   const formattedReply = NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(data)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

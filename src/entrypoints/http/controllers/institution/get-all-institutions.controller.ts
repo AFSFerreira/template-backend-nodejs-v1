@@ -2,7 +2,6 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetAllInstitutionsQueryType } from '@custom-types/http/schemas/institution/get-all-institutions-query-schema'
 import type { FastifyReply } from 'fastify'
 import { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllInstitutionsNames(
@@ -15,5 +14,5 @@ export async function getAllInstitutionsNames(
 
   const { data, meta } = await useCase.execute(parsedQuery)
 
-  return await reply.status(StatusCodes.OK).send({ data, meta })
+  return await reply.sendPaginated(data, meta)
 }

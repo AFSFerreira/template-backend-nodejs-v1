@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllUsersSimplifiedUseCase } from '@use-cases/user/get-all-users-simplified'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllUsersSimplified(
@@ -26,5 +25,5 @@ export async function getAllUsersSimplified(
     tsyringeTokens.presenters.user.userSimplified,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

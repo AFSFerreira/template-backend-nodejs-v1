@@ -7,7 +7,6 @@ import type { GetAllNewsletterTemplatesQueryType } from '@custom-types/http/sche
 import type { FastifyReply } from 'fastify'
 import { NewsletterTemplatePresenter } from '@http/presenters/newsletter-template-presenter'
 import { GetAllNewsletterTemplatesUseCase } from '@use-cases/newsletters/get-all-newsletter-templates'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllNewsletterTemplates(
@@ -25,5 +24,5 @@ export async function getAllNewsletterTemplates(
     HTTPNewsletterTemplate
   >(data)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }

@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllActivityAreasWithAcademicPublicationsUseCase } from '@use-cases/academic-publication/get-all-activity-areas-with-academic-publications-use-case'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllActivityAreasWithAcademicPublicationsController(
@@ -26,5 +25,5 @@ export async function getAllActivityAreasWithAcademicPublicationsController(
     HTTPActivityAreaWithAcademicPublicationsCount
   >(data, tsyringeTokens.presenters.activityArea.activityAreaWithAcademicPublicationsCount)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
+  return await reply.sendPaginated(formattedReply, meta)
 }
