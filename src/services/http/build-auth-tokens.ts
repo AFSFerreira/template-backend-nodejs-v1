@@ -4,17 +4,13 @@ import { env } from '@env/index'
 
 export async function buildAuthTokens({ reply, publicId, payload }: BuildAuthTokensParams): Promise<AuthTokensResult> {
   const accessToken = await reply.jwtSign(payload, {
-    sign: {
-      sub: publicId,
-      expiresIn: env.JWT_EXPIRATION,
-    },
+    sub: publicId,
+    expiresIn: env.JWT_EXPIRATION,
   })
 
   const refreshToken = await reply.jwtSign(payload, {
-    sign: {
-      sub: publicId,
-      expiresIn: env.JWT_REFRESH_EXPIRATION,
-    },
+    sub: publicId,
+    expiresIn: env.JWT_REFRESH_EXPIRATION,
   })
 
   const replyWithCookie = reply.setCookie('refreshToken', refreshToken, {

@@ -10,8 +10,10 @@ export const jwtConfiguration = {
   sign: {
     expiresIn: env.JWT_EXPIRATION,
     aud: env.FRONTEND_URL,
+    iss: env.BACKEND_URL,
   },
   verify: {
     allowedAud: [env.FRONTEND_URL],
+    allowedIss: [env.BACKEND_URL],
   },
 } as const satisfies FastifyJWTOptions
