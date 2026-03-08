@@ -1,5 +1,5 @@
 ---
-name: Tarefa Técnica
+name: Technical Task
 about: Refatoração, melhoria de performance, atualização de dependência ou débito técnico
 title: "[Chore]: "
 labels: ["chore"]
