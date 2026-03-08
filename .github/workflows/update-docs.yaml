@@ -41,10 +41,16 @@ jobs:
             readme = readme.replace(regex, newContent);
             fs.writeFileSync(readmePath, readme);
 
-      - name: Commitar e fazer Push
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Criar Pull Request Automático
+        if: ${{ !env.ACT }}
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "docs: atualiza árvore de diretórios [skip ci]"
-          file_pattern: "README.md"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "github-actions[bot]@users.noreply.github.com"
+          commit-message: "docs: atualiza árvore de diretórios"
+          branch: chore/update-docs-tree
+          delete-branch: true
+          title: "docs: Atualização Automática da Árvore de Diretórios"
+          body: |
+            🤖 **Atualização Automática**
+            Este PR foi gerado automaticamente pelo pipeline de CI/CD.
+            Foram detectadas mudanças na estrutura do diretório `src/` e o `README.md` foi atualizado para refletir a nova arquitetura.
+          labels: documentation, automated pr
