@@ -34,7 +34,7 @@ jobs:
             // Filtra o texto cru e mantém estritamente as linhas que contêm os caracteres do desenho da árvore
             const cleanTreeLines = rawTree
               .split('\n')
-              .filter(line => line.includes('├') || line.includes('└') || line.includes('│') || line.includes('|'));
+              .filter(line => line.includes('├') || line.includes('└') || line.includes('│') || line.includes('|') || line.includes('─'));
 
             // Adiciona um ponto '.' no topo para representar a raiz do projeto de forma limpa e profissional
             const finalTree = ".\n" + cleanTreeLines.join('\n');
