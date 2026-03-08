@@ -5,7 +5,7 @@ import type { UpdateNewsletterQuery } from '@custom-types/repository/prisma/news
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { newsletterWithDetails } from '@custom-types/validators/newsletter-with-template'
+import { newsletterWithDetails } from '@custom-types/validators/newsletter-with-details'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
@@ -19,7 +19,7 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
   ) {}
 
   async create(data: CreateNewsletterQuery) {
-    const newsletter = await this.dbContext.client.newsletter.create({ data })
+    const newsletter = await this.dbContext.client.newsletter.create({ data, include: newsletterWithDetails.include })
     return newsletter
   }
 
@@ -47,12 +47,17 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
       where: { id: query.id },
       data: {
         ...filteredData,
-        NewsletterTemplate: {
-          connect: {
-            id: newsletterTemplateId,
-          },
-        },
+        ...(newsletterTemplateId
+          ? {
+              NewsletterTemplate: {
+                connect: {
+                  id: newsletterTemplateId,
+                },
+              },
+            }
+          : {}),
       },
+      include: newsletterWithDetails.include,
     })
     return newsletter
   }
@@ -93,6 +98,7 @@ export class PrismaNewslettersRepository implements NewslettersRepository {
         skip,
         take,
         orderBy,
+        include: newsletterWithDetails.include,
       }),
     ])
 

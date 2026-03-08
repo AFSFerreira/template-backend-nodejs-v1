@@ -21,6 +21,7 @@ export class NewsletterDetailedWithContentPresenter
       updatedAt: input.updatedAt,
       proseContent: input.proseContent as ProseMirrorSchemaType,
       fileContent: input.fileContent,
+      templateId: input.NewsletterTemplate?.publicId,
     }
   }
 }

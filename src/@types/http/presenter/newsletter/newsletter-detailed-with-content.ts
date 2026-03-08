@@ -1,4 +1,4 @@
-import type { NewsletterWithContentUrl } from '@custom-types/http/presenter/newsletter/newsletter-default'
+import type { NewsletterWithDetails } from '@custom-types/validators/newsletter-with-details'
 import { proseMirrorSchema } from '@http/schemas/utils/components/blog/prose-mirror-schema'
 import { newsletterFormatTypeEnumSchema } from '@lib/zod/utils/enums/newsletter-format-type-enum-schema'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
@@ -7,7 +7,7 @@ import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-sche
 import { nullableTextSchema } from '@lib/zod/utils/primitives/nullable-text-schema'
 import z from 'zod'
 
-export interface NewsletterDetailedWithContentPresenterInput extends NewsletterWithContentUrl {}
+export interface NewsletterDetailedWithContentPresenterInput extends NewsletterWithDetails {}
 
 export const httpNewsletterDetailedWithContentSchema = z.object({
   id: modelPublicIdSchema,
@@ -20,6 +20,7 @@ export const httpNewsletterDetailedWithContentSchema = z.object({
   updatedAt: dateSchema,
   proseContent: proseMirrorSchema.nullable(),
   fileContent: nullableTextSchema,
+  templateId: modelPublicIdSchema.optional(),
 })
 
 export type HTTPNewsletterDetailedWithContent = z.infer<typeof httpNewsletterDetailedWithContentSchema>

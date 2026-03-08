@@ -3,15 +3,15 @@ import type { CreateNewsletterQuery } from '@custom-types/repository/prisma/news
 import type { FindConflictingNewsletterQuery } from '@custom-types/repository/prisma/newsletter/find-conflicting-newsletter-query'
 import type { ListAllNewslettersQuery } from '@custom-types/repository/prisma/newsletter/list-all-newsletters-query'
 import type { UpdateNewsletterQuery } from '@custom-types/repository/prisma/newsletter/update-newsletter-query'
-import type { NewsletterWithDetails } from '@custom-types/validators/newsletter-with-template'
+import type { NewsletterWithDetails } from '@custom-types/validators/newsletter-with-details'
 import type { Newsletter, Prisma } from '@prisma/generated/client'
 
 export interface NewslettersRepository {
-  create: (data: CreateNewsletterQuery) => Promise<Newsletter>
+  create: (data: CreateNewsletterQuery) => Promise<NewsletterWithDetails>
   findByPublicId: (publicId: string) => Promise<NewsletterWithDetails | null>
   findConflictingNewsletter: (query: FindConflictingNewsletterQuery) => Promise<Newsletter | null>
-  update: (query: UpdateNewsletterQuery) => Promise<Newsletter>
+  update: (query: UpdateNewsletterQuery) => Promise<NewsletterWithDetails>
   totalCount: (where?: Prisma.NewsletterWhereInput) => Promise<number>
-  listAll: (query: ListAllNewslettersQuery) => Promise<PaginatedResult<Newsletter[]>>
+  listAll: (query: ListAllNewslettersQuery) => Promise<PaginatedResult<NewsletterWithDetails[]>>
   delete: (id: number) => Promise<void>
 }

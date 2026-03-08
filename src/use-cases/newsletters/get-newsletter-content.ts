@@ -14,6 +14,7 @@ import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newslett
 import { getNewsletterHTMLCached, setNewsletterHTMLCache } from '@services/cache/newsletters-html-cache'
 import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { NewsletterRenderer } from '@services/renderers/newsletters/newsletter-renderer'
+import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newsletter/newsletter-template-not-configured-error'
 import { createFileReadStream } from '@utils/files/create-file-read-stream'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -49,6 +50,10 @@ export class GetNewsletterHtmlContentUseCase {
           value: newsletter.proseContent,
           error: new InvalidNewsletterContentError(),
         })
+
+        if (!newsletter.newsletterTemplateId || !newsletter.NewsletterTemplate) {
+          throw new NewsletterTemplateNotConfiguredError()
+        }
 
         const bodyContent = await generateProseMirrorHtmlWeb(proseContent as JSONContent, tiptapConfiguration)
 

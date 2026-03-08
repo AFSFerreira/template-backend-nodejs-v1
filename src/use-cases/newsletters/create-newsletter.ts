@@ -64,20 +64,12 @@ export class CreateNewsletterUseCase {
 
     let newsletterTemplate: NewsletterTemplate | undefined
 
-    if (templateId) {
-      newsletterTemplate = ensureExists({
-        value: await this.newsletterTemplatesRepository.findByPublicId(templateId),
-        error: new NewsletterTemplateNotFoundError(),
-      })
-    }
-
     if (content.format === NewsletterFormatType.HTML_FILE) {
       const newsletter = await this.newslettersRepository.create({
         ...filteredContent,
         format: NewsletterFormatType.HTML_FILE,
         fileContent: content.contentFilename,
         proseContent: Prisma.DbNull,
-        newsletterTemplateId: newsletterTemplate.id,
       })
 
       await moveFilesIfNotExists({
@@ -100,6 +92,17 @@ export class CreateNewsletterUseCase {
       value: getProseMirrorText({ proseMirror: content.proseContent, tiptapConfiguration }),
       error: new InvalidNewsletterContentError(),
     })
+
+    if (templateId) {
+      newsletterTemplate = ensureExists({
+        value: await this.newsletterTemplatesRepository.findByPublicId(templateId),
+        error: new NewsletterTemplateNotFoundError(),
+      })
+    }
+
+    if (!templateId || !newsletterTemplate) {
+      throw new NewsletterTemplateNotFoundError()
+    }
 
     const oldToNewImagesLinkMap = new Map<string, string>()
 

@@ -46,6 +46,14 @@ export const NEWSLETTER_TEMPLATE_NOT_FOUND: IApiResponse = {
 
 // ============= 409 Conflict =============
 
+export const NEWSLETTER_TEMPLATE_NOT_CONFIGURED: IApiResponse = {
+  status: 409,
+  body: {
+    code: 'NEWSLETTER_TEMPLATE_NOT_CONFIGURED',
+    message: 'A newsletter não possui um template configurado',
+  },
+}
+
 export const NEWSLETTER_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {

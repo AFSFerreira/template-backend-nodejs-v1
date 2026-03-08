@@ -1,12 +1,10 @@
-import type { Newsletter } from '@prisma/generated/client'
+import type { NewsletterWithDetails } from '@custom-types/validators/newsletter-with-details'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { dateSchema } from '@lib/zod/utils/primitives/date-schema'
 import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
 import z from 'zod'
 
-export type NewsletterWithContentUrl = Newsletter
-
-export interface NewsletterDefaultPresenterInput extends NewsletterWithContentUrl {}
+export interface NewsletterDefaultPresenterInput extends NewsletterWithDetails {}
 
 export const httpNewsletterSchema = z.object({
   id: modelPublicIdSchema,

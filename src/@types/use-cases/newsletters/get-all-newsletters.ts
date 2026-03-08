@@ -1,7 +1,7 @@
 import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
-import type { NewsletterWithContentUrl } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { GetAllNewslettersQuerySchemaType } from '@custom-types/http/schemas/newsletter/get-all-newsletters-query-schema'
+import type { NewsletterWithDetails } from '@custom-types/validators/newsletter-with-details'
 
 export interface GetAllNewslettersUseCaseRequest extends GetAllNewslettersQuerySchemaType {}
 
-export interface GetAllNewslettersUseCaseResponse extends PaginatedResult<NewsletterWithContentUrl[]> {}
+export interface GetAllNewslettersUseCaseResponse extends PaginatedResult<NewsletterWithDetails[]> {}

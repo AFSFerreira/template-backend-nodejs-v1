@@ -54,8 +54,10 @@ export const newsletterSwaggerDocs = {
     tags: [swaggerTokens.tags.newsletter.auth],
     response: {
       200: z.string().describe('Conteúdo HTML da newsletter'),
+      400: apiErrorResponseSchema.describe('Conteúdo da newsletter inválido'),
       401: apiErrorResponseSchema.describe('Usuário não autenticado'),
       404: apiErrorResponseSchema.describe('Newsletter não encontrada'),
+      409: apiErrorResponseSchema.describe('Newsletter não possui um template configurado'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
       500: apiErrorResponseSchema.describe('Erro ao recuperar o arquivo HTML da newsletter'),
     },

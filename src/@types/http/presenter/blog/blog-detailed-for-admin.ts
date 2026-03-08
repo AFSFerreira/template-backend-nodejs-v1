@@ -7,8 +7,6 @@ import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-sche
 import { numberSchema } from '@lib/zod/utils/primitives/number-schema'
 import z from 'zod'
 
-export type { BlogWithDetails } from '@custom-types/validators/blog-with-details'
-
 export interface BlogDetailedForAdminPresenterInput extends CustomBlogDetailed {}
 
 export const httpBlogDetailedForAdminSchema = z.object({

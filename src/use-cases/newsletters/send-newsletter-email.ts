@@ -19,6 +19,7 @@ import { generateProseMirrorHtmlEmail } from '@services/formatters/generate-pros
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
 import { PlainTextService } from '@services/formatters/plain-text-service'
 import { NewsletterRenderer } from '@services/renderers/newsletters/newsletter-renderer'
+import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newsletter/newsletter-template-not-configured-error'
 import { readFile } from '@utils/files/read-file'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -56,6 +57,10 @@ export class SendNewsletterEmailUseCase {
           value: newsletter.proseContent,
           error: new InvalidNewsletterContentError(),
         })
+
+        if (!newsletter.newsletterTemplateId || !newsletter.NewsletterTemplate) {
+          throw new NewsletterTemplateNotConfiguredError()
+        }
 
         const bodyContent = await generateProseMirrorHtmlEmail(proseContent as JSONContent, tiptapConfiguration)
 
