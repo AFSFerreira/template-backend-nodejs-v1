@@ -8,7 +8,6 @@ on:
     branches: ['**']
 
 env:
-  NODE_VERSION: 22.x
   # Necerrário para geração de tipos:
   DUMMY_DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
 
@@ -30,10 +29,10 @@ jobs:
         with:
           run_install: false
 
-      - name: Setup Node.js ${{ env.NODE_VERSION }}
+      - name: Setup Node.js ${{ matrix.node }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node }}
           # cache: 'npm'
           cache: 'pnpm'
 
@@ -65,7 +64,7 @@ jobs:
         if: always()
         run: |
           echo "## 🧾 Pipeline Summary" >> $GITHUB_STEP_SUMMARY
-          echo "Node.js v${{ env.NODE_VERSION }}" >> $GITHUB_STEP_SUMMARY
+          echo "Node.js v${{ matrix.node }}" >> $GITHUB_STEP_SUMMARY
           echo "🕒 Completed at $(date)" >> $GITHUB_STEP_SUMMARY
 
           # Verifica o status geral do job para adicionar um ícone de sucesso/falha no topo
