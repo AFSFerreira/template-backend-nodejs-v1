@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { SliderImagePresenter } from '@http/presenters/slider-image-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { CreateHomePageSliderImageUseCase } from '@use-cases/slider-image/create-home-page-slider-image-use-case'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createHomePageSliderImage(
@@ -25,5 +26,5 @@ export async function createHomePageSliderImage(
     tsyringeTokens.presenters.sliderImage.sliderImageHomePage,
   )
 
-  return await reply.status(201).send({ data: { sliderImage: formattedReply } })
+  return await reply.status(StatusCodes.CREATED).send({ data: { sliderImage: formattedReply } })
 }

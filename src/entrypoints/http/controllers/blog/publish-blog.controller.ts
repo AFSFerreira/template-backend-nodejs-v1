@@ -5,6 +5,7 @@ import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateAndPublishBlogUseCase } from '@use-cases/blog/create-and-publish-blog'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createAndPublishBlog(request: ZodRequest<{ body: CreateBlogBodyType }>, reply: FastifyReply) {
@@ -18,7 +19,7 @@ export async function createAndPublishBlog(request: ZodRequest<{ body: CreateBlo
     authorPublicId,
   })
 
-  return await reply.status(201).send({
+  return await reply.status(StatusCodes.CREATED).send({
     data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
   })
 }

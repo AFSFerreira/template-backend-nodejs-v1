@@ -7,6 +7,7 @@ import type { GetAllActivityAreasType } from '@custom-types/http/schemas/activit
 import type { FastifyReply } from 'fastify'
 import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
 import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-case'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllActivityAreas(
@@ -21,5 +22,5 @@ export async function getAllActivityAreas(
 
   const formattedReply = ActivityAreaPresenter.toHTTP<ActivityAreaDefaultPresenterInput, HTTPActivityArea>(data)
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

@@ -4,6 +4,7 @@ import type { FastifyReply } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetRestrictBlogHTMLContentUseCase } from '@use-cases/blog/get-restrict-blog-html-content'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getRestrictBlogHtmlContent(
@@ -20,5 +21,5 @@ export async function getRestrictBlogHtmlContent(
     userPublicId,
   })
 
-  return await reply.status(200).type(HTML_HEADER).send(htmlContent)
+  return await reply.status(StatusCodes.OK).type(HTML_HEADER).send(htmlContent)
 }

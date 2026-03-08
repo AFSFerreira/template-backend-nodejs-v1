@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllBlogsUseCase } from '@use-cases/blog/get-all-blogs'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllBlogs(request: ZodRequest<{ querystring: GetAllBlogsQueryType }>, reply: FastifyReply) {
@@ -22,5 +23,5 @@ export async function getAllBlogs(request: ZodRequest<{ querystring: GetAllBlogs
     tsyringeTokens.presenters.blog.blogSimplified,
   )
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

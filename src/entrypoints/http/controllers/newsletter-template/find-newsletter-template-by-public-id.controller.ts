@@ -7,6 +7,7 @@ import type { FindNewsletterTemplateByPublicIdParamsType } from '@custom-types/h
 import type { FastifyReply } from 'fastify'
 import { NewsletterTemplatePresenter } from '@http/presenters/newsletter-template-presenter'
 import { FindNewsletterTemplateByPublicIdUseCase } from '@use-cases/newsletters/find-newsletter-template-by-public-id'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findNewsletterTemplateByPublicId(
@@ -24,5 +25,5 @@ export async function findNewsletterTemplateByPublicId(
     HTTPNewsletterTemplate
   >(newsletterTemplate)
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

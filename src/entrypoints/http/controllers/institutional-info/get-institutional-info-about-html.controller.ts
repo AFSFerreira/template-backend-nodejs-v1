@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
 import { GetInstitutionalInfoAboutHTMLUseCase } from '@use-cases/institutional-info/get-institutional-info-about-html'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getInstitutionalInfoAboutDescriptionHTML(_request: FastifyRequest, reply: FastifyReply) {
@@ -8,5 +9,5 @@ export async function getInstitutionalInfoAboutDescriptionHTML(_request: Fastify
 
   const { htmlContent } = await useCase.execute()
 
-  return await reply.status(200).type(HTML_HEADER).send(htmlContent)
+  return await reply.status(StatusCodes.OK).type(HTML_HEADER).send(htmlContent)
 }

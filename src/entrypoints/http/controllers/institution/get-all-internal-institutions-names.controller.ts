@@ -7,6 +7,7 @@ import type { GetAllInternalInstitutionsNamesQueryType } from '@custom-types/htt
 import type { FastifyReply } from 'fastify'
 import { InstitutionPresenter } from '@http/presenters/institution-presenter'
 import { GetAllInternalInstitutionsNamesUseCase } from '@use-cases/institution/get-all-internal-institutions-names'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllInternalInstitutionsNames(
@@ -21,5 +22,5 @@ export async function getAllInternalInstitutionsNames(
 
   const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(data)
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

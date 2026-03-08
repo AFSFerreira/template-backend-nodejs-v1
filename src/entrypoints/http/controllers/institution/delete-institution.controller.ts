@@ -2,6 +2,7 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { DeleteInstitutionParamsType } from '@custom-types/http/schemas/institution/delete-institution-params-schema'
 import type { FastifyReply } from 'fastify'
 import { DeleteInstitutionUseCase } from '@use-cases/institution/delete-institution'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function deleteInstitution(
@@ -14,5 +15,5 @@ export async function deleteInstitution(
 
   await useCase.execute({ publicId })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

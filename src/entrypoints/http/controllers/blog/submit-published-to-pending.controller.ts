@@ -5,6 +5,7 @@ import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { SubmitPublishedToPendingUseCase } from '@use-cases/blog/submit-published-to-pending'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function submitPublishedToPending(
@@ -21,7 +22,7 @@ export async function submitPublishedToPending(
     userPublicId,
   })
 
-  return await reply.status(200).send({
+  return await reply.status(StatusCodes.OK).send({
     data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
   })
 }

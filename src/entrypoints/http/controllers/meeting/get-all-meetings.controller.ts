@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { MeetingPresenter } from '@http/presenters/meeting-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllMeetingsUseCase } from '@use-cases/meeting/get-all-meetings'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllMeetings(
@@ -25,5 +26,5 @@ export async function getAllMeetings(
     tsyringeTokens.presenters.meeting.meetingDetailed,
   )
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

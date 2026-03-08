@@ -5,6 +5,7 @@ import type {
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
 import { GetInstitutionalInfoUseCase } from '@use-cases/institutional-info/get-institutional-info'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getInstitutionalInfo(_request: FastifyRequest, reply: FastifyReply) {
@@ -16,5 +17,5 @@ export async function getInstitutionalInfo(_request: FastifyRequest, reply: Fast
     institutionalInfo,
   )
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

@@ -8,6 +8,7 @@ import type { UpdateNewsletterParamsType } from '@custom-types/http/schemas/news
 import type { FastifyReply } from 'fastify'
 import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
 import { UpdateNewsletterUseCase } from '@use-cases/newsletters/update-newsletter'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateNewsletter(
@@ -24,7 +25,7 @@ export async function updateNewsletter(
     body: parsedBody,
   })
 
-  return await reply.status(200).send({
+  return await reply.status(StatusCodes.OK).send({
     data: NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter),
   })
 }

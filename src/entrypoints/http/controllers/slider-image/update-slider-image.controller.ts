@@ -8,6 +8,7 @@ import type { UpdateSliderImageParamsType } from '@custom-types/http/schemas/sli
 import type { FastifyReply } from 'fastify'
 import { SliderImagePresenter } from '@http/presenters/slider-image-presenter'
 import { UpdateSliderImageUseCase } from '@use-cases/slider-image/update-slider-image'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateSliderImage(
@@ -23,5 +24,5 @@ export async function updateSliderImage(
 
   const formattedReply = SliderImagePresenter.toHTTP<SliderImageDefaultPresenterInput, HTTPSliderImage>(sliderImage)
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

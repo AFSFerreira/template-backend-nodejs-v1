@@ -6,6 +6,7 @@ import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateBlogUseCase } from '@use-cases/blog/update-blog'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateBlog(
@@ -24,7 +25,7 @@ export async function updateBlog(
     userPublicId,
   })
 
-  return await reply.status(200).send({
+  return await reply.status(StatusCodes.OK).send({
     data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
   })
 }

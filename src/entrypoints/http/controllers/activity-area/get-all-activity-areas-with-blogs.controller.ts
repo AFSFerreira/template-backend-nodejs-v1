@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetAllActivityAreasWithBlogsUseCase } from '@use-cases/activity-area/get-all-activity-areas-with-blogs-use-case'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllActivityAreasWithBlogs(
@@ -25,5 +26,5 @@ export async function getAllActivityAreasWithBlogs(
     HTTPActivityAreaWithBlogsCount
   >(data, tsyringeTokens.presenters.activityArea.activityAreaWithBlogsCount)
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

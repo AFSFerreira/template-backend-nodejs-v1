@@ -4,6 +4,7 @@ import { newsletterHtmlMultipartFileConfig } from '@constants/multipart-configur
 import { FilePresenter } from '@http/presenters/file-presenter'
 import { fileSchema } from '@lib/zod/utils/generic-components/file-schema'
 import { UploadNewsletterHtmlUseCase } from '@use-cases/newsletters/upload-newsletter-html'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadNewsletterHtml(request: FastifyRequest, reply: FastifyReply) {
@@ -17,5 +18,5 @@ export async function uploadNewsletterHtml(request: FastifyRequest, reply: Fasti
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

@@ -8,6 +8,7 @@ import type { UpdateInstitutionParamsType } from '@custom-types/http/schemas/ins
 import type { FastifyReply } from 'fastify'
 import { InstitutionPresenter } from '@http/presenters/institution-presenter'
 import { UpdateInstitutionUseCase } from '@use-cases/institution/update-institution'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateInstitution(
@@ -23,7 +24,7 @@ export async function updateInstitution(
 
   const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(institution)
 
-  return await reply.status(200).send({
+  return await reply.status(StatusCodes.OK).send({
     data: formattedReply,
   })
 }

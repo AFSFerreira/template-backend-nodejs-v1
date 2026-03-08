@@ -4,6 +4,7 @@ import { logger } from '@lib/pino'
 import { logError } from '@lib/pino/helpers/log-error'
 import { prisma } from '@lib/prisma'
 import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@messages/loggings/system/server-loggings'
+import { StatusCodes } from 'http-status-codes'
 
 export async function healthCheck(_request: FastifyRequest, reply: FastifyReply) {
   const startTime = Date.now()
@@ -19,7 +20,7 @@ export async function healthCheck(_request: FastifyRequest, reply: FastifyReply)
     case 'healthy': {
       logger.info({ uptime, duration }, HEALTHCHECK_SUCESSFUL)
 
-      return reply.status(200).send({ status: 'ok', uptime, timestamp })
+      return reply.status(StatusCodes.OK).send({ status: 'ok', uptime, timestamp })
     }
 
     case 'unhealthy': {
@@ -29,7 +30,7 @@ export async function healthCheck(_request: FastifyRequest, reply: FastifyReply)
         message: HEALTHCHECK_FAILED,
       })
 
-      return reply.status(500).send({ status: 'error', message: HEALTHCHECK_ERROR })
+      return reply.status(StatusCodes.INTERNAL_SERVER_ERROR).send({ status: 'error', message: HEALTHCHECK_ERROR })
     }
 
     default: {

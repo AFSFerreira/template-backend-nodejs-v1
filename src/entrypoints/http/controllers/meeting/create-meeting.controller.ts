@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { MeetingPresenter } from '@http/presenters/meeting-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createMeeting(request: ZodRequest<{ body: CreateMeetingBodyType }>, reply: FastifyReply) {
@@ -22,5 +23,5 @@ export async function createMeeting(request: ZodRequest<{ body: CreateMeetingBod
     tsyringeTokens.presenters.meeting.meetingDetailed,
   )
 
-  return await reply.status(201).send({ data: formattedReply })
+  return await reply.status(StatusCodes.CREATED).send({ data: formattedReply })
 }

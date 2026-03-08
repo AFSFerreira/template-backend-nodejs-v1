@@ -7,6 +7,7 @@ import type { CreateDirectorPositionBodyType } from '@custom-types/http/schemas/
 import type { FastifyReply } from 'fastify'
 import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
 import { CreateDirectorPositionUseCase } from '@use-cases/director-position/create-director-position'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createDirectorPosition(
@@ -23,7 +24,7 @@ export async function createDirectorPosition(
     directorPosition,
   )
 
-  return await reply.status(201).send({
+  return await reply.status(StatusCodes.CREATED).send({
     directorPosition: formattedReply,
   })
 }

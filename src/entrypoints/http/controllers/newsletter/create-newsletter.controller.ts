@@ -7,6 +7,7 @@ import type { CreateNewsletterBodyType } from '@custom-types/http/schemas/newsle
 import type { FastifyReply } from 'fastify'
 import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
 import { CreateNewsletterUseCase } from '@use-cases/newsletters/create-newsletter'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createNewsletter(request: ZodRequest<{ body: CreateNewsletterBodyType }>, reply: FastifyReply) {
@@ -16,7 +17,7 @@ export async function createNewsletter(request: ZodRequest<{ body: CreateNewslet
 
   const { newsletter } = await useCase.execute(createNewsletterInput)
 
-  return await reply.status(201).send({
+  return await reply.status(StatusCodes.CREATED).send({
     data: NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter),
   })
 }

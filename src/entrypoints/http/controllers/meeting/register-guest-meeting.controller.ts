@@ -3,6 +3,7 @@ import type { RegisterGuestMeetingBodyType } from '@custom-types/http/schemas/me
 import type { RegisterGuestMeetingParamsType } from '@custom-types/http/schemas/meeting/register-guest-meeting-params-schema'
 import type { FastifyReply } from 'fastify'
 import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function registerGuestMeeting(
@@ -19,5 +20,5 @@ export async function registerGuestMeeting(
     meetingId,
   })
 
-  return await reply.status(201).send()
+  return await reply.status(StatusCodes.CREATED).send()
 }

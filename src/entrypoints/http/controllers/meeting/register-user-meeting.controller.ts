@@ -5,6 +5,7 @@ import type { FastifyReply } from 'fastify'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { RegisterUserMeetingUseCase } from '@use-cases/meeting/register-user-meeting'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function registerUserMeeting(
@@ -23,5 +24,5 @@ export async function registerUserMeeting(
     meetingId,
   })
 
-  return await reply.status(201).send()
+  return await reply.status(StatusCodes.CREATED).send()
 }

@@ -4,6 +4,7 @@ import type { FastifyReply } from 'fastify'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { TransferAdminRoleUseCase } from '@use-cases/user/transfer-admin-role'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function transferAdminRole(request: ZodRequest<{ body: TransferAdminRoleBodyType }>, reply: FastifyReply) {
@@ -21,5 +22,5 @@ export async function transferAdminRole(request: ZodRequest<{ body: TransferAdmi
     },
   })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

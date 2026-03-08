@@ -7,6 +7,7 @@ import type { CreateInstitutionBodyType } from '@custom-types/http/schemas/insti
 import type { FastifyReply } from 'fastify'
 import { InstitutionPresenter } from '@http/presenters/institution-presenter'
 import { CreateInstitutionUseCase } from '@use-cases/institution/create-institution'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createInstitution(request: ZodRequest<{ body: CreateInstitutionBodyType }>, reply: FastifyReply) {
@@ -18,7 +19,7 @@ export async function createInstitution(request: ZodRequest<{ body: CreateInstit
 
   const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(institution)
 
-  return await reply.status(201).send({
+  return await reply.status(StatusCodes.CREATED).send({
     data: formattedReply,
   })
 }

@@ -9,6 +9,7 @@ import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetAllUserBlogsDetailedUseCase } from '@use-cases/blog/get-all-user-blogs-detailed'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllUserBlogsDetailed(
@@ -30,5 +31,5 @@ export async function getAllUserBlogsDetailed(
     tsyringeTokens.presenters.blog.blogDetailedForAdmin,
   )
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

@@ -4,6 +4,7 @@ import type { FastifyReply } from 'fastify'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteDirectorBoardUseCase } from '@use-cases/director-board/delete-director-board'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function deleteDirectorBoard(
@@ -22,5 +23,5 @@ export async function deleteDirectorBoard(
     },
   })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

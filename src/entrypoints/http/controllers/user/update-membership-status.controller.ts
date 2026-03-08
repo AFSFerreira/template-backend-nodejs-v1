@@ -8,6 +8,7 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateMembershipStatusUseCase } from '@use-cases/user/update-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateMembershipStatus(
@@ -33,5 +34,5 @@ export async function updateMembershipStatus(
     tsyringeTokens.presenters.user.userDetailed,
   )
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

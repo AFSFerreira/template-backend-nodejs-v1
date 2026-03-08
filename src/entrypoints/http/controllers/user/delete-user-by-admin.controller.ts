@@ -5,6 +5,7 @@ import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-pub
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteUserByAdminUseCase } from '@use-cases/user/delete-user-by-admin'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function deleteUserByAdmin(
@@ -25,5 +26,5 @@ export async function deleteUserByAdmin(
     },
   })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

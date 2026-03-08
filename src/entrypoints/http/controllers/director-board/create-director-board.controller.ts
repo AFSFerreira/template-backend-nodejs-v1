@@ -9,6 +9,7 @@ import { DirectorBoardPresenter } from '@http/presenters/director-board-presente
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createDirectorBoard(
@@ -31,5 +32,5 @@ export async function createDirectorBoard(
     directorBoard,
   )
 
-  return await reply.status(201).send({ data: formattedReply })
+  return await reply.status(StatusCodes.CREATED).send({ data: formattedReply })
 }

@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateUserPermissionsUseCase } from '@use-cases/user/update-user-permissions'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateUserPermissions(
@@ -28,5 +29,5 @@ export async function updateUserPermissions(
     },
   })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

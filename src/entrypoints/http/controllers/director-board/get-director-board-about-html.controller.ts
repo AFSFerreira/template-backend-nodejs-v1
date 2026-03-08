@@ -3,6 +3,7 @@ import type { GetDirectorBoardAboutHTMLParamsType } from '@custom-types/http/sch
 import type { FastifyReply } from 'fastify'
 import { HTML_HEADER } from '@constants/header-constants'
 import { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getDirectorBoardAboutHTML(
@@ -15,5 +16,5 @@ export async function getDirectorBoardAboutHTML(
 
   const { htmlContent } = await useCase.execute(parsedParams)
 
-  return await reply.status(200).type(HTML_HEADER).send(htmlContent)
+  return await reply.status(StatusCodes.OK).type(HTML_HEADER).send(htmlContent)
 }

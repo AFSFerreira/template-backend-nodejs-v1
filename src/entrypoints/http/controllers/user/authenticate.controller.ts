@@ -7,6 +7,7 @@ import { authenticateConnectionInfoSchema } from '@http/schemas/user/authenticat
 import { buildAuthTokens } from '@services/http/build-auth-tokens'
 import { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import { getConnectionInfo } from '@utils/http/get-connection-info'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function authenticate(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
@@ -37,7 +38,7 @@ export async function authenticate(request: ZodRequest<{ body: AuthenticateType 
 
   const formattedUser = UserPresenter.toHTTP<UserDefaultPresenterInput, HTTPUser>(user)
 
-  return await replyWithCookie.status(200).send({
+  return await replyWithCookie.status(StatusCodes.OK).send({
     data: {
       accessToken,
       user: formattedUser,

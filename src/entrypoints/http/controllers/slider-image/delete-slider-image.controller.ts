@@ -2,6 +2,7 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { DeleteSliderImageParamsType } from '@custom-types/http/schemas/slider-image/delete-slider-image-params-schema'
 import type { FastifyReply } from 'fastify'
 import { DeleteSliderImageUseCase } from '@use-cases/slider-image/delete-slider-image'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function deleteSliderImage(
@@ -14,5 +15,5 @@ export async function deleteSliderImage(
 
   await useCase.execute({ publicId })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

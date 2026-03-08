@@ -4,6 +4,7 @@ import { userProfilePictureFileConfig } from '@constants/multipart-configuration
 import { FilePresenter } from '@http/presenters/file-presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadUserProfileImageUseCase } from '@use-cases/user/upload-register-profile-image'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadProfileImage(request: FastifyRequest, reply: FastifyReply) {
@@ -17,7 +18,7 @@ export async function uploadProfileImage(request: FastifyRequest, reply: Fastify
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(201).send({
+  return await reply.status(StatusCodes.CREATED).send({
     data: formattedReply,
   })
 }

@@ -5,6 +5,7 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetUserProfileUseCase } from '@use-cases/user/get-user-profile'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getUserProfile(request: FastifyRequest, reply: FastifyReply) {
@@ -19,5 +20,5 @@ export async function getUserProfile(request: FastifyRequest, reply: FastifyRepl
     tsyringeTokens.presenters.user.userDetailed,
   )
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

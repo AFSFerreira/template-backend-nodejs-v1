@@ -4,6 +4,7 @@ import { sliderImageMultipartFileConfig } from '@constants/multipart-configurati
 import { FilePresenter } from '@http/presenters/file-presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadSliderImageUseCase } from '@use-cases/slider-image/upload-slider-image'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadSliderImage(request: FastifyRequest, reply: FastifyReply) {
@@ -17,7 +18,7 @@ export async function uploadSliderImage(request: FastifyRequest, reply: FastifyR
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(201).send({
+  return await reply.status(StatusCodes.CREATED).send({
     data: formattedReply,
   })
 }

@@ -7,6 +7,7 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateUserUseCase } from '@use-cases/user/update-user'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateUser(request: ZodRequest<{ body: UpdateBodyType }>, reply: FastifyReply) {
@@ -25,5 +26,5 @@ export async function updateUser(request: ZodRequest<{ body: UpdateBodyType }>, 
     tsyringeTokens.presenters.user.userDetailed,
   )
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

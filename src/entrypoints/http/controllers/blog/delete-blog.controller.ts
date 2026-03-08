@@ -3,6 +3,7 @@ import type { DeleteBlogParamsType } from '@custom-types/http/schemas/blog/delet
 import type { FastifyReply } from 'fastify'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { DeleteBlogUseCase } from '@use-cases/blog/delete-blog'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function deleteBlog(request: ZodRequest<{ params: DeleteBlogParamsType }>, reply: FastifyReply) {
@@ -13,5 +14,5 @@ export async function deleteBlog(request: ZodRequest<{ params: DeleteBlogParamsT
 
   await useCase.execute({ publicId, userPublicId })
 
-  return await reply.status(204).send()
+  return await reply.status(StatusCodes.NO_CONTENT).send()
 }

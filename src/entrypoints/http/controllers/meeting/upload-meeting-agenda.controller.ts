@@ -4,6 +4,7 @@ import { meetingAgendaMultipartFileConfig } from '@constants/multipart-configura
 import { FilePresenter } from '@http/presenters/file-presenter'
 import { documentSchema } from '@lib/zod/utils/generic-components/document-schema'
 import { UploadMeetingAgendaUseCase } from '@use-cases/meeting/upload-meeting-agenda'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadMeetingAgenda(request: FastifyRequest, reply: FastifyReply) {
@@ -17,5 +18,5 @@ export async function uploadMeetingAgenda(request: FastifyRequest, reply: Fastif
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

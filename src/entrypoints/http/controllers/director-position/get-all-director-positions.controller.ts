@@ -7,6 +7,7 @@ import type { GetAllDirectorPositionsType } from '@custom-types/http/schemas/dir
 import type { FastifyReply } from 'fastify'
 import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
 import { GetAllDirectorPositionsUseCase } from '@use-cases/director-position/get-all-director-positions'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getAllDirectorPositions(
@@ -23,5 +24,5 @@ export async function getAllDirectorPositions(
     data,
   )
 
-  return await reply.status(200).send({ data: formattedReply, meta })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply, meta })
 }

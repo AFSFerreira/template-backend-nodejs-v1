@@ -3,6 +3,7 @@ import { INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH } from '@constants/dynamic-fil
 import { electionNoticeMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import { documentSchema } from '@lib/zod/utils/generic-components/document-schema'
 import { UploadElectionNoticeUseCase } from '@use-cases/document-management/upload-election-notice'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadElectionNotice(request: FastifyRequest, reply: FastifyReply) {
@@ -14,5 +15,5 @@ export async function uploadElectionNotice(request: FastifyRequest, reply: Fasti
 
   await useCase.execute({ filePart, baseFolder: INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH, originalFilename: filename })
 
-  return await reply.status(201).send()
+  return await reply.status(StatusCodes.CREATED).send()
 }

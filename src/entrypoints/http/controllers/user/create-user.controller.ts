@@ -5,6 +5,7 @@ import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { CreateUserUseCase } from '@use-cases/user/create-user'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function createUser(request: ZodRequest<{ body: RegisterBodyType }>, reply: FastifyReply) {
@@ -19,5 +20,5 @@ export async function createUser(request: ZodRequest<{ body: RegisterBodyType }>
     tsyringeTokens.presenters.user.userDetailed,
   )
 
-  return await reply.status(201).send({ data: formattedReply })
+  return await reply.status(StatusCodes.CREATED).send({ data: formattedReply })
 }

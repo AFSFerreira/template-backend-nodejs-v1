@@ -8,6 +8,7 @@ import type { FastifyReply } from 'fastify'
 import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindDirectorBoardByPublicIdUseCase } from '@use-cases/director-board/find-by-public-id'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findDirectorBoardByPublicId(
@@ -25,5 +26,5 @@ export async function findDirectorBoardByPublicId(
     tsyringeTokens.presenters.directorBoard.directorBoardWithUser,
   )
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }

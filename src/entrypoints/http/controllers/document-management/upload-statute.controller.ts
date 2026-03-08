@@ -3,6 +3,7 @@ import { INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH } from '@constants/dynamic-fil
 import { statuteMultipartFileConfig } from '@constants/multipart-configuration-constants'
 import { documentSchema } from '@lib/zod/utils/generic-components/document-schema'
 import { UploadStatuteUseCase } from '@use-cases/document-management/upload-statute'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadStatute(request: FastifyRequest, reply: FastifyReply) {
@@ -14,5 +15,5 @@ export async function uploadStatute(request: FastifyRequest, reply: FastifyReply
 
   await useCase.execute({ filePart, baseFolder: INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH, originalFilename: filename })
 
-  return await reply.status(201).send()
+  return await reply.status(StatusCodes.CREATED).send()
 }

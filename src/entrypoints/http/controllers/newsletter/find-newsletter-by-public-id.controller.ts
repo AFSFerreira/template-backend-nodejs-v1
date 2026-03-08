@@ -7,6 +7,7 @@ import type { FindNewsletterByPublicIdParamsType } from '@custom-types/http/sche
 import type { FastifyReply } from 'fastify'
 import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
 import { FindNewsletterByPublicIdUseCase } from '@use-cases/newsletters/find-newsletter-by-public-id'
+import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findNewsletterByPublicId(
@@ -21,5 +22,5 @@ export async function findNewsletterByPublicId(
 
   const formattedReply = NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter)
 
-  return await reply.status(200).send({ data: formattedReply })
+  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
 }
