@@ -60,3 +60,13 @@ export const UPDATE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['update', 'up
 export const UPSERT_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['upsert'])
 
 export const DELETE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['delete', 'deleteMany'])
+
+export const SENSITIVE_KEYS = new Set<string>([
+  'password',
+  'passwordHash',
+  'identityDocument',
+  'token',
+  'cpf',
+  'rg',
+  'secret',
+])
