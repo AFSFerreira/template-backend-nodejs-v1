@@ -97,6 +97,10 @@ const verifiedPaths = [
   NEWSLETTER_TEMP_HTML_PATH,
   NEWSLETTER_IMAGES_PATH,
   NEWSLETTER_TEMP_IMAGES_PATH,
+  TEMP_FILES_DIR,
+  NUNJUCKS_TEMPLATES_ROOT_PATH,
+  BLOG_IMAGES_PATH,
+  BLOG_TEMP_BANNERS_PATH,
 ].map((path) => ({ path, exists: folderExistsSync(path) }))
 
 const failedVerifiedPaths = verifiedPaths.filter((pathStatus) => !pathStatus.exists)
