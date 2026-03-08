@@ -7,8 +7,8 @@ import type { FindBlogByPublicIdParamsType } from '@custom-types/http/schemas/bl
 import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blog/find-blog-by-public-id-detailed'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

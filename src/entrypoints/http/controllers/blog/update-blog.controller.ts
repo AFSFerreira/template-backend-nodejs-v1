@@ -4,8 +4,8 @@ import type { UpdateBlogBodyType } from '@custom-types/http/schemas/blog/update-
 import type { UpdateBlogParamsType } from '@custom-types/http/schemas/blog/update-blog-params-schema'
 import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateBlogUseCase } from '@use-cases/blog/update-blog'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

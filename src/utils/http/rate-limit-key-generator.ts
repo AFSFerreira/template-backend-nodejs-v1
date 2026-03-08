@@ -1,5 +1,5 @@
 import type { FastifyRequest } from 'fastify'
-import { getRequestUserPublicIdOptional } from '@services/http/get-request-user-public-id-optional'
+import { getRequestUserPublicIdOptional } from '@utils/http/get-request-user-public-id-optional'
 import { getClientIp } from './get-client-ip'
 
 export function rateLimitKeyGenerator(request: FastifyRequest) {

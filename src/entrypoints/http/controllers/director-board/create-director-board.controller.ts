@@ -6,9 +6,9 @@ import type {
 import type { CreateDirectorBoardBodyType } from '@custom-types/http/schemas/director-board/create-director-board-body-schema'
 import type { FastifyReply } from 'fastify'
 import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

@@ -5,9 +5,9 @@ import { logError } from '@lib/pino/helpers/log-error'
 import { UNHANDLED_ERROR } from '@messages/loggings/system/common-loggings'
 import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 import * as Sentry from '@sentry/node'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { sanitizePayload } from '@utils/formatters/sanitize-payload'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { getBusinessError } from './get-business-error'
 
 export function fastifyErrorHandler(error: FastifyError, request: FastifyRequest, reply: FastifyReply) {

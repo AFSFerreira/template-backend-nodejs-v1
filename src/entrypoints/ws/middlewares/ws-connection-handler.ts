@@ -1,8 +1,8 @@
 import type { WebSocket } from '@fastify/websocket'
 import type { FastifyRequest } from 'fastify'
 import { logError } from '@lib/pino/helpers/log-error'
-import { getSocketUserPublicId } from '@services/ws/get-socket-user-public-id'
 import { verifyTokenIsolated } from '@utils/http/verify-jwt-token'
+import { getSocketUserPublicId } from '@utils/ws/get-socket-user-public-id'
 import { wsDispatcher } from '@ws/dispatcher'
 import { wsMessageSchema } from '@ws/schemas/ws-message-schema'
 

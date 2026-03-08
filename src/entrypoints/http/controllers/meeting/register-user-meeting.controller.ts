@@ -3,8 +3,8 @@ import type { RegisterUserMeetingBodyType } from '@custom-types/http/schemas/mee
 import type { RegisterUserMeetingParamsType } from '@custom-types/http/schemas/meeting/register-user-meeting-params-schema'
 import type { FastifyReply } from 'fastify'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { RegisterUserMeetingUseCase } from '@use-cases/meeting/register-user-meeting'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

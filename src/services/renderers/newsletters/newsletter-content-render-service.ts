@@ -9,12 +9,12 @@ import {
   generateProseMirrorHtmlWeb,
 } from '@services/formatters/generate-prose-mirror-html'
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
-import { PlainTextService } from '@services/formatters/plain-text-service'
 import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
 import { NewsletterHtmlReadError } from '@use-cases/errors/newsletter/newsletter-html-read-error'
 import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newsletter/newsletter-template-not-configured-error'
 import { buildNewsletterHtmlPath } from '@utils/builders/paths/build-newsletter-html-path'
 import { readFile } from '@utils/files/read-file'
+import { PlainTextService } from '@utils/formatters/plain-text-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { NewsletterTemplateRenderer } from './newsletter-template-renderer'
 

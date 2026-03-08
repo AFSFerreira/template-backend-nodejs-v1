@@ -8,8 +8,8 @@ import type { UpdateDirectorBoardParamsType } from '@custom-types/http/schemas/d
 import type { FastifyReply } from 'fastify'
 import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateDirectorBoardUseCase } from '@use-cases/director-board/update-director-board'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

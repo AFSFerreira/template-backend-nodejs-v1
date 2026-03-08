@@ -1,7 +1,7 @@
 import type { JobFactory } from '@custom-types/lib/bullmq/job-factory'
 import { setTimeout } from 'node:timers/promises'
 import { BATCH_PROCESSING_DELAY } from '@constants/timing-constants'
-import { JobDatabaseContextNotProvidedError } from '@services/errors/jobs/job-database-context-not-provided-error'
+import { JobDatabaseContextNotProvidedError } from '@utils/errors/jobs/job-database-context-not-provided-error'
 import { ensureExists } from '@utils/validators/ensure'
 import dayjs from 'dayjs'
 

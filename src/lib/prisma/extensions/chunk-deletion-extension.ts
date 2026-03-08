@@ -1,6 +1,6 @@
 import type { RuntimeDataModel } from '@prisma/client/runtime/client'
 import { Prisma } from '@prisma/generated/client'
-import { PrismaModelNameNotResolvedError } from '@services/errors/prisma/prisma-model-name-not-resolved-error'
+import { PrismaModelNameNotResolvedError } from '@utils/errors/prisma/prisma-model-name-not-resolved-error'
 
 export const chunkedDeletionExtension = Prisma.defineExtension((client) => {
   const runtimeDataModel = (client as unknown as { _runtimeDataModel: RuntimeDataModel })._runtimeDataModel

@@ -16,8 +16,8 @@ import {
   SCHEDULER_JOB_STALLED,
   SCHEDULER_WORKER_ERROR,
 } from '@messages/loggings/system/scheduler-loggings'
-import { InvalidCronExpressionError } from '@services/errors/cron/invalid-cron-expression-error'
-import { JobNameAlreadyExistsError } from '@services/errors/jobs/job-name-already-exists-error'
+import { InvalidCronExpressionError } from '@utils/errors/cron/invalid-cron-expression-error'
+import { JobNameAlreadyExistsError } from '@utils/errors/jobs/job-name-already-exists-error'
 import { Queue, Worker } from 'bullmq'
 import z from 'zod'
 import { BASIC_JOB_CONFIGURATION } from '../configuration/base-configuration'

@@ -7,8 +7,8 @@ import type { GetAllBlogsDetailedQueryType } from '@custom-types/http/schemas/bl
 import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetAllBlogsDetailedUseCase } from '@use-cases/blog/get-all-blogs-detailed'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { container } from 'tsyringe'
 
 export async function getAllBlogsDetailed(

@@ -5,9 +5,9 @@ import type { UpdateMembershipStatusParamsType } from '@custom-types/http/schema
 import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { UpdateMembershipStatusUseCase } from '@use-cases/user/update-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

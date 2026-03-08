@@ -3,8 +3,8 @@ import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/pre
 import type { CreateDraftCopyBlogParamsType } from '@custom-types/http/schemas/blog/create-draft-copy-blog-params-schema'
 import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { CreateDraftCopyBlogUseCase } from '@use-cases/blog/create-draft-copy-blog'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

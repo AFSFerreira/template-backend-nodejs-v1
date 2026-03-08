@@ -1,4 +1,4 @@
-import { InvalidExcelCoordinateError } from '@services/errors/excel/invalid-excel-coordinate-error'
+import { InvalidExcelCoordinateError } from '@utils/errors/excel/invalid-excel-coordinate-error'
 
 interface ExcelCoordinate {
   col: number

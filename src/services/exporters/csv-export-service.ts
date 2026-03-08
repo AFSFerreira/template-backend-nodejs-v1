@@ -2,8 +2,8 @@ import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meet
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import { PassThrough } from 'node:stream'
 import { logError } from '@lib/pino/helpers/log-error'
-import { meetingExportMapper } from '@services/mappers/meeting-export-mapper'
 import { userExportMapper } from '@services/mappers/user-export-mapper'
+import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import { stringify } from 'csv-stringify'
 
 export class CsvExportService {

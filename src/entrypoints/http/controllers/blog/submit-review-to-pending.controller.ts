@@ -3,8 +3,8 @@ import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/pre
 import type { SubmitReviewToPendingParamsType } from '@custom-types/http/schemas/blog/submit-review-to-pending-params-schema'
 import type { FastifyReply } from 'fastify'
 import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { SubmitReviewToPendingUseCase } from '@use-cases/blog/submit-review-to-pending'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 

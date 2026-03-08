@@ -1,8 +1,8 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetRestrictBlogHtmlContentParamsType } from '@custom-types/http/schemas/blog/get-restrict-blog-html-content-params-schema'
 import type { FastifyReply } from 'fastify'
-import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetRestrictBlogHTMLContentUseCase } from '@use-cases/blog/get-restrict-blog-html-content'
+import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
