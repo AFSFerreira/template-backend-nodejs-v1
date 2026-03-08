@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -11,7 +11,7 @@ import { getStatute } from './get-statute.controller'
 import { uploadElectionNotice } from './upload-election-notice.controller'
 import { uploadStatute } from './upload-statute.controller'
 
-export async function documentManagementRoutes(app: ZodFastifyInstance) {
+export async function documentManagementRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/statute',

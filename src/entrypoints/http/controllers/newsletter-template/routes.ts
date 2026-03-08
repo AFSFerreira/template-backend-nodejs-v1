@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -10,7 +10,7 @@ import { rateLimit } from '@utils/http/rate-limit'
 import { findNewsletterTemplateByPublicId } from './find-newsletter-template-by-public-id.controller'
 import { getAllNewsletterTemplates } from './get-all-newsletter-templates.controller'
 
-export async function newsletterTemplateRoutes(app: ZodFastifyInstance) {
+export async function newsletterTemplateRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

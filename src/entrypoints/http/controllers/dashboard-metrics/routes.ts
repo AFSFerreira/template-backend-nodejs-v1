@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -9,7 +9,7 @@ import { getBlogsMetrics } from './get-blogs-metrics.controller'
 import { getNewslettersMetrics } from './get-newsletters-metrics.controller'
 import { getUsersMetrics } from './get-users-metrics.controller'
 
-export async function dashboardMetricsRoutes(app: ZodFastifyInstance) {
+export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/blogs',

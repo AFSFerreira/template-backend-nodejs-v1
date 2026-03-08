@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -53,7 +53,7 @@ import { updateUserPermissions } from './update-user-permissions.controller'
 import { uploadProfileImage } from './upload-profile-image.controller'
 import { verifyEmail } from './verify-email.controller'
 
-export async function userRoutes(app: ZodFastifyInstance) {
+export async function userRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/restrict',

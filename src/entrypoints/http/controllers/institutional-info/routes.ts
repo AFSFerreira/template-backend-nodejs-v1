@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { INSTITUTIONAL_INFO_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -13,7 +13,7 @@ import { getInstitutionalInfoForAdmin } from './get-institutional-info-for-admin
 import { updateInstitutionalInfo } from './update-institutional-info.controller'
 import { uploadInstitutionalAboutImage } from './upload-institutional-about-image.controller'
 
-export async function institutionalInfoRoutes(app: ZodFastifyInstance) {
+export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

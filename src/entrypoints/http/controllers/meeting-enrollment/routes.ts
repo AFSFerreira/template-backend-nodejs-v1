@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -10,7 +10,7 @@ import { rateLimit } from '@utils/http/rate-limit'
 import { deleteMeetingEnrollment } from './delete-meeting-enrollment.controller'
 import { getMeetingEnrollment } from './get-meeting-enrollment.controller'
 
-export async function meetingEnrollmentRoutes(app: ZodFastifyInstance) {
+export async function meetingEnrollmentRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/:publicId',

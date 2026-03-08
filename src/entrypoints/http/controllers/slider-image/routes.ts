@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -19,7 +19,7 @@ import { getAllHomePageSlidersRestrict } from './get-all-home-page-sliders-restr
 import { updateSliderImage } from './update-slider-image.controller'
 import { uploadSliderImage } from './upload-slider-image.controller'
 
-export async function sliderImageRoutes(app: ZodFastifyInstance) {
+export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/home-page/restrict',

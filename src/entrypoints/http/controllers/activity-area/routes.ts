@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { getAllActivityAreasWithAcademicPublicationsQuerySchema } from '@http/schemas/academic-publication/get-all-activity-areas-with-academic-publications-query-schema'
 import { getAllActivityAreasSchema } from '@http/schemas/activity-area/get-all-activity-areas-schema'
@@ -9,7 +9,7 @@ import { getAllActivityAreas } from './get-all-activity-areas.controller'
 import { getAllActivityAreasWithAcademicPublicationsController } from './get-all-activity-areas-with-academic-publications.controller'
 import { getAllActivityAreasWithBlogs } from './get-all-activity-areas-with-blogs.controller'
 
-export async function activityAreaRoutes(app: ZodFastifyInstance) {
+export async function activityAreaRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

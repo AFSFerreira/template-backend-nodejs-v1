@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { NEWSLETTER_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -25,7 +25,7 @@ import { updateNewsletter } from './update-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
 import { uploadNewsletterImage } from './upload-newsletter-image.controller'
 
-export async function newsletterRoutes(app: ZodFastifyInstance) {
+export async function newsletterRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

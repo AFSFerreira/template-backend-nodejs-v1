@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -32,7 +32,7 @@ import { updateMeeting } from './update-meeting.controller'
 import { uploadMeetingAgenda } from './upload-meeting-agenda.controller'
 import { uploadMeetingBanner } from './upload-meeting-banner.controller'
 
-export async function meetingRoutes(app: ZodFastifyInstance) {
+export async function meetingRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

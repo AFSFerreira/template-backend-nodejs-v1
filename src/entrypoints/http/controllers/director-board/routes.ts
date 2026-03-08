@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { DIRECTORS_BOARD_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS, MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -23,7 +23,7 @@ import { getDirectorBoardAboutHTML } from './get-director-board-about-html.contr
 import { updateDirectorBoard } from './update-director-board.controller'
 import { uploadDirectorBoardProfileImage } from './upload-director-board-profile-image.controller'
 
-export async function directorBoardRoutes(app: ZodFastifyInstance) {
+export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

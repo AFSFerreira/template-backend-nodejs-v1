@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { BLOGS_PAYLOAD_LIMIT_SIZE, RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { CONTENT_LEADER_PERMISSIONS, CONTENT_PRODUCERS_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -43,7 +43,7 @@ import { updateBlog } from './update-blog.controller'
 import { uploadBlogBanner } from './upload-blog-banner.controller'
 import { uploadBlogImage } from './upload-blog-image.controller'
 
-export async function blogRoutes(app: ZodFastifyInstance) {
+export async function blogRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',

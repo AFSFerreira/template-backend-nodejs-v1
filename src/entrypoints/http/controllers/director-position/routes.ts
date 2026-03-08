@@ -1,4 +1,4 @@
-import type { ZodFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { ADMIN_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
@@ -15,7 +15,7 @@ import { deleteDirectorPosition } from './delete-director-position.controller'
 import { getAllDirectorPositions } from './get-all-director-positions.controller'
 import { updateDirectorPosition } from './update-director-position.controller'
 
-export async function directorPositionRoutes(app: ZodFastifyInstance) {
+export async function directorPositionRoutes(app: ExtendedFastifyInstance) {
   // GET
   app.get(
     '/',
