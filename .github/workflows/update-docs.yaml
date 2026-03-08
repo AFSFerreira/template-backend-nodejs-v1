@@ -21,7 +21,7 @@ jobs:
 
       - name: Gerar Árvore de Diretórios
         run: |
-          npx tree-cli@latest -d -l 4 --ignore "node_modules, .git, dist, coverage, build, .turbo, uploads" > tree.txt
+          npx --yes --quiet tree-cli@latest -d -l 4 --ignore "node_modules, .git, dist, coverage, build, .turbo, uploads" > tree.txt
 
       - name: Injetar Árvore no Markdown
         uses: actions/github-script@v7
@@ -29,22 +29,34 @@ jobs:
           script: |
             const fs = require('fs');
 
-            const tree = fs.readFileSync('tree.txt', 'utf8');
+            const rawTree = fs.readFileSync('tree.txt', 'utf8');
+
+            // Filtra o texto cru e mantém estritamente as linhas que contêm os caracteres do desenho da árvore
+            const cleanTreeLines = rawTree
+              .split('\n')
+              .filter(line => line.includes('├') || line.includes('└') || line.includes('│') || line.includes('|'));
+
+            // Adiciona um ponto '.' no topo para representar a raiz do projeto de forma limpa e profissional
+            const finalTree = ".\n" + cleanTreeLines.join('\n');
+
             const readmePath = 'README.md';
             let readme = fs.readFileSync(readmePath, 'utf8');
 
             const startTag = '<!-- START_TREE -->';
             const endTag = '<!-- END_TREE -->';
 
+            // Regex segura para multiline que busca o conteúdo entre as tags
             const regex = new RegExp(`${startTag}[\\s\\S]*?${endTag}`, 'g');
-            const newContent = `${startTag}\n\`\`\`bash\n${tree}\`\`\`\n${endTag}`;
+
+            // Monta o novo bloco (mantendo as tags)
+            const newContent = `${startTag}\n\`\`\`bash\n${finalTree}\n\`\`\`\n${endTag}`;
 
             readme = readme.replace(regex, newContent);
-            
             fs.writeFileSync(readmePath, readme);
 
+            // Limpeza do artefato temporário
             fs.unlinkSync('tree.txt');
-
+            
       - name: Criar Pull Request Automático
         if: ${{ !env.ACT }}
         uses: peter-evans/create-pull-request@v6
