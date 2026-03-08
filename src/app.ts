@@ -21,6 +21,7 @@ import { multipartConfiguration } from '@http/configurations/multipart-configura
 import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
 import { swaggerConfiguration } from '@http/configurations/swagger-configuration'
 import { swaggerUiConfiguration } from '@http/configurations/swagger-ui-configuration'
+import { customReplyPluginDefinition } from '@http/plugins/custom-reply'
 import { logRequest } from '@http/plugins/request-logger'
 import { logResponse } from '@http/plugins/response-logger'
 import { preSerialization } from '@http/plugins/serializer'
@@ -40,6 +41,8 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   initSentry()
   registerAppSignals(app)
+
+  await customReplyPluginDefinition(app)
 
   // REVIEW: Vale a pena expôr o JSON para o frontend
   // consumir com um Orval ou Kubb?
