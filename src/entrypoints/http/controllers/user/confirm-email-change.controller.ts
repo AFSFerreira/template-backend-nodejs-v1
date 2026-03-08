@@ -15,5 +15,5 @@ export async function confirmEmailChange(
 
   await useCase.execute(parsedBody)
 
-  await reply.status(EMAIL_UPDATED_SUCCESSFULLY.status).send({ data: EMAIL_UPDATED_SUCCESSFULLY.body })
+  return await reply.sendApiResponse(EMAIL_UPDATED_SUCCESSFULLY)
 }

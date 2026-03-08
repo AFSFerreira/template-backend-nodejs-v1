@@ -17,5 +17,5 @@ export async function changePassword(request: ZodRequest<{ body: UpdatePasswordB
     userPublicId,
   })
 
-  await reply.status(PASSWORD_UPDATED_SUCCESSFULLY.status).send({ data: PASSWORD_UPDATED_SUCCESSFULLY.body })
+  await reply.sendApiResponse(PASSWORD_UPDATED_SUCCESSFULLY)
 }

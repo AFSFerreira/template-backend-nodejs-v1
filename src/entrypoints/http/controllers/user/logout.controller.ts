@@ -10,7 +10,7 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
   } catch (_error) {
     logger.debug(INVALID_OR_EXPIRED_TOKEN.body)
 
-    return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send({ data: INVALID_OR_EXPIRED_TOKEN.body })
+    return await reply.sendApiResponse(INVALID_OR_EXPIRED_TOKEN)
   }
 
   return await reply
@@ -20,6 +20,5 @@ export async function logout(request: FastifyRequest, reply: FastifyReply) {
       sameSite: env.NODE_ENV === 'production' ? 'strict' : 'lax',
       httpOnly: true,
     })
-    .status(LOGOUT.status)
-    .send({ data: LOGOUT.body })
+    .sendApiResponse(LOGOUT)
 }

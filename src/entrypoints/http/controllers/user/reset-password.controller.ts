@@ -15,5 +15,5 @@ export async function resetPassword(request: ZodRequest<{ body: ResetPasswordBod
     token,
   })
 
-  await reply.status(PASSWORD_RESET_SUCCESSFUL.status).send({ data: PASSWORD_RESET_SUCCESSFUL.body })
+  return await reply.sendApiResponse(PASSWORD_RESET_SUCCESSFUL)
 }

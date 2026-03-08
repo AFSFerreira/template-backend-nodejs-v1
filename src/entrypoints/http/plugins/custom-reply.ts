@@ -2,6 +2,7 @@ import type { PaginationMetaType } from '@custom-types/custom/pagination-meta-ty
 import 'fastify'
 import type { Readable } from 'node:stream'
 import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
+import type { IApiResponse } from '@custom-types/responses/api-response'
 import type { FastifyReply } from 'fastify'
 import { getFileExtension } from '@utils/files/get-file-extension'
 import { mapExtensionToMimeType } from '@utils/mappers/map-mime-type'
@@ -12,10 +13,15 @@ declare module 'fastify' {
     sendHtml(htmlContent: string): FastifyReply
     sendDownload(stream: Readable, filename: string): FastifyReply
     sendPaginated(data: unknown, meta: PaginationMetaType): FastifyReply
+    sendApiResponse(apiResponse: IApiResponse): FastifyReply
   }
 }
 
 export async function customReplyPluginDefinition(app: ExtendedFastifyInstance) {
+  app.decorateReply('sendApiResponse', function (this: FastifyReply, apiResponse: IApiResponse) {
+    return this.status(apiResponse.status).send(apiResponse.body)
+  })
+
   app.decorateReply('sendHtml', function (this: FastifyReply, htmlContent: string) {
     return this.status(StatusCodes.OK).type('text/html; charset=utf-8').send(htmlContent)
   })

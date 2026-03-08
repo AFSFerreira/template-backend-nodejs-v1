@@ -12,5 +12,5 @@ export async function verifyEmail(request: ZodRequest<{ body: VerifyEmailBodyTyp
 
   await useCase.execute(parsedBody)
 
-  return await reply.status(EMAIL_VERIFICATION_SUCCESSFUL.status).send(EMAIL_VERIFICATION_SUCCESSFUL.body)
+  return await reply.sendApiResponse(EMAIL_VERIFICATION_SUCCESSFUL)
 }

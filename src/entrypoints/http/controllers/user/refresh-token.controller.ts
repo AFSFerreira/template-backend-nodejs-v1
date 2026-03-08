@@ -12,7 +12,7 @@ export async function refreshToken(request: FastifyRequest, reply: FastifyReply)
     await request.jwtVerify({ onlyCookie: true })
   } catch (error: unknown) {
     logger.debug({ error })
-    return await reply.status(INVALID_OR_EXPIRED_TOKEN.status).send({ data: INVALID_OR_EXPIRED_TOKEN.body })
+    return await reply.sendApiResponse(INVALID_OR_EXPIRED_TOKEN)
   }
 
   const { accessToken, reply: replyWithCookie } = await buildAuthTokens({

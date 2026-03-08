@@ -20,5 +20,5 @@ export async function requestEmailChange(
     userPublicId,
   })
 
-  await reply.status(EMAIL_CHANGE_REQUESTED.status).send({ data: EMAIL_CHANGE_REQUESTED.body })
+  return await reply.sendApiResponse(EMAIL_CHANGE_REQUESTED)
 }

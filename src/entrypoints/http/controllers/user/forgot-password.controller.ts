@@ -12,5 +12,5 @@ export async function forgotPassword(request: ZodRequest<{ body: ForgotPasswordB
 
   await useCase.execute({ login })
 
-  return await reply.status(PASSWORD_RESET_IF_USER_EXISTS.status).send({ data: PASSWORD_RESET_IF_USER_EXISTS.body })
+  return await reply.sendApiResponse(PASSWORD_RESET_IF_USER_EXISTS)
 }
