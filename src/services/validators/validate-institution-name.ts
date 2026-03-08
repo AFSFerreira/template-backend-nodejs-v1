@@ -1,5 +1,5 @@
 import type { IValidateInstitutionName } from '@custom-types/services/validators/validate-institution-name'
-import { getAllInstitutions } from '../external/get-all-institutions'
+import { getAllInstitutions } from '../externals/get-all-institutions'
 
 export async function validateInstitutionName({ institutionsRepository, institution }: IValidateInstitutionName) {
   const formattedInstitution = institution.toUpperCase()

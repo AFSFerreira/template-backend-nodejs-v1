@@ -14,7 +14,7 @@ import {
   buildInstitutionalAboutImagePath,
   buildInstitutionalTempAboutImagePath,
 } from '@services/builders/paths/build-institutional-about-image-path'
-import { removeInstitutionalInfoHTMLCache } from '@services/cache/institutional-info-html-cache'
+import { removeInstitutionalInfoHTMLCache } from '@services/caches/institutional-info-html-cache'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-info/institutional-info-not-found-error'

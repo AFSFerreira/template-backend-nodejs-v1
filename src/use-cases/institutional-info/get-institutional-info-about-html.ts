@@ -7,7 +7,7 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
   getInstitutionalInfoHTMLCached,
   setInstitutionalInfoHTMLCache,
-} from '@services/cache/institutional-info-html-cache'
+} from '@services/caches/institutional-info-html-cache'
 import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
 import { inject, injectable } from 'tsyringe'
 

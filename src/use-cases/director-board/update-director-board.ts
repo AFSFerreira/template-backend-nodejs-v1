@@ -17,7 +17,7 @@ import {
   buildDirectorBoardProfileImagePath,
   buildDirectorBoardTempProfileImagePath,
 } from '@services/builders/paths/build-director-board-profile-image-path'
-import { removeDirectorBoardHTMLCache } from '@services/cache/director-board-html-cache'
+import { removeDirectorBoardHTMLCache } from '@services/caches/director-board-html-cache'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'

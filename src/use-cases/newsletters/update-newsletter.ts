@@ -26,7 +26,7 @@ import {
   buildNewsletterTempImagePath,
 } from '@services/builders/paths/build-newsletter-image-path'
 import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
-import { removeNewsletterHTMLCache } from '@services/cache/newsletters-html-cache'
+import { removeNewsletterHTMLCache } from '@services/caches/newsletters-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'

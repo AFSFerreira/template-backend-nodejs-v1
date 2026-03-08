@@ -13,7 +13,7 @@ import { NEWSLETTER_DELETION_SUCCESSFUL } from '@messages/loggings/models/newsle
 import { NewsletterFormatType } from '@prisma/generated/enums'
 import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
 import { buildNewsletterImagePath } from '@services/builders/paths/build-newsletter-image-path'
-import { removeNewsletterHTMLCache } from '@services/cache/newsletters-html-cache'
+import { removeNewsletterHTMLCache } from '@services/caches/newsletters-html-cache'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'

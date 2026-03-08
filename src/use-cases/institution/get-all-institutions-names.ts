@@ -4,7 +4,7 @@ import type {
 } from '@custom-types/use-cases/institution/get-all-institutions-names'
 import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getAllInstitutions } from '@services/external/get-all-institutions'
+import { getAllInstitutions } from '@services/externals/get-all-institutions'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { paginateArray } from '@utils/generics/paginate-array'
 import { inject, injectable } from 'tsyringe'
