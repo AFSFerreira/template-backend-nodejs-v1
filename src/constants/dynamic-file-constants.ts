@@ -16,8 +16,6 @@ export const UPLOADS_DIR = path.resolve(BASE_PROJECT_PATH, 'uploads')
 
 export const TEMP_FILES_DIR = path.resolve(UPLOADS_DIR, 'temp')
 
-export const LOGO_PATH = path.resolve(UPLOADS_DIR, 'documents', 'public', 'logo.png')
-
 // Caminhos relativos de templates nunjucks:
 export const NUNJUCKS_TEMPLATES_ROOT_PATH = path.resolve(BASE_PROJECT_PATH, 'src', 'templates')
 

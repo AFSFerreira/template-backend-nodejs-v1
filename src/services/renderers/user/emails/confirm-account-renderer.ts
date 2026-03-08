@@ -1,16 +1,10 @@
-import type { Attachment } from 'nodemailer/lib/mailer'
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { APP_NAME } from '@constants/env-constants'
-import {
-  CONFIRM_ACCOUNT_HTML_TEMPLATE,
-  CONFIRM_ACCOUNT_TEXT_TEMPLATE,
-  EMAIL_LOGO_CID,
-} from '@constants/static-file-constants'
+import { CONFIRM_ACCOUNT_HTML_TEMPLATE, CONFIRM_ACCOUNT_TEXT_TEMPLATE } from '@constants/static-file-constants'
 import { env } from '@env/index'
+import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
-import { BaseRenderer } from '../base-renderer'
-import { getEmailLogoAttachments } from './email-attachments'
 
 interface ConfirmAccountRendererInput {
   fullName: string
@@ -22,17 +16,12 @@ export class ConfirmAccountRenderer extends BaseRenderer<ConfirmAccountRendererI
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CONFIRM_ACCOUNT_HTML_TEMPLATE)
   protected readonly textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CONFIRM_ACCOUNT_TEXT_TEMPLATE)
 
-  protected getAttachments(): Attachment[] {
-    return getEmailLogoAttachments()
-  }
-
   protected mapPayload(input: ConfirmAccountRendererInput) {
     return {
       full_name: toTitleCasePortuguese(input.fullName),
       email: input.email,
       url: `${env.FRONTEND_URL}/verificar-email/${input.token}`,
       app_name: APP_NAME,
-      email_logo_cid: EMAIL_LOGO_CID,
     }
   }
 }

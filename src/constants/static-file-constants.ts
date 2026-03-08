@@ -45,13 +45,6 @@ export const MEMBERSHIP_REJECTED_TEXT_TEMPLATE = path.join(
 export const DELETE_USER_HTML_TEMPLATE = path.join('user', 'delete-user', 'delete-user.html.njk')
 export const DELETE_USER_TEXT_TEMPLATE = path.join('user', 'delete-user', 'delete-user.text.njk')
 
-// NOTE: Apenas para centralizar o nome da logo utilizada no attachment dos emails,
-// isto não é um arquivo presente fisicamente no backend:
-export const EMAIL_LOGO_NAME = 'logo-header.png'
-
-// NOTE: CID único pra identificar a logo nos emails enviados pelo backend:
-export const EMAIL_LOGO_CID = 'logoheader'
-
 export const STATUTE_FILE_NAME = 'estatuto'
 
 export const ELECTION_NOTICE_FILE_NAME = 'edital-eleição'
