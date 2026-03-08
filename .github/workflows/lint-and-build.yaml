@@ -8,7 +8,7 @@ on:
     branches: ['**']
 
 env:
-  # Necerrário para geração de tipos:
+  # Required for type generation:
   DUMMY_DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
 
 
@@ -75,7 +75,7 @@ jobs:
           echo "Node.js v${{ matrix.node }}" >> $GITHUB_STEP_SUMMARY
           echo "🕒 Completed at $(date)" >> $GITHUB_STEP_SUMMARY
 
-          # Verifica o status geral do job para adicionar um ícone de sucesso/falha no topo
+          # Checks the overall job status to add a success/failure icon at the top
           if [ "${{ job.status }}" == "success" ]; then
             echo "Status: 🟢 Success" >> $GITHUB_STEP_SUMMARY
           else
