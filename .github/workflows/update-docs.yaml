@@ -49,7 +49,7 @@ jobs:
             const regex = new RegExp(`${startTag}[\\s\\S]*?${endTag}`, 'g');
 
             // Monta o novo bloco (mantendo as tags)
-            const newContent = `${startTag}\n\`\`\`bash\n${finalTree}\n\`\`\`\n${endTag}`;
+            const newContent = `${startTag}\n\`\`\`text\n${finalTree}\n\`\`\`\n${endTag}`;
 
             readme = readme.replace(regex, newContent);
             fs.writeFileSync(readmePath, readme);
