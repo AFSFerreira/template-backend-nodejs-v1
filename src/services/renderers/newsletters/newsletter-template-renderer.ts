@@ -22,7 +22,7 @@ interface NewsletterRendererInfo {
   meetingInfo?: MeetingInfo
 }
 
-export class NewsletterRenderer extends BaseRenderer<NewsletterRendererInfo> {
+export class NewsletterTemplateRenderer extends BaseRenderer<NewsletterRendererInfo> {
   protected readonly htmlTemplatePath: string
   protected readonly textTemplatePath: string
 

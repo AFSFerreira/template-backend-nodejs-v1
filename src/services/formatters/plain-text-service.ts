@@ -1,5 +1,7 @@
 import { compile } from 'html-to-text'
 
+// NOTE: Utilitário para converter automaticamente
+// HTML em texto plano sem tags
 export class PlainTextService {
   private static converter = compile({
     wordwrap: 130,

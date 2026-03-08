@@ -2,29 +2,18 @@ import type { SendNewsletterEmailUseCaseRequest } from '@custom-types/use-cases/
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { UsersRepository } from '@repositories/users-repository'
-import type { JSONContent } from '@tiptap/core'
-import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { logger } from '@lib/pino'
-import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_EMAIL_FAILED, NEWSLETTER_EMAIL_SUBJECT } from '@messages/emails/newsletter-emails'
 import {
   NEWSLETTER_EMAIL_DISPATCH_COMPLETED,
   NEWSLETTER_EMAIL_DISPATCH_STARTED,
 } from '@messages/loggings/models/newsletter-loggings'
-import { MembershipStatusType, NewsletterFormatType } from '@prisma/generated/enums'
-import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
-import { generateProseMirrorHtmlEmail } from '@services/formatters/generate-prose-mirror-html'
-import { HtmlOptimizationService } from '@services/formatters/html-optimization'
-import { PlainTextService } from '@services/formatters/plain-text-service'
-import { NewsletterRenderer } from '@services/renderers/newsletters/newsletter-renderer'
-import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newsletter/newsletter-template-not-configured-error'
-import { readFile } from '@utils/files/read-file'
+import { MembershipStatusType } from '@prisma/generated/enums'
+import { NewsletterContentRenderService } from '@services/renderers/newsletters/newsletter-content-render-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { InvalidNewsletterContentError } from '../errors/newsletter/invalid-newsletter-content-error'
-import { NewsletterHtmlReadError } from '../errors/newsletter/newsletter-html-read-error'
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
 
 @injectable()
@@ -46,71 +35,7 @@ export class SendNewsletterEmailUseCase {
       error: new NewsletterNotFoundError(),
     })
 
-    let html: string
-    let text: string
-
-    const newsletterFormat = newsletter.format
-
-    switch (newsletterFormat) {
-      case NewsletterFormatType.PROSEMIRROR: {
-        const proseContent = ensureExists({
-          value: newsletter.proseContent,
-          error: new InvalidNewsletterContentError(),
-        })
-
-        if (!newsletter.newsletterTemplateId || !newsletter.NewsletterTemplate) {
-          throw new NewsletterTemplateNotConfiguredError()
-        }
-
-        const bodyContent = await generateProseMirrorHtmlEmail(proseContent as JSONContent, tiptapConfiguration)
-
-        const activeMeeting = await this.meetingsRepository.findActiveMeeting()
-
-        const rendered = await new NewsletterRenderer(newsletter.NewsletterTemplate.templateFolder).render(
-          {
-            newsletterInfo: {
-              htmlBody: bodyContent,
-              createdAt: newsletter.createdAt,
-              editionNumber: newsletter.editionNumber,
-              sequenceNumber: newsletter.sequenceNumber,
-              volume: newsletter.volume,
-            },
-            meetingInfo: activeMeeting
-              ? {
-                  title: activeMeeting.title,
-                  location: activeMeeting.location,
-                  dates: activeMeeting.MeetingDate.map((meetingDate) => meetingDate.date),
-                }
-              : undefined,
-          },
-          { minify: 'email' },
-        )
-
-        html = rendered.html
-        text = rendered.text
-        break
-      }
-
-      case NewsletterFormatType.HTML_FILE: {
-        const fileContent = ensureExists({
-          value: newsletter.fileContent,
-          error: new NewsletterHtmlReadError(),
-        })
-
-        html = ensureExists({
-          value: await readFile(buildNewsletterHtmlPath(fileContent)),
-          error: new NewsletterHtmlReadError(),
-        })
-
-        html = await HtmlOptimizationService.minifyForEmail(html)
-        text = PlainTextService.fromHtml(html)
-        break
-      }
-
-      default: {
-        throw new UnreachableCaseError(newsletterFormat satisfies never)
-      }
-    }
+    const { html, text } = await new NewsletterContentRenderService(this.meetingsRepository).render(newsletter, 'email')
 
     const subject = `${NEWSLETTER_EMAIL_SUBJECT} ${newsletter.sequenceNumber}`
 

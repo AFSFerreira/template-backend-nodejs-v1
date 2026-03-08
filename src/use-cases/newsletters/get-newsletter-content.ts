@@ -4,22 +4,12 @@ import type {
 } from '@custom-types/use-cases/newsletters/get-newsletter-content'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import type { JSONContent } from '@tiptap/core'
-import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { redis } from '@lib/redis'
-import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { NewsletterFormatType } from '@prisma/generated/enums'
-import { buildNewsletterHtmlPath } from '@services/builders/paths/build-newsletter-html-path'
 import { getNewsletterHTMLCached, setNewsletterHTMLCache } from '@services/cache/newsletters-html-cache'
-import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
-import { NewsletterRenderer } from '@services/renderers/newsletters/newsletter-renderer'
-import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newsletter/newsletter-template-not-configured-error'
-import { createFileReadStream } from '@utils/files/create-file-read-stream'
+import { NewsletterContentRenderService } from '@services/renderers/newsletters/newsletter-content-render-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
-import { InvalidNewsletterContentError } from '../errors/newsletter/invalid-newsletter-content-error'
-import { NewsletterHtmlReadError } from '../errors/newsletter/newsletter-html-read-error'
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
 
 @injectable()
@@ -44,65 +34,10 @@ export class GetNewsletterHtmlContentUseCase {
       error: new NewsletterNotFoundError(),
     })
 
-    switch (newsletter.format) {
-      case NewsletterFormatType.PROSEMIRROR: {
-        const proseContent = ensureExists({
-          value: newsletter.proseContent,
-          error: new InvalidNewsletterContentError(),
-        })
+    const { html } = await new NewsletterContentRenderService(this.meetingsRepository).render(newsletter, 'web')
 
-        if (!newsletter.newsletterTemplateId || !newsletter.NewsletterTemplate) {
-          throw new NewsletterTemplateNotConfiguredError()
-        }
+    await setNewsletterHTMLCache({ publicId, htmlContent: html, redis })
 
-        const bodyContent = await generateProseMirrorHtmlWeb(proseContent as JSONContent, tiptapConfiguration)
-
-        const activeMeeting = await this.meetingsRepository.findActiveMeeting()
-
-        const { html: newsletterContent } = await new NewsletterRenderer(
-          newsletter.NewsletterTemplate.templateFolder,
-        ).render(
-          {
-            newsletterInfo: {
-              htmlBody: bodyContent,
-              createdAt: newsletter.createdAt,
-              editionNumber: newsletter.editionNumber,
-              sequenceNumber: newsletter.sequenceNumber,
-              volume: newsletter.volume,
-            },
-            meetingInfo: activeMeeting
-              ? {
-                  title: activeMeeting.title,
-                  location: activeMeeting.location,
-                  dates: activeMeeting.MeetingDate.map((meetingDate) => meetingDate.date),
-                }
-              : undefined,
-          },
-          { minify: 'web' },
-        )
-
-        await setNewsletterHTMLCache({ publicId, htmlContent: newsletterContent, redis })
-
-        return { content: newsletterContent }
-      }
-
-      case NewsletterFormatType.HTML_FILE: {
-        const fileContent = ensureExists({
-          value: newsletter.fileContent,
-          error: new NewsletterHtmlReadError(),
-        })
-
-        const content = ensureExists({
-          value: await createFileReadStream(buildNewsletterHtmlPath(fileContent)),
-          error: new NewsletterHtmlReadError(),
-        })
-
-        return { content }
-      }
-
-      default: {
-        throw new UnreachableCaseError(newsletter.format satisfies never)
-      }
-    }
+    return { content: html }
   }
 }
