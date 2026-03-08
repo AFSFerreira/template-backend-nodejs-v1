@@ -2,8 +2,8 @@ import type { LoggerOptions, StreamEntry } from 'pino'
 import { IS_DEV } from '@constants/env-constants'
 import { env } from '@env/index'
 import { multistream, pino, stdSerializers, stdTimeFunctions } from 'pino'
-import { getRequestIdStored } from './helpers/get-request-id-stored'
-import { getUserIdStored } from './helpers/get-user-id-stored'
+import { getRequestIdStored } from '../async-local-storage/helpers/get-request-id-stored'
+import { getUserIdStored } from '../async-local-storage/helpers/get-user-id-stored'
 
 const baseConfig: LoggerOptions = {
   level: env.LOG_LEVEL ?? 'info',

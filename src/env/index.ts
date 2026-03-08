@@ -44,6 +44,7 @@ const envSchema = z.object({
 
   // URLs de Conexão:
   FRONTEND_URL: z.url().trim().nonempty().default('http://localhost:5173'),
+  BACKEND_URL: z.url().trim().nonempty().default('http://localhost:3000'),
 
   // Rate Limiting (per minute):
   RATE_LIMIT_STANDARD_MAX: z.coerce.number().int().positive().default(100),

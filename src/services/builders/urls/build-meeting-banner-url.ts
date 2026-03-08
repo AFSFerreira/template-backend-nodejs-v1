@@ -1,5 +1,5 @@
 import { STATIC_MEETING_BANNERS_IMAGE_ROUTE } from '@constants/static-routes-constants'
-import { getBackendBaseUrlStored } from '@lib/pino/helpers/get-backend-base-url-stored'
+import { getBackendBaseUrlStored } from '@lib/async-local-storage/helpers/get-backend-base-url-stored'
 import urlJoin from 'url-join'
 
 export function buildMeetingBannerUrl(filename: string): string {

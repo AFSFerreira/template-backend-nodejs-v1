@@ -2,7 +2,7 @@ import {
   STATIC_INSTITUTIONAL_INFO_DOCUMENTS_ROUTE,
   STATIC_TEMP_INSTITUTIONAL_ABOUT_IMAGE_ROUTE,
 } from '@constants/static-routes-constants'
-import { getBackendBaseUrlStored } from '@lib/pino/helpers/get-backend-base-url-stored'
+import { getBackendBaseUrlStored } from '@lib/async-local-storage/helpers/get-backend-base-url-stored'
 import urlJoin from 'url-join'
 
 export function buildTempInstitutionalAboutImageUrl(filename: string): string {
