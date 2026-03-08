@@ -21,4 +21,17 @@ export const newsletterTemplateSwaggerDocs = {
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
     },
   },
+
+  findNewsletterTemplateByPublicId: {
+    summary: 'Buscar template de newsletter por ID público',
+    description: 'Retorna os dados de um template de newsletter específico pelo seu identificador público.',
+    tags: [swaggerTokens.tags.newsletterTemplate.restricted],
+    response: {
+      200: z.object({ data: httpNewsletterTemplateSchema }).describe('Dados do template de newsletter'),
+      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
+      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
+      404: apiErrorResponseSchema.describe('Template de newsletter não encontrado'),
+      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
+    },
+  },
 } as const
