@@ -21,7 +21,7 @@ jobs:
 
       - name: Gerar Árvore de Diretórios
         run: |
-          npx --yes --quiet tree-cli@latest -a -d -l 6 --ignore "node_modules, .git, dist, coverage, build, .turbo, uploads" > tree.txt
+          npx --yes --quiet tree-cli@latest -a -d -l 3 --ignore "node_modules, .git, dist, coverage, build, .turbo, uploads" > tree.txt
 
       - name: Injetar Árvore no Markdown
         uses: actions/github-script@v7
