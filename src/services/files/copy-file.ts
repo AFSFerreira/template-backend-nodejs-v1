@@ -6,6 +6,7 @@ import { DIRECTORY_NOT_FOUND_ERROR } from '@messages/loggings/system/file-loggin
 import { HashService } from '@services/hashes/hash-service'
 import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
 import { deleteFile } from '@utils/files/delete-file'
+import { fileExists } from '@utils/files/file-exists'
 import { getFileExtension } from '@utils/files/get-file-extension'
 import fs, { ensureDir } from 'fs-extra'
 
@@ -21,12 +22,18 @@ export async function copyFile({
 
   const partialReturnData = { finalFilePath, filename }
 
+  const failedResponse = { ...partialReturnData, success: false }
+
+  if (!fileExists(sourceFilePath)) {
+    return failedResponse
+  }
+
   try {
     await ensureDir(path.join(destinationFolderPath, fileFolderShard))
   } catch (error) {
     logError({ error, message: DIRECTORY_NOT_FOUND_ERROR })
 
-    return { ...partialReturnData, success: false }
+    return failedResponse
   }
 
   try {
@@ -36,6 +43,6 @@ export async function copyFile({
   } catch (_error) {
     await deleteFile(finalFilePath)
 
-    return { ...partialReturnData, success: false }
+    return failedResponse
   }
 }
