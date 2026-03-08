@@ -8,6 +8,7 @@ import { createNewsletterBodySchema } from '@http/schemas/newsletter/create-news
 import { deleteNewsletterParamsSchema } from '@http/schemas/newsletter/delete-newsletter-params-schema'
 import { findNewsletterByPublicIdParamsSchema } from '@http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import { getAllNewslettersQuerySchema } from '@http/schemas/newsletter/get-all-newsletters-query-schema'
+import { previewNewsletterContentBodySchema } from '@http/schemas/newsletter/preview-newsletter-content-body-schema'
 import { updateNewsletterBodySchema } from '@http/schemas/newsletter/update-newsletter-body-schema'
 import { updateNewsletterParamsSchema } from '@http/schemas/newsletter/update-newsletter-params-schema'
 import { newsletterSwaggerDocs } from '@lib/swagger/models/newsletter'
@@ -18,6 +19,7 @@ import { findNewsletterByPublicId } from './find-newsletter-by-public-id.control
 import { findNewsletterByPublicIdRestricted } from './find-newsletter-by-public-id-restricted.controller'
 import { getAllNewsletters } from './get-all-newsletters.controller'
 import { getNewsletterHtmlContent } from './get-newsletter-html-content.controller'
+import { previewNewsletterContent } from './preview-newsletter-content.controller'
 import { sendNewsletterEmail } from './send-newsletter-email.controller'
 import { updateNewsletter } from './update-newsletter.controller'
 import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
@@ -75,6 +77,19 @@ export async function newsletterRoutes(app: ZodFastifyInstance) {
   )
 
   // POST
+  app.post(
+    '/preview-content',
+    {
+      ...NEWSLETTER_PAYLOAD_LIMIT_SIZE,
+      ...rateLimit(RATE_LIMIT_TIERS.HEAVY),
+      preHandler: [verifyJwt, verifyUserRole(MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS)],
+      schema: {
+        ...newsletterSwaggerDocs.previewNewsletterContent,
+        body: previewNewsletterContentBodySchema,
+      },
+    },
+    previewNewsletterContent,
+  )
   app.post(
     '/uploads/html',
     {

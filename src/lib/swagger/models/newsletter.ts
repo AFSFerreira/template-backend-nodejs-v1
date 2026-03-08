@@ -133,6 +133,20 @@ export const newsletterSwaggerDocs = {
     },
   },
 
+  previewNewsletterContent: {
+    summary: 'Pré-visualizar conteúdo da newsletter',
+    description:
+      'Compila um conteúdo ProseMirror com o template selecionado e retorna o HTML renderizado para pré-visualização.',
+    tags: [swaggerTokens.tags.newsletter.restricted],
+    response: {
+      200: z.string().describe('Conteúdo HTML compilado da newsletter'),
+      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
+      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
+      404: apiErrorResponseSchema.describe('Template de newsletter não encontrado'),
+      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
+    },
+  },
+
   deleteNewsletter: {
     summary: 'Excluir newsletter',
     description: 'Remove uma newsletter do sistema.',
