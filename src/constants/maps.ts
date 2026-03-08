@@ -6,7 +6,8 @@ export const EXTENSION_TO_MIME_MAP = new Map<string, string>([
   ['pdf', 'application/pdf'],
   ['docx', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
   ['xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
-  ['csv', 'text/csv'],
+  ['csv', 'text/csv; charset=utf-8'],
+  ['html', 'text/html; charset=utf-8'],
 ])
 
 export const MIME_TO_EXTENSION_MAP = new Map<string, string>(

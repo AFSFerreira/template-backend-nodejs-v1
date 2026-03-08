@@ -14,13 +14,10 @@ export async function exportMeetingEnrollments(
 
   const useCase = container.resolve(ExportMeetingEnrollmentsUseCase)
 
-  const { reportStream, filename, contentTypeHeader } = await useCase.execute({
+  const { reportStream, filename } = await useCase.execute({
     meetingPublicId: publicId,
     format,
   })
 
-  return await reply
-    .header(contentTypeHeader.key, contentTypeHeader.value)
-    .header('Content-Disposition', `attachment; filename="${filename}"`)
-    .send(reportStream)
+  return await reply.sendDownload(reportStream, filename)
 }

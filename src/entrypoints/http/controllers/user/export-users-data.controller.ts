@@ -12,10 +12,7 @@ export async function exportUsersData(
 
   const useCase = container.resolve(ExportUsersDataUseCase)
 
-  const { reportStream, filename, contentTypeHeader } = await useCase.execute({ format })
+  const { reportStream, filename } = await useCase.execute({ format })
 
-  return await reply
-    .header(contentTypeHeader.key, contentTypeHeader.value)
-    .header('Content-Disposition', `attachment; filename="${filename}"`)
-    .send(reportStream)
+  return await reply.sendDownload(reportStream, filename)
 }

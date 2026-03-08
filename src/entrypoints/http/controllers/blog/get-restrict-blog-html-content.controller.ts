@@ -1,7 +1,6 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetRestrictBlogHtmlContentParamsType } from '@custom-types/http/schemas/blog/get-restrict-blog-html-content-params-schema'
 import type { FastifyReply } from 'fastify'
-import { HTML_HEADER } from '@constants/header-constants'
 import { getRequestUserPublicId } from '@services/http/get-request-user-public-id'
 import { GetRestrictBlogHTMLContentUseCase } from '@use-cases/blog/get-restrict-blog-html-content'
 import { StatusCodes } from 'http-status-codes'
@@ -21,5 +20,5 @@ export async function getRestrictBlogHtmlContent(
     userPublicId,
   })
 
-  return await reply.status(StatusCodes.OK).type(HTML_HEADER).send(htmlContent)
+  return await reply.status(StatusCodes.OK).sendHtml(htmlContent)
 }

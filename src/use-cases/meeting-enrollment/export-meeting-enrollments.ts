@@ -5,8 +5,6 @@ import type {
 } from '@custom-types/use-cases/meeting-enrollment/export-meeting-enrollments'
 import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollments-repository'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
-import { EXPORT_CONTENT_TYPE_HEADERS } from '@constants/header-constants'
-import { EXPORT_FILE_EXTENSIONS } from '@constants/static-file-constants'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -44,7 +42,7 @@ export class ExportMeetingEnrollmentsUseCase {
     let reportStream: PassThrough
 
     switch (format) {
-      case 'excel': {
+      case 'xlsx': {
         reportStream = new ExcelExportService().generateMeetingEnrollmentReport(enrollmentStream)
         break
       }
@@ -57,13 +55,10 @@ export class ExportMeetingEnrollmentsUseCase {
       }
     }
 
-    const extension = EXPORT_FILE_EXTENSIONS[format]
-    const filename = `inscricoes-${meeting.title.replaceAll(' ', '-')}_${generateTimestamp()}.${extension}`
-
-    const contentTypeHeader = EXPORT_CONTENT_TYPE_HEADERS[format]
+    const filename = `inscricoes-${meeting.title.replaceAll(' ', '-')}_${generateTimestamp()}.${format}`
 
     logger.info(MEETING_ENROLLMENTS_EXPORT_STARTED)
 
-    return { reportStream, filename, contentTypeHeader }
+    return { reportStream, filename }
   }
 }

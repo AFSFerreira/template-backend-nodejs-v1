@@ -73,10 +73,4 @@ export const PRESENTERS_REGENERATE_COMMAND = `// Execute 'npm run generate:prese
 export const MAX_SLIDER_IMAGES_QUANTITY = 15
 
 // Tipos de formatos de arquivo de exportações:
-export const EXPORT_FILE_FORMATS = ['excel', 'csv'] as const
-
-// Formatos de arquivo de exportações:
-export const EXPORT_FILE_EXTENSIONS: Record<(typeof EXPORT_FILE_FORMATS)[number], string> = {
-  excel: 'xlsx',
-  csv: 'csv',
-} as const
+export const EXPORT_FILE_FORMATS = ['xlsx', 'csv'] as const

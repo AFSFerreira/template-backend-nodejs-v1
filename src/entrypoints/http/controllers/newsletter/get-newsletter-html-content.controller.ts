@@ -1,7 +1,6 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { FindNewsletterByPublicIdParamsType } from '@custom-types/http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
 import type { FastifyReply } from 'fastify'
-import { HTML_HEADER } from '@constants/header-constants'
 import { GetNewsletterHtmlContentUseCase } from '@use-cases/newsletters/get-newsletter-content'
 import { container } from 'tsyringe'
 
@@ -15,5 +14,5 @@ export async function getNewsletterHtmlContent(
 
   const { content } = await useCase.execute({ publicId })
 
-  return await reply.type(HTML_HEADER).send(content)
+  return await reply.sendHtml(content)
 }

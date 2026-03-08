@@ -4,8 +4,6 @@ import type {
   ExportUsersDataUseCaseResponse,
 } from '@custom-types/use-cases/user/export-users-data'
 import type { UsersRepository } from '@repositories/users-repository'
-import { EXPORT_CONTENT_TYPE_HEADERS } from '@constants/header-constants'
-import { EXPORT_FILE_EXTENSIONS } from '@constants/static-file-constants'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
@@ -33,7 +31,7 @@ export class ExportUsersDataUseCase {
     let reportStream: PassThrough
 
     switch (format) {
-      case 'excel': {
+      case 'xlsx': {
         reportStream = new ExcelExportService().generateUsersReport(usersStream)
         break
       }
@@ -46,13 +44,10 @@ export class ExportUsersDataUseCase {
       }
     }
 
-    const extension = EXPORT_FILE_EXTENSIONS[format]
-    const filename = `usuarios_${generateTimestamp()}.${extension}`
-
-    const contentTypeHeader = EXPORT_CONTENT_TYPE_HEADERS[format]
+    const filename = `usuarios_${generateTimestamp()}.${format}`
 
     logger.info(ALL_USERS_INFO_EXPORTED)
 
-    return { reportStream, filename, contentTypeHeader }
+    return { reportStream, filename }
   }
 }

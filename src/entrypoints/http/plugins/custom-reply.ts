@@ -3,7 +3,6 @@ import 'fastify'
 import type { Readable } from 'node:stream'
 import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import type { FastifyReply } from 'fastify'
-import { HTML_HEADER } from '@constants/header-constants'
 import { getFileExtension } from '@utils/files/get-file-extension'
 import { mapExtensionToMimeType } from '@utils/mappers/map-mime-type'
 import { StatusCodes } from 'http-status-codes'
@@ -18,7 +17,7 @@ declare module 'fastify' {
 
 export async function customReplyPluginDefinition(app: ExtendedFastifyInstance) {
   app.decorateReply('sendHtml', function (this: FastifyReply, htmlContent: string) {
-    return this.status(StatusCodes.OK).type(HTML_HEADER).send(htmlContent)
+    return this.status(StatusCodes.OK).type('text/html; charset=utf-8').send(htmlContent)
   })
 
   app.decorateReply('sendDownload', function (this: FastifyReply, stream: Readable, filename: string) {
