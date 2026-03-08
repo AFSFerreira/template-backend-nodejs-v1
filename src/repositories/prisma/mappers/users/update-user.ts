@@ -1,8 +1,8 @@
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { Prisma } from '@prisma/generated/client'
 import { ActivityAreaType } from '@prisma/generated/client'
-import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
-import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
+import { isUpdateUserHighLevelEducation } from '@utils/guards/is-update-user-high-level-education'
+import { isUpdateUserHighLevelStudentEducation } from '@utils/guards/is-update-user-high-level-student-education'
 
 export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUpdateInput {
   let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined

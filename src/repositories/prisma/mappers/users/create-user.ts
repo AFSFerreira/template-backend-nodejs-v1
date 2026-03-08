@@ -1,8 +1,8 @@
 import type { CreateUserQuery } from '@custom-types/repository/prisma/user/create-user-query'
 import type { Prisma } from '@prisma/generated/client'
 import { ActivityAreaType } from '@prisma/generated/client'
-import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
-import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
+import { isRegisterUserHighLevelEducation } from '@utils/guards/is-register-user-high-level-education'
+import { isRegisterUserHighLevelStudentEducation } from '@utils/guards/is-register-user-high-level-student-education'
 
 export function toPrismaCreateUser(data: CreateUserQuery): Prisma.UserCreateInput {
   let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined

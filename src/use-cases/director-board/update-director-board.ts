@@ -13,10 +13,6 @@ import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserRoleType } from '@prisma/generated/enums'
-import {
-  buildDirectorBoardProfileImagePath,
-  buildDirectorBoardTempProfileImagePath,
-} from '@services/builders/paths/build-director-board-profile-image-path'
 import { removeDirectorBoardHTMLCache } from '@services/caches/director-board-html-cache'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
@@ -26,6 +22,10 @@ import { OnlyAdminCanChangeDirectorBoardPositionError } from '@use-cases/errors/
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import {
+  buildDirectorBoardProfileImagePath,
+  buildDirectorBoardTempProfileImagePath,
+} from '@utils/builders/paths/build-director-board-profile-image-path'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'

@@ -10,14 +10,14 @@ import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import {
-  buildInstitutionalAboutImagePath,
-  buildInstitutionalTempAboutImagePath,
-} from '@services/builders/paths/build-institutional-about-image-path'
 import { removeInstitutionalInfoHTMLCache } from '@services/caches/institutional-info-html-cache'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-info/institutional-info-not-found-error'
+import {
+  buildInstitutionalAboutImagePath,
+  buildInstitutionalTempAboutImagePath,
+} from '@utils/builders/paths/build-institutional-about-image-path'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'

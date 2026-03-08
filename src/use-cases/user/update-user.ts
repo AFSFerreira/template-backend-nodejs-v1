@@ -12,18 +12,18 @@ import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_UPDATE_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
-import {
-  buildUserProfileImagePath,
-  buildUserTempProfileImagePath,
-} from '@services/builders/paths/build-user-profile-image-path'
-import { isUpdateUserHighLevelEducation } from '@services/guards/is-update-user-high-level-education'
-import { isUpdateUserHighLevelStudentEducation } from '@services/guards/is-update-user-high-level-student-education'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
 import { validateInstitutionName } from '@services/validators/validate-institution-name'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
+import {
+  buildUserProfileImagePath,
+  buildUserTempProfileImagePath,
+} from '@utils/builders/paths/build-user-profile-image-path'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
+import { isUpdateUserHighLevelEducation } from '@utils/guards/is-update-user-high-level-education'
+import { isUpdateUserHighLevelStudentEducation } from '@utils/guards/is-update-user-high-level-student-education'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'

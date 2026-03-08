@@ -6,11 +6,8 @@ import type { SliderImagesRepository } from '@repositories/slider-images-reposit
 import { MAX_SLIDER_IMAGES_QUANTITY } from '@constants/static-file-constants'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import {
-  buildHomePageSliderImagePath,
-  buildTempSliderImagePath,
-} from '@services/builders/paths/build-slider-image-path'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
+import { buildHomePageSliderImagePath, buildTempSliderImagePath } from '@utils/builders/paths/build-slider-image-path'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()

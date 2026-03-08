@@ -13,21 +13,18 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import { Prisma } from '@prisma/generated/client'
 import { NewsletterFormatType } from '@prisma/generated/enums'
-import {
-  buildNewsletterHtmlPath,
-  buildNewsletterTempHtmlPath,
-} from '@services/builders/paths/build-newsletter-html-path'
-import {
-  buildNewsletterImagePath,
-  buildNewsletterTempImagePath,
-} from '@services/builders/paths/build-newsletter-image-path'
 import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
 import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
-import { getProseMirrorText } from '@services/extractors/get-prose-mirror-text'
-import { replaceProseMirrorImages } from '@services/extractors/replace-prose-mirror-images'
 import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
 import { NewsletterInvalidImageLinkError } from '@use-cases/errors/newsletter/newsletter-invalid-image-link-error'
 import { NewsletterTemplateNotFoundError } from '@use-cases/errors/newsletter/newsletter-template-not-found-error'
+import { buildNewsletterHtmlPath, buildNewsletterTempHtmlPath } from '@utils/builders/paths/build-newsletter-html-path'
+import {
+  buildNewsletterImagePath,
+  buildNewsletterTempImagePath,
+} from '@utils/builders/paths/build-newsletter-image-path'
+import { getProseMirrorText } from '@utils/extractors/get-prose-mirror-text'
+import { replaceProseMirrorImages } from '@utils/extractors/replace-prose-mirror-images'
 import { moveFilesIfNotExists } from '@utils/files/move-files-if-not-exists'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'

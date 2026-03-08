@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify'
 import { END_SIGNALS } from '@constants/arrays'
-import { registerSignals } from '@utils/system/regsiter-signals'
+import { registerSignals } from '@utils/system/register-signals'
 
 export function registerAppSignals(app: FastifyInstance) {
   registerSignals(END_SIGNALS, () => {

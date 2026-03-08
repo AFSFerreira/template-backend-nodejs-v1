@@ -16,12 +16,6 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUBJECT } from '@messages/emails/user-emails'
 import { EMAIL_VERIFICATION_SEND_ERROR, SUCCESSFUL_USER_CREATION } from '@messages/loggings/models/user-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
-import {
-  buildUserProfileImagePath,
-  buildUserTempProfileImagePath,
-} from '@services/builders/paths/build-user-profile-image-path'
-import { isRegisterUserHighLevelEducation } from '@services/guards/is-register-user-high-level-education'
-import { isRegisterUserHighLevelStudentEducation } from '@services/guards/is-register-user-high-level-student-education'
 import { HashService } from '@services/hashes/hash-service'
 import { ConfirmAccountRenderer } from '@services/renderers/user/emails/confirm-account-renderer'
 import { validateActivityAreas } from '@services/validators/validate-activity-areas'
@@ -33,6 +27,12 @@ import { InvalidSecondaryEmailDomainError } from '@use-cases/errors/user/invalid
 import { UserAlreadyExistsError } from '@use-cases/errors/user/user-already-exists-error'
 import { UserWithSameIdentityDocument } from '@use-cases/errors/user/user-with-same-identity-document-error'
 import { UserWithSameUsername } from '@use-cases/errors/user/user-with-same-username-error'
+import {
+  buildUserProfileImagePath,
+  buildUserTempProfileImagePath,
+} from '@utils/builders/paths/build-user-profile-image-path'
+import { isRegisterUserHighLevelEducation } from '@utils/guards/is-register-user-high-level-education'
+import { isRegisterUserHighLevelStudentEducation } from '@utils/guards/is-register-user-high-level-student-education'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
 import { hasValidMxRecord } from '@utils/validators/validate-mx-record'

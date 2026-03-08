@@ -16,11 +16,11 @@ import {
   MEMBERSHIP_REJECTED_EMAIL_SEND_ERROR,
 } from '@messages/loggings/models/user-loggings'
 import { MembershipStatusType, SystemActionType } from '@prisma/generated/enums'
-import { buildUserProfileImagePath } from '@services/builders/paths/build-user-profile-image-path'
 import { MembershipApprovedRenderer } from '@services/renderers/user/emails/membership-approved-renderer'
 import { MembershipRejectedRenderer } from '@services/renderers/user/emails/membership-rejected-renderer'
 import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-status-not-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import { buildUserProfileImagePath } from '@utils/builders/paths/build-user-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 

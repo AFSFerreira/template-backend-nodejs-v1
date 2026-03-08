@@ -1,7 +1,7 @@
 import { resolve4, resolveMx } from 'node:dns/promises'
 import { redis } from '@lib/redis'
 import { getMxRecordCached, setMxRecordCached } from '@services/caches/validate-mx-record-cache'
-import { isNodeSystemError } from '@services/guards/is-node-system-error'
+import { isNodeSystemError } from '@utils/guards/is-node-system-error'
 
 async function checkFallbackRecord(domain: string): Promise<boolean> {
   try {

@@ -14,16 +14,16 @@ import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
-import {
-  buildDirectorBoardProfileImagePath,
-  buildDirectorBoardTempProfileImagePath,
-} from '@services/builders/paths/build-director-board-profile-image-path'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
 import { DirectorBoardUserAlreadyExistsError } from '@use-cases/errors/director-board/director-board-user-already-exists-error'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
+import {
+  buildDirectorBoardProfileImagePath,
+  buildDirectorBoardTempProfileImagePath,
+} from '@utils/builders/paths/build-director-board-profile-image-path'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
 
