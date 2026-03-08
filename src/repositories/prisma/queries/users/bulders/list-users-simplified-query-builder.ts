@@ -90,6 +90,7 @@ export class ListUsersSimplifiedQueryBuilder {
         u.id,
         u.public_id,
         u.full_name,
+        u.membership_status,
         u.email,
         u.role,
         u.email_is_public,

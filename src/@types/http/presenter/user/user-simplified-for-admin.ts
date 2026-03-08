@@ -1,5 +1,6 @@
 import type { CustomUserWithSimplifiedDetails } from '@custom-types/repository/prisma/adapter/user-simplified'
 import type { UserRoleType } from '@prisma/generated/enums'
+import { membershipStatusEnumSchema } from '@lib/zod/utils/enums/membership-status-enum-schema'
 import { userRoleEnumSchema } from '@lib/zod/utils/enums/user-role-enum-schema'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { nonemptyTextSchema } from '@lib/zod/utils/primitives/nonempty-text-schema'
@@ -16,6 +17,7 @@ export const httpSimplifiedUserDetailsForAdminSchema = z.object({
   fullName: nonemptyTextSchema,
   profileImage: nonemptyTextSchema,
   institutionName: nullableTextSchema,
+  membershipStatus: membershipStatusEnumSchema,
   state: optionalNonemptyTextSchema,
   email: nonemptyTextSchema,
   role: userRoleEnumSchema,

@@ -480,8 +480,8 @@ model Newsletter {
   createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  newsletterTemplateId Int                @map("newsletter_template_id")
-  NewsletterTemplate   NewsletterTemplate @relation(fields: [newsletterTemplateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  newsletterTemplateId Int?                @map("newsletter_template_id") // NOTE: Será nulo apenas quando 'format' for 'HTML_FILE'. Este campo é obrigatório quando 'format' for 'PROSEMIRROR'
+  NewsletterTemplate   NewsletterTemplate? @relation(fields: [newsletterTemplateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
   @@unique([editionNumber, volume])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)

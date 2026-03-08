@@ -14,6 +14,7 @@ export class UserSimplifiedPresenterForAdmin
       fullName: input.fullName,
       profileImage: buildUserProfileImageUrl(input.profileImage),
       institutionName: input.institutionName,
+      membershipStatus: input.membershipStatus,
       state: input.state,
       email: input.email,
       role: input.role,

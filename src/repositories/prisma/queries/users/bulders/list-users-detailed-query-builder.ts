@@ -196,7 +196,7 @@ export class ListUsersDetailedQueryBuilder {
         LIMIT ${Prisma.sql`${limit}`} OFFSET ${Prisma.sql`${offset}`}
       )
       SELECT
-        u.id, u.public_id, u.full_name, u.profile_image, u.email,
+        u.id, u.public_id, u.full_name, u.profile_image, u.email, u.membership_status,
         u.role, u.email_is_public, ast.name as state, i.name as institution_name
       FROM paginated_users pu
       JOIN users u ON u.id = pu.id

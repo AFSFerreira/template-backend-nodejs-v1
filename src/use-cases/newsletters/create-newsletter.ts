@@ -4,6 +4,7 @@ import type {
   CreateNewsletterUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/create-newsletter'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
+import type { NewsletterTemplate } from '@prisma/generated/client'
 import type { NewsletterTemplatesRepository } from '@repositories/newsletter-templates-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { logger } from '@lib/pino'
@@ -44,7 +45,13 @@ export class CreateNewsletterUseCase {
   ) {}
 
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
-    const { content, templateId, ...filteredContent } = createNewsletterInput
+    const { content, ...filteredContent } = createNewsletterInput
+
+    let templateId: string | undefined
+
+    if (content.format === 'PROSEMIRROR') {
+      templateId = content.templateId
+    }
 
     ensureNotExists({
       value: await this.newslettersRepository.findConflictingNewsletter({
@@ -55,10 +62,14 @@ export class CreateNewsletterUseCase {
       error: new NewsletterAlreadyExistsError(),
     })
 
-    const newsletterTemplate = ensureExists({
-      value: await this.newsletterTemplatesRepository.findByPublicId(templateId),
-      error: new NewsletterTemplateNotFoundError(),
-    })
+    let newsletterTemplate: NewsletterTemplate | undefined
+
+    if (templateId) {
+      newsletterTemplate = ensureExists({
+        value: await this.newsletterTemplatesRepository.findByPublicId(templateId),
+        error: new NewsletterTemplateNotFoundError(),
+      })
+    }
 
     if (content.format === NewsletterFormatType.HTML_FILE) {
       const newsletter = await this.newslettersRepository.create({

@@ -1,3 +1,4 @@
+import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { limitedNonemptyTextSchema } from '@lib/zod/utils/primitives/limited-nonempty-text-schema'
 import { NewsletterFormatType } from '@prisma/generated/enums'
 import z from 'zod'
@@ -11,6 +12,7 @@ const htmlFileContentSchema = z.object({
 const proseMirrorContentSchema = z.object({
   format: z.literal(NewsletterFormatType.PROSEMIRROR),
   proseContent: proseMirrorSchema,
+  templateId: modelPublicIdSchema,
 })
 
 export const newsletterContentSchema = z.discriminatedUnion('format', [htmlFileContentSchema, proseMirrorContentSchema])
