@@ -23,16 +23,16 @@ run = "pnpm install"
 description = "Gera a tipagem do banco de dados (ex: Prisma Client)"
 run = "pnpm db:generate"
 
-#[tasks."dev:wait-db"]
-#description = "Aguarda o healthcheck do PostgreSQL responder como saudável"
-#run = """
-#!/bin/bash
-#echo "Aguardando o banco de dados iniciar..."
-#while [ "$(docker inspect -f '{{.State.Health.Status}}' $POSTGRES_CONTAINER_NAME 2>/dev/null)" != "healthy" ]; do
-#    sleep 2
-#done
-#echo "Banco de dados pronto!"
-#"""
+# [tasks."dev:wait-db"]
+# description = "Aguarda o healthcheck do PostgreSQL responder como saudável"
+# run = """
+# !/bin/bash
+# echo "Aguardando o banco de dados iniciar..."
+# while [ "$(docker inspect -f '{{.State.Health.Status}}' $POSTGRES_CONTAINER_NAME 2>/dev/null)" != "healthy" ]; do
+#     sleep 2
+# done
+# echo "Banco de dados pronto!"
+# """
 
 [tasks."dev:reset-full"]
 description = "Reseta o ambiente: derruba, sobe o banco, instala pacotes e recria o schema"

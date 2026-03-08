@@ -26,47 +26,8 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ## 📂 Estrutura do Projeto:
 
-```bash
-├─── .github
-│    └─── workflows
-├─── .husky
-├─── prisma
-│    └─── migrations
-│         └─── ...
-├─── uploads
-│    └─── profile-images
-└─── src
-     ├─── @types
-     ├─── constants
-     ├─── env
-     ├─── lib
-     ├─── services
-     ├─── templates
-     ├─── utils
-     ├─── repositories
-     │    └─── prisma
-     │        └─── queries
-     ├─── http
-     │    ├─── controllers
-     │    │    ├─── activity-area
-     │    │    └─── user
-     │    ├─── middlewares
-     │    ├─── presenters
-     │    └─── schemas
-     │         ├─── activity-area
-     │         ├─── user
-     │         └─── utils
-     └─── use-cases
-          ├─── activity-area
-          ├─── errors
-          ├─── factories
-          │    ├─── activity-area
-          │    ├─── messaging
-          │    └─── user
-          ├─── messaging
-          └─── user
-
-```
+<!-- START_TREE -->
+<!-- END_TREE -->
 
 ---
 

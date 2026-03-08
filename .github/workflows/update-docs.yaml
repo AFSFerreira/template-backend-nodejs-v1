@@ -1,0 +1,50 @@
+name: Update Docs
+
+on:
+  push:
+    branches: ["dev"]
+
+jobs:
+  update-docs:
+    name: Update Directory Tree
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Gerar Árvore de Diretórios
+        run: |
+          npx tree-cli@latest -d -l 4 --ignore "node_modules, .git, dist, coverage, build, .turbo, uploads" > tree.txt
+
+      - name: Injetar Árvore no Markdown
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const tree = fs.readFileSync('tree.txt', 'utf8');
+            const readmePath = 'README.md';
+            let readme = fs.readFileSync(readmePath, 'utf8');
+
+            const startTag = '<!-- START_TREE -->';
+            const endTag = '<!-- END_TREE -->';
+
+            const regex = new RegExp(`${startTag}[\\s\\S]*?${endTag}`, 'g');
+            const newContent = `${startTag}\n\`\`\`bash\n${tree}\`\`\`\n${endTag}`;
+
+            readme = readme.replace(regex, newContent);
+            fs.writeFileSync(readmePath, readme);
+
+      - name: Commitar e fazer Push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs: atualiza árvore de diretórios [skip ci]"
+          file_pattern: "README.md"
+          commit_user_name: "github-actions[bot]"
+          commit_user_email: "github-actions[bot]@users.noreply.github.com"
