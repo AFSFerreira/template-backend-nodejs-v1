@@ -29,7 +29,7 @@ CREATE TYPE "public"."EditorialStatusType" AS ENUM ('PENDING_APPROVAL', 'DRAFT',
 CREATE TYPE "public"."SystemActionType" AS ENUM ('MEMBERSHIP_APPROVED', 'MEMBERSHIP_REJECTED', 'ACCOUNT_ACTIVATED', 'ACCOUNT_INACTIVATED', 'ACCOUNT_DELETED', 'ROLE_CHANGED', 'DIRECTOR_BOARD_CREATED', 'DIRECTOR_BOARD_DELETED', 'ADMIN_ROLE_TRANSFERRED');
 
 -- CreateEnum
-CREATE TYPE "NewsletterFormatType" AS ENUM ('HTML_FILE', 'PROSEMIRROR');
+CREATE TYPE "public"."NewsletterFormatType" AS ENUM ('HTML_FILE', 'PROSEMIRROR');
 
 -- CreateTable
 CREATE TABLE "public"."authentication_audits" (
@@ -45,7 +45,7 @@ CREATE TABLE "public"."authentication_audits" (
 );
 
 -- CreateTable
-CREATE TABLE "user_action_audits" (
+CREATE TABLE "public"."user_action_audits" (
     "id" SERIAL NOT NULL,
     "action_type" "SystemActionType" NOT NULL,
     "ip_address" INET,
@@ -337,6 +337,7 @@ CREATE TABLE "public"."newsletters" (
     "public_id" TEXT NOT NULL,
     "format" "NewsletterFormatType" NOT NULL,
     "file_content" TEXT,
+    "newsletter_template_id" INTEGER,
     "prose_content" JSON,
     "sequence_number" TEXT NOT NULL,
     "edition_number" TEXT NOT NULL,
@@ -345,6 +346,15 @@ CREATE TABLE "public"."newsletters" (
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
 
     CONSTRAINT "newsletters_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."newsletter_templates" (
+    "id" SERIAL NOT NULL,
+    "public_id" TEXT NOT NULL,
+    "templateFolder" TEXT NOT NULL,
+
+    CONSTRAINT "newsletter_templates_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -426,13 +436,13 @@ CREATE TABLE "public"."_KeywordToUser" (
 );
 
 -- CreateIndex
-CREATE INDEX "user_action_audits_action_type_idx" ON "user_action_audits"("action_type");
+CREATE INDEX "user_action_audits_action_type_idx" ON "public"."user_action_audits"("action_type");
 
 -- CreateIndex
-CREATE INDEX "user_action_audits_actor_id_idx" ON "user_action_audits"("actor_id");
+CREATE INDEX "user_action_audits_actor_id_idx" ON "public"."user_action_audits"("actor_id");
 
 -- CreateIndex
-CREATE INDEX "user_action_audits_target_id_idx" ON "user_action_audits"("target_id");
+CREATE INDEX "user_action_audits_target_id_idx" ON "public"."user_action_audits"("target_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_public_id_key" ON "public"."users"("public_id");
@@ -546,6 +556,12 @@ CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "public"."newsletters"(
 CREATE UNIQUE INDEX "newsletters_edition_number_volume_key" ON "public"."newsletters"("edition_number", "volume");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "newsletter_templates_public_id_key" ON "public"."newsletter_templates"("public_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "newsletter_templates_templateFolder_key" ON "public"."newsletter_templates"("templateFolder");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "slider_images_public_id_key" ON "public"."slider_images"("public_id");
 
 -- CreateIndex
@@ -588,10 +604,10 @@ CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
 CREATE INDEX "_ActivityAreaToBlog_B_index" ON "public"."_ActivityAreaToBlog"("B");
 
 -- AddForeignKey
-ALTER TABLE "user_action_audits" ADD CONSTRAINT "user_action_audits_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."user_action_audits" ADD CONSTRAINT "user_action_audits_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_action_audits" ADD CONSTRAINT "user_action_audits_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."user_action_audits" ADD CONSTRAINT "user_action_audits_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -661,6 +677,9 @@ ALTER TABLE "public"."guest_meeting_enrollments" ADD CONSTRAINT "guest_meeting_e
 
 -- AddForeignKey
 ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "public"."meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."newsletters" ADD CONSTRAINT "newsletters_newsletter_template_id_fkey" FOREIGN KEY ("newsletter_template_id") REFERENCES "newsletter_templates"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
