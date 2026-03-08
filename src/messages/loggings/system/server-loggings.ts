@@ -18,4 +18,6 @@ export const WORKERS_SHUTDOWN = '✅ Workers finalizados'
 
 export const CRON_SHUTDOWN = '✅ Cron jobs finalizados'
 
+export const IPC_READY_SIGNAL_SENT = '✅ Sinal de READY enviado via IPC. Tráfego liberado'
+
 export const GRACEFUL_SHUTDOWN_ERROR = '❌ Erro durante o Graceful Shutdown'
