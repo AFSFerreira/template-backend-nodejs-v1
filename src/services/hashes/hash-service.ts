@@ -44,15 +44,15 @@ export class HashService {
     return crypto.randomBytes(bytesNumber).toString('hex') as Token
   }
 
-  static generateFileHash(): FileHash {
+  static generateFileId(): FileHash {
     return uuidv4() as FileHash
   }
 
-  static generateJobHash(): JobHash {
+  static generateJobId(): JobHash {
     return uuidv4() as JobHash
   }
 
-  static generateUuidHash(): UuidHash {
+  static generateUuid(): UuidHash {
     return uuidv4() as UuidHash
   }
 

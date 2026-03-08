@@ -19,7 +19,7 @@ export async function saveAvifImage({
   folderPath,
   options,
 }: ISaveAvifImage): Promise<ImageInfo> {
-  const filename = `${newFilename ?? HashService.generateFileHash()}.avif`
+  const filename = `${newFilename ?? HashService.generateFileId()}.avif`
   const finalImagePath = path.resolve(folderPath, filename)
 
   const partialReturnData = { finalImagePath, filename }

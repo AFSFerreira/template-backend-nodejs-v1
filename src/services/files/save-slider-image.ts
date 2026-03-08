@@ -13,7 +13,7 @@ import { createWriteStream, ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 
 export async function saveSliderImage({ filePart, folderPath, options }: ISaveSliderImage): Promise<ImageInfo> {
-  const finalName = `${HashService.generateFileHash()}.avif`
+  const finalName = `${HashService.generateFileId()}.avif`
   const finalImagePath = path.resolve(folderPath, finalName)
 
   const partialReturnData = { finalImagePath, filename: finalName }

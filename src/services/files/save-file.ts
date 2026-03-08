@@ -14,7 +14,7 @@ import { renameFile } from '@utils/files/rename-file'
 import { ensureDir } from 'fs-extra'
 
 export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMultipartFile): Promise<FileInfo> {
-  const filename = `${newFilename ?? `${HashService.generateFileHash()}.${getFileExtension(filePart.filename)}`}`
+  const filename = `${newFilename ?? `${HashService.generateFileId()}.${getFileExtension(filePart.filename)}`}`
 
   const baseFolderPath = path.resolve(baseFolder)
   const finalFilePath = path.resolve(baseFolderPath, filename)
@@ -39,7 +39,7 @@ export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMulti
   // NOTE: Cria um arquivo temporário auxiliar para não corromper
   // o original ao sobrescrever diretamente caso ocorra uma falha ou
   // a stream estoure o limite de tamanho durante a escrita:
-  const tempFileName = `temp-${HashService.generateFileHash()}`
+  const tempFileName = `temp-${HashService.generateFileId()}`
   const tempFilePath = path.resolve(baseFolderPath, tempFileName)
 
   try {

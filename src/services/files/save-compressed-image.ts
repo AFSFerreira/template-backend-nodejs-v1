@@ -23,7 +23,7 @@ export async function saveCompressedImage({
     quality: 70,
   },
 }: SaveCompressedImage): Promise<CompressedImageInfo> {
-  const finalName = `${HashService.generateFileHash()}.webp`
+  const finalName = `${HashService.generateFileId()}.webp`
 
   const finalImagePath = path.resolve(folderPath, finalName)
 
