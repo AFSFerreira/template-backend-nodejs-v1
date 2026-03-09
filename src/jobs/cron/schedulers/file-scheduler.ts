@@ -1,4 +1,4 @@
-import type { BaseScheduler } from '@lib/bullmq/helpers/base-scheduler'
+import type { BaseScheduler } from '@custom-types/lib/bullmq/base-scheduler'
 import { eraseEmptyFoldersJobFactory } from '@jobs/cron/functions/files/erase-empty-folders'
 import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
 import { SchedulerManager } from '@lib/bullmq/helpers/scheduler-manager'

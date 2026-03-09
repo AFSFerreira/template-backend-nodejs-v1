@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.14/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
   "vcs": {
     "enabled": true,
     "useIgnoreFile": true,
@@ -59,7 +59,8 @@
         "noUnusedPrivateClassMembers": "error",
         "noUnusedLabels": "error",
         "noUnreachable": "error",
-        "useIsNan": "error"
+        "useIsNan": "error",
+        "useSingleJsDocAsterisk": "error"
       }
     }
   },

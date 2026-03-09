@@ -1,6 +1,4 @@
-interface PixKeySetField {
-  pixKey: { set: string }
-}
+import type { PixKeySetField } from '@custom-types/utils/guards/pix-key-set-field'
 
 export function hasPixKeySet(value: unknown): value is Record<string, unknown> & PixKeySetField {
   if (typeof value !== 'object' || value === null) return false

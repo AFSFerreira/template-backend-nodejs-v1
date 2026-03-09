@@ -1,4 +1,4 @@
-import type { BaseScheduler } from '@lib/bullmq/helpers/base-scheduler'
+import type { BaseScheduler } from '@custom-types/lib/bullmq/base-scheduler'
 import { cleanupAuditsJobFactory } from '@jobs/cron/functions/database/cleanup-audits'
 import { cleanupUserActionAuditsJobFactory } from '@jobs/cron/functions/database/cleanup-user-action-audits'
 import { cleanupVerifyingUsersJobFactory } from '@jobs/cron/functions/database/cleanup-verifying-users'

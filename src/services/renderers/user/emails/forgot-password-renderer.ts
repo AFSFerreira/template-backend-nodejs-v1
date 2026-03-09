@@ -1,3 +1,4 @@
+import type { ForgotPasswordRendererInput } from '@custom-types/services/renderers/user/emails/forgot-password-renderer'
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { APP_NAME } from '@constants/env-constants'
@@ -5,13 +6,6 @@ import { FORGOT_PASSWORD_HTML_TEMPLATE, FORGOT_PASSWORD_TEXT_TEMPLATE } from '@c
 import { env } from '@env/index'
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
-
-interface ForgotPasswordRendererInput {
-  fullName: string
-  token: string
-  email: string
-  username: string
-}
 
 export class ForgotPasswordRenderer extends BaseRenderer<ForgotPasswordRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, FORGOT_PASSWORD_HTML_TEMPLATE)

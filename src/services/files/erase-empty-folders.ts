@@ -1,10 +1,7 @@
+import type { CleanFolderOptions } from '@custom-types/services/files/clean-folder-options'
 import { promises as fs } from 'node:fs'
 import * as path from 'node:path'
 import { logError } from '@lib/pino/helpers/log-error'
-
-export interface CleanFolderOptions {
-  preserveRoot?: boolean
-}
 
 export async function eraseEmptyFolders(targetDir: string, options: CleanFolderOptions = {}, isRoot: boolean = true) {
   try {

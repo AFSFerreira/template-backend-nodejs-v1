@@ -1,26 +1,8 @@
+import type { NewsletterRendererInfo } from '@custom-types/services/renderers/newsletters/newsletter-template-renderer'
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { DateFormatter } from '@utils/formatters/date-formatter'
 import { BaseRenderer } from '../base-renderer'
-
-interface NewsletterInfo {
-  htmlBody: string
-  sequenceNumber: string
-  editionNumber: string
-  volume: string
-  createdAt: Date
-}
-
-interface MeetingInfo {
-  title: string
-  location: string
-  dates: Date[]
-}
-
-interface NewsletterRendererInfo {
-  newsletterInfo: NewsletterInfo
-  meetingInfo?: MeetingInfo
-}
 
 export class NewsletterTemplateRenderer extends BaseRenderer<NewsletterRendererInfo> {
   protected readonly htmlTemplatePath: string

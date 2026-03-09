@@ -1,14 +1,9 @@
+import type { RenderOptions } from '@custom-types/services/renderers/base-renderer'
 import type { RendererOutput } from '@custom-types/services/renderers/renderer-output'
 import type { Attachment } from 'nodemailer/lib/mailer'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
 import { TemplateEngine } from './template-engine'
-
-type minifyFormat = 'web' | 'email'
-
-interface RenderOptions {
-  minify?: minifyFormat
-}
 
 export abstract class BaseRenderer<TInput> {
   protected abstract readonly htmlTemplatePath: string

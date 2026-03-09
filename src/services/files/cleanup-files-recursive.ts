@@ -1,4 +1,4 @@
-import type { CleanupFilesOptions } from './cleanup-files'
+import type { CleanupFilesOptions } from '@custom-types/services/files/cleanup-files-options'
 import { cleanupFiles } from './cleanup-files'
 import { collectSubdirectories } from './collect-subdirectories'
 

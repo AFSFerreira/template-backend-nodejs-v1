@@ -1,3 +1,7 @@
+import type {
+  NewsletterRenderTarget,
+  NewsletterRenderedContent,
+} from '@custom-types/services/renderers/newsletters/newsletter-content-render-service'
 import type { NewsletterWithDetails } from '@custom-types/validators/newsletter-with-details'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { JSONContent } from '@tiptap/core'
@@ -17,13 +21,6 @@ import { buildNewsletterHtmlPath } from '@utils/builders/paths/build-newsletter-
 import { PlainTextService } from '@utils/formatters/plain-text-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { NewsletterTemplateRenderer } from './newsletter-template-renderer'
-
-type NewsletterRenderTarget = 'web' | 'email'
-
-interface NewsletterRenderedContent {
-  html: string
-  text: string
-}
 
 export class NewsletterContentRenderService {
   constructor(private readonly meetingsRepository: MeetingsRepository) {}

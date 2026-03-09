@@ -1,11 +1,6 @@
-import type { WebSocket } from '@fastify/websocket'
+import type { WsController, WsRouteConfig } from '@custom-types/entrypoints/ws/dispatcher'
 
-export type WsController = (socket: WebSocket, userId: string | null, payload: unknown) => Promise<unknown> | unknown
-
-interface WsRouteConfig {
-  controller: WsController
-  requiresAuth: boolean
-}
+export type { WsController } from '@custom-types/entrypoints/ws/dispatcher'
 
 class WsDispatcher {
   private routes: Map<string, WsRouteConfig> = new Map()

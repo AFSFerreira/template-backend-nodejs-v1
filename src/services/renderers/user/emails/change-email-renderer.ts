@@ -1,3 +1,4 @@
+import type { ChangeEmailRendererInput } from '@custom-types/services/renderers/user/emails/change-email-renderer'
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { APP_NAME } from '@constants/env-constants'
@@ -5,13 +6,6 @@ import { CHANGE_EMAIL_HTML_TEMPLATE, CHANGE_EMAIL_TEXT_TEMPLATE } from '@constan
 import { env } from '@env/index'
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
-
-interface ChangeEmailRendererInput {
-  fullName: string
-  oldEmail: string
-  newEmail: string
-  token: string
-}
 
 export class ChangeEmailRenderer extends BaseRenderer<ChangeEmailRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CHANGE_EMAIL_HTML_TEMPLATE)

@@ -1,3 +1,4 @@
+import type { CleanupFilesOptions } from '@custom-types/services/files/cleanup-files-options'
 import path from 'node:path'
 import { ERASE_FILES_CONCURRENCY } from '@constants/jobs-configuration-constants'
 import { logError } from '@lib/pino/helpers/log-error'
@@ -10,12 +11,6 @@ import ms from 'ms'
 import { deleteFile } from './delete-file'
 import { getFileAgeInMs } from './get-file-age-in-ms'
 import { listFiles } from './list-files'
-
-export interface CleanupFilesOptions {
-  batchSize?: number
-  ttlInMs?: number
-  ignoreFilenames?: string[]
-}
 
 export async function cleanupFiles(folderPath: string, options: CleanupFilesOptions = {}) {
   const { batchSize = ERASE_FILES_CONCURRENCY, ttlInMs = ms('1d'), ignoreFilenames = ['.gitkeep'] } = options

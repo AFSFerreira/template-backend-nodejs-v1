@@ -1,9 +1,5 @@
+import type { ExcelCoordinate } from '@custom-types/utils/excel/get-excel-cell-address'
 import { InvalidExcelCoordinateError } from '@utils/errors/excel/invalid-excel-coordinate-error'
-
-interface ExcelCoordinate {
-  col: number
-  row: number
-}
 
 export function getExcelCellAddress({ col, row }: ExcelCoordinate): string {
   if (col < 1 || row < 1) {

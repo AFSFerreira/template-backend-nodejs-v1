@@ -1,6 +1,4 @@
-interface IdentityDocumentSetField {
-  identityDocument: { set: string }
-}
+import type { IdentityDocumentSetField } from '@custom-types/utils/guards/identity-document-set-field'
 
 export function hasIdentityDocumentSet(value: unknown): value is Record<string, unknown> & IdentityDocumentSetField {
   if (typeof value !== 'object' || value === null) return false

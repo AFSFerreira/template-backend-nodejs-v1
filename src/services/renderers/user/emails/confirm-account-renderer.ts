@@ -1,3 +1,4 @@
+import type { ConfirmAccountRendererInput } from '@custom-types/services/renderers/user/emails/confirm-account-renderer'
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { APP_NAME } from '@constants/env-constants'
@@ -5,12 +6,6 @@ import { CONFIRM_ACCOUNT_HTML_TEMPLATE, CONFIRM_ACCOUNT_TEXT_TEMPLATE } from '@c
 import { env } from '@env/index'
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
-
-interface ConfirmAccountRendererInput {
-  fullName: string
-  email: string
-  token: string
-}
 
 export class ConfirmAccountRenderer extends BaseRenderer<ConfirmAccountRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CONFIRM_ACCOUNT_HTML_TEMPLATE)

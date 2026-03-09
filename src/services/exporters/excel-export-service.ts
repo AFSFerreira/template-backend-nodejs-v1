@@ -1,3 +1,4 @@
+import type { WorkbookStreamOptions } from '@custom-types/services/exporters/excel-export-service'
 import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meeting-enrollment-with-details'
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import { PassThrough } from 'node:stream'
@@ -9,8 +10,6 @@ import { getExcelCellAddress } from '@utils/excel/get-excel-cell-address'
 import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import dayjs from 'dayjs'
 import ExcelJS, { type Style } from 'exceljs'
-
-interface WorkbookStreamOptions extends Partial<ExcelJS.stream.xlsx.WorkbookStreamWriterOptions> {}
 
 export class ExcelExportService {
   private static WHITE_HEX_COLOR = 'FFFFFFFF'

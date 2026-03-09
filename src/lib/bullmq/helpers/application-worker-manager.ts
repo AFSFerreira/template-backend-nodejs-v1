@@ -1,3 +1,4 @@
+import type { WorkerEntry } from '@custom-types/lib/bullmq/worker-entry'
 import type { Queue, Worker } from 'bullmq'
 import { emailQueue } from '@jobs/queues/definitions/email-queue'
 import { fileQueue } from '@jobs/queues/definitions/file-queue'
@@ -6,11 +7,6 @@ import { emailWorker } from '@jobs/queues/workers/email-worker'
 import { fileWorker } from '@jobs/queues/workers/file-worker'
 import { securityWorker } from '@jobs/queues/workers/security-worker'
 import { logger } from '@lib/pino'
-
-interface WorkerEntry {
-  worker: Worker
-  queue: Queue
-}
 
 export class ApplicationWorkerManager {
   private entries: WorkerEntry[] = []

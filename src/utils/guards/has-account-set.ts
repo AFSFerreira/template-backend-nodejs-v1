@@ -1,6 +1,4 @@
-interface AccountSetField {
-  account: { set: string }
-}
+import type { AccountSetField } from '@custom-types/utils/guards/account-set-field'
 
 export function hasAccountSet(value: unknown): value is Record<string, unknown> & AccountSetField {
   if (typeof value !== 'object' || value === null) return false
