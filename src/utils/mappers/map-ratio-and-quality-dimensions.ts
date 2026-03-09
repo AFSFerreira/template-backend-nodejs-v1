@@ -1,5 +1,26 @@
 import type { DimensionsType, IMapQualityToDimensions } from '@custom-types/utils/mappers/map-quality-to-dimensions'
 
+/**
+ * Mapeia uma combinação de aspect ratio e nível de qualidade para dimensões de imagem (largura x altura).
+ *
+ * Utilizado no processamento de imagens (sharp) para redimensionamento automático
+ * baseado na qualidade desejada e proporção do container de destino.
+ *
+ * Aspect ratios suportados: `16:9`, `9:16`, `21:9`, `4:3`, `1:1`, `3:2`.
+ * Níveis de qualidade: `nHD`, `HD`, `FULL_HD`, `QUAD_HD`, `UHD`, `8K_UHD`.
+ *
+ * Quando a qualidade não corresponde a nenhum caso, retorna a resolução padrão
+ * do aspect ratio (geralmente FULL_HD ou HD).
+ *
+ * @param params - Parâmetros da conversão.
+ * @param params.aspectRatio - Proporção da imagem.
+ * @param params.quality - Nível de qualidade desejado.
+ * @returns Objeto com `width` e `height` em pixels.
+ *
+ * @example
+ * mapQualityToDimensions({ aspectRatio: '16:9', quality: 'FULL_HD' }) // { width: 1920, height: 1080 }
+ * mapQualityToDimensions({ aspectRatio: '1:1', quality: 'HD' })       // { width: 1080, height: 1080 }
+ */
 export function mapQualityToDimensions({ aspectRatio, quality }: IMapQualityToDimensions): DimensionsType {
   switch (aspectRatio) {
     case '16:9':
