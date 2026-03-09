@@ -10,7 +10,6 @@ import { DirectorBoardPresenter } from '@http/presenters/director-board-presente
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UpdateDirectorBoardUseCase } from '@use-cases/director-board/update-director-board'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateDirectorBoard(
@@ -34,5 +33,5 @@ export async function updateDirectorBoard(
     tsyringeTokens.presenters.directorBoard.directorBoardWithUser,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

@@ -6,7 +6,6 @@ import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindBlogByPublicIdUseCase } from '@use-cases/blog/find-blog-by-public-id'
 import { getClientIp } from '@utils/http/get-client-ip'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findBlogByPublicId(
@@ -26,5 +25,5 @@ export async function findBlogByPublicId(
     tsyringeTokens.presenters.blog.blogDetailed,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

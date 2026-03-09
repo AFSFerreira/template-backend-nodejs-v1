@@ -8,7 +8,6 @@ import type { UpdateDirectorPositionParamsType } from '@custom-types/http/schema
 import type { FastifyReply } from 'fastify'
 import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
 import { UpdateDirectorPositionUseCase } from '@use-cases/director-position/update-director-position'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateDirectorPosition(
@@ -26,5 +25,5 @@ export async function updateDirectorPosition(
     directorPosition,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

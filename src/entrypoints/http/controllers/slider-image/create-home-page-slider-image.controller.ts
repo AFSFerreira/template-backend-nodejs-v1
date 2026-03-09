@@ -26,5 +26,5 @@ export async function createHomePageSliderImage(
     tsyringeTokens.presenters.sliderImage.sliderImageHomePage,
   )
 
-  return await reply.status(StatusCodes.CREATED).send({ data: { sliderImage: formattedReply } })
+  return await reply.sendResponse({ sliderImage: formattedReply }, StatusCodes.CREATED)
 }

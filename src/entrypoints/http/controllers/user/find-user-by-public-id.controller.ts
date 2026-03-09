@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { UserPresenter } from '@http/presenters/user-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindUserByPublicIdUseCase } from '@use-cases/user/find-by-public-id'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findUserByPublicId(request: ZodRequest<{ params: FindUserByIdParamsType }>, reply: FastifyReply) {
@@ -23,5 +22,5 @@ export async function findUserByPublicId(request: ZodRequest<{ params: FindUserB
     tsyringeTokens.presenters.user.userDetailedForAdmin,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

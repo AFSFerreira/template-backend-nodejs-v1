@@ -9,7 +9,6 @@ import type { FastifyReply } from 'fastify'
 import { MeetingPresenter } from '@http/presenters/meeting-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UpdateMeetingUseCase } from '@use-cases/meeting/update-meeting'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateMeeting(
@@ -31,5 +30,5 @@ export async function updateMeeting(
     tsyringeTokens.presenters.meeting.meetingDetailed,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

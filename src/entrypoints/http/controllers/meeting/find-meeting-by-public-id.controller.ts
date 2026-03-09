@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { MeetingPresenter } from '@http/presenters/meeting-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindMeetingByPublicIdUseCase } from '@use-cases/meeting/find-by-public-id'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findMeetingByPublicId(
@@ -26,5 +25,5 @@ export async function findMeetingByPublicId(
     tsyringeTokens.presenters.meeting.meetingDetailed,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

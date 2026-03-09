@@ -6,7 +6,6 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetInstitutionalInfoForAdminUseCase } from '@use-cases/institutional-info/get-institutional-info-for-admin'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getInstitutionalInfoForAdmin(_request: FastifyRequest, reply: FastifyReply) {
@@ -19,5 +18,5 @@ export async function getInstitutionalInfoForAdmin(_request: FastifyRequest, rep
     HTTPInstitutionalInfoForAdmin
   >(institutionalInfo, tsyringeTokens.presenters.institutionalInfo.institutionalInfoForAdmin)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

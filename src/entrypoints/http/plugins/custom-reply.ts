@@ -30,4 +30,11 @@ export async function customReplyPluginDefinition(app: ExtendedFastifyInstance) 
       .header('X-Total-Pages', meta.totalPages.toString())
       .send({ data, meta })
   })
+
+  app.decorateReply(
+    'sendResponse',
+    function (this: FastifyReply, data?: unknown, statusCode: StatusCodes = StatusCodes.OK) {
+      return this.status(statusCode).send({ data })
+    },
+  )
 }

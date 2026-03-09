@@ -4,7 +4,6 @@ import { blogImageMultipartFileConfig } from '@constants/multipart-configuration
 import { FilePresenter } from '@http/presenters/file-presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadBlogImageUseCase } from '@use-cases/blog/upload-blog-image'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadBlogImage(request: FastifyRequest, reply: FastifyReply) {
@@ -18,5 +17,5 @@ export async function uploadBlogImage(request: FastifyRequest, reply: FastifyRep
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

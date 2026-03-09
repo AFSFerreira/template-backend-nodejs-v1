@@ -4,7 +4,6 @@ import { meetingBannerMultipartFileConfig } from '@constants/multipart-configura
 import { FilePresenter } from '@http/presenters/file-presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadMeetingBannerUseCase } from '@use-cases/meeting/upload-meeting-banner'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function uploadMeetingBanner(request: FastifyRequest, reply: FastifyReply) {
@@ -18,5 +17,5 @@ export async function uploadMeetingBanner(request: FastifyRequest, reply: Fastif
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

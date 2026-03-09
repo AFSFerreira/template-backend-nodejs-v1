@@ -4,7 +4,6 @@ import type { MeetingEnrollmentDetailedWithPresentationPresenter } from '@http/p
 import type { FastifyReply } from 'fastify'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/get-meeting-enrollment'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getMeetingEnrollment(
@@ -22,5 +21,5 @@ export async function getMeetingEnrollment(
 
   const formattedReply = presenter.toHTTP(enrollment)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

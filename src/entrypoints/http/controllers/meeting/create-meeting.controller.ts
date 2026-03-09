@@ -23,5 +23,5 @@ export async function createMeeting(request: ZodRequest<{ body: CreateMeetingBod
     tsyringeTokens.presenters.meeting.meetingDetailed,
   )
 
-  return await reply.status(StatusCodes.CREATED).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

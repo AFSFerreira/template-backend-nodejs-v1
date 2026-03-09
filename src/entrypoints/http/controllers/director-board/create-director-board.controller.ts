@@ -32,5 +32,5 @@ export async function createDirectorBoard(
     directorBoard,
   )
 
-  return await reply.status(StatusCodes.CREATED).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

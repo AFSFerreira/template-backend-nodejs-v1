@@ -20,5 +20,5 @@ export async function createUser(request: ZodRequest<{ body: RegisterBodyType }>
     tsyringeTokens.presenters.user.userDetailed,
   )
 
-  return await reply.status(StatusCodes.CREATED).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

@@ -9,7 +9,6 @@ import { BlogPresenter } from '@http/presenters/blog-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blog/find-blog-by-public-id-detailed'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findBlogByPublicIdRestricted(
@@ -28,5 +27,5 @@ export async function findBlogByPublicIdRestricted(
     tsyringeTokens.presenters.blog.blogDetailedWithContent,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

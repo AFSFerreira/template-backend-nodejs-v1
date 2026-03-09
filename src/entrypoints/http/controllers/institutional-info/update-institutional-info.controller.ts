@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UpdateInstitutionalInfoUseCase } from '@use-cases/institutional-info/update-institutional-info'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function updateInstitutionalInfo(
@@ -26,5 +25,5 @@ export async function updateInstitutionalInfo(
     tsyringeTokens.presenters.institutionalInfo.institutionalInfoDefault,
   )
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }

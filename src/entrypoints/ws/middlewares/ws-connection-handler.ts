@@ -2,6 +2,7 @@ import type { WebSocket } from '@fastify/websocket'
 import type { FastifyRequest } from 'fastify'
 import { logError } from '@lib/pino/helpers/log-error'
 import { verifyTokenIsolated } from '@utils/http/verify-jwt-token'
+import { collectZodErrors } from '@utils/validators/collect-zod-errors'
 import { getSocketUserPublicId } from '@utils/ws/get-socket-user-public-id'
 import { wsDispatcher } from '@ws/dispatcher'
 import { wsMessageSchema } from '@ws/schemas/ws-message-schema'
@@ -20,7 +21,7 @@ export async function wsConnectionHandler(socket: WebSocket, _req: FastifyReques
         socket.send(
           JSON.stringify({
             error: 'Invalid payload contract',
-            details: validation.error.format(), // TODO: Usar o utilitário de capturas de erros do zod aqui
+            details: collectZodErrors(validation.error),
           }),
         )
 

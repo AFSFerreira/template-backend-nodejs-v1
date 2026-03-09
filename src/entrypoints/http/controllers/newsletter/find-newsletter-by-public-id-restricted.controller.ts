@@ -8,7 +8,6 @@ import type { FastifyReply } from 'fastify'
 import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { FindNewsletterByPublicIdRestrictedUseCase } from '@use-cases/newsletters/find-newsletter-by-public-id-restricted'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function findNewsletterByPublicIdRestricted(
@@ -26,5 +25,5 @@ export async function findNewsletterByPublicIdRestricted(
     HTTPNewsletterDetailedWithContent
   >(newsletter, tsyringeTokens.presenters.newsletter.newsletterDetailedWithContent)
 
-  return await reply.status(StatusCodes.OK).send({ data: formattedReply })
+  return await reply.sendResponse(formattedReply)
 }
