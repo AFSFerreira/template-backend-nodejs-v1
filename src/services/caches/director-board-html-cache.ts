@@ -12,6 +12,15 @@ import {
 
 const generateDirectorBoardHtmlKey = (publicId: string) => `cache:directorBoard:${publicId}:aboutMeHtml`
 
+/**
+ * Busca o HTML "Sobre Mim" de um diretor no cache Redis.
+ *
+ * Renova o TTL automaticamente quando o conteúdo não é encontrado (sliding expiration).
+ *
+ * @param publicId - Identificador público do diretor.
+ * @param redis - Instância do cliente Redis.
+ * @returns HTML cacheado ou `null` se não existir.
+ */
 export async function getDirectorBoardHTMLCached({ publicId, redis }: IGetDirectorBoardHTMLCached) {
   const key = generateDirectorBoardHtmlKey(publicId)
   const htmlCached: string | null = await redis.get(key)
@@ -26,6 +35,16 @@ export async function getDirectorBoardHTMLCached({ publicId, redis }: IGetDirect
   return htmlCached
 }
 
+/**
+ * Armazena o HTML "Sobre Mim" de um diretor no cache Redis.
+ *
+ * Usa `NX` para evitar sobrescrita. Caso já exista, apenas renova o TTL.
+ *
+ * @param publicId - Identificador público do diretor.
+ * @param htmlContent - Conteúdo HTML a ser cacheado.
+ * @param redis - Instância do cliente Redis.
+ * @returns `'OK'` se cacheado pela primeira vez, ou `null` se já existia.
+ */
 export async function setDirectorBoardHTMLCache({ publicId, htmlContent, redis }: ISetDirectorBoardHTMLCache) {
   const key = generateDirectorBoardHtmlKey(publicId)
   const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', DIRECTOR_BOARD_HTML_CACHE_TTL, 'NX')
@@ -40,6 +59,12 @@ export async function setDirectorBoardHTMLCache({ publicId, htmlContent, redis }
   return wasCached
 }
 
+/**
+ * Remove o HTML "Sobre Mim" de um diretor do cache Redis.
+ *
+ * @param publicId - Identificador público do diretor.
+ * @param redis - Instância do cliente Redis.
+ */
 export async function removeDirectorBoardHTMLCache({ publicId, redis }: IRemoveDirectorBoardHTMLCache) {
   const key = generateDirectorBoardHtmlKey(publicId)
   await redis.del(key)

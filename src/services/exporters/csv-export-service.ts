@@ -6,7 +6,23 @@ import { userExportMapper } from '@services/mappers/user-export-mapper'
 import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import { stringify } from 'csv-stringify'
 
+/**
+ * Serviço de exportação de dados em formato CSV com streaming.
+ *
+ * Gera relatórios CSV com BOM (Byte Order Mark) para compatibilidade UTF-8
+ * com Excel, delimitador `;` e headers em português. O processamento é feito
+ * via `AsyncIterable` para suportar grandes volumes sem carregar tudo em memória.
+ */
 export class CsvExportService {
+  /**
+   * Gera relatório CSV de inscrições em encontros científicos.
+   *
+   * Processa um stream assíncrono de inscrições e retorna um `PassThrough`
+   * que pode ser canalizado diretamente para a resposta HTTP.
+   *
+   * @param meetingEnrollmentStream - Stream assíncrono de inscrições com detalhes.
+   * @returns Stream `PassThrough` com o conteúdo CSV.
+   */
   generateMeetingEnrollmentReport(meetingEnrollmentStream: AsyncIterable<MeetingEnrollmentWithDetails>): PassThrough {
     const passThrough = new PassThrough()
 
@@ -59,6 +75,13 @@ export class CsvExportService {
     return passThrough
   }
 
+  /**
+   * Gera relatório CSV de usuários com todos os dados cadastrais,
+   * incluindo endereço, curso, publicações e informações de diretoria.
+   *
+   * @param usersStream - Stream assíncrono de usuários com relacionamentos.
+   * @returns Stream `PassThrough` com o conteúdo CSV.
+   */
   generateUsersReport(usersStream: AsyncIterable<UserWithDetails>): PassThrough {
     const passThrough = new PassThrough()
 

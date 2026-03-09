@@ -6,6 +6,9 @@ import { DELETE_USER_HTML_TEMPLATE, DELETE_USER_TEXT_TEMPLATE } from '@constants
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
 
+/**
+ * Renderizador do e-mail de notificação de exclusão de conta.
+ */
 export class DeleteUserRenderer extends BaseRenderer<DeleteUserRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, DELETE_USER_HTML_TEMPLATE)
   protected readonly textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, DELETE_USER_TEXT_TEMPLATE)

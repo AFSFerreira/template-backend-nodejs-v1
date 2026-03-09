@@ -12,6 +12,19 @@ import { deleteFile } from './delete-file'
 import { getFileAgeInMs } from './get-file-age-in-ms'
 import { listFiles } from './list-files'
 
+/**
+ * Remove arquivos expirados (baseado em TTL) de um diretório,
+ * processando em lotes para controle de concorrência.
+ *
+ * Ignora arquivos listados em `ignoreFilenames` (padrão: `.gitkeep`).
+ * Cada arquivo é verificado individualmente pela idade (birthtime/ctime/mtime).
+ *
+ * @param folderPath - Diretório-alvo para limpeza.
+ * @param options.batchSize - Tamanho do lote de deleções em paralelo (padrão: `ERASE_FILES_CONCURRENCY`).
+ * @param options.ttlInMs - Tempo de vida máximo em milissegundos (padrão: 1 dia).
+ * @param options.ignoreFilenames - Nomes de arquivos a ignorar (padrão: `['.gitkeep']`).
+ * @returns `false` em caso de erro ao listar o diretório.
+ */
 export async function cleanupFiles(folderPath: string, options: CleanupFilesOptions = {}) {
   const { batchSize = ERASE_FILES_CONCURRENCY, ttlInMs = ms('1d'), ignoreFilenames = ['.gitkeep'] } = options
 

@@ -13,6 +13,22 @@ import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { getFileExtension } from '@utils/files/get-file-extension'
 import { ensureDir } from 'fs-extra'
 
+/**
+ * Salva um arquivo multipart no disco com padrão de segurança via arquivo temporário.
+ *
+ * Fluxo (temp file safety pattern):
+ * 1. Gera nome único preservando a extensão original.
+ * 2. Verifica duplicidade (idempotente).
+ * 3. Escreve em arquivo temporário auxiliar.
+ * 4. Renomeia para o caminho final somente após escrita completa.
+ * 5. Em caso de falha ou truncamento, remove o arquivo temporário.
+ *
+ * @param filePart - Parte do multipart com stream e metadados.
+ * @param baseFolder - Diretório base de destino.
+ * @param newFilename - Nome personalizado (opcional; gera UUID + extensão se não informado).
+ * @returns Informações do arquivo salvo com flag `success`.
+ * @throws {FileSaveError} Se o stream for truncado ou a renomeação falhar.
+ */
 export async function saveFile({ filePart, baseFolder, newFilename }: ISaveMultipartFile): Promise<FileInfo> {
   const filename = `${newFilename ?? `${HashService.generateFileId()}.${getFileExtension(filePart.filename)}`}`
 

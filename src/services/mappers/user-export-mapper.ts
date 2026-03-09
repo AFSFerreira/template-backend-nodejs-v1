@@ -13,6 +13,23 @@ import { mapMembershipStatus } from '@utils/mappers/map-membership-status'
 import { mapOccupation } from '@utils/mappers/map-occupation'
 import dayjs from 'dayjs'
 
+/**
+ * Mapeia um usuário com todos os seus relacionamentos para um objeto plano
+ * adequado à exportação em CSV/Excel.
+ *
+ * Transforma campos de:
+ * - Dados pessoais (nome, documento, nascimento)
+ * - Dados profissionais/acadêmicos (instituição, curso, área)
+ * - Associação e preferências (status, newsletter, email público)
+ * - Endereço completo
+ * - Curso/graduação vinculada
+ * - Palavras-chave e publicações acadêmicas
+ * - Diretoria (cargo, foto, "sobre mim")
+ *
+ * @param user - Usuário com relacionamentos carregados.
+ * @param targetTimezone - Timezone para formatação de datas (padrão: `SYSTEM_TIMEZONE`).
+ * @returns Objeto plano com todos os campos formatados para exportação.
+ */
 export function userExportMapper(user: UserWithDetails, targetTimezone: string = SYSTEM_TIMEZONE) {
   // Dados pessoais:
   const fullName = user.fullName

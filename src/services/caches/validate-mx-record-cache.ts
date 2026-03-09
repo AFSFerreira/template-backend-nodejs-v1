@@ -9,6 +9,15 @@ import { GET_MX_RECORD_CACHED_INFO, SET_MX_RECORD_CACHE_INFO } from '@messages/l
 
 const generateMxRecordKey = (mxRecord: string) => `mx-record:verify:${mxRecord}`
 
+/**
+ * Busca o resultado de validação de registro MX no cache Redis.
+ *
+ * Renova o TTL automaticamente quando encontra o resultado em cache.
+ *
+ * @param mxRecord - Domínio do registro MX.
+ * @param redis - Instância do cliente Redis.
+ * @returns `'valid'`, `'invalid'` ou `null` se não estiver em cache.
+ */
 export async function getMxRecordCached({ mxRecord, redis }: IGetMxRecordCached): Promise<MxRecordResult | null> {
   const key = generateMxRecordKey(mxRecord)
   const mxRecordCached: MxRecordResult | null = (await redis.get(key)) as MxRecordResult
@@ -23,6 +32,16 @@ export async function getMxRecordCached({ mxRecord, redis }: IGetMxRecordCached)
   return mxRecordCached
 }
 
+/**
+ * Armazena o resultado de validação de registro MX no cache Redis.
+ *
+ * Usa `NX` para evitar sobrescrita. Caso já exista, apenas renova o TTL.
+ *
+ * @param mxRecord - Domínio do registro MX.
+ * @param result - Resultado da validação (`'valid'` ou `'invalid'`).
+ * @param redis - Instância do cliente Redis.
+ * @returns `'OK'` se cacheado pela primeira vez, ou `null` se já existia.
+ */
 export async function setMxRecordCached({ mxRecord, result, redis }: ISetMxRecordCached) {
   const key = generateMxRecordKey(mxRecord)
   const mxRecordWasCached: 'OK' | null = await redis.set(key, result, 'PX', MX_RECORD_VERIFY_TTL, 'NX')

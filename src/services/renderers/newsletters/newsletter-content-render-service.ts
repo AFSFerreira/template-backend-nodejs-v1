@@ -22,6 +22,16 @@ import { PlainTextService } from '@utils/formatters/plain-text-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { NewsletterTemplateRenderer } from './newsletter-template-renderer'
 
+/**
+ * Serviço de renderização de conteúdo de newsletters.
+ *
+ * Suporta dois formatos de newslettter:
+ * - **PROSEMIRROR:** renderiza conteúdo ProseMirror JSON via template Nunjucks,
+ *   incluindo dados de reunião ativa (se houver).
+ * - **HTML_FILE:** lê arquivo HTML estático do disco e aplica minificação.
+ *
+ * A minificação varia conforme o target: `'web'` (agressiva) ou `'email'` (conservadora).
+ */
 export class NewsletterContentRenderService {
   constructor(private readonly meetingsRepository: MeetingsRepository) {}
 

@@ -3,6 +3,14 @@ import type {
   IValidatedActivityAreas,
 } from '@custom-types/services/validators/validate-activity-areas'
 
+/**
+ * Valida combinações de área + tipo de atividade contra o repositório de áreas cadastradas.
+ *
+ * Compara cada par `(area, type)` recebido com os registros existentes no banco.
+ * Retorna as áreas inválidas caso alguma combinação não seja encontrada.
+ *
+ * @returns Objeto com `success: true` e as áreas encontradas, ou `success: false` e as áreas inválidas.
+ */
 export async function validateActivityAreas({
   activityAreasRepository,
   activityAreas,

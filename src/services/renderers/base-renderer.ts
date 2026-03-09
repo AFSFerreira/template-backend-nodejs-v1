@@ -5,6 +5,18 @@ import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
 import { TemplateEngine } from './template-engine'
 
+/**
+ * Classe abstrata base para renderização de templates de e-mail.
+ *
+ * Encapsula o fluxo completo de renderização: mapeamento de payload,
+ * renderização Nunjucks (HTML e texto plano), minificação opcional e anexos.
+ *
+ * Subclasses devem definir:
+ * - `htmlTemplatePath` e opcionalmente `textTemplatePath` (caminhos dos templates Nunjucks).
+ * - `mapPayload(input)` para transformar dados de entrada no formato esperado pelo template.
+ *
+ * @typeParam TInput - Tipo dos dados de entrada para renderização.
+ */
 export abstract class BaseRenderer<TInput> {
   protected abstract readonly htmlTemplatePath: string
   protected readonly textTemplatePath: string | null = null

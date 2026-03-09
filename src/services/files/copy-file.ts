@@ -10,6 +10,18 @@ import { buildShardFileFolder } from '@utils/files/build-shard-file-folder'
 import { getFileExtension } from '@utils/files/get-file-extension'
 import fs, { ensureDir } from 'fs-extra'
 
+/**
+ * Copia um arquivo para um diretório de destino, opcionalmente com sharding de pasta.
+ *
+ * Gera nome único com a extensão do arquivo original (ou usa `newFilename` se fornecido).
+ * Cria subdiretórios via {@link buildShardFileFolder} quando `buildShard` for `true`.
+ *
+ * @param sourceFilePath - Caminho absoluto do arquivo de origem.
+ * @param newFilename - Nome personalizado (opcional; gera UUID se não informado).
+ * @param destinationFolderPath - Diretório de destino.
+ * @param buildShard - Se `true`, cria subdiretórios de sharding baseados no nome do arquivo.
+ * @returns Informações do arquivo copiado com flag `success`.
+ */
 export async function copyFile({
   sourceFilePath,
   newFilename,

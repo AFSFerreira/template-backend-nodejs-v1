@@ -4,6 +4,13 @@ import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { DateFormatter } from '@utils/formatters/date-formatter'
 import { BaseRenderer } from '../base-renderer'
 
+/**
+ * Renderizador de templates de newsletter baseado em Nunjucks.
+ *
+ * Estende {@link BaseRenderer} para mapear dados da newsletter (edição,
+ * volume, datas) e opcionalmente dados de encontro científico ativo
+ * no formato esperado pelos templates `template.html.njk` e `template.text.njk`.
+ */
 export class NewsletterTemplateRenderer extends BaseRenderer<NewsletterRendererInfo> {
   protected readonly htmlTemplatePath: string
   protected readonly textTemplatePath: string

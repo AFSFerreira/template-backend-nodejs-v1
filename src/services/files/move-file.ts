@@ -4,6 +4,15 @@ import { FILE_PERSIST_ERROR } from '@messages/loggings/system/file-loggings'
 import { fileExists } from '@services/files/file-exists'
 import fs from 'fs-extra'
 
+/**
+ * Move um arquivo de um caminho para outro com opções configuráveis.
+ *
+ * @param oldFilePath - Caminho atual do arquivo.
+ * @param newFilePath - Caminho de destino.
+ * @param options.overwrite - Se `true`, sobrescreve arquivo existente no destino.
+ * @param options.ignoreOldFileMissing - Se `true`, retorna `oldFilePath` caso o arquivo original não exista.
+ * @returns Caminho final do arquivo movido, ou `null` em caso de erro.
+ */
 export async function moveFile({ oldFilePath, newFilePath, options }: IMoveFile) {
   try {
     // Verifica se o arquivo antigo existe:

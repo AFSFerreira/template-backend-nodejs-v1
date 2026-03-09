@@ -7,6 +7,11 @@ import { env } from '@env/index'
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
 
+/**
+ * Renderizador do e-mail de verificação de conta.
+ *
+ * Gera link com token para o frontend em `/verificar-email/{token}`.
+ */
 export class ConfirmAccountRenderer extends BaseRenderer<ConfirmAccountRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CONFIRM_ACCOUNT_HTML_TEMPLATE)
   protected readonly textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CONFIRM_ACCOUNT_TEXT_TEMPLATE)

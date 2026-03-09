@@ -9,6 +9,15 @@ import { GET_NEWSLETTER_HTML_CACHED_INFO, SET_NEWSLETTER_HTML_CACHE_INFO } from 
 
 const generateNewsletterHtmlKey = (publicId: string) => `cache:newsletter:${publicId}:contentHtml`
 
+/**
+ * Busca o HTML de uma newsletter no cache Redis.
+ *
+ * Renova o TTL automaticamente quando encontra o conteúdo em cache (sliding expiration).
+ *
+ * @param publicId - Identificador público da newsletter.
+ * @param redis - Instância do cliente Redis.
+ * @returns HTML cacheado ou `null` se não existir.
+ */
 export async function getNewsletterHTMLCached({ publicId, redis }: IGetNewsletterHTMLCached) {
   const key = generateNewsletterHtmlKey(publicId)
   const htmlCached: string | null = await redis.get(key)
@@ -23,6 +32,16 @@ export async function getNewsletterHTMLCached({ publicId, redis }: IGetNewslette
   return htmlCached
 }
 
+/**
+ * Armazena o HTML de uma newsletter no cache Redis.
+ *
+ * Usa `NX` para evitar sobrescrita. Caso já exista, apenas renova o TTL.
+ *
+ * @param publicId - Identificador público da newsletter.
+ * @param htmlContent - Conteúdo HTML a ser cacheado.
+ * @param redis - Instância do cliente Redis.
+ * @returns `'OK'` se cacheado pela primeira vez, ou `null` se já existia.
+ */
 export async function setNewsletterHTMLCache({ publicId, htmlContent, redis }: ISetNewsletterHTMLCache) {
   const key = generateNewsletterHtmlKey(publicId)
   const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', NEWSLETTER_HTML_CACHE_TTL, 'NX')
@@ -37,6 +56,12 @@ export async function setNewsletterHTMLCache({ publicId, htmlContent, redis }: I
   return wasCached
 }
 
+/**
+ * Remove o HTML de uma newsletter do cache Redis.
+ *
+ * @param publicId - Identificador público da newsletter.
+ * @param redis - Instância do cliente Redis.
+ */
 export async function removeNewsletterHTMLCache({ publicId, redis }: IRemoveNewsletterHTMLCache) {
   const key = generateNewsletterHtmlKey(publicId)
   await redis.del(key)

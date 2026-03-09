@@ -10,7 +10,22 @@ const SECRET_KEY_BUFFER = Buffer.from(env.ENCRYPTION_KEY, 'base64')
 const IV_HEX_LENGTH = 32
 const AUTH_TAG_HEX_LENGTH = 32
 
+/**
+ * Serviço de criptografia simétrica baseado em AES-256-GCM.
+ *
+ * Utiliza Initialization Vector (IV) aleatório de 16 bytes e Authentication Tag
+ * para garantir confidencialidade e integridade dos dados.
+ *
+ * O payload criptografado é uma string hexadecimal no formato:
+ * `[IV (32 hex chars)][AuthTag (32 hex chars)][CipherText]`
+ */
 export class EncryptionService {
+  /**
+   * Criptografa uma string usando AES-256-GCM com IV aleatório.
+   *
+   * @param input - Texto plano a ser criptografado.
+   * @returns Payload criptografado no formato `IV + AuthTag + CipherText` (hexadecimal).
+   */
   static encrypt(input: string): EncryptedData {
     const initializationVector = crypto.randomBytes(16)
 
@@ -25,6 +40,15 @@ export class EncryptionService {
     return `${initializationVectorHex}${authTag}${encrypted}` as EncryptedData
   }
 
+  /**
+   * Descriptografa um payload criptografado pelo método {@link EncryptionService.encrypt}.
+   *
+   * Extrai IV e AuthTag do prefixo hex para validar autenticidade e decifrar o conteúdo.
+   *
+   * @param encryptedPayload - String hexadecimal no formato `IV + AuthTag + CipherText`.
+   * @returns Texto plano original.
+   * @throws {DecryptionFailedError} Se o payload for inválido ou a autenticação falhar.
+   */
   static decrypt(encryptedPayload: string | EncryptedData): string {
     if (encryptedPayload.length < IV_HEX_LENGTH + AUTH_TAG_HEX_LENGTH) {
       throw new DecryptionFailedError()

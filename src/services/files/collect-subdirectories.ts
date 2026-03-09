@@ -4,6 +4,15 @@ import { logError } from '@lib/pino/helpers/log-error'
 import { LISTING_FILES_ERROR } from '@messages/loggings/system/file-loggings'
 import { listFiles } from './list-files'
 
+/**
+ * Coleta recursivamente todos os subdiretórios dentro de um caminho raiz.
+ *
+ * Retorna uma lista plana com os caminhos absolutos de todos os diretórios
+ * encontrados em qualquer nível de profundidade.
+ *
+ * @param rootPath - Diretório raiz para início da coleta.
+ * @returns Lista de caminhos absolutos dos subdiretórios.
+ */
 export async function collectSubdirectories(rootPath: string): Promise<string[]> {
   const dirs: string[] = []
 

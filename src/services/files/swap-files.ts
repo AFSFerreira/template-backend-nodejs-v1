@@ -6,6 +6,17 @@ import { SWAP_FILE_LOOP_ERROR } from '@messages/loggings/system/file-loggings'
 import { deleteFile } from './delete-file'
 import { saveFile } from './save-file'
 
+/**
+ * Substitui arquivos existentes por novos, removendo versões anteriores com extensões diferentes.
+ *
+ * Para cada arquivo:
+ * 1. Salva o novo arquivo com o nome especificado.
+ * 2. Se `anyExtension` estiver habilitado, remove todos os arquivos
+ *    com o mesmo nome base mas extensão diferente (via glob).
+ *
+ * @param files - Lista de arquivos a serem substituídos.
+ * @returns Informações do último arquivo processado, ou `false` em caso de erro.
+ */
 export async function swapFiles(files: IswapFiles[]) {
   for (const file of files) {
     const { anyExtension, ...filteredFileInfo } = file

@@ -1,6 +1,16 @@
 import type { IGetAllInstitutions } from '@custom-types/services/external/get-all-institutions'
 import { getExternalInstitutions } from './get-external-institutions'
 
+/**
+ * Combina instituições da API externa de universidades com as cadastradas no banco local.
+ *
+ * Mescla as duas fontes em uma lista única sem duplicatas (case-sensitive),
+ * priorizando as externas e complementando com as locais.
+ *
+ * @param institutionsRepository - Repositório de instituições locais.
+ * @param query - Filtros de busca (nome, limite, página).
+ * @returns Lista unificada de nomes de instituições em uppercase.
+ */
 export async function getAllInstitutions({ institutionsRepository, query }: IGetAllInstitutions) {
   const universityName = query.name
   const limit = query.limit ?? 10

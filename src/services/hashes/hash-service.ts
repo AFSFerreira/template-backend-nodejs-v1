@@ -11,6 +11,12 @@ import { env } from '@env/index'
 import { argon2id, hash as argonHash, needsRehash, verify } from 'argon2'
 import { v4 as uuidv4 } from 'uuid'
 
+/**
+ * Serviço centralizado de hashing e geração de identificadores.
+ *
+ * Combina Argon2id (com pepper secreto) para senhas, SHA-256 para tokens,
+ * HMAC-SHA256 para blind indexes de documentos, e UUID v4 para identificadores únicos.
+ */
 export class HashService {
   private static readonly argonConfig = {
     type: argon2id,
@@ -22,24 +28,56 @@ export class HashService {
 
   private static cachedDummyHash: string | null = null
 
+  /**
+   * Gera hash SHA-256 de um token ou string qualquer.
+   *
+   * @param input - Valor a ser hasheado.
+   * @returns Hash SHA-256 em formato hexadecimal.
+   */
   static hashToken(input: string): HashedToken {
     return crypto.hash('sha256', input) as HashedToken
   }
 
+  /**
+   * Gera um blind index HMAC-SHA256 para busca determinística de dados criptografados.
+   *
+   * Utilizado para permitir buscas em campos criptografados (e.g., documentos de identidade)
+   * sem expor o valor original.
+   *
+   * @param input - Valor a ser indexado (e.g., CPF em texto plano).
+   * @returns Hash HMAC-SHA256 em formato hexadecimal.
+   */
   static generateBlindIndex(input: string): HashedToken {
     const secret = Buffer.from(env.BLIND_INDEX_SECRET, 'base64')
     return crypto.createHmac('sha256', secret).update(input).digest('hex') as HashedToken
   }
 
+  /**
+   * Gera hash Argon2id de uma senha com pepper secreto.
+   *
+   * @param password - Senha em texto plano.
+   * @returns Hash Argon2id da senha.
+   */
   static async hashPassword(password: string): Promise<HashedPassword> {
     const hash = await argonHash(password, HashService.argonConfig)
     return hash as HashedPassword
   }
 
+  /**
+   * Compara uma senha em texto plano com um hash Argon2id.
+   *
+   * @returns `true` se a senha corresponde ao hash.
+   */
   static async comparePassword({ password, hashedPassword }: IComparePassword): Promise<boolean> {
     return await verify(hashedPassword, password, { secret: HashService.argonConfig.secret })
   }
 
+  /**
+   * Gera um token criptograficamente seguro usando `crypto.randomBytes`.
+   *
+   * @param bytesNumber - Quantidade de bytes aleatórios (a string resultante terá o dobro em caracteres hex).
+   * @returns Token hexadecimal.
+   */
   static generateToken(bytesNumber: number): Token {
     return crypto.randomBytes(bytesNumber).toString('hex') as Token
   }
@@ -56,10 +94,20 @@ export class HashService {
     return uuidv4() as UuidHash
   }
 
+  /**
+   * Verifica se um hash Argon2 existente precisa ser recalculado
+   * por estar com parâmetros de custo desatualizados.
+   */
   static needsUpgrade(hash: string): boolean {
     return needsRehash(hash, HashService.argonConfig)
   }
 
+  /**
+   * Retorna um hash Argon2 dummy (cache interno) para prevenir timing attacks.
+   *
+   * Usado quando o usuário não é encontrado durante autenticação, garantindo
+   * que o tempo de resposta seja consistente independentemente da existência do usuário.
+   */
   static async getDummyHash(): Promise<string> {
     if (!HashService.cachedDummyHash) {
       HashService.cachedDummyHash = await argonHash('dummy_password_for_timing_attacks', HashService.argonConfig)

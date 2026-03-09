@@ -11,6 +11,15 @@ import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import dayjs from 'dayjs'
 import ExcelJS, { type Style } from 'exceljs'
 
+/**
+ * Serviço de exportação de dados em formato Excel (.xlsx) com streaming.
+ *
+ * Utiliza `ExcelJS.stream.xlsx.WorkbookWriter` para escrita incremental
+ * em memória mínima. Inclui cabeçalho congelado, auto-filtro, estilização
+ * de colunas e metadados do documento.
+ *
+ * **Restrição OOXML:** nomes de worksheets devem ter no máximo 31 caracteres.
+ */
 export class ExcelExportService {
   private static WHITE_HEX_COLOR = 'FFFFFFFF'
   // private static DEEP_BLUE_HEX_COLOR = '073292FF'
@@ -22,6 +31,16 @@ export class ExcelExportService {
   private static MEDIUM_COLUMN_SIZE = 40
   private static LARGE_COLUMN_SIZE = 60
 
+  /**
+   * Gera planilha Excel de inscrições em encontros científicos com streaming.
+   *
+   * Processa um `AsyncIterable` e retorna um `PassThrough` pronto para
+   * ser canalizado na resposta HTTP.
+   *
+   * @param meetingEnrollmentStream - Stream assíncrono de inscrições.
+   * @param targetTimezone - Timezone para formatação de datas (padrão: `SYSTEM_TIMEZONE`).
+   * @returns Stream `PassThrough` com o arquivo `.xlsx`.
+   */
   generateMeetingEnrollmentReport(
     meetingEnrollmentStream: AsyncIterable<MeetingEnrollmentWithDetails>,
     targetTimezone: string = SYSTEM_TIMEZONE,
@@ -140,6 +159,14 @@ export class ExcelExportService {
     return passThrough
   }
 
+  /**
+   * Gera planilha Excel de usuários com dados cadastrais completos, incluindo
+   * endereço, curso, publicações, palavras-chave e informações de diretoria.
+   *
+   * @param usersStream - Stream assíncrono de usuários com relacionamentos.
+   * @param targetTimezone - Timezone para formatação de datas (padrão: `SYSTEM_TIMEZONE`).
+   * @returns Stream `PassThrough` com o arquivo `.xlsx`.
+   */
   generateUsersReport(
     usersStream: AsyncIterable<UserWithDetails>,
     targetTimezone: string = SYSTEM_TIMEZONE,

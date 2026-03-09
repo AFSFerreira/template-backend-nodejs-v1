@@ -13,6 +13,23 @@ import { mapQualityToDimensions } from '@utils/mappers/map-ratio-and-quality-dim
 import { ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 
+/**
+ * Salva uma imagem no formato AVIF com compressão via sharp.
+ *
+ * Fluxo:
+ * 1. Gera nome único (ou usa `newFilename`) com extensão `.avif`.
+ * 2. Verifica se o arquivo já existe (idempotente).
+ * 3. Cria diretório de destino se necessário.
+ * 4. Processa o stream com sharp (resize + encode AVIF).
+ * 5. Persiste via pipeline stream → sharp → writeStream.
+ * 6. Em caso de falha, remove arquivo parcial.
+ *
+ * @param filePart - Parte do multipart contendo o stream da imagem.
+ * @param newFilename - Nome do arquivo sem extensão (opcional; gera UUID se não informado).
+ * @param folderPath - Diretório de destino.
+ * @param options - Opções de dimensões e qualidade AVIF.
+ * @returns Informações do arquivo salvo com flag `success`.
+ */
 export async function saveAvifImage({
   filePart,
   newFilename,

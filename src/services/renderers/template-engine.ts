@@ -3,6 +3,15 @@ import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
 import { IS_DEV } from '@constants/env-constants'
 import nunjucks from 'nunjucks'
 
+/**
+ * Motor de templates Nunjucks com padrão Singleton.
+ *
+ * Gerencia duas instâncias independentes:
+ * - **HTML** (`autoescape: true`): previne XSS escapando variáveis automaticamente.
+ * - **Texto** (`autoescape: false`): renderiza templates de texto plano sem escaping.
+ *
+ * Em ambiente de desenvolvimento, habilita hot-reload e desativa cache de templates.
+ */
 export class TemplateEngine {
   private static htmlInstance: Environment | undefined
   private static textInstance: Environment | undefined

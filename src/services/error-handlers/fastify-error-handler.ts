@@ -10,6 +10,14 @@ import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { getBusinessError } from './get-business-error'
 
+/**
+ * Handler global de erros do Fastify.
+ *
+ * Classifica o erro via {@link getBusinessError}:
+ * - **Erros de negócio (ApiError, ZodError, FastifyError):** retorna status HTTP apropriado.
+ * - **500 / SystemError:** reporta ao Sentry com contexto completo (usuário, rota, IP, body sanitizado)
+ *   e registra no log estruturado antes de retornar resposta genérica.
+ */
 export function fastifyErrorHandler(error: FastifyError, request: FastifyRequest, reply: FastifyReply) {
   const responseError = getBusinessError(error)
 

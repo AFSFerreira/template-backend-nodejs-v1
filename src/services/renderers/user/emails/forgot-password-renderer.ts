@@ -7,6 +7,11 @@ import { env } from '@env/index'
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
 
+/**
+ * Renderizador do e-mail de recuperação de senha.
+ *
+ * Gera link com token para o frontend em `/reset-password?token={token}`.
+ */
 export class ForgotPasswordRenderer extends BaseRenderer<ForgotPasswordRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, FORGOT_PASSWORD_HTML_TEMPLATE)
   protected readonly textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, FORGOT_PASSWORD_TEXT_TEMPLATE)

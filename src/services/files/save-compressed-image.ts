@@ -12,6 +12,18 @@ import { FileSaveError } from '@use-cases/errors/generic/file-save-error'
 import { ensureDir } from 'fs-extra'
 import sharp from 'sharp'
 
+/**
+ * Salva uma imagem comprimida no formato WebP via sharp.
+ *
+ * Gera nome único com extensão `.webp`, verifica duplicidade,
+ * e aplica resize + compressão WebP com dimensões e qualidade configuráveis.
+ * Remove arquivo parcial em caso de falha.
+ *
+ * @param filePart - Parte do multipart com o stream da imagem.
+ * @param folderPath - Diretório de destino.
+ * @param options - Dimensões (padrão: 192x192) e qualidade (padrão: 70).
+ * @returns Informações do arquivo salvo com flag `success`.
+ */
 export async function saveCompressedImage({
   filePart,
   folderPath,
