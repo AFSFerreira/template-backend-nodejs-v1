@@ -7,6 +7,18 @@ import { formatPresentationType } from '@utils/formatters/presentation-type-labe
 import { mapEducationLevel } from '@utils/mappers/map-education-level'
 import dayjs from 'dayjs'
 
+/**
+ * Mapeia uma inscrição de encontro (com detalhes completos) para um objeto plano
+ * adequado à exportação em CSV/Excel.
+ *
+ * Unifica dados de usuários cadastrados (`UserDetails`) e convidados (`GuestDetails`)
+ * em um formato normalizado, aplicando formatações de data, tradução de enums e
+ * concatenação de autores/afiliações separados por `;`.
+ *
+ * @param meetingEnrollment - Inscrição de encontro com relacionamentos carregados.
+ * @param targetTimezone - Fuso horário para formatação de datas (padrão: `SYSTEM_TIMEZONE`).
+ * @returns Objeto plano com campos formatados para exportação.
+ */
 export function meetingExportMapper(
   meetingEnrollment: MeetingEnrollmentWithDetails,
   targetTimezone: string = SYSTEM_TIMEZONE,
