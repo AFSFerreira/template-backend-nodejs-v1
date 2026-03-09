@@ -15,11 +15,11 @@ import {
 } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
 import { ChangeEmailRenderer } from '@services/renderers/user/emails/change-email-renderer'
+import { hasValidMxRecord } from '@services/validators/validate-mx-record'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { hasValidMxRecord } from '@utils/validators/validate-mx-record'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
