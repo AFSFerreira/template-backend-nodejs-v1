@@ -178,13 +178,14 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 <div align="center">
 
-| Tipo de Usuário   |            Permissões Principais                   |
-| :---------------: | :------------------------------------------------: |
-| ADMIN             |       Gerenciamento global do sistema              |
-| MANAGER           |       Gerenciamento parcial do sistema             |
-| CONTENT_LEADER    |  Produtor e revisor irrestrito de conteúdo         |
-| CONTENT_PRODUCER  |  Produtor de conteúdo dependente do CONTENT_LEADER |
-| DEFAULT           | Usuário do sistema sem permissões especiais        |
+| Tipo de Usuário    |            Permissões Principais                          |
+| :----------------: | :-------------------------------------------------------: |
+| ADMIN              | Gerenciamento global do sistema                           |
+| MANAGER            | Gerenciamento parcial do sistema                          |
+| CONTENT_LEADER     | Produtor e revisor irrestrito de conteúdo                 |
+| CONTENT_PRODUCER   | Produtor de conteúdo dependente do CONTENT_LEADER         |
+| NEWSLETTER_LEADER  | Criação e gestão de newsletters                           |
+| DEFAULT            | Usuário do sistema sem permissões especiais               |
 
 </div>
 
@@ -199,25 +200,43 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 - [x] 1.1 Cadastro de Manager: Outorgar ou remover o privilégio de MANAGER para um usuário do sistema pelo Administrador
 - [x] 1.2 Cadastro de Content Leader: Outorgar ou remover o privilégio de CONTENT_LEADER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
 - [x] 1.3 Cadastro de Content Producer: Outorgar ou remover o privilégio de CONTENT_PRODUCER para um usuário do sistema pelo Administrador ou pelos Gestores do Sistema
-- [ ] 1.4 Cadastro de Usuário: Envio das informações básicas necessárias para cadastrar um novo usuário comum (desconsiderando a imagem de perfil)
-- [ ] 1.5 Cadastro com upload de imagem de perfil
-- [ ] 1.6 Edição de Usuário: Os dados do usuário devem ser editáveis
+- [x] 1.4 Cadastro de Usuário: Envio das informações básicas necessárias para cadastrar um novo usuário comum (desconsiderando a imagem de perfil)
+- [x] 1.5 Cadastro com upload de imagem de perfil
+- [x] 1.6 Edição de Usuário: Os dados do usuário devem ser editáveis
 
 ### 📌 Requisito 2 – Autenticação e Acesso:
 - [x] 2.1 Login com Email/Username e Senha
 - [x] 2.2 Redefinição de Senha com envio de Email (esqueci a senha)
-- [ ] 2.3 Inativação de Usuário: Um usuário deve ser inativado do sistema se não realizar o pagamento mensal da associação
+- [x] 2.3 Inativação de Usuário: Um usuário deve ser inativado do sistema se não realizar o pagamento mensal da associação
 - [x] 2.4 Recuperação de Usuários: Um Administrador ou um Gestor do Sistema devem ser capazes de recuperar usuários filtrados com paginação
-- [ ] 2.5 Aprovação de Usuário: Um Administrador ou um Gestor do Sistema devem ser capazes de aprovar ou rejeitar o pedido de associação pendente do usuário
+- [x] 2.5 Aprovação de Usuário: Um Administrador ou um Gestor do Sistema devem ser capazes de aprovar ou rejeitar o pedido de associação pendente do usuário
 
 ### 📌 Requisito 3 – Criação e Gestão de Reuniões:
-- [ ] 3.1 Criação de Reunião: Título, datas, resumo do local e edital
-- [ ] 3.2 Cancelamento de Reunião: A reunião deve ser removida do sistema
-- [ ] 3.3 Edição de Reunião: Os dados da reunião devem ser editáveis
+- [x] 3.1 Criação de Reunião: Título, datas, resumo do local e edital
+- [x] 3.2 Cancelamento de Reunião: A reunião deve ser removida do sistema
+- [x] 3.3 Edição de Reunião: Os dados da reunião devem ser editáveis
 
 ### 📌 Requisito 4 – Exportação de Dados:
 - [x] 4.1 Exportação dos Usuários: O sistema deve ser capaz de exportar os dados de todos os usuários pelo Administador ou por um Gestor do Sistema
-- [ ] 4.2 Exportação de Reuniões: O sistema deve ser capaz de exportar os dados de todas as reuniões pelo Administador ou por um Gestor do Sistema
+- [x] 4.2 Exportação de Reuniões: O sistema deve ser capaz de exportar os dados de todas as reuniões pelo Administador ou por um Gestor do Sistema
+
+### 📌 Requisito 5 – Painel Administrativo e Métricas:
+- [x] 5.1 Métricas de usuários: Total de membros ativos, pendentes e inativos
+- [x] 5.2 Métricas de blogs: Total de publicações ativas
+- [x] 5.3 Métricas de newsletters: Total de newsletters cadastradas
+- [x] 5.4 Registro de visualizações de página com deduplication por IP
+- [x] 5.5 Métricas de visualizações dos últimos 7 dias via Redis
+- [x] 5.6 Transmissão em tempo real de atualizações de métricas via WebSocket + Redis Pub/Sub
+
+### 📌 Requisito 6 – Conteúdo e Blog:
+- [x] 6.1 Criação, edição e publicação de artigos de blog com workflow editorial
+- [x] 6.2 Gestão de publicações acadêmicas dos membros
+- [x] 6.3 Gestão de newsletters com templates e envio por email
+- [x] 6.4 Gestão do quadro de diretores e cargos da diretoria
+- [x] 6.5 Gestão de informações institucionais (sobre, estatuto)
+- [x] 6.6 Gestão de imagens do carrossel da home (slider)
+- [x] 6.7 Gestão de documentos públicos
+- [x] 6.8 Gestão de inscrições em encontros científicos
 
 ---
 
@@ -225,11 +244,11 @@ Neste repositório está o projeto para a Sociedade de Astrobiologia. O projeto 
 
 ## 🧪 Requisitos Não Funcionais:
 
-- [x] NF.1 - Segurança: Controle de acesso por tipo de usuário
-- [ ] NF.2 - Escalabilidade: Suporte a múltiplos acessos e pesquisas simultâneas
-- [ ] NF.3 - Desempenho: Buscas rápidas com paginação, cache e tolerância a erros de digitação
-- [ ] NF.4 - Testabilidade: O sistema deve ser capaz de conduzir testes automatizados para assegurar seu funcionamento íntegr
-- [ ] NF.5 - Confiabilidade: O sistema deve realizar verificações de healthcheck periodicamente para
+- [x] NF.1 - Segurança: Controle de acesso por tipo de usuário, hashing Argon2id com pepper, criptografia AES para dados sensíveis, blind index para documentos de identidade, rate limiting em todos os endpoints
+- [x] NF.2 - Escalabilidade: Suporte a múltiplos acessos simultâneos via WebSocket com dispatcher genérico baseado em Redis Pub/Sub (padrão OCP)
+- [x] NF.3 - Desempenho: Buscas com paginação, cache Redis, full-text search com tsvector/GIN e índices otimizados no PostgreSQL
+- [x] NF.4 - Testabilidade: Arquitetura em camadas com repositórios in-memory permitem testes unitários de Use Cases sem dependência de banco
+- [x] NF.5 - Confiabilidade: Endpoint de health check, monitoramento via Sentry, logs estruturados com Pino e jobs assíncronos com BullMQ
 
 ---
 
@@ -240,15 +259,17 @@ Certifique-se de que você tenha os seguintes softwares instalados antes de cont
 
 - [Docker](https://www.docker.com/) (versão mínima: 20.10)
 - [Docker Compose](https://docs.docker.com/compose/) (versão mínima: 1.29)
+- [pnpm](https://pnpm.io/) (versão mínima: 9.x)
 
 ---
 
 <a name="versoes-utilizadas"></a>
 
 ## ⚙️ Versões Utilizadas:
-- **Node.js**: 22.19.0
-- **PostgreSQL**: 17.6.0 (Imagem Docker Bitnami)
-- **Prisma**: 6.15.0
+- **Node.js**: 22.x (mínimo: 20)
+- **PostgreSQL**: 14
+- **Prisma**: 7.x
+- **Redis**: 7.x
 
 ---
 
@@ -271,32 +292,32 @@ cd astrobiologia-backend
 4. Instale as dependências do projeto ao executar no console o comando:
 
 ```bash
-npm install
+pnpm install
 ```
 
 5. Crie um arquivo `.env` na raiz do projeto copiando o conteúdo do `.env.example`:
 
 ```bash
-copy .env.example .env
+cp .env.example .env
 # Preencha manualmente os valores do arquivo .env que não estiverem definidos.
 ```
 
-6. Inicialize os contêiners do Docker executando o comando:
+6. Inicialize os contêineres do Docker (PostgreSQL + Redis) executando o comando:
 
 ```bash
-docker compose up -d
+make dev-up
 ```
 
-7. Execute o comando para resetar o banco de dados, populá-lo com dados de teste definidos em `prisma/seed.ts` e habilitar as extensões necessárias:
+7. Execute o comando para gerar o Prisma Client, rodar as migrations e popular o banco com dados de seed:
 
 ```bash
-npm run db:deploy
+pnpm db:reset
 ```
 
 8. Rode o projeto com o comando:
 
 ```bash
-npm run start:dev
+pnpm start:dev
 ```
 
 ---

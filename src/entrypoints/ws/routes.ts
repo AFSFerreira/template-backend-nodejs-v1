@@ -1,21 +1,18 @@
 import type { FastifyInstance } from 'fastify'
 import type { WebSocket } from 'ws'
+import { logError } from '@lib/pino/helpers/log-error'
 import ms from 'ms'
-// import { WsDispatcher } from './dispatcher'
+import { clientStates } from './client-states'
+import { WsDispatcher } from './dispatcher'
+import { setupRedisPubSubSubscriptions } from './middlewares/setup-redis-dashboard-metrics-subscriptions'
 import { wsConnectionHandler } from './middlewares/ws-connection-handler'
-
-// // Registrando rotas:
-// WsDispatcher.register('SUBSCRIBE_METRICS', false, async (socket: WebSocket,
-//   userId: string | null,
-//   payload: unknown
-// ) => {
-//   console.log("deu certo")
-//   socket.send(JSON.stringify({ data: "deu certo" }))
-// })
-
-const clientStates = new WeakMap<WebSocket, boolean>()
+import { registerHandlers } from './register-handlers'
 
 export async function websocketRoutes(app: FastifyInstance) {
+  registerHandlers(WsDispatcher.getInstance())
+
+  await setupRedisPubSubSubscriptions(app)
+
   app.get('/ws', { websocket: true }, wsConnectionHandler)
 
   // ===== Configuração do Heartbeat para todas as Rotas =====
@@ -23,20 +20,38 @@ export async function websocketRoutes(app: FastifyInstance) {
   const wss = app.websocketServer
 
   wss.on('connection', (ws: WebSocket) => {
-    clientStates.set(ws, true)
+    clientStates.set(ws, { isAlive: true, subscriptions: new Set<string>() })
 
     ws.on('pong', () => {
-      clientStates.set(ws, true)
+      const currentState = clientStates.get(ws) || { isAlive: false, subscriptions: new Set<string>() }
+      clientStates.set(ws, { ...currentState, isAlive: true })
+    })
+
+    ws.on('error', (error) => {
+      logError({ error, message: 'Erro na conexão WebSocket' })
     })
   })
 
   const interval = setInterval(() => {
+    const nowInSeconds = Math.floor(Date.now() / 1000)
+
     wss.clients.forEach((ws: WebSocket) => {
-      if (clientStates.get(ws) === false) {
+      const state = clientStates.get(ws)
+
+      if (!state || state.isAlive === false) {
         ws.terminate()
+        return
       }
 
-      clientStates.set(ws, false)
+      const tokenExp = state.tokenExp
+
+      if (tokenExp && nowInSeconds > tokenExp) {
+        ws.send(JSON.stringify({ error: 'Session expired', code: 4001 }))
+        ws.close(4001, 'Token Expired')
+        return
+      }
+
+      clientStates.set(ws, { ...state, isAlive: false })
 
       ws.ping()
     })
@@ -44,6 +59,11 @@ export async function websocketRoutes(app: FastifyInstance) {
 
   app.addHook('onClose', (_app, done) => {
     clearInterval(interval)
+
+    wss.clients.forEach((client) => {
+      client.close()
+    })
+
     done()
   })
 }

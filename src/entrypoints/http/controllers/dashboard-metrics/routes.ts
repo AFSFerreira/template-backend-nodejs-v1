@@ -8,6 +8,7 @@ import { rateLimit } from '@utils/http/rate-limit'
 import { getBlogsMetrics } from './get-blogs-metrics.controller'
 import { getNewslettersMetrics } from './get-newsletters-metrics.controller'
 import { getUsersMetrics } from './get-users-metrics.controller'
+import { registerPageViewController } from './register-page-view.controller'
 
 export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -43,5 +44,16 @@ export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
       },
     },
     getNewslettersMetrics,
+  )
+
+  app.post(
+    '/page-views',
+    {
+      ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
+      schema: {
+        ...dashboardMetricsSwaggerDocs.registerPageView,
+      },
+    },
+    registerPageViewController,
   )
 }

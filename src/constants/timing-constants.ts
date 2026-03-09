@@ -17,3 +17,5 @@ export const SENTRY_CLOSE_TIMEOUT = ms('2s')
 export const AVERAGE_CRON_JOB_TIME_EXECUTION = ms('10m')
 
 export const BATCH_PROCESSING_DELAY = ms('1s')
+
+export const PAGE_VIEW_DEDUPLICATION_TTL = ms('24h')

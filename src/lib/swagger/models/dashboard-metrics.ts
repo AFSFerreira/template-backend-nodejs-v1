@@ -41,4 +41,14 @@ export const dashboardMetricsSwaggerDocs = {
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
     },
   },
+
+  registerPageView: {
+    summary: 'Registrar visualização de página',
+    description: 'Registra uma visualização única de página com base no IP do visitante.',
+    tags: [swaggerTokens.tags.dashboardMetrics.public],
+    response: {
+      204: z.undefined().describe('Visualização registrada com sucesso'),
+      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
+    },
+  },
 } as const

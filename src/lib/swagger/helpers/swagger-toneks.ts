@@ -18,6 +18,7 @@ export const swaggerTokens = {
     },
 
     dashboardMetrics: {
+      public: 'Métricas do Painel (Público)',
       restricted: 'Métricas do Painel',
     },
 
