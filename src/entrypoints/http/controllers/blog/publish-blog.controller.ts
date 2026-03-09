@@ -19,7 +19,7 @@ export async function createAndPublishBlog(request: ZodRequest<{ body: CreateBlo
     authorPublicId,
   })
 
-  return await reply.status(StatusCodes.CREATED).send({
-    data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
-  })
+  const formattedReply = BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog)
+
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

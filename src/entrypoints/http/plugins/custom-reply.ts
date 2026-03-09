@@ -34,7 +34,7 @@ export async function customReplyPluginDefinition(app: ExtendedFastifyInstance) 
   app.decorateReply(
     'sendResponse',
     function (this: FastifyReply, data?: unknown, statusCode: StatusCodes = StatusCodes.OK) {
-      return this.status(statusCode).send({ data })
+      return this.status(statusCode).send(data !== undefined ? { data } : undefined)
     },
   )
 }

@@ -17,7 +17,7 @@ export async function createNewsletter(request: ZodRequest<{ body: CreateNewslet
 
   const { newsletter } = await useCase.execute(createNewsletterInput)
 
-  return await reply.status(StatusCodes.CREATED).send({
-    data: NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter),
-  })
+  const formattedReply = NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter)
+
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

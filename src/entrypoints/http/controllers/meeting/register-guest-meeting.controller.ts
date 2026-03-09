@@ -20,5 +20,5 @@ export async function registerGuestMeeting(
     meetingId,
   })
 
-  return await reply.status(StatusCodes.CREATED).send()
+  return await reply.sendResponse(undefined, StatusCodes.CREATED)
 }

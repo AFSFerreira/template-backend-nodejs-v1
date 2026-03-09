@@ -18,7 +18,5 @@ export async function uploadSliderImage(request: FastifyRequest, reply: FastifyR
 
   const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
 
-  return await reply.status(StatusCodes.CREATED).send({
-    data: formattedReply,
-  })
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

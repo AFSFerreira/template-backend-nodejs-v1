@@ -24,7 +24,5 @@ export async function createDirectorPosition(
     directorPosition,
   )
 
-  return await reply.status(StatusCodes.CREATED).send({
-    directorPosition: formattedReply,
-  })
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

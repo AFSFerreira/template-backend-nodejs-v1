@@ -22,7 +22,7 @@ export async function createDraftCopyBlog(
     userPublicId,
   })
 
-  return await reply.status(StatusCodes.CREATED).send({
-    data: BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog),
-  })
+  const formattedReply = BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog)
+
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

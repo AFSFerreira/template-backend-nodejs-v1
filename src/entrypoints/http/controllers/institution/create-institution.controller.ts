@@ -19,7 +19,5 @@ export async function createInstitution(request: ZodRequest<{ body: CreateInstit
 
   const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(institution)
 
-  return await reply.status(StatusCodes.CREATED).send({
-    data: formattedReply,
-  })
+  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
 }

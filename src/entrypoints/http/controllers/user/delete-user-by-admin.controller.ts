@@ -26,5 +26,5 @@ export async function deleteUserByAdmin(
     },
   })
 
-  return await reply.status(StatusCodes.NO_CONTENT).send()
+  return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
 }

@@ -2,7 +2,6 @@ import type { DashboardNewslettersMetricsPresenter } from '@http/presenters/dash
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GetNewslettersMetricsUseCase } from '@use-cases/dashboard-metrics/get-newsletters-metrics'
-import { StatusCodes } from 'http-status-codes'
 import { container } from 'tsyringe'
 
 export async function getNewslettersMetrics(_request: FastifyRequest, reply: FastifyReply) {
@@ -13,7 +12,7 @@ export async function getNewslettersMetrics(_request: FastifyRequest, reply: Fas
 
   const metrics = await useCase.execute()
 
-  return await reply.status(StatusCodes.OK).send({
-    data: presenter.toHTTP(metrics),
-  })
+  const formattedReply = presenter.toHTTP(metrics)
+
+  return await reply.sendResponse(formattedReply)
 }

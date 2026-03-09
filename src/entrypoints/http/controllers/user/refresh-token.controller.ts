@@ -5,7 +5,6 @@ import { buildAuthTokens } from '@utils/http/build-auth-tokens'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { getRequestUserRole } from '@utils/http/get-request-user-role'
 import { getRequestUserStatus } from '@utils/http/get-request-user-status'
-import { StatusCodes } from 'http-status-codes'
 
 export async function refreshToken(request: FastifyRequest, reply: FastifyReply) {
   try {
@@ -24,9 +23,7 @@ export async function refreshToken(request: FastifyRequest, reply: FastifyReply)
     },
   })
 
-  return await replyWithCookie.status(StatusCodes.OK).send({
-    data: {
-      accessToken,
-    },
-  })
+  const formattedReply = { accessToken }
+
+  return await replyWithCookie.sendResponse(formattedReply)
 }

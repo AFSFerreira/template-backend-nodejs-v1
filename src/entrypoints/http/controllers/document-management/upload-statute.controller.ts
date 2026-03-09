@@ -15,5 +15,5 @@ export async function uploadStatute(request: FastifyRequest, reply: FastifyReply
 
   await useCase.execute({ filePart, baseFolder: INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH, originalFilename: filename })
 
-  return await reply.status(StatusCodes.CREATED).send()
+  return await reply.sendResponse(undefined, StatusCodes.CREATED)
 }
