@@ -1,6 +1,6 @@
 import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { fileExists } from '@utils/files/file-exists'
+import { fileExists } from '@services/files/file-exists'
 
 export async function moveFilesIfNotExists(input: ImagePathInfo | ImagePathInfo[]) {
   if (Array.isArray(input)) {

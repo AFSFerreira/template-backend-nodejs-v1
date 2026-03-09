@@ -1,10 +1,10 @@
 import type { GetStatuteUseCaseResponse } from '@custom-types/use-cases/document-management/get-statute'
 import path from 'node:path'
 import { STATUTE_FILE_NAME_PATTERN } from '@constants/dynamic-file-constants'
+import { createFileReadStream } from '@services/files/create-file-read-stream'
 import { getFiles } from '@services/files/get-files'
 import { MissingStatuteFileError } from '@use-cases/errors/document-management/missing-statute-file-error'
 import { StatuteFileReadError } from '@use-cases/errors/document-management/statute-file-read-error'
-import { createFileReadStream } from '@utils/files/create-file-read-stream'
 import { ensureExists } from '@utils/validators/ensure'
 import { injectable } from 'tsyringe'
 

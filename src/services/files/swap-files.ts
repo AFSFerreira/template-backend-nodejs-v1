@@ -3,7 +3,7 @@ import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { logError } from '@lib/pino/helpers/log-error'
 import { SWAP_FILE_LOOP_ERROR } from '@messages/loggings/system/file-loggings'
-import { deleteFile } from '../../utils/files/delete-file'
+import { deleteFile } from './delete-file'
 import { saveFile } from './save-file'
 
 export async function swapFiles(files: IswapFiles[]) {

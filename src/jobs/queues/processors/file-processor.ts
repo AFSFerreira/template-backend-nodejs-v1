@@ -8,8 +8,8 @@ import {
   FILE_MOVED_SUCCESSFULLY,
 } from '@messages/loggings/jobs/queues/files'
 import { copyFile } from '@services/files/copy-file'
+import { deleteFile } from '@services/files/delete-file'
 import { moveFile } from '@services/files/move-file'
-import { deleteFile } from '@utils/files/delete-file'
 
 export async function fileProcessor(job: Job<FileJobData>): Promise<void> {
   const data = job.data
