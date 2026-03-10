@@ -1,16 +1,19 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { VerifyEmailBodyType } from '@custom-types/http/schemas/user/verify-email-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { VerifyEmailUseCase } from '@use-cases/user/verify-email'
 import type { FastifyReply } from 'fastify'
 import { EMAIL_VERIFICATION_SUCCESSFUL } from '@messages/responses/user-responses/2xx'
-import { VerifyEmailUseCase } from '@use-cases/user/verify-email'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function verifyEmail(request: ZodRequest<{ body: VerifyEmailBodyType }>, reply: FastifyReply) {
-  const parsedBody = request.body
+@injectable()
+export class VerifyEmailController implements IController {
+  constructor(private useCase: VerifyEmailUseCase) {}
 
-  const useCase = container.resolve(VerifyEmailUseCase)
+  async handle(request: ZodRequest<{ body: VerifyEmailBodyType }>, reply: FastifyReply) {
+    const parsedBody = request.body
+    await this.useCase.execute(parsedBody)
 
-  await useCase.execute(parsedBody)
-
-  return await reply.sendApiResponse(EMAIL_VERIFICATION_SUCCESSFUL)
+    return await reply.sendApiResponse(EMAIL_VERIFICATION_SUCCESSFUL)
+  }
 }

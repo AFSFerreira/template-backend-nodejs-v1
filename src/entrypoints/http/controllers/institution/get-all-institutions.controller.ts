@@ -1,18 +1,18 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetAllInstitutionsQueryType } from '@custom-types/http/schemas/institution/get-all-institutions-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
 import type { FastifyReply } from 'fastify'
-import { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function getAllInstitutionsNames(
-  request: ZodRequest<{ querystring: GetAllInstitutionsQueryType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllInstitutionsNamesController implements IController {
+  constructor(private useCase: GetAllInstitutionsNamesUseCase) {}
 
-  const useCase = container.resolve(GetAllInstitutionsNamesUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllInstitutionsQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
-
-  return await reply.sendPaginated(data, meta)
+    return await reply.sendPaginated(data, meta)
+  }
 }

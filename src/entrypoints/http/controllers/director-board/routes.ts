@@ -13,15 +13,16 @@ import { getDirectorBoardAboutHTMLParamsSchema } from '@http/schemas/director-bo
 import { updateDirectorBoardBodySchema } from '@http/schemas/director-board/update-director-board-body-schema'
 import { updateDirectorBoardParamsSchema } from '@http/schemas/director-board/update-director-board-params-schema'
 import { directorBoardSwaggerDocs } from '@lib/swagger/models/director-board'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createDirectorBoard } from './create-director-board.controller'
-import { deleteDirectorBoard } from './delete-director-board.controller'
-import { findDirectorBoardByPublicId } from './find-director-board-by-public-id.controller'
-import { findDirectorBoardByPublicIdForAdmin } from './find-director-board-by-public-id-for-admin.controller'
-import { getAllDirectorsBoard } from './get-all-director-board.controller'
-import { getDirectorBoardAboutHTML } from './get-director-board-about-html.controller'
-import { updateDirectorBoard } from './update-director-board.controller'
-import { uploadDirectorBoardProfileImage } from './upload-director-board-profile-image.controller'
+import { CreateDirectorBoardController } from './create-director-board.controller'
+import { DeleteDirectorBoardController } from './delete-director-board.controller'
+import { FindDirectorBoardByPublicIdController } from './find-director-board-by-public-id.controller'
+import { FindDirectorBoardByPublicIdForAdminController } from './find-director-board-by-public-id-for-admin.controller'
+import { GetAllDirectorsBoardController } from './get-all-director-board.controller'
+import { GetDirectorBoardAboutHTMLController } from './get-director-board-about-html.controller'
+import { UpdateDirectorBoardController } from './update-director-board.controller'
+import { UploadDirectorBoardProfileImageController } from './upload-director-board-profile-image.controller'
 
 export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -34,7 +35,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllDirectorBoardSchema,
       },
     },
-    getAllDirectorsBoard,
+    adaptRoute(GetAllDirectorsBoardController),
   )
   app.get(
     '/:publicId/about-me/html',
@@ -45,7 +46,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         params: getDirectorBoardAboutHTMLParamsSchema,
       },
     },
-    getDirectorBoardAboutHTML,
+    adaptRoute(GetDirectorBoardAboutHTMLController),
   )
   app.get(
     '/restrict/:publicId',
@@ -57,7 +58,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         params: findDirectorBoardByPublicIdForAdminParamsSchema,
       },
     },
-    findDirectorBoardByPublicIdForAdmin,
+    adaptRoute(FindDirectorBoardByPublicIdForAdminController),
   )
   app.get(
     '/:publicId',
@@ -68,7 +69,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         params: findDirectorBoardByPublicIdParamsSchema,
       },
     },
-    findDirectorBoardByPublicId,
+    adaptRoute(FindDirectorBoardByPublicIdController),
   )
 
   // POST
@@ -81,7 +82,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         ...directorBoardSwaggerDocs.uploadDirectorBoardProfileImage,
       },
     },
-    uploadDirectorBoardProfileImage,
+    adaptRoute(UploadDirectorBoardProfileImageController),
   )
   app.post(
     '/',
@@ -94,7 +95,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         body: createDirectorBoardBodySchema,
       },
     },
-    createDirectorBoard,
+    adaptRoute(CreateDirectorBoardController),
   )
 
   // PATCH
@@ -110,7 +111,7 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         body: updateDirectorBoardBodySchema,
       },
     },
-    updateDirectorBoard,
+    adaptRoute(UpdateDirectorBoardController),
   )
 
   // DELETE
@@ -124,6 +125,6 @@ export async function directorBoardRoutes(app: ExtendedFastifyInstance) {
         params: deleteDirectorBoardParamsSchema,
       },
     },
-    deleteDirectorBoard,
+    adaptRoute(DeleteDirectorBoardController),
   )
 }

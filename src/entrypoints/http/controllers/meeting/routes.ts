@@ -19,18 +19,19 @@ import { registerUserMeetingParamsSchema } from '@http/schemas/meeting/register-
 import { updateMeetingBodySchema } from '@http/schemas/meeting/update-meeting-body-schema'
 import { updateMeetingParamsSchema } from '@http/schemas/meeting/update-meeting-params-schema'
 import { meetingSwaggerDocs } from '@lib/swagger/models/meeting'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createMeeting } from './create-meeting.controller'
-import { deleteMeeting } from './delete-meeting.controller'
-import { exportMeetingEnrollments } from './export-meeting-enrollments.controller'
-import { findMeetingByPublicId } from './find-meeting-by-public-id.controller'
-import { getAllMeetings } from './get-all-meetings.controller'
-import { getMeetingParticipants } from './get-meeting-participants.controller'
-import { registerGuestMeeting } from './register-guest-meeting.controller'
-import { registerUserMeeting } from './register-user-meeting.controller'
-import { updateMeeting } from './update-meeting.controller'
-import { uploadMeetingAgenda } from './upload-meeting-agenda.controller'
-import { uploadMeetingBanner } from './upload-meeting-banner.controller'
+import { CreateMeetingController } from './create-meeting.controller'
+import { DeleteMeetingController } from './delete-meeting.controller'
+import { ExportMeetingEnrollmentsController } from './export-meeting-enrollments.controller'
+import { FindMeetingByPublicIdController } from './find-meeting-by-public-id.controller'
+import { GetAllMeetingsController } from './get-all-meetings.controller'
+import { GetMeetingParticipantsController } from './get-meeting-participants.controller'
+import { RegisterGuestMeetingController } from './register-guest-meeting.controller'
+import { RegisterUserMeetingController } from './register-user-meeting.controller'
+import { UpdateMeetingController } from './update-meeting.controller'
+import { UploadMeetingAgendaController } from './upload-meeting-agenda.controller'
+import { UploadMeetingBannerController } from './upload-meeting-banner.controller'
 
 export async function meetingRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -43,7 +44,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllMeetingsQuerySchema,
       },
     },
-    getAllMeetings,
+    adaptRoute(GetAllMeetingsController),
   )
   app.get(
     '/:publicId',
@@ -54,7 +55,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         params: findMeetingByPublicIdParamsSchema,
       },
     },
-    findMeetingByPublicId,
+    adaptRoute(FindMeetingByPublicIdController),
   )
   app.get(
     '/:meetingPublicId/participants',
@@ -67,7 +68,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         querystring: getMeetingParticipantsQuerySchema,
       },
     },
-    getMeetingParticipants,
+    adaptRoute(GetMeetingParticipantsController),
   )
   app.get(
     '/:publicId/export-enrollments',
@@ -80,7 +81,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         querystring: exportMeetingEnrollmentsQuerySchema,
       },
     },
-    exportMeetingEnrollments,
+    adaptRoute(ExportMeetingEnrollmentsController),
   )
 
   // POST
@@ -94,7 +95,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         body: createMeetingBodySchema,
       },
     },
-    createMeeting,
+    adaptRoute(CreateMeetingController),
   )
   app.post(
     '/:meetingId/register-user',
@@ -107,7 +108,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         body: registerUserMeetingBodySchema,
       },
     },
-    registerUserMeeting,
+    adaptRoute(RegisterUserMeetingController),
   )
   app.post(
     '/:meetingId/register-guest',
@@ -119,7 +120,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         body: registerGuestMeetingBodySchema,
       },
     },
-    registerGuestMeeting,
+    adaptRoute(RegisterGuestMeetingController),
   )
   app.post(
     '/uploads/banner',
@@ -130,7 +131,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         ...meetingSwaggerDocs.uploadMeetingBanner,
       },
     },
-    uploadMeetingBanner,
+    adaptRoute(UploadMeetingBannerController),
   )
   app.post(
     '/uploads/agenda',
@@ -141,7 +142,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         ...meetingSwaggerDocs.uploadMeetingAgenda,
       },
     },
-    uploadMeetingAgenda,
+    adaptRoute(UploadMeetingAgendaController),
   )
 
   // PATCH
@@ -156,7 +157,7 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         body: updateMeetingBodySchema,
       },
     },
-    updateMeeting,
+    adaptRoute(UpdateMeetingController),
   )
 
   // DELETE
@@ -170,6 +171,6 @@ export async function meetingRoutes(app: ExtendedFastifyInstance) {
         params: deleteMeetingParamsSchema,
       },
     },
-    deleteMeeting,
+    adaptRoute(DeleteMeetingController),
   )
 }

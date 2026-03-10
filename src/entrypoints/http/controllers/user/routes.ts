@@ -27,31 +27,32 @@ import { updateUserPermissionsBodySchema } from '@http/schemas/user/update-user-
 import { updateUserPermissionsParamsSchema } from '@http/schemas/user/update-user-permissions-params-schema'
 import { verifyEmailBodySchema } from '@http/schemas/user/verify-email-body-schema'
 import { userSwaggerDocs } from '@lib/swagger/models/user'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { authenticate } from './authenticate.controller'
-import { changePassword } from './change-password.controller'
-import { checkAvailability } from './check-availability.controller'
-import { confirmEmailChange } from './confirm-email-change.controller'
-import { createUser } from './create-user.controller'
-import { deleteUser } from './delete-user.controller'
-import { deleteUserByAdmin } from './delete-user-by-admin.controller'
-import { exportUsersData } from './export-users-data.controller'
-import { findUserByPublicId } from './find-user-by-public-id.controller'
-import { forgotPassword } from './forgot-password.controller'
-import { getAllUsersDetailed } from './get-all-users-detailed.controller'
-import { getAllUsersSimplified } from './get-all-users-simplified.controller'
-import { getUserProfile } from './get-user-profile.controller'
-import { logout } from './logout.controller'
-import { refreshToken } from './refresh-token.controller'
-import { requestEmailChange } from './request-email-change.controller'
-import { resetPassword } from './reset-password.controller'
-import { reviewMembershipStatus } from './review-membership-status.controller'
-import { transferAdminRole } from './transfer-admin-role.controller'
-import { updateMembershipStatus } from './update-membership-status.controller'
-import { updateUser } from './update-user.controller'
-import { updateUserPermissions } from './update-user-permissions.controller'
-import { uploadProfileImage } from './upload-profile-image.controller'
-import { verifyEmail } from './verify-email.controller'
+import { AuthenticateController } from './authenticate.controller'
+import { ChangePasswordController } from './change-password.controller'
+import { CheckAvailabilityController } from './check-availability.controller'
+import { ConfirmEmailChangeController } from './confirm-email-change.controller'
+import { CreateUserController } from './create-user.controller'
+import { DeleteUserController } from './delete-user.controller'
+import { DeleteUserByAdminController } from './delete-user-by-admin.controller'
+import { ExportUsersDataController } from './export-users-data.controller'
+import { FindUserByPublicIdController } from './find-user-by-public-id.controller'
+import { ForgotPasswordController } from './forgot-password.controller'
+import { GetAllUsersDetailedController } from './get-all-users-detailed.controller'
+import { GetAllUsersSimplifiedController } from './get-all-users-simplified.controller'
+import { GetUserProfileController } from './get-user-profile.controller'
+import { LogoutController } from './logout.controller'
+import { RefreshTokenController } from './refresh-token.controller'
+import { RequestEmailChangeController } from './request-email-change.controller'
+import { ResetPasswordController } from './reset-password.controller'
+import { ReviewMembershipStatusController } from './review-membership-status.controller'
+import { TransferAdminRoleController } from './transfer-admin-role.controller'
+import { UpdateMembershipStatusController } from './update-membership-status.controller'
+import { UpdateUserController } from './update-user.controller'
+import { UpdateUserPermissionsController } from './update-user-permissions.controller'
+import { UploadProfileImageController } from './upload-profile-image.controller'
+import { VerifyEmailController } from './verify-email.controller'
 
 export async function userRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -65,7 +66,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllUsersDetailedQuerySchema,
       },
     },
-    getAllUsersDetailed,
+    adaptRoute(GetAllUsersDetailedController),
   )
   app.get(
     '/',
@@ -76,7 +77,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllUsersSimplifiedQuerySchema,
       },
     },
-    getAllUsersSimplified,
+    adaptRoute(GetAllUsersSimplifiedController),
   )
   app.get(
     '/availability',
@@ -87,7 +88,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         querystring: checkAvailabilityQuerySchema,
       },
     },
-    checkAvailability,
+    adaptRoute(CheckAvailabilityController),
   )
   app.get(
     '/export',
@@ -99,7 +100,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         querystring: exportUsersDataQuerySchema,
       },
     },
-    exportUsersData,
+    adaptRoute(ExportUsersDataController),
   )
   app.get(
     '/me',
@@ -110,7 +111,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         ...userSwaggerDocs.getUserProfile,
       },
     },
-    getUserProfile,
+    adaptRoute(GetUserProfileController),
   )
   app.get(
     '/:publicId',
@@ -122,7 +123,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         params: findUserByPublicIdParamsSchema,
       },
     },
-    findUserByPublicId,
+    adaptRoute(FindUserByPublicIdController),
   )
 
   // POST
@@ -135,7 +136,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: registerBodySchema,
       },
     },
-    createUser,
+    adaptRoute(CreateUserController),
   )
   app.post(
     '/sessions',
@@ -146,7 +147,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: authenticateBodySchema,
       },
     },
-    authenticate,
+    adaptRoute(AuthenticateController),
   )
   app.post(
     '/sessions/refresh-token',
@@ -157,7 +158,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         ...userSwaggerDocs.refreshToken,
       },
     },
-    refreshToken,
+    adaptRoute(RefreshTokenController),
   )
   app.post(
     '/uploads/profile-image',
@@ -168,7 +169,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         ...userSwaggerDocs.uploadProfileImage,
       },
     },
-    uploadProfileImage,
+    adaptRoute(UploadProfileImageController),
   )
   app.post(
     '/forgot-password',
@@ -179,7 +180,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: forgotPasswordBodySchema,
       },
     },
-    forgotPassword,
+    adaptRoute(ForgotPasswordController),
   )
   app.post(
     '/verify-email',
@@ -190,7 +191,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: verifyEmailBodySchema,
       },
     },
-    verifyEmail,
+    adaptRoute(VerifyEmailController),
   )
 
   // PATCH
@@ -203,7 +204,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: resetPasswordBodySchema,
       },
     },
-    resetPassword,
+    adaptRoute(ResetPasswordController),
   )
   app.patch(
     '/change-password',
@@ -215,7 +216,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: changePasswordBodySchema,
       },
     },
-    changePassword,
+    adaptRoute(ChangePasswordController),
   )
   app.patch(
     '/request-email-change',
@@ -227,7 +228,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: requestEmailChangeBodySchema,
       },
     },
-    requestEmailChange,
+    adaptRoute(RequestEmailChangeController),
   )
   app.patch(
     '/confirm-email-change',
@@ -238,7 +239,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: confirmEmailChangeBodySchema,
       },
     },
-    confirmEmailChange,
+    adaptRoute(ConfirmEmailChangeController),
   )
   app.patch(
     '/me',
@@ -250,7 +251,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: updateBodySchema,
       },
     },
-    updateUser,
+    adaptRoute(UpdateUserController),
   )
   app.patch(
     '/update/me',
@@ -262,7 +263,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: updateBodySchema,
       },
     },
-    updateUser,
+    adaptRoute(UpdateUserController),
   )
   app.patch(
     '/:publicId/review-membership-status',
@@ -275,7 +276,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: reviewMembershipStatusBodySchema,
       },
     },
-    reviewMembershipStatus,
+    adaptRoute(ReviewMembershipStatusController),
   )
   app.patch(
     '/:publicId/membership-status',
@@ -288,7 +289,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: updateMembershipStatusBodySchema,
       },
     },
-    updateMembershipStatus,
+    adaptRoute(UpdateMembershipStatusController),
   )
   app.patch(
     '/:publicId/permissions',
@@ -301,7 +302,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: updateUserPermissionsBodySchema,
       },
     },
-    updateUserPermissions,
+    adaptRoute(UpdateUserPermissionsController),
   )
   app.patch(
     '/transfer-admin',
@@ -313,7 +314,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         body: transferAdminRoleBodySchema,
       },
     },
-    transferAdminRole,
+    adaptRoute(TransferAdminRoleController),
   )
 
   // DELETE
@@ -326,7 +327,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         ...userSwaggerDocs.logout,
       },
     },
-    logout,
+    adaptRoute(LogoutController),
   )
   app.delete(
     '/me',
@@ -337,7 +338,7 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         ...userSwaggerDocs.deleteUser,
       },
     },
-    deleteUser,
+    adaptRoute(DeleteUserController),
   )
   app.delete(
     '/:publicId',
@@ -349,6 +350,6 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
         params: deleteUserByAdminParamsSchema,
       },
     },
-    deleteUserByAdmin,
+    adaptRoute(DeleteUserByAdminController),
   )
 }

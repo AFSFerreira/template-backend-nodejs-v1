@@ -1,21 +1,23 @@
-import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { UploadNewsletterHtmlUseCase } from '@use-cases/newsletters/upload-newsletter-html'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { newsletterHtmlMultipartFileConfig } from '@constants/multipart-configuration-constants'
-import { FilePresenter } from '@http/presenters/file-presenter'
+import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { fileSchema } from '@lib/zod/utils/generic-components/file-schema'
-import { UploadNewsletterHtmlUseCase } from '@use-cases/newsletters/upload-newsletter-html'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function uploadNewsletterHtml(request: FastifyRequest, reply: FastifyReply) {
-  const filePart = await request.file(newsletterHtmlMultipartFileConfig)
+@injectable()
+export class UploadNewsletterHtmlController implements IController {
+  constructor(private useCase: UploadNewsletterHtmlUseCase) {}
 
-  fileSchema.parse(filePart)
+  async handle(request: FastifyRequest, reply: FastifyReply) {
+    const filePart = await request.file(newsletterHtmlMultipartFileConfig)
 
-  const useCase = container.resolve(UploadNewsletterHtmlUseCase)
+    fileSchema.parse(filePart)
+    const uploadedFile = await this.useCase.execute({ filePart })
 
-  const uploadedFile = await useCase.execute({ filePart })
+    const formattedReply = UploadedFileDefaultPresenter.toHTTP(uploadedFile)
 
-  const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

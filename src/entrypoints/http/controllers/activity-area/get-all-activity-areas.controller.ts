@@ -1,25 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  ActivityAreaDefaultPresenterInput,
-  HTTPActivityArea,
-} from '@custom-types/http/presenter/activity-area/activity-area-default'
 import type { GetAllActivityAreasType } from '@custom-types/http/schemas/activity-area/get-all-activity-areas-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-case'
 import type { FastifyReply } from 'fastify'
-import { ActivityAreaPresenter } from '@http/presenters/activity-area-presenter'
-import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-case'
-import { container } from 'tsyringe'
+import { ActivityAreaDefaultPresenter } from '@http/presenters/activity-area/activity-area-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllActivityAreas(
-  request: ZodRequest<{ querystring: GetAllActivityAreasType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllActivityAreasController implements IController {
+  constructor(private useCase: GetAllActivityAreasUseCase) {}
 
-  const useCase = container.resolve(GetAllActivityAreasUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllActivityAreasType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = ActivityAreaDefaultPresenter.toHTTPList(data)
 
-  const formattedReply = ActivityAreaPresenter.toHTTP<ActivityAreaDefaultPresenterInput, HTTPActivityArea>(data)
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

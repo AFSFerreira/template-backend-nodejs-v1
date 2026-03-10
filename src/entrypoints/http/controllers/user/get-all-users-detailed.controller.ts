@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPSimplifiedUserDetailsForAdmin,
-  UserSimplifiedForAdminPresenterInput,
-} from '@custom-types/http/presenter/user/user-simplified-for-admin'
 import type { GetAllUsersDetailedQueryType } from '@custom-types/http/schemas/user/get-all-users-detailed-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
 import type { FastifyReply } from 'fastify'
-import { UserPresenter } from '@http/presenters/user-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
-import { container } from 'tsyringe'
+import { UserSimplifiedPresenterForAdmin } from '@http/presenters/user/user-simplified-for-admin.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllUsersDetailed(
-  request: ZodRequest<{ querystring: GetAllUsersDetailedQueryType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllUsersDetailedController implements IController {
+  constructor(private useCase: GetAllUsersDetailedUseCase) {}
 
-  const useCase = container.resolve(GetAllUsersDetailedUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllUsersDetailedQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = UserSimplifiedPresenterForAdmin.toHTTPList(data)
 
-  const formattedReply = UserPresenter.toHTTP<UserSimplifiedForAdminPresenterInput, HTTPSimplifiedUserDetailsForAdmin>(
-    data,
-    tsyringeTokens.presenters.user.userSimplifiedForAdmin,
-  )
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

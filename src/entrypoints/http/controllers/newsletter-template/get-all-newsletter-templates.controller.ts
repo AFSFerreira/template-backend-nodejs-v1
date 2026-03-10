@@ -1,28 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPNewsletterTemplate,
-  NewsletterTemplateDefaultPresenterInput,
-} from '@custom-types/http/presenter/newsletter-template/newsletter-template-default'
 import type { GetAllNewsletterTemplatesQueryType } from '@custom-types/http/schemas/newsletter/get-all-newsletter-templates-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllNewsletterTemplatesUseCase } from '@use-cases/newsletters/get-all-newsletter-templates'
 import type { FastifyReply } from 'fastify'
-import { NewsletterTemplatePresenter } from '@http/presenters/newsletter-template-presenter'
-import { GetAllNewsletterTemplatesUseCase } from '@use-cases/newsletters/get-all-newsletter-templates'
-import { container } from 'tsyringe'
+import { NewsletterTemplateDefaultPresenter } from '@http/presenters/newsletter-template/newsletter-template-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllNewsletterTemplates(
-  request: ZodRequest<{ querystring: GetAllNewsletterTemplatesQueryType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllNewsletterTemplatesController implements IController {
+  constructor(private useCase: GetAllNewsletterTemplatesUseCase) {}
 
-  const useCase = container.resolve(GetAllNewsletterTemplatesUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllNewsletterTemplatesQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = NewsletterTemplateDefaultPresenter.toHTTPList(data)
 
-  const formattedReply = NewsletterTemplatePresenter.toHTTP<
-    NewsletterTemplateDefaultPresenterInput,
-    HTTPNewsletterTemplate
-  >(data)
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

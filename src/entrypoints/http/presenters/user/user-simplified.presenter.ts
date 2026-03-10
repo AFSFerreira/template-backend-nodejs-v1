@@ -1,14 +1,11 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPSimplifiedUserDetails,
   UserSimplifiedPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 
-export class UserSimplifiedPresenter
-  implements IPresenterStrategy<UserSimplifiedPresenterInput, HTTPSimplifiedUserDetails>
-{
-  public toHTTP(input: UserSimplifiedPresenterInput): HTTPSimplifiedUserDetails {
+export const UserSimplifiedPresenter = {
+  toHTTP(input: UserSimplifiedPresenterInput): HTTPSimplifiedUserDetails {
     return {
       id: input.publicId,
       fullName: input.fullName,
@@ -17,5 +14,9 @@ export class UserSimplifiedPresenter
       state: input.state,
       email: input.emailIsPublic ? input.email : null,
     }
-  }
+  },
+
+  toHTTPList(inputs: UserSimplifiedPresenterInput[]): HTTPSimplifiedUserDetails[] {
+    return inputs.map(this.toHTTP)
+  },
 }

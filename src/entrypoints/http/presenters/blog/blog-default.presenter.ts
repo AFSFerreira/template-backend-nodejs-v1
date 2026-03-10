@@ -1,9 +1,8 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-export class BlogDefaultPresenter implements IPresenterStrategy<BlogDefaultPresenterInput, HTTPBlog> {
-  public toHTTP(input: BlogDefaultPresenterInput): HTTPBlog {
+export const BlogDefaultPresenter = {
+  toHTTP(input: BlogDefaultPresenterInput): HTTPBlog {
     return {
       id: input.publicId,
       authorName: input.authorName,
@@ -15,5 +14,9 @@ export class BlogDefaultPresenter implements IPresenterStrategy<BlogDefaultPrese
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
+  },
+
+  toHTTPList(inputs: BlogDefaultPresenterInput[]): HTTPBlog[] {
+    return inputs.map(this.toHTTP)
+  },
 }

@@ -1,22 +1,18 @@
-import type {
-  DashboardUsersMetricsPresenterInput,
-  HTTPDashboardUsersMetrics,
-} from '@custom-types/http/presenter/dashboard-metrics/dashboard-users-metrics'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetUsersMetricsUseCase } from '@use-cases/dashboard-metrics/get-users-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DashboardPresenter } from '@http/presenters/dashboard-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetUsersMetricsUseCase } from '@use-cases/dashboard-metrics/get-users-metrics'
-import { container } from 'tsyringe'
+import { UsersMetricsPresenter } from '@http/presenters/dashboard-metrics/dashboard-users-metrics.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getUsersMetrics(_request: FastifyRequest, reply: FastifyReply) {
-  const useCase = container.resolve(GetUsersMetricsUseCase)
+@injectable()
+export class GetUsersMetricsController implements IController {
+  constructor(private useCase: GetUsersMetricsUseCase) {}
 
-  const metrics = await useCase.execute()
+  async handle(_request: FastifyRequest, reply: FastifyReply) {
+    const metrics = await this.useCase.execute()
 
-  const formattedReply = DashboardPresenter.toHTTP<DashboardUsersMetricsPresenterInput, HTTPDashboardUsersMetrics>(
-    metrics,
-    tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsUsers,
-  )
+    const formattedReply = UsersMetricsPresenter.toHTTP(metrics)
 
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

@@ -1,24 +1,27 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { RegisterGuestMeetingBodyType } from '@custom-types/http/schemas/meeting/register-guest-meeting-body-schema'
 import type { RegisterGuestMeetingParamsType } from '@custom-types/http/schemas/meeting/register-guest-meeting-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
 import type { FastifyReply } from 'fastify'
-import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function registerGuestMeeting(
-  request: ZodRequest<{ body: RegisterGuestMeetingBodyType; params: RegisterGuestMeetingParamsType }>,
-  reply: FastifyReply,
-) {
-  const { meetingId } = request.params
-  const parsedBody = request.body
+@injectable()
+export class RegisterGuestMeetingController implements IController {
+  constructor(private useCase: RegisterGuestMeetingUseCase) {}
 
-  const useCase = container.resolve(RegisterGuestMeetingUseCase)
+  async handle(
+    request: ZodRequest<{ body: RegisterGuestMeetingBodyType; params: RegisterGuestMeetingParamsType }>,
+    reply: FastifyReply,
+  ) {
+    const { meetingId } = request.params
+    const parsedBody = request.body
+    await this.useCase.execute({
+      ...parsedBody,
+      meetingId,
+    })
 
-  await useCase.execute({
-    ...parsedBody,
-    meetingId,
-  })
-
-  return await reply.sendResponse(undefined, StatusCodes.CREATED)
+    return await reply.sendResponse(undefined, StatusCodes.CREATED)
+  }
 }

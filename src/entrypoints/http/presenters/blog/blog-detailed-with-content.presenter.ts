@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   BlogDetailedWithContentPresenterInput,
   HTTPBlogDetailedWithContent,
@@ -6,10 +5,8 @@ import type {
 import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-export class BlogDetailedWithContentPresenter
-  implements IPresenterStrategy<BlogDetailedWithContentPresenterInput, HTTPBlogDetailedWithContent>
-{
-  public toHTTP(input: BlogDetailedWithContentPresenterInput): HTTPBlogDetailedWithContent {
+export const BlogDetailedWithContentPresenter = {
+  toHTTP(input: BlogDetailedWithContentPresenterInput): HTTPBlogDetailedWithContent {
     return {
       id: input.publicId,
       accessCount: input.accessCount,
@@ -22,5 +19,9 @@ export class BlogDetailedWithContentPresenter
       subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       content: input.content as ProseMirrorSchemaType,
     }
-  }
+  },
+
+  toHTTPList(inputs: BlogDetailedWithContentPresenterInput[]): HTTPBlogDetailedWithContent[] {
+    return inputs.map(this.toHTTP)
+  },
 }

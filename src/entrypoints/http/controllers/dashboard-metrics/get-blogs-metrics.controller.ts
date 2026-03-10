@@ -1,22 +1,18 @@
-import type {
-  DashboardBlogsMetricsPresenterInput,
-  HTTPDashboardBlogsMetrics,
-} from '@custom-types/http/presenter/dashboard-metrics/dashboard-blogs-metrics'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetBlogsMetricsUseCase } from '@use-cases/dashboard-metrics/get-blogs-metrics'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { DashboardPresenter } from '@http/presenters/dashboard-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetBlogsMetricsUseCase } from '@use-cases/dashboard-metrics/get-blogs-metrics'
-import { container } from 'tsyringe'
+import { DashboardBlogsMetricsPresenter } from '@http/presenters/dashboard-metrics/dashboard-blogs-metrics.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getBlogsMetrics(_request: FastifyRequest, reply: FastifyReply) {
-  const useCase = container.resolve(GetBlogsMetricsUseCase)
+@injectable()
+export class GetBlogsMetricsController implements IController {
+  constructor(private useCase: GetBlogsMetricsUseCase) {}
 
-  const metrics = await useCase.execute()
+  async handle(_request: FastifyRequest, reply: FastifyReply) {
+    const metrics = await this.useCase.execute()
 
-  const formattedReply = DashboardPresenter.toHTTP<DashboardBlogsMetricsPresenterInput, HTTPDashboardBlogsMetrics>(
-    metrics,
-    tsyringeTokens.presenters.dashboardMetrics.dashboardMetricsBlogs,
-  )
+    const formattedReply = DashboardBlogsMetricsPresenter.toHTTP(metrics)
 
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

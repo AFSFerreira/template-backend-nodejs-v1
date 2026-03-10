@@ -1,11 +1,15 @@
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetStatuteUseCase } from '@use-cases/document-management/get-statute'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { GetStatuteUseCase } from '@use-cases/document-management/get-statute'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function getStatute(_request: FastifyRequest, reply: FastifyReply) {
-  const useCase = container.resolve(GetStatuteUseCase)
+@injectable()
+export class GetStatuteController implements IController {
+  constructor(private useCase: GetStatuteUseCase) {}
 
-  const { filename, stream } = await useCase.execute()
+  async handle(_request: FastifyRequest, reply: FastifyReply) {
+    const { filename, stream } = await this.useCase.execute()
 
-  return await reply.sendDownload(stream, filename)
+    return await reply.sendDownload(stream, filename)
+  }
 }

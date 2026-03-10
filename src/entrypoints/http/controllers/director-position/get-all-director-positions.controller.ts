@@ -1,27 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  DirectorPositionDefaultPresenterInput,
-  HTTPDirectorPosition,
-} from '@custom-types/http/presenter/director-position/director-position-default'
 import type { GetAllDirectorPositionsType } from '@custom-types/http/schemas/director-position/get-all-director-positions-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllDirectorPositionsUseCase } from '@use-cases/director-position/get-all-director-positions'
 import type { FastifyReply } from 'fastify'
-import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
-import { GetAllDirectorPositionsUseCase } from '@use-cases/director-position/get-all-director-positions'
-import { container } from 'tsyringe'
+import { DirectorPositionDefaultPresenter } from '@http/presenters/director-position/director-position-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllDirectorPositions(
-  request: ZodRequest<{ querystring: GetAllDirectorPositionsType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllDirectorPositionsController implements IController {
+  constructor(private useCase: GetAllDirectorPositionsUseCase) {}
 
-  const useCase = container.resolve(GetAllDirectorPositionsUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllDirectorPositionsType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = DirectorPositionDefaultPresenter.toHTTPList(data)
 
-  const formattedReply = DirectorPositionPresenter.toHTTP<DirectorPositionDefaultPresenterInput, HTTPDirectorPosition>(
-    data,
-  )
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

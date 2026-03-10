@@ -1,6 +1,7 @@
 import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-instance'
 import { healthCheckSwaggerDocs } from '@lib/swagger/models/health-check'
-import { healthCheck } from './health-check.controller'
+import { adaptRoute } from '@utils/http/adapt-route'
+import { HealthCheckController } from './health-check.controller'
 
 export async function healthCheckRoutes(app: ExtendedFastifyInstance) {
   app.get(
@@ -10,6 +11,6 @@ export async function healthCheckRoutes(app: ExtendedFastifyInstance) {
         ...healthCheckSwaggerDocs.healthCheck,
       },
     },
-    healthCheck,
+    adaptRoute(HealthCheckController),
   )
 }

@@ -1,12 +1,11 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPNewsletter,
   NewsletterDefaultPresenterInput,
 } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 
-export class NewsletterDefaultPresenter implements IPresenterStrategy<NewsletterDefaultPresenterInput, HTTPNewsletter> {
-  public toHTTP(input: NewsletterDefaultPresenterInput): HTTPNewsletter {
+export const NewsletterDefaultPresenter = {
+  toHTTP(input: NewsletterDefaultPresenterInput): HTTPNewsletter {
     return {
       id: input.publicId,
       content: buildNewsletterHtmlUrl(input.publicId),
@@ -16,5 +15,9 @@ export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
+  },
+
+  toHTTPList(inputs: NewsletterDefaultPresenterInput[]): HTTPNewsletter[] {
+    return inputs.map(this.toHTTP)
+  },
 }

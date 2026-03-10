@@ -12,18 +12,19 @@ import { previewNewsletterContentBodySchema } from '@http/schemas/newsletter/pre
 import { updateNewsletterBodySchema } from '@http/schemas/newsletter/update-newsletter-body-schema'
 import { updateNewsletterParamsSchema } from '@http/schemas/newsletter/update-newsletter-params-schema'
 import { newsletterSwaggerDocs } from '@lib/swagger/models/newsletter'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createNewsletter } from './create-newsletter.controller'
-import { deleteNewsletter } from './delete-newsletter.controller'
-import { findNewsletterByPublicId } from './find-newsletter-by-public-id.controller'
-import { findNewsletterByPublicIdRestricted } from './find-newsletter-by-public-id-restricted.controller'
-import { getAllNewsletters } from './get-all-newsletters.controller'
-import { getNewsletterHtmlContent } from './get-newsletter-html-content.controller'
-import { previewNewsletterContent } from './preview-newsletter-content.controller'
-import { sendNewsletterEmail } from './send-newsletter-email.controller'
-import { updateNewsletter } from './update-newsletter.controller'
-import { uploadNewsletterHtml } from './upload-newsletter-html.controller'
-import { uploadNewsletterImage } from './upload-newsletter-image.controller'
+import { CreateNewsletterController } from './create-newsletter.controller'
+import { DeleteNewsletterController } from './delete-newsletter.controller'
+import { FindNewsletterByPublicIdController } from './find-newsletter-by-public-id.controller'
+import { FindNewsletterByPublicIdRestrictedController } from './find-newsletter-by-public-id-restricted.controller'
+import { GetAllNewslettersController } from './get-all-newsletters.controller'
+import { GetNewsletterHtmlContentController } from './get-newsletter-html-content.controller'
+import { PreviewNewsletterContentController } from './preview-newsletter-content.controller'
+import { SendNewsletterEmailController } from './send-newsletter-email.controller'
+import { UpdateNewsletterController } from './update-newsletter.controller'
+import { UploadNewsletterHtmlController } from './upload-newsletter-html.controller'
+import { UploadNewsletterImageController } from './upload-newsletter-image.controller'
 
 export async function newsletterRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -37,7 +38,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllNewslettersQuerySchema,
       },
     },
-    getAllNewsletters,
+    adaptRoute(GetAllNewslettersController),
   )
   app.get(
     '/restrict/:publicId',
@@ -49,7 +50,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
-    findNewsletterByPublicIdRestricted,
+    adaptRoute(FindNewsletterByPublicIdRestrictedController),
   )
   app.get(
     '/:publicId',
@@ -61,7 +62,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
-    findNewsletterByPublicId,
+    adaptRoute(FindNewsletterByPublicIdController),
   )
   app.get(
     '/:publicId/content',
@@ -73,7 +74,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
-    getNewsletterHtmlContent,
+    adaptRoute(GetNewsletterHtmlContentController),
   )
 
   // POST
@@ -88,7 +89,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         body: previewNewsletterContentBodySchema,
       },
     },
-    previewNewsletterContent,
+    adaptRoute(PreviewNewsletterContentController),
   )
   app.post(
     '/uploads/html',
@@ -100,7 +101,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         ...newsletterSwaggerDocs.uploadNewsletterHtml,
       },
     },
-    uploadNewsletterHtml,
+    adaptRoute(UploadNewsletterHtmlController),
   )
   app.post(
     '/uploads/image',
@@ -111,7 +112,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         ...newsletterSwaggerDocs.uploadNewsletterImage,
       },
     },
-    uploadNewsletterImage,
+    adaptRoute(UploadNewsletterImageController),
   )
   app.post(
     '/',
@@ -124,7 +125,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         body: createNewsletterBodySchema,
       },
     },
-    createNewsletter,
+    adaptRoute(CreateNewsletterController),
   )
   app.post(
     '/:publicId/send-by-email',
@@ -136,7 +137,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         params: findNewsletterByPublicIdParamsSchema,
       },
     },
-    sendNewsletterEmail,
+    adaptRoute(SendNewsletterEmailController),
   )
 
   // PATCH
@@ -152,7 +153,7 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         body: updateNewsletterBodySchema,
       },
     },
-    updateNewsletter,
+    adaptRoute(UpdateNewsletterController),
   )
 
   // DELETE
@@ -166,6 +167,6 @@ export async function newsletterRoutes(app: ExtendedFastifyInstance) {
         params: deleteNewsletterParamsSchema,
       },
     },
-    deleteNewsletter,
+    adaptRoute(DeleteNewsletterController),
   )
 }

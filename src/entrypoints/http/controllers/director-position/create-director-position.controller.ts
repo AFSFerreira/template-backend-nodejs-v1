@@ -1,28 +1,22 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  DirectorPositionDefaultPresenterInput,
-  HTTPDirectorPosition,
-} from '@custom-types/http/presenter/director-position/director-position-default'
 import type { CreateDirectorPositionBodyType } from '@custom-types/http/schemas/director-position/create-director-position-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { CreateDirectorPositionUseCase } from '@use-cases/director-position/create-director-position'
 import type { FastifyReply } from 'fastify'
-import { DirectorPositionPresenter } from '@http/presenters/director-position-presenter'
-import { CreateDirectorPositionUseCase } from '@use-cases/director-position/create-director-position'
+import { DirectorPositionDefaultPresenter } from '@http/presenters/director-position/director-position-default.presenter'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function createDirectorPosition(
-  request: ZodRequest<{ body: CreateDirectorPositionBodyType }>,
-  reply: FastifyReply,
-) {
-  const parsedBody = request.body
+@injectable()
+export class CreateDirectorPositionController implements IController {
+  constructor(private useCase: CreateDirectorPositionUseCase) {}
 
-  const useCase = container.resolve(CreateDirectorPositionUseCase)
+  async handle(request: ZodRequest<{ body: CreateDirectorPositionBodyType }>, reply: FastifyReply) {
+    const parsedBody = request.body
+    const { directorPosition } = await this.useCase.execute(parsedBody)
 
-  const { directorPosition } = await useCase.execute(parsedBody)
+    const formattedReply = DirectorPositionDefaultPresenter.toHTTP(directorPosition)
 
-  const formattedReply = DirectorPositionPresenter.toHTTP<DirectorPositionDefaultPresenterInput, HTTPDirectorPosition>(
-    directorPosition,
-  )
-
-  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+    return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+  }
 }

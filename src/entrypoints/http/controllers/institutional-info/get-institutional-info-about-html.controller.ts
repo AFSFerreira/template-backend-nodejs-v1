@@ -1,12 +1,16 @@
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetInstitutionalInfoAboutHTMLUseCase } from '@use-cases/institutional-info/get-institutional-info-about-html'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { GetInstitutionalInfoAboutHTMLUseCase } from '@use-cases/institutional-info/get-institutional-info-about-html'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function getInstitutionalInfoAboutDescriptionHTML(_request: FastifyRequest, reply: FastifyReply) {
-  const useCase = container.resolve(GetInstitutionalInfoAboutHTMLUseCase)
+@injectable()
+export class GetInstitutionalInfoAboutDescriptionHTMLController implements IController {
+  constructor(private useCase: GetInstitutionalInfoAboutHTMLUseCase) {}
 
-  const { htmlContent } = await useCase.execute()
+  async handle(_request: FastifyRequest, reply: FastifyReply) {
+    const { htmlContent } = await this.useCase.execute()
 
-  return await reply.status(StatusCodes.OK).sendHtml(htmlContent)
+    return await reply.status(StatusCodes.OK).sendHtml(htmlContent)
+  }
 }

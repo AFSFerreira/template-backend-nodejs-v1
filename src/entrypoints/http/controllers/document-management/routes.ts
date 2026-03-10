@@ -5,11 +5,12 @@ import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyMultipart } from '@http/middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { documentManagementSwaggerDocs } from '@lib/swagger/models/document-management'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { getElectionNotice } from './get-election-notice.controller'
-import { getStatute } from './get-statute.controller'
-import { uploadElectionNotice } from './upload-election-notice.controller'
-import { uploadStatute } from './upload-statute.controller'
+import { GetElectionNoticeController } from './get-election-notice.controller'
+import { GetStatuteController } from './get-statute.controller'
+import { UploadElectionNoticeController } from './upload-election-notice.controller'
+import { UploadStatuteController } from './upload-statute.controller'
 
 export async function documentManagementRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -21,7 +22,7 @@ export async function documentManagementRoutes(app: ExtendedFastifyInstance) {
         ...documentManagementSwaggerDocs.getStatute,
       },
     },
-    getStatute,
+    adaptRoute(GetStatuteController),
   )
   app.get(
     '/election-notice',
@@ -31,7 +32,7 @@ export async function documentManagementRoutes(app: ExtendedFastifyInstance) {
         ...documentManagementSwaggerDocs.getElectionNotice,
       },
     },
-    getElectionNotice,
+    adaptRoute(GetElectionNoticeController),
   )
 
   // POST
@@ -44,7 +45,7 @@ export async function documentManagementRoutes(app: ExtendedFastifyInstance) {
         ...documentManagementSwaggerDocs.uploadStatute,
       },
     },
-    uploadStatute,
+    adaptRoute(UploadStatuteController),
   )
   app.post(
     '/election-notice',
@@ -55,6 +56,6 @@ export async function documentManagementRoutes(app: ExtendedFastifyInstance) {
         ...documentManagementSwaggerDocs.uploadElectionNotice,
       },
     },
-    uploadElectionNotice,
+    adaptRoute(UploadElectionNoticeController),
   )
 }

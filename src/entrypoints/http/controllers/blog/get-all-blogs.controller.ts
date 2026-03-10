@@ -1,26 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  BlogSimplifiedPresenterInput,
-  HTTPSimplifiedBlog,
-} from '@custom-types/http/presenter/blog/blog-simplified'
 import type { GetAllBlogsQueryType } from '@custom-types/http/schemas/blog/get-all-blogs-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllBlogsUseCase } from '@use-cases/blog/get-all-blogs'
 import type { FastifyReply } from 'fastify'
-import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetAllBlogsUseCase } from '@use-cases/blog/get-all-blogs'
-import { container } from 'tsyringe'
+import { BlogSimplifiedPresenter } from '@http/presenters/blog/blog-simplified.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllBlogs(request: ZodRequest<{ querystring: GetAllBlogsQueryType }>, reply: FastifyReply) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllBlogsController implements IController {
+  constructor(private useCase: GetAllBlogsUseCase) {}
 
-  const useCase = container.resolve(GetAllBlogsUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllBlogsQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = BlogSimplifiedPresenter.toHTTPList(data)
 
-  const formattedReply = BlogPresenter.toHTTP<BlogSimplifiedPresenterInput, HTTPSimplifiedBlog>(
-    data,
-    tsyringeTokens.presenters.blog.blogSimplified,
-  )
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

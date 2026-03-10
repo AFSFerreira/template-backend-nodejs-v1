@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPNewsletterDetailedWithContent,
   NewsletterDetailedWithContentPresenterInput,
@@ -6,10 +5,8 @@ import type {
 import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/helpers/generic/prose-mirror-schema'
 import { buildNewsletterHtmlUrl } from '@services/builders/urls/build-newsletter-html-url'
 
-export class NewsletterDetailedWithContentPresenter
-  implements IPresenterStrategy<NewsletterDetailedWithContentPresenterInput, HTTPNewsletterDetailedWithContent>
-{
-  public toHTTP(input: NewsletterDetailedWithContentPresenterInput): HTTPNewsletterDetailedWithContent {
+export const NewsletterDetailedWithContentPresenter = {
+  toHTTP(input: NewsletterDetailedWithContentPresenterInput): HTTPNewsletterDetailedWithContent {
     return {
       id: input.publicId,
       content: buildNewsletterHtmlUrl(input.publicId),
@@ -23,5 +20,9 @@ export class NewsletterDetailedWithContentPresenter
       fileContent: input.fileContent,
       templateId: input.NewsletterTemplate?.publicId,
     }
-  }
+  },
+
+  toHTTPList(inputs: NewsletterDetailedWithContentPresenterInput[]): HTTPNewsletterDetailedWithContent[] {
+    return inputs.map(this.toHTTP)
+  },
 }

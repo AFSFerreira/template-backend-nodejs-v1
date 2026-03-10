@@ -11,13 +11,14 @@ import { getAllHomePageSlidersSchema } from '@http/schemas/slider-image/get-all-
 import { updateSliderImageBodySchema } from '@http/schemas/slider-image/update-slider-image-body-schema'
 import { updateSliderImageParamsSchema } from '@http/schemas/slider-image/update-slider-image-params-schema'
 import { sliderImageSwaggerDocs } from '@lib/swagger/models/slider-image'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createHomePageSliderImage } from './create-home-page-slider-image.controller'
-import { deleteSliderImage } from './delete-slider-image.controller'
-import { getAllHomePageSliders } from './get-all-home-page-sliders.controller'
-import { getAllHomePageSlidersRestrict } from './get-all-home-page-sliders-restrict.controller'
-import { updateSliderImage } from './update-slider-image.controller'
-import { uploadSliderImage } from './upload-slider-image.controller'
+import { CreateHomePageSliderImageController } from './create-home-page-slider-image.controller'
+import { DeleteSliderImageController } from './delete-slider-image.controller'
+import { GetAllHomePageSlidersController } from './get-all-home-page-sliders.controller'
+import { GetAllHomePageSlidersRestrictController } from './get-all-home-page-sliders-restrict.controller'
+import { UpdateSliderImageController } from './update-slider-image.controller'
+import { UploadSliderImageController } from './upload-slider-image.controller'
 
 export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -31,7 +32,7 @@ export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllHomePageSlidersRestrictSchema,
       },
     },
-    getAllHomePageSlidersRestrict,
+    adaptRoute(GetAllHomePageSlidersRestrictController),
   )
   app.get(
     '/home-page',
@@ -42,7 +43,7 @@ export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllHomePageSlidersSchema,
       },
     },
-    getAllHomePageSliders,
+    adaptRoute(GetAllHomePageSlidersController),
   )
 
   // POST
@@ -56,7 +57,7 @@ export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
         body: createHomePageSliderImageBodySchema,
       },
     },
-    createHomePageSliderImage,
+    adaptRoute(CreateHomePageSliderImageController),
   )
   app.post(
     '/uploads/images',
@@ -67,7 +68,7 @@ export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
         ...sliderImageSwaggerDocs.uploadSliderImage,
       },
     },
-    uploadSliderImage,
+    adaptRoute(UploadSliderImageController),
   )
 
   // PATCH
@@ -82,7 +83,7 @@ export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
         body: updateSliderImageBodySchema,
       },
     },
-    updateSliderImage,
+    adaptRoute(UpdateSliderImageController),
   )
 
   // DELETE
@@ -96,6 +97,6 @@ export async function sliderImageRoutes(app: ExtendedFastifyInstance) {
         params: deleteSliderImageParamsSchema,
       },
     },
-    deleteSliderImage,
+    adaptRoute(DeleteSliderImageController),
   )
 }

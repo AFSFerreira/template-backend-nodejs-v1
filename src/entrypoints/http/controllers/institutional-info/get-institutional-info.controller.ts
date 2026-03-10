@@ -1,20 +1,18 @@
-import type {
-  HTTPInstitutionalInfo,
-  InstitutionalInfoPresenterInput,
-} from '@custom-types/http/presenter/institutional-info/institutional-info'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetInstitutionalInfoUseCase } from '@use-cases/institutional-info/get-institutional-info'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
-import { GetInstitutionalInfoUseCase } from '@use-cases/institutional-info/get-institutional-info'
-import { container } from 'tsyringe'
+import { InstitutionalInfoDefaultPresenter } from '@http/presenters/institutional-info/institutional-info.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getInstitutionalInfo(_request: FastifyRequest, reply: FastifyReply) {
-  const useCase = container.resolve(GetInstitutionalInfoUseCase)
+@injectable()
+export class GetInstitutionalInfoController implements IController {
+  constructor(private useCase: GetInstitutionalInfoUseCase) {}
 
-  const { institutionalInfo } = await useCase.execute()
+  async handle(_request: FastifyRequest, reply: FastifyReply) {
+    const { institutionalInfo } = await this.useCase.execute()
 
-  const formattedReply = InstitutionalInfoPresenter.toHTTP<InstitutionalInfoPresenterInput, HTTPInstitutionalInfo>(
-    institutionalInfo,
-  )
+    const formattedReply = InstitutionalInfoDefaultPresenter.toHTTP(institutionalInfo)
 
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

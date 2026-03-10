@@ -4,10 +4,11 @@ import { getAllActivityAreasWithAcademicPublicationsQuerySchema } from '@http/sc
 import { getAllActivityAreasSchema } from '@http/schemas/activity-area/get-all-activity-areas-schema'
 import { getAllActivityAreasWithBlogsQuerySchema } from '@http/schemas/activity-area/get-all-activity-areas-with-blogs-query-schema'
 import { activityAreaSwaggerDocs } from '@lib/swagger/models/activity-area'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { getAllActivityAreas } from './get-all-activity-areas.controller'
-import { getAllActivityAreasWithAcademicPublicationsController } from './get-all-activity-areas-with-academic-publications.controller'
-import { getAllActivityAreasWithBlogs } from './get-all-activity-areas-with-blogs.controller'
+import { GetAllActivityAreasController } from './get-all-activity-areas.controller'
+import { GetAllActivityAreasWithAcademicPublicationsController } from './get-all-activity-areas-with-academic-publications.controller'
+import { GetAllActivityAreasWithBlogsController } from './get-all-activity-areas-with-blogs.controller'
 
 export async function activityAreaRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -20,7 +21,7 @@ export async function activityAreaRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllActivityAreasSchema,
       },
     },
-    getAllActivityAreas,
+    adaptRoute(GetAllActivityAreasController),
   )
   app.get(
     '/blogs',
@@ -31,7 +32,7 @@ export async function activityAreaRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllActivityAreasWithBlogsQuerySchema,
       },
     },
-    getAllActivityAreasWithBlogs,
+    adaptRoute(GetAllActivityAreasWithBlogsController),
   )
   app.get(
     '/academic-publications',
@@ -42,6 +43,6 @@ export async function activityAreaRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllActivityAreasWithAcademicPublicationsQuerySchema,
       },
     },
-    getAllActivityAreasWithAcademicPublicationsController,
+    adaptRoute(GetAllActivityAreasWithAcademicPublicationsController),
   )
 }

@@ -9,11 +9,12 @@ import { getAllDirectorPositionsSchema } from '@http/schemas/director-position/g
 import { updateDirectorPositionBodySchema } from '@http/schemas/director-position/update-director-position-body-schema'
 import { updateDirectorPositionParamsSchema } from '@http/schemas/director-position/update-director-position-params-schema'
 import { directorPositionSwaggerDocs } from '@lib/swagger/models/director-position'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createDirectorPosition } from './create-director-position.controller'
-import { deleteDirectorPosition } from './delete-director-position.controller'
-import { getAllDirectorPositions } from './get-all-director-positions.controller'
-import { updateDirectorPosition } from './update-director-position.controller'
+import { CreateDirectorPositionController } from './create-director-position.controller'
+import { DeleteDirectorPositionController } from './delete-director-position.controller'
+import { GetAllDirectorPositionsController } from './get-all-director-positions.controller'
+import { UpdateDirectorPositionController } from './update-director-position.controller'
 
 export async function directorPositionRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -27,7 +28,7 @@ export async function directorPositionRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllDirectorPositionsSchema,
       },
     },
-    getAllDirectorPositions,
+    adaptRoute(GetAllDirectorPositionsController),
   )
 
   // POST
@@ -41,7 +42,7 @@ export async function directorPositionRoutes(app: ExtendedFastifyInstance) {
         body: createDirectorPositionBodySchema,
       },
     },
-    createDirectorPosition,
+    adaptRoute(CreateDirectorPositionController),
   )
 
   // PATCH
@@ -56,7 +57,7 @@ export async function directorPositionRoutes(app: ExtendedFastifyInstance) {
         body: updateDirectorPositionBodySchema,
       },
     },
-    updateDirectorPosition,
+    adaptRoute(UpdateDirectorPositionController),
   )
 
   // DELETE
@@ -70,6 +71,6 @@ export async function directorPositionRoutes(app: ExtendedFastifyInstance) {
         params: deleteDirectorPositionParamsSchema,
       },
     },
-    deleteDirectorPosition,
+    adaptRoute(DeleteDirectorPositionController),
   )
 }

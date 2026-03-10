@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
@@ -8,10 +7,8 @@ import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-pro
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
 
-export class UserDetailedPresenterForAdmin
-  implements IPresenterStrategy<UserDetailedPresenterForAdminInput, HTTPUserWithDetailsForAdmin>
-{
-  public toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
+export const UserDetailedPresenterForAdmin = {
+  toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
     return {
       id: input.publicId,
       astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
@@ -97,5 +94,9 @@ export class UserDetailedPresenterForAdmin
           }
         : undefined,
     }
-  }
+  },
+
+  toHTTPList(inputs: UserDetailedPresenterForAdminInput[]): HTTPUserWithDetailsForAdmin[] {
+    return inputs.map(this.toHTTP)
+  },
 }

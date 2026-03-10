@@ -1,25 +1,28 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { CreateBlogBodyType } from '@custom-types/http/schemas/blog/create-blog-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { CreateDraftBlogUseCase } from '@use-cases/blog/create-draft-blog'
 import type { FastifyReply } from 'fastify'
-import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { CreateDraftBlogUseCase } from '@use-cases/blog/create-draft-blog'
+import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function createDraftBlog(request: ZodRequest<{ body: CreateBlogBodyType }>, reply: FastifyReply) {
-  const authorPublicId = getRequestUserPublicId(request)
-  const parsedBody = request.body
+@injectable()
+export class CreateDraftBlogController implements IController {
+  constructor(private useCase: CreateDraftBlogUseCase) {}
 
-  const useCase = container.resolve(CreateDraftBlogUseCase)
+  async handle(request: ZodRequest<{ body: CreateBlogBodyType }>, reply: FastifyReply) {
+    const authorPublicId = getRequestUserPublicId(request)
+    const parsedBody = request.body
 
-  const { blog } = await useCase.execute({
-    ...parsedBody,
-    authorPublicId,
-  })
+    const { blog } = await this.useCase.execute({
+      ...parsedBody,
+      authorPublicId,
+    })
 
-  const formattedReply = BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog)
+    const formattedReply = BlogDefaultPresenter.toHTTP(blog)
 
-  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+    return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+  }
 }

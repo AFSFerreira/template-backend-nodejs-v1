@@ -1,26 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  AddressWithUsersCountPresenterInput,
-  HTTPAddressStates,
-} from '@custom-types/http/presenter/address/address-with-users-count'
 import type { GetAllStatesQueryType } from '@custom-types/http/schemas/address/get-all-states-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
 import type { FastifyReply } from 'fastify'
-import { AddressPresenter } from '@http/presenters/address-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetAllStatesUseCase } from '@use-cases/address-state/get-all-states'
-import { container } from 'tsyringe'
+import { AddressWithUsersCountPresenter } from '@http/presenters/address/address-with-users-count.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllStates(request: ZodRequest<{ querystring: GetAllStatesQueryType }>, reply: FastifyReply) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllStatesController implements IController {
+  constructor(private useCase: GetAllStatesUseCase) {}
 
-  const useCase = container.resolve(GetAllStatesUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllStatesQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = AddressWithUsersCountPresenter.toHTTPList(data)
 
-  const formattedReply = AddressPresenter.toHTTP<AddressWithUsersCountPresenterInput, HTTPAddressStates>(
-    data,
-    tsyringeTokens.presenters.address.addressWithUsersCount,
-  )
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

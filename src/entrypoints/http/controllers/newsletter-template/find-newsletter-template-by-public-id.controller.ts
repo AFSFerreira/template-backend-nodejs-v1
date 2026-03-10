@@ -1,28 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPNewsletterTemplate,
-  NewsletterTemplateDefaultPresenterInput,
-} from '@custom-types/http/presenter/newsletter-template/newsletter-template-default'
 import type { FindNewsletterTemplateByPublicIdParamsType } from '@custom-types/http/schemas/newsletter-template/find-newsletter-template-by-public-id-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { FindNewsletterTemplateByPublicIdUseCase } from '@use-cases/newsletters/find-newsletter-template-by-public-id'
 import type { FastifyReply } from 'fastify'
-import { NewsletterTemplatePresenter } from '@http/presenters/newsletter-template-presenter'
-import { FindNewsletterTemplateByPublicIdUseCase } from '@use-cases/newsletters/find-newsletter-template-by-public-id'
-import { container } from 'tsyringe'
+import { NewsletterTemplateDefaultPresenter } from '@http/presenters/newsletter-template/newsletter-template-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function findNewsletterTemplateByPublicId(
-  request: ZodRequest<{ params: FindNewsletterTemplateByPublicIdParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
+@injectable()
+export class FindNewsletterTemplateByPublicIdController implements IController {
+  constructor(private useCase: FindNewsletterTemplateByPublicIdUseCase) {}
 
-  const useCase = container.resolve(FindNewsletterTemplateByPublicIdUseCase)
+  async handle(request: ZodRequest<{ params: FindNewsletterTemplateByPublicIdParamsType }>, reply: FastifyReply) {
+    const { publicId } = request.params
+    const { newsletterTemplate } = await this.useCase.execute({ publicId })
 
-  const { newsletterTemplate } = await useCase.execute({ publicId })
+    const formattedReply = NewsletterTemplateDefaultPresenter.toHTTP(newsletterTemplate)
 
-  const formattedReply = NewsletterTemplatePresenter.toHTTP<
-    NewsletterTemplateDefaultPresenterInput,
-    HTTPNewsletterTemplate
-  >(newsletterTemplate)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

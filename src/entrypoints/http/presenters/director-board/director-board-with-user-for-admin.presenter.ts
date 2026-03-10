@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   DirectorBoardWithUserForAdminPresenterInput,
   HTTPDirectorBoardWithUserForAdmin,
@@ -7,10 +6,8 @@ import type { ProseMirrorSchemaType } from '@custom-types/http/schemas/utils/hel
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 
-export class DirectorBoardWithUserForAdminPresenter
-  implements IPresenterStrategy<DirectorBoardWithUserForAdminPresenterInput, HTTPDirectorBoardWithUserForAdmin>
-{
-  public toHTTP(input: DirectorBoardWithUserForAdminPresenterInput): HTTPDirectorBoardWithUserForAdmin {
+export const DirectorBoardWithUserForAdminPresenter = {
+  toHTTP(input: DirectorBoardWithUserForAdminPresenterInput): HTTPDirectorBoardWithUserForAdmin {
     return {
       id: input.User.publicId,
       publicName: input.publicName,
@@ -21,5 +18,9 @@ export class DirectorBoardWithUserForAdminPresenter
       linkLattes: input.User.linkLattes,
       aboutMe: input.aboutMe as ProseMirrorSchemaType,
     }
-  }
+  },
+
+  toHTTPList(inputs: DirectorBoardWithUserForAdminPresenterInput[]): HTTPDirectorBoardWithUserForAdmin[] {
+    return inputs.map(this.toHTTP)
+  },
 }

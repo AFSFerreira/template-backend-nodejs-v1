@@ -6,9 +6,10 @@ import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { deleteMeetingEnrollmentParamsSchema } from '@http/schemas/meeting-enrollment/delete-meeting-enrollment-params-schema'
 import { getMeetingEnrollmentParamsSchema } from '@http/schemas/meeting-enrollment/get-meeting-enrollment-params-schema'
 import { meetingEnrollmentSwaggerDocs } from '@lib/swagger/models/meeting-enrollment'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { deleteMeetingEnrollment } from './delete-meeting-enrollment.controller'
-import { getMeetingEnrollment } from './get-meeting-enrollment.controller'
+import { DeleteMeetingEnrollmentController } from './delete-meeting-enrollment.controller'
+import { GetMeetingEnrollmentController } from './get-meeting-enrollment.controller'
 
 export async function meetingEnrollmentRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -22,7 +23,7 @@ export async function meetingEnrollmentRoutes(app: ExtendedFastifyInstance) {
         params: getMeetingEnrollmentParamsSchema,
       },
     },
-    getMeetingEnrollment,
+    adaptRoute(GetMeetingEnrollmentController),
   )
 
   // DELETE
@@ -36,6 +37,6 @@ export async function meetingEnrollmentRoutes(app: ExtendedFastifyInstance) {
         params: deleteMeetingEnrollmentParamsSchema,
       },
     },
-    deleteMeetingEnrollment,
+    adaptRoute(DeleteMeetingEnrollmentController),
   )
 }

@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPMeetingWithDetails,
   MeetingDetailedPresenterInput,
@@ -6,10 +5,8 @@ import type {
 import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
 import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
 
-export class MeetingDetailedPresenter
-  implements IPresenterStrategy<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>
-{
-  public toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails {
+export const MeetingDetailedPresenter = {
+  toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails {
     return {
       id: input.publicId,
       title: input.title,
@@ -32,5 +29,9 @@ export class MeetingDetailedPresenter
         : undefined,
       meetingDates: input.MeetingDate?.map((meetingDate) => meetingDate.date),
     }
-  }
+  },
+
+  toHTTPList(inputs: MeetingDetailedPresenterInput[]): HTTPMeetingWithDetails[] {
+    return inputs.map(this.toHTTP)
+  },
 }

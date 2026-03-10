@@ -1,9 +1,8 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { BlogDetailedPresenterInput, HTTPBlogDetailed } from '@custom-types/http/presenter/blog/blog-detailed'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-export class BlogDetailedPresenter implements IPresenterStrategy<BlogDetailedPresenterInput, HTTPBlogDetailed> {
-  public toHTTP(input: BlogDetailedPresenterInput): HTTPBlogDetailed {
+export const BlogDetailedPresenter = {
+  toHTTP(input: BlogDetailedPresenterInput): HTTPBlogDetailed {
     return {
       id: input.publicId,
       accessCount: input.accessCount,
@@ -15,5 +14,9 @@ export class BlogDetailedPresenter implements IPresenterStrategy<BlogDetailedPre
       authorName: input.User?.fullName ?? input.authorName,
       subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
     }
-  }
+  },
+
+  toHTTPList(inputs: BlogDetailedPresenterInput[]): HTTPBlogDetailed[] {
+    return inputs.map(this.toHTTP)
+  },
 }

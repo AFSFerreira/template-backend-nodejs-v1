@@ -11,13 +11,14 @@ import { getAllInternalInstitutionsNamesQuerySchema } from '@http/schemas/instit
 import { updateInstitutionBodySchema } from '@http/schemas/institution/update-institution-body-schema'
 import { updateInstitutionParamsSchema } from '@http/schemas/institution/update-institution-params-schema'
 import { institutionSwaggerDocs } from '@lib/swagger/models/institution'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createInstitution } from './create-institution.controller'
-import { deleteInstitution } from './delete-institution.controller'
-import { getAllInstitutionsNames } from './get-all-institutions.controller'
-import { getAllInstitutionsWithUsers } from './get-all-institutions-with-users.controller'
-import { getAllInternalInstitutionsNames } from './get-all-internal-institutions-names.controller'
-import { updateInstitution } from './update-institution.controller'
+import { CreateInstitutionController } from './create-institution.controller'
+import { DeleteInstitutionController } from './delete-institution.controller'
+import { GetAllInstitutionsNamesController } from './get-all-institutions.controller'
+import { GetAllInstitutionsWithUsersController } from './get-all-institutions-with-users.controller'
+import { GetAllInternalInstitutionsNamesController } from './get-all-internal-institutions-names.controller'
+import { UpdateInstitutionController } from './update-institution.controller'
 
 export async function institutionRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -30,7 +31,7 @@ export async function institutionRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllInstitutionsWithUsersQuerySchema,
       },
     },
-    getAllInstitutionsWithUsers,
+    adaptRoute(GetAllInstitutionsWithUsersController),
   )
   app.get(
     '/names',
@@ -41,7 +42,7 @@ export async function institutionRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllInstitutionsQuerySchema,
       },
     },
-    getAllInstitutionsNames,
+    adaptRoute(GetAllInstitutionsNamesController),
   )
   app.get(
     '/names/internal',
@@ -52,7 +53,7 @@ export async function institutionRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllInternalInstitutionsNamesQuerySchema,
       },
     },
-    getAllInternalInstitutionsNames,
+    adaptRoute(GetAllInternalInstitutionsNamesController),
   )
 
   // POST
@@ -66,7 +67,7 @@ export async function institutionRoutes(app: ExtendedFastifyInstance) {
         body: createInstitutionBodySchema,
       },
     },
-    createInstitution,
+    adaptRoute(CreateInstitutionController),
   )
 
   // PATCH
@@ -81,7 +82,7 @@ export async function institutionRoutes(app: ExtendedFastifyInstance) {
         body: updateInstitutionBodySchema,
       },
     },
-    updateInstitution,
+    adaptRoute(UpdateInstitutionController),
   )
 
   // DELETE
@@ -95,6 +96,6 @@ export async function institutionRoutes(app: ExtendedFastifyInstance) {
         params: deleteInstitutionParamsSchema,
       },
     },
-    deleteInstitution,
+    adaptRoute(DeleteInstitutionController),
   )
 }

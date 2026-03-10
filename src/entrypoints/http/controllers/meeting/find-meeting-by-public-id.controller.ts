@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPMeetingWithDetails,
-  MeetingDetailedPresenterInput,
-} from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { FindUserByIdParamsType } from '@custom-types/http/schemas/user/find-by-public-id-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { FindMeetingByPublicIdUseCase } from '@use-cases/meeting/find-by-public-id'
 import type { FastifyReply } from 'fastify'
-import { MeetingPresenter } from '@http/presenters/meeting-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FindMeetingByPublicIdUseCase } from '@use-cases/meeting/find-by-public-id'
-import { container } from 'tsyringe'
+import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function findMeetingByPublicId(
-  request: ZodRequest<{ params: FindUserByIdParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
+@injectable()
+export class FindMeetingByPublicIdController implements IController {
+  constructor(private useCase: FindMeetingByPublicIdUseCase) {}
 
-  const useCase = container.resolve(FindMeetingByPublicIdUseCase)
+  async handle(request: ZodRequest<{ params: FindUserByIdParamsType }>, reply: FastifyReply) {
+    const { publicId } = request.params
+    const { meeting } = await this.useCase.execute({ publicId })
 
-  const { meeting } = await useCase.execute({ publicId })
+    const formattedReply = MeetingDefaultPresenter.toHTTP(meeting)
 
-  const formattedReply = MeetingPresenter.toHTTP<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>(
-    meeting,
-    tsyringeTokens.presenters.meeting.meetingDetailed,
-  )
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

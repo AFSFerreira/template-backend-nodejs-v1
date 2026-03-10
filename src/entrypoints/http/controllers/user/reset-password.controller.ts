@@ -1,19 +1,22 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { ResetPasswordBodyType } from '@custom-types/http/schemas/user/reset-password-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { ResetPasswordUseCase } from '@use-cases/user/reset-password'
 import type { FastifyReply } from 'fastify'
 import { PASSWORD_RESET_SUCCESSFUL } from '@messages/responses/user-responses/2xx'
-import { ResetPasswordUseCase } from '@use-cases/user/reset-password'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function resetPassword(request: ZodRequest<{ body: ResetPasswordBodyType }>, reply: FastifyReply) {
-  const { newPassword, token } = request.body
+@injectable()
+export class ResetPasswordController implements IController {
+  constructor(private useCase: ResetPasswordUseCase) {}
 
-  const useCase = container.resolve(ResetPasswordUseCase)
+  async handle(request: ZodRequest<{ body: ResetPasswordBodyType }>, reply: FastifyReply) {
+    const { newPassword, token } = request.body
+    await this.useCase.execute({
+      newPassword,
+      token,
+    })
 
-  await useCase.execute({
-    newPassword,
-    token,
-  })
-
-  return await reply.sendApiResponse(PASSWORD_RESET_SUCCESSFUL)
+    return await reply.sendApiResponse(PASSWORD_RESET_SUCCESSFUL)
+  }
 }

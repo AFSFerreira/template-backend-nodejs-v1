@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPInstitutionalInfoForAdmin,
   InstitutionalInfoForAdminPresenterInput,
@@ -8,15 +7,17 @@ import { buildElectionNoticeUrl } from '@services/builders/urls/build-election-n
 import { buildInstitutionalAboutImageUrl } from '@services/builders/urls/build-institutional-about-image-url'
 import { buildStatuteUrl } from '@services/builders/urls/build-statute-url'
 
-export class InstitutionalInfoForAdminPresenter
-  implements IPresenterStrategy<InstitutionalInfoForAdminPresenterInput, HTTPInstitutionalInfoForAdmin>
-{
-  public toHTTP(input: InstitutionalInfoForAdminPresenterInput): HTTPInstitutionalInfoForAdmin {
+export const InstitutionalInfoForAdminPresenter = {
+  toHTTP(input: InstitutionalInfoForAdminPresenterInput): HTTPInstitutionalInfoForAdmin {
     return {
       aboutImage: buildInstitutionalAboutImageUrl(input.aboutImage),
       aboutDescription: input.aboutDescription as ProseMirrorSchemaType,
       statuteFile: buildStatuteUrl(input.statuteFile),
       electionNoticeFile: buildElectionNoticeUrl(input.electionNoticeFile),
     }
-  }
+  },
+
+  toHTTPList(inputs: InstitutionalInfoForAdminPresenterInput[]): HTTPInstitutionalInfoForAdmin[] {
+    return inputs.map(this.toHTTP)
+  },
 }

@@ -21,27 +21,28 @@ import { submitPendingToPublishParamsSchema } from '@http/schemas/blog/submit-re
 import { updateBlogBodySchema } from '@http/schemas/blog/update-blog-body-schema'
 import { updateBlogParamsSchema } from '@http/schemas/blog/update-blog-params-schema'
 import { blogSwaggerDocs } from '@lib/swagger/models/blog'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { createDraftBlog } from './create-draft-blog.controller'
-import { createDraftCopyBlog } from './create-draft-copy-blog.controller'
-import { createPendingBlog } from './create-pending-blog.controller'
-import { deleteBlog } from './delete-blog.controller'
-import { findBlogByPublicId } from './find-blog-by-public-id.controller'
-import { findBlogByPublicIdRestricted } from './find-blog-by-public-id-detailed.controller'
-import { getAllBlogs } from './get-all-blogs.controller'
-import { getAllBlogsDetailed } from './get-all-blogs-detailed.controller'
-import { getAllUserBlogsDetailed } from './get-all-user-blogs-detailed.controller'
-import { getBlogHtmlContent } from './get-blog-html-content.controller'
-import { getRestrictBlogHtmlContent } from './get-restrict-blog-html-content.controller'
-import { createAndPublishBlog } from './publish-blog.controller'
-import { submitDraftForReview } from './submit-draft-for-review.controller'
-import { submitPendingToPublish } from './submit-pending-to-publish.controller'
-import { submitPendingToReview } from './submit-pending-to-review.controller'
-import { submitPublishedToPending } from './submit-published-to-pending.controller'
-import { submitReviewToPending } from './submit-review-to-pending.controller'
-import { updateBlog } from './update-blog.controller'
-import { uploadBlogBanner } from './upload-blog-banner.controller'
-import { uploadBlogImage } from './upload-blog-image.controller'
+import { CreateDraftBlogController } from './create-draft-blog.controller'
+import { CreateDraftCopyBlogController } from './create-draft-copy-blog.controller'
+import { CreatePendingBlogController } from './create-pending-blog.controller'
+import { DeleteBlogController } from './delete-blog.controller'
+import { FindBlogByPublicIdController } from './find-blog-by-public-id.controller'
+import { FindBlogByPublicIdRestrictedController } from './find-blog-by-public-id-detailed.controller'
+import { GetAllBlogsController } from './get-all-blogs.controller'
+import { GetAllBlogsDetailedController } from './get-all-blogs-detailed.controller'
+import { GetAllUserBlogsDetailedController } from './get-all-user-blogs-detailed.controller'
+import { GetBlogHtmlContentController } from './get-blog-html-content.controller'
+import { GetRestrictBlogHtmlContentController } from './get-restrict-blog-html-content.controller'
+import { CreateAndPublishBlogController } from './publish-blog.controller'
+import { SubmitDraftForReviewController } from './submit-draft-for-review.controller'
+import { SubmitPendingToPublishController } from './submit-pending-to-publish.controller'
+import { SubmitPendingToReviewController } from './submit-pending-to-review.controller'
+import { SubmitPublishedToPendingController } from './submit-published-to-pending.controller'
+import { SubmitReviewToPendingController } from './submit-review-to-pending.controller'
+import { UpdateBlogController } from './update-blog.controller'
+import { UploadBlogBannerController } from './upload-blog-banner.controller'
+import { UploadBlogImageController } from './upload-blog-image.controller'
 
 export async function blogRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -54,7 +55,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllBlogsQuerySchema,
       },
     },
-    getAllBlogs,
+    adaptRoute(GetAllBlogsController),
   )
   app.get(
     '/restrict',
@@ -66,7 +67,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllBlogsDetailedQuerySchema,
       },
     },
-    getAllBlogsDetailed,
+    adaptRoute(GetAllBlogsDetailedController),
   )
   app.get(
     '/restrict/me',
@@ -78,7 +79,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllUserBlogsDetailedQuerySchema,
       },
     },
-    getAllUserBlogsDetailed,
+    adaptRoute(GetAllUserBlogsDetailedController),
   )
   app.get(
     '/:publicId/html',
@@ -89,7 +90,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: getBlogHtmlContentParamsSchema,
       },
     },
-    getBlogHtmlContent,
+    adaptRoute(GetBlogHtmlContentController),
   )
   app.get(
     '/restrict/:publicId/html',
@@ -101,7 +102,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: getRestrictBlogHtmlContentParamsSchema,
       },
     },
-    getRestrictBlogHtmlContent,
+    adaptRoute(GetRestrictBlogHtmlContentController),
   )
   app.get(
     '/restrict/:publicId',
@@ -113,7 +114,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: findBlogByPublicIdParamsSchema,
       },
     },
-    findBlogByPublicIdRestricted,
+    adaptRoute(FindBlogByPublicIdRestrictedController),
   )
   app.get(
     '/:publicId',
@@ -124,7 +125,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: findBlogByPublicIdParamsSchema,
       },
     },
-    findBlogByPublicId,
+    adaptRoute(FindBlogByPublicIdController),
   )
 
   // POST
@@ -139,7 +140,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         body: createBlogBodySchema,
       },
     },
-    createPendingBlog,
+    adaptRoute(CreatePendingBlogController),
   )
   app.post(
     '/create/draft',
@@ -152,7 +153,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         body: createBlogBodySchema,
       },
     },
-    createDraftBlog,
+    adaptRoute(CreateDraftBlogController),
   )
   app.post(
     '/:publicId/create-draft-copy',
@@ -164,7 +165,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: createDraftCopyBlogParamsSchema,
       },
     },
-    createDraftCopyBlog,
+    adaptRoute(CreateDraftCopyBlogController),
   )
   app.post(
     '/create/publish',
@@ -177,7 +178,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         body: createBlogBodySchema,
       },
     },
-    createAndPublishBlog,
+    adaptRoute(CreateAndPublishBlogController),
   )
   app.post(
     '/uploads/image',
@@ -188,7 +189,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         ...blogSwaggerDocs.uploadBlogImage,
       },
     },
-    uploadBlogImage,
+    adaptRoute(UploadBlogImageController),
   )
   app.post(
     '/uploads/banner',
@@ -199,7 +200,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         ...blogSwaggerDocs.uploadBlogBanner,
       },
     },
-    uploadBlogBanner,
+    adaptRoute(UploadBlogBannerController),
   )
 
   // PATCH
@@ -213,7 +214,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: submitDraftForReviewParamsSchema,
       },
     },
-    submitDraftForReview,
+    adaptRoute(SubmitDraftForReviewController),
   )
   app.patch(
     '/:publicId/submit-review-to-pending',
@@ -225,7 +226,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: submitReviewToPendingParamsSchema,
       },
     },
-    submitReviewToPending,
+    adaptRoute(SubmitReviewToPendingController),
   )
   app.patch(
     '/:publicId/submit-pending-to-publish',
@@ -237,7 +238,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: submitPendingToPublishParamsSchema,
       },
     },
-    submitPendingToPublish,
+    adaptRoute(SubmitPendingToPublishController),
   )
   app.patch(
     '/:publicId/submit-published-to-pending',
@@ -249,7 +250,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: submitPublishedToPendingParamsSchema,
       },
     },
-    submitPublishedToPending,
+    adaptRoute(SubmitPublishedToPendingController),
   )
   app.patch(
     '/:publicId/submit-pending-to-review',
@@ -261,7 +262,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: submitPendingToReviewParamsSchema,
       },
     },
-    submitPendingToReview,
+    adaptRoute(SubmitPendingToReviewController),
   )
   app.patch(
     '/:publicId',
@@ -275,7 +276,7 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         body: updateBlogBodySchema,
       },
     },
-    updateBlog,
+    adaptRoute(UpdateBlogController),
   )
 
   // DELETE
@@ -289,6 +290,6 @@ export async function blogRoutes(app: ExtendedFastifyInstance) {
         params: deleteBlogParamsSchema,
       },
     },
-    deleteBlog,
+    adaptRoute(DeleteBlogController),
   )
 }

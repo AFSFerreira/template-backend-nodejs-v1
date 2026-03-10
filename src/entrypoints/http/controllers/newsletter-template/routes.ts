@@ -6,9 +6,10 @@ import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { findNewsletterTemplateByPublicIdParamsSchema } from '@http/schemas/newsletter-template/find-newsletter-template-by-public-id-params-schema'
 import { getAllNewsletterTemplatesQuerySchema } from '@http/schemas/newsletter-template/get-all-newsletter-templates-query-schema'
 import { newsletterTemplateSwaggerDocs } from '@lib/swagger/models/newsletter-template'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { findNewsletterTemplateByPublicId } from './find-newsletter-template-by-public-id.controller'
-import { getAllNewsletterTemplates } from './get-all-newsletter-templates.controller'
+import { FindNewsletterTemplateByPublicIdController } from './find-newsletter-template-by-public-id.controller'
+import { GetAllNewsletterTemplatesController } from './get-all-newsletter-templates.controller'
 
 export async function newsletterTemplateRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -22,7 +23,7 @@ export async function newsletterTemplateRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllNewsletterTemplatesQuerySchema,
       },
     },
-    getAllNewsletterTemplates,
+    adaptRoute(GetAllNewsletterTemplatesController),
   )
   app.get(
     '/:publicId',
@@ -34,6 +35,6 @@ export async function newsletterTemplateRoutes(app: ExtendedFastifyInstance) {
         params: findNewsletterTemplateByPublicIdParamsSchema,
       },
     },
-    findNewsletterTemplateByPublicId,
+    adaptRoute(FindNewsletterTemplateByPublicIdController),
   )
 }

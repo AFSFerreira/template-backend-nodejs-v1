@@ -1,19 +1,19 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetDirectorBoardAboutHTMLParamsType } from '@custom-types/http/schemas/director-board/get-director-board-about-html-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
 import type { FastifyReply } from 'fastify'
-import { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function getDirectorBoardAboutHTML(
-  request: ZodRequest<{ params: GetDirectorBoardAboutHTMLParamsType }>,
-  reply: FastifyReply,
-) {
-  const parsedParams = request.params
+@injectable()
+export class GetDirectorBoardAboutHTMLController implements IController {
+  constructor(private useCase: GetDirectorBoardAboutHTMLUseCase) {}
 
-  const useCase = container.resolve(GetDirectorBoardAboutHTMLUseCase)
+  async handle(request: ZodRequest<{ params: GetDirectorBoardAboutHTMLParamsType }>, reply: FastifyReply) {
+    const parsedParams = request.params
+    const { htmlContent } = await this.useCase.execute(parsedParams)
 
-  const { htmlContent } = await useCase.execute(parsedParams)
-
-  return await reply.status(StatusCodes.OK).sendHtml(htmlContent)
+    return await reply.status(StatusCodes.OK).sendHtml(htmlContent)
+  }
 }

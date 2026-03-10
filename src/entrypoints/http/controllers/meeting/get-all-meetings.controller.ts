@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPMeetingWithDetails,
-  MeetingDetailedPresenterInput,
-} from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { GetAllMeetingsQueryType } from '@custom-types/http/schemas/meeting/get-all-meetings-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllMeetingsUseCase } from '@use-cases/meeting/get-all-meetings'
 import type { FastifyReply } from 'fastify'
-import { MeetingPresenter } from '@http/presenters/meeting-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetAllMeetingsUseCase } from '@use-cases/meeting/get-all-meetings'
-import { container } from 'tsyringe'
+import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllMeetings(
-  request: ZodRequest<{ querystring: GetAllMeetingsQueryType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllMeetingsController implements IController {
+  constructor(private useCase: GetAllMeetingsUseCase) {}
 
-  const useCase = container.resolve(GetAllMeetingsUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllMeetingsQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = MeetingDefaultPresenter.toHTTPList(data)
 
-  const formattedReply = MeetingPresenter.toHTTP<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>(
-    data,
-    tsyringeTokens.presenters.meeting.meetingDetailed,
-  )
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

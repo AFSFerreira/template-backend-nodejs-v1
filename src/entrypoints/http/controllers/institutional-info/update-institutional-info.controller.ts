@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPInstitutionalInfo,
-  InstitutionalInfoPresenterInput,
-} from '@custom-types/http/presenter/institutional-info/institutional-info'
 import type { UpdateInstitutionalInfoBodyType } from '@custom-types/http/schemas/institutional-info/update-institutional-info-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { UpdateInstitutionalInfoUseCase } from '@use-cases/institutional-info/update-institutional-info'
 import type { FastifyReply } from 'fastify'
-import { InstitutionalInfoPresenter } from '@http/presenters/institutional-info-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { UpdateInstitutionalInfoUseCase } from '@use-cases/institutional-info/update-institutional-info'
-import { container } from 'tsyringe'
+import { InstitutionalInfoDefaultPresenter } from '@http/presenters/institutional-info/institutional-info.presenter'
+import { injectable } from 'tsyringe'
 
-export async function updateInstitutionalInfo(
-  request: ZodRequest<{ body: UpdateInstitutionalInfoBodyType }>,
-  reply: FastifyReply,
-) {
-  const parsedBody = request.body
+@injectable()
+export class UpdateInstitutionalInfoController implements IController {
+  constructor(private useCase: UpdateInstitutionalInfoUseCase) {}
 
-  const useCase = container.resolve(UpdateInstitutionalInfoUseCase)
+  async handle(request: ZodRequest<{ body: UpdateInstitutionalInfoBodyType }>, reply: FastifyReply) {
+    const parsedBody = request.body
+    const { institutionalInfo } = await this.useCase.execute({ data: parsedBody })
 
-  const { institutionalInfo } = await useCase.execute({ data: parsedBody })
+    const formattedReply = InstitutionalInfoDefaultPresenter.toHTTP(institutionalInfo)
 
-  const formattedReply = InstitutionalInfoPresenter.toHTTP<InstitutionalInfoPresenterInput, HTTPInstitutionalInfo>(
-    institutionalInfo,
-    tsyringeTokens.presenters.institutionalInfo.institutionalInfoDefault,
-  )
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

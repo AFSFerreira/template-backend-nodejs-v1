@@ -1,19 +1,19 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { DeleteInstitutionParamsType } from '@custom-types/http/schemas/institution/delete-institution-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { DeleteInstitutionUseCase } from '@use-cases/institution/delete-institution'
 import type { FastifyReply } from 'fastify'
-import { DeleteInstitutionUseCase } from '@use-cases/institution/delete-institution'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function deleteInstitution(
-  request: ZodRequest<{ params: DeleteInstitutionParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
+@injectable()
+export class DeleteInstitutionController implements IController {
+  constructor(private useCase: DeleteInstitutionUseCase) {}
 
-  const useCase = container.resolve(DeleteInstitutionUseCase)
+  async handle(request: ZodRequest<{ params: DeleteInstitutionParamsType }>, reply: FastifyReply) {
+    const { publicId } = request.params
+    await this.useCase.execute({ publicId })
 
-  await useCase.execute({ publicId })
-
-  return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
+    return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
+  }
 }

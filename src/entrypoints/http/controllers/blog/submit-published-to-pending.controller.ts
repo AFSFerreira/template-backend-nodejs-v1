@@ -1,27 +1,26 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { SubmitPublishedToReviewParamsType } from '@custom-types/http/schemas/blog/submit-published-to-review-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { SubmitPublishedToPendingUseCase } from '@use-cases/blog/submit-published-to-pending'
 import type { FastifyReply } from 'fastify'
-import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { SubmitPublishedToPendingUseCase } from '@use-cases/blog/submit-published-to-pending'
+import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function submitPublishedToPending(
-  request: ZodRequest<{ params: SubmitPublishedToReviewParamsType }>,
-  reply: FastifyReply,
-) {
-  const userPublicId = getRequestUserPublicId(request)
-  const parsedParams = request.params
+@injectable()
+export class SubmitPublishedToPendingController implements IController {
+  constructor(private useCase: SubmitPublishedToPendingUseCase) {}
 
-  const useCase = container.resolve(SubmitPublishedToPendingUseCase)
+  async handle(request: ZodRequest<{ params: SubmitPublishedToReviewParamsType }>, reply: FastifyReply) {
+    const userPublicId = getRequestUserPublicId(request)
+    const parsedParams = request.params
+    const { blog } = await this.useCase.execute({
+      ...parsedParams,
+      userPublicId,
+    })
 
-  const { blog } = await useCase.execute({
-    ...parsedParams,
-    userPublicId,
-  })
+    const formattedReply = BlogDefaultPresenter.toHTTP(blog)
 
-  const formattedReply = BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

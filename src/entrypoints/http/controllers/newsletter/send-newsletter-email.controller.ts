@@ -1,19 +1,19 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { FindNewsletterByPublicIdParamsType } from '@custom-types/http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { SendNewsletterEmailUseCase } from '@use-cases/newsletters/send-newsletter-email'
 import type { FastifyReply } from 'fastify'
-import { SendNewsletterEmailUseCase } from '@use-cases/newsletters/send-newsletter-email'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function sendNewsletterEmail(
-  request: ZodRequest<{ params: FindNewsletterByPublicIdParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
+@injectable()
+export class SendNewsletterEmailController implements IController {
+  constructor(private useCase: SendNewsletterEmailUseCase) {}
 
-  const useCase = container.resolve(SendNewsletterEmailUseCase)
+  async handle(request: ZodRequest<{ params: FindNewsletterByPublicIdParamsType }>, reply: FastifyReply) {
+    const { publicId } = request.params
+    await this.useCase.execute({ publicId })
 
-  await useCase.execute({ publicId })
-
-  return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
+    return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
+  }
 }

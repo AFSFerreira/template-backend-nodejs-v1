@@ -1,16 +1,17 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { PreviewNewsletterContentBodyType } from '@custom-types/http/schemas/newsletter/preview-newsletter-content-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { PreviewNewsletterContentUseCase } from '@use-cases/newsletters/preview-newsletter-content'
 import type { FastifyReply } from 'fastify'
-import { PreviewNewsletterContentUseCase } from '@use-cases/newsletters/preview-newsletter-content'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function previewNewsletterContent(
-  request: ZodRequest<{ body: PreviewNewsletterContentBodyType }>,
-  reply: FastifyReply,
-) {
-  const useCase = container.resolve(PreviewNewsletterContentUseCase)
+@injectable()
+export class PreviewNewsletterContentController implements IController {
+  constructor(private useCase: PreviewNewsletterContentUseCase) {}
 
-  const { html } = await useCase.execute(request.body)
+  async handle(request: ZodRequest<{ body: PreviewNewsletterContentBodyType }>, reply: FastifyReply) {
+    const { html } = await this.useCase.execute(request.body)
 
-  return await reply.sendHtml(html)
+    return await reply.sendHtml(html)
+  }
 }

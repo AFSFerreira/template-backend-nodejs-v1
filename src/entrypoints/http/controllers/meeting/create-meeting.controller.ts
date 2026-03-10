@@ -1,27 +1,22 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPMeetingWithDetails,
-  MeetingDetailedPresenterInput,
-} from '@custom-types/http/presenter/meeting/meeting-detailed'
 import type { CreateMeetingBodyType } from '@custom-types/http/schemas/meeting/create-meeting-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
 import type { FastifyReply } from 'fastify'
-import { MeetingPresenter } from '@http/presenters/meeting-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
+import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function createMeeting(request: ZodRequest<{ body: CreateMeetingBodyType }>, reply: FastifyReply) {
-  const parsedBody = request.body
+@injectable()
+export class CreateMeetingController implements IController {
+  constructor(private useCase: CreateMeetingUseCase) {}
 
-  const useCase = container.resolve(CreateMeetingUseCase)
+  async handle(request: ZodRequest<{ body: CreateMeetingBodyType }>, reply: FastifyReply) {
+    const parsedBody = request.body
+    const { meeting } = await this.useCase.execute(parsedBody)
 
-  const { meeting } = await useCase.execute(parsedBody)
+    const formattedReply = MeetingDefaultPresenter.toHTTP(meeting)
 
-  const formattedReply = MeetingPresenter.toHTTP<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>(
-    meeting,
-    tsyringeTokens.presenters.meeting.meetingDetailed,
-  )
-
-  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+    return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+  }
 }

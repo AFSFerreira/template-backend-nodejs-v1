@@ -1,23 +1,22 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPNewsletter,
-  NewsletterDefaultPresenterInput,
-} from '@custom-types/http/presenter/newsletter/newsletter-default'
 import type { CreateNewsletterBodyType } from '@custom-types/http/schemas/newsletter/create-newsletter-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { CreateNewsletterUseCase } from '@use-cases/newsletters/create-newsletter'
 import type { FastifyReply } from 'fastify'
-import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
-import { CreateNewsletterUseCase } from '@use-cases/newsletters/create-newsletter'
+import { NewsletterDefaultPresenter } from '@http/presenters/newsletter/newsletter-default.presenter'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function createNewsletter(request: ZodRequest<{ body: CreateNewsletterBodyType }>, reply: FastifyReply) {
-  const createNewsletterInput = request.body
+@injectable()
+export class CreateNewsletterController implements IController {
+  constructor(private useCase: CreateNewsletterUseCase) {}
 
-  const useCase = container.resolve(CreateNewsletterUseCase)
+  async handle(request: ZodRequest<{ body: CreateNewsletterBodyType }>, reply: FastifyReply) {
+    const createNewsletterInput = request.body
+    const { newsletter } = await this.useCase.execute(createNewsletterInput)
 
-  const { newsletter } = await useCase.execute(createNewsletterInput)
+    const formattedReply = NewsletterDefaultPresenter.toHTTP(newsletter)
 
-  const formattedReply = NewsletterPresenter.toHTTP<NewsletterDefaultPresenterInput, HTTPNewsletter>(newsletter)
-
-  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+    return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+  }
 }

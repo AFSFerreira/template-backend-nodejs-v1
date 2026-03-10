@@ -1,27 +1,26 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPSliderImage,
-  SliderImageDefaultPresenterInput,
-} from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { UpdateSliderImageBodyType } from '@custom-types/http/schemas/slider-image/update-slider-image-body-schema'
 import type { UpdateSliderImageParamsType } from '@custom-types/http/schemas/slider-image/update-slider-image-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { UpdateSliderImageUseCase } from '@use-cases/slider-image/update-slider-image'
 import type { FastifyReply } from 'fastify'
-import { SliderImagePresenter } from '@http/presenters/slider-image-presenter'
-import { UpdateSliderImageUseCase } from '@use-cases/slider-image/update-slider-image'
-import { container } from 'tsyringe'
+import { SliderImageDefaultPresenter } from '@http/presenters/slider-image/slider-image-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function updateSliderImage(
-  request: ZodRequest<{ body: UpdateSliderImageBodyType; params: UpdateSliderImageParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
-  const parsedBody = request.body
+@injectable()
+export class UpdateSliderImageController implements IController {
+  constructor(private useCase: UpdateSliderImageUseCase) {}
 
-  const useCase = container.resolve(UpdateSliderImageUseCase)
+  async handle(
+    request: ZodRequest<{ body: UpdateSliderImageBodyType; params: UpdateSliderImageParamsType }>,
+    reply: FastifyReply,
+  ) {
+    const { publicId } = request.params
+    const parsedBody = request.body
+    const { sliderImage } = await this.useCase.execute({ publicId, data: parsedBody })
 
-  const { sliderImage } = await useCase.execute({ publicId, data: parsedBody })
+    const formattedReply = SliderImageDefaultPresenter.toHTTP(sliderImage)
 
-  const formattedReply = SliderImagePresenter.toHTTP<SliderImageDefaultPresenterInput, HTTPSliderImage>(sliderImage)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

@@ -3,9 +3,10 @@ import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { getAcademicPublicationsYearsQuerySchema } from '@http/schemas/academic-publication/get-academic-publications-years-query-schema'
 import { getAllAcademicPublicationsQuerySchema } from '@http/schemas/academic-publication/get-all-academic-publications-query-schema'
 import { academicPublicationSwaggerDocs } from '@lib/swagger/models/academic-publication'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { getAcademicPublicationsYearsController } from './get-academic-publications-years.controller'
-import { getAllAcademicPublicationsController } from './get-all-academic-publications.controller'
+import { GetAcademicPublicationsYearsController } from './get-academic-publications-years.controller'
+import { GetAllAcademicPublicationsController } from './get-all-academic-publications.controller'
 
 export async function academicPublicationRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -18,7 +19,7 @@ export async function academicPublicationRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllAcademicPublicationsQuerySchema,
       },
     },
-    getAllAcademicPublicationsController,
+    adaptRoute(GetAllAcademicPublicationsController),
   )
   app.get(
     '/years',
@@ -29,6 +30,6 @@ export async function academicPublicationRoutes(app: ExtendedFastifyInstance) {
         querystring: getAcademicPublicationsYearsQuerySchema,
       },
     },
-    getAcademicPublicationsYearsController,
+    adaptRoute(GetAcademicPublicationsYearsController),
   )
 }

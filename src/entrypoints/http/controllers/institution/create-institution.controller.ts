@@ -1,23 +1,22 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPInstitution,
-  InstitutionDefaultPresenterInput,
-} from '@custom-types/http/presenter/institution/institution-default'
 import type { CreateInstitutionBodyType } from '@custom-types/http/schemas/institution/create-institution-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { CreateInstitutionUseCase } from '@use-cases/institution/create-institution'
 import type { FastifyReply } from 'fastify'
-import { InstitutionPresenter } from '@http/presenters/institution-presenter'
-import { CreateInstitutionUseCase } from '@use-cases/institution/create-institution'
+import { InstitutionDefaultPresenter } from '@http/presenters/institution/institution-default.presenter'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function createInstitution(request: ZodRequest<{ body: CreateInstitutionBodyType }>, reply: FastifyReply) {
-  const parsedBody = request.body
+@injectable()
+export class CreateInstitutionController implements IController {
+  constructor(private useCase: CreateInstitutionUseCase) {}
 
-  const useCase = container.resolve(CreateInstitutionUseCase)
+  async handle(request: ZodRequest<{ body: CreateInstitutionBodyType }>, reply: FastifyReply) {
+    const parsedBody = request.body
+    const { institution } = await this.useCase.execute(parsedBody)
 
-  const { institution } = await useCase.execute(parsedBody)
+    const formattedReply = InstitutionDefaultPresenter.toHTTP(institution)
 
-  const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(institution)
-
-  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+    return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+  }
 }

@@ -1,4 +1,3 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   DirectorBoardDefaultPresenterInput,
   HTTPDirectorBoard,
@@ -6,10 +5,8 @@ import type {
 import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
 import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
 
-export class DirectorBoardDefaultPresenter
-  implements IPresenterStrategy<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>
-{
-  public toHTTP(input: DirectorBoardDefaultPresenterInput): HTTPDirectorBoard {
+export const DirectorBoardDefaultPresenter = {
+  toHTTP(input: DirectorBoardDefaultPresenterInput): HTTPDirectorBoard {
     return {
       id: input.publicId,
       profileImage: input.profileImage
@@ -19,5 +16,9 @@ export class DirectorBoardDefaultPresenter
       publicName: input.publicName,
       linkLattes: input.User.linkLattes ?? null,
     }
-  }
+  },
+
+  toHTTPList(inputs: DirectorBoardDefaultPresenterInput[]): HTTPDirectorBoard[] {
+    return inputs.map(this.toHTTP)
+  },
 }

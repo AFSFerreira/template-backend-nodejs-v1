@@ -4,30 +4,33 @@ import type {
   UpdateUserPermissionsBodyType,
 } from '@custom-types/http/schemas/user/update-user-permissions-body-schema'
 import type { UpdateUserPermissionsParamsType } from '@custom-types/http/schemas/user/update-user-permissions-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { UpdateUserPermissionsUseCase } from '@use-cases/user/update-user-permissions'
 import type { FastifyReply } from 'fastify'
-import { UpdateUserPermissionsUseCase } from '@use-cases/user/update-user-permissions'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function updateUserPermissions(
-  request: ZodRequest<{ body: UpdateUserPermissionsBodyType; params: UpdateUserPermissionsParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
-  const parsedBody = request.body as UpdateUserPermissionsBodySchemaType
+@injectable()
+export class UpdateUserPermissionsController implements IController {
+  constructor(private useCase: UpdateUserPermissionsUseCase) {}
 
-  const useCase = container.resolve(UpdateUserPermissionsUseCase)
+  async handle(
+    request: ZodRequest<{ body: UpdateUserPermissionsBodyType; params: UpdateUserPermissionsParamsType }>,
+    reply: FastifyReply,
+  ) {
+    const { publicId } = request.params
+    const parsedBody = request.body as UpdateUserPermissionsBodySchemaType
+    await this.useCase.execute({
+      publicId,
+      data: parsedBody,
+      audit: {
+        actorPublicId: getRequestUserPublicId(request),
+        ipAddress: getClientIp(request),
+      },
+    })
 
-  await useCase.execute({
-    publicId,
-    data: parsedBody,
-    audit: {
-      actorPublicId: getRequestUserPublicId(request),
-      ipAddress: getClientIp(request),
-    },
-  })
-
-  return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
+    return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
+  }
 }

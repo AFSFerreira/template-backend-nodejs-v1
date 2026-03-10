@@ -1,25 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPInstitution,
-  InstitutionDefaultPresenterInput,
-} from '@custom-types/http/presenter/institution/institution-default'
 import type { GetAllInternalInstitutionsNamesQueryType } from '@custom-types/http/schemas/institution/get-all-internal-institutions-names-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllInternalInstitutionsNamesUseCase } from '@use-cases/institution/get-all-internal-institutions-names'
 import type { FastifyReply } from 'fastify'
-import { InstitutionPresenter } from '@http/presenters/institution-presenter'
-import { GetAllInternalInstitutionsNamesUseCase } from '@use-cases/institution/get-all-internal-institutions-names'
-import { container } from 'tsyringe'
+import { InstitutionDefaultPresenter } from '@http/presenters/institution/institution-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllInternalInstitutionsNames(
-  request: ZodRequest<{ querystring: GetAllInternalInstitutionsNamesQueryType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllInternalInstitutionsNamesController implements IController {
+  constructor(private useCase: GetAllInternalInstitutionsNamesUseCase) {}
 
-  const useCase = container.resolve(GetAllInternalInstitutionsNamesUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllInternalInstitutionsNamesQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = InstitutionDefaultPresenter.toHTTPList(data)
 
-  const formattedReply = InstitutionPresenter.toHTTP<InstitutionDefaultPresenterInput, HTTPInstitution>(data)
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

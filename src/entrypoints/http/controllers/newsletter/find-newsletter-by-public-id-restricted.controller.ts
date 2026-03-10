@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPNewsletterDetailedWithContent,
-  NewsletterDetailedWithContentPresenterInput,
-} from '@custom-types/http/presenter/newsletter/newsletter-detailed-with-content'
 import type { FindNewsletterByPublicIdParamsType } from '@custom-types/http/schemas/newsletter/find-newsletter-by-public-id-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { FindNewsletterByPublicIdRestrictedUseCase } from '@use-cases/newsletters/find-newsletter-by-public-id-restricted'
 import type { FastifyReply } from 'fastify'
-import { NewsletterPresenter } from '@http/presenters/newsletter-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FindNewsletterByPublicIdRestrictedUseCase } from '@use-cases/newsletters/find-newsletter-by-public-id-restricted'
-import { container } from 'tsyringe'
+import { NewsletterDetailedWithContentPresenter } from '@http/presenters/newsletter/newsletter-detailed-with-content.presenter'
+import { injectable } from 'tsyringe'
 
-export async function findNewsletterByPublicIdRestricted(
-  request: ZodRequest<{ params: FindNewsletterByPublicIdParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
+@injectable()
+export class FindNewsletterByPublicIdRestrictedController implements IController {
+  constructor(private useCase: FindNewsletterByPublicIdRestrictedUseCase) {}
 
-  const useCase = container.resolve(FindNewsletterByPublicIdRestrictedUseCase)
+  async handle(request: ZodRequest<{ params: FindNewsletterByPublicIdParamsType }>, reply: FastifyReply) {
+    const { publicId } = request.params
+    const { newsletter } = await this.useCase.execute({ publicId })
 
-  const { newsletter } = await useCase.execute({ publicId })
+    const formattedReply = NewsletterDetailedWithContentPresenter.toHTTP(newsletter)
 
-  const formattedReply = NewsletterPresenter.toHTTP<
-    NewsletterDetailedWithContentPresenterInput,
-    HTTPNewsletterDetailedWithContent
-  >(newsletter, tsyringeTokens.presenters.newsletter.newsletterDetailedWithContent)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

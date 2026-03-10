@@ -1,18 +1,18 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { ExportUsersDataQueryType } from '@custom-types/http/schemas/user/export-users-data-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { ExportUsersDataUseCase } from '@use-cases/user/export-users-data'
 import type { FastifyReply } from 'fastify'
-import { ExportUsersDataUseCase } from '@use-cases/user/export-users-data'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function exportUsersData(
-  request: ZodRequest<{ querystring: ExportUsersDataQueryType }>,
-  reply: FastifyReply,
-) {
-  const { format } = request.query
+@injectable()
+export class ExportUsersDataController implements IController {
+  constructor(private useCase: ExportUsersDataUseCase) {}
 
-  const useCase = container.resolve(ExportUsersDataUseCase)
+  async handle(request: ZodRequest<{ querystring: ExportUsersDataQueryType }>, reply: FastifyReply) {
+    const { format } = request.query
+    const { reportStream, filename } = await this.useCase.execute({ format })
 
-  const { reportStream, filename } = await useCase.execute({ format })
-
-  return await reply.sendDownload(reportStream, filename)
+    return await reply.sendDownload(reportStream, filename)
+  }
 }

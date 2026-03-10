@@ -2,8 +2,9 @@ import type { ExtendedFastifyInstance } from '@custom-types/custom/zod-fastify-i
 import { RATE_LIMIT_TIERS } from '@constants/route-configuration-constants'
 import { getAllStatesQuerySchema } from '@http/schemas/address/get-all-states-query-schema'
 import { addressSwaggerDocs } from '@lib/swagger/models/address-state'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { getAllStates } from './get-all-states.controller'
+import { GetAllStatesController } from './get-all-states.controller'
 
 export async function addressRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -16,6 +17,6 @@ export async function addressRoutes(app: ExtendedFastifyInstance) {
         querystring: getAllStatesQuerySchema,
       },
     },
-    getAllStates,
+    adaptRoute(GetAllStatesController),
   )
 }

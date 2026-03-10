@@ -1,31 +1,23 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  BlogDetailedWithContentPresenterInput,
-  HTTPBlogDetailedWithContent,
-} from '@custom-types/http/presenter/blog/blog-detailed-with-content'
 import type { FindBlogByPublicIdParamsType } from '@custom-types/http/schemas/blog/find-blog-by-public-id-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blog/find-blog-by-public-id-detailed'
 import type { FastifyReply } from 'fastify'
-import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blog/find-blog-by-public-id-detailed'
+import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function findBlogByPublicIdRestricted(
-  request: ZodRequest<{ params: FindBlogByPublicIdParamsType }>,
-  reply: FastifyReply,
-) {
-  const userPublicId = getRequestUserPublicId(request)
-  const { publicId } = request.params
+@injectable()
+export class FindBlogByPublicIdRestrictedController implements IController {
+  constructor(private useCase: FindBlogByPublicIdRestrictedUseCase) {}
 
-  const useCase = container.resolve(FindBlogByPublicIdRestrictedUseCase)
+  async handle(request: ZodRequest<{ params: FindBlogByPublicIdParamsType }>, reply: FastifyReply) {
+    const userPublicId = getRequestUserPublicId(request)
+    const { publicId } = request.params
+    const { blog } = await this.useCase.execute({ publicId, userPublicId })
 
-  const { blog } = await useCase.execute({ publicId, userPublicId })
+    const formattedReply = BlogDefaultPresenter.toHTTP(blog)
 
-  const formattedReply = BlogPresenter.toHTTP<BlogDetailedWithContentPresenterInput, HTTPBlogDetailedWithContent>(
-    blog,
-    tsyringeTokens.presenters.blog.blogDetailedWithContent,
-  )
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

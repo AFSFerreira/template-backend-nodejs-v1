@@ -6,12 +6,13 @@ import { verifyMultipart } from '@http/middlewares/verify-multipart.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { updateInstitutionalInfoBodySchema } from '@http/schemas/institutional-info/update-institutional-info-body-schema'
 import { institutionalInfoSwaggerDocs } from '@lib/swagger/models/institutional-info'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { getInstitutionalInfo } from './get-institutional-info.controller'
-import { getInstitutionalInfoAboutDescriptionHTML } from './get-institutional-info-about-html.controller'
-import { getInstitutionalInfoForAdmin } from './get-institutional-info-for-admin.controller'
-import { updateInstitutionalInfo } from './update-institutional-info.controller'
-import { uploadInstitutionalAboutImage } from './upload-institutional-about-image.controller'
+import { GetInstitutionalInfoController } from './get-institutional-info.controller'
+import { GetInstitutionalInfoAboutDescriptionHTMLController } from './get-institutional-info-about-html.controller'
+import { GetInstitutionalInfoForAdminController } from './get-institutional-info-for-admin.controller'
+import { UpdateInstitutionalInfoController } from './update-institutional-info.controller'
+import { UploadInstitutionalAboutImageController } from './upload-institutional-about-image.controller'
 
 export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -23,7 +24,7 @@ export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
         ...institutionalInfoSwaggerDocs.getInstitutionalInfo,
       },
     },
-    getInstitutionalInfo,
+    adaptRoute(GetInstitutionalInfoController),
   )
   app.get(
     '/about-description/html',
@@ -33,7 +34,7 @@ export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
         ...institutionalInfoSwaggerDocs.getInstitutionalInfoAboutDescriptionHTML,
       },
     },
-    getInstitutionalInfoAboutDescriptionHTML,
+    adaptRoute(GetInstitutionalInfoAboutDescriptionHTMLController),
   )
   app.get(
     '/restrict',
@@ -44,7 +45,7 @@ export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
         ...institutionalInfoSwaggerDocs.getInstitutionalInfoForAdmin,
       },
     },
-    getInstitutionalInfoForAdmin,
+    adaptRoute(GetInstitutionalInfoForAdminController),
   )
 
   // POST
@@ -57,7 +58,7 @@ export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
         ...institutionalInfoSwaggerDocs.uploadInstitutionalAboutImage,
       },
     },
-    uploadInstitutionalAboutImage,
+    adaptRoute(UploadInstitutionalAboutImageController),
   )
 
   // PATCH
@@ -72,6 +73,6 @@ export async function institutionalInfoRoutes(app: ExtendedFastifyInstance) {
         body: updateInstitutionalInfoBodySchema,
       },
     },
-    updateInstitutionalInfo,
+    adaptRoute(UpdateInstitutionalInfoController),
   )
 }

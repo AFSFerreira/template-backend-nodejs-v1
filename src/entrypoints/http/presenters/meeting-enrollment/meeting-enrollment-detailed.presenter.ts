@@ -1,13 +1,10 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPMeetingEnrollmentDetailed,
   MeetingEnrollmentDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 
-export class MeetingEnrollmentDetailedPresenter
-  implements IPresenterStrategy<MeetingEnrollmentDetailedPresenterInput, HTTPMeetingEnrollmentDetailed>
-{
-  public toHTTP(input: MeetingEnrollmentDetailedPresenterInput): HTTPMeetingEnrollmentDetailed {
+export const MeetingEnrollmentDetailedPresenter = {
+  toHTTP(input: MeetingEnrollmentDetailedPresenterInput): HTTPMeetingEnrollmentDetailed {
     return {
       id: input.publicId,
       createdAt: input.createdAt,
@@ -35,5 +32,9 @@ export class MeetingEnrollmentDetailedPresenter
           }
         : null,
     }
-  }
+  },
+
+  toHTTPList(inputs: MeetingEnrollmentDetailedPresenterInput[]): HTTPMeetingEnrollmentDetailed[] {
+    return inputs.map(this.toHTTP)
+  },
 }

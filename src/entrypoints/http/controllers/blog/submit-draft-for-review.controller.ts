@@ -1,27 +1,26 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { SubmitDraftForReviewParamsType } from '@custom-types/http/schemas/blog/submit-draft-for-review-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { SubmitDraftForReviewUseCase } from '@use-cases/blog/submit-draft-for-review'
 import type { FastifyReply } from 'fastify'
-import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { SubmitDraftForReviewUseCase } from '@use-cases/blog/submit-draft-for-review'
+import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function submitDraftForReview(
-  request: ZodRequest<{ params: SubmitDraftForReviewParamsType }>,
-  reply: FastifyReply,
-) {
-  const userPublicId = getRequestUserPublicId(request)
-  const parsedParams = request.params
+@injectable()
+export class SubmitDraftForReviewController implements IController {
+  constructor(private useCase: SubmitDraftForReviewUseCase) {}
 
-  const useCase = container.resolve(SubmitDraftForReviewUseCase)
+  async handle(request: ZodRequest<{ params: SubmitDraftForReviewParamsType }>, reply: FastifyReply) {
+    const userPublicId = getRequestUserPublicId(request)
+    const parsedParams = request.params
+    const { blog } = await this.useCase.execute({
+      ...parsedParams,
+      userPublicId,
+    })
 
-  const { blog } = await useCase.execute({
-    ...parsedParams,
-    userPublicId,
-  })
+    const formattedReply = BlogDefaultPresenter.toHTTP(blog)
 
-  const formattedReply = BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

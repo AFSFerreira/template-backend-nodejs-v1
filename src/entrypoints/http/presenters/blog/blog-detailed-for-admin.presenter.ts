@@ -1,14 +1,11 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   BlogDetailedForAdminPresenterInput,
   HTTPBlogDetailedForAdmin,
 } from '@custom-types/http/presenter/blog/blog-detailed-for-admin'
 import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
 
-export class BlogDetailedForAdminPresenter
-  implements IPresenterStrategy<BlogDetailedForAdminPresenterInput, HTTPBlogDetailedForAdmin>
-{
-  public toHTTP(input: BlogDetailedForAdminPresenterInput): HTTPBlogDetailedForAdmin {
+export const BlogDetailedForAdminPresenter = {
+  toHTTP(input: BlogDetailedForAdminPresenterInput): HTTPBlogDetailedForAdmin {
     return {
       id: input.publicId,
       editorialStatus: input.editorialStatus,
@@ -20,5 +17,9 @@ export class BlogDetailedForAdminPresenter
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
+  },
+
+  toHTTPList(inputs: BlogDetailedForAdminPresenterInput[]): HTTPBlogDetailedForAdmin[] {
+    return inputs.map(this.toHTTP)
+  },
 }

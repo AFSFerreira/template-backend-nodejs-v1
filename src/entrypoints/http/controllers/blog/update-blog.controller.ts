@@ -1,30 +1,29 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { BlogDefaultPresenterInput, HTTPBlog } from '@custom-types/http/presenter/blog/blog-default'
 import type { UpdateBlogBodyType } from '@custom-types/http/schemas/blog/update-blog-body-schema'
 import type { UpdateBlogParamsType } from '@custom-types/http/schemas/blog/update-blog-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { UpdateBlogUseCase } from '@use-cases/blog/update-blog'
 import type { FastifyReply } from 'fastify'
-import { BlogPresenter } from '@http/presenters/blog-presenter'
-import { UpdateBlogUseCase } from '@use-cases/blog/update-blog'
+import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function updateBlog(
-  request: ZodRequest<{ body: UpdateBlogBodyType; params: UpdateBlogParamsType }>,
-  reply: FastifyReply,
-) {
-  const userPublicId = getRequestUserPublicId(request)
-  const { publicId } = request.params
-  const parsedBody = request.body
+@injectable()
+export class UpdateBlogController implements IController {
+  constructor(private useCase: UpdateBlogUseCase) {}
 
-  const useCase = container.resolve(UpdateBlogUseCase)
+  async handle(request: ZodRequest<{ body: UpdateBlogBodyType; params: UpdateBlogParamsType }>, reply: FastifyReply) {
+    const userPublicId = getRequestUserPublicId(request)
+    const { publicId } = request.params
+    const parsedBody = request.body
+    const { blog } = await this.useCase.execute({
+      publicId,
+      body: parsedBody,
+      userPublicId,
+    })
 
-  const { blog } = await useCase.execute({
-    publicId,
-    body: parsedBody,
-    userPublicId,
-  })
+    const formattedReply = BlogDefaultPresenter.toHTTP(blog)
 
-  const formattedReply = BlogPresenter.toHTTP<BlogDefaultPresenterInput, HTTPBlog>(blog)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

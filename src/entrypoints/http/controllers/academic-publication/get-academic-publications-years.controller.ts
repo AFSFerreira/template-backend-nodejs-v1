@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  AcademicPublicationYearPresenterInput,
-  HTTPAcademicPublicationYear,
-} from '@custom-types/http/presenter/academic-publication/academic-publication-year'
 import type { GetAcademicPublicationsYearsQueryType } from '@custom-types/http/schemas/academic-pulication/get-academic-publications-years-query-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAcademicPublicationsYearsUseCase } from '@use-cases/academic-publication/get-academic-publications-years'
 import type { FastifyReply } from 'fastify'
-import { AcademicPublicationPresenter } from '@http/presenters/academic-publication-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetAcademicPublicationsYearsUseCase } from '@use-cases/academic-publication/get-academic-publications-years'
-import { container } from 'tsyringe'
+import { AcademicPublicationYearPresenter } from '@http/presenters/academic-publication/academic-publication-year.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAcademicPublicationsYearsController(
-  request: ZodRequest<{ querystring: GetAcademicPublicationsYearsQueryType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAcademicPublicationsYearsController implements IController {
+  constructor(private useCase: GetAcademicPublicationsYearsUseCase) {}
 
-  const useCase = container.resolve(GetAcademicPublicationsYearsUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAcademicPublicationsYearsQueryType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = AcademicPublicationYearPresenter.toHTTPList(data)
 
-  const formattedReply = AcademicPublicationPresenter.toHTTP<
-    AcademicPublicationYearPresenterInput,
-    HTTPAcademicPublicationYear
-  >(data, tsyringeTokens.presenters.academicPublication.academicPublicationYear)
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

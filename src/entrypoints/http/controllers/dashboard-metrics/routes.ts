@@ -4,11 +4,12 @@ import { MANAGER_PERMISSIONS } from '@constants/sets'
 import { verifyJwt } from '@http/middlewares/verify-jwt.middleware'
 import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { dashboardMetricsSwaggerDocs } from '@lib/swagger/models/dashboard-metrics'
+import { adaptRoute } from '@utils/http/adapt-route'
 import { rateLimit } from '@utils/http/rate-limit'
-import { getBlogsMetrics } from './get-blogs-metrics.controller'
-import { getNewslettersMetrics } from './get-newsletters-metrics.controller'
-import { getUsersMetrics } from './get-users-metrics.controller'
-import { registerPageViewController } from './register-page-view.controller'
+import { GetBlogsMetricsController } from './get-blogs-metrics.controller'
+import { GetNewslettersMetricsController } from './get-newsletters-metrics.controller'
+import { GetUsersMetricsController } from './get-users-metrics.controller'
+import { RegisterPageViewController } from './register-page-view.controller'
 
 export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
   // GET
@@ -21,7 +22,7 @@ export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
         ...dashboardMetricsSwaggerDocs.getBlogsMetrics,
       },
     },
-    getBlogsMetrics,
+    adaptRoute(GetBlogsMetricsController),
   )
   app.get(
     '/users',
@@ -32,7 +33,7 @@ export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
         ...dashboardMetricsSwaggerDocs.getUsersMetrics,
       },
     },
-    getUsersMetrics,
+    adaptRoute(GetUsersMetricsController),
   )
   app.get(
     '/newsletters',
@@ -43,7 +44,7 @@ export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
         ...dashboardMetricsSwaggerDocs.getNewslettersMetrics,
       },
     },
-    getNewslettersMetrics,
+    adaptRoute(GetNewslettersMetricsController),
   )
 
   app.post(
@@ -54,6 +55,6 @@ export async function dashboardMetricsRoutes(app: ExtendedFastifyInstance) {
         ...dashboardMetricsSwaggerDocs.registerPageView,
       },
     },
-    registerPageViewController,
+    adaptRoute(RegisterPageViewController),
   )
 }

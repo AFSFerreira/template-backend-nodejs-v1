@@ -1,10 +1,7 @@
-import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
 import type { AcademicPublicationSimplifiedPresenterInput } from '@custom-types/http/presenter/academic-publication/academic-publication-simplified'
 
-export class AcademicPublicationFilteredPresenter
-  implements IPresenterStrategy<AcademicPublicationSimplifiedPresenterInput, HTTPAcademicPublication>
-{
+export const AcademicPublicationFilteredPresenter = {
   toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication {
     return {
       title: input.title,
@@ -17,5 +14,9 @@ export class AcademicPublicationFilteredPresenter
       mainCategory: input.mainCategory,
       publicationYear: input.publicationYear,
     }
-  }
+  },
+
+  toHTTPList(inputs: AcademicPublicationSimplifiedPresenterInput[]): HTTPAcademicPublication[] {
+    return inputs.map(this.toHTTP)
+  },
 }

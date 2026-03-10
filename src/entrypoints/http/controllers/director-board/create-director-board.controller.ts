@@ -1,36 +1,30 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  DirectorBoardDefaultPresenterInput,
-  HTTPDirectorBoard,
-} from '@custom-types/http/presenter/director-board/director-board-default'
 import type { CreateDirectorBoardBodyType } from '@custom-types/http/schemas/director-board/create-director-board-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
 import type { FastifyReply } from 'fastify'
-import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
-import { CreateDirectorBoardUseCase } from '@use-cases/director-board/create-director-board'
+import { DirectorBoardDefaultPresenter } from '@http/presenters/director-board/director-board-default.presenter'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function createDirectorBoard(
-  request: ZodRequest<{ body: CreateDirectorBoardBodyType }>,
-  reply: FastifyReply,
-) {
-  const parsedBody = request.body
+@injectable()
+export class CreateDirectorBoardController implements IController {
+  constructor(private useCase: CreateDirectorBoardUseCase) {}
 
-  const useCase = container.resolve(CreateDirectorBoardUseCase)
+  async handle(request: ZodRequest<{ body: CreateDirectorBoardBodyType }>, reply: FastifyReply) {
+    const parsedBody = request.body
+    const { directorBoard } = await this.useCase.execute({
+      ...parsedBody,
+      audit: {
+        actorPublicId: getRequestUserPublicId(request),
+        ipAddress: getClientIp(request),
+      },
+    })
 
-  const { directorBoard } = await useCase.execute({
-    ...parsedBody,
-    audit: {
-      actorPublicId: getRequestUserPublicId(request),
-      ipAddress: getClientIp(request),
-    },
-  })
+    const formattedReply = DirectorBoardDefaultPresenter.toHTTP(directorBoard)
 
-  const formattedReply = DirectorBoardPresenter.toHTTP<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>(
-    directorBoard,
-  )
-
-  return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+    return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
+  }
 }

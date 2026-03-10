@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  DirectorBoardWithUserForAdminPresenterInput,
-  HTTPDirectorBoardWithUserForAdmin,
-} from '@custom-types/http/presenter/director-board/director-board-with-user-for-admin'
 import type { FindDirectorBoardByPublicIdForAdminParamsType } from '@custom-types/http/schemas/director-board/find-director-board-by-public-id-for-admin-params-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { FindDirectorBoardByPublicIdForAdminUseCase } from '@use-cases/director-board/find-by-public-id-for-admin'
 import type { FastifyReply } from 'fastify'
-import { DirectorBoardPresenter } from '@http/presenters/director-board-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { FindDirectorBoardByPublicIdForAdminUseCase } from '@use-cases/director-board/find-by-public-id-for-admin'
-import { container } from 'tsyringe'
+import { DirectorBoardWithUserForAdminPresenter } from '@http/presenters/director-board/director-board-with-user-for-admin.presenter'
+import { injectable } from 'tsyringe'
 
-export async function findDirectorBoardByPublicIdForAdmin(
-  request: ZodRequest<{ params: FindDirectorBoardByPublicIdForAdminParamsType }>,
-  reply: FastifyReply,
-) {
-  const { publicId } = request.params
+@injectable()
+export class FindDirectorBoardByPublicIdForAdminController implements IController {
+  constructor(private useCase: FindDirectorBoardByPublicIdForAdminUseCase) {}
 
-  const useCase = container.resolve(FindDirectorBoardByPublicIdForAdminUseCase)
+  async handle(request: ZodRequest<{ params: FindDirectorBoardByPublicIdForAdminParamsType }>, reply: FastifyReply) {
+    const { publicId } = request.params
+    const { directorBoard } = await this.useCase.execute({ publicId })
 
-  const { directorBoard } = await useCase.execute({ publicId })
+    const formattedReply = DirectorBoardWithUserForAdminPresenter.toHTTP(directorBoard)
 
-  const formattedReply = DirectorBoardPresenter.toHTTP<
-    DirectorBoardWithUserForAdminPresenterInput,
-    HTTPDirectorBoardWithUserForAdmin
-  >(directorBoard, tsyringeTokens.presenters.directorBoard.directorBoardWithUserForAdmin)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }

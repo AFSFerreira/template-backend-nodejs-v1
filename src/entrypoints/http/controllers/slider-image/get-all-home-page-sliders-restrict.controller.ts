@@ -1,29 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type {
-  HTTPSliderImage,
-  SliderImageDefaultPresenterInput,
-} from '@custom-types/http/presenter/slider-image/slider-image-default'
 import type { GetAllHomePageSlidersRestrictType } from '@custom-types/http/schemas/slider-image/get-all-home-page-sliders-restrict-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { GetAllHomePageSlidersRestrictUseCase } from '@use-cases/slider-image/get-all-home-page-sliders-restrict'
 import type { FastifyReply } from 'fastify'
-import { SliderImagePresenter } from '@http/presenters/slider-image-presenter'
-import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { GetAllHomePageSlidersRestrictUseCase } from '@use-cases/slider-image/get-all-home-page-sliders-restrict'
-import { container } from 'tsyringe'
+import { SliderImageDefaultPresenter } from '@http/presenters/slider-image/slider-image-default.presenter'
+import { injectable } from 'tsyringe'
 
-export async function getAllHomePageSlidersRestrict(
-  request: ZodRequest<{ querystring: GetAllHomePageSlidersRestrictType }>,
-  reply: FastifyReply,
-) {
-  const parsedQuery = request.query
+@injectable()
+export class GetAllHomePageSlidersRestrictController implements IController {
+  constructor(private useCase: GetAllHomePageSlidersRestrictUseCase) {}
 
-  const useCase = container.resolve(GetAllHomePageSlidersRestrictUseCase)
+  async handle(request: ZodRequest<{ querystring: GetAllHomePageSlidersRestrictType }>, reply: FastifyReply) {
+    const parsedQuery = request.query
+    const { data, meta } = await this.useCase.execute(parsedQuery)
 
-  const { data, meta } = await useCase.execute(parsedQuery)
+    const formattedReply = SliderImageDefaultPresenter.toHTTPList(data)
 
-  const formattedReply = SliderImagePresenter.toHTTP<SliderImageDefaultPresenterInput, HTTPSliderImage>(
-    data,
-    tsyringeTokens.presenters.sliderImage.sliderImageHomePage,
-  )
-
-  return await reply.sendPaginated(formattedReply, meta)
+    return await reply.sendPaginated(formattedReply, meta)
+  }
 }

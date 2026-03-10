@@ -1,46 +1,48 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
 import type { AuthenticateType } from '@custom-types/http/schemas/user/authenticate-body-schema'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import type { FastifyReply } from 'fastify'
-import { UserPresenter } from '@http/presenters/user-presenter'
+import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
 import { authenticateConnectionInfoSchema } from '@http/schemas/user/authenticate-connection-info-schema'
-import { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import { buildAuthTokens } from '@utils/http/build-auth-tokens'
 import { getConnectionInfo } from '@utils/http/get-connection-info'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function authenticate(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
-  const { login, password } = request.body
+@injectable()
+export class AuthenticateController implements IController {
+  constructor(private useCase: AuthenticateUseCase) {}
 
-  const info = getConnectionInfo(request)
+  async handle(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
+    const { login, password } = request.body
 
-  const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(info)
+    const info = getConnectionInfo(request)
 
-  const useCase = container.resolve(AuthenticateUseCase)
+    const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(info)
+    const { user } = await this.useCase.execute({
+      login,
+      password,
+      ipAddress,
+      browser,
+      remotePort,
+    })
 
-  const { user } = await useCase.execute({
-    login,
-    password,
-    ipAddress,
-    browser,
-    remotePort,
-  })
+    const { accessToken, reply: replyWithCookie } = await buildAuthTokens({
+      reply,
+      publicId: user.publicId,
+      payload: {
+        role: user.role,
+        status: user.membershipStatus,
+      },
+    })
 
-  const { accessToken, reply: replyWithCookie } = await buildAuthTokens({
-    reply,
-    publicId: user.publicId,
-    payload: {
-      role: user.role,
-      status: user.membershipStatus,
-    },
-  })
+    const formattedUser = UserDefaultPresenter.toHTTP(user)
 
-  const formattedUser = UserPresenter.toHTTP<UserDefaultPresenterInput, HTTPUser>(user)
+    const formattedReply = {
+      accessToken,
+      user: formattedUser,
+    }
 
-  const formattedReply = {
-    accessToken,
-    user: formattedUser,
+    return await replyWithCookie.sendResponse(formattedReply)
   }
-
-  return await replyWithCookie.sendResponse(formattedReply)
 }

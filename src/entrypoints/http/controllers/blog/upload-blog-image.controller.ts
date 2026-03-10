@@ -1,21 +1,23 @@
-import type { FileInput, HTTPFile } from '@custom-types/http/presenter/file/file-default'
+import type { IController } from '@custom-types/utils/http/adapt-route'
+import type { UploadBlogImageUseCase } from '@use-cases/blog/upload-blog-image'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { blogImageMultipartFileConfig } from '@constants/multipart-configuration-constants'
-import { FilePresenter } from '@http/presenters/file-presenter'
+import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
-import { UploadBlogImageUseCase } from '@use-cases/blog/upload-blog-image'
-import { container } from 'tsyringe'
+import { injectable } from 'tsyringe'
 
-export async function uploadBlogImage(request: FastifyRequest, reply: FastifyReply) {
-  const filePart = await request.file(blogImageMultipartFileConfig)
+@injectable()
+export class UploadBlogImageController implements IController {
+  constructor(private useCase: UploadBlogImageUseCase) {}
 
-  imageSchema.parse(filePart)
+  async handle(request: FastifyRequest, reply: FastifyReply) {
+    const filePart = await request.file(blogImageMultipartFileConfig)
 
-  const useCase = container.resolve(UploadBlogImageUseCase)
+    imageSchema.parse(filePart)
+    const uploadedFile = await this.useCase.execute({ filePart })
 
-  const uploadedFile = await useCase.execute({ filePart })
+    const formattedReply = UploadedFileDefaultPresenter.toHTTP(uploadedFile)
 
-  const formattedReply = FilePresenter.toHTTP<FileInput, HTTPFile>(uploadedFile)
-
-  return await reply.sendResponse(formattedReply)
+    return await reply.sendResponse(formattedReply)
+  }
 }
