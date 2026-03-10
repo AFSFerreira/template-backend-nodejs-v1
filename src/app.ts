@@ -44,9 +44,9 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   await customReplyPluginDefinition(app)
 
-  // REVIEW: Vale a pena expôr o JSON para o frontend
-  // consumir com um Orval ou Kubb?
   if (IS_DEV) {
+    // REVIEW: Vale a pena expôr o JSON para o frontend
+    // consumir com um Orval ou Kubb?
     app.register(swagger, swaggerConfiguration)
 
     app.register(swaggerUi, swaggerUiConfiguration)
