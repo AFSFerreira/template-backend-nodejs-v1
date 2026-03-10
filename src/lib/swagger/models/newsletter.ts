@@ -2,8 +2,8 @@ import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
 import { httpNewsletterSchema } from '@custom-types/http/presenter/newsletter/newsletter-default'
 import { httpNewsletterDetailedWithContentSchema } from '@custom-types/http/presenter/newsletter/newsletter-detailed-with-content'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
-import { apiMetaResponseSchema } from '@lib/zod/helpers/api-meta-response-schema'
-import { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
+import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 
 export const newsletterSwaggerDocs = {

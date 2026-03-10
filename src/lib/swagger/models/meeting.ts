@@ -2,8 +2,8 @@ import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
 import { httpMeetingWithDetailsSchema } from '@custom-types/http/presenter/meeting/meeting-detailed'
 import { httpMeetingEnrollmentDetailedSchema } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
-import { apiMetaResponseSchema } from '@lib/zod/helpers/api-meta-response-schema'
-import { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
+import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 
 export const meetingSwaggerDocs = {

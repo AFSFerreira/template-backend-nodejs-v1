@@ -2,7 +2,7 @@ import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
 import { httpInstitutionalInfoSchema } from '@custom-types/http/presenter/institutional-info/institutional-info'
 import { httpInstitutionalInfoForAdminSchema } from '@custom-types/http/presenter/institutional-info/institutional-info-for-admin'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
-import { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 
 export const institutionalInfoSwaggerDocs = {

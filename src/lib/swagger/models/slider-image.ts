@@ -1,8 +1,8 @@
 import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
 import { httpSliderImageSchema } from '@custom-types/http/presenter/slider-image/slider-image-default'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
-import { apiMetaResponseSchema } from '@lib/zod/helpers/api-meta-response-schema'
-import { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
+import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 
 export const sliderImageSwaggerDocs = {

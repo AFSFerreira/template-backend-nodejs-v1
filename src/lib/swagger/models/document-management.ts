@@ -1,5 +1,5 @@
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
-import { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 
 export const documentManagementSwaggerDocs = {

@@ -5,14 +5,10 @@ import { httpUserDetailsForAdminSchema } from '@custom-types/http/presenter/user
 import { httpSimplifiedUserDetailsSchema } from '@custom-types/http/presenter/user/user-simplified'
 import { httpSimplifiedUserDetailsForAdminSchema } from '@custom-types/http/presenter/user/user-simplified-for-admin'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
-import { apiMetaResponseSchema } from '@lib/zod/helpers/api-meta-response-schema'
-import { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
+import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
-
-const apiMessageSchema = z.object({
-  code: z.string().describe('Código identificador da mensagem'),
-  message: z.string().describe('Mensagem descritiva'),
-})
+import { apiMessageSchema } from '../schemas/api-message-schema'
 
 export const userSwaggerDocs = {
   // ========== AUTH ==========

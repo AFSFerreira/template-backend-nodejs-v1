@@ -1,4 +1,4 @@
-import type { apiErrorResponseSchema } from '@lib/zod/helpers/api-response-schema'
+import type { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import type z from 'zod'
 import type { IApiValidationErrorResponse } from './api-validation-error-response'
 
