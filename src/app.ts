@@ -24,7 +24,6 @@ import { swaggerUiConfiguration } from '@http/configurations/swagger-ui-configur
 import { customReplyPluginDefinition } from '@http/plugins/custom-reply'
 import { logRequest } from '@http/plugins/request-logger'
 import { logResponse } from '@http/plugins/response-logger'
-import { preSerialization } from '@http/plugins/serializer'
 import { gracefulShutdown } from '@http/plugins/shutdown'
 import { staticFileRoutes } from '@http/plugins/static-files'
 import { httpRoutes } from '@http/routes'
@@ -69,7 +68,6 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   app.addHook('onRequest', logRequest)
   app.addHook('onResponse', logResponse)
-  app.addHook('preSerialization', preSerialization)
   app.addHook('onClose', gracefulShutdown)
 
   app.setErrorHandler(fastifyErrorHandler)
