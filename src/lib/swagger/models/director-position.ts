@@ -1,5 +1,5 @@
 import { httpDirectorPositionSchema } from '@custom-types/http/presenter/director-position/director-position-default'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'

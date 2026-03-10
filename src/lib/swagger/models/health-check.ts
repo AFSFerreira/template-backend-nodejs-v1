@@ -1,4 +1,4 @@
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { z } from 'zod'
 
 export const healthCheckSwaggerDocs = {

@@ -4,7 +4,7 @@ import { httpBlogDetailedForAdminSchema } from '@custom-types/http/presenter/blo
 import { httpBlogDetailedWithContentSchema } from '@custom-types/http/presenter/blog/blog-detailed-with-content'
 import { httpSimplifiedBlogSchema } from '@custom-types/http/presenter/blog/blog-simplified'
 import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'

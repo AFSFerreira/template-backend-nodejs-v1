@@ -1,7 +1,7 @@
 import { dashboardBlogsMetricsSchema } from '@custom-types/http/presenter/dashboard-metrics/dashboard-blogs-metrics'
 import { dashboardNewslettersMetricsSchema } from '@custom-types/http/presenter/dashboard-metrics/dashboard-newsletters-metrics'
 import { dashboardUsersMetricsSchema } from '@custom-types/http/presenter/dashboard-metrics/dashboard-users-metrics'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 

@@ -2,7 +2,7 @@ import { httpDirectorBoardSchema } from '@custom-types/http/presenter/director-b
 import { httpDirectorBoardWithUserSchema } from '@custom-types/http/presenter/director-board/director-board-with-user'
 import { httpDirectorBoardWithUserForAdminSchema } from '@custom-types/http/presenter/director-board/director-board-with-user-for-admin'
 import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'

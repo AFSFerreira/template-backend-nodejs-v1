@@ -1,7 +1,7 @@
 import { httpActivityAreaWithAcademicPublicationsCountSchema } from '@custom-types/http/presenter/academic-publication/activity-area-with-academic-publications-count'
 import { httpActivityAreaSchema } from '@custom-types/http/presenter/activity-area/activity-area-default'
 import { httpActivityAreaWithBlogsCountSchema } from '@custom-types/http/presenter/activity-area/activity-area-with-blogs-count'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'

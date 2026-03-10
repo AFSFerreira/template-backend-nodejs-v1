@@ -1,6 +1,6 @@
 import { httpInstitutionSchema } from '@custom-types/http/presenter/institution/institution-default'
 import { httpInstitutionWithUsersCountSchema } from '@custom-types/http/presenter/institution/institution-with-users-count'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'

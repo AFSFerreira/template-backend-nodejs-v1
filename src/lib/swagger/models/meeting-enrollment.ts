@@ -1,5 +1,5 @@
 import { httpMeetingEnrollmentDetailedWithPresentationSchema } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-detailed-with-presentation'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
 

@@ -4,7 +4,7 @@ import { httpUserDetailsSchema } from '@custom-types/http/presenter/user/user-de
 import { httpUserDetailsForAdminSchema } from '@custom-types/http/presenter/user/user-detailed-for-admin'
 import { httpSimplifiedUserDetailsSchema } from '@custom-types/http/presenter/user/user-simplified'
 import { httpSimplifiedUserDetailsForAdminSchema } from '@custom-types/http/presenter/user/user-simplified-for-admin'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'

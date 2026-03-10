@@ -1,6 +1,6 @@
 import { httpAcademicPublicationSchema } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
 import { httpAcademicPublicationYearSchema } from '@custom-types/http/presenter/academic-publication/academic-publication-year'
-import { swaggerTokens } from '@lib/swagger/helpers/swagger-toneks'
+import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
 import { z } from 'zod'
