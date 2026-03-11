@@ -18,10 +18,10 @@ import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newslett
 import { buildNewsletterHtmlPath } from '@utils/builders/paths/build-newsletter-html-path'
 import { PlainTextService } from '@utils/formatters/plain-text-service'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { NewsletterTemplateRenderer } from './newsletter-template-renderer'
 
-@injectable()
+@singleton()
 export class NewsletterContentRenderService {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

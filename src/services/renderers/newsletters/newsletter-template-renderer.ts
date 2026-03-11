@@ -12,13 +12,15 @@ import { BaseRenderer } from '../base-renderer'
 export class NewsletterTemplateRenderer extends BaseRenderer<NewsletterRendererInfo> {
   protected htmlTemplatePath: string
 
-  constructor(templateFolder?: string) {
+  constructor(templateFolder: string = NEWSLETTER_BASE_TEMPLATE_FOLDER) {
     super()
+
     this.htmlTemplatePath = path.resolve(
       NUNJUCKS_TEMPLATES_ROOT_PATH,
-      templateFolder ?? NEWSLETTER_BASE_TEMPLATE_FOLDER,
+      NEWSLETTER_BASE_TEMPLATE_FOLDER,
       'template.html.njk',
     )
+
     this.textTemplatePath = path.resolve(
       NUNJUCKS_TEMPLATES_ROOT_PATH,
       templateFolder ?? NEWSLETTER_BASE_TEMPLATE_FOLDER,
