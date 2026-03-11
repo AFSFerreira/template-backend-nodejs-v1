@@ -15,11 +15,9 @@ export class ChangePasswordController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: UpdatePasswordBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    const userPublicId = getRequestUserPublicId(request)
     await this.useCase.execute({
-      ...parsedBody,
-      userPublicId,
+      ...request.body,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     return await reply.sendApiResponse(PASSWORD_UPDATED_SUCCESSFULLY)

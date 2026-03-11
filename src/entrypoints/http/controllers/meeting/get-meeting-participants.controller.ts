@@ -22,9 +22,8 @@ export class GetMeetingParticipantsController implements IController {
     reply: FastifyReply,
   ) {
     const { meetingPublicId } = request.params
-    const parsedQuery = request.query
     const { data, meta } = await this.useCase.execute({
-      ...parsedQuery,
+      ...request.query,
       meetingPublicId,
     })
 

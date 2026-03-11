@@ -18,10 +18,7 @@ export class FindBlogByPublicIdController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ params: FindBlogByPublicIdParamsType }>, reply: FastifyReply) {
-    const parsedParams = request.params
-    const ip = getClientIp(request)
-
-    const { blog } = await this.useCase.execute({ publicId: parsedParams.publicId, ip })
+    const { blog } = await this.useCase.execute({ publicId: request.params.publicId, ip: getClientIp(request) })
 
     const formattedReply = this.blogDetailedPresenter.toHTTP(blog)
 

@@ -22,8 +22,7 @@ export class UpdateInstitutionController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body
-    const { institution } = await this.useCase.execute({ publicId, data: parsedBody })
+    const { institution } = await this.useCase.execute({ publicId, data: request.body })
 
     const formattedReply = this.institutionDefaultPresenter.toHTTP(institution)
 

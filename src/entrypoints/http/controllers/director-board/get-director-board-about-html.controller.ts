@@ -14,8 +14,7 @@ export class GetDirectorBoardAboutHTMLController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ params: GetDirectorBoardAboutHTMLParamsType }>, reply: FastifyReply) {
-    const parsedParams = request.params
-    const { htmlContent } = await this.useCase.execute(parsedParams)
+    const { htmlContent } = await this.useCase.execute(request.params)
 
     return await reply.status(StatusCodes.OK).sendHtml(htmlContent)
   }

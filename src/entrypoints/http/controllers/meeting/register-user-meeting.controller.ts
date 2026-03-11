@@ -21,11 +21,9 @@ export class RegisterUserMeetingController implements IController {
     reply: FastifyReply,
   ) {
     const { meetingId } = request.params
-    const userPublicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
-    const parsedBody = request.body
     await this.useCase.execute({
-      ...parsedBody,
-      userPublicId,
+      ...request.body,
+      userPublicId: modelPublicIdSchema.parse(getRequestUserPublicId(request)),
       meetingId,
     })
 

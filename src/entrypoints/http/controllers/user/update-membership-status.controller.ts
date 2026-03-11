@@ -24,9 +24,8 @@ export class UpdateMembershipStatusController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body
     const { user } = await this.useCase.execute({
-      ...parsedBody,
+      ...request.body,
       publicId,
       audit: {
         actorPublicId: getRequestUserPublicId(request),

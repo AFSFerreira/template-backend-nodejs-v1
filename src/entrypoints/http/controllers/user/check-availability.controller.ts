@@ -13,8 +13,7 @@ export class CheckAvailabilityController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: CheckAvailabilityQueryType }>, reply: FastifyReply) {
-    const parsedQuery = request.query
-    const { availabilities } = await this.useCase.execute(parsedQuery)
+    const { availabilities } = await this.useCase.execute(request.query)
 
     return await reply.sendResponse(availabilities)
   }

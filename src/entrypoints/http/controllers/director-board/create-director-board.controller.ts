@@ -20,9 +20,8 @@ export class CreateDirectorBoardController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateDirectorBoardBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
     const { directorBoard } = await this.useCase.execute({
-      ...parsedBody,
+      ...request.body,
       audit: {
         actorPublicId: getRequestUserPublicId(request),
         ipAddress: getClientIp(request),

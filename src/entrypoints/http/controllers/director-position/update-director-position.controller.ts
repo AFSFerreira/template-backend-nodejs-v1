@@ -22,8 +22,7 @@ export class UpdateDirectorPositionController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body
-    const { directorPosition } = await this.useCase.execute({ publicId, data: parsedBody })
+    const { directorPosition } = await this.useCase.execute({ publicId, data: request.body })
 
     const formattedReply = this.directorPositionDefaultPresenter.toHTTP(directorPosition)
 

@@ -18,8 +18,7 @@ export class CreateDirectorPositionController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateDirectorPositionBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    const { directorPosition } = await this.useCase.execute(parsedBody)
+    const { directorPosition } = await this.useCase.execute(request.body)
 
     const formattedReply = this.directorPositionDefaultPresenter.toHTTP(directorPosition)
 

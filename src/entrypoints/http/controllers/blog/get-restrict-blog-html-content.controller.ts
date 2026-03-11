@@ -15,11 +15,9 @@ export class GetRestrictBlogHtmlContentController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ params: GetRestrictBlogHtmlContentParamsType }>, reply: FastifyReply) {
-    const userPublicId = getRequestUserPublicId(request)
-    const parsedParams = request.params
     const { htmlContent } = await this.useCase.execute({
-      ...parsedParams,
-      userPublicId,
+      ...request.params,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     return await reply.status(StatusCodes.OK).sendHtml(htmlContent)

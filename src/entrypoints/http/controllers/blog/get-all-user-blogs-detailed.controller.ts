@@ -18,11 +18,9 @@ export class GetAllUserBlogsDetailedController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllUserBlogsDetailedQueryType }>, reply: FastifyReply) {
-    const userPublicId = getRequestUserPublicId(request)
-    const parsedQuery = request.query
     const { data, meta } = await this.useCase.execute({
-      ...parsedQuery,
-      userPublicId,
+      ...request.query,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.blogDetailedForAdminPresenter.toHTTPList(data)

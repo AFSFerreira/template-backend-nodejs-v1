@@ -22,8 +22,7 @@ export class UpdateSliderImageController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body
-    const { sliderImage } = await this.useCase.execute({ publicId, data: parsedBody })
+    const { sliderImage } = await this.useCase.execute({ publicId, data: request.body })
 
     const formattedReply = this.sliderImageDefaultPresenter.toHTTP(sliderImage)
 

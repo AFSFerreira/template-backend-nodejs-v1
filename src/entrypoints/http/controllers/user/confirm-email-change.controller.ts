@@ -14,8 +14,7 @@ export class ConfirmEmailChangeController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: ConfirmEmailChangeBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    await this.useCase.execute(parsedBody)
+    await this.useCase.execute(request.body)
 
     return await reply.sendApiResponse(EMAIL_UPDATED_SUCCESSFULLY)
   }

@@ -19,11 +19,9 @@ export class UpdateUserController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: UpdateBodyType }>, reply: FastifyReply) {
-    const publicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
-    const parsedBody = request.body as UpdateUserBodySchemaType
     const { user } = await this.useCase.execute({
-      publicId,
-      data: parsedBody,
+      publicId: modelPublicIdSchema.parse(getRequestUserPublicId(request)),
+      data: request.body as UpdateUserBodySchemaType,
     })
 
     const formattedReply = this.userDetailedPresenter.toHTTP(user)

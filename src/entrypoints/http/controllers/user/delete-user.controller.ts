@@ -14,8 +14,7 @@ export class DeleteUserController implements IController {
   ) {}
 
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const publicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
-    await this.useCase.execute({ publicId })
+    await this.useCase.execute({ publicId: modelPublicIdSchema.parse(getRequestUserPublicId(request)) })
 
     return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
   }

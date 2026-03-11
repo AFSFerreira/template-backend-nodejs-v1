@@ -22,10 +22,9 @@ export class UpdateMeetingController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body
     const { meeting } = await this.useCase.execute({
       publicId,
-      body: parsedBody,
+      body: request.body,
     })
 
     const formattedReply = this.meetingDetailedPresenter.toHTTP(meeting)

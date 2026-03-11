@@ -19,9 +19,8 @@ export class RegisterGuestMeetingController implements IController {
     reply: FastifyReply,
   ) {
     const { meetingId } = request.params
-    const parsedBody = request.body
     await this.useCase.execute({
-      ...parsedBody,
+      ...request.body,
       meetingId,
     })
 

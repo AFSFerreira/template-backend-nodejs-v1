@@ -17,8 +17,7 @@ export class GetAllStatesController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllStatesQueryType }>, reply: FastifyReply) {
-    const parsedQuery = request.query
-    const { data, meta } = await this.useCase.execute(parsedQuery)
+    const { data, meta } = await this.useCase.execute(request.query)
 
     const formattedReply = this.addressWithUsersCountPresenter.toHTTPList(data)
 

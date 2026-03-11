@@ -24,10 +24,9 @@ export class UpdateUserPermissionsController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body as UpdateUserPermissionsBodySchemaType
     await this.useCase.execute({
       publicId,
-      data: parsedBody,
+      data: request.body as UpdateUserPermissionsBodySchemaType,
       audit: {
         actorPublicId: getRequestUserPublicId(request),
         ipAddress: getClientIp(request),

@@ -18,8 +18,7 @@ export class CreateNewsletterController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateNewsletterBodyType }>, reply: FastifyReply) {
-    const createNewsletterInput = request.body
-    const { newsletter } = await this.useCase.execute(createNewsletterInput)
+    const { newsletter } = await this.useCase.execute(request.body)
 
     const formattedReply = this.newsletterDefaultPresenter.toHTTP(newsletter)
 

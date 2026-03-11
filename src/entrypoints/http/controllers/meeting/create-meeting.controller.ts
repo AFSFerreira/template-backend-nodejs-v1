@@ -18,8 +18,7 @@ export class CreateMeetingController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateMeetingBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    const { meeting } = await this.useCase.execute(parsedBody)
+    const { meeting } = await this.useCase.execute(request.body)
 
     const formattedReply = this.meetingDetailedPresenter.toHTTP(meeting)
 

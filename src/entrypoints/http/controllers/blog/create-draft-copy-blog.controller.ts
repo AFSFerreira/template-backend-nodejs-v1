@@ -19,11 +19,9 @@ export class CreateDraftCopyBlogController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ params: CreateDraftCopyBlogParamsType }>, reply: FastifyReply) {
-    const userPublicId = getRequestUserPublicId(request)
-    const parsedParams = request.params
     const { blog } = await this.useCase.execute({
-      ...parsedParams,
-      userPublicId,
+      ...request.params,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.blogDefaultPresenter.toHTTP(blog)

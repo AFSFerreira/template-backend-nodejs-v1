@@ -17,8 +17,7 @@ export class UpdateInstitutionalInfoController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: UpdateInstitutionalInfoBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    const { institutionalInfo } = await this.useCase.execute({ data: parsedBody })
+    const { institutionalInfo } = await this.useCase.execute({ data: request.body })
 
     const formattedReply = this.institutionalInfoDefaultPresenter.toHTTP(institutionalInfo)
 

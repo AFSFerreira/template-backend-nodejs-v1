@@ -19,13 +19,11 @@ export class UpdateBlogController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: UpdateBlogBodyType; params: UpdateBlogParamsType }>, reply: FastifyReply) {
-    const userPublicId = getRequestUserPublicId(request)
     const { publicId } = request.params
-    const parsedBody = request.body
     const { blog } = await this.useCase.execute({
       publicId,
-      body: parsedBody,
-      userPublicId,
+      body: request.body,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.blogDefaultPresenter.toHTTP(blog)

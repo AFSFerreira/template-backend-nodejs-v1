@@ -18,8 +18,7 @@ export class CreateHomePageSliderImageController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateHomePageSliderImageBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    const { sliderImage } = await this.useCase.execute(parsedBody)
+    const { sliderImage } = await this.useCase.execute(request.body)
 
     const formattedReply = this.sliderImageDefaultPresenter.toHTTP(sliderImage)
 

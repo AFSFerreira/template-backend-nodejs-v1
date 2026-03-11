@@ -18,11 +18,9 @@ export class SubmitPublishedToPendingController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ params: SubmitPublishedToReviewParamsType }>, reply: FastifyReply) {
-    const userPublicId = getRequestUserPublicId(request)
-    const parsedParams = request.params
     const { blog } = await this.useCase.execute({
-      ...parsedParams,
-      userPublicId,
+      ...request.params,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.blogDefaultPresenter.toHTTP(blog)

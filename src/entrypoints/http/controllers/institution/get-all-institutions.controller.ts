@@ -13,8 +13,7 @@ export class GetAllInstitutionsNamesController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllInstitutionsQueryType }>, reply: FastifyReply) {
-    const parsedQuery = request.query
-    const { data, meta } = await this.useCase.execute(parsedQuery)
+    const { data, meta } = await this.useCase.execute(request.query)
 
     return await reply.sendPaginated(data, meta)
   }

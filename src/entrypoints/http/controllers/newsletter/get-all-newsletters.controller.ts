@@ -17,8 +17,7 @@ export class GetAllNewslettersController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllNewslettersQueryType }>, reply: FastifyReply) {
-    const parsedQuery = request.query
-    const { data, meta } = await this.useCase.execute(parsedQuery)
+    const { data, meta } = await this.useCase.execute(request.query)
 
     const formattedReply = this.newsletterDefaultPresenter.toHTTPList(data)
 

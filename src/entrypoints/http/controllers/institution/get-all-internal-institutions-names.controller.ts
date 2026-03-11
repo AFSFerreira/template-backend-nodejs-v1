@@ -17,8 +17,7 @@ export class GetAllInternalInstitutionsNamesController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllInternalInstitutionsNamesQueryType }>, reply: FastifyReply) {
-    const parsedQuery = request.query
-    const { data, meta } = await this.useCase.execute(parsedQuery)
+    const { data, meta } = await this.useCase.execute(request.query)
 
     const formattedReply = this.institutionDefaultPresenter.toHTTPList(data)
 

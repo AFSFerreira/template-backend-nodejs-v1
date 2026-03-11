@@ -18,8 +18,7 @@ export class CreateUserController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: RegisterBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body as RegisterUserBodySchemaType
-    const { user } = await this.useCase.execute(parsedBody)
+    const { user } = await this.useCase.execute(request.body as RegisterUserBodySchemaType)
 
     const formattedReply = this.userDetailedPresenter.toHTTP(user)
 

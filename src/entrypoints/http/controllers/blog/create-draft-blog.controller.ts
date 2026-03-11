@@ -19,12 +19,9 @@ export class CreateDraftBlogController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateBlogBodyType }>, reply: FastifyReply) {
-    const authorPublicId = getRequestUserPublicId(request)
-    const parsedBody = request.body
-
     const { blog } = await this.useCase.execute({
-      ...parsedBody,
-      authorPublicId,
+      ...request.body,
+      authorPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.blogDefaultPresenter.toHTTP(blog)

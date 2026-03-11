@@ -15,9 +15,8 @@ export class DeleteBlogController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ params: DeleteBlogParamsType }>, reply: FastifyReply) {
-    const userPublicId = getRequestUserPublicId(request)
     const { publicId } = request.params
-    await this.useCase.execute({ publicId, userPublicId })
+    await this.useCase.execute({ publicId, userPublicId: getRequestUserPublicId(request) })
 
     return await reply.sendResponse(undefined, StatusCodes.NO_CONTENT)
   }

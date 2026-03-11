@@ -14,8 +14,7 @@ export class VerifyEmailController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: VerifyEmailBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    await this.useCase.execute(parsedBody)
+    await this.useCase.execute(request.body)
 
     return await reply.sendApiResponse(EMAIL_VERIFICATION_SUCCESSFUL)
   }

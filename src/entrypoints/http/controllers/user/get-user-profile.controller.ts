@@ -17,8 +17,9 @@ export class GetUserProfileController implements IController {
   ) {}
 
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const publicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
-    const { user } = await this.useCase.execute({ publicId })
+    const { user } = await this.useCase.execute({
+      publicId: modelPublicIdSchema.parse(getRequestUserPublicId(request)),
+    })
 
     const formattedReply = this.userDetailedPresenter.toHTTP(user)
 

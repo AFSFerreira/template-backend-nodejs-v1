@@ -17,8 +17,7 @@ export class GetAllDirectorPositionsController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllDirectorPositionsType }>, reply: FastifyReply) {
-    const parsedQuery = request.query
-    const { data, meta } = await this.useCase.execute(parsedQuery)
+    const { data, meta } = await this.useCase.execute(request.query)
 
     const formattedReply = this.directorPositionDefaultPresenter.toHTTPList(data)
 

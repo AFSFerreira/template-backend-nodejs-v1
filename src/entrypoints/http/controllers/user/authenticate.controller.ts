@@ -22,9 +22,7 @@ export class AuthenticateController implements IController {
   async handle(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
     const { login, password } = request.body
 
-    const info = getConnectionInfo(request)
-
-    const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(info)
+    const { ipAddress, browser, remotePort } = authenticateConnectionInfoSchema.parse(getConnectionInfo(request))
     const { user } = await this.useCase.execute({
       login,
       password,

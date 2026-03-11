@@ -23,12 +23,10 @@ export class UpdateDirectorBoardController implements IController {
     reply: FastifyReply,
   ) {
     const { publicId } = request.params
-    const parsedBody = request.body
-    const requestUserPublicId = getRequestUserPublicId(request)
     const { directorBoard } = await this.useCase.execute({
       publicId,
-      data: parsedBody,
-      requestUserPublicId,
+      data: request.body,
+      requestUserPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.directorBoardWithUserPresenter.toHTTP(directorBoard)

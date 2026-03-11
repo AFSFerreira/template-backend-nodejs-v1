@@ -23,11 +23,9 @@ export class GetAllBlogsDetailedController implements IController {
     }>,
     reply: FastifyReply,
   ) {
-    const userPublicId = getRequestUserPublicId(request)
-    const query = request.query
     const { data, meta } = await this.useCase.execute({
-      ...query,
-      userPublicId,
+      ...request.query,
+      userPublicId: getRequestUserPublicId(request),
     })
 
     const formattedReply = this.blogDetailedForAdminPresenter.toHTTPList(data)

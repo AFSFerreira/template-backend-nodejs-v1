@@ -18,8 +18,7 @@ export class CreateInstitutionController implements IController {
   ) {}
 
   async handle(request: ZodRequest<{ body: CreateInstitutionBodyType }>, reply: FastifyReply) {
-    const parsedBody = request.body
-    const { institution } = await this.useCase.execute(parsedBody)
+    const { institution } = await this.useCase.execute(request.body)
 
     const formattedReply = this.institutionDefaultPresenter.toHTTP(institution)
 
