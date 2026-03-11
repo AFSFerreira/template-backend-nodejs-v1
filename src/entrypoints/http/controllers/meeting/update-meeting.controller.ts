@@ -3,7 +3,7 @@ import type { UpdateMeetingBodyType } from '@custom-types/http/schemas/meeting/u
 import type { UpdateMeetingParamsType } from '@custom-types/http/schemas/meeting/update-meeting-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
+import { MeetingDetailedPresenter } from '@http/presenters/meeting/meeting-detailed.presenter'
 import { UpdateMeetingUseCase } from '@use-cases/meeting/update-meeting'
 import { inject, injectable } from 'tsyringe'
 
@@ -13,8 +13,8 @@ export class UpdateMeetingController implements IController {
     @inject(UpdateMeetingUseCase)
     private readonly useCase: UpdateMeetingUseCase,
 
-    @inject(MeetingDefaultPresenter)
-    private readonly meetingDefaultPresenter: MeetingDefaultPresenter,
+    @inject(MeetingDetailedPresenter)
+    private readonly meetingDetailedPresenter: MeetingDetailedPresenter,
   ) {}
 
   async handle(
@@ -28,7 +28,7 @@ export class UpdateMeetingController implements IController {
       body: parsedBody,
     })
 
-    const formattedReply = this.meetingDefaultPresenter.toHTTP(meeting)
+    const formattedReply = this.meetingDetailedPresenter.toHTTP(meeting)
 
     return await reply.sendResponse(formattedReply)
   }

@@ -2,7 +2,7 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetAllMeetingsQueryType } from '@custom-types/http/schemas/meeting/get-all-meetings-query-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
+import { MeetingDetailedPresenter } from '@http/presenters/meeting/meeting-detailed.presenter'
 import { GetAllMeetingsUseCase } from '@use-cases/meeting/get-all-meetings'
 import { inject, injectable } from 'tsyringe'
 
@@ -12,15 +12,15 @@ export class GetAllMeetingsController implements IController {
     @inject(GetAllMeetingsUseCase)
     private readonly useCase: GetAllMeetingsUseCase,
 
-    @inject(MeetingDefaultPresenter)
-    private readonly meetingDefaultPresenter: MeetingDefaultPresenter,
+    @inject(MeetingDetailedPresenter)
+    private readonly meetingDetailedPresenter: MeetingDetailedPresenter,
   ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllMeetingsQueryType }>, reply: FastifyReply) {
     const parsedQuery = request.query
     const { data, meta } = await this.useCase.execute(parsedQuery)
 
-    const formattedReply = this.meetingDefaultPresenter.toHTTPList(data)
+    const formattedReply = this.meetingDetailedPresenter.toHTTPList(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

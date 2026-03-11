@@ -3,7 +3,7 @@ import type { UpdateMembershipStatusBodyType } from '@custom-types/http/schemas/
 import type { UpdateMembershipStatusParamsType } from '@custom-types/http/schemas/user/update-membership-status-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
 import { UpdateMembershipStatusUseCase } from '@use-cases/user/update-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
@@ -15,8 +15,8 @@ export class UpdateMembershipStatusController implements IController {
     @inject(UpdateMembershipStatusUseCase)
     private readonly useCase: UpdateMembershipStatusUseCase,
 
-    @inject(UserDefaultPresenter)
-    private readonly userDefaultPresenter: UserDefaultPresenter,
+    @inject(UserDetailedPresenter)
+    private readonly userDetailedPresenter: UserDetailedPresenter,
   ) {}
 
   async handle(
@@ -34,7 +34,7 @@ export class UpdateMembershipStatusController implements IController {
       },
     })
 
-    const formattedReply = this.userDefaultPresenter.toHTTP(user)
+    const formattedReply = this.userDetailedPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply)
   }

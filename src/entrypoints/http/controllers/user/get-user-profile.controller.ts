@@ -1,6 +1,6 @@
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { GetUserProfileUseCase } from '@use-cases/user/get-user-profile'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
@@ -12,15 +12,15 @@ export class GetUserProfileController implements IController {
     @inject(GetUserProfileUseCase)
     private readonly useCase: GetUserProfileUseCase,
 
-    @inject(UserDefaultPresenter)
-    private readonly userDefaultPresenter: UserDefaultPresenter,
+    @inject(UserDetailedPresenter)
+    private readonly userDetailedPresenter: UserDetailedPresenter,
   ) {}
 
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const publicId = modelPublicIdSchema.parse(getRequestUserPublicId(request))
     const { user } = await this.useCase.execute({ publicId })
 
-    const formattedReply = this.userDefaultPresenter.toHTTP(user)
+    const formattedReply = this.userDetailedPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply)
   }

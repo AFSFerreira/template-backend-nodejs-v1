@@ -3,7 +3,7 @@ import type { UpdateDirectorBoardBodyType } from '@custom-types/http/schemas/dir
 import type { UpdateDirectorBoardParamsType } from '@custom-types/http/schemas/director-board/update-director-board-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { DirectorBoardDefaultPresenter } from '@http/presenters/director-board/director-board-default.presenter'
+import { DirectorBoardWithUserPresenter } from '@http/presenters/director-board/director-board-with-user.presenter'
 import { UpdateDirectorBoardUseCase } from '@use-cases/director-board/update-director-board'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { inject, injectable } from 'tsyringe'
@@ -14,8 +14,8 @@ export class UpdateDirectorBoardController implements IController {
     @inject(UpdateDirectorBoardUseCase)
     private readonly useCase: UpdateDirectorBoardUseCase,
 
-    @inject(DirectorBoardDefaultPresenter)
-    private readonly directorBoardDefaultPresenter: DirectorBoardDefaultPresenter,
+    @inject(DirectorBoardWithUserPresenter)
+    private readonly directorBoardWithUserPresenter: DirectorBoardWithUserPresenter,
   ) {}
 
   async handle(
@@ -31,7 +31,7 @@ export class UpdateDirectorBoardController implements IController {
       requestUserPublicId,
     })
 
-    const formattedReply = this.directorBoardDefaultPresenter.toHTTP(directorBoard)
+    const formattedReply = this.directorBoardWithUserPresenter.toHTTP(directorBoard)
 
     return await reply.sendResponse(formattedReply)
   }

@@ -28,7 +28,7 @@ import { CreateDraftCopyBlogController } from './create-draft-copy-blog.controll
 import { CreatePendingBlogController } from './create-pending-blog.controller'
 import { DeleteBlogController } from './delete-blog.controller'
 import { FindBlogByPublicIdController } from './find-blog-by-public-id.controller'
-import { FindBlogByPublicIdRestrictedController } from './find-blog-by-public-id-detailed.controller'
+import { FindBlogByPublicIdRestrictedController } from './find-blog-by-public-id-restrict.controller'
 import { GetAllBlogsController } from './get-all-blogs.controller'
 import { GetAllBlogsDetailedController } from './get-all-blogs-detailed.controller'
 import { GetAllUserBlogsDetailedController } from './get-all-user-blogs-detailed.controller'

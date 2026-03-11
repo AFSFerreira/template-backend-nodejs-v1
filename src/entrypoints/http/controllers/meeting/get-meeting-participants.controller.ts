@@ -3,7 +3,7 @@ import type { GetMeetingParticipantsParamsType } from '@custom-types/http/schema
 import type { GetMeetingParticipantsQueryType } from '@custom-types/http/schemas/meeting/get-meeting-participants-query-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { MeetingEnrollmentDetailedWithPresentationPresenter } from '@http/presenters/meeting-enrollment/meeting-enrollment-detailed-with-presentation.presenter'
+import { MeetingEnrollmentDetailedPresenter } from '@http/presenters/meeting-enrollment/meeting-enrollment-detailed.presenter'
 import { GetMeetingParticipantsUseCase } from '@use-cases/meeting/get-meeting-participants'
 import { inject, injectable } from 'tsyringe'
 
@@ -13,8 +13,8 @@ export class GetMeetingParticipantsController implements IController {
     @inject(GetMeetingParticipantsUseCase)
     private readonly useCase: GetMeetingParticipantsUseCase,
 
-    @inject(MeetingEnrollmentDetailedWithPresentationPresenter)
-    private readonly meetingEnrollmentDetailedWithPresentationPresenter: MeetingEnrollmentDetailedWithPresentationPresenter,
+    @inject(MeetingEnrollmentDetailedPresenter)
+    private readonly meetingEnrollmentDetailedPresenter: MeetingEnrollmentDetailedPresenter,
   ) {}
 
   async handle(
@@ -28,7 +28,7 @@ export class GetMeetingParticipantsController implements IController {
       meetingPublicId,
     })
 
-    const formattedReply = this.meetingEnrollmentDetailedWithPresentationPresenter.toHTTPList(data)
+    const formattedReply = this.meetingEnrollmentDetailedPresenter.toHTTPList(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

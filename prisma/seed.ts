@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import type { AddressState, Meeting, User } from '@prisma/generated/client'
 import { prisma } from '@lib/prisma'
 import { pool } from '@lib/prisma/helpers/configuration'

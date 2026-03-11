@@ -2,7 +2,7 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { UpdateBodyType, UpdateUserBodySchemaType } from '@custom-types/http/schemas/user/update-user-body-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { UpdateUserUseCase } from '@use-cases/user/update-user'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
@@ -14,8 +14,8 @@ export class UpdateUserController implements IController {
     @inject(UpdateUserUseCase)
     private readonly useCase: UpdateUserUseCase,
 
-    @inject(UserDefaultPresenter)
-    private readonly userDefaultPresenter: UserDefaultPresenter,
+    @inject(UserDetailedPresenter)
+    private readonly userDetailedPresenter: UserDetailedPresenter,
   ) {}
 
   async handle(request: ZodRequest<{ body: UpdateBodyType }>, reply: FastifyReply) {
@@ -26,7 +26,7 @@ export class UpdateUserController implements IController {
       data: parsedBody,
     })
 
-    const formattedReply = this.userDefaultPresenter.toHTTP(user)
+    const formattedReply = this.userDetailedPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply)
   }

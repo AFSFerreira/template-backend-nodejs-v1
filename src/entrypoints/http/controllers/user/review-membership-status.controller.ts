@@ -3,7 +3,7 @@ import type { ReviewMembershipStatusBodyType } from '@custom-types/http/schemas/
 import type { ReviewMembershipStatusParamsType } from '@custom-types/http/schemas/user/review-membership-status-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
 import { ReviewMembershipStatusUseCase } from '@use-cases/user/review-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
@@ -15,8 +15,8 @@ export class ReviewMembershipStatusController implements IController {
     @inject(ReviewMembershipStatusUseCase)
     private readonly useCase: ReviewMembershipStatusUseCase,
 
-    @inject(UserDefaultPresenter)
-    private readonly userDefaultPresenter: UserDefaultPresenter,
+    @inject(UserDetailedPresenter)
+    private readonly userDetailedPresenter: UserDetailedPresenter,
   ) {}
 
   async handle(
@@ -33,7 +33,7 @@ export class ReviewMembershipStatusController implements IController {
       },
     })
 
-    const formattedReply = this.userDefaultPresenter.toHTTP(user)
+    const formattedReply = this.userDetailedPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply)
   }

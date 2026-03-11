@@ -2,7 +2,7 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { FindBlogByPublicIdParamsType } from '@custom-types/http/schemas/blog/find-blog-by-public-id-query-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
+import { BlogDetailedWithContentPresenter } from '@http/presenters/blog/blog-detailed-with-content.presenter'
 import { FindBlogByPublicIdRestrictedUseCase } from '@use-cases/blog/find-blog-by-public-id-detailed'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { inject, injectable } from 'tsyringe'
@@ -13,8 +13,8 @@ export class FindBlogByPublicIdRestrictedController implements IController {
     @inject(FindBlogByPublicIdRestrictedUseCase)
     private readonly useCase: FindBlogByPublicIdRestrictedUseCase,
 
-    @inject(BlogDefaultPresenter)
-    private readonly blogDefaultPresenter: BlogDefaultPresenter,
+    @inject(BlogDetailedWithContentPresenter)
+    private readonly blogDetailedWithContentPresenter: BlogDetailedWithContentPresenter,
   ) {}
 
   async handle(request: ZodRequest<{ params: FindBlogByPublicIdParamsType }>, reply: FastifyReply) {
@@ -22,7 +22,7 @@ export class FindBlogByPublicIdRestrictedController implements IController {
     const { publicId } = request.params
     const { blog } = await this.useCase.execute({ publicId, userPublicId })
 
-    const formattedReply = this.blogDefaultPresenter.toHTTP(blog)
+    const formattedReply = this.blogDetailedWithContentPresenter.toHTTP(blog)
 
     return await reply.sendResponse(formattedReply)
   }
