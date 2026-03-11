@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { InstitutionDefaultPresenter } from '@http/presenters/institution/institution-default.presenter'
 import { CreateInstitutionUseCase } from '@use-cases/institution/create-institution'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateInstitutionController implements IController {
   constructor(
     @inject(CreateInstitutionUseCase)

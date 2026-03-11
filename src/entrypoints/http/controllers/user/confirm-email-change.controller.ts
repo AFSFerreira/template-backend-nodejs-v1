@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { EMAIL_UPDATED_SUCCESSFULLY } from '@messages/responses/user-responses/2xx'
 import { ConfirmEmailChangeUseCase } from '@use-cases/user/confirm-email-change'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ConfirmEmailChangeController implements IController {
   constructor(
     @inject(ConfirmEmailChangeUseCase)

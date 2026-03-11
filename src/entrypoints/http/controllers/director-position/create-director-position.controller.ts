@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { DirectorPositionDefaultPresenter } from '@http/presenters/director-position/director-position-default.presenter'
 import { CreateDirectorPositionUseCase } from '@use-cases/director-position/create-director-position'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateDirectorPositionController implements IController {
   constructor(
     @inject(CreateDirectorPositionUseCase)

@@ -5,9 +5,9 @@ import { statuteMultipartFileConfig } from '@constants/multipart-configuration-c
 import { documentSchema } from '@lib/zod/utils/generic-components/document-schema'
 import { UploadStatuteUseCase } from '@use-cases/document-management/upload-statute'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadStatuteController implements IController {
   constructor(
     @inject(UploadStatuteUseCase)

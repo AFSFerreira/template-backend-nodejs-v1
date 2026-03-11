@@ -4,9 +4,9 @@ import { meetingBannerMultipartFileConfig } from '@constants/multipart-configura
 import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadMeetingBannerUseCase } from '@use-cases/meeting/upload-meeting-banner'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadMeetingBannerController implements IController {
   constructor(
     @inject(UploadMeetingBannerUseCase)

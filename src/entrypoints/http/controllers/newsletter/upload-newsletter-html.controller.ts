@@ -4,9 +4,9 @@ import { newsletterHtmlMultipartFileConfig } from '@constants/multipart-configur
 import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { fileSchema } from '@lib/zod/utils/generic-components/file-schema'
 import { UploadNewsletterHtmlUseCase } from '@use-cases/newsletters/upload-newsletter-html'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadNewsletterHtmlController implements IController {
   constructor(
     @inject(UploadNewsletterHtmlUseCase)

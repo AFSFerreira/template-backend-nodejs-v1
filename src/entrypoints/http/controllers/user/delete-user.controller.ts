@@ -4,9 +4,9 @@ import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-pub
 import { DeleteUserUseCase } from '@use-cases/user/delete-user'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteUserController implements IController {
   constructor(
     @inject(DeleteUserUseCase)

@@ -4,9 +4,9 @@ import { newsletterImageMultipartFileConfig } from '@constants/multipart-configu
 import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadNewsletterImageUseCase } from '@use-cases/newsletters/upload-newsletter-image'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadNewsletterImageController implements IController {
   constructor(
     @inject(UploadNewsletterImageUseCase)

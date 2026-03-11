@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { PASSWORD_RESET_SUCCESSFUL } from '@messages/responses/user-responses/2xx'
 import { ResetPasswordUseCase } from '@use-cases/user/reset-password'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ResetPasswordController implements IController {
   constructor(
     @inject(ResetPasswordUseCase)

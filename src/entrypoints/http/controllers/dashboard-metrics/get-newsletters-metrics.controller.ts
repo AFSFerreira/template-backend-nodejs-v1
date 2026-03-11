@@ -2,9 +2,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { DashboardNewslettersMetricsPresenter } from '@http/presenters/dashboard-metrics/dashboard-newsletters-metrics.presenter'
 import { GetNewslettersMetricsUseCase } from '@use-cases/dashboard-metrics/get-newsletters-metrics'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetNewslettersMetricsController implements IController {
   constructor(
     @inject(GetNewslettersMetricsUseCase)

@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { DeleteMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/delete-meeting-enrollment'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteMeetingEnrollmentController implements IController {
   constructor(
     @inject(DeleteMeetingEnrollmentUseCase)

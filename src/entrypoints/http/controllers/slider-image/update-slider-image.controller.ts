@@ -5,9 +5,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { SliderImageDefaultPresenter } from '@http/presenters/slider-image/slider-image-default.presenter'
 import { UpdateSliderImageUseCase } from '@use-cases/slider-image/update-slider-image'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateSliderImageController implements IController {
   constructor(
     @inject(UpdateSliderImageUseCase)

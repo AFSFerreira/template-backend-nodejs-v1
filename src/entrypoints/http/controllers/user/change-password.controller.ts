@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/responses/user-responses/2xx'
 import { ChangePasswordUseCase } from '@use-cases/user/change-password'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ChangePasswordController implements IController {
   constructor(
     @inject(ChangePasswordUseCase)

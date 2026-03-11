@@ -5,9 +5,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { MeetingEnrollmentDetailedPresenter } from '@http/presenters/meeting-enrollment/meeting-enrollment-detailed.presenter'
 import { GetMeetingParticipantsUseCase } from '@use-cases/meeting/get-meeting-participants'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetMeetingParticipantsController implements IController {
   constructor(
     @inject(GetMeetingParticipantsUseCase)

@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { GetRestrictBlogHTMLContentUseCase } from '@use-cases/blog/get-restrict-blog-html-content'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetRestrictBlogHtmlContentController implements IController {
   constructor(
     @inject(GetRestrictBlogHTMLContentUseCase)

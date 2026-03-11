@@ -3,9 +3,9 @@ import type { CheckAvailabilityQueryType } from '@custom-types/http/schemas/user
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { CheckAvailabilityUseCase } from '@use-cases/user/check-availability'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CheckAvailabilityController implements IController {
   constructor(
     @inject(CheckAvailabilityUseCase)

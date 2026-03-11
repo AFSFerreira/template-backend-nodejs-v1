@@ -7,9 +7,9 @@ import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.prese
 import { UpdateMembershipStatusUseCase } from '@use-cases/user/update-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateMembershipStatusController implements IController {
   constructor(
     @inject(UpdateMembershipStatusUseCase)

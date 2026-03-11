@@ -3,9 +3,9 @@ import type { GetAllInstitutionsQueryType } from '@custom-types/http/schemas/ins
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllInstitutionsNamesController implements IController {
   constructor(
     @inject(GetAllInstitutionsNamesUseCase)

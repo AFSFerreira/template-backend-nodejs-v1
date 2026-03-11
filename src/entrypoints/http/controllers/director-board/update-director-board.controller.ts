@@ -6,9 +6,9 @@ import type { FastifyReply } from 'fastify'
 import { DirectorBoardWithUserPresenter } from '@http/presenters/director-board/director-board-with-user.presenter'
 import { UpdateDirectorBoardUseCase } from '@use-cases/director-board/update-director-board'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateDirectorBoardController implements IController {
   constructor(
     @inject(UpdateDirectorBoardUseCase)

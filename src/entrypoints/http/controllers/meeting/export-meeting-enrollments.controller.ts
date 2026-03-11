@@ -4,9 +4,9 @@ import type { ExportMeetingEnrollmentsQueryType } from '@custom-types/http/schem
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { ExportMeetingEnrollmentsUseCase } from '@use-cases/meeting-enrollment/export-meeting-enrollments'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ExportMeetingEnrollmentsController implements IController {
   constructor(
     @inject(ExportMeetingEnrollmentsUseCase)

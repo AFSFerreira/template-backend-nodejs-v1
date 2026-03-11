@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { DirectorBoardWithUserForAdminPresenter } from '@http/presenters/director-board/director-board-with-user-for-admin.presenter'
 import { FindDirectorBoardByPublicIdForAdminUseCase } from '@use-cases/director-board/find-by-public-id-for-admin'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class FindDirectorBoardByPublicIdForAdminController implements IController {
   constructor(
     @inject(FindDirectorBoardByPublicIdForAdminUseCase)

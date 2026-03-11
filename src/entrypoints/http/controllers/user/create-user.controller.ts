@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
 import { CreateUserUseCase } from '@use-cases/user/create-user'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateUserController implements IController {
   constructor(
     @inject(CreateUserUseCase)

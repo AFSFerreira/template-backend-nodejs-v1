@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { SliderImageDefaultPresenter } from '@http/presenters/slider-image/slider-image-default.presenter'
 import { CreateHomePageSliderImageUseCase } from '@use-cases/slider-image/create-home-page-slider-image-use-case'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateHomePageSliderImageController implements IController {
   constructor(
     @inject(CreateHomePageSliderImageUseCase)

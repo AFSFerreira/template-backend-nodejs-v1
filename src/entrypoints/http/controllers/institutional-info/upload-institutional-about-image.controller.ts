@@ -5,9 +5,9 @@ import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/up
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadInstitutionalAboutImageUseCase } from '@use-cases/institutional-info/upload-institutional-about-image'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadInstitutionalAboutImageController implements IController {
   constructor(
     @inject(UploadInstitutionalAboutImageUseCase)

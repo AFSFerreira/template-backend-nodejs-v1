@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { ActivityAreaDefaultPresenter } from '@http/presenters/activity-area/activity-area-default.presenter'
 import { GetAllActivityAreasUseCase } from '@use-cases/activity-area/get-all-activity-areas-use-case'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllActivityAreasController implements IController {
   constructor(
     @inject(GetAllActivityAreasUseCase)

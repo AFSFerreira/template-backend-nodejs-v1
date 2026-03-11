@@ -6,9 +6,9 @@ import { logError } from '@lib/pino/helpers/log-error'
 import { prisma } from '@lib/prisma'
 import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@messages/loggings/system/server-loggings'
 import { StatusCodes } from 'http-status-codes'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class HealthCheckController implements IController {
   async handle(_request: FastifyRequest, reply: FastifyReply) {
     const startTime = Date.now()

@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { BlogDetailedPresenter } from '@http/presenters/blog/blog-detailed.presenter'
 import { FindBlogByPublicIdUseCase } from '@use-cases/blog/find-blog-by-public-id'
 import { getClientIp } from '@utils/http/get-client-ip'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class FindBlogByPublicIdController implements IController {
   constructor(
     @inject(FindBlogByPublicIdUseCase)

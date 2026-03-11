@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { MeetingDetailedPresenter } from '@http/presenters/meeting/meeting-detailed.presenter'
 import { FindMeetingByPublicIdUseCase } from '@use-cases/meeting/find-by-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class FindMeetingByPublicIdController implements IController {
   constructor(
     @inject(FindMeetingByPublicIdUseCase)

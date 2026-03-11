@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { EMAIL_CHANGE_REQUESTED } from '@messages/responses/user-responses/2xx'
 import { RequestEmailChangeUseCase } from '@use-cases/user/request-email-change'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RequestEmailChangeController implements IController {
   constructor(
     @inject(RequestEmailChangeUseCase)

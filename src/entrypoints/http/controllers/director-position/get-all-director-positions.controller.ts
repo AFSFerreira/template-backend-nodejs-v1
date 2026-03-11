@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { DirectorPositionDefaultPresenter } from '@http/presenters/director-position/director-position-default.presenter'
 import { GetAllDirectorPositionsUseCase } from '@use-cases/director-position/get-all-director-positions'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllDirectorPositionsController implements IController {
   constructor(
     @inject(GetAllDirectorPositionsUseCase)

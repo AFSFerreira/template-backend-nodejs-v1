@@ -3,9 +3,9 @@ import type { FindNewsletterByPublicIdParamsType } from '@custom-types/http/sche
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { GetNewsletterHtmlContentUseCase } from '@use-cases/newsletters/get-newsletter-content'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetNewsletterHtmlContentController implements IController {
   constructor(
     @inject(GetNewsletterHtmlContentUseCase)

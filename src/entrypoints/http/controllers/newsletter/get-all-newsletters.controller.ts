@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { NewsletterDefaultPresenter } from '@http/presenters/newsletter/newsletter-default.presenter'
 import { GetAllNewslettersUseCase } from '@use-cases/newsletters/get-all-newsletters'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllNewslettersController implements IController {
   constructor(
     @inject(GetAllNewslettersUseCase)

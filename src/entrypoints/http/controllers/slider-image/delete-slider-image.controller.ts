@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { DeleteSliderImageUseCase } from '@use-cases/slider-image/delete-slider-image'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteSliderImageController implements IController {
   constructor(
     @inject(DeleteSliderImageUseCase)

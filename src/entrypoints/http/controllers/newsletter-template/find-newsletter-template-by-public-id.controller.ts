@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { NewsletterTemplateDefaultPresenter } from '@http/presenters/newsletter-template/newsletter-template-default.presenter'
 import { FindNewsletterTemplateByPublicIdUseCase } from '@use-cases/newsletters/find-newsletter-template-by-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class FindNewsletterTemplateByPublicIdController implements IController {
   constructor(
     @inject(FindNewsletterTemplateByPublicIdUseCase)

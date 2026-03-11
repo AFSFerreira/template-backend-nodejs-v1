@@ -6,9 +6,9 @@ import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.prese
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { UpdateUserUseCase } from '@use-cases/user/update-user'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateUserController implements IController {
   constructor(
     @inject(UpdateUserUseCase)

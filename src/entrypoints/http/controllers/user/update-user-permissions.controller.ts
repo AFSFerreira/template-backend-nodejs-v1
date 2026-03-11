@@ -10,9 +10,9 @@ import { UpdateUserPermissionsUseCase } from '@use-cases/user/update-user-permis
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateUserPermissionsController implements IController {
   constructor(
     @inject(UpdateUserPermissionsUseCase)

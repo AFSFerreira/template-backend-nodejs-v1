@@ -5,9 +5,9 @@ import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/up
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadSliderImageUseCase } from '@use-cases/slider-image/upload-slider-image'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadSliderImageController implements IController {
   constructor(
     @inject(UploadSliderImageUseCase)

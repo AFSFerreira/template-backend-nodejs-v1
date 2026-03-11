@@ -4,9 +4,9 @@ import { env } from '@env/index'
 import { logger } from '@lib/pino'
 import { LOGOUT } from '@messages/responses/user-responses/2xx'
 import { INVALID_OR_EXPIRED_TOKEN } from '@messages/responses/user-responses/4xx'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class LogoutController implements IController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {

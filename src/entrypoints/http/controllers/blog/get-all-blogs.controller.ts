@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { BlogSimplifiedPresenter } from '@http/presenters/blog/blog-simplified.presenter'
 import { GetAllBlogsUseCase } from '@use-cases/blog/get-all-blogs'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllBlogsController implements IController {
   constructor(
     @inject(GetAllBlogsUseCase)

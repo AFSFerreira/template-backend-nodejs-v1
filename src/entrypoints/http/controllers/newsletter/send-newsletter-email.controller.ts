@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { SendNewsletterEmailUseCase } from '@use-cases/newsletters/send-newsletter-email'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class SendNewsletterEmailController implements IController {
   constructor(
     @inject(SendNewsletterEmailUseCase)

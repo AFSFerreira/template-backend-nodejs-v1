@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { AcademicPublicationYearPresenter } from '@http/presenters/academic-publication/academic-publication-year.presenter'
 import { GetAcademicPublicationsYearsUseCase } from '@use-cases/academic-publication/get-academic-publications-years'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAcademicPublicationsYearsController implements IController {
   constructor(
     @inject(GetAcademicPublicationsYearsUseCase)

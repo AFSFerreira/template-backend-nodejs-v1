@@ -3,9 +3,9 @@ import type { ExportUsersDataQueryType } from '@custom-types/http/schemas/user/e
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { ExportUsersDataUseCase } from '@use-cases/user/export-users-data'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ExportUsersDataController implements IController {
   constructor(
     @inject(ExportUsersDataUseCase)

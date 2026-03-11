@@ -4,9 +4,9 @@ import { blogImageMultipartFileConfig } from '@constants/multipart-configuration
 import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadBlogImageUseCase } from '@use-cases/blog/upload-blog-image'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadBlogImageController implements IController {
   constructor(
     @inject(UploadBlogImageUseCase)

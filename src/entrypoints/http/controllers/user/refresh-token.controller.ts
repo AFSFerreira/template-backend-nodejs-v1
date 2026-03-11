@@ -6,9 +6,9 @@ import { buildAuthTokens } from '@utils/http/build-auth-tokens'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { getRequestUserRole } from '@utils/http/get-request-user-role'
 import { getRequestUserStatus } from '@utils/http/get-request-user-status'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RefreshTokenController implements IController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     try {

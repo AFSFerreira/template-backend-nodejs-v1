@@ -4,9 +4,9 @@ import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.prese
 import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-public-id-schema'
 import { GetUserProfileUseCase } from '@use-cases/user/get-user-profile'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetUserProfileController implements IController {
   constructor(
     @inject(GetUserProfileUseCase)

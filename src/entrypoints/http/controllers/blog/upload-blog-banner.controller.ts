@@ -4,9 +4,9 @@ import { blogBannerMultipartFileConfig } from '@constants/multipart-configuratio
 import { UploadedFileDefaultPresenter } from '@http/presenters/file-presenter/uploaded-file-default.presenter'
 import { imageSchema } from '@lib/zod/utils/generic-components/image-schema'
 import { UploadBlogBannerUseCase } from '@use-cases/blog/upload-blog-banner'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadBlogBannerController implements IController {
   constructor(
     @inject(UploadBlogBannerUseCase)

@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { MeetingDetailedPresenter } from '@http/presenters/meeting/meeting-detailed.presenter'
 import { CreateMeetingUseCase } from '@use-cases/meeting/create-meeting'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateMeetingController implements IController {
   constructor(
     @inject(CreateMeetingUseCase)

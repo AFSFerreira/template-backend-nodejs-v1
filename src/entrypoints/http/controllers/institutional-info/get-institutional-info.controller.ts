@@ -2,9 +2,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { InstitutionalInfoDefaultPresenter } from '@http/presenters/institutional-info/institutional-info.presenter'
 import { GetInstitutionalInfoUseCase } from '@use-cases/institutional-info/get-institutional-info'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetInstitutionalInfoController implements IController {
   constructor(
     @inject(GetInstitutionalInfoUseCase)

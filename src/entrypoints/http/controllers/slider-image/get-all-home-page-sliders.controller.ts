@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { SliderImageDefaultPresenter } from '@http/presenters/slider-image/slider-image-default.presenter'
 import { GetAllHomePageSlidersUseCase } from '@use-cases/slider-image/get-all-home-page-sliders'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllHomePageSlidersController implements IController {
   constructor(
     @inject(GetAllHomePageSlidersUseCase)

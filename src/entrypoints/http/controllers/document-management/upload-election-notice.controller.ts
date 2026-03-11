@@ -5,9 +5,9 @@ import { electionNoticeMultipartFileConfig } from '@constants/multipart-configur
 import { documentSchema } from '@lib/zod/utils/generic-components/document-schema'
 import { UploadElectionNoticeUseCase } from '@use-cases/document-management/upload-election-notice'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadElectionNoticeController implements IController {
   constructor(
     @inject(UploadElectionNoticeUseCase)

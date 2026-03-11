@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { DirectorBoardDefaultPresenter } from '@http/presenters/director-board/director-board-default.presenter'
 import { GetAllDirectorsBoard } from '@use-cases/director-board/get-all-directors-board'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllDirectorsBoardController implements IController {
   constructor(
     @inject(GetAllDirectorsBoard)

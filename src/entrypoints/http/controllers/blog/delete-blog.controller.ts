@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { DeleteBlogUseCase } from '@use-cases/blog/delete-blog'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteBlogController implements IController {
   constructor(
     @inject(DeleteBlogUseCase)

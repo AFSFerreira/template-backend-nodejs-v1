@@ -5,9 +5,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { RegisterGuestMeetingUseCase } from '@use-cases/meeting/register-guest-meeting'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RegisterGuestMeetingController implements IController {
   constructor(
     @inject(RegisterGuestMeetingUseCase)

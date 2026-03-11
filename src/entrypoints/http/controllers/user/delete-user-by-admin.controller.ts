@@ -7,9 +7,9 @@ import { DeleteUserByAdminUseCase } from '@use-cases/user/delete-user-by-admin'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteUserByAdminController implements IController {
   constructor(
     @inject(DeleteUserByAdminUseCase)

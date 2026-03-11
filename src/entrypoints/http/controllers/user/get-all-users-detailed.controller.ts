@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { UserSimplifiedPresenterForAdmin } from '@http/presenters/user/user-simplified-for-admin.presenter'
 import { GetAllUsersDetailedUseCase } from '@use-cases/user/get-all-users-detailed'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllUsersDetailedController implements IController {
   constructor(
     @inject(GetAllUsersDetailedUseCase)

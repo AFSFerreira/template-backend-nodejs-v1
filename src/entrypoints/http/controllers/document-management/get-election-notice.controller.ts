@@ -1,9 +1,9 @@
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import { GetElectionNoticeUseCase } from '@use-cases/document-management/get-election-notice'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetElectionNoticeController implements IController {
   constructor(
     @inject(GetElectionNoticeUseCase)

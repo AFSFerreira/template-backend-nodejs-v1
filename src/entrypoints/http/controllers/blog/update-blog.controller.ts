@@ -6,9 +6,9 @@ import type { FastifyReply } from 'fastify'
 import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { UpdateBlogUseCase } from '@use-cases/blog/update-blog'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateBlogController implements IController {
   constructor(
     @inject(UpdateBlogUseCase)

@@ -5,9 +5,9 @@ import type { FastifyReply } from 'fastify'
 import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
 import { SubmitReviewToPendingUseCase } from '@use-cases/blog/submit-review-to-pending'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class SubmitReviewToPendingController implements IController {
   constructor(
     @inject(SubmitReviewToPendingUseCase)

@@ -3,9 +3,9 @@ import type { FastifyReply, FastifyRequest } from 'fastify'
 import { RegisterPageViewUseCase } from '@use-cases/dashboard-metrics/register-page-view'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RegisterPageViewController implements IController {
   constructor(
     @inject(RegisterPageViewUseCase)

@@ -4,9 +4,9 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { DeleteDirectorPositionUseCase } from '@use-cases/director-position/delete-director-position'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteDirectorPositionController implements IController {
   constructor(
     @inject(DeleteDirectorPositionUseCase)

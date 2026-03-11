@@ -7,9 +7,9 @@ import { authenticateConnectionInfoSchema } from '@http/schemas/user/authenticat
 import { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import { buildAuthTokens } from '@utils/http/build-auth-tokens'
 import { getConnectionInfo } from '@utils/http/get-connection-info'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class AuthenticateController implements IController {
   constructor(
     @inject(AuthenticateUseCase)

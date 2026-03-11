@@ -7,9 +7,9 @@ import { modelPublicIdSchema } from '@lib/zod/utils/generic-components/model-pub
 import { RegisterUserMeetingUseCase } from '@use-cases/meeting/register-user-meeting'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RegisterUserMeetingController implements IController {
   constructor(
     @inject(RegisterUserMeetingUseCase)

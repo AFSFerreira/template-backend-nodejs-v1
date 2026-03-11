@@ -6,9 +6,9 @@ import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.present
 import { CreateAndPublishBlogUseCase } from '@use-cases/blog/create-and-publish-blog'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
 import { StatusCodes } from 'http-status-codes'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateAndPublishBlogController implements IController {
   constructor(
     @inject(CreateAndPublishBlogUseCase)
