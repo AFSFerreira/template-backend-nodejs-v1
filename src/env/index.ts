@@ -29,6 +29,9 @@ const envSchema = z.object({
   SENTRY_DSN: z.url().trim().nonempty().optional(),
   SENTRY_RELEASE: z.string().trim().nonempty().default('dev-local'),
 
+  // Memory:
+  MAX_RAM_MB: z.coerce.number().int().positive().min(512),
+
   // Database:
   DATABASE_URL: z.url().trim().nonempty(),
   DB_POOL_MAX: z.coerce.number().int().positive().default(10),

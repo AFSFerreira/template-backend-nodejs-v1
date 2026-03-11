@@ -13,6 +13,7 @@ import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
+import underPressure from '@fastify/under-pressure'
 import fastifyWebsocket from '@fastify/websocket'
 import { compressConfiguration } from '@http/configurations/compress-configuration'
 import { corsConfiguration } from '@http/configurations/cors-configuration'
@@ -23,6 +24,7 @@ import { multipartConfiguration } from '@http/configurations/multipart-configura
 import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
 import { swaggerConfiguration } from '@http/configurations/swagger-configuration'
 import { swaggerUiConfiguration } from '@http/configurations/swagger-ui-configuration'
+import { underPressureConfiguration } from '@http/configurations/under-pressure-configuration'
 import { customReplyPluginDefinition } from '@http/plugins/custom-reply'
 import { logRequest } from '@http/plugins/request-logger'
 import { logResponse } from '@http/plugins/response-logger'
@@ -58,6 +60,7 @@ export async function buildApp(): Promise<FastifyInstance> {
 
   app.register(fastifyWebsocket, wsConfiguration)
   app.register(helmet, helmetConfiguration)
+  app.register(underPressure, underPressureConfiguration)
   app.register(fastifyCompress, compressConfiguration)
   app.register(multipart, multipartConfiguration)
   app.register(staticFileRoutes)
