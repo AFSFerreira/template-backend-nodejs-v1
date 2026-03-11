@@ -58,7 +58,7 @@ export const NEWSLETTER_ALREADY_EXISTS: IApiResponse = {
   status: 409,
   body: {
     code: 'NEWSLETTER_ALREADY_EXISTS',
-    message: 'Já existe uma newsletter com esse volume e número de edição',
+    message: 'Já existe uma newsletter com esse ano e número de edição',
   },
 }
 
