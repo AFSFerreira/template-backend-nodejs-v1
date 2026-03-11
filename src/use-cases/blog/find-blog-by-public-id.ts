@@ -3,10 +3,9 @@ import type {
   FindBlogByPublicIdUseCaseResponse,
 } from '@custom-types/use-cases/blogs/find-blog-by-public-id'
 import type { BlogsRepository } from '@repositories/blogs-repository'
-import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { registerBlogViews } from '@services/caches/register-blog-views-cache'
+import { RegisterBlogViewsCacheService } from '@services/caches/register-blog-views-cache'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -16,6 +15,9 @@ export class FindBlogByPublicIdUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
+
+    @inject(RegisterBlogViewsCacheService)
+    private readonly registerBlogViewsCacheService: RegisterBlogViewsCacheService,
   ) {}
 
   async execute({ publicId, ip }: FindBlogByPublicIdUseCaseRequest): Promise<FindBlogByPublicIdUseCaseResponse> {
@@ -30,11 +32,7 @@ export class FindBlogByPublicIdUseCase {
       throw new BlogNotFoundError()
     }
 
-    const blogWasNotRecentlyViewed = await registerBlogViews({
-      blogId: foundBlog.id,
-      ip,
-      redis,
-    })
+    const blogWasNotRecentlyViewed = await this.registerBlogViewsCacheService.register(foundBlog.id, ip)
 
     if (blogWasNotRecentlyViewed) {
       await this.blogsRepository.incrementAccessesNumber(foundBlog.id)

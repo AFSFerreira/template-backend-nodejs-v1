@@ -28,7 +28,7 @@ export async function copyFile({
   destinationFolderPath,
   buildShard,
 }: ICopyFile): Promise<FileInfo> {
-  const filename = `${newFilename ?? HashService.generateFileId()}.${getFileExtension(sourceFilePath)}`
+  const filename = `${newFilename ?? new HashService().generateFileId()}.${getFileExtension(sourceFilePath)}`
   const fileFolderShard = buildShard ? buildShardFileFolder(filename) : ''
   const finalFilePath = path.resolve(destinationFolderPath, fileFolderShard, filename)
 

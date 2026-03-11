@@ -1,44 +1,34 @@
+import type { Redis } from 'ioredis'
 import { DIRECTOR_BOARD_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
+import { AbstractHtmlCacheService } from '@lib/redis/helpers/abstract-html-cache-service'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
   GET_DIRECTOR_BOARD_HTML_CACHED_INFO,
   SET_DIRECTOR_BOARD_HTML_CACHE_INFO,
 } from '@messages/loggings/services/cache'
-import { injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-const generateDirectorBoardHtmlKey = (publicId: string) => `cache:directorBoard:${publicId}:aboutMeHtml`
-
-@injectable()
-export class DirectorBoardHtmlCacheService {
-  async get(publicId: string) {
-    const key = generateDirectorBoardHtmlKey(publicId)
-    const htmlCached: string | null = await redis.get(key)
-
-    if (htmlCached) {
-      await redis.pexpire(key, DIRECTOR_BOARD_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key }, GET_DIRECTOR_BOARD_HTML_CACHED_INFO)
-
-    return htmlCached
+@singleton()
+export class DirectorBoardHtmlCacheService extends AbstractHtmlCacheService {
+  constructor(
+    @inject(tsyringeTokens.providers.redis)
+    redis: Redis,
+  ) {
+    super(redis)
   }
 
-  async set(publicId: string, htmlContent: string) {
-    const key = generateDirectorBoardHtmlKey(publicId)
-    const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', DIRECTOR_BOARD_HTML_CACHE_TTL, 'NX')
-
-    if (!wasCached) {
-      await redis.pexpire(key, DIRECTOR_BOARD_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key, wasCached }, SET_DIRECTOR_BOARD_HTML_CACHE_INFO)
-
-    return wasCached
+  protected generateKey(publicId: string): string {
+    return `cache:directorBoard:${publicId}:aboutMeHtml`
   }
 
-  async remove(publicId: string) {
-    const key = generateDirectorBoardHtmlKey(publicId)
-    await redis.del(key)
+  protected get ttlInMs(): number {
+    return DIRECTOR_BOARD_HTML_CACHE_TTL
+  }
+
+  protected get logMessages() {
+    return {
+      get: GET_DIRECTOR_BOARD_HTML_CACHED_INFO,
+      set: SET_DIRECTOR_BOARD_HTML_CACHE_INFO,
+    }
   }
 }

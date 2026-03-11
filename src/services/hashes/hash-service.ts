@@ -9,7 +9,7 @@ import type { Options as ArgonOptions } from 'argon2'
 import crypto from 'node:crypto'
 import { env } from '@env/index'
 import { argon2id, hash as argonHash, needsRehash, verify } from 'argon2'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 import { v4 as uuidv4 } from 'uuid'
 
 /**
@@ -18,7 +18,7 @@ import { v4 as uuidv4 } from 'uuid'
  * Combina Argon2id (com pepper secreto) para senhas, SHA-256 para tokens,
  * HMAC-SHA256 para blind indexes de documentos, e UUID v4 para identificadores únicos.
  */
-@injectable()
+@singleton()
 export class HashService {
   private static readonly argonConfig = {
     type: argon2id,

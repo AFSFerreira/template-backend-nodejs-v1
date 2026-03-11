@@ -1,11 +1,15 @@
 import { resolve4, resolve6, resolveMx } from 'node:dns/promises'
-import { redis } from '@lib/redis'
-import { getMxRecordCached, setMxRecordCached } from '@services/caches/validate-mx-record-cache'
+import { ValidateMxRecordCacheService } from '@services/caches/validate-mx-record-cache'
 import { isNodeSystemError } from '@utils/guards/is-node-system-error'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class MxRecordValidationService {
+  constructor(
+    @inject(ValidateMxRecordCacheService)
+    private readonly mxRecordCacheService: ValidateMxRecordCacheService,
+  ) {}
+
   async checkFallbackRecord(domain: string): Promise<boolean> {
     const [aRecordsResult, aaaaRecordsResult] = await Promise.allSettled([resolve4(domain), resolve6(domain)])
 
@@ -19,10 +23,7 @@ export class MxRecordValidationService {
   async validate(email: string) {
     const domain = email.split('@')[1]
 
-    const mxRecordCached = await getMxRecordCached({
-      mxRecord: domain,
-      redis,
-    })
+    const mxRecordCached = await this.mxRecordCacheService.get(domain)
 
     if (mxRecordCached) return mxRecordCached === 'valid'
 
@@ -30,33 +31,21 @@ export class MxRecordValidationService {
       const mxRecords = await resolveMx(domain)
 
       if (mxRecords && mxRecords.length > 0) {
-        await setMxRecordCached({
-          mxRecord: domain,
-          result: 'valid',
-          redis,
-        })
+        await this.mxRecordCacheService.set(domain, 'valid')
 
         return true
       }
     } catch (error: unknown) {
       if (isNodeSystemError(error)) {
         if (error.code === 'ENOTFOUND' || error.code === 'NXDOMAIN') {
-          await setMxRecordCached({
-            mxRecord: domain,
-            result: 'invalid',
-            redis,
-          })
+          await this.mxRecordCacheService.set(domain, 'invalid')
           return false
         }
 
         if (error.code === 'ENODATA') {
           const domainRecordFbResult = (await this.checkFallbackRecord(domain)) === true ? 'valid' : 'invalid'
 
-          await setMxRecordCached({
-            mxRecord: domain,
-            result: domainRecordFbResult,
-            redis,
-          })
+          await this.mxRecordCacheService.set(domain, domainRecordFbResult)
           return domainRecordFbResult === 'valid'
         }
       }
@@ -67,11 +56,7 @@ export class MxRecordValidationService {
 
     const domainRecordFbResult = (await this.checkFallbackRecord(domain)) === true ? 'valid' : 'invalid'
 
-    await setMxRecordCached({
-      mxRecord: domain,
-      result: domainRecordFbResult,
-      redis,
-    })
+    await this.mxRecordCacheService.set(domain, domainRecordFbResult)
 
     return domainRecordFbResult === 'valid'
   }

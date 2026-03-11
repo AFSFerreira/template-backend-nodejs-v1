@@ -2,10 +2,10 @@ import type { MeetingEnrollmentWithDetails } from '@custom-types/validators/meet
 import type { UserWithDetails } from '@custom-types/validators/user-with-details'
 import { PassThrough } from 'node:stream'
 import { logError } from '@lib/pino/helpers/log-error'
-import { userExportMapper } from '@services/mappers/user-export-mapper'
-import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
+import { MeetingExportMapperService } from '@services/mappers/meeting-export-mapper'
+import { UserExportMapperService } from '@services/mappers/user-export-mapper'
 import { stringify } from 'csv-stringify'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 /**
  * Serviço de exportação de dados em formato CSV com streaming.
@@ -16,6 +16,13 @@ import { injectable } from 'tsyringe'
  */
 @injectable()
 export class CsvExportService {
+  constructor(
+    @inject(MeetingExportMapperService)
+    private readonly meetingExportMapperService: MeetingExportMapperService,
+
+    @inject(UserExportMapperService)
+    private readonly userExportMapperService: UserExportMapperService,
+  ) {}
   /**
    * Gera relatório CSV de inscrições em encontros científicos.
    *
@@ -57,7 +64,7 @@ export class CsvExportService {
     const backgroundLineProcessing = async () => {
       try {
         for await (const meetingEnrollment of meetingEnrollmentStream) {
-          const row = meetingExportMapper(meetingEnrollment)
+          const row = this.meetingExportMapperService.map(meetingEnrollment)
 
           csvStringifier.write(row)
         }
@@ -146,7 +153,7 @@ export class CsvExportService {
     const backgroundLineProcessing = async () => {
       try {
         for await (const user of usersStream) {
-          const row = userExportMapper(user)
+          const row = this.userExportMapperService.map(user)
 
           csvStringifier.write(row)
         }

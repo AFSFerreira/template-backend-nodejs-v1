@@ -1,41 +1,31 @@
+import type { Redis } from 'ioredis'
 import { NEWSLETTER_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
+import { AbstractHtmlCacheService } from '@lib/redis/helpers/abstract-html-cache-service'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GET_NEWSLETTER_HTML_CACHED_INFO, SET_NEWSLETTER_HTML_CACHE_INFO } from '@messages/loggings/services/cache'
-import { injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-const generateNewsletterHtmlKey = (publicId: string) => `cache:newsletter:${publicId}:contentHtml`
-
-@injectable()
-export class NewsletterHtmlCacheService {
-  async get(publicId: string) {
-    const key = generateNewsletterHtmlKey(publicId)
-    const htmlCached: string | null = await redis.get(key)
-
-    if (htmlCached) {
-      await redis.pexpire(key, NEWSLETTER_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key }, GET_NEWSLETTER_HTML_CACHED_INFO)
-
-    return htmlCached
+@singleton()
+export class NewsletterHtmlCacheService extends AbstractHtmlCacheService {
+  constructor(
+    @inject(tsyringeTokens.providers.redis)
+    redis: Redis,
+  ) {
+    super(redis)
   }
 
-  async set(publicId: string, htmlContent: string) {
-    const key = generateNewsletterHtmlKey(publicId)
-    const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', NEWSLETTER_HTML_CACHE_TTL, 'NX')
-
-    if (!wasCached) {
-      await redis.pexpire(key, NEWSLETTER_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key, wasCached }, SET_NEWSLETTER_HTML_CACHE_INFO)
-
-    return wasCached
+  protected generateKey(publicId: string): string {
+    return `cache:newsletter:${publicId}:contentHtml`
   }
 
-  async remove(publicId: string) {
-    const key = generateNewsletterHtmlKey(publicId)
-    await redis.del(key)
+  protected get ttlInMs(): number {
+    return NEWSLETTER_HTML_CACHE_TTL
+  }
+
+  protected get logMessages() {
+    return {
+      get: GET_NEWSLETTER_HTML_CACHED_INFO,
+      set: SET_NEWSLETTER_HTML_CACHE_INFO,
+    }
   }
 }

@@ -32,7 +32,7 @@ type UserWithoutIdentityDocument = Omit<
   'identityType' | 'identityDocument' | 'identityDocumentBlindIndex'
 >
 
-const passwordHash = await HashService.hashPassword('123456789Az#')
+const passwordHash = await new HashService().hashPassword('123456789Az#')
 
 export const partialUserData1: PartialUserCreateInputInfo = {
   passwordHash,
@@ -196,7 +196,7 @@ export const usersDataArray1: Prisma.UserCreateInput[] = [
   contentProducerUserData1,
 ].map((userWithoutIdentityDocument) => {
   const identityDocument = cpf.generate(true)
-  const identityDocumentBlindIndex = (new HashService()).generateBlindIndex(identityDocument)
+  const identityDocumentBlindIndex = new HashService().generateBlindIndex(identityDocument)
 
   return {
     ...userWithoutIdentityDocument,
@@ -211,7 +211,7 @@ export const usersDataArray2: Prisma.UserCreateInput[] = []
 // Criando Usuários Dummy para Testar Paginações no Frontend:
 for (let idx = 0; idx <= 90; idx++) {
   const identityDocument = cpf.generate(true)
-  const identityDocumentBlindIndex = (new HashService()).generateBlindIndex(identityDocument)
+  const identityDocumentBlindIndex = new HashService().generateBlindIndex(identityDocument)
 
   usersDataArray2.push({
     ...partialUserData1,
@@ -230,7 +230,7 @@ export const usersDataArray3: Prisma.UserCreateInput[] = []
 
 for (let idx = 0; idx <= 90; idx++) {
   const identityDocument = cpf.generate(true)
-  const identityDocumentBlindIndex = (new HashService()).generateBlindIndex(identityDocument)
+  const identityDocumentBlindIndex = new HashService().generateBlindIndex(identityDocument)
 
   usersDataArray3.push({
     ...partialUserData1,

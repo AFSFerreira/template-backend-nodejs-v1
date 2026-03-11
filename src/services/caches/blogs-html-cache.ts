@@ -1,41 +1,31 @@
+import type { Redis } from 'ioredis'
 import { BLOG_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
+import { AbstractHtmlCacheService } from '@lib/redis/helpers/abstract-html-cache-service'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { GET_BLOG_HTML_CACHED_INFO, SET_BLOG_CACHE_INFO } from '@messages/loggings/services/cache'
-import { injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-const generateBlogHtmlKey = (publicId: string) => `cache:blog:${publicId}:contentHtml`
-
-@injectable()
-export class BlogHtmlCacheService {
-  async get(publicId: string) {
-    const key = generateBlogHtmlKey(publicId)
-    const htmlCached: string | null = await redis.get(key)
-
-    if (htmlCached) {
-      await redis.pexpire(key, BLOG_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key }, GET_BLOG_HTML_CACHED_INFO)
-
-    return htmlCached
+@singleton()
+export class BlogHtmlCacheService extends AbstractHtmlCacheService {
+  constructor(
+    @inject(tsyringeTokens.providers.redis)
+    redis: Redis,
+  ) {
+    super(redis)
   }
 
-  async set(publicId: string, htmlContent: string) {
-    const key = generateBlogHtmlKey(publicId)
-    const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', BLOG_HTML_CACHE_TTL, 'NX')
-
-    if (!wasCached) {
-      await redis.pexpire(key, BLOG_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key, wasCached }, SET_BLOG_CACHE_INFO)
-
-    return wasCached
+  protected generateKey(publicId: string): string {
+    return `cache:blog:${publicId}:contentHtml`
   }
 
-  async remove(publicId: string) {
-    const key = generateBlogHtmlKey(publicId)
-    await redis.del(key)
+  protected get ttlInMs(): number {
+    return BLOG_HTML_CACHE_TTL
+  }
+
+  protected get logMessages() {
+    return {
+      get: GET_BLOG_HTML_CACHED_INFO,
+      set: SET_BLOG_CACHE_INFO,
+    }
   }
 }

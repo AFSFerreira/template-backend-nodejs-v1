@@ -1,44 +1,46 @@
+import type { Redis } from 'ioredis'
 import { INSTITUTIONAL_INFO_HTML_CACHE_TTL } from '@constants/cache-constants'
-import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
+import { AbstractHtmlCacheService } from '@lib/redis/helpers/abstract-html-cache-service'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import {
   GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO,
   SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO,
 } from '@messages/loggings/services/cache'
-import { injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-const INSTITUTIONAL_INFO_HTML_KEY = 'cache:institutionalInfo:aboutDescriptionHtml'
-
-@injectable()
-export class InstitutionalInfoHtmlCacheService {
-  async get() {
-    const key = INSTITUTIONAL_INFO_HTML_KEY
-    const htmlCached: string | null = await redis.get(key)
-
-    if (htmlCached) {
-      await redis.pexpire(key, INSTITUTIONAL_INFO_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key }, GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO)
-
-    return htmlCached
+@singleton()
+export class InstitutionalInfoHtmlCacheService extends AbstractHtmlCacheService {
+  constructor(
+    @inject(tsyringeTokens.providers.redis)
+    redis: Redis,
+  ) {
+    super(redis)
   }
 
-  async set(htmlContent: string) {
-    const key = INSTITUTIONAL_INFO_HTML_KEY
-    const wasCached: 'OK' | null = await redis.set(key, htmlContent, 'PX', INSTITUTIONAL_INFO_HTML_CACHE_TTL, 'NX')
-
-    if (!wasCached) {
-      await redis.pexpire(key, INSTITUTIONAL_INFO_HTML_CACHE_TTL)
-    }
-
-    logger.info({ key, wasCached }, SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO)
-
-    return wasCached
+  protected generateKey(_publicId: string): string {
+    return 'cache:institutionalInfo:aboutDescriptionHtml'
   }
 
-  async remove() {
-    const key = INSTITUTIONAL_INFO_HTML_KEY
-    await redis.del(key)
+  protected get ttlInMs(): number {
+    return INSTITUTIONAL_INFO_HTML_CACHE_TTL
+  }
+
+  protected get logMessages() {
+    return {
+      get: GET_INSTITUTIONAL_INFO_HTML_CACHED_INFO,
+      set: SET_INSTITUTIONAL_INFO_HTML_CACHE_INFO,
+    }
+  }
+
+  public override async get(): Promise<string | null> {
+    return super.get('')
+  }
+
+  public override async set(htmlContent: string): Promise<'OK' | null> {
+    return super.set('', htmlContent)
+  }
+
+  public override async remove(): Promise<void> {
+    return super.remove('')
   }
 }

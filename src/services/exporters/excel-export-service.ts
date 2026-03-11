@@ -5,12 +5,12 @@ import { PassThrough } from 'node:stream'
 import { SYSTEM_TIMEZONE } from '@constants/timezone-constants'
 import { env } from '@env/index'
 import { logError } from '@lib/pino/helpers/log-error'
-import { userExportMapper } from '@services/mappers/user-export-mapper'
+import { MeetingExportMapperService } from '@services/mappers/meeting-export-mapper'
+import { UserExportMapperService } from '@services/mappers/user-export-mapper'
 import { getExcelCellAddress } from '@utils/excel/get-excel-cell-address'
-import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import dayjs from 'dayjs'
 import ExcelJS, { type Style } from 'exceljs'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 /**
  * Serviço de exportação de dados em formato Excel (.xlsx) com streaming.
@@ -32,6 +32,14 @@ export class ExcelExportService {
   private static SMALL_COLUMN_SIZE = 25
   private static MEDIUM_COLUMN_SIZE = 40
   private static LARGE_COLUMN_SIZE = 60
+
+  constructor(
+    @inject(MeetingExportMapperService)
+    private readonly meetingExportMapperService: MeetingExportMapperService,
+
+    @inject(UserExportMapperService)
+    private readonly userExportMapperService: UserExportMapperService,
+  ) {}
 
   /**
    * Gera planilha Excel de inscrições em encontros científicos com streaming.
@@ -137,7 +145,7 @@ export class ExcelExportService {
       try {
         for await (const meetingEnrollment of meetingEnrollmentStream) {
           // Formata os dados no padrão da coluna antes de inserir:
-          const worksheetRow = meetingExportMapper(meetingEnrollment)
+          const worksheetRow = this.meetingExportMapperService.map(meetingEnrollment)
 
           worksheet.addRow(worksheetRow).commit()
         }
@@ -312,7 +320,7 @@ export class ExcelExportService {
     const backgroundLineProcessing = async () => {
       try {
         for await (const user of usersStream) {
-          const worksheetRow = userExportMapper(user, targetTimezone)
+          const worksheetRow = this.userExportMapperService.map(user, targetTimezone)
 
           worksheet.addRow(worksheetRow).commit()
         }
