@@ -9,9 +9,9 @@ import { FileService } from '@services/files/file-service'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { getFileExtension } from '@utils/files/get-file-extension'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadElectionNoticeUseCase {
   constructor(
     @inject(FileService)

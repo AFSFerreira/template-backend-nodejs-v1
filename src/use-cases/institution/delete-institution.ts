@@ -8,9 +8,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { INSTITUTION_DELETED_SUCCESSFULLY } from '@messages/loggings/models/institution-loggings'
 import { InstitutionNotFoundError } from '@use-cases/errors/institution/institution-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteInstitutionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutions)

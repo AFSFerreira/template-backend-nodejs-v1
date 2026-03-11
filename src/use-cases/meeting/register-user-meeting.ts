@@ -14,9 +14,9 @@ import { UserAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-p
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RegisterUserMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

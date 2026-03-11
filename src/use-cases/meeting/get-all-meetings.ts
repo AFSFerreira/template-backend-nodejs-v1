@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/meeting/get-all-meetings'
 import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllMeetingsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

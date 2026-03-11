@@ -14,11 +14,11 @@ import { UserRoleType } from '@prisma/generated/enums'
 import { DeleteUserRenderer } from '@services/renderers/user/emails/delete-user-renderer'
 import { buildUserProfileImagePath } from '@utils/builders/paths/build-user-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { AdminCannotDeleteSelfError } from '../errors/user/admin-cannot-delete-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class DeleteUserUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

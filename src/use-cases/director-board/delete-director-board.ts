@@ -16,9 +16,9 @@ import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/dir
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { buildDirectorBoardProfileImagePath } from '@utils/builders/paths/build-director-board-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteDirectorBoardUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorsBoard)

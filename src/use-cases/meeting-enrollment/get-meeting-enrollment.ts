@@ -6,9 +6,9 @@ import type { MeetingEnrollmentsRepository } from '@repositories/meeting-enrollm
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingEnrollmentNotFoundError } from '@use-cases/errors/meeting-enrollment/meeting-enrollment-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetMeetingEnrollmentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetingEnrollments)

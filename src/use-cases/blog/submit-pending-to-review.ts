@@ -12,9 +12,9 @@ import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { BlogNotInPendingApprovalStatusError } from '@use-cases/errors/blog/blog-not-in-pending-approval-status-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class SubmitPendingToReviewUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

@@ -1,9 +1,9 @@
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class PrismaAddressCountriesRepository implements AddressCountryRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

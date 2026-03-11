@@ -8,9 +8,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_ENROLLMENT_DELETION_SUCCESSFUL } from '@messages/loggings/models/meeting-enrollment-loggings'
 import { MeetingEnrollmentNotFoundError } from '@use-cases/errors/meeting-enrollment/meeting-enrollment-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteMeetingEnrollmentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetingEnrollments)

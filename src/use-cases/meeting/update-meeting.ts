@@ -16,9 +16,9 @@ import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

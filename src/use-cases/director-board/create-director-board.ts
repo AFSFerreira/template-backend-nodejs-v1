@@ -25,9 +25,9 @@ import {
   buildDirectorBoardTempProfileImagePath,
 } from '@utils/builders/paths/build-director-board-profile-image-path'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateDirectorBoardUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorsBoard)

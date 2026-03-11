@@ -5,10 +5,10 @@ import type {
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { DirectorBoardNotFoundError } from '../errors/director-board/director-board-not-found-error'
 
-@injectable()
+@singleton()
 export class FindDirectorBoardByPublicIdForAdminUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorsBoard)

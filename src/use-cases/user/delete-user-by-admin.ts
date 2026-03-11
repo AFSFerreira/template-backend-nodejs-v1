@@ -13,11 +13,11 @@ import { USER_DELETION_BY_ADMIN_SUCCESSFUL } from '@messages/loggings/models/use
 import { SystemActionType } from '@prisma/generated/enums'
 import { buildUserProfileImagePath } from '@utils/builders/paths/build-user-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { AdminCannotDeleteSelfError } from '../errors/user/admin-cannot-delete-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class DeleteUserByAdminUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

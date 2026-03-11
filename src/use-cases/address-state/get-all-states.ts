@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/address/get-all-states'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllStatesUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.addressStates)

@@ -5,10 +5,10 @@ import type {
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class FindUserByPublicIdUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

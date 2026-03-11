@@ -5,9 +5,9 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { InstitutionalInfoHtmlCacheService } from '@services/caches/institutional-info-html-cache'
 import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetInstitutionalInfoAboutHTMLUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutionalInfo)

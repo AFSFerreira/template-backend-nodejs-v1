@@ -15,10 +15,10 @@ import { buildMeetingBannerPath, buildTempMeetingBannerPath } from '@utils/build
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { getArrayMaxDate } from '@utils/generics/get-array-max-date'
 import { ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { InvalidEmailDomainError } from '../errors/user/invalid-email-domain-error'
 
-@injectable()
+@singleton()
 export class CreateMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

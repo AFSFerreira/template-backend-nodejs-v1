@@ -1,9 +1,9 @@
 import type { GetNewslettersMetricsUseCaseResponse } from '@custom-types/use-cases/dashboard-metrics/get-newsletters-metrics'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetNewslettersMetricsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

@@ -2,9 +2,9 @@ import type { GetBlogsMetricsUseCaseResponse } from '@custom-types/use-cases/das
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetBlogsMetricsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

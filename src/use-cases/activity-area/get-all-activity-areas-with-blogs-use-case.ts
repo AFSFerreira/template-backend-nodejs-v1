@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/activity-area/get-all-activity-areas-with-blogs'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllActivityAreasWithBlogsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.activityAreas)

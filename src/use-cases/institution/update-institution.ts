@@ -10,9 +10,9 @@ import { INSTITUTION_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/inst
 import { InstitutionAlreadyExistsError } from '@use-cases/errors/institution/institution-already-exists-error'
 import { InstitutionNotFoundError } from '@use-cases/errors/institution/institution-not-found-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateInstitutionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutions)

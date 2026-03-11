@@ -8,9 +8,9 @@ import { NEWSLETTER_HTML_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models
 import { FileService } from '@services/files/file-service'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { FileTooBigError } from '@use-cases/errors/newsletter/file-too-big-error'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadNewsletterHtmlUseCase {
   constructor(
     @inject(FileService)

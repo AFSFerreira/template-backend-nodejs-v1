@@ -13,10 +13,10 @@ import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
 import { toDateOnlyUTC } from '@utils/formatters/to-date-only'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { InvalidEmailDomainError } from '../errors/user/invalid-email-domain-error'
 
-@injectable()
+@singleton()
 export class RegisterGuestMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

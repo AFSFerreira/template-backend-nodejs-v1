@@ -6,9 +6,9 @@ import { getFiles } from '@services/files/get-files'
 import { ElectionNoticeFileReadError } from '@use-cases/errors/document-management/election-notice-file-read-error'
 import { MissingElectionNoticeFileError } from '@use-cases/errors/document-management/missing-election-notice-file-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetElectionNoticeUseCase {
   async execute(): Promise<GetElectionNoticeUseCaseResponse> {
     const files = await getFiles(ELECTION_NOTICE_FILE_NAME_PATTERN)

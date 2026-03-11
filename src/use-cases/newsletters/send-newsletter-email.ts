@@ -12,10 +12,10 @@ import {
 import { MembershipStatusType } from '@prisma/generated/enums'
 import { NewsletterContentRenderService } from '@services/renderers/newsletters/newsletter-content-render-service'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
 
-@injectable()
+@singleton()
 export class SendNewsletterEmailUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

@@ -8,9 +8,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_POSITION_CREATED_SUCCESSFULLY } from '@messages/loggings/models/director-position-loggings'
 import { DirectorPositionAlreadyExistsError } from '@use-cases/errors/director-position/director-position-already-exists-error'
 import { ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateDirectorPositionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorPositions)

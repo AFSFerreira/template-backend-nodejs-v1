@@ -10,9 +10,9 @@ import { HashService } from '@services/hashes/hash-service'
 import { IncorrectOldPasswordError } from '@use-cases/errors/user/incorrect-old-password-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ChangePasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

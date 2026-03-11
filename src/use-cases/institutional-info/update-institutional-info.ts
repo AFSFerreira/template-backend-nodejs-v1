@@ -19,9 +19,9 @@ import {
 } from '@utils/builders/paths/build-institutional-about-image-path'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateInstitutionalInfoUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutionalInfo)

@@ -10,10 +10,10 @@ import { HashService } from '@services/hashes/hash-service'
 import { PasswordRecoveryNotRequestedByUserError } from '@use-cases/errors/user/password-recovery-not-requested-by-user-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { InvalidTokenError } from '../errors/user/invalid-token-error'
 
-@injectable()
+@singleton()
 export class ResetPasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

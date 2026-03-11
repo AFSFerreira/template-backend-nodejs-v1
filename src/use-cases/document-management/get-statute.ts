@@ -6,9 +6,9 @@ import { getFiles } from '@services/files/get-files'
 import { MissingStatuteFileError } from '@use-cases/errors/document-management/missing-statute-file-error'
 import { StatuteFileReadError } from '@use-cases/errors/document-management/statute-file-read-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { injectable } from 'tsyringe'
+import { singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetStatuteUseCase {
   async execute(): Promise<GetStatuteUseCaseResponse> {
     const files = await getFiles(STATUTE_FILE_NAME_PATTERN)

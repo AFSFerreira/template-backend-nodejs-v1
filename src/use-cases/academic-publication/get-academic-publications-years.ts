@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/academic-publications/get-academic-publications-years'
 import type { AcademicPublicationsRepository } from '@repositories/academic-publications-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAcademicPublicationsYearsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.academicPublications)

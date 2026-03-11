@@ -6,9 +6,9 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { HashService } from '@services/hashes/hash-service'
 import { MissingCheckAvailabilitiesInput } from '@use-cases/errors/user/missing-email-and-username-error'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CheckAvailabilityUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

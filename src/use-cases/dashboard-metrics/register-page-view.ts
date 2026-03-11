@@ -1,8 +1,8 @@
 import type { RegisterPageViewUseCaseInput } from '@custom-types/use-cases/dashboard-metrics/register-page-view'
 import { PageVisualizationCacheService } from '@services/caches/page-visualization-cache'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RegisterPageViewUseCase {
   constructor(
     @inject(PageVisualizationCacheService)

@@ -17,9 +17,9 @@ import { buildNewsletterHtmlPath } from '@utils/builders/paths/build-newsletter-
 import { buildNewsletterImagePath } from '@utils/builders/paths/build-newsletter-image-path'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

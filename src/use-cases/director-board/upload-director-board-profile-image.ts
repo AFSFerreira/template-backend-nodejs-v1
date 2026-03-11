@@ -7,9 +7,9 @@ import { DirectorBoardUrlBuilderService } from '@services/builders/urls/build-di
 import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadDirectorBoardProfileImageUseCase {
   constructor(
     @inject(FileService)

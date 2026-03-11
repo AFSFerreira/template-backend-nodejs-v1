@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/academic-publication/get-all-activity-areas-with-academic-publications'
 import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllActivityAreasWithAcademicPublicationsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.activityAreas)

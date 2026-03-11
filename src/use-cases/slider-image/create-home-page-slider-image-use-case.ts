@@ -8,9 +8,9 @@ import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { SliderImageLimitReachedError } from '@use-cases/errors/slider-image/slider-image-limit-reached-error'
 import { buildHomePageSliderImagePath, buildTempSliderImagePath } from '@utils/builders/paths/build-slider-image-path'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateHomePageSliderImageUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.sliderImages)

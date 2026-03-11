@@ -8,9 +8,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_POSITION_DELETION_SUCCESSFUL } from '@messages/loggings/models/director-position-loggings'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteDirectorPositionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorPositions)

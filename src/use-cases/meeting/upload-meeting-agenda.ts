@@ -8,9 +8,9 @@ import { MEETING_AGENDA_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/
 import { FileService } from '@services/files/file-service'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadMeetingAgendaUseCase {
   constructor(
     @inject(FileService)

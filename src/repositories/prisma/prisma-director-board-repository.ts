@@ -9,9 +9,9 @@ import { directorBoardWithUser } from '@custom-types/validators/director-board-w
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class PrismaDirectorBoardRepository implements DirectorBoardRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

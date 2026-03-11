@@ -11,9 +11,9 @@ import { EmailChangeNotRequestedError } from '@use-cases/errors/user/email-chang
 import { InvalidTokenError } from '@use-cases/errors/user/invalid-token-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ConfirmEmailChangeUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

@@ -5,10 +5,10 @@ import type {
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
 
-@injectable()
+@singleton()
 export class FindNewsletterByPublicIdUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

@@ -3,9 +3,9 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { Prisma } from '@prisma/generated/client'
 import type { KeywordsRepository } from '../keywords-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class PrismaKeywordsRepository implements KeywordsRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

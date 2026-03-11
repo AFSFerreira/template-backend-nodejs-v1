@@ -12,13 +12,13 @@ import { InvalidQueryRawResultError } from '@messages/system/invalid-query-raw-r
 import { blogDetailedAdapterSchema } from '@repositories/prisma/adapters/blogs/blog-detailed-adapter-schema'
 import { blogSimplifiedAdapterSchema } from '@repositories/prisma/adapters/blogs/blog-simplified-adapter-schema'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import z from 'zod'
 import { buildListAllBlogsDetailedQuery } from './queries/blogs/orchestrators/build-list-all-blogs-detailed-query'
 import { buildListAllBlogsSimplifiedQuery } from './queries/blogs/orchestrators/build-list-all-blogs-simplified-query'
 import { buildListAllUserBlogsDetailedQuery } from './queries/blogs/orchestrators/build-list-all-user-blogs-detailed-query'
 
-@injectable()
+@singleton()
 export class PrismaBlogsRepository implements BlogsRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

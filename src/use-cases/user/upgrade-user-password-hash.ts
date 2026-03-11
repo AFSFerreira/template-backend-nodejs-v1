@@ -7,9 +7,9 @@ import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { PASSWORD_HASH_UPGRADED_SUCCESSFULLY } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpgradeUserPasswordHashUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

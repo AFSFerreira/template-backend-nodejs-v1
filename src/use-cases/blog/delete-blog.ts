@@ -10,11 +10,11 @@ import { BlogHtmlCacheService } from '@services/caches/blogs-html-cache'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { buildBlogBannerPath } from '@utils/builders/paths/build-blog-banner-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { BlogDeletionForbiddenError } from '../errors/blog/blog-deletion-forbidden-error'
 import { BlogNotFoundError } from '../errors/blog/blog-not-found-error'
 
-@injectable()
+@singleton()
 export class DeleteBlogUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

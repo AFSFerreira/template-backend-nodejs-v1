@@ -1,9 +1,9 @@
 import type { GetInstitutionalInfoForAdminUseCaseResponse } from '@custom-types/use-cases/institutional-info/get-institutional-info-for-admin'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetInstitutionalInfoForAdminUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutionalInfo)

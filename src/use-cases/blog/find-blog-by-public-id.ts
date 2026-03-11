@@ -8,9 +8,9 @@ import { EditorialStatusType } from '@prisma/generated/enums'
 import { RegisterBlogViewsCacheService } from '@services/caches/register-blog-views-cache'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class FindBlogByPublicIdUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

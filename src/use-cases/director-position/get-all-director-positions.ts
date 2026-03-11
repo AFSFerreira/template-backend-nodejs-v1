@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/director-position/get-all-director-positions'
 import type { DirectorPositionsRepository } from '@repositories/director-positions-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllDirectorPositionsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorPositions)

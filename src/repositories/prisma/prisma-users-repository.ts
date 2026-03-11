@@ -23,13 +23,13 @@ import { MembershipStatusType } from '@prisma/generated/enums'
 import { userSimplifiedAdapterSchema } from '@repositories/prisma/adapters/users/user-simplified-adapter-schema'
 import { buildListAllUsersSimplifiedQuery } from '@repositories/prisma/queries/users/orchestrators/build-list-all-users-simplified-query'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import z from 'zod'
 import { toPrismaCreateUser } from './mappers/users/create-user'
 import { toPrismaUpdateUser } from './mappers/users/update-user'
 import { buildListAllUsersDetailedQuery } from './queries/users/orchestrators/build-list-all-users-detailed-query'
 
-@injectable()
+@singleton()
 export class PrismaUsersRepository implements UsersRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

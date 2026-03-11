@@ -26,9 +26,9 @@ import { getProseMirrorText } from '@utils/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@utils/extractors/replace-prose-mirror-images'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class CreateDraftCopyBlogUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

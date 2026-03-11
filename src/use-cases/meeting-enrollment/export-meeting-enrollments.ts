@@ -13,10 +13,10 @@ import { CsvExportService } from '@services/exporters/csv-export-service'
 import { ExcelExportService } from '@services/exporters/excel-export-service'
 import { generateTimestamp } from '@utils/dates/generate-timestamp'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { MeetingNotFoundError } from '../errors/meeting/meeting-not-found-error'
 
-@injectable()
+@singleton()
 export class ExportMeetingEnrollmentsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetingEnrollments)

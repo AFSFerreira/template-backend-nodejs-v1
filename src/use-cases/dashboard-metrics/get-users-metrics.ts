@@ -2,9 +2,9 @@ import type { GetUsersMetricsUseCaseResponse } from '@custom-types/use-cases/das
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MembershipStatusType } from '@prisma/generated/enums'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetUsersMetricsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

@@ -4,9 +4,9 @@ import type { NewsletterTemplatesRepository } from '@repositories/newsletter-tem
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class PrismaNewsletterTemplatesRepository implements NewsletterTemplatesRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

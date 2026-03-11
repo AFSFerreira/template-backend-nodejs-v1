@@ -27,9 +27,9 @@ import {
 } from '@utils/builders/paths/build-director-board-profile-image-path'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateDirectorBoardUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

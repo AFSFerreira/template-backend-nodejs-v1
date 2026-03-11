@@ -5,12 +5,12 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EMAIL_VERIFICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { EmailVerificationNotRequestedError } from '../errors/user/email-verification-not-requested-error'
 import { InvalidTokenError } from '../errors/user/invalid-token-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class VerifyEmailUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

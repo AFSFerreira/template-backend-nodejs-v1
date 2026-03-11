@@ -23,10 +23,10 @@ import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { isUpdateUserHighLevelEducation } from '@utils/guards/is-update-user-high-level-education'
 import { isUpdateUserHighLevelStudentEducation } from '@utils/guards/is-update-user-high-level-student-education'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class UpdateUserUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

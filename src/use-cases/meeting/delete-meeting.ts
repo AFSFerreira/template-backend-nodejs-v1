@@ -11,9 +11,9 @@ import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-foun
 import { buildMeetingAgendaPath } from '@utils/builders/paths/build-meeting-agenda-path'
 import { buildMeetingBannerPath } from '@utils/builders/paths/build-meeting-banner-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

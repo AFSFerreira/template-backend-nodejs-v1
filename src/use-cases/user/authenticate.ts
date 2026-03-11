@@ -13,10 +13,10 @@ import { MembershipStatusType } from '@prisma/generated/enums'
 import { HashService } from '@services/hashes/hash-service'
 import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
 import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
-@injectable()
+@singleton()
 export class AuthenticateUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

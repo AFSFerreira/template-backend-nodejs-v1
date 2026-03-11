@@ -10,9 +10,9 @@ import { DirectorBoardHtmlCacheService } from '@services/caches/director-board-h
 import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetDirectorBoardAboutHTMLUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorsBoard)

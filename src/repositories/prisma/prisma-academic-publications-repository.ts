@@ -9,12 +9,12 @@ import { InvalidQueryRawResultError } from '@messages/system/invalid-query-raw-r
 import { academicPublicationAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-adapter-schema'
 import { academicPublicationYearAdapterSchema } from '@repositories/prisma/adapters/academic-publications/academic-publication-year-adapter-schema'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import z from 'zod'
 import { buildListAcademicPublicationsYearsQuery } from './queries/academic-publications/orchestrators/build-list-academic-publications-years-query'
 import { buildListAllAcademicPublicationsQuery } from './queries/academic-publications/orchestrators/build-list-all-academic-publications-query'
 
-@injectable()
+@singleton()
 export class PrismaAcademicPublicationsRepository implements AcademicPublicationsRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

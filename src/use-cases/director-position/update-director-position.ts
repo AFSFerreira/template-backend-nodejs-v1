@@ -6,9 +6,9 @@ import type { DirectorPositionsRepository } from '@repositories/director-positio
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DirectorPositionNotFoundError } from '@use-cases/errors/director-position/director-position-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateDirectorPositionUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.directorPositions)

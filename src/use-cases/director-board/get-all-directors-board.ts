@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/director-board/get-all-directors-board'
 import type { DirectorBoardRepository } from '@repositories/directors-board-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllDirectorsBoard {
   constructor(
     @inject(tsyringeTokens.repositories.directorsBoard)

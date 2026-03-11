@@ -34,11 +34,11 @@ import { isRegisterUserHighLevelEducation } from '@utils/guards/is-register-user
 import { isRegisterUserHighLevelStudentEducation } from '@utils/guards/is-register-user-high-level-student-education'
 import { getTrueMapping } from '@utils/mappers/get-true-mapping'
 import { objectDeepEqual } from '@utils/object/object-deep-equal'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { UserWithSameEmail } from '../errors/user/user-with-same-email-error'
 import { UserWithSameSecondaryEmail } from '../errors/user/user-with-same-secondary-email-error'
 
-@injectable()
+@singleton()
 export class CreateUserUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

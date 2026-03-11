@@ -7,9 +7,9 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllUserBlogsDetailedUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

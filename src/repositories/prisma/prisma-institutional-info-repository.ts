@@ -3,9 +3,9 @@ import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
 import type { InstitutionalInfo } from '@prisma/generated/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class PrismaInstitutionalInfoRepository implements InstitutionalInfoRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

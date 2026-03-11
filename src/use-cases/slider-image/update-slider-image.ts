@@ -9,9 +9,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { SliderImageInvalidOrderError } from '@use-cases/errors/slider-image/slider-image-invalid-order-error'
 import { SliderImageNotFoundError } from '@use-cases/errors/slider-image/slider-image-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateSliderImageUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.sliderImages)

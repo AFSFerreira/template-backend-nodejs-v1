@@ -7,10 +7,10 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NewsletterHtmlCacheService } from '@services/caches/newsletters-html-cache'
 import { NewsletterContentRenderService } from '@services/renderers/newsletters/newsletter-content-render-service'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { NewsletterNotFoundError } from '../errors/newsletter/newsletter-not-found-error'
 
-@injectable()
+@singleton()
 export class GetNewsletterHtmlContentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

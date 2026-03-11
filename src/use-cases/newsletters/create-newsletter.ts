@@ -28,10 +28,10 @@ import { getProseMirrorText } from '@utils/extractors/get-prose-mirror-text'
 import { replaceProseMirrorImages } from '@utils/extractors/replace-prose-mirror-images'
 import { sanitizeUrlFilename } from '@utils/formatters/sanitize-url-filename'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { NewsletterAlreadyExistsError } from '../errors/newsletter/newsletter-already-exists-error'
 
-@injectable()
+@singleton()
 export class CreateNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

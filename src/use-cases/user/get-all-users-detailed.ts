@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/user/get-all-users-detailed'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllUsersDetailedUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

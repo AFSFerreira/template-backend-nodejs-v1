@@ -16,10 +16,10 @@ import {
 import { HashService } from '@services/hashes/hash-service'
 import { ForgotPasswordRenderer } from '@services/renderers/user/emails/forgot-password-renderer'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { UserNotFoundForPasswordResetError } from '../errors/user/user-not-found-for-password-reset-error'
 
-@injectable()
+@singleton()
 export class ForgotPasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

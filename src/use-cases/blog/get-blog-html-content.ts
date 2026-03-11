@@ -11,9 +11,9 @@ import { BlogHtmlCacheService } from '@services/caches/blogs-html-cache'
 import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetBlogHTMLContentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)

@@ -5,9 +5,9 @@ import type {
 import { InstitutionService } from '@services/externals/get-all-institutions'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { paginateArray } from '@utils/generics/paginate-array'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllInstitutionsNamesUseCase {
   constructor(
     @inject(InstitutionService)

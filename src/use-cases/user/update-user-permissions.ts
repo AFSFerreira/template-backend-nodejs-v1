@@ -9,11 +9,11 @@ import { USER_PERMISSIONS_UPDATED_SUCCESSFULLY } from '@messages/loggings/models
 import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
 import { isManagerPermissions } from '@utils/guards/is-manager-permissions'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { AdminCannotUpdateOwnRoleError } from '../errors/user/admin-cannot-update-own-role-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class UpdateUserPermissionsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

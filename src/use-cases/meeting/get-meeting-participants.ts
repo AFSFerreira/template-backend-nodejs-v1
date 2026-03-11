@@ -7,9 +7,9 @@ import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetMeetingParticipantsUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)

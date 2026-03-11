@@ -11,9 +11,9 @@ import { SLIDER_IMAGE_DELETION_SUCCESSFUL } from '@messages/loggings/models/slid
 import { SliderImageNotFoundError } from '@use-cases/errors/slider-image/slider-image-not-found-error'
 import { buildHomePageSliderImagePath } from '@utils/builders/paths/build-slider-image-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class DeleteSliderImageUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.sliderImages)

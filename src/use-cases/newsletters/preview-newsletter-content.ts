@@ -10,10 +10,10 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { NewsletterTemplateRenderer } from '@services/renderers/newsletters/newsletter-template-renderer'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { NewsletterTemplateNotFoundError } from '../errors/newsletter/newsletter-template-not-found-error'
 
-@injectable()
+@singleton()
 export class PreviewNewsletterContentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletterTemplates)

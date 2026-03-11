@@ -10,9 +10,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { evalOffset } from '@utils/generics/eval-offset'
 import { evalTotalPages } from '@utils/generics/eval-total-pages'
 import { mapMeetingStatusToDateFilter } from '@utils/mappers/map-status-to-date-filter'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class PrismaMeetingsRepository implements MeetingsRepository {
   constructor(
     @inject(tsyringeTokens.infra.database)

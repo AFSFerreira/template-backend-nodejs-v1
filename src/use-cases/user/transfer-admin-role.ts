@@ -11,11 +11,11 @@ import { ADMIN_ROLE_TRANSFERRED_SUCCESSFULLY } from '@messages/loggings/models/u
 import { SystemActionType, UserRoleType } from '@prisma/generated/enums'
 import { CurrentUserIsNotAdminError } from '@use-cases/errors/user/current-user-is-not-admin-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 import { CannotTransferAdminToSelfError } from '../errors/user/cannot-transfer-admin-to-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
-@injectable()
+@singleton()
 export class TransferAdminRoleUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

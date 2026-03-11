@@ -20,9 +20,9 @@ import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-do
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
 import { ensureExists, ensureNotExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class RequestEmailChangeUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

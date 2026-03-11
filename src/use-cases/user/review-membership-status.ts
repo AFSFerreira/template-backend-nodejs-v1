@@ -22,9 +22,9 @@ import { MembershipStatusNotPending } from '@use-cases/errors/user/membership-st
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { buildUserProfileImagePath } from '@utils/builders/paths/build-user-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ReviewMembershipStatusUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

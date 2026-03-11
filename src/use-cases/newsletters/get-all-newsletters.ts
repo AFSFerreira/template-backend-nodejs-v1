@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/newsletters/get-all-newsletters'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllNewslettersUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)

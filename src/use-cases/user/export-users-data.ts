@@ -12,9 +12,9 @@ import { MembershipStatusType } from '@prisma/generated/enums'
 import { CsvExportService } from '@services/exporters/csv-export-service'
 import { ExcelExportService } from '@services/exporters/excel-export-service'
 import { generateTimestamp } from '@utils/dates/generate-timestamp'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class ExportUsersDataUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

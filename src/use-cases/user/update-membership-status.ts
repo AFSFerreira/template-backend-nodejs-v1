@@ -11,9 +11,9 @@ import { AdminCannotBeInactivatedError } from '@use-cases/errors/user/admin-cann
 import { CannotUpdateMembershipStatusVerifyingOrPendingError } from '@use-cases/errors/user/cannot-update-membership-status-verifying-or-pending-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UpdateMembershipStatusUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)

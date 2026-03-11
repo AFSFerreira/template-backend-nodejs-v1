@@ -6,9 +6,9 @@ import { SLIDER_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
 import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class UploadSliderImageUseCase {
   constructor(
     @inject(FileService)

@@ -4,9 +4,9 @@ import type {
 } from '@custom-types/use-cases/slider-image/get-all-home-page-sliders'
 import type { SliderImagesRepository } from '@repositories/slider-images-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { inject, injectable } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-@injectable()
+@singleton()
 export class GetAllHomePageSlidersUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.sliderImages)
