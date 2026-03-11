@@ -30,13 +30,13 @@ wait-redis:
 	done
 	@echo "Redis pronto!"
 
+wait-infra: wait-db wait-redis
+	@echo "Toda a infraestrutura está pronta e saudável! 🚀"
+
 dev-reset-full:
 	make dev-down
 	make dev-up
-
-	make wait-db
-	make wait-redis
-
+	make wait-infra
 	make dev-install
 	(command -v pnpm > /dev/null 2>&1 && pnpm db:reset) || npm run db:reset
 
