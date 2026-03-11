@@ -7,12 +7,11 @@ import type { JSONContent } from '@tiptap/core'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_DELETION_SUCCESSFUL } from '@messages/loggings/models/newsletter-loggings'
 import { NewsletterFormatType } from '@prisma/generated/enums'
-import { removeNewsletterHTMLCache } from '@services/caches/newsletters-html-cache'
-import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
+import { NewsletterHtmlCacheService } from '@services/caches/newsletters-html-cache'
+import { ProseMirrorExtractorService } from '@services/extractors/extract-prose-mirror-images'
 import { NewsletterNotFoundError } from '@use-cases/errors/newsletter/newsletter-not-found-error'
 import { buildNewsletterHtmlPath } from '@utils/builders/paths/build-newsletter-html-path'
 import { buildNewsletterImagePath } from '@utils/builders/paths/build-newsletter-image-path'
@@ -25,6 +24,12 @@ export class DeleteNewsletterUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
+
+    @inject(NewsletterHtmlCacheService)
+    private readonly newsletterHtmlCacheService: NewsletterHtmlCacheService,
+
+    @inject(ProseMirrorExtractorService)
+    private readonly proseMirrorExtractorService: ProseMirrorExtractorService,
   ) {}
 
   async execute({ publicId }: DeleteNewsletterUseCaseRequest): Promise<DeleteNewsletterUseCaseResponse> {
@@ -53,7 +58,7 @@ export class DeleteNewsletterUseCase {
       case NewsletterFormatType.PROSEMIRROR: {
         if (!newsletter.proseContent) break
 
-        const images = extractProseMirrorImages(newsletter.proseContent as JSONContent)
+        const images = this.proseMirrorExtractorService.extractImages(newsletter.proseContent as JSONContent)
 
         for (const imageLink of images) {
           const imageName = sanitizeUrlFilename(imageLink)
@@ -74,7 +79,7 @@ export class DeleteNewsletterUseCase {
     }
 
     // Removendo o cache HTML da newsletter:
-    await removeNewsletterHTMLCache({ publicId: newsletter.publicId, redis })
+    await this.newsletterHtmlCacheService.remove(newsletter.publicId)
 
     logger.info({ newsletterPublicId: newsletter.publicId }, NEWSLETTER_DELETION_SUCCESSFUL)
 

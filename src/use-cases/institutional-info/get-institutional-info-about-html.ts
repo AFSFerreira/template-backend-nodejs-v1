@@ -1,14 +1,10 @@
 import type { GetInstitutionalInfoAboutHTMLUseCaseResponse } from '@custom-types/use-cases/institutional-info/get-institutional-info-about-html'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import type { JSONContent } from '@tiptap/core'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import {
-  getInstitutionalInfoHTMLCached,
-  setInstitutionalInfoHTMLCache,
-} from '@services/caches/institutional-info-html-cache'
-import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
+import { InstitutionalInfoHtmlCacheService } from '@services/caches/institutional-info-html-cache'
+import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { inject, injectable } from 'tsyringe'
 
 @injectable()
@@ -16,10 +12,16 @@ export class GetInstitutionalInfoAboutHTMLUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutionalInfo)
     private readonly institutionalInfoRepository: InstitutionalInfoRepository,
+
+    @inject(InstitutionalInfoHtmlCacheService)
+    private readonly institutionalInfoHtmlCacheService: InstitutionalInfoHtmlCacheService,
+
+    @inject(TipTapRendererService)
+    private readonly tipTapRendererService: TipTapRendererService,
   ) {}
 
   async execute(): Promise<GetInstitutionalInfoAboutHTMLUseCaseResponse> {
-    const cachedHtml = await getInstitutionalInfoHTMLCached({ redis })
+    const cachedHtml = await this.institutionalInfoHtmlCacheService.get()
 
     if (cachedHtml) return { htmlContent: cachedHtml }
 
@@ -27,9 +29,9 @@ export class GetInstitutionalInfoAboutHTMLUseCase {
 
     const proseMirror = institutionalInfo.aboutDescription as JSONContent
 
-    const htmlContent = await generateProseMirrorHtmlWeb(proseMirror, tiptapConfiguration)
+    const htmlContent = await this.tipTapRendererService.generateProseMirrorHtmlWeb(proseMirror, tiptapConfiguration)
 
-    await setInstitutionalInfoHTMLCache({ htmlContent, redis })
+    await this.institutionalInfoHtmlCacheService.set(htmlContent)
 
     return { htmlContent }
   }

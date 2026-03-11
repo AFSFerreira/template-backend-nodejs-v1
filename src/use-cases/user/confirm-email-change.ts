@@ -18,10 +18,13 @@ export class ConfirmEmailChangeUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async execute({ token }: ConfirmEmailChangeUseCaseRequest): Promise<ConfirmEmailChangeUseCaseResponse> {
-    const emailVerificationTokenHash = HashService.hashToken(token)
+    const emailVerificationTokenHash = this.hashService.hashToken(token)
 
     const userFound = ensureExists({
       value: await this.usersRepository.validateEmailVerificationToken(emailVerificationTokenHash),

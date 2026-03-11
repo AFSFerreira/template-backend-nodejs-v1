@@ -18,11 +18,14 @@ export class ResetPasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async execute({ newPassword, token }: ResetPasswordUseCaseRequest): Promise<ResetPasswordUseCaseResponse> {
-    const tokenHash = HashService.hashToken(token)
-    const passwordHash = await HashService.hashPassword(newPassword)
+    const tokenHash = this.hashService.hashToken(token)
+    const passwordHash = await this.hashService.hashPassword(newPassword)
 
     const userFound = ensureExists({
       value: await this.usersRepository.validateUserToken(tokenHash),

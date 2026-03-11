@@ -26,4 +26,8 @@ export const tsyringeTokens = {
   infra: {
     database: 'DatabaseContext',
   },
+
+  providers: {
+    redis: 'Redis',
+  },
 } as const

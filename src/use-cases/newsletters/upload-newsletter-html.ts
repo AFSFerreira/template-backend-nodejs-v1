@@ -5,13 +5,18 @@ import type {
 import { NEWSLETTER_TEMP_HTML_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/pino'
 import { NEWSLETTER_HTML_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
-import { saveFile } from '@services/files/save-file'
+import { FileService } from '@services/files/file-service'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { FileTooBigError } from '@use-cases/errors/newsletter/file-too-big-error'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadNewsletterHtmlUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+  ) {}
+
   async execute({ filePart }: UploadNewsletterHtmlUseCaseRequest): Promise<UploadNewsletterHtmlUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
@@ -21,7 +26,7 @@ export class UploadNewsletterHtmlUseCase {
       throw new FileTooBigError()
     }
 
-    const { filename, success } = await saveFile({
+    const { filename, success } = await this.fileService.saveFile({
       filePart,
       baseFolder: NEWSLETTER_TEMP_HTML_PATH,
     })

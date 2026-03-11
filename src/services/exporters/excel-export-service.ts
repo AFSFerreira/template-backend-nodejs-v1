@@ -10,6 +10,7 @@ import { getExcelCellAddress } from '@utils/excel/get-excel-cell-address'
 import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import dayjs from 'dayjs'
 import ExcelJS, { type Style } from 'exceljs'
+import { injectable } from 'tsyringe'
 
 /**
  * Serviço de exportação de dados em formato Excel (.xlsx) com streaming.
@@ -20,6 +21,7 @@ import ExcelJS, { type Style } from 'exceljs'
  *
  * **Restrição OOXML:** nomes de worksheets devem ter no máximo 31 caracteres.
  */
+@injectable()
 export class ExcelExportService {
   private static WHITE_HEX_COLOR = 'FFFFFFFF'
   // private static DEEP_BLUE_HEX_COLOR = '073292FF'

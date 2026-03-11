@@ -11,16 +11,15 @@ import type { JSONContent } from '@tiptap/core'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import { Prisma } from '@prisma/generated/client'
 import { NewsletterFormatType } from '@prisma/generated/enums'
-import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
-import { removeNewsletterHTMLCache } from '@services/caches/newsletters-html-cache'
-import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
-import { moveFilesIfNotExists } from '@services/files/move-files-if-not-exists'
+import { NewsletterUrlBuilderService } from '@services/builders/urls/build-newsletter-image-url'
+import { NewsletterHtmlCacheService } from '@services/caches/newsletters-html-cache'
+import { ProseMirrorExtractorService } from '@services/extractors/extract-prose-mirror-images'
+import { FileService } from '@services/files/file-service'
 import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
 import { NewsletterAlreadyExistsError } from '@use-cases/errors/newsletter/newsletter-already-exists-error'
 import { NewsletterInvalidFilenameError } from '@use-cases/errors/newsletter/newsletter-invalid-filename-error'
@@ -46,6 +45,18 @@ export class UpdateNewsletterUseCase {
 
     @inject(tsyringeTokens.repositories.newsletterTemplates)
     private readonly newsletterTemplatesRepository: NewsletterTemplatesRepository,
+
+    @inject(NewsletterUrlBuilderService)
+    private readonly newsletterUrlBuilderService: NewsletterUrlBuilderService,
+
+    @inject(NewsletterHtmlCacheService)
+    private readonly newsletterHtmlCacheService: NewsletterHtmlCacheService,
+
+    @inject(ProseMirrorExtractorService)
+    private readonly proseMirrorExtractorService: ProseMirrorExtractorService,
+
+    @inject(FileService)
+    private readonly fileService: FileService,
   ) {}
 
   async execute({ publicId, body }: UpdateNewsletterUseCaseRequest): Promise<UpdateNewsletterUseCaseResponse> {
@@ -128,7 +139,9 @@ export class UpdateNewsletterUseCase {
               if (!foundNewsletter.proseContent) break
 
               if (foundNewsletter.proseContent) {
-                const oldProseMirrorImages = extractProseMirrorImages(foundNewsletter.proseContent as JSONContent)
+                const oldProseMirrorImages = this.proseMirrorExtractorService.extractImages(
+                  foundNewsletter.proseContent as JSONContent,
+                )
 
                 imagesToDelete = Array.from(oldProseMirrorImages).map((imageLink) => {
                   return ensureExists({
@@ -171,8 +184,10 @@ export class UpdateNewsletterUseCase {
               if (!foundNewsletter.proseContent) break
 
               // Diferenciando imagens novas e removidas:
-              const oldImages = extractProseMirrorImages(foundNewsletter.proseContent as JSONContent)
-              const newImages = extractProseMirrorImages(body.content.proseContent)
+              const oldImages = this.proseMirrorExtractorService.extractImages(
+                foundNewsletter.proseContent as JSONContent,
+              )
+              const newImages = this.proseMirrorExtractorService.extractImages(body.content.proseContent)
 
               const addedImageLinks = Array.from<string>(newImages.difference(oldImages))
               const removedImageLinks = Array.from<string>(oldImages.difference(newImages))
@@ -192,7 +207,7 @@ export class UpdateNewsletterUseCase {
                   error: new NewsletterInvalidImageLinkError(),
                 })
 
-                oldToNewImagesLinkMap.set(imageName, buildNewsletterImageUrl(imageName))
+                oldToNewImagesLinkMap.set(imageName, this.newsletterUrlBuilderService.buildImageUrl(imageName))
 
                 return {
                   oldFilePath: buildNewsletterTempImagePath(imageName),
@@ -221,7 +236,7 @@ export class UpdateNewsletterUseCase {
           if (!updateData.proseContent) {
             const oldToNewImagesLinkMap = new Map<string, string>()
 
-            const allImages = Array.from(extractProseMirrorImages(body.content.proseContent))
+            const allImages = Array.from(this.proseMirrorExtractorService.extractImages(body.content.proseContent))
 
             imagesToMove = allImages.map((imageLink) => {
               const imageName = ensureExists({
@@ -229,7 +244,7 @@ export class UpdateNewsletterUseCase {
                 error: new NewsletterInvalidImageLinkError(),
               })
 
-              oldToNewImagesLinkMap.set(imageLink, buildNewsletterImageUrl(imageName))
+              oldToNewImagesLinkMap.set(imageLink, this.newsletterUrlBuilderService.buildImageUrl(imageName))
 
               return {
                 oldFilePath: buildNewsletterTempImagePath(imageName),
@@ -264,7 +279,7 @@ export class UpdateNewsletterUseCase {
 
     // Mover arquivos HTML da pasta temporária para a pasta definitiva:
     if (htmlFileToMove) {
-      await moveFilesIfNotExists(htmlFileToMove)
+      await this.fileService.moveFilesIfNotExists(htmlFileToMove)
     }
 
     // Apagar arquivos HTML antigos:
@@ -274,7 +289,7 @@ export class UpdateNewsletterUseCase {
 
     // Mover novas imagens do prose mirror:
     if (imagesToMove) {
-      await moveFilesIfNotExists(imagesToMove)
+      await this.fileService.moveFilesIfNotExists(imagesToMove)
     }
 
     // Apagar imagens removidas do prose mirror:
@@ -286,7 +301,7 @@ export class UpdateNewsletterUseCase {
       )
     }
 
-    await removeNewsletterHTMLCache({ publicId: foundNewsletter.publicId, redis })
+    await this.newsletterHtmlCacheService.remove(foundNewsletter.publicId)
 
     logger.info(
       { newsletterPublicId: newsletter.publicId, sequenceNumber: newsletter.sequenceNumber },

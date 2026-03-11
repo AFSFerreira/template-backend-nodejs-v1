@@ -4,7 +4,6 @@ import type {
   CreateDraftBlogUseCaseResponse,
 } from '@custom-types/use-cases/blogs/create-blog-draft'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { logger } from '@lib/pino'
@@ -12,10 +11,10 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_CREATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType, EditorialStatusType } from '@prisma/generated/enums'
-import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
-import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
-import { moveFilesIfNotExists } from '@services/files/move-files-if-not-exists'
-import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import { BlogUrlBuilderService } from '@services/builders/urls/build-blog-image-url'
+import { ProseMirrorExtractorService } from '@services/extractors/extract-prose-mirror-images'
+import { FileService } from '@services/files/file-service'
+import { ActivityAreaValidationService } from '@services/validators/validate-activity-areas'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { buildBlogBannerPath, buildBlogTempBannerPath } from '@utils/builders/paths/build-blog-banner-path'
@@ -31,14 +30,23 @@ import { UserNotFoundError } from '../errors/user/user-not-found-error'
 @injectable()
 export class CreateDraftBlogUseCase {
   constructor(
-    @inject(tsyringeTokens.repositories.activityAreas)
-    private readonly activityAreasRepository: ActivityAreasRepository,
-
     @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(ProseMirrorExtractorService)
+    private readonly proseMirrorExtractorService: ProseMirrorExtractorService,
+
+    @inject(BlogUrlBuilderService)
+    private readonly blogUrlBuilderService: BlogUrlBuilderService,
+
+    @inject(FileService)
+    private readonly fileService: FileService,
+
+    @inject(ActivityAreaValidationService)
+    private readonly activityAreaValidationService: ActivityAreaValidationService,
   ) {}
 
   async execute(createDraftBlogUseCaseInput: CreateDraftBlogUseCaseRequest): Promise<CreateDraftBlogUseCaseResponse> {
@@ -50,14 +58,14 @@ export class CreateDraftBlogUseCase {
     const oldToNewImagesLinkMap = new Map<string, string>()
 
     const formatedBlogImages: ImagePathInfo[] = Array.from(
-      extractProseMirrorImages(createDraftBlogUseCaseInput.content),
+      this.proseMirrorExtractorService.extractImages(createDraftBlogUseCaseInput.content),
     ).map((imageLink) => {
       const imageName = ensureExists({
         value: sanitizeUrlFilename(imageLink),
         error: new BlogInvalidImageLinkError(),
       })
 
-      oldToNewImagesLinkMap.set(imageLink, buildBlogImageUrl(imageName))
+      oldToNewImagesLinkMap.set(imageLink, this.blogUrlBuilderService.buildBlogImageUrl(imageName))
 
       return {
         oldFilePath: buildBlogTempImagePath(imageName),
@@ -77,13 +85,12 @@ export class CreateDraftBlogUseCase {
 
     const nonRepeatingSubcategories = Array.from<string>(new Set<string>(createDraftBlogUseCaseInput.subcategories))
 
-    const { validatedActivityAreas, success } = await validateActivityAreas({
-      activityAreasRepository: this.activityAreasRepository,
-      activityAreas: nonRepeatingSubcategories.map((subcategory) => ({
+    const { validatedActivityAreas, success } = await this.activityAreaValidationService.validate(
+      nonRepeatingSubcategories.map((subcategory) => ({
         area: subcategory,
         type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       })),
-    })
+    )
 
     if (!success) {
       throw new InvalidActivityArea(
@@ -110,7 +117,7 @@ export class CreateDraftBlogUseCase {
     }
 
     // Persistir banner e imagens da pasta temporária para a pasta definitiva:
-    await moveFilesIfNotExists([...formatedBlogImages, blogBannerPaths])
+    await this.fileService.moveFilesIfNotExists([...formatedBlogImages, blogBannerPaths])
 
     logger.info(
       {

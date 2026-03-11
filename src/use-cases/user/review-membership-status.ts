@@ -35,6 +35,12 @@ export class ReviewMembershipStatusUseCase {
 
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
+
+    @inject(MembershipApprovedRenderer)
+    private readonly membershipApprovedRenderer: MembershipApprovedRenderer,
+
+    @inject(MembershipRejectedRenderer)
+    private readonly membershipRejectedRenderer: MembershipRejectedRenderer,
   ) {}
 
   async execute({
@@ -82,7 +88,7 @@ export class ReviewMembershipStatusUseCase {
           })
         })
 
-        const { html, text, attachments } = await new MembershipApprovedRenderer().render(emailInfo, {
+        const { html, text, attachments } = await this.membershipApprovedRenderer.render(emailInfo, {
           minify: 'email',
         })
 
@@ -119,7 +125,7 @@ export class ReviewMembershipStatusUseCase {
           })
         }
 
-        const { html, text, attachments } = await new MembershipRejectedRenderer().render(emailInfo, {
+        const { html, text, attachments } = await this.membershipRejectedRenderer.render(emailInfo, {
           minify: 'email',
         })
 

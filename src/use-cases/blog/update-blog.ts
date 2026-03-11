@@ -2,23 +2,21 @@ import type { ImagePathInfo } from '@custom-types/custom/image-path-info'
 import type { UpdateBlogQuery } from '@custom-types/repository/prisma/blog/update-blog-query'
 import type { UpdateBlogUseCaseRequest, UpdateBlogUseCaseResponse } from '@custom-types/use-cases/blogs/update-blog'
 import type { InputJsonValue } from '@prisma/client/runtime/client'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS, DRAFT_OR_PENDING_OR_CHANGES_REQUESTED } from '@constants/sets'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_UPDATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { ActivityAreaType } from '@prisma/generated/enums'
-import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
-import { removeBlogHTMLCache } from '@services/caches/blogs-html-cache'
-import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
-import { moveFilesIfNotExists } from '@services/files/move-files-if-not-exists'
-import { validateActivityAreas } from '@services/validators/validate-activity-areas'
+import { BlogUrlBuilderService } from '@services/builders/urls/build-blog-image-url'
+import { BlogHtmlCacheService } from '@services/caches/blogs-html-cache'
+import { ProseMirrorExtractorService } from '@services/extractors/extract-prose-mirror-images'
+import { FileService } from '@services/files/file-service'
+import { ActivityAreaValidationService } from '@services/validators/validate-activity-areas'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogEditorialStatusChangeForbiddenError } from '@use-cases/errors/blog/blog-editorial-status-change-forbidden-error'
 import { BlogInvalidImageLinkError } from '@use-cases/errors/blog/blog-invalid-image-link-error'
@@ -37,14 +35,26 @@ import { inject, injectable } from 'tsyringe'
 @injectable()
 export class UpdateBlogUseCase {
   constructor(
-    @inject(tsyringeTokens.repositories.activityAreas)
-    private readonly activityAreasRepository: ActivityAreasRepository,
-
     @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(ProseMirrorExtractorService)
+    private readonly proseMirrorExtractorService: ProseMirrorExtractorService,
+
+    @inject(BlogUrlBuilderService)
+    private readonly blogUrlBuilderService: BlogUrlBuilderService,
+
+    @inject(FileService)
+    private readonly fileService: FileService,
+
+    @inject(ActivityAreaValidationService)
+    private readonly activityAreaValidationService: ActivityAreaValidationService,
+
+    @inject(BlogHtmlCacheService)
+    private readonly blogHtmlCacheService: BlogHtmlCacheService,
   ) {}
 
   async execute({ publicId, userPublicId, body }: UpdateBlogUseCaseRequest): Promise<UpdateBlogUseCaseResponse> {
@@ -106,8 +116,8 @@ export class UpdateBlogUseCase {
         error: new InvalidBlogContentError(),
       })
 
-      const oldBlogImages = extractProseMirrorImages(foundBlog.content as JSONContent)
-      const newBlogImages = extractProseMirrorImages(body.content as JSONContent)
+      const oldBlogImages = this.proseMirrorExtractorService.extractImages(foundBlog.content as JSONContent)
+      const newBlogImages = this.proseMirrorExtractorService.extractImages(body.content as JSONContent)
 
       addedImageLinks = Array.from<string>(newBlogImages.difference(oldBlogImages)).map((imageLink) => {
         return ensureExists({
@@ -126,7 +136,7 @@ export class UpdateBlogUseCase {
       const oldToNewImagesLinkMap = new Map<string, string>()
 
       formattedBlogImages = addedImageLinks.map((imageName) => {
-        oldToNewImagesLinkMap.set(imageName, buildBlogImageUrl(imageName))
+        oldToNewImagesLinkMap.set(imageName, this.blogUrlBuilderService.buildBlogImageUrl(imageName))
 
         return {
           oldFilePath: buildBlogTempImagePath(imageName),
@@ -156,10 +166,8 @@ export class UpdateBlogUseCase {
       }))
 
       // Valida as novas subcategorias:
-      const { validatedActivityAreas, success } = await validateActivityAreas({
-        activityAreas: formattedSubcategories,
-        activityAreasRepository: this.activityAreasRepository,
-      })
+      const { validatedActivityAreas, success } =
+        await this.activityAreaValidationService.validate(formattedSubcategories)
 
       if (!success) {
         throw new InvalidActivityArea(
@@ -193,7 +201,7 @@ export class UpdateBlogUseCase {
       : undefined
 
     if (blogBannerPaths) {
-      await moveFilesIfNotExists(blogBannerPaths)
+      await this.fileService.moveFilesIfNotExists(blogBannerPaths)
 
       await deleteFileEnqueued({
         filePath: buildBlogBannerPath(blog.bannerImage),
@@ -201,7 +209,7 @@ export class UpdateBlogUseCase {
     }
 
     if (formattedBlogImages) {
-      await moveFilesIfNotExists(formattedBlogImages)
+      await this.fileService.moveFilesIfNotExists(formattedBlogImages)
     }
 
     if (imagesToDelete) {
@@ -217,7 +225,7 @@ export class UpdateBlogUseCase {
     }
 
     // Remover cache HTML do blog para forçar regeneração:
-    await removeBlogHTMLCache({ publicId: blog.publicId, redis })
+    await this.blogHtmlCacheService.remove(blog.publicId)
 
     logger.info(
       {

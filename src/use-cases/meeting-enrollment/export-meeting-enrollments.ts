@@ -24,6 +24,12 @@ export class ExportMeetingEnrollmentsUseCase {
 
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
+
+    @inject(CsvExportService)
+    private readonly csvExportService: CsvExportService,
+
+    @inject(ExcelExportService)
+    private readonly excelExportService: ExcelExportService,
   ) {}
 
   async execute({
@@ -43,11 +49,11 @@ export class ExportMeetingEnrollmentsUseCase {
 
     switch (format) {
       case 'xlsx': {
-        reportStream = new ExcelExportService().generateMeetingEnrollmentReport(enrollmentStream)
+        reportStream = this.excelExportService.generateMeetingEnrollmentReport(enrollmentStream)
         break
       }
       case 'csv': {
-        reportStream = new CsvExportService().generateMeetingEnrollmentReport(enrollmentStream)
+        reportStream = this.csvExportService.generateMeetingEnrollmentReport(enrollmentStream)
         break
       }
       default: {

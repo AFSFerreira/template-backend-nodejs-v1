@@ -19,6 +19,12 @@ export class ExportUsersDataUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(CsvExportService)
+    private readonly csvExportService: CsvExportService,
+
+    @inject(ExcelExportService)
+    private readonly excelExportService: ExcelExportService,
   ) {}
 
   async execute({ format }: ExportUsersDataUseCaseRequest): Promise<ExportUsersDataUseCaseResponse> {
@@ -32,11 +38,11 @@ export class ExportUsersDataUseCase {
 
     switch (format) {
       case 'xlsx': {
-        reportStream = new ExcelExportService().generateUsersReport(usersStream)
+        reportStream = this.excelExportService.generateUsersReport(usersStream)
         break
       }
       case 'csv': {
-        reportStream = new CsvExportService().generateUsersReport(usersStream)
+        reportStream = this.csvExportService.generateUsersReport(usersStream)
         break
       }
       default: {

@@ -7,7 +7,7 @@ import type { NewsletterTemplatesRepository } from '@repositories/newsletter-tem
 import type { JSONContent } from '@tiptap/core'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
+import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { NewsletterTemplateRenderer } from '@services/renderers/newsletters/newsletter-template-renderer'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -21,6 +21,12 @@ export class PreviewNewsletterContentUseCase {
 
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
+
+    @inject(TipTapRendererService)
+    private readonly tipTapRendererService: TipTapRendererService,
+
+    @inject(NewsletterTemplateRenderer)
+    private readonly newsletterTemplateRenderer: NewsletterTemplateRenderer,
   ) {}
 
   async execute({
@@ -35,11 +41,15 @@ export class PreviewNewsletterContentUseCase {
       error: new NewsletterTemplateNotFoundError(),
     })
 
-    const bodyContent = await generateProseMirrorHtmlWeb(proseContent as JSONContent, tiptapConfiguration)
+    const bodyContent = await this.tipTapRendererService.generateProseMirrorHtmlWeb(
+      proseContent as JSONContent,
+      tiptapConfiguration,
+    )
 
     const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
-    const { html } = await new NewsletterTemplateRenderer(template.templateFolder).render(
+    const { html } = await this.newsletterTemplateRenderer.renderTemplate(
+      template.templateFolder,
       {
         newsletterInfo: {
           htmlBody: bodyContent,

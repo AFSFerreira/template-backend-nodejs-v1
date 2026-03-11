@@ -3,14 +3,22 @@ import type {
   UploadDirectorBoardProfileImageUseCaseResponse,
 } from '@custom-types/use-cases/director-board/upload-director-board-profile-image'
 import { DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
-import { buildTempDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
-import { saveAvifImage } from '@services/files/save-avif-image'
+import { DirectorBoardUrlBuilderService } from '@services/builders/urls/build-director-board-profile-image-url'
+import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadDirectorBoardProfileImageUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+
+    @inject(DirectorBoardUrlBuilderService)
+    private readonly directorBoardUrlBuilderService: DirectorBoardUrlBuilderService,
+  ) {}
+
   async execute({
     filePart,
   }: UploadDirectorBoardProfileImageUseCaseRequest): Promise<UploadDirectorBoardProfileImageUseCaseResponse> {
@@ -23,7 +31,7 @@ export class UploadDirectorBoardProfileImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { filename, success } = await saveAvifImage({
+    const { filename, success } = await this.fileService.saveAvifImage({
       filePart: filePart,
       folderPath: DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH,
     })
@@ -32,7 +40,7 @@ export class UploadDirectorBoardProfileImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const publicUrl = buildTempDirectorBoardProfileImageUrl(filename)
+    const publicUrl = this.directorBoardUrlBuilderService.buildTempProfileImageUrl(filename)
 
     return { filename, publicUrl }
   }

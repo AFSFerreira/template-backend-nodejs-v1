@@ -5,6 +5,7 @@ import { logError } from '@lib/pino/helpers/log-error'
 import { userExportMapper } from '@services/mappers/user-export-mapper'
 import { meetingExportMapper } from '@utils/mappers/meeting-export-mapper'
 import { stringify } from 'csv-stringify'
+import { injectable } from 'tsyringe'
 
 /**
  * Serviço de exportação de dados em formato CSV com streaming.
@@ -13,6 +14,7 @@ import { stringify } from 'csv-stringify'
  * com Excel, delimitador `;` e headers em português. O processamento é feito
  * via `AsyncIterable` para suportar grandes volumes sem carregar tudo em memória.
  */
+@injectable()
 export class CsvExportService {
   /**
    * Gera relatório CSV de inscrições em encontros científicos.

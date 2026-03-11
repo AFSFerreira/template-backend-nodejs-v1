@@ -7,12 +7,10 @@ import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { JSONContent } from '@tiptap/core'
 import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NewsletterFormatType } from '@prisma/generated/enums'
 import { readFile } from '@services/files/read-file'
-import {
-  generateProseMirrorHtmlEmail,
-  generateProseMirrorHtmlWeb,
-} from '@services/formatters/generate-prose-mirror-html'
+import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
 import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
 import { NewsletterHtmlReadError } from '@use-cases/errors/newsletter/newsletter-html-read-error'
@@ -20,20 +18,21 @@ import { NewsletterTemplateNotConfiguredError } from '@use-cases/errors/newslett
 import { buildNewsletterHtmlPath } from '@utils/builders/paths/build-newsletter-html-path'
 import { PlainTextService } from '@utils/formatters/plain-text-service'
 import { ensureExists } from '@utils/validators/ensure'
+import { inject, injectable } from 'tsyringe'
 import { NewsletterTemplateRenderer } from './newsletter-template-renderer'
 
-/**
- * Serviço de renderização de conteúdo de newsletters.
- *
- * Suporta dois formatos de newslettter:
- * - **PROSEMIRROR:** renderiza conteúdo ProseMirror JSON via template Nunjucks,
- *   incluindo dados de reunião ativa (se houver).
- * - **HTML_FILE:** lê arquivo HTML estático do disco e aplica minificação.
- *
- * A minificação varia conforme o target: `'web'` (agressiva) ou `'email'` (conservadora).
- */
+@injectable()
 export class NewsletterContentRenderService {
-  constructor(private readonly meetingsRepository: MeetingsRepository) {}
+  constructor(
+    @inject(tsyringeTokens.repositories.meetings)
+    private readonly meetingsRepository: MeetingsRepository,
+
+    @inject(TipTapRendererService)
+    private readonly tipTapRendererService: TipTapRendererService,
+
+    @inject(NewsletterTemplateRenderer)
+    private readonly newsletterTemplateRenderer: NewsletterTemplateRenderer,
+  ) {}
 
   async render(newsletter: NewsletterWithDetails, target: NewsletterRenderTarget): Promise<NewsletterRenderedContent> {
     switch (newsletter.format) {
@@ -68,12 +67,18 @@ export class NewsletterContentRenderService {
 
     switch (target) {
       case 'email': {
-        bodyContent = await generateProseMirrorHtmlEmail(proseContent as JSONContent, tiptapConfiguration)
+        bodyContent = await this.tipTapRendererService.generateProseMirrorHtmlEmail(
+          proseContent as JSONContent,
+          tiptapConfiguration,
+        )
         break
       }
 
       case 'web': {
-        bodyContent = await generateProseMirrorHtmlWeb(proseContent as JSONContent, tiptapConfiguration)
+        bodyContent = await this.tipTapRendererService.generateProseMirrorHtmlWeb(
+          proseContent as JSONContent,
+          tiptapConfiguration,
+        )
         break
       }
 
@@ -84,7 +89,8 @@ export class NewsletterContentRenderService {
 
     const activeMeeting = await this.meetingsRepository.findActiveMeeting()
 
-    const rendered = await new NewsletterTemplateRenderer(newsletter.NewsletterTemplate.templateFolder).render(
+    const rendered = await this.newsletterTemplateRenderer.renderTemplate(
+      newsletter.NewsletterTemplate.templateFolder,
       {
         newsletterInfo: {
           htmlBody: bodyContent,

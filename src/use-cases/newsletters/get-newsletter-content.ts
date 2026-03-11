@@ -2,11 +2,9 @@ import type {
   GetNewsletterHtmlContentUseCaseRequest,
   GetNewsletterHtmlContentUseCaseResponse,
 } from '@custom-types/use-cases/newsletters/get-newsletter-content'
-import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
-import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getNewsletterHTMLCached, setNewsletterHTMLCache } from '@services/caches/newsletters-html-cache'
+import { NewsletterHtmlCacheService } from '@services/caches/newsletters-html-cache'
 import { NewsletterContentRenderService } from '@services/renderers/newsletters/newsletter-content-render-service'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -18,14 +16,17 @@ export class GetNewsletterHtmlContentUseCase {
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
 
-    @inject(tsyringeTokens.repositories.meetings)
-    private readonly meetingsRepository: MeetingsRepository,
+    @inject(NewsletterHtmlCacheService)
+    private readonly newsletterHtmlCacheService: NewsletterHtmlCacheService,
+
+    @inject(NewsletterContentRenderService)
+    private readonly newsletterContentRenderService: NewsletterContentRenderService,
   ) {}
 
   async execute({
     publicId,
   }: GetNewsletterHtmlContentUseCaseRequest): Promise<GetNewsletterHtmlContentUseCaseResponse> {
-    const cachedHtml = await getNewsletterHTMLCached({ publicId, redis })
+    const cachedHtml = await this.newsletterHtmlCacheService.get(publicId)
 
     if (cachedHtml) return { content: cachedHtml }
 
@@ -34,9 +35,9 @@ export class GetNewsletterHtmlContentUseCase {
       error: new NewsletterNotFoundError(),
     })
 
-    const { html } = await new NewsletterContentRenderService(this.meetingsRepository).render(newsletter, 'web')
+    const { html } = await this.newsletterContentRenderService.render(newsletter, 'web')
 
-    await setNewsletterHTMLCache({ publicId, htmlContent: html, redis })
+    await this.newsletterHtmlCacheService.set(publicId, html)
 
     return { content: html }
   }

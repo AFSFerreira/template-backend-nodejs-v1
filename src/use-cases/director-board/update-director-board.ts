@@ -9,11 +9,10 @@ import type { DirectorBoardRepository } from '@repositories/directors-board-repo
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { UserRoleType } from '@prisma/generated/enums'
-import { removeDirectorBoardHTMLCache } from '@services/caches/director-board-html-cache'
+import { DirectorBoardHtmlCacheService } from '@services/caches/director-board-html-cache'
 import { generateText } from '@tiptap/core'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { DirectorBoardPositionAlreadyOccupiedError } from '@use-cases/errors/director-board/director-board-position-already-occupied-error'
@@ -41,6 +40,9 @@ export class UpdateDirectorBoardUseCase {
 
     @inject(tsyringeTokens.repositories.directorPositions)
     private readonly directorPositionsRepository: DirectorPositionsRepository,
+
+    @inject(DirectorBoardHtmlCacheService)
+    private readonly directorBoardHtmlCacheService: DirectorBoardHtmlCacheService,
   ) {}
 
   async execute({
@@ -138,7 +140,7 @@ export class UpdateDirectorBoardUseCase {
     }
 
     // Removendo o cache HTML do director board:
-    await removeDirectorBoardHTMLCache({ publicId: directorBoard.publicId, redis })
+    await this.directorBoardHtmlCacheService.remove(directorBoard.publicId)
 
     return {
       directorBoard,

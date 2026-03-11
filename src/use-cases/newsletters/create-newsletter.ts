@@ -13,9 +13,9 @@ import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { NEWSLETTER_CREATED_SUCCESSFULLY } from '@messages/loggings/models/newsletter-loggings'
 import { Prisma } from '@prisma/generated/client'
 import { NewsletterFormatType } from '@prisma/generated/enums'
-import { buildNewsletterImageUrl } from '@services/builders/urls/build-newsletter-image-url'
-import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
-import { moveFilesIfNotExists } from '@services/files/move-files-if-not-exists'
+import { NewsletterUrlBuilderService } from '@services/builders/urls/build-newsletter-image-url'
+import { ProseMirrorExtractorService } from '@services/extractors/extract-prose-mirror-images'
+import { FileService } from '@services/files/file-service'
 import { InvalidNewsletterContentError } from '@use-cases/errors/newsletter/invalid-newsletter-content-error'
 import { NewsletterInvalidImageLinkError } from '@use-cases/errors/newsletter/newsletter-invalid-image-link-error'
 import { NewsletterTemplateNotFoundError } from '@use-cases/errors/newsletter/newsletter-template-not-found-error'
@@ -39,6 +39,15 @@ export class CreateNewsletterUseCase {
 
     @inject(tsyringeTokens.repositories.newsletterTemplates)
     private readonly newsletterTemplatesRepository: NewsletterTemplatesRepository,
+
+    @inject(NewsletterUrlBuilderService)
+    private readonly newsletterUrlBuilderService: NewsletterUrlBuilderService,
+
+    @inject(ProseMirrorExtractorService)
+    private readonly proseMirrorExtractorService: ProseMirrorExtractorService,
+
+    @inject(FileService)
+    private readonly fileService: FileService,
   ) {}
 
   async execute(createNewsletterInput: CreateNewsletterUseCaseRequest): Promise<CreateNewsletterUseCaseResponse> {
@@ -69,7 +78,7 @@ export class CreateNewsletterUseCase {
         proseContent: Prisma.DbNull,
       })
 
-      await moveFilesIfNotExists({
+      await this.fileService.moveFilesIfNotExists({
         oldFilePath: buildNewsletterTempHtmlPath(content.contentFilename),
         newFilePath: buildNewsletterHtmlPath(content.contentFilename),
       })
@@ -103,21 +112,21 @@ export class CreateNewsletterUseCase {
 
     const oldToNewImagesLinkMap = new Map<string, string>()
 
-    const formattedNewsletterImages: ImagePathInfo[] = Array.from(extractProseMirrorImages(content.proseContent)).map(
-      (imageLink) => {
-        const imageName = ensureExists({
-          value: sanitizeUrlFilename(imageLink),
-          error: new NewsletterInvalidImageLinkError(),
-        })
+    const formattedNewsletterImages: ImagePathInfo[] = Array.from(
+      this.proseMirrorExtractorService.extractImages(content.proseContent),
+    ).map((imageLink) => {
+      const imageName = ensureExists({
+        value: sanitizeUrlFilename(imageLink),
+        error: new NewsletterInvalidImageLinkError(),
+      })
 
-        oldToNewImagesLinkMap.set(imageLink, buildNewsletterImageUrl(imageName))
+      oldToNewImagesLinkMap.set(imageLink, this.newsletterUrlBuilderService.buildImageUrl(imageName))
 
-        return {
-          oldFilePath: buildNewsletterTempImagePath(imageName),
-          newFilePath: buildNewsletterImagePath(imageName),
-        }
-      },
-    )
+      return {
+        oldFilePath: buildNewsletterTempImagePath(imageName),
+        newFilePath: buildNewsletterImagePath(imageName),
+      }
+    })
 
     const newProseMirror = replaceProseMirrorImages({
       proseMirror: content.proseContent,
@@ -132,7 +141,7 @@ export class CreateNewsletterUseCase {
       newsletterTemplateId: newsletterTemplate.id,
     })
 
-    await moveFilesIfNotExists(formattedNewsletterImages)
+    await this.fileService.moveFilesIfNotExists(formattedNewsletterImages)
 
     logger.info(
       { newsletterPublicId: newsletter.publicId, sequenceNumber: newsletter.sequenceNumber },

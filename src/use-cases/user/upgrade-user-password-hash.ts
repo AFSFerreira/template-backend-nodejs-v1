@@ -14,13 +14,16 @@ export class UpgradeUserPasswordHashUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async execute({
     userId,
     password,
   }: UpgradeUserPasswordHashUseCaseRequest): Promise<UpgradeUserPasswordHashUseCaseResponse> {
-    const newPasswordHash = await HashService.hashPassword(password)
+    const newPasswordHash = await this.hashService.hashPassword(password)
 
     await this.usersRepository.upgradePasswordHash({
       id: userId,

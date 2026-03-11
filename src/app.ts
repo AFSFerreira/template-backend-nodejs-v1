@@ -7,6 +7,7 @@ import { IS_DEV } from '@constants/env-constants'
 import { fastifyCompress } from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
+import helmet from '@fastify/helmet'
 import fastifyJwt from '@fastify/jwt'
 import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
@@ -16,6 +17,7 @@ import fastifyWebsocket from '@fastify/websocket'
 import { compressConfiguration } from '@http/configurations/compress-configuration'
 import { corsConfiguration } from '@http/configurations/cors-configuration'
 import { fastifyConfiguration } from '@http/configurations/fastify-configuration'
+import { helmetConfiguration } from '@http/configurations/helmet-configuration'
 import { jwtConfiguration } from '@http/configurations/jwt-configuration'
 import { multipartConfiguration } from '@http/configurations/multipart-configuration'
 import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
@@ -55,6 +57,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   app.setSerializerCompiler(serializerCompiler)
 
   app.register(fastifyWebsocket, wsConfiguration)
+  app.register(helmet, helmetConfiguration)
   app.register(fastifyCompress, compressConfiguration)
   app.register(multipart, multipartConfiguration)
   app.register(staticFileRoutes)

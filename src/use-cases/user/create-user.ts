@@ -1,10 +1,8 @@
 import type { CreateUserUseCaseRequest, CreateUserUseCaseResponse } from '@custom-types/use-cases/user/create-user'
 import type { ApiError } from '@errors/api-error'
 import type { DatabaseContext } from '@lib/prisma/helpers/database-context'
-import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
 import type { AddressCountryRepository } from '@repositories/address-countries-repository'
 import type { AddressStatesRepository } from '@repositories/address-states-repository'
-import type { InstitutionsRepository } from '@repositories/institutions-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { EMAIL_VALIDATION_EXPIRATION_TIME } from '@constants/timing-constants'
@@ -18,9 +16,9 @@ import { EMAIL_VERIFICATION_SEND_ERROR, SUCCESSFUL_USER_CREATION } from '@messag
 import { ActivityAreaType } from '@prisma/generated/enums'
 import { HashService } from '@services/hashes/hash-service'
 import { ConfirmAccountRenderer } from '@services/renderers/user/emails/confirm-account-renderer'
-import { validateActivityAreas } from '@services/validators/validate-activity-areas'
-import { validateInstitutionName } from '@services/validators/validate-institution-name'
-import { hasValidMxRecord } from '@services/validators/validate-mx-record'
+import { ActivityAreaValidationService } from '@services/validators/validate-activity-areas'
+import { InstitutionValidationService } from '@services/validators/validate-institution-name'
+import { MxRecordValidationService } from '@services/validators/validate-mx-record'
 import { InvalidActivityArea } from '@use-cases/errors/user/invalid-activity-areas-error'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { InvalidInstitutionName } from '@use-cases/errors/user/invalid-institution-name-error'
@@ -46,12 +44,6 @@ export class CreateUserUseCase {
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
 
-    @inject(tsyringeTokens.repositories.activityAreas)
-    private readonly activityAreasRepository: ActivityAreasRepository,
-
-    @inject(tsyringeTokens.repositories.institutions)
-    private readonly institutionsRepository: InstitutionsRepository,
-
     @inject(tsyringeTokens.repositories.addressStates)
     private readonly addressStatesRepository: AddressStatesRepository,
 
@@ -60,17 +52,34 @@ export class CreateUserUseCase {
 
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
+
+    @inject(ConfirmAccountRenderer)
+    private readonly confirmAccountRenderer: ConfirmAccountRenderer,
+
+    @inject(ActivityAreaValidationService)
+    private readonly activityAreaValidationService: ActivityAreaValidationService,
+
+    @inject(InstitutionValidationService)
+    private readonly institutionValidationService: InstitutionValidationService,
+
+    @inject(MxRecordValidationService)
+    private readonly mxRecordValidationService: MxRecordValidationService,
   ) {}
 
   async execute(registerUseCaseInput: CreateUserUseCaseRequest): Promise<CreateUserUseCaseResponse> {
-    const isValidEmailDomain = await hasValidMxRecord(registerUseCaseInput.user.email)
+    const isValidEmailDomain = await this.mxRecordValidationService.validate(registerUseCaseInput.user.email)
 
     if (!isValidEmailDomain) {
       throw new InvalidEmailDomainError()
     }
 
     if (registerUseCaseInput.user.secondaryEmail) {
-      const isValidSecondaryEmailDomain = await hasValidMxRecord(registerUseCaseInput.user.secondaryEmail)
+      const isValidSecondaryEmailDomain = await this.mxRecordValidationService.validate(
+        registerUseCaseInput.user.secondaryEmail,
+      )
 
       if (!isValidSecondaryEmailDomain) {
         throw new InvalidSecondaryEmailDomainError()
@@ -81,10 +90,10 @@ export class CreateUserUseCase {
       isRegisterUserHighLevelEducation(registerUseCaseInput) ||
       isRegisterUserHighLevelStudentEducation(registerUseCaseInput)
 
-    const passwordHash = await HashService.hashPassword(registerUseCaseInput.user.password)
+    const passwordHash = await this.hashService.hashPassword(registerUseCaseInput.user.password)
 
-    const emailVerificationToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
-    const emailVerificationTokenHash = HashService.hashToken(emailVerificationToken)
+    const emailVerificationToken = this.hashService.generateToken(RANDOM_BYTES_NUMBER)
+    const emailVerificationTokenHash = this.hashService.hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_VALIDATION_EXPIRATION_TIME)
 
     let profileImage = DEFAULT_PROFILE_IMAGE_NAME
@@ -95,7 +104,9 @@ export class CreateUserUseCase {
       username: registerUseCaseInput.user.username,
       identity: {
         identityType: registerUseCaseInput.user.identity.identityType,
-        identityDocumentBlindIndex: HashService.generateBlindIndex(registerUseCaseInput.user.identity.identityDocument),
+        identityDocumentBlindIndex: this.hashService.generateBlindIndex(
+          registerUseCaseInput.user.identity.identityDocument,
+        ),
       },
     })
 
@@ -169,10 +180,8 @@ export class CreateUserUseCase {
           index === self.findIndex((a) => a.area === activityArea.area && a.type === activityArea.type),
       )
 
-      const { validatedActivityAreas, success } = await validateActivityAreas({
-        activityAreas: nonRepeatingActivityAreas,
-        activityAreasRepository: this.activityAreasRepository,
-      })
+      const { validatedActivityAreas, success } =
+        await this.activityAreaValidationService.validate(nonRepeatingActivityAreas)
 
       if (!success) {
         throw new InvalidActivityArea(
@@ -180,10 +189,7 @@ export class CreateUserUseCase {
         )
       }
 
-      const isValidInstitution = await validateInstitutionName({
-        institution: registerUseCaseInput.institution.name,
-        institutionsRepository: this.institutionsRepository,
-      })
+      const isValidInstitution = await this.institutionValidationService.validate(registerUseCaseInput.institution.name)
 
       if (!isValidInstitution) {
         throw new InvalidInstitutionName()
@@ -218,7 +224,7 @@ export class CreateUserUseCase {
           ...filteredUserInfo,
           identityType: identity.identityType,
           identityDocument: identity.identityDocument,
-          identityDocumentBlindIndex: HashService.generateBlindIndex(identity.identityDocument),
+          identityDocumentBlindIndex: this.hashService.generateBlindIndex(identity.identityDocument),
           profileImage,
           passwordHash,
           emailVerificationTokenHash,
@@ -242,7 +248,7 @@ export class CreateUserUseCase {
       await moveFileEnqueued(userProfileImagePaths)
     }
 
-    const { html, text, attachments } = await new ConfirmAccountRenderer().render(
+    const { html, text, attachments } = await this.confirmAccountRenderer.render(
       {
         fullName: createdUser.fullName,
         email: createdUser.email,

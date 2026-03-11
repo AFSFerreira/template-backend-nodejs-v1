@@ -18,8 +18,8 @@ import { TemplateEngine } from './template-engine'
  * @typeParam TInput - Tipo dos dados de entrada para renderização.
  */
 export abstract class BaseRenderer<TInput> {
-  protected abstract readonly htmlTemplatePath: string
-  protected readonly textTemplatePath: string | null = null
+  protected abstract htmlTemplatePath: string
+  protected textTemplatePath: string | null = null
 
   protected abstract mapPayload(input: TInput): Record<string, unknown>
 
@@ -31,6 +31,7 @@ export abstract class BaseRenderer<TInput> {
     const payload = this.mapPayload(input)
 
     const htmlEngine = TemplateEngine.getHtmlInstance()
+
     let html = htmlEngine.render(this.htmlTemplatePath, payload)
 
     if (options) {

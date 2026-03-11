@@ -13,6 +13,9 @@ export class CheckAvailabilityUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async execute(
@@ -44,7 +47,7 @@ export class CheckAvailabilityUseCase {
                 !!(await this.usersRepository.findConflictingUser({
                   identity: {
                     identityType: identity.identityType,
-                    identityDocumentBlindIndex: HashService.generateBlindIndex(identity.identityDocument),
+                    identityDocumentBlindIndex: this.hashService.generateBlindIndex(identity.identityDocument),
                   },
                 })),
             ] as [string, () => Promise<boolean>],

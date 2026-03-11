@@ -23,6 +23,9 @@ export class DeleteUserUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(DeleteUserRenderer)
+    private readonly deleteUserRenderer: DeleteUserRenderer,
   ) {}
 
   async execute({ publicId }: DeleteUserUseCaseRequest): Promise<DeleteUserUseCaseResponse> {
@@ -37,7 +40,7 @@ export class DeleteUserUseCase {
 
     await this.usersRepository.delete(deletedUser.id)
 
-    const { html, text, attachments } = await new DeleteUserRenderer().render(
+    const { html, text, attachments } = await this.deleteUserRenderer.render(
       {
         fullName: deletedUser.fullName,
         email: deletedUser.email,

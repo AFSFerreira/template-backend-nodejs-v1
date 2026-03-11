@@ -6,12 +6,14 @@ import { CHANGE_EMAIL_HTML_TEMPLATE, CHANGE_EMAIL_TEXT_TEMPLATE } from '@constan
 import { env } from '@env/index'
 import { BaseRenderer } from '@services/renderers/base-renderer'
 import { toTitleCasePortuguese } from '@utils/formatters/to-title-case-portuguese'
+import { injectable } from 'tsyringe'
 
 /**
  * Renderizador do e-mail de confirmação de alteração de endereço de e-mail.
  *
  * Gera link com token para o frontend em `/confirmar-alteracao-email/{token}`.
  */
+@injectable()
 export class ChangeEmailRenderer extends BaseRenderer<ChangeEmailRendererInput> {
   protected readonly htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CHANGE_EMAIL_HTML_TEMPLATE)
   protected readonly textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, CHANGE_EMAIL_TEXT_TEMPLATE)

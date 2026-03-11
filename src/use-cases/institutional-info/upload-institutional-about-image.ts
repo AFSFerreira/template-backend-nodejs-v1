@@ -3,14 +3,22 @@ import type {
   UploadInstitutionalAboutImageUseCaseResponse,
 } from '@custom-types/use-cases/institutional-info/upload-institutional-about-image'
 import { INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH } from '@constants/dynamic-file-constants'
-import { buildTempInstitutionalAboutImageUrl } from '@services/builders/urls/build-institutional-about-image-url'
-import { saveAvifImage } from '@services/files/save-avif-image'
+import { InstitutionalInfoUrlBuilderService } from '@services/builders/urls/build-institutional-about-image-url'
+import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadInstitutionalAboutImageUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+
+    @inject(InstitutionalInfoUrlBuilderService)
+    private readonly institutionalInfoUrlBuilderService: InstitutionalInfoUrlBuilderService,
+  ) {}
+
   async execute({
     filePart,
   }: UploadInstitutionalAboutImageUseCaseRequest): Promise<UploadInstitutionalAboutImageUseCaseResponse> {
@@ -22,7 +30,7 @@ export class UploadInstitutionalAboutImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { filename, success } = await saveAvifImage({
+    const { filename, success } = await this.fileService.saveAvifImage({
       filePart,
       folderPath: INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
       options: {
@@ -37,7 +45,7 @@ export class UploadInstitutionalAboutImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const publicUrl = buildTempInstitutionalAboutImageUrl(filename)
+    const publicUrl = this.institutionalInfoUrlBuilderService.buildTempAboutImageUrl(filename)
 
     return { filename, publicUrl }
   }

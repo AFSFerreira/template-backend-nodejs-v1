@@ -1,35 +1,31 @@
-import type {
-  IValidateActivityAreas,
-  IValidatedActivityAreas,
-} from '@custom-types/services/validators/validate-activity-areas'
+import type { IValidatedActivityAreas } from '@custom-types/services/validators/validate-activity-areas'
+import type { PartialActivityAreas } from '@custom-types/validators/partial-activity-areas'
+import type { ActivityAreasRepository } from '@repositories/activity-areas-repository'
+import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
+import { inject, injectable } from 'tsyringe'
 
-/**
- * Valida combinações de área + tipo de atividade contra o repositório de áreas cadastradas.
- *
- * Compara cada par `(area, type)` recebido com os registros existentes no banco.
- * Retorna as áreas inválidas caso alguma combinação não seja encontrada.
- *
- * @returns Objeto com `success: true` e as áreas encontradas, ou `success: false` e as áreas inválidas.
- */
-export async function validateActivityAreas({
-  activityAreasRepository,
-  activityAreas,
-}: IValidateActivityAreas): Promise<IValidatedActivityAreas> {
-  const activityAreasFound = await activityAreasRepository.findManyBy(activityAreas)
+@injectable()
+export class ActivityAreaValidationService {
+  constructor(
+    @inject(tsyringeTokens.repositories.activityAreas)
+    private readonly activityAreasRepository: ActivityAreasRepository,
+  ) {}
 
-  // NOTE: Se esta verificação provocar problemas eventualmente,
-  // considerar usar o stableStringify para simplificar o processo
-  const activityAreasFoundSet = new Set(
-    activityAreasFound.map((activityArea) => `${activityArea.area}:${activityArea.type}`),
-  )
+  async validate(activityAreas: PartialActivityAreas): Promise<IValidatedActivityAreas> {
+    const activityAreasFound = await this.activityAreasRepository.findManyBy(activityAreas)
 
-  const wrongActivityAreas = activityAreas.filter((activityArea) => {
-    return !activityAreasFoundSet.has(`${activityArea.area}:${activityArea.type}`)
-  })
+    const activityAreasFoundSet = new Set(
+      activityAreasFound.map((activityArea) => `${activityArea.area}:${activityArea.type}`),
+    )
 
-  if (wrongActivityAreas.length !== 0) {
-    return { validatedActivityAreas: wrongActivityAreas, success: false }
+    const wrongActivityAreas = activityAreas.filter((activityArea) => {
+      return !activityAreasFoundSet.has(`${activityArea.area}:${activityArea.type}`)
+    })
+
+    if (wrongActivityAreas.length !== 0) {
+      return { validatedActivityAreas: wrongActivityAreas, success: false }
+    }
+
+    return { validatedActivityAreas: activityAreasFound, success: true }
   }
-
-  return { validatedActivityAreas: activityAreasFound, success: true }
 }

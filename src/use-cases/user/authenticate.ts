@@ -21,6 +21,9 @@ export class AuthenticateUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async execute({
@@ -36,8 +39,8 @@ export class AuthenticateUseCase {
     })
 
     // Comparação obrigatória para evitar timing attacks:
-    const hashToCompare = user?.passwordHash ?? (await HashService.getDummyHash())
-    const doesPasswordMatch = await HashService.comparePassword({ password, hashedPassword: hashToCompare })
+    const hashToCompare = user?.passwordHash ?? (await this.hashService.getDummyHash())
+    const doesPasswordMatch = await this.hashService.comparePassword({ password, hashedPassword: hashToCompare })
 
     const auditAuthenticateObject = {
       browser: browser ?? null,

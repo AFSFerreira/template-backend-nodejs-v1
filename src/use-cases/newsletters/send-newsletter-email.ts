@@ -1,5 +1,4 @@
 import type { SendNewsletterEmailUseCaseRequest } from '@custom-types/use-cases/newsletters/send-newsletter-email'
-import type { MeetingsRepository } from '@repositories/meetings-repository'
 import type { NewslettersRepository } from '@repositories/newsletters-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
@@ -22,11 +21,11 @@ export class SendNewsletterEmailUseCase {
     @inject(tsyringeTokens.repositories.newsletters)
     private readonly newslettersRepository: NewslettersRepository,
 
-    @inject(tsyringeTokens.repositories.meetings)
-    private readonly meetingsRepository: MeetingsRepository,
-
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(NewsletterContentRenderService)
+    private readonly newsletterContentRenderService: NewsletterContentRenderService,
   ) {}
 
   async execute({ publicId }: SendNewsletterEmailUseCaseRequest): Promise<void> {
@@ -35,7 +34,7 @@ export class SendNewsletterEmailUseCase {
       error: new NewsletterNotFoundError(),
     })
 
-    const { html, text } = await new NewsletterContentRenderService(this.meetingsRepository).render(newsletter, 'email')
+    const { html, text } = await this.newsletterContentRenderService.render(newsletter, 'email')
 
     const subject = `${NEWSLETTER_EMAIL_SUBJECT} ${newsletter.sequenceNumber}`
 

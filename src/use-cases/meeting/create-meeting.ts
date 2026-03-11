@@ -7,7 +7,7 @@ import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { MEETING_CREATION_SUCCESSFUL } from '@messages/loggings/models/meeting-loggings'
-import { hasValidMxRecord } from '@services/validators/validate-mx-record'
+import { MxRecordValidationService } from '@services/validators/validate-mx-record'
 import { ActiveMeetingAlreadyExistsError } from '@use-cases/errors/meeting/active-meeting-already-exists-error'
 import { InvalidPaymentLimitDateError } from '@use-cases/errors/meeting/invalid-payment-limit-date-error'
 import { buildMeetingAgendaPath, buildTempMeetingAgendaPath } from '@utils/builders/paths/build-meeting-agenda-path'
@@ -23,10 +23,15 @@ export class CreateMeetingUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.meetings)
     private readonly meetingsRepository: MeetingsRepository,
+
+    @inject(MxRecordValidationService)
+    private readonly mxRecordValidationService: MxRecordValidationService,
   ) {}
 
   async execute(data: CreateMeetingUseCaseRequest): Promise<CreateMeetingUseCaseResponse> {
-    const isValidBillingEmailDomain = await hasValidMxRecord(data.meetingPaymentInfo.billingEmail)
+    const isValidBillingEmailDomain = await this.mxRecordValidationService.validate(
+      data.meetingPaymentInfo.billingEmail,
+    )
 
     if (!isValidBillingEmailDomain) {
       throw new InvalidEmailDomainError()

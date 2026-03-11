@@ -1,30 +1,45 @@
+import type { RenderOptions } from '@custom-types/services/renderers/base-renderer'
 import type { NewsletterRendererInfo } from '@custom-types/services/renderers/newsletters/newsletter-template-renderer'
+import type { RendererOutput } from '@custom-types/services/renderers/renderer-output'
 import path from 'node:path'
 import { NUNJUCKS_TEMPLATES_ROOT_PATH } from '@constants/dynamic-file-constants'
+import { NEWSLETTER_BASE_TEMPLATE_FOLDER } from '@constants/static-file-constants'
 import { DateFormatter } from '@utils/formatters/date-formatter'
+import { injectable } from 'tsyringe'
 import { BaseRenderer } from '../base-renderer'
 
-/**
- * Renderizador de templates de newsletter baseado em Nunjucks.
- *
- * Estende {@link BaseRenderer} para mapear dados da newsletter (edição,
- * volume, datas) e opcionalmente dados de encontro científico ativo
- * no formato esperado pelos templates `template.html.njk` e `template.text.njk`.
- */
+@injectable()
 export class NewsletterTemplateRenderer extends BaseRenderer<NewsletterRendererInfo> {
-  protected readonly htmlTemplatePath: string
-  protected readonly textTemplatePath: string
+  protected htmlTemplatePath: string
 
-  constructor(templateFolder: string) {
+  constructor(templateFolder?: string) {
     super()
+    this.htmlTemplatePath = path.resolve(
+      NUNJUCKS_TEMPLATES_ROOT_PATH,
+      templateFolder ?? NEWSLETTER_BASE_TEMPLATE_FOLDER,
+      'template.html.njk',
+    )
+    this.textTemplatePath = path.resolve(
+      NUNJUCKS_TEMPLATES_ROOT_PATH,
+      templateFolder ?? NEWSLETTER_BASE_TEMPLATE_FOLDER,
+      'template.text.njk',
+    )
+  }
+
+  async renderTemplate(
+    templateFolder: string,
+    input: NewsletterRendererInfo,
+    options?: RenderOptions,
+  ): Promise<RendererOutput> {
     this.htmlTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, templateFolder, 'template.html.njk')
     this.textTemplatePath = path.resolve(NUNJUCKS_TEMPLATES_ROOT_PATH, templateFolder, 'template.text.njk')
+
+    return super.render(input, options)
   }
 
   protected mapPayload(input: NewsletterRendererInfo) {
     const { newsletterInfo, meetingInfo } = input
 
-    // Se a reunião não existir, mandamos null para o template não renderizar o bloco:
     const eventoPayload = meetingInfo
       ? {
           newsletter_event_title: meetingInfo.title,

@@ -6,11 +6,10 @@ import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { UsersRepository } from '@repositories/users-repository'
 import type { JSONContent } from '@tiptap/core'
 import { CONTENT_LEADER_PERMISSIONS } from '@constants/sets'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { getBlogHTMLCached, setBlogHTMLCache } from '@services/caches/blogs-html-cache'
-import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
+import { BlogHtmlCacheService } from '@services/caches/blogs-html-cache'
+import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { BlogAccessForbiddenError } from '@use-cases/errors/blog/blog-access-forbidden-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
@@ -25,6 +24,12 @@ export class GetRestrictBlogHTMLContentUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(BlogHtmlCacheService)
+    private readonly blogHtmlCacheService: BlogHtmlCacheService,
+
+    @inject(TipTapRendererService)
+    private readonly tipTapRendererService: TipTapRendererService,
   ) {}
 
   async execute({
@@ -36,7 +41,7 @@ export class GetRestrictBlogHTMLContentUseCase {
       error: new UserNotFoundError(),
     })
 
-    const cachedBlogHtml = await getBlogHTMLCached({ publicId, redis })
+    const cachedBlogHtml = await this.blogHtmlCacheService.get(publicId)
 
     if (cachedBlogHtml) return { htmlContent: cachedBlogHtml }
 
@@ -51,9 +56,12 @@ export class GetRestrictBlogHTMLContentUseCase {
 
     const blogProseMirror = blog.content as JSONContent
 
-    const htmlContent = await generateProseMirrorHtmlWeb(blogProseMirror, tiptapConfiguration)
+    const htmlContent = await this.tipTapRendererService.generateProseMirrorHtmlWeb(
+      blogProseMirror,
+      tiptapConfiguration,
+    )
 
-    await setBlogHTMLCache({ publicId, htmlContent, redis })
+    await this.blogHtmlCacheService.set(publicId, htmlContent)
 
     return { htmlContent }
   }

@@ -4,10 +4,9 @@ import type { UsersRepository } from '@repositories/users-repository'
 import { CONTENT_LEADER_PERMISSIONS, PENDING_APPROVAL_OR_PUBLISHED } from '@constants/sets'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_DELETION_SUCCESSFUL } from '@messages/loggings/models/blog-loggings'
-import { removeBlogHTMLCache } from '@services/caches/blogs-html-cache'
+import { BlogHtmlCacheService } from '@services/caches/blogs-html-cache'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { buildBlogBannerPath } from '@utils/builders/paths/build-blog-banner-path'
 import { ensureExists } from '@utils/validators/ensure'
@@ -23,6 +22,9 @@ export class DeleteBlogUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(BlogHtmlCacheService)
+    private readonly blogHtmlCacheService: BlogHtmlCacheService,
   ) {}
 
   async execute({ publicId, userPublicId }: DeleteBlogUseCaseRequest): Promise<DeleteBlogUseCaseResponse> {
@@ -56,7 +58,7 @@ export class DeleteBlogUseCase {
     })
 
     // Removendo o cache HTML do blog:
-    await removeBlogHTMLCache({ publicId: blog.publicId, redis })
+    await this.blogHtmlCacheService.remove(blog.publicId)
 
     logger.info({ blogId: blog.id, title: blog.title }, BLOG_DELETION_SUCCESSFUL)
 

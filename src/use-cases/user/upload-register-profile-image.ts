@@ -3,13 +3,18 @@ import type {
   UploadUserProfileImageUseCaseResponse,
 } from '@custom-types/use-cases/user/upload-register-profile-image'
 import { REGISTER_TEMP_PROFILE_IMAGES_PATH } from '@constants/dynamic-file-constants'
-import { saveCompressedImage } from '@services/files/save-compressed-image'
+import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadUserProfileImageUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+  ) {}
+
   async execute({ filePart }: UploadUserProfileImageUseCaseRequest): Promise<UploadUserProfileImageUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
@@ -20,7 +25,7 @@ export class UploadUserProfileImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { filename, success } = await saveCompressedImage({
+    const { filename, success } = await this.fileService.saveCompressedImage({
       filePart,
       folderPath: REGISTER_TEMP_PROFILE_IMAGES_PATH,
     })

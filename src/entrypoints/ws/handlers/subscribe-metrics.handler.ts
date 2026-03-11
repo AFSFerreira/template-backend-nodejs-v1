@@ -1,8 +1,8 @@
 import type { WebSocket } from 'ws'
-import { redis } from '@lib/redis'
 import { redisTokens } from '@lib/redis/helpers/redis-tokens'
-import { getPageViewsLast7Days } from '@services/caches/page-visualization-cache'
+import { PageVisualizationCacheService } from '@services/caches/page-visualization-cache'
 import { clientStates } from '@ws/client-states'
+import { container } from 'tsyringe'
 
 export async function subscribeMetrics(socket: WebSocket, _userId: string | null, _payload: unknown) {
   const state = clientStates.get(socket)
@@ -18,7 +18,8 @@ export async function subscribeMetrics(socket: WebSocket, _userId: string | null
       }),
     )
 
-    const chartData = await getPageViewsLast7Days(redis)
+    const pageVisualizationCacheService = container.resolve(PageVisualizationCacheService)
+    const chartData = await pageVisualizationCacheService.getPageViewsLast7Days()
 
     socket.send(
       JSON.stringify({

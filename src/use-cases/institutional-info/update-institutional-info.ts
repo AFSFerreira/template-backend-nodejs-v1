@@ -7,10 +7,9 @@ import type { Prisma } from '@prisma/generated/client'
 import type { InstitutionalInfoRepository } from '@repositories/institutional-info-repository'
 import type { JSONContent } from '@tiptap/core'
 import { moveFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
-import { removeInstitutionalInfoHTMLCache } from '@services/caches/institutional-info-html-cache'
+import { InstitutionalInfoHtmlCacheService } from '@services/caches/institutional-info-html-cache'
 import { generateText } from '@tiptap/core'
 import { InvalidProseMirrorError } from '@use-cases/errors/generic/invalid-prose-mirror-error'
 import { InstitutionalInfoNotFoundError } from '@use-cases/errors/institutional-info/institutional-info-not-found-error'
@@ -27,6 +26,9 @@ export class UpdateInstitutionalInfoUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.institutionalInfo)
     private readonly institutionalInfoRepository: InstitutionalInfoRepository,
+
+    @inject(InstitutionalInfoHtmlCacheService)
+    private readonly institutionalInfoHtmlCacheService: InstitutionalInfoHtmlCacheService,
   ) {}
 
   async execute({ data }: UpdateInstitutionalInfoUseCaseRequest): Promise<UpdateInstitutionalInfoUseCaseResponse> {
@@ -83,7 +85,7 @@ export class UpdateInstitutionalInfoUseCase {
       await moveFileEnqueued(institutionalAboutImagePaths)
     }
 
-    await removeInstitutionalInfoHTMLCache({ redis })
+    await this.institutionalInfoHtmlCacheService.remove()
 
     return { institutionalInfo }
   }

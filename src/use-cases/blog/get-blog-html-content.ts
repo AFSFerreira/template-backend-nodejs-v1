@@ -4,12 +4,11 @@ import type {
 } from '@custom-types/use-cases/blogs/get-blog-html-content'
 import type { BlogsRepository } from '@repositories/blogs-repository'
 import type { JSONContent } from '@tiptap/core'
-import { redis } from '@lib/redis'
 import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { getBlogHTMLCached, setBlogHTMLCache } from '@services/caches/blogs-html-cache'
-import { generateProseMirrorHtmlWeb } from '@services/formatters/generate-prose-mirror-html'
+import { BlogHtmlCacheService } from '@services/caches/blogs-html-cache'
+import { TipTapRendererService } from '@services/formatters/generate-prose-mirror-html'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, injectable } from 'tsyringe'
@@ -19,10 +18,16 @@ export class GetBlogHTMLContentUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.blogs)
     private readonly blogsRepository: BlogsRepository,
+
+    @inject(TipTapRendererService)
+    private readonly rendererService: TipTapRendererService,
+
+    @inject(BlogHtmlCacheService)
+    private readonly blogHtmlCacheService: BlogHtmlCacheService,
   ) {}
 
   async execute({ publicId }: GetBlogHTMLContentUseCaseRequest): Promise<GetBlogHTMLContentUseCaseResponse> {
-    const cachedBlogHtml = await getBlogHTMLCached({ publicId, redis })
+    const cachedBlogHtml = await this.blogHtmlCacheService.get(publicId)
 
     if (cachedBlogHtml) return { htmlContent: cachedBlogHtml }
 
@@ -39,9 +44,9 @@ export class GetBlogHTMLContentUseCase {
 
     const blogProseMirror = blog.content as JSONContent
 
-    const htmlContent = await generateProseMirrorHtmlWeb(blogProseMirror, tiptapConfiguration)
+    const htmlContent = await this.rendererService.generateProseMirrorHtmlWeb(blogProseMirror, tiptapConfiguration)
 
-    await setBlogHTMLCache({ publicId, htmlContent, redis })
+    await this.blogHtmlCacheService.set(publicId, htmlContent)
 
     return { htmlContent }
   }

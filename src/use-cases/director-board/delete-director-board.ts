@@ -8,11 +8,10 @@ import type { UserActionAuditsRepository } from '@repositories/user-action-audit
 import type { UsersRepository } from '@repositories/users-repository'
 import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
-import { redis } from '@lib/redis'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { DIRECTOR_BOARD_DELETION_SUCCESSFUL } from '@messages/loggings/models/director-board-loggings'
 import { SystemActionType } from '@prisma/generated/enums'
-import { removeDirectorBoardHTMLCache } from '@services/caches/director-board-html-cache'
+import { DirectorBoardHtmlCacheService } from '@services/caches/director-board-html-cache'
 import { DirectorBoardNotFoundError } from '@use-cases/errors/director-board/director-board-not-found-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { buildDirectorBoardProfileImagePath } from '@utils/builders/paths/build-director-board-profile-image-path'
@@ -33,6 +32,9 @@ export class DeleteDirectorBoardUseCase {
 
     @inject(tsyringeTokens.infra.database)
     private readonly dbContext: DatabaseContext,
+
+    @inject(DirectorBoardHtmlCacheService)
+    private readonly directorBoardHtmlCacheService: DirectorBoardHtmlCacheService,
   ) {}
 
   async execute({ publicId, audit }: DeleteDirectorBoardUseCaseRequest): Promise<DeleteDirectorBoardUseCaseResponse> {
@@ -64,7 +66,7 @@ export class DeleteDirectorBoardUseCase {
     }
 
     // Removendo o cache HTML do director board:
-    await removeDirectorBoardHTMLCache({ publicId: directorBoard.publicId, redis })
+    await this.directorBoardHtmlCacheService.remove(directorBoard.publicId)
 
     logger.info({ directorBoardPublicId: directorBoard.publicId }, DIRECTOR_BOARD_DELETION_SUCCESSFUL)
 

@@ -7,7 +7,7 @@ import type { MeetingsRepository } from '@repositories/meetings-repository'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { REGISTER_GUEST_MEETING } from '@messages/loggings/models/meeting-loggings'
-import { hasValidMxRecord } from '@services/validators/validate-mx-record'
+import { MxRecordValidationService } from '@services/validators/validate-mx-record'
 import { MeetingNotFoundError } from '@use-cases/errors/meeting/meeting-not-found-error'
 import { GuestAlreadyRegisteredInMeetingError } from '@use-cases/errors/meeting-participation/guest-already-registered-in-meeting-error'
 import { MeetingAlreadyFinishedError } from '@use-cases/errors/meeting-participation/meeting-already-finished-error'
@@ -24,12 +24,15 @@ export class RegisterGuestMeetingUseCase {
 
     @inject(tsyringeTokens.repositories.meetingEnrollments)
     private readonly meetingEnrollmentsRepository: MeetingEnrollmentsRepository,
+
+    @inject(MxRecordValidationService)
+    private readonly mxRecordValidationService: MxRecordValidationService,
   ) {}
 
   async execute(
     registerGuestMeetingUseCaseInput: RegisterGuestMeetingUseCaseRequest,
   ): Promise<RegisterGuestMeetingUseCaseResponse> {
-    const isValidEmailDomain = await hasValidMxRecord(registerGuestMeetingUseCaseInput.email)
+    const isValidEmailDomain = await this.mxRecordValidationService.validate(registerGuestMeetingUseCaseInput.email)
 
     if (!isValidEmailDomain) {
       throw new InvalidEmailDomainError()

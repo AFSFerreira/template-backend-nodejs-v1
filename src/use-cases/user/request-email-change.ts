@@ -15,7 +15,7 @@ import {
 } from '@messages/loggings/models/user-loggings'
 import { HashService } from '@services/hashes/hash-service'
 import { ChangeEmailRenderer } from '@services/renderers/user/emails/change-email-renderer'
-import { hasValidMxRecord } from '@services/validators/validate-mx-record'
+import { MxRecordValidationService } from '@services/validators/validate-mx-record'
 import { InvalidEmailDomainError } from '@use-cases/errors/user/invalid-email-domain-error'
 import { UserNotFoundError } from '@use-cases/errors/user/user-not-found-error'
 import { UserWithSameEmail } from '@use-cases/errors/user/user-with-same-email-error'
@@ -27,20 +27,29 @@ export class RequestEmailChangeUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
+
+    @inject(MxRecordValidationService)
+    private readonly mxRecordValidationService: MxRecordValidationService,
+
+    @inject(ChangeEmailRenderer)
+    private readonly changeEmailRenderer: ChangeEmailRenderer,
   ) {}
 
   async execute({
     userPublicId,
     newEmail,
   }: RequestEmailChangeUseCaseRequest): Promise<RequestEmailChangeUseCaseResponse> {
-    const isValidEmailDomain = await hasValidMxRecord(newEmail)
+    const isValidEmailDomain = await this.mxRecordValidationService.validate(newEmail)
 
     if (!isValidEmailDomain) {
       throw new InvalidEmailDomainError()
     }
 
-    const emailVerificationToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
-    const emailVerificationTokenHash = HashService.hashToken(emailVerificationToken)
+    const emailVerificationToken = this.hashService.generateToken(RANDOM_BYTES_NUMBER)
+    const emailVerificationTokenHash = this.hashService.hashToken(emailVerificationToken)
     const emailVerificationTokenExpiresAt = new Date(Date.now() + EMAIL_CHANGE_EXPIRATION_TIME)
 
     const userFound = ensureExists({
@@ -60,7 +69,7 @@ export class RequestEmailChangeUseCase {
       emailVerificationTokenExpiresAt,
     })
 
-    const { html, text, attachments } = await new ChangeEmailRenderer().render(
+    const { html, text, attachments } = await this.changeEmailRenderer.render(
       {
         fullName: user.fullName,
         oldEmail: user.email,

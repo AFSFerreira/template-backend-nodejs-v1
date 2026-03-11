@@ -24,11 +24,17 @@ export class ForgotPasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
+
+    @inject(ForgotPasswordRenderer)
+    private readonly forgotPasswordRenderer: ForgotPasswordRenderer,
   ) {}
 
   async execute({ login }: ForgotPasswordUseCaseRequest): Promise<ForgotPasswordUseCaseResponse> {
-    const recoveryPasswordToken = HashService.generateToken(RANDOM_BYTES_NUMBER)
-    const recoveryPasswordTokenHash = HashService.hashToken(recoveryPasswordToken)
+    const recoveryPasswordToken = this.hashService.generateToken(RANDOM_BYTES_NUMBER)
+    const recoveryPasswordTokenHash = this.hashService.hashToken(recoveryPasswordToken)
     const recoveryPasswordTokenExpiresAt = new Date(Date.now() + RECOVERY_PASSWORD_EXPIRATION_TIME)
 
     const userAlreadyExists = ensureExists({
@@ -49,7 +55,7 @@ export class ForgotPasswordUseCase {
     // Recuperação de senha enviada para o email escolhido pelo usuário
     const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
 
-    const { html, text, attachments } = await new ForgotPasswordRenderer().render(
+    const { html, text, attachments } = await this.forgotPasswordRenderer.render(
       {
         email: user.email,
         username: user.username,

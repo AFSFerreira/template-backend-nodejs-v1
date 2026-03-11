@@ -17,6 +17,9 @@ export class ChangePasswordUseCase {
   constructor(
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(HashService)
+    private readonly hashService: HashService,
   ) {}
 
   async execute({
@@ -24,14 +27,14 @@ export class ChangePasswordUseCase {
     oldPassword,
     newPassword,
   }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
-    const newPasswordHash = await HashService.hashPassword(newPassword)
+    const newPasswordHash = await this.hashService.hashPassword(newPassword)
 
     const user = ensureExists({
       value: await this.usersRepository.findByPublicId(userPublicId),
       error: new UserNotFoundError(),
     })
 
-    const isOldPasswordCorrect = await HashService.comparePassword({
+    const isOldPasswordCorrect = await this.hashService.comparePassword({
       password: oldPassword,
       hashedPassword: user.passwordHash,
     })

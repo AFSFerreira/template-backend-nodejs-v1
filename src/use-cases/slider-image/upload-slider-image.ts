@@ -3,13 +3,18 @@ import type {
   UploadSliderImageUseCaseResponse,
 } from '@custom-types/use-cases/slider-image/upload-slider-image'
 import { SLIDER_TEMP_IMAGES_PATH } from '@constants/dynamic-file-constants'
-import { saveAvifImage } from '@services/files/save-avif-image'
+import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadSliderImageUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+  ) {}
+
   async execute({ filePart }: UploadSliderImageUseCaseRequest): Promise<UploadSliderImageUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
@@ -20,7 +25,7 @@ export class UploadSliderImageUseCase {
       throw new ImageTooBigError()
     }
 
-    const { filename, success } = await saveAvifImage({
+    const { filename, success } = await this.fileService.saveAvifImage({
       filePart: filePart,
       folderPath: SLIDER_TEMP_IMAGES_PATH,
       options: {

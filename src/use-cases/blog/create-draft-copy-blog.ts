@@ -13,9 +13,9 @@ import { tiptapConfiguration } from '@lib/tiptap/helpers/configuration'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { BLOG_COPY_CREATED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
 import { EditorialStatusType } from '@prisma/generated/enums'
-import { buildBlogImageUrl } from '@services/builders/urls/build-blog-image-url'
-import { extractProseMirrorImages } from '@services/extractors/extract-prose-mirror-images'
-import { copyFile } from '@services/files/copy-file'
+import { BlogUrlBuilderService } from '@services/builders/urls/build-blog-image-url'
+import { ProseMirrorExtractorService } from '@services/extractors/extract-prose-mirror-images'
+import { FileService } from '@services/files/file-service'
 import { BlogContentCopyError } from '@use-cases/errors/blog/blog-content-copy-error'
 import { BlogCopyForbiddenError } from '@use-cases/errors/blog/blog-copy-forbidden-error'
 import { BlogNotFoundError } from '@use-cases/errors/blog/blog-not-found-error'
@@ -36,6 +36,15 @@ export class CreateDraftCopyBlogUseCase {
 
     @inject(tsyringeTokens.repositories.users)
     private readonly usersRepository: UsersRepository,
+
+    @inject(ProseMirrorExtractorService)
+    private readonly proseMirrorExtractorService: ProseMirrorExtractorService,
+
+    @inject(BlogUrlBuilderService)
+    private readonly blogUrlBuilderService: BlogUrlBuilderService,
+
+    @inject(FileService)
+    private readonly fileService: FileService,
   ) {}
 
   async execute({
@@ -57,7 +66,7 @@ export class CreateDraftCopyBlogUseCase {
     }
 
     // Cria uma nova cópia da imagem do banner:
-    const newBannerImage = await copyFile({
+    const newBannerImage = await this.fileService.copyFile({
       sourceFilePath: buildBlogBannerPath(foundBlog.bannerImage),
       destinationFolderPath: BLOG_BANNERS_PATH,
       buildShard: true,
@@ -68,7 +77,7 @@ export class CreateDraftCopyBlogUseCase {
     }
 
     // Extrai o conjunto de todos os nomes das imagens do blog em formato de link:
-    const blogImages = extractProseMirrorImages(foundBlog.content as JSONContent)
+    const blogImages = this.proseMirrorExtractorService.extractImages(foundBlog.content as JSONContent)
 
     const oldToNewImagesLinkMap = new Map<string, string>()
 
@@ -80,7 +89,7 @@ export class CreateDraftCopyBlogUseCase {
           error: new BlogContentCopyError(),
         })
 
-        const imageCopyInfo = await copyFile({
+        const imageCopyInfo = await this.fileService.copyFile({
           sourceFilePath: buildBlogImagePath(imageName),
           destinationFolderPath: BLOG_IMAGES_PATH,
           buildShard: true,
@@ -90,7 +99,7 @@ export class CreateDraftCopyBlogUseCase {
           throw new BlogContentCopyError()
         }
 
-        const copyImageNewUrl = buildBlogImageUrl(imageCopyInfo.filename)
+        const copyImageNewUrl = this.blogUrlBuilderService.buildBlogImageUrl(imageCopyInfo.filename)
 
         oldToNewImagesLinkMap.set(imageLink, copyImageNewUrl)
       }),

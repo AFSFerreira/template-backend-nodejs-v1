@@ -5,13 +5,18 @@ import type {
 import { BLOG_TEMP_BANNERS_PATH } from '@constants/dynamic-file-constants'
 import { logger } from '@lib/pino'
 import { BLOG_BANNER_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/blog-loggings'
-import { saveAvifImage } from '@services/files/save-avif-image'
+import { FileService } from '@services/files/file-service'
 import { ImageTooBigError } from '@use-cases/errors/generic/image-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadBlogBannerUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+  ) {}
+
   async execute({ filePart }: UploadBlogBannerUseCaseRequest): Promise<UploadBlogBannerUseCaseResponse> {
     if (!filePart) {
       throw new MissingMultipartContentFile()
@@ -21,7 +26,7 @@ export class UploadBlogBannerUseCase {
       throw new ImageTooBigError()
     }
 
-    const { filename, success } = await saveAvifImage({
+    const { filename, success } = await this.fileService.saveAvifImage({
       filePart: filePart,
       folderPath: BLOG_TEMP_BANNERS_PATH,
       options: {

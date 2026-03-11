@@ -5,14 +5,19 @@ import type {
 import { ELECTION_NOTICE_FILE_NAME } from '@constants/static-file-constants'
 import { logger } from '@lib/pino'
 import { ELECTION_NOTICE_UPLOADED_SUCCESSFULLY } from '@messages/loggings/models/document-management-loggings'
-import { swapFiles } from '@services/files/swap-files'
+import { FileService } from '@services/files/file-service'
 import { FileTooBigError } from '@use-cases/errors/generic/file-too-big-error'
 import { MissingMultipartContentFile } from '@use-cases/errors/generic/missing-multipart-content-file'
 import { getFileExtension } from '@utils/files/get-file-extension'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UploadElectionNoticeUseCase {
+  constructor(
+    @inject(FileService)
+    private readonly fileService: FileService,
+  ) {}
+
   async execute({
     filePart,
     baseFolder,
@@ -29,7 +34,7 @@ export class UploadElectionNoticeUseCase {
 
     const filename = `${ELECTION_NOTICE_FILE_NAME}.${getFileExtension(originalFilename)}`
 
-    const persistImageIsSuccessful = await swapFiles([
+    const persistImageIsSuccessful = await this.fileService.swapFiles([
       {
         filename,
         baseFolder,
