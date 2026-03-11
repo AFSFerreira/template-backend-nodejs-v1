@@ -29,7 +29,7 @@ module.exports = {
       // Cluster mode:
       instances: 'max',
       exec_mode: 'cluster',
-      max_memory_restart: '1.5G',
+      max_memory_restart: '1536M',
 
       // Node flags + Environment:
       node_args: '--env-file=.env --max-old-space-size=1536',
