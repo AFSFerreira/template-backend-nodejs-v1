@@ -1,10 +1,18 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { UserUrlBuilderService } from '@services/builders/urls/build-user-profile-image-url'
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
+import { inject, singleton } from 'tsyringe'
 
-export const UserDefaultPresenter = {
-  toHTTP(input: UserDefaultPresenterInput): HTTPUser {
+@singleton()
+export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPresenterInput, HTTPUser> {
+  constructor(
+    @inject(UserUrlBuilderService)
+    private readonly userUrlBuilderService: UserUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: UserDefaultPresenterInput): HTTPUser {
     return {
       id: input.publicId,
       astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
@@ -29,12 +37,12 @@ export const UserDefaultPresenter = {
       receiveReports: input.receiveReports,
       role: input.role,
       username: input.username,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
       birthdate: truncateDate(input.birthdate),
     }
-  },
+  }
 
   toHTTPList(inputs: UserDefaultPresenterInput[]): HTTPUser[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

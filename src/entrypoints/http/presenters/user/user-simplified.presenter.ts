@@ -1,22 +1,32 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPSimplifiedUserDetails,
   UserSimplifiedPresenterInput,
 } from '@custom-types/http/presenter/user/user-simplified'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { UserUrlBuilderService } from '@services/builders/urls/build-user-profile-image-url'
+import { inject, singleton } from 'tsyringe'
 
-export const UserSimplifiedPresenter = {
-  toHTTP(input: UserSimplifiedPresenterInput): HTTPSimplifiedUserDetails {
+@singleton()
+export class UserSimplifiedPresenter
+  implements IPresenterStrategy<UserSimplifiedPresenterInput, HTTPSimplifiedUserDetails>
+{
+  constructor(
+    @inject(UserUrlBuilderService)
+    private readonly userUrlBuilderService: UserUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: UserSimplifiedPresenterInput): HTTPSimplifiedUserDetails {
     return {
       id: input.publicId,
       fullName: input.fullName,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
       institutionName: input.institutionName,
       state: input.state,
       email: input.emailIsPublic ? input.email : null,
     }
-  },
+  }
 
   toHTTPList(inputs: UserSimplifiedPresenterInput[]): HTTPSimplifiedUserDetails[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

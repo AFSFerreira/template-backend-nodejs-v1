@@ -1,14 +1,17 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetDirectorBoardAboutHTMLParamsType } from '@custom-types/http/schemas/director-board/get-director-board-about-html-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
 import type { FastifyReply } from 'fastify'
+import { GetDirectorBoardAboutHTMLUseCase } from '@use-cases/director-board/get-director-board-about-html'
 import { StatusCodes } from 'http-status-codes'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetDirectorBoardAboutHTMLController implements IController {
-  constructor(private useCase: GetDirectorBoardAboutHTMLUseCase) {}
+  constructor(
+    @inject(GetDirectorBoardAboutHTMLUseCase)
+    private readonly useCase: GetDirectorBoardAboutHTMLUseCase,
+  ) {}
 
   async handle(request: ZodRequest<{ params: GetDirectorBoardAboutHTMLParamsType }>, reply: FastifyReply) {
     const parsedParams = request.params

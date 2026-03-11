@@ -1,8 +1,13 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPAcademicPublication } from '@custom-types/http/presenter/academic-publication/academic-publication-default'
 import type { AcademicPublicationSimplifiedPresenterInput } from '@custom-types/http/presenter/academic-publication/academic-publication-simplified'
+import { singleton } from 'tsyringe'
 
-export const AcademicPublicationFilteredPresenter = {
-  toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication {
+@singleton()
+export class AcademicPublicationFilteredPresenter
+  implements IPresenterStrategy<AcademicPublicationSimplifiedPresenterInput, HTTPAcademicPublication>
+{
+  public toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication {
     return {
       title: input.title,
       authorsNames: input.authorsNames,
@@ -14,9 +19,9 @@ export const AcademicPublicationFilteredPresenter = {
       mainCategory: input.mainCategory,
       publicationYear: input.publicationYear,
     }
-  },
+  }
 
   toHTTPList(inputs: AcademicPublicationSimplifiedPresenterInput[]): HTTPAcademicPublication[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

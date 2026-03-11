@@ -17,4 +17,14 @@ export class InstitutionalInfoUrlBuilderService {
     const backendBaseUrl = getBackendBaseUrlStored()
     return urlJoin(backendBaseUrl, STATIC_INSTITUTIONAL_INFO_DOCUMENTS_ROUTE, filename)
   }
+
+  buildStatuteUrl(filename: string): string {
+    const backendBaseUrl = getBackendBaseUrlStored()
+    return urlJoin(backendBaseUrl, STATIC_INSTITUTIONAL_INFO_DOCUMENTS_ROUTE, filename)
+  }
+
+  buildElectionNoticeUrl(filename: string): string {
+    const backendBaseUrl = getBackendBaseUrlStored()
+    return urlJoin(backendBaseUrl, STATIC_INSTITUTIONAL_INFO_DOCUMENTS_ROUTE, filename)
+  }
 }

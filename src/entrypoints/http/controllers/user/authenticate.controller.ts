@@ -1,17 +1,23 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { AuthenticateType } from '@custom-types/http/schemas/user/authenticate-body-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import type { FastifyReply } from 'fastify'
 import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
 import { authenticateConnectionInfoSchema } from '@http/schemas/user/authenticate-connection-info-schema'
+import { AuthenticateUseCase } from '@use-cases/user/authenticate'
 import { buildAuthTokens } from '@utils/http/build-auth-tokens'
 import { getConnectionInfo } from '@utils/http/get-connection-info'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class AuthenticateController implements IController {
-  constructor(private useCase: AuthenticateUseCase) {}
+  constructor(
+    @inject(AuthenticateUseCase)
+    private readonly useCase: AuthenticateUseCase,
+
+    @inject(UserDefaultPresenter)
+    private readonly userDefaultPresenter: UserDefaultPresenter,
+  ) {}
 
   async handle(request: ZodRequest<{ body: AuthenticateType }>, reply: FastifyReply) {
     const { login, password } = request.body
@@ -36,7 +42,7 @@ export class AuthenticateController implements IController {
       },
     })
 
-    const formattedUser = UserDefaultPresenter.toHTTP(user)
+    const formattedUser = this.userDefaultPresenter.toHTTP(user)
 
     const formattedReply = {
       accessToken,

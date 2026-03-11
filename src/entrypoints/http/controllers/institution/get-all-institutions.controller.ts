@@ -1,13 +1,16 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetAllInstitutionsQueryType } from '@custom-types/http/schemas/institution/get-all-institutions-query-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
 import type { FastifyReply } from 'fastify'
-import { injectable } from 'tsyringe'
+import { GetAllInstitutionsNamesUseCase } from '@use-cases/institution/get-all-institutions-names'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllInstitutionsNamesController implements IController {
-  constructor(private useCase: GetAllInstitutionsNamesUseCase) {}
+  constructor(
+    @inject(GetAllInstitutionsNamesUseCase)
+    private readonly useCase: GetAllInstitutionsNamesUseCase,
+  ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllInstitutionsQueryType }>, reply: FastifyReply) {
     const parsedQuery = request.query

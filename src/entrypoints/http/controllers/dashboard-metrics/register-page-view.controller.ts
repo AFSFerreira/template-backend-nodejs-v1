@@ -1,13 +1,16 @@
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { RegisterPageViewUseCase } from '@use-cases/dashboard-metrics/register-page-view'
 import type { FastifyReply, FastifyRequest } from 'fastify'
+import { RegisterPageViewUseCase } from '@use-cases/dashboard-metrics/register-page-view'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { StatusCodes } from 'http-status-codes'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class RegisterPageViewController implements IController {
-  constructor(private useCase: RegisterPageViewUseCase) {}
+  constructor(
+    @inject(RegisterPageViewUseCase)
+    private readonly useCase: RegisterPageViewUseCase,
+  ) {}
 
   async handle(request: FastifyRequest, reply: FastifyReply) {
     await this.useCase.execute({ ip: getClientIp(request) })

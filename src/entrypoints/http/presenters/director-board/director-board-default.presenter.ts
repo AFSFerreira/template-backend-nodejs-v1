@@ -1,24 +1,37 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   DirectorBoardDefaultPresenterInput,
   HTTPDirectorBoard,
 } from '@custom-types/http/presenter/director-board/director-board-default'
-import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { DirectorBoardUrlBuilderService } from '@services/builders/urls/build-director-board-profile-image-url'
+import { UserUrlBuilderService } from '@services/builders/urls/build-user-profile-image-url'
+import { inject, singleton } from 'tsyringe'
 
-export const DirectorBoardDefaultPresenter = {
-  toHTTP(input: DirectorBoardDefaultPresenterInput): HTTPDirectorBoard {
+@singleton()
+export class DirectorBoardDefaultPresenter
+  implements IPresenterStrategy<DirectorBoardDefaultPresenterInput, HTTPDirectorBoard>
+{
+  constructor(
+    @inject(DirectorBoardUrlBuilderService)
+    private readonly directorBoardUrlBuilderService: DirectorBoardUrlBuilderService,
+
+    @inject(UserUrlBuilderService)
+    private readonly userUrlBuilderService: UserUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: DirectorBoardDefaultPresenterInput): HTTPDirectorBoard {
     return {
       id: input.publicId,
       profileImage: input.profileImage
-        ? buildDirectorBoardProfileImageUrl(input.profileImage)
-        : buildUserProfileImageUrl(input.User.profileImage),
+        ? this.directorBoardUrlBuilderService.buildProfileImageUrl(input.profileImage)
+        : this.userUrlBuilderService.buildProfileImageUrl(input.User.profileImage),
       position: input.DirectorPosition.position,
       publicName: input.publicName,
       linkLattes: input.User.linkLattes ?? null,
     }
-  },
+  }
 
   toHTTPList(inputs: DirectorBoardDefaultPresenterInput[]): HTTPDirectorBoard[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

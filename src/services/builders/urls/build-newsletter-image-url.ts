@@ -15,4 +15,9 @@ export class NewsletterUrlBuilderService {
     const backendBaseUrl = getBackendBaseUrlStored()
     return urlJoin(backendBaseUrl, STATIC_NEWSLETTER_IMAGES_ROUTE, buildShardFileFolder(filename), filename)
   }
+
+  buildHtmlUrl(publicId: string): string {
+    const backendBaseUrl = getBackendBaseUrlStored()
+    return urlJoin(backendBaseUrl, 'newsletters', publicId, 'content')
+  }
 }

@@ -1,18 +1,23 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPMeetingEnrollment,
   MeetingEnrollmentDefaultPresenterInput,
 } from '@custom-types/http/presenter/meeting-enrollment/meeting-enrollment-default'
+import { singleton } from 'tsyringe'
 
-export const MeetingEnrollmentDefaultPresenter = {
-  toHTTP(input: MeetingEnrollmentDefaultPresenterInput): HTTPMeetingEnrollment {
+@singleton()
+export class MeetingEnrollmentDefaultPresenter
+  implements IPresenterStrategy<MeetingEnrollmentDefaultPresenterInput, HTTPMeetingEnrollment>
+{
+  public toHTTP(input: MeetingEnrollmentDefaultPresenterInput): HTTPMeetingEnrollment {
     return {
       id: input.publicId,
       createdAt: input.createdAt,
       meetingId: input.meetingId,
     }
-  },
+  }
 
   toHTTPList(inputs: MeetingEnrollmentDefaultPresenterInput[]): HTTPMeetingEnrollment[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

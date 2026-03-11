@@ -2,14 +2,20 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { UpdateNewsletterBodyType } from '@custom-types/http/schemas/newsletter/update-newsletter-body-schema'
 import type { UpdateNewsletterParamsType } from '@custom-types/http/schemas/newsletter/update-newsletter-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { UpdateNewsletterUseCase } from '@use-cases/newsletters/update-newsletter'
 import type { FastifyReply } from 'fastify'
 import { NewsletterDefaultPresenter } from '@http/presenters/newsletter/newsletter-default.presenter'
-import { injectable } from 'tsyringe'
+import { UpdateNewsletterUseCase } from '@use-cases/newsletters/update-newsletter'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UpdateNewsletterController implements IController {
-  constructor(private useCase: UpdateNewsletterUseCase) {}
+  constructor(
+    @inject(UpdateNewsletterUseCase)
+    private readonly useCase: UpdateNewsletterUseCase,
+
+    @inject(NewsletterDefaultPresenter)
+    private readonly newsletterDefaultPresenter: NewsletterDefaultPresenter,
+  ) {}
 
   async handle(
     request: ZodRequest<{ body: UpdateNewsletterBodyType; params: UpdateNewsletterParamsType }>,
@@ -22,7 +28,7 @@ export class UpdateNewsletterController implements IController {
       body: parsedBody,
     })
 
-    const formattedReply = NewsletterDefaultPresenter.toHTTP(newsletter)
+    const formattedReply = this.newsletterDefaultPresenter.toHTTP(newsletter)
 
     return await reply.sendResponse(formattedReply)
   }

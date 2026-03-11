@@ -2,14 +2,20 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { UpdateMeetingBodyType } from '@custom-types/http/schemas/meeting/update-meeting-body-schema'
 import type { UpdateMeetingParamsType } from '@custom-types/http/schemas/meeting/update-meeting-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { UpdateMeetingUseCase } from '@use-cases/meeting/update-meeting'
 import type { FastifyReply } from 'fastify'
 import { MeetingDefaultPresenter } from '@http/presenters/meeting/meeting-default.presenter'
-import { injectable } from 'tsyringe'
+import { UpdateMeetingUseCase } from '@use-cases/meeting/update-meeting'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UpdateMeetingController implements IController {
-  constructor(private useCase: UpdateMeetingUseCase) {}
+  constructor(
+    @inject(UpdateMeetingUseCase)
+    private readonly useCase: UpdateMeetingUseCase,
+
+    @inject(MeetingDefaultPresenter)
+    private readonly meetingDefaultPresenter: MeetingDefaultPresenter,
+  ) {}
 
   async handle(
     request: ZodRequest<{ body: UpdateMeetingBodyType; params: UpdateMeetingParamsType }>,
@@ -22,7 +28,7 @@ export class UpdateMeetingController implements IController {
       body: parsedBody,
     })
 
-    const formattedReply = MeetingDefaultPresenter.toHTTP(meeting)
+    const formattedReply = this.meetingDefaultPresenter.toHTTP(meeting)
 
     return await reply.sendResponse(formattedReply)
   }

@@ -1,11 +1,22 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPUserWithDetails, UserDetailedPresenterInput } from '@custom-types/http/presenter/user/user-detailed'
-import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { DirectorBoardUrlBuilderService } from '@services/builders/urls/build-director-board-profile-image-url'
+import { UserUrlBuilderService } from '@services/builders/urls/build-user-profile-image-url'
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
+import { inject, singleton } from 'tsyringe'
 
-export const UserDetailedPresenter = {
-  toHTTP(input: UserDetailedPresenterInput): HTTPUserWithDetails {
+@singleton()
+export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPresenterInput, HTTPUserWithDetails> {
+  constructor(
+    @inject(UserUrlBuilderService)
+    private readonly userUrlBuilderService: UserUrlBuilderService,
+
+    @inject(DirectorBoardUrlBuilderService)
+    private readonly directorBoardUrlBuilderService: DirectorBoardUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: UserDetailedPresenterInput): HTTPUserWithDetails {
     return {
       id: input.publicId,
       astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
@@ -29,7 +40,7 @@ export const UserDetailedPresenter = {
       publicInformation: input.publicInformation,
       receiveReports: input.receiveReports,
       username: input.username,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
       birthdate: truncateDate(input.birthdate),
 
       institutionName: input.Institution?.name,
@@ -83,15 +94,15 @@ export const UserDetailedPresenter = {
             linkLattes: input.linkLattes,
             name: input.fullName,
             profileImage: input.DirectorBoard.profileImage
-              ? buildDirectorBoardProfileImageUrl(input.DirectorBoard.profileImage)
-              : buildUserProfileImageUrl(input.profileImage),
+              ? this.directorBoardUrlBuilderService.buildProfileImageUrl(input.DirectorBoard.profileImage)
+              : this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
             position: input.DirectorBoard.DirectorPosition.position,
           }
         : undefined,
     }
-  },
+  }
 
   toHTTPList(inputs: UserDetailedPresenterInput[]): HTTPUserWithDetails[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

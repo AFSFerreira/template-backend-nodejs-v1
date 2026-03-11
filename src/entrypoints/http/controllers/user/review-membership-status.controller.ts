@@ -2,16 +2,22 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { ReviewMembershipStatusBodyType } from '@custom-types/http/schemas/user/review-membership-status-body-schema'
 import type { ReviewMembershipStatusParamsType } from '@custom-types/http/schemas/user/review-membership-status-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { ReviewMembershipStatusUseCase } from '@use-cases/user/review-membership-status'
 import type { FastifyReply } from 'fastify'
 import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { ReviewMembershipStatusUseCase } from '@use-cases/user/review-membership-status'
 import { getClientIp } from '@utils/http/get-client-ip'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class ReviewMembershipStatusController implements IController {
-  constructor(private useCase: ReviewMembershipStatusUseCase) {}
+  constructor(
+    @inject(ReviewMembershipStatusUseCase)
+    private readonly useCase: ReviewMembershipStatusUseCase,
+
+    @inject(UserDefaultPresenter)
+    private readonly userDefaultPresenter: UserDefaultPresenter,
+  ) {}
 
   async handle(
     request: ZodRequest<{ body: ReviewMembershipStatusBodyType; params: ReviewMembershipStatusParamsType }>,
@@ -27,7 +33,7 @@ export class ReviewMembershipStatusController implements IController {
       },
     })
 
-    const formattedReply = UserDefaultPresenter.toHTTP(user)
+    const formattedReply = this.userDefaultPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply)
   }

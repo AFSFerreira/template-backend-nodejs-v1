@@ -1,15 +1,21 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { SubmitReviewToPendingParamsType } from '@custom-types/http/schemas/blog/submit-review-to-pending-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { SubmitReviewToPendingUseCase } from '@use-cases/blog/submit-review-to-pending'
 import type { FastifyReply } from 'fastify'
 import { BlogDefaultPresenter } from '@http/presenters/blog/blog-default.presenter'
+import { SubmitReviewToPendingUseCase } from '@use-cases/blog/submit-review-to-pending'
 import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class SubmitReviewToPendingController implements IController {
-  constructor(private useCase: SubmitReviewToPendingUseCase) {}
+  constructor(
+    @inject(SubmitReviewToPendingUseCase)
+    private readonly useCase: SubmitReviewToPendingUseCase,
+
+    @inject(BlogDefaultPresenter)
+    private readonly blogDefaultPresenter: BlogDefaultPresenter,
+  ) {}
 
   async handle(request: ZodRequest<{ params: SubmitReviewToPendingParamsType }>, reply: FastifyReply) {
     const userPublicId = getRequestUserPublicId(request)
@@ -19,7 +25,7 @@ export class SubmitReviewToPendingController implements IController {
       userPublicId,
     })
 
-    const formattedReply = BlogDefaultPresenter.toHTTP(blog)
+    const formattedReply = this.blogDefaultPresenter.toHTTP(blog)
 
     return await reply.sendResponse(formattedReply)
   }

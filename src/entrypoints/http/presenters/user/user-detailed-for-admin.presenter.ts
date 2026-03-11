@@ -1,14 +1,27 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPUserWithDetailsForAdmin,
   UserDetailedPresenterForAdminInput,
 } from '@custom-types/http/presenter/user/user-detailed-for-admin'
-import { buildDirectorBoardProfileImageUrl } from '@services/builders/urls/build-director-board-profile-image-url'
-import { buildUserProfileImageUrl } from '@services/builders/urls/build-user-profile-image-url'
+import { DirectorBoardUrlBuilderService } from '@services/builders/urls/build-director-board-profile-image-url'
+import { UserUrlBuilderService } from '@services/builders/urls/build-user-profile-image-url'
 import { maskIdentityDocument } from '@utils/formatters/mask-identity-document'
 import { truncateDate } from '@utils/formatters/truncate-date'
+import { inject, singleton } from 'tsyringe'
 
-export const UserDetailedPresenterForAdmin = {
-  toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
+@singleton()
+export class UserDetailedPresenterForAdmin
+  implements IPresenterStrategy<UserDetailedPresenterForAdminInput, HTTPUserWithDetailsForAdmin>
+{
+  constructor(
+    @inject(UserUrlBuilderService)
+    private readonly userUrlBuilderService: UserUrlBuilderService,
+
+    @inject(DirectorBoardUrlBuilderService)
+    private readonly directorBoardUrlBuilderService: DirectorBoardUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
     return {
       id: input.publicId,
       astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
@@ -33,7 +46,7 @@ export const UserDetailedPresenterForAdmin = {
       publicInformation: input.publicInformation,
       receiveReports: input.receiveReports,
       username: input.username,
-      profileImage: buildUserProfileImageUrl(input.profileImage),
+      profileImage: this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
       interestDescription: input.interestDescription,
       birthdate: truncateDate(input.birthdate),
 
@@ -88,15 +101,15 @@ export const UserDetailedPresenterForAdmin = {
             linkLattes: input.linkLattes,
             name: input.fullName,
             profileImage: input.DirectorBoard.profileImage
-              ? buildDirectorBoardProfileImageUrl(input.DirectorBoard.profileImage)
-              : buildUserProfileImageUrl(input.profileImage),
+              ? this.directorBoardUrlBuilderService.buildProfileImageUrl(input.DirectorBoard.profileImage)
+              : this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
             position: input.DirectorBoard.DirectorPosition.position,
           }
         : undefined,
     }
-  },
+  }
 
   toHTTPList(inputs: UserDetailedPresenterForAdminInput[]): HTTPUserWithDetailsForAdmin[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

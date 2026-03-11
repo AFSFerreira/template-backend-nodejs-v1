@@ -1,17 +1,26 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   HTTPMeetingWithDetails,
   MeetingDetailedPresenterInput,
 } from '@custom-types/http/presenter/meeting/meeting-detailed'
-import { buildMeetingAgendaUrl } from '@services/builders/urls/build-meeting-agenda-url'
-import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
+import { MeetingUrlBuilderService } from '@services/builders/urls/build-meeting-banner-url'
+import { inject, singleton } from 'tsyringe'
 
-export const MeetingDetailedPresenter = {
-  toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails {
+@singleton()
+export class MeetingDetailedPresenter
+  implements IPresenterStrategy<MeetingDetailedPresenterInput, HTTPMeetingWithDetails>
+{
+  constructor(
+    @inject(MeetingUrlBuilderService)
+    private readonly meetingUrlBuilderService: MeetingUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails {
     return {
       id: input.publicId,
       title: input.title,
-      agenda: buildMeetingAgendaUrl(input.agenda),
-      bannerImage: buildMeetingBannerUrl(input.bannerImage),
+      agenda: this.meetingUrlBuilderService.buildAgendaUrl(input.agenda),
+      bannerImage: this.meetingUrlBuilderService.buildBannerUrl(input.bannerImage),
       description: input.description,
       location: input.location,
       lastDate: input.lastDate,
@@ -29,9 +38,9 @@ export const MeetingDetailedPresenter = {
         : undefined,
       meetingDates: input.MeetingDate?.map((meetingDate) => meetingDate.date),
     }
-  },
+  }
 
   toHTTPList(inputs: MeetingDetailedPresenterInput[]): HTTPMeetingWithDetails[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

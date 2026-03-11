@@ -1,20 +1,26 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { GetAllInstitutionsWithUsersQueryType } from '@custom-types/http/schemas/institution/get-all-institutions-with-users-query-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { GetAllInstitutionsWithUsersUseCase } from '@use-cases/institution/get-all-institutions-with-user'
 import type { FastifyReply } from 'fastify'
 import { InstitutionWithUsersCountPresenter } from '@http/presenters/institution/institution-with-users-count.presenter'
-import { injectable } from 'tsyringe'
+import { GetAllInstitutionsWithUsersUseCase } from '@use-cases/institution/get-all-institutions-with-user'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class GetAllInstitutionsWithUsersController implements IController {
-  constructor(private useCase: GetAllInstitutionsWithUsersUseCase) {}
+  constructor(
+    @inject(GetAllInstitutionsWithUsersUseCase)
+    private readonly useCase: GetAllInstitutionsWithUsersUseCase,
+
+    @inject(InstitutionWithUsersCountPresenter)
+    private readonly institutionWithUsersCountPresenter: InstitutionWithUsersCountPresenter,
+  ) {}
 
   async handle(request: ZodRequest<{ querystring: GetAllInstitutionsWithUsersQueryType }>, reply: FastifyReply) {
     const parsedQuery = request.query
     const { data, meta } = await this.useCase.execute(parsedQuery)
 
-    const formattedReply = InstitutionWithUsersCountPresenter.toHTTPList(data)
+    const formattedReply = this.institutionWithUsersCountPresenter.toHTTPList(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

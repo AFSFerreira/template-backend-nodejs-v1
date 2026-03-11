@@ -1,18 +1,26 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type { HTTPMeeting, MeetingDefaultPresenterInput } from '@custom-types/http/presenter/meeting/meeting-default'
-import { buildMeetingBannerUrl } from '@services/builders/urls/build-meeting-banner-url'
+import { MeetingUrlBuilderService } from '@services/builders/urls/build-meeting-banner-url'
+import { inject, singleton } from 'tsyringe'
 
-export const MeetingDefaultPresenter = {
-  toHTTP(input: MeetingDefaultPresenterInput): HTTPMeeting {
+@singleton()
+export class MeetingDefaultPresenter implements IPresenterStrategy<MeetingDefaultPresenterInput, HTTPMeeting> {
+  constructor(
+    @inject(MeetingUrlBuilderService)
+    private readonly meetingUrlBuilderService: MeetingUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: MeetingDefaultPresenterInput): HTTPMeeting {
     return {
       id: input.publicId,
       title: input.title,
-      bannerImage: buildMeetingBannerUrl(input.bannerImage),
+      bannerImage: this.meetingUrlBuilderService.buildBannerUrl(input.bannerImage),
       description: input.description,
       lastDate: input.lastDate,
     }
-  },
+  }
 
   toHTTPList(inputs: MeetingDefaultPresenterInput[]): HTTPMeeting[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

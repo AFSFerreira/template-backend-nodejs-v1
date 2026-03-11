@@ -1,24 +1,32 @@
+import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
 import type {
   BlogSimplifiedPresenterInput,
   HTTPSimplifiedBlog,
 } from '@custom-types/http/presenter/blog/blog-simplified'
-import { buildBlogBannerUrl } from '@services/builders/urls/build-blog-banner-url'
+import { BlogUrlBuilderService } from '@services/builders/urls/build-blog-image-url'
+import { inject, singleton } from 'tsyringe'
 
-export const BlogSimplifiedPresenter = {
-  toHTTP(input: BlogSimplifiedPresenterInput): HTTPSimplifiedBlog {
+@singleton()
+export class BlogSimplifiedPresenter implements IPresenterStrategy<BlogSimplifiedPresenterInput, HTTPSimplifiedBlog> {
+  constructor(
+    @inject(BlogUrlBuilderService)
+    private readonly blogUrlBuilderService: BlogUrlBuilderService,
+  ) {}
+
+  public toHTTP(input: BlogSimplifiedPresenterInput): HTTPSimplifiedBlog {
     return {
       id: input.publicId,
       title: input.title,
       editorialStatus: input.editorialStatus,
-      bannerImage: buildBlogBannerUrl(input.bannerImage),
+      bannerImage: this.blogUrlBuilderService.buildBlogBannerUrl(input.bannerImage),
       searchContent: input.searchContent,
       accessCount: input.accessCount,
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  },
+  }
 
   toHTTPList(inputs: BlogSimplifiedPresenterInput[]): HTTPSimplifiedBlog[] {
-    return inputs.map(this.toHTTP)
-  },
+    return inputs.map((input) => this.toHTTP(input))
+  }
 }

@@ -2,14 +2,20 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { UpdateDirectorPositionBodyType } from '@custom-types/http/schemas/director-position/update-director-position-body-schema'
 import type { UpdateDirectorPositionParamsType } from '@custom-types/http/schemas/director-position/update-director-position-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { UpdateDirectorPositionUseCase } from '@use-cases/director-position/update-director-position'
 import type { FastifyReply } from 'fastify'
 import { DirectorPositionDefaultPresenter } from '@http/presenters/director-position/director-position-default.presenter'
-import { injectable } from 'tsyringe'
+import { UpdateDirectorPositionUseCase } from '@use-cases/director-position/update-director-position'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class UpdateDirectorPositionController implements IController {
-  constructor(private useCase: UpdateDirectorPositionUseCase) {}
+  constructor(
+    @inject(UpdateDirectorPositionUseCase)
+    private readonly useCase: UpdateDirectorPositionUseCase,
+
+    @inject(DirectorPositionDefaultPresenter)
+    private readonly directorPositionDefaultPresenter: DirectorPositionDefaultPresenter,
+  ) {}
 
   async handle(
     request: ZodRequest<{ body: UpdateDirectorPositionBodyType; params: UpdateDirectorPositionParamsType }>,
@@ -19,7 +25,7 @@ export class UpdateDirectorPositionController implements IController {
     const parsedBody = request.body
     const { directorPosition } = await this.useCase.execute({ publicId, data: parsedBody })
 
-    const formattedReply = DirectorPositionDefaultPresenter.toHTTP(directorPosition)
+    const formattedReply = this.directorPositionDefaultPresenter.toHTTP(directorPosition)
 
     return await reply.sendResponse(formattedReply)
   }

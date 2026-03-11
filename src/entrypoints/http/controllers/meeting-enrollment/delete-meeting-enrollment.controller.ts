@@ -1,14 +1,17 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { DeleteMeetingEnrollmentParamsType } from '@custom-types/http/schemas/meeting-enrollment/delete-meeting-enrollment-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
-import type { DeleteMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/delete-meeting-enrollment'
 import type { FastifyReply } from 'fastify'
+import { DeleteMeetingEnrollmentUseCase } from '@use-cases/meeting-enrollment/delete-meeting-enrollment'
 import { StatusCodes } from 'http-status-codes'
-import { injectable } from 'tsyringe'
+import { inject, injectable } from 'tsyringe'
 
 @injectable()
 export class DeleteMeetingEnrollmentController implements IController {
-  constructor(private useCase: DeleteMeetingEnrollmentUseCase) {}
+  constructor(
+    @inject(DeleteMeetingEnrollmentUseCase)
+    private readonly useCase: DeleteMeetingEnrollmentUseCase,
+  ) {}
 
   async handle(request: ZodRequest<{ params: DeleteMeetingEnrollmentParamsType }>, reply: FastifyReply) {
     const { publicId } = request.params
