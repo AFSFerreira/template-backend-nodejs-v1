@@ -9,9 +9,7 @@ export const helmetConfiguration = {
   referrerPolicy: { policy: 'no-referrer' },
   contentSecurityPolicy: {
     directives: {
-      defaultSrc: ["'none'"],
-      scriptSrc: ["'none'"],
-      objectSrc: ["'none'"],
+      defaultSrc: ["'self'"],
       baseUri: ["'none'"],
       frameAncestors: ["'self'", env.FRONTEND_URL],
       imgSrc: ["'self'", 'data:', 'https:', env.FRONTEND_URL],
