@@ -88,7 +88,11 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
 
     researcherProfileUpdatePayload.Keyword = data.keyword
       ? {
-          set: data.keyword.map((value) => ({ value })),
+          set: [],
+          connectOrCreate: data.keyword.map((value) => ({
+            where: { value },
+            create: { value },
+          })),
         }
       : researcherProfileUpdatePayload.Keyword
 
