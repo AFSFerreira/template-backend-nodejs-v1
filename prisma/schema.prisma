@@ -3,12 +3,12 @@ generator client {
   output          = "../src/@types/lib/prisma/generated"
   compilerBuild   = "fast"
   previewFeatures = ["partialIndexes"]
-  moduleFormat = "esm"
-  runtime = "nodejs"
+  moduleFormat    = "esm"
+  runtime         = "nodejs"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider     = "postgresql"
   relationMode = "foreignKeys"
 }
 
