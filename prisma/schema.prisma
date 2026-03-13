@@ -155,6 +155,7 @@ model Address {
   userId Int  @unique @map("user_id")
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([userId])
   @@index([stateId])
   @@map("addresses")
 }
@@ -180,7 +181,6 @@ model AddressCountry {
 
   State AddressState[] @relation()
 
-  @@index([name])
   @@map("address_countries")
 }
 
@@ -307,6 +307,7 @@ model DirectorPosition {
 
   DirectorBoard DirectorBoard? @relation()
 
+  @@index([precedence])
   @@index([position(ops: raw("gin_trgm_ops"))], map: "idx_director_positions_position_trgm_gin", type: Gin)
   @@map("director_positions")
 }
@@ -344,6 +345,7 @@ model MeetingEnrollment {
   GuestDetails        GuestMeetingEnrollment? @relation()
 
   @@index([meetingId])
+  @@index([createdAt])
   @@map("meeting_enrollments")
 }
 
@@ -375,6 +377,7 @@ model GuestMeetingEnrollment {
   meetingEnrollmentId Int               @unique @map("meeting_enrollment_id")
   MeetingEnrollment   MeetingEnrollment @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([meetingEnrollmentId])
   @@map("guest_meeting_enrollments")
 }
 
@@ -434,6 +437,7 @@ model Meeting {
   MeetingEnrollment  MeetingEnrollment[] @relation()
 
   @@index([lastDate])
+  @@index([createdAt])
   @@index([title(ops: raw("gin_trgm_ops"))], map: "idx_meetings_title_trgm_gin", type: Gin)
   @@map("meetings")
 }
