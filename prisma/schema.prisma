@@ -9,7 +9,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-
+  relationMode = "foreignKeys"
 }
 
 model InstitutionalInfo {
