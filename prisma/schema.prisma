@@ -28,10 +28,10 @@ model UserActionAudit {
   createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
 
   actorId Int?  @map("actor_id")
-  Actor   User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Actor   User? @relation("audit_actor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   targetId Int?  @map("target_id")
-  Target   User? @relation("AuditTarget", fields: [targetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  Target   User? @relation("audit_target", fields: [targetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([actionType])
   @@index([actorId])
@@ -50,6 +50,7 @@ model AuthenticationAudit {
   userId Int?  @map("user_id")
   user   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
+  @@index([userId, status, createdAt])
   @@map("authentication_audits")
 }
 
@@ -78,13 +79,14 @@ model User {
   publicInformation              String?              @map("public_information")
   activityAreaDescription        String?              @map("activity_area_description")
   subActivityAreaDescription     String?              @map("sub_activity_area_description")
-  email                          String               @unique
+  email                          String
   secondaryEmail                 String?              @map("secondary_email")
   passwordHash                   String               @map("password_hash")
   loginAttempts                  Int                  @default(0) @map("login_attempts")
   lastLogin                      DateTime?            @map("last_login") @db.Timestamptz(3)
   createdAt                      DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt                      DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt                      DateTime?            @map("deleted_at") @db.Timestamptz(3) // NOTE: Campo criado para facilitar futuras implementações de soft delete
 
   identityType               IdentityType @map("identity_type")
   identityDocument           String       @map("identity_document_encrypted")
@@ -118,9 +120,10 @@ model User {
   EnrolledCourse        EnrolledCourse?         @relation()
   UserMeetingEnrollment UserMeetingEnrollment[] @relation()
   Keyword               Keyword[]               @relation()
-  UserActionAuditActor  UserActionAudit[]       @relation("AuditActor")
-  UserActionAuditTarget UserActionAudit[]       @relation("AuditTarget")
+  UserActionAuditActor  UserActionAudit[]       @relation("audit_actor")
+  UserActionAuditTarget UserActionAudit[]       @relation("audit_target")
 
+  @@unique([email], where: raw("deleted_at IS NULL"))
   @@unique([identityType, identityDocumentBlindIndex])
   @@unique([secondaryEmail], where: raw("membership_status = ANY (ARRAY['ACTIVE'::\"MembershipStatusType\", 'INACTIVE'::\"MembershipStatusType\"])"), map: "users_secondary_email_key")
   @@unique([recoveryPasswordTokenHash], where: raw("recovery_password_token IS NOT NULL"))
@@ -130,6 +133,9 @@ model User {
   @@index([role])
   @@index([fullNameTsvPt], map: "idx_users_full_name_tsv_pt", type: Gin)
   @@index([fullNameUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_users_fullname_trgm_gin", type: Gin)
+  @@index([institutionId])
+  @@index([activityAreaId])
+  @@index([subActivityAreaId])
   @@map("users")
 }
 
@@ -216,6 +222,8 @@ model AcademicPublication {
   User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
+  @@index([createdAt])
+  @@index([activityAreaId])
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_academic_publications_title_trgm_gin", type: Gin)
   @@index([titleTsvPt], map: "idx_academic_publications_title_tsv_pt", type: Gin)
   @@map("academic_publications")
@@ -393,6 +401,7 @@ model MeetingPresentationAuthor {
   presentationId Int                 @map("presentation_id")
   Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([presentationId])
   @@map("meeting_presentation_authors")
 }
 
@@ -403,6 +412,7 @@ model MeetingPresentationAffiliation {
   presentationId Int                 @map("presentation_id")
   Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
+  @@index([presentationId])
   @@map("meeting_presentation_affiliations")
 }
 
@@ -460,6 +470,8 @@ model Blog {
 
   Subcategories ActivityArea[] @relation()
 
+  @@index([userId])
+  @@index([createdAt])
   @@index([editorialStatus])
   @@index([searchTsvPt], map: "idx_blogs_search_tsv_pt", type: Gin)
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_blogs_title_trgm_gin", type: Gin)
@@ -483,6 +495,8 @@ model Newsletter {
   newsletterTemplateId Int?                @map("newsletter_template_id") // NOTE: Será nulo apenas quando 'format' for 'HTML_FILE'. Este campo é obrigatório quando 'format' for 'PROSEMIRROR'
   NewsletterTemplate   NewsletterTemplate? @relation(fields: [newsletterTemplateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  @@index([createdAt])
+  @@index([newsletterTemplateId], where: raw("newsletter_template_id IS NOT NULL"))
   @@unique([editionNumber, volume])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
   @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
