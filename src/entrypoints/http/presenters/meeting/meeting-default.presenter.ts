@@ -10,7 +10,12 @@ export class MeetingDefaultPresenter implements IPresenterStrategy<MeetingDefaul
     private readonly meetingUrlBuilderService: MeetingUrlBuilderService,
   ) {}
 
-  public toHTTP(input: MeetingDefaultPresenterInput): HTTPMeeting {
+  public toHTTP(input: MeetingDefaultPresenterInput): HTTPMeeting
+  public toHTTP(input: MeetingDefaultPresenterInput[]): HTTPMeeting[]
+  public toHTTP(input: MeetingDefaultPresenterInput | MeetingDefaultPresenterInput[]): HTTPMeeting | HTTPMeeting[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       title: input.title,
@@ -18,9 +23,5 @@ export class MeetingDefaultPresenter implements IPresenterStrategy<MeetingDefaul
       description: input.description,
       lastDate: input.lastDate,
     }
-  }
-
-  toHTTPList(inputs: MeetingDefaultPresenterInput[]): HTTPMeeting[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

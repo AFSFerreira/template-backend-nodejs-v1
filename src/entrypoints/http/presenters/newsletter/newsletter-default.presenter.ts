@@ -13,7 +13,14 @@ export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter
     private readonly newsletterUrlBuilderService: NewsletterUrlBuilderService,
   ) {}
 
-  public toHTTP(input: NewsletterDefaultPresenterInput): HTTPNewsletter {
+  public toHTTP(input: NewsletterDefaultPresenterInput): HTTPNewsletter
+  public toHTTP(input: NewsletterDefaultPresenterInput[]): HTTPNewsletter[]
+  public toHTTP(
+    input: NewsletterDefaultPresenterInput | NewsletterDefaultPresenterInput[],
+  ): HTTPNewsletter | HTTPNewsletter[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       content: this.newsletterUrlBuilderService.buildHtmlUrl(input.publicId),
@@ -23,9 +30,5 @@ export class NewsletterDefaultPresenter implements IPresenterStrategy<Newsletter
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
-
-  toHTTPList(inputs: NewsletterDefaultPresenterInput[]): HTTPNewsletter[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

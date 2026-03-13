@@ -9,14 +9,17 @@ import { singleton } from 'tsyringe'
 export class ActivityAreaDefaultPresenter
   implements IPresenterStrategy<ActivityAreaDefaultPresenterInput, HTTPActivityArea>
 {
-  public toHTTP(input: ActivityAreaDefaultPresenterInput): HTTPActivityArea {
+  public toHTTP(input: ActivityAreaDefaultPresenterInput): HTTPActivityArea
+  public toHTTP(input: ActivityAreaDefaultPresenterInput[]): HTTPActivityArea[]
+  public toHTTP(
+    input: ActivityAreaDefaultPresenterInput | ActivityAreaDefaultPresenterInput[],
+  ): HTTPActivityArea | HTTPActivityArea[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       area: input.area,
       type: input.type,
     }
-  }
-
-  toHTTPList(inputs: ActivityAreaDefaultPresenterInput[]): HTTPActivityArea[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

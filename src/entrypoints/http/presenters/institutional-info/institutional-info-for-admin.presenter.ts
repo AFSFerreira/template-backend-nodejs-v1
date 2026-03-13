@@ -16,16 +16,19 @@ export class InstitutionalInfoForAdminPresenter
     private readonly institutionalInfoUrlBuilderService: InstitutionalInfoUrlBuilderService,
   ) {}
 
-  public toHTTP(input: InstitutionalInfoForAdminPresenterInput): HTTPInstitutionalInfoForAdmin {
+  public toHTTP(input: InstitutionalInfoForAdminPresenterInput): HTTPInstitutionalInfoForAdmin
+  public toHTTP(input: InstitutionalInfoForAdminPresenterInput[]): HTTPInstitutionalInfoForAdmin[]
+  public toHTTP(
+    input: InstitutionalInfoForAdminPresenterInput | InstitutionalInfoForAdminPresenterInput[],
+  ): HTTPInstitutionalInfoForAdmin | HTTPInstitutionalInfoForAdmin[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       aboutImage: this.institutionalInfoUrlBuilderService.buildAboutImageUrl(input.aboutImage),
       aboutDescription: input.aboutDescription as ProseMirrorSchemaType,
       statuteFile: this.institutionalInfoUrlBuilderService.buildStatuteUrl(input.statuteFile),
       electionNoticeFile: this.institutionalInfoUrlBuilderService.buildElectionNoticeUrl(input.electionNoticeFile),
     }
-  }
-
-  toHTTPList(inputs: InstitutionalInfoForAdminPresenterInput[]): HTTPInstitutionalInfoForAdmin[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

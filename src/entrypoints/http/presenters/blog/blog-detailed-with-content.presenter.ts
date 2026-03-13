@@ -16,7 +16,14 @@ export class BlogDetailedWithContentPresenter
     private readonly blogUrlBuilderService: BlogUrlBuilderService,
   ) {}
 
-  public toHTTP(input: BlogDetailedWithContentPresenterInput): HTTPBlogDetailedWithContent {
+  public toHTTP(input: BlogDetailedWithContentPresenterInput): HTTPBlogDetailedWithContent
+  public toHTTP(input: BlogDetailedWithContentPresenterInput[]): HTTPBlogDetailedWithContent[]
+  public toHTTP(
+    input: BlogDetailedWithContentPresenterInput | BlogDetailedWithContentPresenterInput[],
+  ): HTTPBlogDetailedWithContent | HTTPBlogDetailedWithContent[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       accessCount: input.accessCount,
@@ -29,9 +36,5 @@ export class BlogDetailedWithContentPresenter
       subcategories: input.Subcategories?.map((sc) => sc.area) ?? [],
       content: input.content as ProseMirrorSchemaType,
     }
-  }
-
-  toHTTPList(inputs: BlogDetailedWithContentPresenterInput[]): HTTPBlogDetailedWithContent[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

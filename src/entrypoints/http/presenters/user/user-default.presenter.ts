@@ -12,7 +12,13 @@ export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPrese
     private readonly userUrlBuilderService: UserUrlBuilderService,
   ) {}
 
-  public toHTTP(input: UserDefaultPresenterInput): HTTPUser {
+  public toHTTP(input: UserDefaultPresenterInput): HTTPUser
+  public toHTTP(input: UserDefaultPresenterInput[]): HTTPUser[]
+  public toHTTP(input: UserDefaultPresenterInput | UserDefaultPresenterInput[]): HTTPUser | HTTPUser[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
+
     const profile = input.ResearcherProfile
 
     return {
@@ -42,9 +48,5 @@ export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPrese
       profileImage: this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
       birthdate: truncateDate(input.birthdate),
     }
-  }
-
-  toHTTPList(inputs: UserDefaultPresenterInput[]): HTTPUser[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

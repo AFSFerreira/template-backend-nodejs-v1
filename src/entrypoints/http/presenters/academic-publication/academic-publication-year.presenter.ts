@@ -9,14 +9,17 @@ import { singleton } from 'tsyringe'
 export class AcademicPublicationYearPresenter
   implements IPresenterStrategy<AcademicPublicationYearPresenterInput, HTTPAcademicPublicationYear>
 {
-  public toHTTP(input: AcademicPublicationYearPresenterInput): HTTPAcademicPublicationYear {
+  public toHTTP(input: AcademicPublicationYearPresenterInput): HTTPAcademicPublicationYear
+  public toHTTP(input: AcademicPublicationYearPresenterInput[]): HTTPAcademicPublicationYear[]
+  public toHTTP(
+    input: AcademicPublicationYearPresenterInput | AcademicPublicationYearPresenterInput[],
+  ): HTTPAcademicPublicationYear | HTTPAcademicPublicationYear[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       year: input.year,
       count: input.count,
     }
-  }
-
-  toHTTPList(inputs: AcademicPublicationYearPresenterInput[]): HTTPAcademicPublicationYear[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

@@ -9,7 +9,14 @@ import { singleton } from 'tsyringe'
 export class MeetingEnrollmentDetailedPresenter
   implements IPresenterStrategy<MeetingEnrollmentDetailedPresenterInput, HTTPMeetingEnrollmentDetailed>
 {
-  public toHTTP(input: MeetingEnrollmentDetailedPresenterInput): HTTPMeetingEnrollmentDetailed {
+  public toHTTP(input: MeetingEnrollmentDetailedPresenterInput): HTTPMeetingEnrollmentDetailed
+  public toHTTP(input: MeetingEnrollmentDetailedPresenterInput[]): HTTPMeetingEnrollmentDetailed[]
+  public toHTTP(
+    input: MeetingEnrollmentDetailedPresenterInput | MeetingEnrollmentDetailedPresenterInput[],
+  ): HTTPMeetingEnrollmentDetailed | HTTPMeetingEnrollmentDetailed[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       createdAt: input.createdAt,
@@ -37,9 +44,5 @@ export class MeetingEnrollmentDetailedPresenter
           }
         : null,
     }
-  }
-
-  toHTTPList(inputs: MeetingEnrollmentDetailedPresenterInput[]): HTTPMeetingEnrollmentDetailed[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

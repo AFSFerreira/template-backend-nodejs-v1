@@ -19,7 +19,7 @@ export class GetAllNewsletterTemplatesController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllNewsletterTemplatesQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.newsletterTemplateDefaultPresenter.toHTTPList(data)
+    const formattedReply = this.newsletterTemplateDefaultPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

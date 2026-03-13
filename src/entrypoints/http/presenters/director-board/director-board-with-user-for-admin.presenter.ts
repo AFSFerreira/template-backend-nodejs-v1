@@ -20,7 +20,14 @@ export class DirectorBoardWithUserForAdminPresenter
     private readonly userUrlBuilderService: UserUrlBuilderService,
   ) {}
 
-  public toHTTP(input: DirectorBoardWithUserForAdminPresenterInput): HTTPDirectorBoardWithUserForAdmin {
+  public toHTTP(input: DirectorBoardWithUserForAdminPresenterInput): HTTPDirectorBoardWithUserForAdmin
+  public toHTTP(input: DirectorBoardWithUserForAdminPresenterInput[]): HTTPDirectorBoardWithUserForAdmin[]
+  public toHTTP(
+    input: DirectorBoardWithUserForAdminPresenterInput | DirectorBoardWithUserForAdminPresenterInput[],
+  ): HTTPDirectorBoardWithUserForAdmin | HTTPDirectorBoardWithUserForAdmin[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.User.publicId,
       publicName: input.publicName,
@@ -31,9 +38,5 @@ export class DirectorBoardWithUserForAdminPresenter
       linkLattes: input.User.ResearcherProfile?.linkLattes ?? null,
       aboutMe: input.aboutMe as ProseMirrorSchemaType,
     }
-  }
-
-  toHTTPList(inputs: DirectorBoardWithUserForAdminPresenterInput[]): HTTPDirectorBoardWithUserForAdmin[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

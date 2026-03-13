@@ -13,7 +13,14 @@ export class BlogSimplifiedPresenter implements IPresenterStrategy<BlogSimplifie
     private readonly blogUrlBuilderService: BlogUrlBuilderService,
   ) {}
 
-  public toHTTP(input: BlogSimplifiedPresenterInput): HTTPSimplifiedBlog {
+  public toHTTP(input: BlogSimplifiedPresenterInput): HTTPSimplifiedBlog
+  public toHTTP(input: BlogSimplifiedPresenterInput[]): HTTPSimplifiedBlog[]
+  public toHTTP(
+    input: BlogSimplifiedPresenterInput | BlogSimplifiedPresenterInput[],
+  ): HTTPSimplifiedBlog | HTTPSimplifiedBlog[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       title: input.title,
@@ -24,9 +31,5 @@ export class BlogSimplifiedPresenter implements IPresenterStrategy<BlogSimplifie
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
-
-  toHTTPList(inputs: BlogSimplifiedPresenterInput[]): HTTPSimplifiedBlog[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

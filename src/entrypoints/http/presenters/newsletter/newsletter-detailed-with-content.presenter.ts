@@ -16,7 +16,14 @@ export class NewsletterDetailedWithContentPresenter
     private readonly newsletterUrlBuilderService: NewsletterUrlBuilderService,
   ) {}
 
-  public toHTTP(input: NewsletterDetailedWithContentPresenterInput): HTTPNewsletterDetailedWithContent {
+  public toHTTP(input: NewsletterDetailedWithContentPresenterInput): HTTPNewsletterDetailedWithContent
+  public toHTTP(input: NewsletterDetailedWithContentPresenterInput[]): HTTPNewsletterDetailedWithContent[]
+  public toHTTP(
+    input: NewsletterDetailedWithContentPresenterInput | NewsletterDetailedWithContentPresenterInput[],
+  ): HTTPNewsletterDetailedWithContent | HTTPNewsletterDetailedWithContent[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       content: this.newsletterUrlBuilderService.buildHtmlUrl(input.publicId),
@@ -30,9 +37,5 @@ export class NewsletterDetailedWithContentPresenter
       fileContent: input.fileContent,
       templateId: input.NewsletterTemplate?.publicId,
     }
-  }
-
-  toHTTPList(inputs: NewsletterDetailedWithContentPresenterInput[]): HTTPNewsletterDetailedWithContent[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

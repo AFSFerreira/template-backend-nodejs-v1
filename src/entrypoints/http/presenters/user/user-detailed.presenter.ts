@@ -16,7 +16,14 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPre
     private readonly directorBoardUrlBuilderService: DirectorBoardUrlBuilderService,
   ) {}
 
-  public toHTTP(input: UserDetailedPresenterInput): HTTPUserWithDetails {
+  public toHTTP(input: UserDetailedPresenterInput): HTTPUserWithDetails
+  public toHTTP(input: UserDetailedPresenterInput[]): HTTPUserWithDetails[]
+  public toHTTP(
+    input: UserDetailedPresenterInput | UserDetailedPresenterInput[],
+  ): HTTPUserWithDetails | HTTPUserWithDetails[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     const profile = input.ResearcherProfile
 
     return {
@@ -103,9 +110,5 @@ export class UserDetailedPresenter implements IPresenterStrategy<UserDetailedPre
           }
         : undefined,
     }
-  }
-
-  toHTTPList(inputs: UserDetailedPresenterInput[]): HTTPUserWithDetails[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

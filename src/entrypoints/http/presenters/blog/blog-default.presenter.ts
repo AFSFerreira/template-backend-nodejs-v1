@@ -10,7 +10,12 @@ export class BlogDefaultPresenter implements IPresenterStrategy<BlogDefaultPrese
     private readonly blogUrlBuilderService: BlogUrlBuilderService,
   ) {}
 
-  public toHTTP(input: BlogDefaultPresenterInput): HTTPBlog {
+  public toHTTP(input: BlogDefaultPresenterInput): HTTPBlog
+  public toHTTP(input: BlogDefaultPresenterInput[]): HTTPBlog[]
+  public toHTTP(input: BlogDefaultPresenterInput | BlogDefaultPresenterInput[]): HTTPBlog | HTTPBlog[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       authorName: input.authorName,
@@ -22,9 +27,5 @@ export class BlogDefaultPresenter implements IPresenterStrategy<BlogDefaultPrese
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
-
-  toHTTPList(inputs: BlogDefaultPresenterInput[]): HTTPBlog[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

@@ -19,7 +19,14 @@ export class DirectorBoardWithUserPresenter
     private readonly userUrlBuilderService: UserUrlBuilderService,
   ) {}
 
-  public toHTTP(input: DirectorBoardWithUserPresenterInput): HTTPDirectorBoardWithUser {
+  public toHTTP(input: DirectorBoardWithUserPresenterInput): HTTPDirectorBoardWithUser
+  public toHTTP(input: DirectorBoardWithUserPresenterInput[]): HTTPDirectorBoardWithUser[]
+  public toHTTP(
+    input: DirectorBoardWithUserPresenterInput | DirectorBoardWithUserPresenterInput[],
+  ): HTTPDirectorBoardWithUser | HTTPDirectorBoardWithUser[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.User.publicId,
       publicName: input.publicName,
@@ -29,9 +36,5 @@ export class DirectorBoardWithUserPresenter
       position: input.DirectorPosition.position,
       linkLattes: input.User.ResearcherProfile?.linkLattes ?? null,
     }
-  }
-
-  toHTTPList(inputs: DirectorBoardWithUserPresenterInput[]): HTTPDirectorBoardWithUser[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

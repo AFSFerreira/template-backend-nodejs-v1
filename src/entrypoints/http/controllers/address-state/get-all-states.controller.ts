@@ -19,7 +19,7 @@ export class GetAllStatesController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllStatesQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.addressWithUsersCountPresenter.toHTTPList(data)
+    const formattedReply = this.addressWithUsersCountPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

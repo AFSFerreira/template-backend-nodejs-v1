@@ -9,14 +9,17 @@ import { singleton } from 'tsyringe'
 export class InstitutionWithUsersCountPresenter
   implements IPresenterStrategy<InstitutionWithUsersCountPresenterInput, HTTPInstitutionWithUsersCount>
 {
-  public toHTTP(input: InstitutionWithUsersCountPresenterInput): HTTPInstitutionWithUsersCount {
+  public toHTTP(input: InstitutionWithUsersCountPresenterInput): HTTPInstitutionWithUsersCount
+  public toHTTP(input: InstitutionWithUsersCountPresenterInput[]): HTTPInstitutionWithUsersCount[]
+  public toHTTP(
+    input: InstitutionWithUsersCountPresenterInput | InstitutionWithUsersCountPresenterInput[],
+  ): HTTPInstitutionWithUsersCount | HTTPInstitutionWithUsersCount[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       name: input.name,
       usersCount: input.usersCount,
     }
-  }
-
-  toHTTPList(inputs: InstitutionWithUsersCountPresenterInput[]): HTTPInstitutionWithUsersCount[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

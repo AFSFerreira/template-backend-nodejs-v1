@@ -3,10 +3,15 @@ generator client {
   output          = "../src/@types/lib/prisma/generated"
   compilerBuild   = "fast"
   previewFeatures = ["partialIndexes"]
+  // moduleFormat = "esm"
+  // generatedFileExtension = "mts"
+  // importFileExtension = "mjs"
+  // runtime = "nodejs"
 }
 
 datasource db {
   provider = "postgresql"
+
 }
 
 model InstitutionalInfo {

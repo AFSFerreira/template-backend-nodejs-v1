@@ -22,7 +22,7 @@ export class GetAllActivityAreasWithAcademicPublicationsController implements IC
   ) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.activityAreaWithAcademicPublicationsCountPresenter.toHTTPList(data)
+    const formattedReply = this.activityAreaWithAcademicPublicationsCountPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

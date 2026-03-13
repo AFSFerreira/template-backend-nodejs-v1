@@ -15,7 +15,14 @@ export class UserSimplifiedPresenterForAdmin
     private readonly userUrlBuilderService: UserUrlBuilderService,
   ) {}
 
-  public toHTTP(input: UserSimplifiedForAdminPresenterInput): HTTPSimplifiedUserDetailsForAdmin {
+  public toHTTP(input: UserSimplifiedForAdminPresenterInput): HTTPSimplifiedUserDetailsForAdmin
+  public toHTTP(input: UserSimplifiedForAdminPresenterInput[]): HTTPSimplifiedUserDetailsForAdmin[]
+  public toHTTP(
+    input: UserSimplifiedForAdminPresenterInput | UserSimplifiedForAdminPresenterInput[],
+  ): HTTPSimplifiedUserDetailsForAdmin | HTTPSimplifiedUserDetailsForAdmin[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       fullName: input.fullName,
@@ -26,9 +33,5 @@ export class UserSimplifiedPresenterForAdmin
       email: input.email,
       role: input.role,
     }
-  }
-
-  toHTTPList(inputs: UserSimplifiedForAdminPresenterInput[]): HTTPSimplifiedUserDetailsForAdmin[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

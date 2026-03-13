@@ -19,7 +19,7 @@ export class GetAllDirectorsBoardController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllDirectorBoardType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.directorBoardDefaultPresenter.toHTTPList(data)
+    const formattedReply = this.directorBoardDefaultPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

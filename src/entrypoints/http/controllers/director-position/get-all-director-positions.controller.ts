@@ -19,7 +19,7 @@ export class GetAllDirectorPositionsController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllDirectorPositionsType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.directorPositionDefaultPresenter.toHTTPList(data)
+    const formattedReply = this.directorPositionDefaultPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

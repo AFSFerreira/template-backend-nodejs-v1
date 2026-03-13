@@ -21,7 +21,14 @@ export class UserDetailedPresenterForAdmin
     private readonly directorBoardUrlBuilderService: DirectorBoardUrlBuilderService,
   ) {}
 
-  public toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
+  public toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin
+  public toHTTP(input: UserDetailedPresenterForAdminInput[]): HTTPUserWithDetailsForAdmin[]
+  public toHTTP(
+    input: UserDetailedPresenterForAdminInput | UserDetailedPresenterForAdminInput[],
+  ): HTTPUserWithDetailsForAdmin | HTTPUserWithDetailsForAdmin[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     const profile = input.ResearcherProfile
 
     return {
@@ -110,9 +117,5 @@ export class UserDetailedPresenterForAdmin
           }
         : undefined,
     }
-  }
-
-  toHTTPList(inputs: UserDetailedPresenterForAdminInput[]): HTTPUserWithDetailsForAdmin[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

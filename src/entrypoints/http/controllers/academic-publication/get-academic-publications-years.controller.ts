@@ -19,7 +19,7 @@ export class GetAcademicPublicationsYearsController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAcademicPublicationsYearsQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.academicPublicationYearPresenter.toHTTPList(data)
+    const formattedReply = this.academicPublicationYearPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

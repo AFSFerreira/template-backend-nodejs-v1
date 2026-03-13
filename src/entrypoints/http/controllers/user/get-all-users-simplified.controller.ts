@@ -19,7 +19,7 @@ export class GetAllUsersSimplifiedController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllUsersSimplifiedQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.userSimplifiedPresenter.toHTTPList(data)
+    const formattedReply = this.userSimplifiedPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

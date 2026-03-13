@@ -23,7 +23,7 @@ export class GetAllUserBlogsDetailedController implements IController {
       userPublicId: getRequestUserPublicId(request),
     })
 
-    const formattedReply = this.blogDetailedForAdminPresenter.toHTTPList(data)
+    const formattedReply = this.blogDetailedForAdminPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

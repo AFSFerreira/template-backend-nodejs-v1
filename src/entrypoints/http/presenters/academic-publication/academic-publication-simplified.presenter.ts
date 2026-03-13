@@ -7,7 +7,14 @@ import { singleton } from 'tsyringe'
 export class AcademicPublicationFilteredPresenter
   implements IPresenterStrategy<AcademicPublicationSimplifiedPresenterInput, HTTPAcademicPublication>
 {
-  public toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication {
+  public toHTTP(input: AcademicPublicationSimplifiedPresenterInput): HTTPAcademicPublication
+  public toHTTP(input: AcademicPublicationSimplifiedPresenterInput[]): HTTPAcademicPublication[]
+  public toHTTP(
+    input: AcademicPublicationSimplifiedPresenterInput | AcademicPublicationSimplifiedPresenterInput[],
+  ): HTTPAcademicPublication | HTTPAcademicPublication[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       title: input.title,
       authorsNames: input.authorsNames,
@@ -19,9 +26,5 @@ export class AcademicPublicationFilteredPresenter
       mainCategory: input.mainCategory,
       publicationYear: input.publicationYear,
     }
-  }
-
-  toHTTPList(inputs: AcademicPublicationSimplifiedPresenterInput[]): HTTPAcademicPublication[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

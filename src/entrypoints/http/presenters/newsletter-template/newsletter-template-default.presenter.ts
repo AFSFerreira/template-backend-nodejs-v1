@@ -10,14 +10,17 @@ import { singleton } from 'tsyringe'
 export class NewsletterTemplateDefaultPresenter
   implements IPresenterStrategy<NewsletterTemplateDefaultPresenterInput, HTTPNewsletterTemplate>
 {
-  public toHTTP(input: NewsletterTemplateDefaultPresenterInput): HTTPNewsletterTemplate {
+  public toHTTP(input: NewsletterTemplateDefaultPresenterInput): HTTPNewsletterTemplate
+  public toHTTP(input: NewsletterTemplateDefaultPresenterInput[]): HTTPNewsletterTemplate[]
+  public toHTTP(
+    input: NewsletterTemplateDefaultPresenterInput | NewsletterTemplateDefaultPresenterInput[],
+  ): HTTPNewsletterTemplate | HTTPNewsletterTemplate[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       templateName: getFileBasename(input.templateFolder),
     }
-  }
-
-  toHTTPList(inputs: NewsletterTemplateDefaultPresenterInput[]): HTTPNewsletterTemplate[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

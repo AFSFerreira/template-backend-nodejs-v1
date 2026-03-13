@@ -9,14 +9,17 @@ import { singleton } from 'tsyringe'
 export class AddressWithUsersCountPresenter
   implements IPresenterStrategy<AddressWithUsersCountPresenterInput, HTTPAddressStates>
 {
-  public toHTTP(input: AddressWithUsersCountPresenterInput): HTTPAddressStates {
+  public toHTTP(input: AddressWithUsersCountPresenterInput): HTTPAddressStates
+  public toHTTP(input: AddressWithUsersCountPresenterInput[]): HTTPAddressStates[]
+  public toHTTP(
+    input: AddressWithUsersCountPresenterInput | AddressWithUsersCountPresenterInput[],
+  ): HTTPAddressStates | HTTPAddressStates[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       state: input.state,
       usersCount: input.usersCount,
     }
-  }
-
-  toHTTPList(inputs: AddressWithUsersCountPresenterInput[]): HTTPAddressStates[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

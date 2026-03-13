@@ -15,7 +15,19 @@ export class MeetingEnrollmentDetailedWithPresentationPresenter
 {
   public toHTTP(
     input: MeetingEnrollmentDetailedWithPresentationPresenterInput,
-  ): HTTPMeetingEnrollmentDetailedWithPresentation {
+  ): HTTPMeetingEnrollmentDetailedWithPresentation
+  public toHTTP(
+    input: MeetingEnrollmentDetailedWithPresentationPresenterInput[],
+  ): HTTPMeetingEnrollmentDetailedWithPresentation[]
+  public toHTTP(
+    input:
+      | MeetingEnrollmentDetailedWithPresentationPresenterInput
+      | MeetingEnrollmentDetailedWithPresentationPresenterInput[],
+  ): HTTPMeetingEnrollmentDetailedWithPresentation | HTTPMeetingEnrollmentDetailedWithPresentation[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
+
     return {
       id: input.publicId,
       createdAt: input.createdAt,
@@ -56,11 +68,5 @@ export class MeetingEnrollmentDetailedWithPresentationPresenter
           }
         : null,
     }
-  }
-
-  toHTTPList(
-    inputs: MeetingEnrollmentDetailedWithPresentationPresenterInput[],
-  ): HTTPMeetingEnrollmentDetailedWithPresentation[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

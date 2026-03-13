@@ -19,7 +19,7 @@ export class GetAllMeetingsController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllMeetingsQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.meetingDetailedPresenter.toHTTPList(data)
+    const formattedReply = this.meetingDetailedPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

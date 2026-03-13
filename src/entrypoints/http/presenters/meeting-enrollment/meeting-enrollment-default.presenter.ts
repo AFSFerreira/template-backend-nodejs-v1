@@ -9,15 +9,18 @@ import { singleton } from 'tsyringe'
 export class MeetingEnrollmentDefaultPresenter
   implements IPresenterStrategy<MeetingEnrollmentDefaultPresenterInput, HTTPMeetingEnrollment>
 {
-  public toHTTP(input: MeetingEnrollmentDefaultPresenterInput): HTTPMeetingEnrollment {
+  public toHTTP(input: MeetingEnrollmentDefaultPresenterInput): HTTPMeetingEnrollment
+  public toHTTP(input: MeetingEnrollmentDefaultPresenterInput[]): HTTPMeetingEnrollment[]
+  public toHTTP(
+    input: MeetingEnrollmentDefaultPresenterInput | MeetingEnrollmentDefaultPresenterInput[],
+  ): HTTPMeetingEnrollment | HTTPMeetingEnrollment[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       createdAt: input.createdAt,
       meetingId: input.meetingId,
     }
-  }
-
-  toHTTPList(inputs: MeetingEnrollmentDefaultPresenterInput[]): HTTPMeetingEnrollment[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

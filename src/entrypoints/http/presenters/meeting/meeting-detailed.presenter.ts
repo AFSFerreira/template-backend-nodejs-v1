@@ -15,7 +15,14 @@ export class MeetingDetailedPresenter
     private readonly meetingUrlBuilderService: MeetingUrlBuilderService,
   ) {}
 
-  public toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails {
+  public toHTTP(input: MeetingDetailedPresenterInput): HTTPMeetingWithDetails
+  public toHTTP(input: MeetingDetailedPresenterInput[]): HTTPMeetingWithDetails[]
+  public toHTTP(
+    input: MeetingDetailedPresenterInput | MeetingDetailedPresenterInput[],
+  ): HTTPMeetingWithDetails | HTTPMeetingWithDetails[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       title: input.title,
@@ -38,9 +45,5 @@ export class MeetingDetailedPresenter
         : undefined,
       meetingDates: input.MeetingDate?.map((meetingDate) => meetingDate.date),
     }
-  }
-
-  toHTTPList(inputs: MeetingDetailedPresenterInput[]): HTTPMeetingWithDetails[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

@@ -15,7 +15,14 @@ export class BlogDetailedForAdminPresenter
     private readonly blogUrlBuilderService: BlogUrlBuilderService,
   ) {}
 
-  public toHTTP(input: BlogDetailedForAdminPresenterInput): HTTPBlogDetailedForAdmin {
+  public toHTTP(input: BlogDetailedForAdminPresenterInput): HTTPBlogDetailedForAdmin
+  public toHTTP(input: BlogDetailedForAdminPresenterInput[]): HTTPBlogDetailedForAdmin[]
+  public toHTTP(
+    input: BlogDetailedForAdminPresenterInput | BlogDetailedForAdminPresenterInput[],
+  ): HTTPBlogDetailedForAdmin | HTTPBlogDetailedForAdmin[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       editorialStatus: input.editorialStatus,
@@ -27,9 +34,5 @@ export class BlogDetailedForAdminPresenter
       createdAt: input.createdAt,
       updatedAt: input.updatedAt,
     }
-  }
-
-  toHTTPList(inputs: BlogDetailedForAdminPresenterInput[]): HTTPBlogDetailedForAdmin[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

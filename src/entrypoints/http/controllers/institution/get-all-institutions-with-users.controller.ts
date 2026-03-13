@@ -19,7 +19,7 @@ export class GetAllInstitutionsWithUsersController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllInstitutionsWithUsersQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.institutionWithUsersCountPresenter.toHTTPList(data)
+    const formattedReply = this.institutionWithUsersCountPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

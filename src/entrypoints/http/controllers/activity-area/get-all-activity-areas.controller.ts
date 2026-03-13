@@ -19,7 +19,7 @@ export class GetAllActivityAreasController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllActivityAreasType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.activityAreaDefaultPresenter.toHTTPList(data)
+    const formattedReply = this.activityAreaDefaultPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

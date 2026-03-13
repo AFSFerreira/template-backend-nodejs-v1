@@ -27,7 +27,7 @@ export class GetMeetingParticipantsController implements IController {
       meetingPublicId,
     })
 
-    const formattedReply = this.meetingEnrollmentDetailedPresenter.toHTTPList(data)
+    const formattedReply = this.meetingEnrollmentDetailedPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

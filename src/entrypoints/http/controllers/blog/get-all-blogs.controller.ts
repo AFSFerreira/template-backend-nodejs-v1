@@ -19,7 +19,7 @@ export class GetAllBlogsController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllBlogsQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.blogSimplifiedPresenter.toHTTPList(data)
+    const formattedReply = this.blogSimplifiedPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

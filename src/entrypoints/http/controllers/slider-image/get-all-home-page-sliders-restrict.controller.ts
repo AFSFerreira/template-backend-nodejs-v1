@@ -19,7 +19,7 @@ export class GetAllHomePageSlidersRestrictController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllHomePageSlidersRestrictType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.sliderImageDefaultPresenter.toHTTPList(data)
+    const formattedReply = this.sliderImageDefaultPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

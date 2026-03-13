@@ -13,7 +13,14 @@ export class HomePageSliderImagePresenter
     private readonly sliderImageUrlBuilderService: SliderImageUrlBuilderService,
   ) {}
 
-  public toHTTP(input: HomePageSliderImagePresenterInput): HTTPSliderImage {
+  public toHTTP(input: HomePageSliderImagePresenterInput): HTTPSliderImage
+  public toHTTP(input: HomePageSliderImagePresenterInput[]): HTTPSliderImage[]
+  public toHTTP(
+    input: HomePageSliderImagePresenterInput | HomePageSliderImagePresenterInput[],
+  ): HTTPSliderImage | HTTPSliderImage[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       id: input.publicId,
       image: this.sliderImageUrlBuilderService.buildImageUrl(input.image, 'home-page'),
@@ -21,9 +28,5 @@ export class HomePageSliderImagePresenter
       isActive: input.isActive,
       order: input.order,
     }
-  }
-
-  toHTTPList(inputs: HomePageSliderImagePresenterInput[]): HTTPSliderImage[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

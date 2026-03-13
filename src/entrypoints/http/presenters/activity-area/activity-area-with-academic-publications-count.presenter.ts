@@ -15,16 +15,22 @@ export class ActivityAreaWithAcademicPublicationsCountPresenter
 {
   public toHTTP(
     input: ActivityAreaWithAcademicPublicationsCountPresenterInput,
-  ): HTTPActivityAreaWithAcademicPublicationsCount {
+  ): HTTPActivityAreaWithAcademicPublicationsCount
+  public toHTTP(
+    input: ActivityAreaWithAcademicPublicationsCountPresenterInput[],
+  ): HTTPActivityAreaWithAcademicPublicationsCount[]
+  public toHTTP(
+    input:
+      | ActivityAreaWithAcademicPublicationsCountPresenterInput
+      | ActivityAreaWithAcademicPublicationsCountPresenterInput[],
+  ): HTTPActivityAreaWithAcademicPublicationsCount | HTTPActivityAreaWithAcademicPublicationsCount[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
+
     return {
       area: input.area,
       publicationsCount: input.publicationsCount,
     }
-  }
-
-  toHTTPList(
-    inputs: ActivityAreaWithAcademicPublicationsCountPresenterInput[],
-  ): HTTPActivityAreaWithAcademicPublicationsCount[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

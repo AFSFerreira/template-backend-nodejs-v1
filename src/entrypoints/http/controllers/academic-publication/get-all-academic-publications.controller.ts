@@ -19,7 +19,7 @@ export class GetAllAcademicPublicationsController implements IController {
   async handle(request: ZodRequest<{ querystring: GetAllAcademicPublicationsQueryType }>, reply: FastifyReply) {
     const { data, meta } = await this.useCase.execute(request.query)
 
-    const formattedReply = this.academicPublicationFilteredPresenter.toHTTPList(data)
+    const formattedReply = this.academicPublicationFilteredPresenter.toHTTP(data)
 
     return await reply.sendPaginated(formattedReply, meta)
   }

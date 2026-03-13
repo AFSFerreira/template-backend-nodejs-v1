@@ -4,7 +4,12 @@ import { singleton } from 'tsyringe'
 
 @singleton()
 export class AddressDefaultPresenter implements IPresenterStrategy<AddressDefaultPresenterInput, HTTPAddress> {
-  public toHTTP(input: AddressDefaultPresenterInput): HTTPAddress {
+  public toHTTP(input: AddressDefaultPresenterInput): HTTPAddress
+  public toHTTP(input: AddressDefaultPresenterInput[]): HTTPAddress[]
+  public toHTTP(input: AddressDefaultPresenterInput | AddressDefaultPresenterInput[]): HTTPAddress | HTTPAddress[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       zip: input.zip,
       number: input.number,
@@ -13,9 +18,5 @@ export class AddressDefaultPresenter implements IPresenterStrategy<AddressDefaul
       district: input.district,
       city: input.city,
     }
-  }
-
-  toHTTPList(inputs: AddressDefaultPresenterInput[]): HTTPAddress[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }

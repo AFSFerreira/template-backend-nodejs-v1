@@ -9,13 +9,16 @@ import { singleton } from 'tsyringe'
 export class DashboardBlogsMetricsPresenter
   implements IPresenterStrategy<DashboardBlogsMetricsPresenterInput, HTTPDashboardBlogsMetrics>
 {
-  public toHTTP(input: DashboardBlogsMetricsPresenterInput): HTTPDashboardBlogsMetrics {
+  public toHTTP(input: DashboardBlogsMetricsPresenterInput): HTTPDashboardBlogsMetrics
+  public toHTTP(input: DashboardBlogsMetricsPresenterInput[]): HTTPDashboardBlogsMetrics[]
+  public toHTTP(
+    input: DashboardBlogsMetricsPresenterInput | DashboardBlogsMetricsPresenterInput[],
+  ): HTTPDashboardBlogsMetrics | HTTPDashboardBlogsMetrics[] {
+    if (Array.isArray(input)) {
+      return input.map((element) => this.toHTTP(element))
+    }
     return {
       totalBlogs: input.totalBlogs,
     }
-  }
-
-  toHTTPList(inputs: DashboardBlogsMetricsPresenterInput[]): HTTPDashboardBlogsMetrics[] {
-    return inputs.map((input) => this.toHTTP(input))
   }
 }
