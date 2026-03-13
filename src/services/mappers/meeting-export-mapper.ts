@@ -16,10 +16,14 @@ export class MeetingExportMapperService {
     const createdAt = dayjs(meetingEnrollment.createdAt).tz(targetTimezone).format('DD/MM/YYYY HH:mm')
 
     const institutionName =
-      meetingEnrollment.UserDetails?.User.Institution?.name || meetingEnrollment.GuestDetails?.institutionName || ''
+      meetingEnrollment.UserDetails?.User.ResearcherProfile?.Institution?.name ||
+      meetingEnrollment.GuestDetails?.institutionName ||
+      ''
 
     const departmentName =
-      meetingEnrollment.UserDetails?.User.departmentName || meetingEnrollment.GuestDetails?.departmentName || ''
+      meetingEnrollment.UserDetails?.User.ResearcherProfile?.departmentName ||
+      meetingEnrollment.GuestDetails?.departmentName ||
+      ''
 
     const educationLevel = mapEducationLevel(
       meetingEnrollment.UserDetails?.User.educationLevel ?? meetingEnrollment.GuestDetails?.educationLevel,

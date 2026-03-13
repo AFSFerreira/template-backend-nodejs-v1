@@ -27,7 +27,7 @@ export class DirectorBoardWithUserPresenter
         ? this.directorBoardUrlBuilderService.buildProfileImageUrl(input.profileImage)
         : this.userUrlBuilderService.buildProfileImageUrl(input.User.profileImage),
       position: input.DirectorPosition.position,
-      linkLattes: input.User.linkLattes,
+      linkLattes: input.User.ResearcherProfile?.linkLattes ?? null,
     }
   }
 

@@ -6,7 +6,11 @@ export const meetingEnrollmentWithDetails = {
       include: {
         User: {
           include: {
-            Institution: true,
+            ResearcherProfile: {
+              include: {
+                Institution: true,
+              },
+            },
           },
         },
       },

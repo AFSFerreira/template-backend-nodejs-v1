@@ -22,10 +22,12 @@ export class UserDetailedPresenterForAdmin
   ) {}
 
   public toHTTP(input: UserDetailedPresenterForAdminInput): HTTPUserWithDetailsForAdmin {
+    const profile = input.ResearcherProfile
+
     return {
       id: input.publicId,
       astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
-      departmentName: input.departmentName,
+      departmentName: profile?.departmentName ?? null,
       role: input.role,
       educationLevel: input.educationLevel,
       email: input.email,
@@ -36,26 +38,27 @@ export class UserDetailedPresenterForAdmin
         identityType: input.identityType,
         identityDocument: input.identityDocument,
       }),
-      institutionComplement: input.institutionComplement,
-      linkGoogleScholar: input.linkGoogleScholar,
-      linkLattes: input.linkLattes,
-      linkResearcherId: input.linkResearcherId,
+      institutionComplement: profile?.institutionComplement ?? null,
+      linkGoogleScholar: profile?.linkGoogleScholar ?? null,
+      linkLattes: profile?.linkLattes ?? null,
+      linkResearcherId: profile?.linkResearcherId ?? null,
       membershipStatus: input.membershipStatus,
-      occupation: input.occupation,
-      orcidNumber: input.orcidNumber,
-      publicInformation: input.publicInformation,
+      occupation: profile?.occupation ?? null,
+      orcidNumber: profile?.orcidNumber ?? null,
+      publicInformation: profile?.publicInformation ?? null,
       receiveReports: input.receiveReports,
       username: input.username,
       profileImage: this.userUrlBuilderService.buildProfileImageUrl(input.profileImage),
       interestDescription: input.interestDescription,
       birthdate: truncateDate(input.birthdate),
 
-      institutionName: input.Institution?.name,
+      institutionName: profile?.Institution?.name,
 
-      keywords: input.Keyword && input.Keyword.length > 0 ? input.Keyword?.map((keyword) => keyword.value) : undefined,
+      keywords:
+        profile?.Keyword && profile.Keyword.length > 0 ? profile.Keyword.map((keyword) => keyword.value) : undefined,
 
-      mainActivityArea: input.ActivityArea?.area,
-      subActivityArea: input.SubActivityArea?.area,
+      mainActivityArea: profile?.ActivityArea?.area,
+      subActivityArea: profile?.SubActivityArea?.area,
 
       address: input.Address
         ? {
@@ -70,20 +73,20 @@ export class UserDetailedPresenterForAdmin
           }
         : undefined,
 
-      enrolledCourse: input.EnrolledCourse
+      enrolledCourse: profile?.EnrolledCourse
         ? {
-            courseName: input.EnrolledCourse.courseName,
-            startGraduationDate: truncateDate(input.EnrolledCourse.startGraduationDate),
-            expectedGraduationDate: truncateDate(input.EnrolledCourse.expectedGraduationDate),
-            supervisorName: input.EnrolledCourse.supervisorName,
-            scholarshipHolder: input.EnrolledCourse.scholarshipHolder,
-            sponsoringOrganization: input.EnrolledCourse.sponsoringOrganization,
+            courseName: profile.EnrolledCourse.courseName,
+            startGraduationDate: truncateDate(profile.EnrolledCourse.startGraduationDate),
+            expectedGraduationDate: truncateDate(profile.EnrolledCourse.expectedGraduationDate),
+            supervisorName: profile.EnrolledCourse.supervisorName,
+            scholarshipHolder: profile.EnrolledCourse.scholarshipHolder,
+            sponsoringOrganization: profile.EnrolledCourse.sponsoringOrganization,
           }
         : undefined,
 
       academicPublications:
-        input.AcademicPublication && input.AcademicPublication.length > 0
-          ? input.AcademicPublication.map((academicPublication) => ({
+        profile?.AcademicPublication && profile.AcademicPublication.length > 0
+          ? profile.AcademicPublication.map((academicPublication) => ({
               title: academicPublication.title,
               authors: academicPublication.AcademicPublicationAuthors?.map((author) => author.name),
               publicationYear: academicPublication.publicationYear,
@@ -98,7 +101,7 @@ export class UserDetailedPresenterForAdmin
 
       directorBoardInfo: input.DirectorBoard
         ? {
-            linkLattes: input.linkLattes,
+            linkLattes: profile?.linkLattes,
             name: input.fullName,
             profileImage: input.DirectorBoard.profileImage
               ? this.directorBoardUrlBuilderService.buildProfileImageUrl(input.DirectorBoard.profileImage)

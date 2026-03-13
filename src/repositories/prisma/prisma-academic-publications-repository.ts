@@ -41,7 +41,11 @@ export class PrismaAcademicPublicationsRepository implements AcademicPublication
 
   async findManyByUserId(userId: number) {
     const academicPublication = await this.dbContext.client.academicPublication.findMany({
-      where: { userId },
+      where: {
+        ResearcherProfile: {
+          userId,
+        },
+      },
       orderBy: [{ title: 'asc' }, { id: 'asc' }],
     })
     return academicPublication

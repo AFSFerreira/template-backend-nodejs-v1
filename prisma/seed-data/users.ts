@@ -34,18 +34,44 @@ type UserWithoutIdentityDocument = Omit<
 
 const passwordHash = await new HashService().hashPassword('123456789Az#')
 
-export const partialUserData1: PartialUserCreateInputInfo = {
-  passwordHash,
-  birthdate: new Date('2025-09-22'),
-  profileImage: 'default.png',
+const partialResearcherProfileData: Prisma.ResearcherProfileCreateWithoutUserInput = {
   linkLattes: 'http://lattes.cnpq.br/1918385364299862',
   linkGoogleScholar: 'https://scholar.google.com/admin.admin',
   linkResearcherId: null,
   orcidNumber: '0000-0001-2345-6789',
-  membershipStatus: MembershipStatusType.ACTIVE,
   departmentName: 'DEPARTAMENTO DE ASTROBIOLOGIA',
   institutionComplement: 'LABORATÓRIO DE VIDA EXTRATERRESTRE',
   occupation: OccupationType.RESEARCHER,
+  activityAreaDescription: null,
+  subActivityAreaDescription: null,
+  publicInformation: 'ASTROBIÓLOGO',
+  EnrolledCourse: enrolledCourseNestedUserData1,
+  AcademicPublication: { create: academicPublicationsCreateUserDataArray1 },
+  Keyword: {
+    connectOrCreate: keywordsConnectOrCreateUserData1,
+  },
+  Institution: {
+    connect: {
+      name: institutionData1.name,
+    },
+  },
+  ActivityArea: {
+    connect: {
+      type_area: activityAreaData1,
+    },
+  },
+  SubActivityArea: {
+    connect: {
+      type_area: subActivityAreaData1,
+    },
+  },
+}
+
+export const partialUserData1: PartialUserCreateInputInfo = {
+  passwordHash,
+  birthdate: new Date('2025-09-22'),
+  profileImage: 'default.png',
+  membershipStatus: MembershipStatusType.ACTIVE,
   educationLevel: EducationLevelType.DOCTORATE_STUDENT,
   emailIsPublic: true,
   astrobiologyOrRelatedStartYear: 2010,
@@ -53,33 +79,9 @@ export const partialUserData1: PartialUserCreateInputInfo = {
   receiveReports: true,
   loginAttempts: 0,
   lastLogin: null,
-  publicInformation: 'ASTROBIÓLOGO',
   wantsNewsletter: false,
-
-  EnrolledCourse: enrolledCourseNestedUserData1,
-
-  AcademicPublication: { create: academicPublicationsCreateUserDataArray1 },
-
-  Keyword: {
-    connectOrCreate: keywordsConnectOrCreateUserData1,
-  },
-
-  Institution: {
-    connect: {
-      name: institutionData1.name,
-    },
-  },
-
-  ActivityArea: {
-    connect: {
-      type_area: activityAreaData1,
-    },
-  },
-
-  SubActivityArea: {
-    connect: {
-      type_area: subActivityAreaData1,
-    },
+  ResearcherProfile: {
+    create: partialResearcherProfileData,
   },
 }
 
@@ -93,7 +95,12 @@ export const adminUserData1: UserWithoutIdentityDocument = {
 
 export const managerUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/1918385364299862',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/1918385364299862',
+    },
+  },
   fullName: 'Gustavo Porto de Mello',
   email: 'gustavo@email.com',
   username: 'gustavo.porto',
@@ -102,7 +109,12 @@ export const managerUserData1: UserWithoutIdentityDocument = {
 
 export const managerUserData2: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/9117662545474146',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/9117662545474146',
+    },
+  },
   fullName: 'Douglas Galante',
   email: 'douglas@email.com',
   username: 'douglas.galante',
@@ -111,7 +123,12 @@ export const managerUserData2: UserWithoutIdentityDocument = {
 
 export const managerUserData3: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/5093103617210826',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/5093103617210826',
+    },
+  },
   fullName: 'Beatriz Siffert',
   email: 'beatriz@email.com',
   username: 'beatriz.siffert',
@@ -120,7 +137,12 @@ export const managerUserData3: UserWithoutIdentityDocument = {
 
 export const managerUserData4: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/7450204581620194',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/7450204581620194',
+    },
+  },
   fullName: 'Amanda Bendia',
   email: 'amanda@email.com',
   username: 'amanda.bendia',
@@ -129,7 +151,12 @@ export const managerUserData4: UserWithoutIdentityDocument = {
 
 export const managerUserData5: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/5822376591265210',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/5822376591265210',
+    },
+  },
   fullName: 'Fábio Rodrigues',
   email: 'fabio@email.com',
   username: 'fabio.rodrigues',
@@ -138,7 +165,12 @@ export const managerUserData5: UserWithoutIdentityDocument = {
 
 export const managerUserData6: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/1704175571734114',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/1704175571734114',
+    },
+  },
   fullName: 'Flávia Callefo',
   email: 'flavia@email.com',
   username: 'flavia.callefo',
@@ -147,7 +179,12 @@ export const managerUserData6: UserWithoutIdentityDocument = {
 
 export const managerUserData7: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/4916914753471904',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/4916914753471904',
+    },
+  },
   fullName: 'Claudia Lage',
   email: 'claudia@email.com',
   username: 'claudia.lage',
@@ -156,7 +193,12 @@ export const managerUserData7: UserWithoutIdentityDocument = {
 
 export const managerUserData8: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'http://lattes.cnpq.br/123456789',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'http://lattes.cnpq.br/123456789',
+    },
+  },
   fullName: 'Dummy Manager',
   email: 'dummy-manager@email.com',
   username: 'dummy.manager',
@@ -165,7 +207,12 @@ export const managerUserData8: UserWithoutIdentityDocument = {
 
 export const contentLeaderUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'https://lattes.cnpq.br/3390986971402979',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'https://lattes.cnpq.br/3390986971402979',
+    },
+  },
   fullName: 'Danilo Albergaria',
   email: 'danilo@email.com',
   username: 'danilo.albergaria',
@@ -174,7 +221,12 @@ export const contentLeaderUserData1: UserWithoutIdentityDocument = {
 
 export const contentProducerUserData1: UserWithoutIdentityDocument = {
   ...partialUserData1,
-  linkLattes: 'https://lattes.cnpq.br/3390986971402979',
+  ResearcherProfile: {
+    create: {
+      ...partialResearcherProfileData,
+      linkLattes: 'https://lattes.cnpq.br/3390986971402979',
+    },
+  },
   fullName: 'Allber Ferreira',
   email: 'allber@email.com',
   username: 'allber.ferreira',

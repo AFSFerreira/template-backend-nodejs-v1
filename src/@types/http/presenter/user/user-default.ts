@@ -1,4 +1,5 @@
-import type { User } from '@prisma/generated/client'
+import type { UserWithDetailsDecrypted } from '@custom-types/validators/user-with-details-decrypted'
+import type { ResearcherProfile, User } from '@prisma/generated/client'
 import { educationLevelSchema } from '@lib/zod/utils/enums/education-level-enum-schema'
 import { identityTypeEnumSchema } from '@lib/zod/utils/enums/identity-type-enum-schema'
 import { occupationEnumSchema } from '@lib/zod/utils/enums/occupation-enum-schema'
@@ -11,7 +12,11 @@ import { nullableTextSchema } from '@lib/zod/utils/primitives/nullable-text-sche
 import { optionalNullableTextSchema } from '@lib/zod/utils/primitives/optional-nullable-text-schema'
 import z from 'zod'
 
-export interface UserDefaultPresenterInput extends User {}
+type UserDefaultPresenterInputFromAuthentication = User & {
+  ResearcherProfile?: ResearcherProfile | null
+}
+
+export type UserDefaultPresenterInput = UserWithDetailsDecrypted | UserDefaultPresenterInputFromAuthentication
 
 export const httpUserSchema = z.object({
   id: modelPublicIdSchema,

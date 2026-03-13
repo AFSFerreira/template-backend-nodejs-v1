@@ -9,6 +9,13 @@ export type CreateUserQuery = Omit<RegisterUserBodySchemaType, 'user' | 'address
     educationLevel: EducationLevelType
     profileImage: string
     occupation?: OccupationType
+    linkLattes?: string
+    linkGoogleScholar?: string
+    linkResearcherId?: string
+    orcidNumber?: string
+    departmentName?: string
+    institutionComplement?: string
+    publicInformation?: string
 
     identityType: IdentityType
     identityDocument: string

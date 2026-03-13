@@ -2,7 +2,11 @@ import type { Prisma } from '@prisma/generated/client'
 
 export const directorBoardWithUser = {
   include: {
-    User: true,
+    User: {
+      include: {
+        ResearcherProfile: true,
+      },
+    },
     DirectorPosition: true,
   },
 } as const satisfies Prisma.DirectorBoardDefaultArgs

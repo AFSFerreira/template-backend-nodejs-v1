@@ -13,10 +13,12 @@ export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPrese
   ) {}
 
   public toHTTP(input: UserDefaultPresenterInput): HTTPUser {
+    const profile = input.ResearcherProfile
+
     return {
       id: input.publicId,
       astrobiologyOrRelatedStartYear: input.astrobiologyOrRelatedStartYear,
-      departmentName: input.departmentName,
+      departmentName: profile?.departmentName ?? null,
       educationLevel: input.educationLevel,
       email: input.email,
       emailIsPublic: input.emailIsPublic,
@@ -26,14 +28,14 @@ export class UserDefaultPresenter implements IPresenterStrategy<UserDefaultPrese
         identityType: input.identityType,
         identityDocument: input.identityDocument,
       }),
-      institutionComplement: input.institutionComplement,
+      institutionComplement: profile?.institutionComplement ?? null,
       interestDescription: input.interestDescription,
-      linkGoogleScholar: input.linkGoogleScholar,
-      linkLattes: input.linkLattes,
-      linkResearcherId: input.linkResearcherId,
-      occupation: input.occupation,
-      orcidNumber: input.orcidNumber,
-      publicInformation: input.publicInformation,
+      linkGoogleScholar: profile?.linkGoogleScholar ?? null,
+      linkLattes: profile?.linkLattes ?? null,
+      linkResearcherId: profile?.linkResearcherId ?? null,
+      occupation: profile?.occupation ?? null,
+      orcidNumber: profile?.orcidNumber ?? null,
+      publicInformation: profile?.publicInformation ?? null,
       receiveReports: input.receiveReports,
       role: input.role,
       username: input.username,

@@ -25,6 +25,8 @@ export class UserExportMapperService {
   ) {}
 
   map(user: UserWithDetails, targetTimezone: string = SYSTEM_TIMEZONE) {
+    const profile = user.ResearcherProfile
+
     // Dados pessoais:
     const fullName = user.fullName
     const username = user.username
@@ -34,19 +36,19 @@ export class UserExportMapperService {
     const identityDocument = user.identityDocument
 
     // Dados profissionais/acadêmicos:
-    const institutionName = user.Institution?.name ?? ''
-    const departmentName = user.departmentName ?? ''
-    const occupation = mapOccupation(user.occupation)
+    const institutionName = profile?.Institution?.name ?? ''
+    const departmentName = profile?.departmentName ?? ''
+    const occupation = mapOccupation(profile?.occupation)
     const educationLevel = mapEducationLevel(user.educationLevel)
-    const activityAreaDescription = user.activityAreaDescription ?? ''
-    const subActivityAreaDescription = user.subActivityAreaDescription ?? ''
+    const activityAreaDescription = profile?.activityAreaDescription ?? ''
+    const subActivityAreaDescription = profile?.subActivityAreaDescription ?? ''
     const interestDescription = user.interestDescription
     const astrobiologyOrRelatedStartYear = user.astrobiologyOrRelatedStartYear
-    const mainAreaActivity = user.ActivityArea?.area ?? ''
+    const mainAreaActivity = profile?.ActivityArea?.area ?? ''
 
     // Dados de associação e preferências:
     const membershipStatus = mapMembershipStatus(user.membershipStatus)
-    const publicInformation = user.publicInformation
+    const publicInformation = profile?.publicInformation
     const emailIsPublic = booleanToPtLabel(user.emailIsPublic)
     const receiveReports = booleanToPtLabel(user.receiveReports)
 
@@ -66,29 +68,29 @@ export class UserExportMapperService {
     const complement = user.Address?.complement ?? ''
 
     // Curso:
-    const courseName = user.EnrolledCourse?.courseName ?? ''
-    const startGraduationDate = user.EnrolledCourse?.startGraduationDate
-      ? dayjs(user.EnrolledCourse.startGraduationDate).tz(targetTimezone).format('YYYY-MM')
+    const courseName = profile?.EnrolledCourse?.courseName ?? ''
+    const startGraduationDate = profile?.EnrolledCourse?.startGraduationDate
+      ? dayjs(profile.EnrolledCourse.startGraduationDate).tz(targetTimezone).format('YYYY-MM')
       : ''
-    const expectedGraduationDate = user.EnrolledCourse?.expectedGraduationDate
-      ? dayjs(user.EnrolledCourse.expectedGraduationDate).tz(targetTimezone).format('YYYY-MM')
+    const expectedGraduationDate = profile?.EnrolledCourse?.expectedGraduationDate
+      ? dayjs(profile.EnrolledCourse.expectedGraduationDate).tz(targetTimezone).format('YYYY-MM')
       : ''
-    const supervisorName = user.EnrolledCourse?.supervisorName ?? ''
-    const scholarshipHolder = user.EnrolledCourse?.scholarshipHolder ?? false
-    const sponsoringOrganization = user.EnrolledCourse?.sponsoringOrganization ?? ''
+    const supervisorName = profile?.EnrolledCourse?.supervisorName ?? ''
+    const scholarshipHolder = profile?.EnrolledCourse?.scholarshipHolder ?? false
+    const sponsoringOrganization = profile?.EnrolledCourse?.sponsoringOrganization ?? ''
 
     // Áreas de atuação:
-    const activityArea = user.ActivityArea?.area ?? ''
-    const subActivityArea = user.SubActivityArea?.area ?? ''
+    const activityArea = profile?.ActivityArea?.area ?? ''
+    const subActivityArea = profile?.SubActivityArea?.area ?? ''
 
     // Palavras-chave e publicações:
     const keywords =
-      user.Keyword?.map((k: Keyword) => k.value)
+      profile?.Keyword?.map((k: Keyword) => k.value)
         .filter(Boolean)
         .join('; ') ?? ''
 
     const publications =
-      user.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(' | ') ?? ''
+      profile?.AcademicPublication?.map((p) => `${p.title} (${p.publicationYear.toString()})`).join(' | ') ?? ''
 
     // Diretoria:
     const directorBoardProfileImage = user.DirectorBoard?.profileImage

@@ -165,8 +165,10 @@ export class PrismaActivityAreasRepository implements ActivityAreasRepository {
       type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
       AcademicPublication: {
         some: {
-          User: {
-            membershipStatus: MembershipStatusType.ACTIVE,
+          ResearcherProfile: {
+            User: {
+              membershipStatus: MembershipStatusType.ACTIVE,
+            },
           },
         },
       },

@@ -5,24 +5,72 @@ import { isUpdateUserHighLevelEducation } from '@utils/guards/is-update-user-hig
 import { isUpdateUserHighLevelStudentEducation } from '@utils/guards/is-update-user-high-level-student-education'
 
 export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUpdateInput {
-  let keywordsConnectOrCreateData: Prisma.UserUpdateInput['Keyword'] | undefined
+  let researcherProfileUpdateData: Prisma.UserUpdateInput['ResearcherProfile'] | undefined
 
-  let academicPublicationCreateData: Prisma.UserUpdateInput['AcademicPublication'] | undefined
+  const userData = data.user ?? {}
 
-  let enrolledCourseUpsertData: Prisma.UserUpdateInput['EnrolledCourse'] | undefined
-
-  let institutionConnectData: Prisma.UserUpdateInput['Institution'] | undefined
-
-  let activityAreaConnectData: Prisma.UserUpdateInput['ActivityArea'] | undefined
-
-  let subActivityAreaConnectData: Prisma.UserUpdateInput['SubActivityArea'] | undefined
+  const {
+    activityAreaDescription,
+    subActivityAreaDescription,
+    occupation,
+    linkLattes,
+    linkGoogleScholar,
+    linkResearcherId,
+    orcidNumber,
+    departmentName,
+    institutionComplement,
+    publicInformation,
+    ...filteredUserData
+  } = userData
 
   const isUserHighLevelEducation = isUpdateUserHighLevelEducation(data)
   const isUserHighLevelStudentEducation = isUpdateUserHighLevelStudentEducation(data)
 
   if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
+    const researcherProfileUpdatePayload: Prisma.ResearcherProfileUpdateWithoutUserInput = {}
+
+    if (activityAreaDescription) {
+      researcherProfileUpdatePayload.activityAreaDescription = activityAreaDescription
+    }
+
+    if (subActivityAreaDescription) {
+      researcherProfileUpdatePayload.subActivityAreaDescription = subActivityAreaDescription
+    }
+
+    if (occupation) {
+      researcherProfileUpdatePayload.occupation = occupation
+    }
+
+    if (linkLattes) {
+      researcherProfileUpdatePayload.linkLattes = linkLattes
+    }
+
+    if (linkGoogleScholar) {
+      researcherProfileUpdatePayload.linkGoogleScholar = linkGoogleScholar
+    }
+
+    if (linkResearcherId) {
+      researcherProfileUpdatePayload.linkResearcherId = linkResearcherId
+    }
+
+    if (orcidNumber) {
+      researcherProfileUpdatePayload.orcidNumber = orcidNumber
+    }
+
+    if (departmentName) {
+      researcherProfileUpdatePayload.departmentName = departmentName
+    }
+
+    if (institutionComplement) {
+      researcherProfileUpdatePayload.institutionComplement = institutionComplement
+    }
+
+    if (publicInformation) {
+      researcherProfileUpdatePayload.publicInformation = publicInformation
+    }
+
     if (isUserHighLevelStudentEducation) {
-      enrolledCourseUpsertData = data.enrolledCourse
+      researcherProfileUpdatePayload.EnrolledCourse = data.enrolledCourse
         ? {
             upsert: {
               create: {
@@ -35,16 +83,16 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
               },
             },
           }
-        : undefined
+        : researcherProfileUpdatePayload.EnrolledCourse
     }
 
-    keywordsConnectOrCreateData = data.keyword
+    researcherProfileUpdatePayload.Keyword = data.keyword
       ? {
           set: data.keyword.map((value) => ({ value })),
         }
-      : undefined
+      : researcherProfileUpdatePayload.Keyword
 
-    academicPublicationCreateData = data.academicPublication
+    researcherProfileUpdatePayload.AcademicPublication = data.academicPublication
       ? {
           deleteMany: {},
           create: data.academicPublication.map((academicPublication) => {
@@ -71,15 +119,15 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
             }
           }),
         }
-      : undefined
+      : researcherProfileUpdatePayload.AcademicPublication
 
-    institutionConnectData = data.institution
+    researcherProfileUpdatePayload.Institution = data.institution
       ? {
           connect: { name: data.institution.name },
         }
-      : undefined
+      : researcherProfileUpdatePayload.Institution
 
-    activityAreaConnectData = data.activityArea
+    researcherProfileUpdatePayload.ActivityArea = data.activityArea
       ? {
           connect: {
             type_area: {
@@ -88,9 +136,9 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
             },
           },
         }
-      : undefined
+      : researcherProfileUpdatePayload.ActivityArea
 
-    subActivityAreaConnectData = data.activityArea
+    researcherProfileUpdatePayload.SubActivityArea = data.activityArea
       ? {
           connect: {
             type_area: {
@@ -99,7 +147,13 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
             },
           },
         }
-      : undefined
+      : researcherProfileUpdatePayload.SubActivityArea
+
+    if (Object.keys(researcherProfileUpdatePayload).length > 0) {
+      researcherProfileUpdateData = {
+        update: researcherProfileUpdatePayload,
+      }
+    }
   }
 
   const addressUpsertData: Prisma.UserUpdateInput['Address'] = data.address
@@ -112,13 +166,8 @@ export function toPrismaUpdateUser(data: UpdateUserQuery['data']): Prisma.UserUp
     : undefined
 
   return {
-    ...data.user,
+    ...(Object.keys(filteredUserData).length > 0 ? filteredUserData : undefined),
     Address: addressUpsertData,
-    EnrolledCourse: enrolledCourseUpsertData,
-    Institution: institutionConnectData,
-    AcademicPublication: academicPublicationCreateData,
-    Keyword: keywordsConnectOrCreateData,
-    ActivityArea: activityAreaConnectData,
-    SubActivityArea: subActivityAreaConnectData,
+    ResearcherProfile: researcherProfileUpdateData,
   }
 }

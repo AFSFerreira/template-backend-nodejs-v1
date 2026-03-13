@@ -40,11 +40,13 @@ export class ListUsersDetailedQueryBuilder {
     }
 
     if (query.departmentName) {
-      this.conditions.push(Prisma.sql`u.department_name ILIKE ${`%${query.departmentName}%`}`)
+      this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rpf ON rpf.user_id = u.id`)
+      this.conditions.push(Prisma.sql`rpf.department_name ILIKE ${`%${query.departmentName}%`}`)
     }
 
     if (query.occupation) {
-      this.conditions.push(Prisma.sql`u.occupation = ${query.occupation}::"OccupationType"`)
+      this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rpo ON rpo.user_id = u.id`)
+      this.conditions.push(Prisma.sql`rpo.occupation = ${query.occupation}::"OccupationType"`)
     }
 
     if (query.educationLevel) {
@@ -86,7 +88,8 @@ export class ListUsersDetailedQueryBuilder {
   public withInstitutionFilter(institutionName?: string): this {
     if (!institutionName) return this
 
-    this.innerJoins.push(Prisma.sql`LEFT JOIN institutions fi ON fi.id = u.institution_id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rpi ON rpi.user_id = u.id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN institutions fi ON fi.id = rpi.institution_id`)
     this.conditions.push(Prisma.sql`fi.name ILIKE ${`%${institutionName}%`}`)
 
     return this
@@ -104,12 +107,14 @@ export class ListUsersDetailedQueryBuilder {
 
   public withActivityAreaFilters(mainActivityArea?: string, subActivityArea?: string): this {
     if (mainActivityArea) {
-      this.innerJoins.push(Prisma.sql`LEFT JOIN area_of_activity aoa ON aoa.id = u.activity_area_id`)
+      this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rpma ON rpma.user_id = u.id`)
+      this.innerJoins.push(Prisma.sql`LEFT JOIN area_of_activity aoa ON aoa.id = rpma.activity_area_id`)
       this.conditions.push(Prisma.sql`aoa.area ILIKE ${`%${mainActivityArea}%`}`)
     }
 
     if (subActivityArea) {
-      this.innerJoins.push(Prisma.sql`LEFT JOIN area_of_activity saoa ON saoa.id = u.sub_activity_area_id`)
+      this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rpsa ON rpsa.user_id = u.id`)
+      this.innerJoins.push(Prisma.sql`LEFT JOIN area_of_activity saoa ON saoa.id = rpsa.sub_activity_area_id`)
       this.conditions.push(Prisma.sql`saoa.area ILIKE ${`%${subActivityArea}%`}`)
     }
 
@@ -141,7 +146,8 @@ export class ListUsersDetailedQueryBuilder {
     const keywordsUnique = Array.from(new Set(keywords))
     const kwCount = keywordsUnique.length
 
-    this.innerJoins.push(Prisma.sql`LEFT JOIN "_KeywordToUser" ktu ON ktu."B" = u.id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rpk ON rpk.user_id = u.id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN "_KeywordToResearcherProfile" ktu ON ktu."B" = rpk.id`)
     this.innerJoins.push(Prisma.sql`LEFT JOIN keywords k ON k.id = ktu."A"`)
     this.havings.push(
       Prisma.sql`COUNT(DISTINCT k.value) FILTER (WHERE k.value ILIKE ANY(${keywordsUnique}::text[])) = ${kwCount}`,
@@ -200,7 +206,8 @@ export class ListUsersDetailedQueryBuilder {
         u.role, u.email_is_public, ast.name as state, i.name as institution_name
       FROM paginated_users pu
       JOIN users u ON u.id = pu.id
-      LEFT JOIN institutions i ON i.id = u.institution_id
+      LEFT JOIN researchers_profile rp ON rp.user_id = u.id
+      LEFT JOIN institutions i ON i.id = rp.institution_id
       LEFT JOIN addresses a ON a.user_id = u.id
       LEFT JOIN address_states ast ON a.state_id = ast.id
       ${orderByClause}

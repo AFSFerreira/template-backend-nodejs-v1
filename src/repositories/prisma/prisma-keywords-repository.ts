@@ -33,8 +33,8 @@ export class PrismaKeywordsRepository implements KeywordsRepository {
   async findManyByUserId(userId: number) {
     const keywords = await this.dbContext.client.keyword.findMany({
       where: {
-        User: {
-          some: { id: userId },
+        ResearcherProfile: {
+          some: { userId },
         },
       },
       orderBy: [{ value: 'asc' }, { id: 'asc' }],

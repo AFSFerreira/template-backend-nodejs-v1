@@ -3,7 +3,11 @@ import type { Prisma } from '@prisma/generated/client'
 export const userWithSimplifiedDetails = {
   include: {
     Address: true,
-    Institution: true,
+    ResearcherProfile: {
+      include: {
+        Institution: true,
+      },
+    },
   },
 } as const satisfies Prisma.UserDefaultArgs
 

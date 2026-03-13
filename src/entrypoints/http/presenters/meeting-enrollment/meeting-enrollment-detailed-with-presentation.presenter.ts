@@ -24,10 +24,10 @@ export class MeetingEnrollmentDetailedWithPresentationPresenter
             id: input.UserDetails.User.publicId,
             fullName: input.UserDetails.User.fullName,
             email: input.UserDetails.User.email,
-            departmentName: input.UserDetails.User.departmentName,
-            institutionName: input.UserDetails.User.Institution?.name,
+            departmentName: input.UserDetails.User.ResearcherProfile?.departmentName ?? null,
+            institutionName: input.UserDetails.User.ResearcherProfile?.Institution?.name,
             educationLevel: input.UserDetails.User.educationLevel,
-            occupation: input.UserDetails.User.occupation,
+            occupation: input.UserDetails.User.ResearcherProfile?.occupation,
             wantsNewsletter: input.UserDetails.User.wantsNewsletter,
           }
         : null,

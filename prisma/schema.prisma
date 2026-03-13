@@ -61,32 +61,24 @@ model User {
   username                       String               @unique
   birthdate                      DateTime             @db.Date
   profileImage                   String               @map("profile_image")
-  linkLattes                     String?              @map("link_lattes")
-  linkGoogleScholar              String?              @map("link_google_scholar")
-  linkResearcherId               String?              @map("link_researcher_id")
-  orcidNumber                    String?              @map("orcid_number")
   membershipStatus               MembershipStatusType @default(VERIFYING) @map("membership_status")
   role                           UserRoleType         @default(DEFAULT)
-  departmentName                 String?              @map("department_name")
   wantsNewsletter                Boolean              @map("wants_newsletter")
-  institutionComplement          String?              @map("institution_complement")
-  occupation                     OccupationType?
   educationLevel                 EducationLevelType   @map("education_level")
   emailIsPublic                  Boolean              @map("email_is_public")
   astrobiologyOrRelatedStartYear Int?                 @map("astrobiology_or_related_start_year")
   interestDescription            String               @map("interest_description")
   receiveReports                 Boolean              @map("receive_reports")
-  publicInformation              String?              @map("public_information")
-  activityAreaDescription        String?              @map("activity_area_description")
-  subActivityAreaDescription     String?              @map("sub_activity_area_description")
   email                          String
   secondaryEmail                 String?              @map("secondary_email")
   passwordHash                   String               @map("password_hash")
-  loginAttempts                  Int                  @default(0) @map("login_attempts")
-  lastLogin                      DateTime?            @map("last_login") @db.Timestamptz(3)
-  createdAt                      DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt                      DateTime             @updatedAt @map("updated_at") @db.Timestamptz(3)
-  deletedAt                      DateTime?            @map("deleted_at") @db.Timestamptz(3) // NOTE: Campo criado para facilitar futuras implementações de soft delete
+
+  loginAttempts Int       @default(0) @map("login_attempts")
+  lastLogin     DateTime? @map("last_login") @db.Timestamptz(3)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3) // NOTE: Campo criado para facilitar futuras implementações de soft delete
 
   identityType               IdentityType @map("identity_type")
   identityDocument           String       @map("identity_document_encrypted")
@@ -103,25 +95,14 @@ model User {
   fullNameTsvPt    Unsupported("tsvector")? @map("full_name_tsv_pt")
   fullNameUnaccent String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(full_name, ''::text) FROM 1 FOR 255))")) @map("full_name_unaccent")
 
-  institutionId Int?         @map("institution_id")
-  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  activityAreaId Int?          @map("activity_area_id")
-  ActivityArea   ActivityArea? @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  subActivityAreaId Int?          @map("sub_activity_area_id")
-  SubActivityArea   ActivityArea? @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  AcademicPublication   AcademicPublication[]   @relation()
   Address               Address?                @relation()
   AuthenticationAudit   AuthenticationAudit[]   @relation()
   Blog                  Blog[]                  @relation()
   DirectorBoard         DirectorBoard?          @relation()
-  EnrolledCourse        EnrolledCourse?         @relation()
   UserMeetingEnrollment UserMeetingEnrollment[] @relation()
-  Keyword               Keyword[]               @relation()
   UserActionAuditActor  UserActionAudit[]       @relation("audit_actor")
   UserActionAuditTarget UserActionAudit[]       @relation("audit_target")
+  ResearcherProfile     ResearcherProfile?      @relation()
 
   @@unique([email], where: raw("deleted_at IS NULL"))
   @@unique([identityType, identityDocumentBlindIndex])
@@ -133,10 +114,43 @@ model User {
   @@index([role])
   @@index([fullNameTsvPt], map: "idx_users_full_name_tsv_pt", type: Gin)
   @@index([fullNameUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_users_fullname_trgm_gin", type: Gin)
+  @@map("users")
+}
+
+model ResearcherProfile {
+  id                         Int            @id @default(autoincrement())
+  publicInformation          String?        @map("public_information")
+  activityAreaDescription    String?        @map("activity_area_description")
+  subActivityAreaDescription String?        @map("sub_activity_area_description")
+  occupation                 OccupationType
+  linkLattes                 String?        @map("link_lattes")
+  linkGoogleScholar          String?        @map("link_google_scholar")
+  linkResearcherId           String?        @map("link_researcher_id")
+  orcidNumber                String?        @map("orcid_number")
+  departmentName             String         @map("department_name")
+  institutionComplement      String?        @map("institution_complement")
+
+  institutionId Int?         @map("institution_id")
+  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  activityAreaId Int          @map("activity_area_id")
+  ActivityArea   ActivityArea @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  subActivityAreaId Int          @map("sub_activity_area_id")
+  SubActivityArea   ActivityArea @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+
+  userId Int  @unique @map("user_id")
+  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  AcademicPublication AcademicPublication[] @relation()
+  EnrolledCourse      EnrolledCourse?       @relation()
+  Keyword             Keyword[]             @relation()
+
+  @@index([userId])
   @@index([institutionId])
   @@index([activityAreaId])
   @@index([subActivityAreaId])
-  @@map("users")
+  @@map("researchers_profile")
 }
 
 model Address {
@@ -194,10 +208,10 @@ model EnrolledCourse {
   sponsoringOrganization String?   @map("sponsoring_organization")
   createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
 
-  userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  profileId         Int               @unique @map("user_id")
+  ResearcherProfile ResearcherProfile @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index([userId])
+  @@index([profileId])
   @@map("enrolled_courses")
 }
 
@@ -218,10 +232,10 @@ model AcademicPublication {
   activityAreaId Int          @map("activity_area_id")
   ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
-  userId Int  @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  profileId         Int               @map("user_id")
+  ResearcherProfile ResearcherProfile @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
-  @@index([userId])
+  @@index([profileId])
   @@index([createdAt])
   @@index([activityAreaId])
   @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_academic_publications_title_trgm_gin", type: Gin)
@@ -247,7 +261,7 @@ model Institution {
   name      String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
-  User User[] @relation()
+  ResearcherProfile ResearcherProfile[] @relation()
 
   @@index([name(ops: raw("gin_trgm_ops"))], map: "idx_institutions_name_trgm_gin", type: Gin)
   @@map("institutions")
@@ -260,8 +274,8 @@ model ActivityArea {
   createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
 
   AcademicPublication AcademicPublication[] @relation()
-  UserActivityArea    User[]                @relation("activity_area")
-  UserSubActivityArea User[]                @relation("sub_activity_area")
+  UserActivityArea    ResearcherProfile[]   @relation("activity_area")
+  UserSubActivityArea ResearcherProfile[]   @relation("sub_activity_area")
   BlogSubcategory     Blog[]                @relation()
 
   @@unique([type, area])
@@ -273,7 +287,7 @@ model Keyword {
   value     String   @unique
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
 
-  User User[] @relation()
+  ResearcherProfile ResearcherProfile[] @relation()
 
   @@map("keywords")
 }
@@ -499,9 +513,9 @@ model Newsletter {
   newsletterTemplateId Int?                @map("newsletter_template_id") // NOTE: Será nulo apenas quando 'format' for 'HTML_FILE'. Este campo é obrigatório quando 'format' for 'PROSEMIRROR'
   NewsletterTemplate   NewsletterTemplate? @relation(fields: [newsletterTemplateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
 
+  @@unique([editionNumber, volume])
   @@index([createdAt])
   @@index([newsletterTemplateId], where: raw("newsletter_template_id IS NOT NULL"))
-  @@unique([editionNumber, volume])
   @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
   @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
   @@index([volume(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_volume_trgm_gin", type: Gin)

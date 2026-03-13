@@ -37,7 +37,8 @@ export class ListUsersSimplifiedQueryBuilder {
   public withInstitution(institutionName?: string): this {
     if (!institutionName) return this
 
-    this.innerJoins.push(Prisma.sql`LEFT JOIN institutions i ON i.id = u.institution_id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN researchers_profile rp ON rp.user_id = u.id`)
+    this.innerJoins.push(Prisma.sql`LEFT JOIN institutions i ON i.id = rp.institution_id`)
     this.conditions.push(Prisma.sql`i.name ILIKE ${institutionName}`)
 
     return this
@@ -99,7 +100,8 @@ export class ListUsersSimplifiedQueryBuilder {
         i.name as institution_name
       FROM paginated_users pu
       JOIN users u ON u.id = pu.id
-      LEFT JOIN institutions i ON i.id = u.institution_id
+      LEFT JOIN researchers_profile rp ON rp.user_id = u.id
+      LEFT JOIN institutions i ON i.id = rp.institution_id
       LEFT JOIN addresses a ON a.user_id = u.id
       LEFT JOIN address_states ast ON a.state_id = ast.id
       ${orderByClause}

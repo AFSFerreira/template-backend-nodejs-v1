@@ -5,22 +5,28 @@ import { isRegisterUserHighLevelEducation } from '@utils/guards/is-register-user
 import { isRegisterUserHighLevelStudentEducation } from '@utils/guards/is-register-user-high-level-student-education'
 
 export function toPrismaCreateUser(data: CreateUserQuery): Prisma.UserCreateInput {
-  let keywordsConnectOrCreateData: Prisma.UserCreateInput['Keyword'] | undefined
+  let researcherProfileCreateData: Prisma.UserCreateInput['ResearcherProfile'] | undefined
 
-  let academicPublicationCreateData: Prisma.UserCreateInput['AcademicPublication'] | undefined
-
-  let enrolledCourseCreateData: Prisma.UserCreateInput['EnrolledCourse'] | undefined
-
-  let institutionConnectOrCreateData: Prisma.UserCreateInput['Institution'] | undefined
-
-  let activityAreaConnectData: Prisma.UserCreateInput['ActivityArea'] | undefined
-
-  let subActivityAreaConnectData: Prisma.UserCreateInput['SubActivityArea'] | undefined
+  const {
+    activityAreaDescription,
+    subActivityAreaDescription,
+    occupation,
+    linkLattes,
+    linkGoogleScholar,
+    linkResearcherId,
+    orcidNumber,
+    departmentName,
+    institutionComplement,
+    publicInformation,
+    ...filteredUserData
+  } = data.user
 
   const isUserHighLevelEducation = isRegisterUserHighLevelEducation(data)
   const isUserHighLevelStudentEducation = isRegisterUserHighLevelStudentEducation(data)
 
   if (isUserHighLevelEducation || isUserHighLevelStudentEducation) {
+    let enrolledCourseCreateData: Prisma.ResearcherProfileCreateWithoutUserInput['EnrolledCourse'] | undefined
+
     if (isUserHighLevelStudentEducation) {
       enrolledCourseCreateData = {
         create: {
@@ -32,14 +38,14 @@ export function toPrismaCreateUser(data: CreateUserQuery): Prisma.UserCreateInpu
       }
     }
 
-    keywordsConnectOrCreateData = {
+    const keywordsConnectOrCreateData: Prisma.ResearcherProfileCreateWithoutUserInput['Keyword'] = {
       connectOrCreate: data.keyword.map((value: string) => ({
         where: { value },
         create: { value },
       })),
     }
 
-    academicPublicationCreateData = {
+    const academicPublicationCreateData: Prisma.ResearcherProfileCreateWithoutUserInput['AcademicPublication'] = {
       create: data.academicPublication.map((academicPublication) => {
         const { area, authors, ...filteredAcademicPublicationData } = academicPublication
 
@@ -65,14 +71,14 @@ export function toPrismaCreateUser(data: CreateUserQuery): Prisma.UserCreateInpu
       }),
     }
 
-    institutionConnectOrCreateData = {
+    const institutionConnectOrCreateData: Prisma.ResearcherProfileCreateWithoutUserInput['Institution'] = {
       connectOrCreate: {
         create: { name: data.institution.name },
         where: { name: data.institution.name },
       },
     }
 
-    activityAreaConnectData = {
+    const activityAreaConnectData: Prisma.ResearcherProfileCreateWithoutUserInput['ActivityArea'] = {
       connect: {
         type_area: {
           area: data.activityArea.mainActivityArea,
@@ -81,13 +87,36 @@ export function toPrismaCreateUser(data: CreateUserQuery): Prisma.UserCreateInpu
       },
     }
 
-    subActivityAreaConnectData = {
+    const subActivityAreaConnectData: Prisma.ResearcherProfileCreateWithoutUserInput['SubActivityArea'] = {
       connect: {
         type_area: {
           area: data.activityArea.subActivityArea,
           type: ActivityAreaType.SUB_AREA_OF_ACTIVITY,
         },
       },
+    }
+
+    if (occupation && departmentName) {
+      researcherProfileCreateData = {
+        create: {
+          activityAreaDescription,
+          subActivityAreaDescription,
+          occupation,
+          linkLattes,
+          linkGoogleScholar,
+          linkResearcherId,
+          orcidNumber,
+          departmentName,
+          institutionComplement,
+          publicInformation,
+          Institution: institutionConnectOrCreateData,
+          ActivityArea: activityAreaConnectData,
+          SubActivityArea: subActivityAreaConnectData,
+          Keyword: keywordsConnectOrCreateData,
+          AcademicPublication: academicPublicationCreateData,
+          EnrolledCourse: enrolledCourseCreateData,
+        },
+      }
     }
   }
 
@@ -104,16 +133,11 @@ export function toPrismaCreateUser(data: CreateUserQuery): Prisma.UserCreateInpu
   }
 
   return {
-    ...data.user,
-    birthdate: new Date(data.user.birthdate),
-    emailIsPublic: data.user.emailIsPublic ?? false,
-    receiveReports: data.user.receiveReports ?? false,
+    ...filteredUserData,
+    birthdate: new Date(filteredUserData.birthdate),
+    emailIsPublic: filteredUserData.emailIsPublic ?? false,
+    receiveReports: filteredUserData.receiveReports ?? false,
     Address: addressCreateData,
-    EnrolledCourse: enrolledCourseCreateData,
-    Institution: institutionConnectOrCreateData,
-    AcademicPublication: academicPublicationCreateData,
-    Keyword: keywordsConnectOrCreateData,
-    ActivityArea: activityAreaConnectData,
-    SubActivityArea: subActivityAreaConnectData,
+    ResearcherProfile: researcherProfileCreateData,
   }
 }

@@ -99,12 +99,14 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
 
   async listAllInstitutionsWithUsersCount(query: ListAllInstitutionsWithUsersQuery) {
     const where: Prisma.InstitutionWhereInput = {
-      User: {
+      ResearcherProfile: {
         some: {
-          role: {
-            notIn: [UserRoleType.ADMIN, UserRoleType.MANAGER],
+          User: {
+            role: {
+              notIn: [UserRoleType.ADMIN, UserRoleType.MANAGER],
+            },
+            membershipStatus: MembershipStatusType.ACTIVE,
           },
-          membershipStatus: MembershipStatusType.ACTIVE,
         },
       },
     }
@@ -113,7 +115,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
       ...(query?.orderBy?.usersCountOrder
         ? [
             {
-              User: { _count: query.orderBy.usersCountOrder },
+              ResearcherProfile: { _count: query.orderBy.usersCountOrder },
             },
           ]
         : []),
@@ -122,7 +124,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
 
     const include: Prisma.InstitutionInclude = {
       _count: {
-        select: { User: true },
+        select: { ResearcherProfile: true },
       },
     }
 
@@ -147,7 +149,7 @@ export class PrismaInstitutionsRepository implements InstitutionsRepository {
     return {
       data: institutions.map((institution) => ({
         name: institution.name,
-        usersCount: institution._count.User,
+        usersCount: institution._count.ResearcherProfile,
       })),
       meta: {
         totalItems,

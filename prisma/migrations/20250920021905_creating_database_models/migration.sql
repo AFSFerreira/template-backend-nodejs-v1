@@ -47,7 +47,7 @@ CREATE TABLE "public"."authentication_audits" (
 -- CreateTable
 CREATE TABLE "public"."user_action_audits" (
     "id" SERIAL NOT NULL,
-    "action_type" "SystemActionType" NOT NULL,
+    "action_type" "public"."SystemActionType" NOT NULL,
     "ip_address" INET,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "actor_id" INTEGER,
@@ -64,16 +64,9 @@ CREATE TABLE "public"."users" (
     "username" TEXT NOT NULL,
     "birthdate" DATE NOT NULL,
     "profile_image" TEXT NOT NULL,
-    "link_lattes" TEXT,
-    "link_google_scholar" TEXT,
-    "link_researcher_id" TEXT,
-    "orcid_number" TEXT,
     "membership_status" "public"."MembershipStatusType" NOT NULL DEFAULT 'VERIFYING',
     "role" "public"."UserRoleType" NOT NULL DEFAULT 'DEFAULT',
-    "department_name" TEXT,
     "wants_newsletter" BOOLEAN NOT NULL,
-    "institution_complement" TEXT,
-    "occupation" "public"."OccupationType",
     "education_level" "public"."EducationLevelType" NOT NULL,
     "identity_type" "public"."IdentityType" NOT NULL,
     "identity_document_encrypted" TEXT NOT NULL,
@@ -82,9 +75,6 @@ CREATE TABLE "public"."users" (
     "astrobiology_or_related_start_year" INTEGER,
     "interest_description" TEXT NOT NULL,
     "receive_reports" BOOLEAN NOT NULL,
-    "public_information" TEXT,
-    "activity_area_description" TEXT,
-    "sub_activity_area_description" TEXT,
     "email" TEXT NOT NULL,
     "secondary_email" TEXT,
     "password_hash" TEXT NOT NULL,
@@ -94,15 +84,34 @@ CREATE TABLE "public"."users" (
     "recovery_password_token_expires_at" TIMESTAMPTZ(3),
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ(3) NOT NULL,
-    "activity_area_id" INTEGER,
-    "sub_activity_area_id" INTEGER,
-    "institution_id" INTEGER,
+    "deleted_at" TIMESTAMPTZ(3),
     "email_verification_token" TEXT,
     "new_email" TEXT,
     "email_verification_token_expires_at" TIMESTAMPTZ(3),
     "email_verified_at" TIMESTAMPTZ(3),
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."researchers_profile" (
+    "id" SERIAL NOT NULL,
+    "public_information" TEXT,
+    "activity_area_description" TEXT,
+    "sub_activity_area_description" TEXT,
+    "occupation" "public"."OccupationType" NOT NULL,
+    "link_lattes" TEXT,
+    "link_google_scholar" TEXT,
+    "link_researcher_id" TEXT,
+    "orcid_number" TEXT,
+    "department_name" TEXT NOT NULL,
+    "institution_complement" TEXT,
+    "institution_id" INTEGER,
+    "activity_area_id" INTEGER NOT NULL,
+    "sub_activity_area_id" INTEGER NOT NULL,
+    "user_id" INTEGER NOT NULL,
+
+    CONSTRAINT "researchers_profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -317,7 +326,7 @@ CREATE TABLE "public"."meeting_date" (
 CREATE TABLE "public"."blogs" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "editorial_status" "EditorialStatusType" NOT NULL DEFAULT 'PENDING_APPROVAL',
+    "editorial_status" "public"."EditorialStatusType" NOT NULL DEFAULT 'PENDING_APPROVAL',
     "title" TEXT NOT NULL,
     "banner_image" TEXT NOT NULL,
     "author_name" TEXT NOT NULL,
@@ -335,7 +344,7 @@ CREATE TABLE "public"."blogs" (
 CREATE TABLE "public"."newsletters" (
     "id" SERIAL NOT NULL,
     "public_id" TEXT NOT NULL,
-    "format" "NewsletterFormatType" NOT NULL,
+    "format" "public"."NewsletterFormatType" NOT NULL,
     "file_content" TEXT,
     "newsletter_template_id" INTEGER,
     "prose_content" JSON,
@@ -400,8 +409,8 @@ CREATE TABLE "public"."guest_meeting_enrollments" (
     "email" TEXT NOT NULL,
     "institution_name" TEXT NOT NULL,
     "department_name" TEXT NOT NULL,
-    "occupation" "OccupationType" NOT NULL,
-    "education_level" "EducationLevelType" NOT NULL,
+    "occupation" "public"."OccupationType" NOT NULL,
+    "education_level" "public"."EducationLevelType" NOT NULL,
     "wants_newsletter" BOOLEAN NOT NULL,
     "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "meeting_enrollment_id" INTEGER NOT NULL,
@@ -428,11 +437,11 @@ CREATE TABLE "public"."_ActivityAreaToBlog" (
 );
 
 -- CreateTable
-CREATE TABLE "public"."_KeywordToUser" (
+CREATE TABLE "public"."_KeywordToResearcherProfile" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL,
 
-    CONSTRAINT "_KeywordToUser_AB_pkey" PRIMARY KEY ("A","B")
+    CONSTRAINT "_KeywordToResearcherProfile_AB_pkey" PRIMARY KEY ("A","B")
 );
 
 -- CreateIndex
@@ -451,7 +460,7 @@ CREATE UNIQUE INDEX "users_public_id_key" ON "public"."users"("public_id");
 CREATE UNIQUE INDEX "users_username_key" ON "public"."users"("username");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_email_key" ON "public"."users"("email");
+CREATE UNIQUE INDEX "users_email_key" ON "public"."users"("email") WHERE (deleted_at IS NULL);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_recovery_password_token_key" ON "public"."users"("recovery_password_token") WHERE (recovery_password_token IS NOT NULL);
@@ -472,10 +481,13 @@ CREATE UNIQUE INDEX "address_states_name_country_id_key" ON "public"."address_st
 CREATE UNIQUE INDEX "address_countries_name_key" ON "public"."address_countries"("name");
 
 -- CreateIndex
-CREATE INDEX "address_countries_name_idx" ON "public"."address_countries"("name");
+CREATE INDEX "addresses_state_id_idx" ON "public"."addresses"("state_id");
 
 -- CreateIndex
-CREATE INDEX "addresses_state_id_idx" ON "public"."addresses"("state_id");
+CREATE INDEX "authentication_audits_user_id_status_created_at_idx" ON "public"."authentication_audits"("user_id", "status", "created_at");
+
+-- CreateIndex
+CREATE INDEX "addresses_user_id_idx" ON "public"."addresses"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses"("user_id");
@@ -484,7 +496,28 @@ CREATE UNIQUE INDEX "enrolled_courses_user_id_key" ON "public"."enrolled_courses
 CREATE INDEX "enrolled_courses_user_id_idx" ON "public"."enrolled_courses"("user_id");
 
 -- CreateIndex
+CREATE INDEX "academic_publications_created_at_idx" ON "public"."academic_publications"("created_at");
+
+-- CreateIndex
+CREATE INDEX "academic_publications_activity_area_id_idx" ON "public"."academic_publications"("activity_area_id");
+
+-- CreateIndex
 CREATE INDEX "academic_publications_user_id_idx" ON "public"."academic_publications"("user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "researchers_profile_user_id_key" ON "public"."researchers_profile"("user_id");
+
+-- CreateIndex
+CREATE INDEX "researchers_profile_user_id_idx" ON "public"."researchers_profile"("user_id");
+
+-- CreateIndex
+CREATE INDEX "researchers_profile_institution_id_idx" ON "public"."researchers_profile"("institution_id");
+
+-- CreateIndex
+CREATE INDEX "researchers_profile_activity_area_id_idx" ON "public"."researchers_profile"("activity_area_id");
+
+-- CreateIndex
+CREATE INDEX "researchers_profile_sub_activity_area_id_idx" ON "public"."researchers_profile"("sub_activity_area_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "academic_publication_authors_public_id_key" ON "public"."academic_publication_authors"("public_id");
@@ -523,6 +556,9 @@ CREATE UNIQUE INDEX "director_positions_position_key" ON "public"."director_posi
 CREATE UNIQUE INDEX "director_positions_public_id_key" ON "public"."director_positions"("public_id");
 
 -- CreateIndex
+CREATE INDEX "director_positions_precedence_idx" ON "public"."director_positions"("precedence");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "meeting_payment_information_meeting_id_key" ON "public"."meeting_payment_information"("meeting_id");
 
 -- CreateIndex
@@ -541,7 +577,22 @@ CREATE INDEX "meeting_date_meeting_id_idx" ON "public"."meeting_date"("meeting_i
 CREATE INDEX "meeting_enrollments_meeting_id_idx" ON "public"."meeting_enrollments"("meeting_id");
 
 -- CreateIndex
+CREATE INDEX "meeting_enrollments_created_at_idx" ON "public"."meeting_enrollments"("created_at");
+
+-- CreateIndex
+CREATE INDEX "meeting_presentation_authors_presentation_id_idx" ON "public"."meeting_presentation_authors"("presentation_id");
+
+-- CreateIndex
+CREATE INDEX "meeting_presentation_affiliations_presentation_id_idx" ON "public"."meeting_presentation_affiliations"("presentation_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "blogs_public_id_key" ON "public"."blogs"("public_id");
+
+-- CreateIndex
+CREATE INDEX "blogs_user_id_idx" ON "public"."blogs"("user_id");
+
+-- CreateIndex
+CREATE INDEX "blogs_created_at_idx" ON "public"."blogs"("created_at");
 
 -- CreateIndex
 CREATE INDEX "blogs_editorial_status_idx" ON "public"."blogs"("editorial_status");
@@ -554,6 +605,12 @@ CREATE UNIQUE INDEX "newsletters_sequence_number_key" ON "public"."newsletters"(
 
 -- CreateIndex
 CREATE UNIQUE INDEX "newsletters_edition_number_volume_key" ON "public"."newsletters"("edition_number", "volume");
+
+-- CreateIndex
+CREATE INDEX "newsletters_created_at_idx" ON "public"."newsletters"("created_at");
+
+-- CreateIndex
+CREATE INDEX "newsletters_newsletter_template_id_idx" ON "public"."newsletters"("newsletter_template_id") WHERE (newsletter_template_id IS NOT NULL);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "newsletter_templates_public_id_key" ON "public"."newsletter_templates"("public_id");
@@ -592,34 +649,40 @@ CREATE UNIQUE INDEX "users_identity_type_identity_document_blind_index_key" ON "
 CREATE UNIQUE INDEX "guest_meeting_enrollments_meeting_enrollment_id_key" ON "public"."guest_meeting_enrollments"("meeting_enrollment_id");
 
 -- CreateIndex
+CREATE INDEX "guest_meeting_enrollments_meeting_enrollment_id_idx" ON "public"."guest_meeting_enrollments"("meeting_enrollment_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "meeting_presentations_meeting_enrollment_id_key" ON "public"."meeting_presentations"("meeting_enrollment_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "meeting_enrollments_public_id_key" ON "public"."meeting_enrollments"("public_id");
 
 -- CreateIndex
-CREATE INDEX "_KeywordToUser_B_index" ON "public"."_KeywordToUser"("B");
+CREATE INDEX "_KeywordToResearcherProfile_B_index" ON "public"."_KeywordToResearcherProfile"("B");
 
 -- CreateIndex
 CREATE INDEX "_ActivityAreaToBlog_B_index" ON "public"."_ActivityAreaToBlog"("B");
 
 -- AddForeignKey
-ALTER TABLE "public"."user_action_audits" ADD CONSTRAINT "user_action_audits_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."user_action_audits" ADD CONSTRAINT "user_action_audits_actor_id_fkey" FOREIGN KEY ("actor_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."user_action_audits" ADD CONSTRAINT "user_action_audits_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."user_action_audits" ADD CONSTRAINT "user_action_audits_target_id_fkey" FOREIGN KEY ("target_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."authentication_audits" ADD CONSTRAINT "authentication_audits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."researchers_profile" ADD CONSTRAINT "researchers_profile_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."researchers_profile" ADD CONSTRAINT "researchers_profile_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."users" ADD CONSTRAINT "users_institution_id_fkey" FOREIGN KEY ("institution_id") REFERENCES "public"."institutions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "public"."researchers_profile" ADD CONSTRAINT "researchers_profile_sub_activity_area_id_fkey" FOREIGN KEY ("sub_activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "public"."researchers_profile" ADD CONSTRAINT "researchers_profile_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -631,13 +694,13 @@ ALTER TABLE "public"."addresses" ADD CONSTRAINT "addresses_state_id_fkey" FOREIG
 ALTER TABLE "public"."address_states" ADD CONSTRAINT "address_states_country_id_fkey" FOREIGN KEY ("country_id") REFERENCES "public"."address_countries"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."enrolled_courses" ADD CONSTRAINT "enrolled_courses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."enrolled_courses" ADD CONSTRAINT "enrolled_courses_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."researchers_profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."academic_publications" ADD CONSTRAINT "academic_publications_activity_area_id_fkey" FOREIGN KEY ("activity_area_id") REFERENCES "public"."area_of_activity"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."academic_publications" ADD CONSTRAINT "academic_publications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."academic_publications" ADD CONSTRAINT "academic_publications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "public"."researchers_profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."academic_publication_authors" ADD CONSTRAINT "academic_publication_authors_academic_publication_id_fkey" FOREIGN KEY ("academic_publication_id") REFERENCES "public"."academic_publications"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -679,13 +742,13 @@ ALTER TABLE "public"."guest_meeting_enrollments" ADD CONSTRAINT "guest_meeting_e
 ALTER TABLE "public"."meeting_presentations" ADD CONSTRAINT "meeting_presentations_meeting_enrollment_id_fkey" FOREIGN KEY ("meeting_enrollment_id") REFERENCES "public"."meeting_enrollments"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."newsletters" ADD CONSTRAINT "newsletters_newsletter_template_id_fkey" FOREIGN KEY ("newsletter_template_id") REFERENCES "newsletter_templates"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
+ALTER TABLE "public"."newsletters" ADD CONSTRAINT "newsletters_newsletter_template_id_fkey" FOREIGN KEY ("newsletter_template_id") REFERENCES "public"."newsletter_templates"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."_KeywordToResearcherProfile" ADD CONSTRAINT "_KeywordToResearcherProfile_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."keywords"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "public"."_KeywordToUser" ADD CONSTRAINT "_KeywordToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "public"."_KeywordToResearcherProfile" ADD CONSTRAINT "_KeywordToResearcherProfile_B_fkey" FOREIGN KEY ("B") REFERENCES "public"."researchers_profile"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."_ActivityAreaToBlog" ADD CONSTRAINT "_ActivityAreaToBlog_A_fkey" FOREIGN KEY ("A") REFERENCES "public"."area_of_activity"("id") ON DELETE CASCADE ON UPDATE CASCADE;

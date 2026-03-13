@@ -2,7 +2,7 @@ import type { Prisma } from '@prisma/generated/client'
 
 export const academicPublicationWithDetails = {
   include: {
-    User: true,
+    ResearcherProfile: true,
     ActivityArea: true,
     AcademicPublicationAuthors: true,
   },
