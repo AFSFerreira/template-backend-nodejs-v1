@@ -36,10 +36,10 @@
     "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
     "SSH_AUTH_SOCK": "/tmp/vscode-ssh-auth.sock",
 
-    // Variáveis Personalizadas:
-    "SSH_KEY_NAME": "id_ed25519",  // NOTE: Troque pelo nome da sua chave SSH específica
-    "GITHUB_USERNAME": "email",    // NOTE: Troque pelo seu nome de usuário no github
-    "GITHUB_EMAIL": "username"     // NOTE: Troque pelo seu email primário do github
+    // Variáveis Personalizadas :
+    "SSH_KEY_NAME": "chave_wsl",  // NOTE: Troque pelo nome da sua chave SSH específica
+    "GITHUB_USERNAME": "AFSFerreira",    // NOTE: Troque pelo seu nome de usuário no github
+    "GITHUB_EMAIL": "alferreira@id.uff.br"     // NOTE: Troque pelo seu email primário do github
   },
 
   "mounts": [
