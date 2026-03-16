@@ -1,4 +1,20 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - .:/workspace:cached
+      - node_modules:/workspace/node_modules
+      - pnpm_cache:/root/.local/share/pnpm/store
+    environment:
+      - PNPM_HOME=/root/.local/share/pnpm
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    command: sleep infinity
+
   postgres:
     image: postgres:14.19-alpine3.21@sha256:5078d8d88aa34e961582822feb73eef6b1b1f45965debdadab848bd254c2d336
     shm_size: 128mb
@@ -106,6 +122,10 @@ services:
   #     start_period: 10s
 
 volumes:
+  node_modules:
+    driver: local
+  pnpm_cache:
+    driver: local
   postgres_data:
     driver: local
   redis_data:

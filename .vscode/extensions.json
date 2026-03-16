@@ -14,5 +14,7 @@
     "mylesmurphy.prettify-ts",
     "yoavbls.pretty-ts-errors",
     "inferrinizzard.prettier-sql-vscode",
+    "biomejs.biome",
+    "hverlin.mise-vscode",
   ]
 }
