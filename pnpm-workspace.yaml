@@ -1,3 +1,6 @@
+ignoredBuiltDependencies:
+  - argon2
+
 onlyBuiltDependencies:
   - '@prisma/engines'
   - '@sentry-internal/node-cpu-profiler'

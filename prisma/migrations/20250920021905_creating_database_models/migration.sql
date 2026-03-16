@@ -568,6 +568,9 @@ CREATE INDEX "meeting_payment_information_meeting_id_idx" ON "public"."meeting_p
 CREATE UNIQUE INDEX "meetings_public_id_key" ON "public"."meetings"("public_id");
 
 -- CreateIndex
+CREATE INDEX "meetings_created_at_idx" ON "public"."meetings"("created_at");
+
+-- CreateIndex
 CREATE INDEX "meetings_last_date_idx" ON "public"."meetings"("last_date");
 
 -- CreateIndex

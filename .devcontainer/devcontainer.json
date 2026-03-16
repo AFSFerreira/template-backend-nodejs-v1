@@ -1,0 +1,49 @@
+{
+  "name": "Ambiente de Desenvolvimento",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "api",
+  "workspaceFolder": "/workspace",
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true
+      },
+      "extensions": [
+        "prisma.prisma",
+        "mikestead.dotenv",
+        "usernamehw.errorlens",
+        "dbaeumer.vscode-eslint",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-portuguese-brazilian",
+        "jeff-hykin.better-dockerfile-syntax",
+        "pkief.material-icon-theme",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "rvest.vs-code-prettier-eslint",
+        "mylesmurphy.prettify-ts",
+        "yoavbls.pretty-ts-errors",
+        "inferrinizzard.prettier-sql-vscode",
+        "biomejs.biome",
+        "hverlin.mise-vscode"
+      ]
+    }
+  },
+
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+    "GITHUB_USERNAME": "${localEnv:MY_GIT_USER}",
+    "GITHUB_EMAIL": "${localEnv:MY_GIT_EMAIL}"
+  },
+
+  // NOTE: Substitua "<NOME_DA_CHAVE_SSH>" pelo nome da sua chave SSH:
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh/${localEnv:MY_SSH_KEY_NAME}.pub,target=/root/.ssh/signing_key.pub,type=bind,readonly"
+  ],
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "remoteUser": "root"
+}
