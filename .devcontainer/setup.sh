@@ -12,9 +12,5 @@ echo "🔐 Configurando Git Identity..."
 git config --global user.signingkey /root/.ssh/signing_key.pub
 git config --global gpg.format ssh
 git config --global commit.gpgsign true
-
-# NOTE: Substitua pelo seu email primário do Github:
-git config --global user.email "<EMAIL>"
-
-# NOTE: Substitua pelo seu username do Github:
-git config --global user.name "<USERNAME>"
+git config --global user.email "$MY_GIT_USER"
+git config --global user.name "$MY_GIT_EMAIL"

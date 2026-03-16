@@ -33,12 +33,14 @@
 
   "containerEnv": {
     "NODE_ENV": "development",
-    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
+    "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+    "GITHUB_USERNAME": "${localEnv:MY_GIT_USER}",
+    "GITHUB_EMAIL": "${localEnv:MY_GIT_EMAIL}"
   },
 
   // NOTE: Substitua "<NOME_DA_CHAVE_SSH>" pelo nome da sua chave SSH:
   "mounts": [
-    "source=${localEnv:HOME}/.ssh/<NOME_DA_CHAVE_SSH>.pub,target=/root/.ssh/signing_key.pub,type=bind,readonly"
+    "source=${localEnv:HOME}/.ssh/${localEnv:MY_SSH_KEY_NAME}.pub,target=/root/.ssh/signing_key.pub,type=bind,readonly"
   ],
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
