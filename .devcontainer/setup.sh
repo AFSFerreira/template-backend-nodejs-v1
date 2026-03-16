@@ -9,6 +9,7 @@ pnpm install
 yes | pnpm approve-builds
 
 echo "🔐 Configurando Git Identity..."
+git config pull.rebase true
 git config --global user.signingkey /root/.ssh/signing_key.pub
 git config --global gpg.format ssh
 git config --global commit.gpgsign true
