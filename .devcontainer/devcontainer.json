@@ -36,7 +36,7 @@
     "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0"
   },
 
-  // NOTE: Substitua pelo nome da sua chave SSH:
+  // NOTE: Substitua "<NOME_DA_CHAVE_SSH>" pelo nome da sua chave SSH:
   "mounts": [
     "source=${localEnv:HOME}/.ssh/<NOME_DA_CHAVE_SSH>.pub,target=/root/.ssh/signing_key.pub,type=bind,readonly"
   ],
