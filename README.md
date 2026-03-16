@@ -337,5 +337,5 @@ pnpm start:dev
 
 ## 👥 Equipe de Desenvolvimento:
 - **Product Owner**: <a href="https://github.com/DougCristiano" target="_blank">Douglas Cristiano</a>
-- **Dev Backend**: <a href="https://github.com/zfrekey" target="_blank">Filype Abreu</a>
 - **Dev Backend**: <a href="https://github.com/AFSFerreira" target="_blank">Allber Ferreira</a>
+- **Dev Backend**: <a href="https://github.com/zfrekey" target="_blank">Filype Abreu</a>
