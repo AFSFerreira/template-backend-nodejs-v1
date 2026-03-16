@@ -10,8 +10,8 @@ yes | pnpm approve-builds
 
 echo "🔐 Configurando Git Identity..."
 git config pull.rebase true
-git config --global user.signingkey /root/.ssh/signing_key.pub
+git config --global user.signingkey /root/.ssh/signing_key
 git config --global gpg.format ssh
 git config --global commit.gpgsign true
-git config --global user.email "$MY_GIT_USER"
-git config --global user.name "$MY_GIT_EMAIL"
+git config --global user.email "$MY_GIT_EMAIL"
+git config --global user.name "$MY_GIT_USER"

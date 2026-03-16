@@ -38,7 +38,6 @@
     "GITHUB_EMAIL": "${localEnv:MY_GIT_EMAIL}"
   },
 
-  // NOTE: Substitua "<NOME_DA_CHAVE_SSH>" pelo nome da sua chave SSH:
   "mounts": [
     "source=${localEnv:HOME}/.ssh/${localEnv:MY_SSH_KEY_NAME}.pub,target=/root/.ssh/signing_key.pub,type=bind,readonly"
   ],
