@@ -34,13 +34,18 @@
   "containerEnv": {
     "NODE_ENV": "development",
     "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
-    "SSH_AUTH_SOCK": "/tmp/vscode-ssh-auth.sock"
+    "SSH_AUTH_SOCK": "/tmp/vscode-ssh-auth.sock",
+
+    // Variáveis Personalizadas:
+    "SSH_KEY_NAME": "id_ed25519",  // NOTE: Troque pelo nome da sua chave SSH específica
+    "GITHUB_USERNAME": "email",    // NOTE: Troque pelo seu nome de usuário no github
+    "GITHUB_EMAIL": "username"     // NOTE: Troque pelo seu email primário do github
   },
 
   "mounts": [
-    "source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,readonly"
+    "source=${localEnv:HOME}/.ssh/${localEnv:SSH_KEY_NAME:-id_ed25519}.pub,target=/root/.ssh/signing_key.pub,type=bind,readonly"
   ],
 
-  "postCreateCommand": "mise install && corepack enable && corepack prepare pnpm@latest --activate && pnpm install && (yes | pnpm approve-builds)",
+  "postCreateCommand": "mise install && corepack enable && corepack prepare pnpm@latest --activate && pnpm install && (yes | pnpm approve-builds) && git config --global user.signingkey /root/.ssh/$SSH_KEY_NAME.pub && git config --global user.email \"$GITHUB_EMAIL\" && git config --global user.name \"$GITHUB_USERNAME\"",
   "remoteUser": "root"
 }
