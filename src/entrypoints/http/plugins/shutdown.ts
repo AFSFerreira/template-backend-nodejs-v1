@@ -4,7 +4,6 @@ import { applicationScheduler, applicationWorkerManager } from '@lib/bullmq'
 import { logger } from '@lib/pino'
 import { logError } from '@lib/pino/helpers/log-error'
 import { prisma } from '@lib/prisma'
-import { pool } from '@lib/prisma/helpers/configuration'
 import { redis } from '@lib/redis'
 import {
   CRON_SHUTDOWN,
@@ -39,7 +38,6 @@ export async function gracefulShutdown(_instance: FastifyInstance) {
   // 3. Desconecta do Postgres (nenhum worker ativo para fazer queries)
   try {
     await prisma.$disconnect()
-    await pool.end()
     logger.info(DATABASE_SHUTDOWN)
   } catch (error: unknown) {
     logError({ error, message: `${GRACEFUL_SHUTDOWN_ERROR} [Postgres]` })

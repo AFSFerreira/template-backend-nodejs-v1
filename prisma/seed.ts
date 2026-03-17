@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 import type { AddressState, Meeting, User } from '@prisma/generated/client'
 import { prisma } from '@lib/prisma'
-import { pool } from '@lib/prisma/helpers/configuration'
 import { getRandomArrayElement } from '@utils/generics/get-random-array-element'
 import { activityAreasData1, subActivityAreasData1 } from './seed-data/activity-areas'
 import { addressStatesDataArray1 } from './seed-data/address-states'
@@ -208,5 +207,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect()
-    await pool.end()
   })
