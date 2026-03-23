@@ -1,45 +1,82 @@
-import fastifyJwt from '@fastify/jwt'
-import fastify from 'fastify'
-import { env } from './env'
-import { ZodError } from 'zod'
+import 'reflect-metadata'
+import '@lib/dayjs/index'
+import '@lib/tsyringe/index'
+import '@lib/zod/index'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { IS_DEV } from '@constants/env-constants'
+import { fastifyCompress } from '@fastify/compress'
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
-import { userRoutes } from './http/controllers/users/routes'
+import helmet from '@fastify/helmet'
+import fastifyJwt from '@fastify/jwt'
+import multipart from '@fastify/multipart'
+import rateLimit from '@fastify/rate-limit'
+import swagger from '@fastify/swagger'
+import swaggerUi from '@fastify/swagger-ui'
+import underPressure from '@fastify/under-pressure'
+import fastifyWebsocket from '@fastify/websocket'
+import { compressConfiguration } from '@http/configurations/compress-configuration'
+import { corsConfiguration } from '@http/configurations/cors-configuration'
+import { fastifyConfiguration } from '@http/configurations/fastify-configuration'
+import { helmetConfiguration } from '@http/configurations/helmet-configuration'
+import { jwtConfiguration } from '@http/configurations/jwt-configuration'
+import { multipartConfiguration } from '@http/configurations/multipart-configuration'
+import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
+import { swaggerConfiguration } from '@http/configurations/swagger-configuration'
+import { swaggerUiConfiguration } from '@http/configurations/swagger-ui-configuration'
+import { underPressureConfiguration } from '@http/configurations/under-pressure-configuration'
+import { customReplyPluginDefinition } from '@http/plugins/custom-reply'
+import { logRequest } from '@http/plugins/request-logger'
+import { logResponse } from '@http/plugins/response-logger'
+import { gracefulShutdown } from '@http/plugins/shutdown'
+import { httpRoutes } from '@http/routes'
+import { initSentry } from '@lib/sentry'
+import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
+import { registerAppSignals } from '@services/system/register-app-signals'
+import { wsConfiguration } from '@ws/configurations/ws-configuration'
+import { websocketRoutes } from '@ws/routes'
+import fastify, { type FastifyInstance } from 'fastify'
+import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 
-export const app = fastify()
+export async function buildApp(): Promise<FastifyInstance> {
+  const app = fastify(fastifyConfiguration).withTypeProvider<ZodTypeProvider>()
 
-app.register(cors, {
-     origin: env.FRONTEND_URL,
-     credentials: true,
-   })
+  initSentry()
+  registerAppSignals(app)
 
-app.register(fastifyCookie)
+  await customReplyPluginDefinition(app)
 
-app.register(fastifyJwt, {
-     secret: env.JWT_SECRET,
-     cookie: {
-       cookieName: 'refreshToken',
-       signed: false,
-     },
-     sign: {
-       expiresIn: '5m',
-     },
-})
+  if (IS_DEV) {
+    // REVIEW: Vale a pena expôr o JSON para o frontend
+    // consumir com um Orval ou Kubb?
+    app.register(swagger, swaggerConfiguration)
 
-app.register(userRoutes)
+    app.register(swaggerUi, swaggerUiConfiguration)
+  }
 
-app.setErrorHandler((error, _, reply) => {
-     if (error instanceof ZodError) {
-       return reply
-         .status(400)
-         .send({ message: 'Validation error!', issues: error.format() })
-     }
-   
-     if (env.NODE_ENV !== 'production') {
-       console.error(error)
-     } else {
-       // TODO: Send error to monitoring service
-     }
-   
-     reply.status(500).send({ message: 'Internal server error' })
-})
+  app.setValidatorCompiler(validatorCompiler)
+  app.setSerializerCompiler(serializerCompiler)
+
+  app.register(fastifyWebsocket, wsConfiguration)
+  app.register(helmet, helmetConfiguration)
+  app.register(underPressure, underPressureConfiguration)
+  app.register(fastifyCompress, compressConfiguration)
+  app.register(multipart, multipartConfiguration)
+  app.register(fastifyCookie)
+  app.register(rateLimit, rateLimitConfigurations)
+  app.register(cors, corsConfiguration)
+  app.register(fastifyJwt, jwtConfiguration)
+
+  app.register(httpRoutes)
+  app.register(websocketRoutes)
+
+  app.addHook('onRequest', logRequest)
+  app.addHook('onResponse', logResponse)
+  app.addHook('onClose', gracefulShutdown)
+
+  app.setErrorHandler(fastifyErrorHandler)
+
+  await app.ready()
+
+  return app
+}

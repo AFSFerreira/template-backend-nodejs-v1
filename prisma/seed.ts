@@ -1,26 +1,23 @@
-import { PrismaClient } from '@prisma/client'
-import { hash } from 'bcryptjs'
-
-const prisma = new PrismaClient()
+import { prisma } from '@lib/prisma'
+import 'reflect-metadata'
+import { userData1 } from './seed-data/users'
 
 async function main() {
+  // Criação de Usuários:
   await prisma.user.upsert({
-    where: { email: "email@example.com" },
+    where: { email: userData1.email },
     update: {},
-    create: {
-      name: "Admin",
-      email: "email@example.com",
-      password_digest: await hash("12345678", 10),
-    }
+    create: userData1,
   })
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect()
-  })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
+  .catch(async (error) => {
+    // eslint-disable-next-line no-console
+    // biome-ignore lint/suspicious/noConsole: <Console necessário. Impossível utilizar pino aqui>
+    console.error('Erro ao executar seed:', error)
     process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
   })

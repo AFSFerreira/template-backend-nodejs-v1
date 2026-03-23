@@ -1,0 +1,62 @@
+{
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Gere as mensagens de commit SEMPRE em Português do Brasil (PT-BR). Siga estritamente o padrão Conventional Commits (feat, fix, chore, docs, etc). Seja conciso."
+    }
+  ],
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "files.trimTrailingWhitespace": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "cSpell.words": [
+    "appendonly",
+    "Astrobio",
+    "astrobiologia",
+    "autoincrement",
+    "BUILDKIT",
+    "cnpj",
+    "dbgenerated",
+    "falhar",
+    "fkey",
+    "FLUSHALL",
+    "FLUSHDB",
+    "healthcheck",
+    "ILIKE",
+    "isready",
+    "loglevel",
+    "MAXMEMORY",
+    "noeviction",
+    "orcid",
+    "OUTRA",
+    "pkey",
+    "plainto",
+    "plpgsql",
+    "requirepass",
+    "sbastrobiodb",
+    "servidor",
+    "setweight",
+    "treeify",
+    "trgm",
+    "tsquery",
+    "tsvector",
+    "unaccent",
+    "uuidv"
+  ]
+}

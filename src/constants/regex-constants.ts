@@ -1,0 +1,15 @@
+export const YEAR_MONTH_REGEX = /^\d{4}-(0[1-9]|1[0-2])$/
+export const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#]).+$/
+export const INNER_SPACES_REGEX = /^\S+$/
+export const SQL_IDENTIFIER_REGEX = /^[a-zA-Z_][a-zA-Z0-9_]*$/
+export const TOKEN_DURATION_REGEX = /^(?:[1-9]\d*(?:[ywdhms]))+$/i
+export const RNE_VALIDATION_REGEX = /^[A-Za-z]\d{6}-\d$/
+export const PASSPORT_VALIDATION_REGEX = /^[A-Z0-9]{6,9}$/
+export const UPPERCASE_PASSWORD_CHARACTERS_REGEX = /[A-Z]/
+export const LOWERCASE_PASSWORD_CHARACTERS_REGEX = /[a-z]/
+export const PASSWORD_DIGIT_REGEX = /[0-9]/
+export const PASSWORD_SPECIAL_CHARACTER_REGEX = /[\W_]/
+export const DIGITS_ONLY_REGEX = /^\d+$/
+export const BASE64_REGEX = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/
+export const HEXADECIMAL_REGEX = /^(0[xX])?[0-9a-fA-F]+$/
+export const NEWSLETTER_NUMBER = /^\d+(\.\d+)*$/

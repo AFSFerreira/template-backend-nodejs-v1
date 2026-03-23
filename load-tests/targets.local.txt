@@ -1,0 +1,9 @@
+# GET ${BASE_URL}/blogs
+# Accept: application/json
+
+# GET ${BASE_URL}/users
+# Accept: application/json
+
+POST ${BASE_URL}/users/sessions
+Content-Type: application/json
+@load-tests/auth-payload.json
