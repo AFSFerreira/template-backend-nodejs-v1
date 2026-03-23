@@ -1,5 +1,5 @@
 import type { EmailEnqueuedInput } from '@custom-types/jobs/queues/facades/email-queue-facade'
-import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { logger } from '@lib/pino'
 import { logError } from '@lib/pino/helpers/log-error'
 import {

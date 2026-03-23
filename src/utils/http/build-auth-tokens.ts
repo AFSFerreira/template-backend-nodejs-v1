@@ -13,18 +13,18 @@ import { env } from '@env/index'
  *
  * @param params - Parâmetros para geração dos tokens.
  * @param params.reply - Objeto reply do Fastify para assinar tokens e configurar cookies.
- * @param params.publicId - Identificador público do usuário (campo `sub` do JWT).
+ * @param params.id - Identificador público do usuário (campo `sub` do JWT).
  * @param params.payload - Dados adicionais a serem incluídos no payload do JWT.
  * @returns Objeto contendo `accessToken` e `reply` (com cookie já configurado).
  */
-export async function buildAuthTokens({ reply, publicId, payload }: BuildAuthTokensParams): Promise<AuthTokensResult> {
+export async function buildAuthTokens({ reply, id, payload }: BuildAuthTokensParams): Promise<AuthTokensResult> {
   const accessToken = await reply.jwtSign(payload, {
-    sub: publicId,
+    sub: id,
     expiresIn: env.JWT_EXPIRATION,
   })
 
   const refreshToken = await reply.jwtSign(payload, {
-    sub: publicId,
+    sub: id,
     expiresIn: env.JWT_REFRESH_EXPIRATION,
   })
 

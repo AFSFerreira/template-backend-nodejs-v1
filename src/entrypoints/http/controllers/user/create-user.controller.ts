@@ -2,7 +2,7 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { RegisterBodyType, RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { UserDetailedPresenter } from '@http/presenters/user/user-detailed.presenter'
+import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
 import { CreateUserUseCase } from '@use-cases/user/create-user'
 import { StatusCodes } from 'http-status-codes'
 import { inject, singleton } from 'tsyringe'
@@ -13,14 +13,14 @@ export class CreateUserController implements IController {
     @inject(CreateUserUseCase)
     private readonly useCase: CreateUserUseCase,
 
-    @inject(UserDetailedPresenter)
-    private readonly userDetailedPresenter: UserDetailedPresenter,
+    @inject(UserDefaultPresenter)
+    private readonly userDefaultPresenter: UserDefaultPresenter,
   ) {}
 
   async handle(request: ZodRequest<{ body: RegisterBodyType }>, reply: FastifyReply) {
     const { user } = await this.useCase.execute(request.body as RegisterUserBodySchemaType)
 
-    const formattedReply = this.userDetailedPresenter.toHTTP(user)
+    const formattedReply = this.userDefaultPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply, StatusCodes.CREATED)
   }

@@ -1,6 +1,6 @@
 import type { UserRoleType } from '@prisma/generated/enums'
 
 export interface UpdateRoleQuery {
-  id: number
+  id: string
   role: UserRoleType
 }

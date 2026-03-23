@@ -5,7 +5,7 @@ import { logError } from '@lib/pino/helpers/log-error'
 import { verifyTokenIsolated } from '@utils/http/verify-jwt-token'
 import { collectZodErrors } from '@utils/validators/collect-zod-errors'
 import { getSocketExp } from '@utils/ws/get-socket-exp'
-import { getSocketUserPublicId } from '@utils/ws/get-socket-user-public-id'
+import { getSocketUserId } from '@utils/ws/get-socket-user-public-id'
 import { getSocketUserRole } from '@utils/ws/get-socket-user-role'
 import { clientStates } from '@ws/client-states'
 import { WsDispatcher } from '@ws/dispatcher'
@@ -41,7 +41,7 @@ export async function wsConnectionHandler(socket: WebSocket, _req: FastifyReques
         try {
           const decoded = verifyTokenIsolated(token)
 
-          userId = getSocketUserPublicId(decoded)
+          userId = getSocketUserId(decoded)
 
           userRole = getSocketUserRole(decoded)
 

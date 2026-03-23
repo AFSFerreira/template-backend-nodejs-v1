@@ -1,11 +1,11 @@
-import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import type { User } from '@prisma/generated/client'
 import type { UpdateUserUseCaseRequestBody } from './update-user-use-case-request-body'
 
 export interface UpdateUserUseCaseRequest {
-  publicId: string
+  id: string
   data: UpdateUserUseCaseRequestBody
 }
 
 export interface UpdateUserUseCaseResponse {
-  user: UserWithDetails
+  user: User
 }

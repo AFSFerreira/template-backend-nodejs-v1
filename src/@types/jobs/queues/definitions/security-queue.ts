@@ -3,23 +3,23 @@ import type { Prisma } from '@prisma/generated/client'
 
 export interface UpgradePasswordHashJobData {
   type: 'upgrade-password-hash'
-  userId: number
+  userId: string
   password: string
 }
 
 export interface IncrementLoginAttemptsJobData {
   type: 'increment-login-attempts'
-  userId: number
+  userId: string
 }
 
 export interface ResetLoginAttemptsJobData {
   type: 'reset-login-attempts'
-  userId: number
+  userId: string
 }
 
 export interface SetLastLoginJobData {
   type: 'set-last-login'
-  userId: number
+  userId: string
 }
 
 export interface CreateAuthenticationAuditJobData {
@@ -28,7 +28,7 @@ export interface CreateAuthenticationAuditJobData {
 }
 
 export interface UpgradePasswordHashResult {
-  userId: number
+  userId: string
   newPasswordHash: HashedPassword
 }
 

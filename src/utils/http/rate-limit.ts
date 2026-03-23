@@ -6,7 +6,7 @@ import { rateLimitKeyGenerator } from './rate-limit-key-generator'
  * Cria a configuração de Rate Limiting para uma rota Fastify.
  *
  * Retorna um objeto parcial de `RouteOptions` que pode ser espalhado na definição
- * da rota. A chave de identificação padrão prioriza o `publicId` do usuário autenticado;
+ * da rota. A chave de identificação padrão prioriza o `id` do usuário autenticado;
  * caso contrário, utiliza o IP do cliente.
  *
  * @param params - Parâmetros de configuração.

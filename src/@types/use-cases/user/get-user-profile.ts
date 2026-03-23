@@ -1,9 +1,9 @@
-import type { UserWithDetailsDecrypted } from '@custom-types/validators/user-with-details-decrypted'
+import type { User } from '@prisma/generated/client'
 
 export interface GetUserProfileUseCaseRequest {
-  publicId: string
+  id: string
 }
 
 export interface GetUserProfileUseCaseResponse {
-  user: UserWithDetailsDecrypted
+  user: User
 }

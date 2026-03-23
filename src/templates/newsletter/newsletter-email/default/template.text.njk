@@ -1,9 +1,0 @@
-{% include "./partials/text/header.text.njk" %}
-
-{{ newsletter_body | safe }}
-
-{% if newsletter_event_title and newsletter_event_dates and newsletter_event_location %}
-  {% include "./partials/text/event.text.njk" %}
-{% endif %}
-
-{% include "./partials/text/footer.text.njk" %}

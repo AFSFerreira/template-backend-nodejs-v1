@@ -23,14 +23,14 @@ export class ChangePasswordUseCase {
   ) {}
 
   async execute({
-    userPublicId,
+    userId,
     oldPassword,
     newPassword,
   }: ChangePasswordUseCaseRequest): Promise<ChangePasswordUseCaseResponse> {
     const newPasswordHash = await this.hashService.hashPassword(newPassword)
 
     const user = ensureExists({
-      value: await this.usersRepository.findByPublicId(userPublicId),
+      value: await this.usersRepository.findById(userId),
       error: new UserNotFoundError(),
     })
 
@@ -50,7 +50,7 @@ export class ChangePasswordUseCase {
       passwordHash: newPasswordHash,
     })
 
-    logger.info({ userPublicId }, PASSWORD_UPDATED_SUCCESSFULLY)
+    logger.info({ userId }, PASSWORD_UPDATED_SUCCESSFULLY)
 
     return {}
   }

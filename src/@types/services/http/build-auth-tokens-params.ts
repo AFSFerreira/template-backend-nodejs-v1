@@ -3,6 +3,6 @@ import type { TokenPayload } from './token-payload'
 
 export interface BuildAuthTokensParams {
   reply: FastifyReply
-  publicId: string
+  id: string
   payload: TokenPayload
 }

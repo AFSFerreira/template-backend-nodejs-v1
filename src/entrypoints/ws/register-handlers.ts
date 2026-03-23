@@ -1,6 +1,3 @@
-import type { WsDispatcher } from './dispatcher'
-import { subscribeMetrics } from './handlers/subscribe-metrics.handler'
+// import type { WsDispatcher } from './dispatcher'
 
-export function registerHandlers(dispatcher: WsDispatcher) {
-  dispatcher.register('subscribe_metrics', subscribeMetrics)
-}
+// export function registerHandlers(dispatcher: WsDispatcher) {}

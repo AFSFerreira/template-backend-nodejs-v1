@@ -1,8 +1,8 @@
 import type { FindUserByIdParamsSchemaType } from '@custom-types/http/schemas/user/find-by-public-id-params-schema'
-import type { UserWithDetailsDecrypted } from '@custom-types/validators/user-with-details-decrypted'
+import type { User } from '@prisma/generated/client'
 
-export interface FindUserByPublicIdUseCaseRequest extends FindUserByIdParamsSchemaType {}
+export interface FindUserByIdUseCaseRequest extends FindUserByIdParamsSchemaType {}
 
-export interface FindUserByPublicIdUseCaseResponse {
-  user: UserWithDetailsDecrypted
+export interface FindUserByIdUseCaseResponse {
+  user: User
 }

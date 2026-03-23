@@ -1,3 +1,3 @@
 import { uuidv7Schema } from '../primitives/uuidv7-schema'
 
-export const modelPublicIdSchema = uuidv7Schema
+export const modelIdSchema = uuidv7Schema

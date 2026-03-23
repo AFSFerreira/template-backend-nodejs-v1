@@ -33,10 +33,9 @@ export class AuthenticateController implements IController {
 
     const { accessToken, reply: replyWithCookie } = await buildAuthTokens({
       reply,
-      publicId: user.publicId,
+      id: user.id,
       payload: {
         role: user.role,
-        status: user.membershipStatus,
       },
     })
 

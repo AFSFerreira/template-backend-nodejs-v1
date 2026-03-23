@@ -4,7 +4,7 @@ import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { PASSWORD_UPDATED_SUCCESSFULLY } from '@messages/responses/user-responses/2xx'
 import { ChangePasswordUseCase } from '@use-cases/user/change-password'
-import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
+import { getRequestUserId } from '@utils/http/get-request-user-public-id'
 import { inject, singleton } from 'tsyringe'
 
 @singleton()
@@ -17,7 +17,7 @@ export class ChangePasswordController implements IController {
   async handle(request: ZodRequest<{ body: UpdatePasswordBodyType }>, reply: FastifyReply) {
     await this.useCase.execute({
       ...request.body,
-      userPublicId: getRequestUserPublicId(request),
+      userId: getRequestUserId(request),
     })
 
     return await reply.sendApiResponse(PASSWORD_UPDATED_SUCCESSFULLY)

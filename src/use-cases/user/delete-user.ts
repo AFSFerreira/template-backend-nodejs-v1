@@ -3,19 +3,14 @@ import type {
   DeleteUserUseCaseResponse,
 } from '@custom-types/use-cases/user/delete-own-account'
 import type { UsersRepository } from '@repositories/users-repository'
-import { DEFAULT_PROFILE_IMAGE_NAME } from '@constants/static-file-constants'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
-import { deleteFileEnqueued } from '@jobs/queues/facades/file-queue-facade'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { USER_DELETION_EMAIL_SUBJECT } from '@messages/emails/user-emails'
 import { USER_DELETION_EMAIL_SEND_ERROR, USER_DELETION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
-import { UserRoleType } from '@prisma/generated/enums'
 import { DeleteUserRenderer } from '@services/renderers/user/emails/delete-user-renderer'
-import { buildUserProfileImagePath } from '@utils/builders/paths/build-user-profile-image-path'
 import { ensureExists } from '@utils/validators/ensure'
 import { inject, singleton } from 'tsyringe'
-import { AdminCannotDeleteSelfError } from '../errors/user/admin-cannot-delete-self-error'
 import { UserNotFoundError } from '../errors/user/user-not-found-error'
 
 @singleton()
@@ -28,15 +23,11 @@ export class DeleteUserUseCase {
     private readonly deleteUserRenderer: DeleteUserRenderer,
   ) {}
 
-  async execute({ publicId }: DeleteUserUseCaseRequest): Promise<DeleteUserUseCaseResponse> {
+  async execute({ id }: DeleteUserUseCaseRequest): Promise<DeleteUserUseCaseResponse> {
     const deletedUser = ensureExists({
-      value: await this.usersRepository.findByPublicId(publicId),
+      value: await this.usersRepository.findById(id),
       error: new UserNotFoundError(),
     })
-
-    if (deletedUser.role === UserRoleType.ADMIN) {
-      throw new AdminCannotDeleteSelfError()
-    }
 
     await this.usersRepository.delete(deletedUser.id)
 
@@ -56,20 +47,13 @@ export class DeleteUserUseCase {
       attachments,
       logging: {
         errorMessage: USER_DELETION_EMAIL_SEND_ERROR,
-        context: { userPublicId: deletedUser.publicId, userEmail: deletedUser.email },
+        context: { userId: deletedUser.id, userEmail: deletedUser.email },
       },
     })
 
-    // Enfileirando a remoção da antiga foto de perfil do usuário:
-    if (deletedUser.profileImage !== DEFAULT_PROFILE_IMAGE_NAME) {
-      await deleteFileEnqueued({
-        filePath: buildUserProfileImagePath(deletedUser.profileImage),
-      })
-    }
-
     logger.info(
       {
-        publicId: deletedUser.publicId,
+        id: deletedUser.id,
         email: deletedUser.email,
       },
       USER_DELETION_SUCCESSFUL,

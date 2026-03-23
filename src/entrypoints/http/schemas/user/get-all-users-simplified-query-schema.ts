@@ -6,8 +6,6 @@ import z from 'zod'
 export const getAllUsersSimplifiedQueryRawSchema = z
   .object({
     fullName: upperCaseTextSchema,
-    institutionName: upperCaseTextSchema,
-    state: upperCaseTextSchema,
     orderBy: z
       .object({
         fullNameOrder: orderDirectionsEnumSchema,

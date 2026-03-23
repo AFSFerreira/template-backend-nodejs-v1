@@ -5,14 +5,12 @@ import {
   incrementLoginAttemptsEnqueued,
   resetLoginAttemptsEnqueued,
   setLastLoginEnqueued,
+  upgradeUserPasswordHashEnqueued,
 } from '@jobs/queues/facades/security-queue-facade'
 import { logger } from '@lib/pino'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { AUTHENTICATION_SUCCESSFUL } from '@messages/loggings/models/user-loggings'
-import { MembershipStatusType } from '@prisma/generated/enums'
 import { HashService } from '@services/hashes/hash-service'
-import { MembershipStatusInactiveError } from '@use-cases/errors/user/membership-status-inactive-error'
-import { MembershipStatusPendingError } from '@use-cases/errors/user/membership-status-pending-error'
 import { inject, singleton } from 'tsyringe'
 import { InvalidCredentialsError } from '../errors/user/invalid-credentials-error'
 
@@ -64,22 +62,25 @@ export class AuthenticateUseCase {
       throw new InvalidCredentialsError()
     }
 
-    if (user.membershipStatus === MembershipStatusType.PENDING) {
-      throw new MembershipStatusPendingError()
+    const needsPasswordHashUpgrade = this.hashService.needsUpgrade(user.passwordHash)
+
+    if (needsPasswordHashUpgrade) {
+      await upgradeUserPasswordHashEnqueued({
+        userId: user.id,
+        password,
+      })
     }
 
-    if (user.membershipStatus === MembershipStatusType.INACTIVE) {
-      throw new MembershipStatusInactiveError()
-    }
-
-    await createAuthenticationAuditEnqueued({
-      audit: {
-        ...auditAuthenticateObject,
-        status: 'SUCCESS',
-      },
-    })
-    await setLastLoginEnqueued({ userId: user.id })
-    await resetLoginAttemptsEnqueued({ userId: user.id })
+    await Promise.all([
+      createAuthenticationAuditEnqueued({
+        audit: {
+          ...auditAuthenticateObject,
+          status: 'SUCCESS',
+        },
+      }),
+      setLastLoginEnqueued({ userId: user.id }),
+      resetLoginAttemptsEnqueued({ userId: user.id }),
+    ])
 
     logger.info(AUTHENTICATION_SUCCESSFUL)
 

@@ -38,7 +38,7 @@ export class ForgotPasswordUseCase {
     const recoveryPasswordTokenExpiresAt = new Date(Date.now() + RECOVERY_PASSWORD_EXPIRATION_TIME)
 
     const userAlreadyExists = ensureExists({
-      value: await this.usersRepository.findByEmails(login),
+      value: await this.usersRepository.findByEmail(login),
       error: new UserNotFoundForPasswordResetError(),
     })
 
@@ -52,9 +52,6 @@ export class ForgotPasswordUseCase {
       tokenData,
     })
 
-    // Recuperação de senha enviada para o email escolhido pelo usuário
-    const userChosenEmail = user.secondaryEmail && login === user.secondaryEmail ? user.secondaryEmail : user.email
-
     const { html, text, attachments } = await this.forgotPasswordRenderer.render(
       {
         email: user.email,
@@ -66,14 +63,14 @@ export class ForgotPasswordUseCase {
     )
 
     await sendEmailEnqueued({
-      to: userChosenEmail,
+      to: login,
       subject: PASSWORD_RESET_SUBJECT,
       message: text,
       html,
       attachments,
       logging: {
         errorMessage: PASSWORD_RESET_EMAIL_FAILED,
-        context: { userPublicId: user.publicId, userEmail: userChosenEmail },
+        context: { userId: user.id, userEmail: login },
       },
     })
 

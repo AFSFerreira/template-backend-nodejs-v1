@@ -1,17 +1,17 @@
 import type Redis from 'ioredis'
 
 export interface IGetNewsletterHTMLCached {
-  publicId: string
+  id: string
   redis: Redis
 }
 
 export interface ISetNewsletterHTMLCache {
-  publicId: string
+  id: string
   htmlContent: string
   redis: Redis
 }
 
 export interface IRemoveNewsletterHTMLCache {
-  publicId: string
+  id: string
   redis: Redis
 }

@@ -1,8 +1,8 @@
 import type { RegisterUserBodySchemaType } from '@custom-types/http/schemas/user/register-body-schema'
-import type { UserWithDetails } from '@custom-types/validators/user-with-details'
+import type { User } from '@prisma/generated/client'
 
 export type CreateUserUseCaseRequest = RegisterUserBodySchemaType
 
 export interface CreateUserUseCaseResponse {
-  user: UserWithDetails
+  user: User
 }

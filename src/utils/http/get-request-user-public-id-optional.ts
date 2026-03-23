@@ -1,15 +1,15 @@
 import type { FastifyRequest } from 'fastify'
 
 /**
- * Extrai o `publicId` do usuário autenticado, retornando `null` se não estiver presente.
+ * Extrai o `id` do usuário autenticado, retornando `null` se não estiver presente.
  *
- * Versão não-obrigatória de {@link getRequestUserPublicId}. Utilizada em rotas
+ * Versão não-obrigatória de {@link getRequestUserId}. Utilizada em rotas
  * que podem ser acessadas tanto por usuários autenticados quanto anônimos
  * (ex: geração de chave de rate limit).
  *
  * @param request - Request do Fastify.
- * @returns `publicId` (UUIDv7) do usuário ou `null` se não autenticado.
+ * @returns `id` (UUIDv7) do usuário ou `null` se não autenticado.
  */
-export function getRequestUserPublicIdOptional(request: FastifyRequest): string | null {
+export function getRequestUserIdOptional(request: FastifyRequest): string | null {
   return request.user?.sub
 }

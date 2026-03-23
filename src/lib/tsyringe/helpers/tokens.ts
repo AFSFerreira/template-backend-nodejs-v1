@@ -1,25 +1,7 @@
 export const tsyringeTokens = {
   repositories: {
-    academicPublications: 'AcademicPublicationsRepository',
-    activityAreas: 'ActivityAreasRepository',
-    addressCountries: 'AddressCountriesRepository',
-    addressStates: 'AddressStatesRepository',
-    addresses: 'AddressesRepository',
     authenticationAudits: 'AuthenticationAuditsRepository',
     userActionAudits: 'UserActionAuditsRepository',
-    blogs: 'BlogsRepository',
-    institutionalInfo: 'InstitutionalInfoRepository',
-    directorsBoard: 'DirectorsBoardRepository',
-    directorPositions: 'DirectorPositionsRepository',
-    enrolledCourses: 'EnrolledCoursesRepository',
-    institutions: 'InstitutionsRepository',
-    keywords: 'KeywordsRepository',
-    meetings: 'MeetingsRepository',
-    meetingEnrollments: 'MeetingEnrollmentsRepository',
-    newsletters: 'NewslettersRepository',
-    newsletterTemplates: 'NewsletterTemplatesRepository',
-    paymentInfo: 'PaymentInfoRepository',
-    sliderImages: 'SliderImagesRepository',
     users: 'UsersRepository',
   },
 
@@ -29,5 +11,14 @@ export const tsyringeTokens = {
 
   providers: {
     redis: 'Redis',
+  },
+
+  presenters: {
+    users: {
+      simplified: 'user:simplified',
+      default: 'user:default',
+      detailed: 'user:detailed',
+      detailedForAdmin: 'user:detailed-for-admin',
+    },
   },
 } as const

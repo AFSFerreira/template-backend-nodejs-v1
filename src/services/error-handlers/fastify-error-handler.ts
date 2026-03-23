@@ -7,7 +7,7 @@ import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 import * as Sentry from '@sentry/node'
 import { sanitizePayload } from '@utils/formatters/sanitize-payload'
 import { getClientIp } from '@utils/http/get-client-ip'
-import { getRequestUserPublicId } from '@utils/http/get-request-user-public-id'
+import { getRequestUserId } from '@utils/http/get-request-user-public-id'
 import { getBusinessError } from './get-business-error'
 
 /**
@@ -25,7 +25,7 @@ export function fastifyErrorHandler(error: FastifyError, request: FastifyRequest
     if (HAS_SENTRY) {
       Sentry.withScope((scope) => {
         if (request.user) {
-          scope.setUser({ id: getRequestUserPublicId(request) })
+          scope.setUser({ id: getRequestUserId(request) })
         }
 
         scope.setTag('method', request.method)

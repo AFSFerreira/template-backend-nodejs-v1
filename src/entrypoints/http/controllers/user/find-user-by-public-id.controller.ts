@@ -2,25 +2,25 @@ import type { ZodRequest } from '@custom-types/custom/zod-request'
 import type { FindUserByIdParamsType } from '@custom-types/http/schemas/user/find-by-public-id-params-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
-import { UserDetailedPresenterForAdmin } from '@http/presenters/user/user-detailed-for-admin.presenter'
-import { FindUserByPublicIdUseCase } from '@use-cases/user/find-by-public-id'
+import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'
+import { FindUserByIdUseCase } from '@use-cases/user/find-by-public-id'
 import { inject, singleton } from 'tsyringe'
 
 @singleton()
-export class FindUserByPublicIdController implements IController {
+export class FindUserByIdController implements IController {
   constructor(
-    @inject(FindUserByPublicIdUseCase)
-    private readonly useCase: FindUserByPublicIdUseCase,
+    @inject(FindUserByIdUseCase)
+    private readonly useCase: FindUserByIdUseCase,
 
-    @inject(UserDetailedPresenterForAdmin)
-    private readonly userDetailedPresenterForAdmin: UserDetailedPresenterForAdmin,
+    @inject(UserDefaultPresenter)
+    private readonly userDefaultPresenter: UserDefaultPresenter,
   ) {}
 
   async handle(request: ZodRequest<{ params: FindUserByIdParamsType }>, reply: FastifyReply) {
-    const { publicId } = request.params
-    const { user } = await this.useCase.execute({ publicId })
+    const { id } = request.params
+    const { user } = await this.useCase.execute({ id })
 
-    const formattedReply = this.userDetailedPresenterForAdmin.toHTTP(user)
+    const formattedReply = this.userDefaultPresenter.toHTTP(user)
 
     return await reply.sendResponse(formattedReply)
   }

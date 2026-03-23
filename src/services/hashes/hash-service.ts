@@ -1,5 +1,4 @@
 import type { IComparePassword } from '@custom-types/services/hashes/compare-password'
-import type { FileHash } from '@custom-types/services/hashes/file-hash'
 import type { HashedPassword } from '@custom-types/services/hashes/hashed-password'
 import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
 import type { JobHash } from '@custom-types/services/hashes/job-hash'
@@ -41,20 +40,6 @@ export class HashService {
   }
 
   /**
-   * Gera um blind index HMAC-SHA256 para busca determinística de dados criptografados.
-   *
-   * Utilizado para permitir buscas em campos criptografados (e.g., documentos de identidade)
-   * sem expor o valor original.
-   *
-   * @param input - Valor a ser indexado (e.g., CPF em texto plano).
-   * @returns Hash HMAC-SHA256 em formato hexadecimal.
-   */
-  generateBlindIndex(input: string): HashedToken {
-    const secret = Buffer.from(env.BLIND_INDEX_SECRET, 'base64')
-    return crypto.createHmac('sha256', secret).update(input).digest('hex') as HashedToken
-  }
-
-  /**
    * Gera hash Argon2id de uma senha com pepper secreto.
    *
    * @param password - Senha em texto plano.
@@ -82,10 +67,6 @@ export class HashService {
    */
   generateToken(bytesNumber: number): Token {
     return crypto.randomBytes(bytesNumber).toString('hex') as Token
-  }
-
-  generateFileId(): FileHash {
-    return uuidv4() as FileHash
   }
 
   generateJobId(): JobHash {

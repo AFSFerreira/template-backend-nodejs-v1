@@ -1,65 +1,5 @@
-import type { Prisma } from '@prisma/generated/client'
-import type { EditorialStatusType, EducationLevelType, UserRoleType } from '@prisma/generated/enums'
-import banks from 'bancos-brasileiros/bancos.json' with { type: 'json' }
-import {
-  ADMIN_PERMISSIONS_ARRAY,
-  CONTENT_LEADER_PERMISSIONS_ARRAY,
-  CONTENT_PRODUCERS_PERMISSIONS_ARRAY,
-  DRAFT_OR_PENDING_OR_CHANGES_REQUESTED_ARRAY,
-  HIGH_LEVEL_EDUCATION_TYPE_ARRAY,
-  HIGH_LEVEL_STUDENT_EDUCATION_TYPE_ARRAY,
-  LOW_LEVEL_EDUCATION_TYPE_ARRAY,
-  MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS_ARRAY,
-  MANAGER_PERMISSIONS_ARRAY,
-  NOT_APPROVED_EDITORIAL_STATUS_ARRAY,
-  PENDING_APPROVAL_OR_PUBLISHED_ARRAY,
-} from './arrays'
-
-export const VALID_BANK_CODES = new Set<string>(banks.map((bank) => bank.COMPE))
-
-export const LOW_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(LOW_LEVEL_EDUCATION_TYPE_ARRAY)
-
-export const HIGH_LEVEL_EDUCATION_STUDENT_TYPE_SET = new Set<EducationLevelType>(
-  HIGH_LEVEL_STUDENT_EDUCATION_TYPE_ARRAY,
-)
-
-export const NOT_APPROVED_EDITORIAL_STATUS = new Set<EditorialStatusType>(NOT_APPROVED_EDITORIAL_STATUS_ARRAY)
-
-export const DRAFT_OR_PENDING_OR_CHANGES_REQUESTED = new Set<EditorialStatusType>(
-  DRAFT_OR_PENDING_OR_CHANGES_REQUESTED_ARRAY,
-)
-
-export const PENDING_APPROVAL_OR_PUBLISHED = new Set<EditorialStatusType>(PENDING_APPROVAL_OR_PUBLISHED_ARRAY)
-
-export const HIGH_LEVEL_EDUCATION_TYPE_SET = new Set<EducationLevelType>(HIGH_LEVEL_EDUCATION_TYPE_ARRAY)
-
-export const ADMIN_PERMISSIONS = new Set<UserRoleType>(ADMIN_PERMISSIONS_ARRAY)
-
-export const MANAGER_PERMISSIONS = new Set<UserRoleType>(MANAGER_PERMISSIONS_ARRAY)
-
-export const MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS = new Set<UserRoleType>(
-  MANAGER_AND_NEWSLETTER_LEADER_PERMISSIONS_ARRAY,
-)
-
-export const CONTENT_LEADER_PERMISSIONS = new Set<UserRoleType>(CONTENT_LEADER_PERMISSIONS_ARRAY)
-
-export const CONTENT_PRODUCERS_PERMISSIONS = new Set<UserRoleType>(CONTENT_PRODUCERS_PERMISSIONS_ARRAY)
-
-export const READ_OPERATIONS_SET = new Set<Prisma.PrismaAction>([
-  'findUnique',
-  'findFirst',
-  'findMany',
-  'findUniqueOrThrow',
-  'findFirstOrThrow',
-])
-
-export const CREATE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['create', 'createMany', 'createManyAndReturn'])
-
-export const UPDATE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['update', 'updateMany'])
-
-export const UPSERT_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['upsert'])
-
-export const DELETE_OPERATIONS_SET = new Set<Prisma.PrismaAction>(['delete', 'deleteMany'])
+import type { UserRoleType } from '@prisma/generated/enums'
+import { ADMIN_PERMISSIONS_ARRAY } from './arrays'
 
 export const SENSITIVE_KEYS = new Set<string>([
   'password',
@@ -70,3 +10,5 @@ export const SENSITIVE_KEYS = new Set<string>([
   'rg',
   'secret',
 ])
+
+export const ADMIN_PERMISSIONS = new Set<UserRoleType>(ADMIN_PERMISSIONS_ARRAY)

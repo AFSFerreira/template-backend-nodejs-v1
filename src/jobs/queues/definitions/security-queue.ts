@@ -1,5 +1,5 @@
 import type { SecurityJobData } from '@custom-types/jobs/queues/definitions/security-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { redisConnection } from '@lib/redis/helpers/configuration'
 import { Queue } from 'bullmq'
 import ms from 'ms'

@@ -1,4 +1,4 @@
 export interface AuditInfo {
-  actorPublicId: string
+  actorId: string
   ipAddress: string
 }

@@ -1,9 +1,0 @@
-import type { DirectorBoardWithUserRefactored } from '@custom-types/custom/director-board-with-user-refactored'
-
-export interface FindDirectorBoardByPublicIdUseCaseRequest {
-  publicId: string
-}
-
-export interface FindDirectorBoardByPublicIdUseCaseResponse {
-  directorBoard: DirectorBoardWithUserRefactored
-}

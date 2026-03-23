@@ -38,7 +38,7 @@ export class VerifyEmailUseCase {
 
     const user = await this.usersRepository.confirmEmailVerification(userFound.id)
 
-    logger.info({ userPublicId: user.publicId, email: user.email }, EMAIL_VERIFICATION_SUCCESSFUL)
+    logger.info({ userId: user.id, email: user.email }, EMAIL_VERIFICATION_SUCCESSFUL)
 
     return { user }
   }

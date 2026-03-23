@@ -1,11 +1,11 @@
 import type { FastifyRequest } from 'fastify'
-import { getRequestUserPublicIdOptional } from '@utils/http/get-request-user-public-id-optional'
+import { getRequestUserIdOptional } from '@utils/http/get-request-user-public-id-optional'
 import { getClientIp } from './get-client-ip'
 
 /**
  * Gera a chave de identificação para rate limiting.
  *
- * Prioriza o `publicId` do usuário autenticado (formato `user:<publicId>`).
+ * Prioriza o `id` do usuário autenticado (formato `user:<id>`).
  * Para requisições não autenticadas, utiliza o IP do cliente (formato `ip:<ipAddress>`).
  *
  * @param request - Request do Fastify.
@@ -19,10 +19,10 @@ import { getClientIp } from './get-client-ip'
  * rateLimitKeyGenerator(request) // 'ip:192.168.1.100'
  */
 export function rateLimitKeyGenerator(request: FastifyRequest) {
-  const userPublicId = getRequestUserPublicIdOptional(request)
+  const userId = getRequestUserIdOptional(request)
 
-  if (userPublicId) {
-    return `user:${userPublicId}`
+  if (userId) {
+    return `user:${userId}`
   }
 
   return `ip:${getClientIp(request)}`

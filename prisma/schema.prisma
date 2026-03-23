@@ -12,28 +12,16 @@ datasource db {
   relationMode = "foreignKeys"
 }
 
-model InstitutionalInfo {
-  id                 Int       @id @default(autoincrement())
-  aboutDescription   Json      @map("about_description") @db.Json // Descrição da página Sobre em formato ProseMirror
-  aboutImage         String    @map("about_image")
-  statuteFile        String    @default("estatuto.pdf") @map("statute_file")
-  electionNoticeFile String    @default("edital-eleição.pdf") @map("election_notice_file")
-  createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt          DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  @@map("institutional_info")
-}
-
 model UserActionAudit {
   id         Int              @id @default(autoincrement())
   actionType SystemActionType @map("action_type")
   ipAddress  String?          @map("ip_address") @db.Inet
   createdAt  DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
 
-  actorId Int?  @map("actor_id")
+  actorId String?  @map("actor_id")
   Actor   User? @relation("audit_actor", fields: [actorId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
-  targetId Int?  @map("target_id")
+  targetId String?  @map("target_id")
   Target   User? @relation("audit_target", fields: [targetId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([actionType])
@@ -50,7 +38,7 @@ model AuthenticationAudit {
   status     AuthenticationStatusType
   createdAt  DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
 
-  userId Int?  @map("user_id")
+  userId String?  @map("user_id")
   user   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([userId, status, createdAt])
@@ -58,503 +46,38 @@ model AuthenticationAudit {
 }
 
 model User {
-  id                             Int                  @id @default(autoincrement())
-  publicId                       String               @unique @default(uuid(7)) @map("public_id")
-  fullName                       String               @map("full_name")
-  username                       String               @unique
-  birthdate                      DateTime             @db.Date
-  profileImage                   String               @map("profile_image")
-  membershipStatus               MembershipStatusType @default(VERIFYING) @map("membership_status")
-  role                           UserRoleType         @default(DEFAULT)
-  wantsNewsletter                Boolean              @map("wants_newsletter")
-  educationLevel                 EducationLevelType   @map("education_level")
-  emailIsPublic                  Boolean              @map("email_is_public")
-  astrobiologyOrRelatedStartYear Int?                 @map("astrobiology_or_related_start_year")
-  interestDescription            String               @map("interest_description")
-  receiveReports                 Boolean              @map("receive_reports")
-  email                          String
-  secondaryEmail                 String?              @map("secondary_email")
-  passwordHash                   String               @map("password_hash")
+  id           String       @unique @default(uuid(7)) @map("public_id")
+  fullName     String       @map("full_name")
+  birthdate    DateTime     @db.Date
+  username     String       @unique
+  email        String       @unique
+  passwordHash String       @map("password_hash")
+  role         UserRoleType @default(DEFAULT)
 
   loginAttempts Int       @default(0) @map("login_attempts")
   lastLogin     DateTime? @map("last_login") @db.Timestamptz(3)
 
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
-  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3) // NOTE: Campo criado para facilitar futuras implementações de soft delete
-
-  identityType               IdentityType @map("identity_type")
-  identityDocument           String       @map("identity_document_encrypted")
-  identityDocumentBlindIndex String       @map("identity_document_blind_index")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   recoveryPasswordTokenHash      String?   @map("recovery_password_token")
   recoveryPasswordTokenExpiresAt DateTime? @map("recovery_password_token_expires_at") @db.Timestamptz(3)
 
-  newEmail                        String?   @map("new_email")
   emailVerificationTokenHash      String?   @map("email_verification_token")
   emailVerificationTokenExpiresAt DateTime? @map("email_verification_token_expires_at") @db.Timestamptz(3)
   emailVerifiedAt                 DateTime? @map("email_verified_at") @db.Timestamptz(3)
 
-  fullNameTsvPt    Unsupported("tsvector")? @map("full_name_tsv_pt")
-  fullNameUnaccent String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(full_name, ''::text) FROM 1 FOR 255))")) @map("full_name_unaccent")
+  AuthenticationAudit   AuthenticationAudit[] @relation()
+  UserActionAuditActor  UserActionAudit[]     @relation("audit_actor")
+  UserActionAuditTarget UserActionAudit[]     @relation("audit_target")
 
-  Address               Address?                @relation()
-  AuthenticationAudit   AuthenticationAudit[]   @relation()
-  Blog                  Blog[]                  @relation()
-  DirectorBoard         DirectorBoard?          @relation()
-  UserMeetingEnrollment UserMeetingEnrollment[] @relation()
-  UserActionAuditActor  UserActionAudit[]       @relation("audit_actor")
-  UserActionAuditTarget UserActionAudit[]       @relation("audit_target")
-  ResearcherProfile     ResearcherProfile?      @relation()
-
-  @@unique([email], where: raw("deleted_at IS NULL"))
-  @@unique([identityType, identityDocumentBlindIndex])
-  @@unique([secondaryEmail], where: raw("membership_status = ANY (ARRAY['ACTIVE'::\"MembershipStatusType\", 'INACTIVE'::\"MembershipStatusType\"])"), map: "users_secondary_email_key")
   @@unique([recoveryPasswordTokenHash], where: raw("recovery_password_token IS NOT NULL"))
-  @@unique([emailVerificationTokenHash], where: raw("email_verification_token IS NOT NULL"))
-  @@index([membershipStatus])
-  @@index([newEmail])
   @@index([role])
-  @@index([fullNameTsvPt], map: "idx_users_full_name_tsv_pt", type: Gin)
-  @@index([fullNameUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_users_fullname_trgm_gin", type: Gin)
   @@map("users")
-}
-
-model ResearcherProfile {
-  id                         Int            @id @default(autoincrement())
-  publicInformation          String?        @map("public_information")
-  activityAreaDescription    String?        @map("activity_area_description")
-  subActivityAreaDescription String?        @map("sub_activity_area_description")
-  occupation                 OccupationType
-  linkLattes                 String?        @map("link_lattes")
-  linkGoogleScholar          String?        @map("link_google_scholar")
-  linkResearcherId           String?        @map("link_researcher_id")
-  orcidNumber                String?        @map("orcid_number")
-  departmentName             String         @map("department_name")
-  institutionComplement      String?        @map("institution_complement")
-
-  institutionId Int?         @map("institution_id")
-  Institution   Institution? @relation(fields: [institutionId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  activityAreaId Int          @map("activity_area_id")
-  ActivityArea   ActivityArea @relation("activity_area", fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  subActivityAreaId Int          @map("sub_activity_area_id")
-  SubActivityArea   ActivityArea @relation("sub_activity_area", fields: [subActivityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  AcademicPublication AcademicPublication[] @relation()
-  EnrolledCourse      EnrolledCourse?       @relation()
-  Keyword             Keyword[]             @relation()
-
-  @@index([userId])
-  @@index([institutionId])
-  @@index([activityAreaId])
-  @@index([subActivityAreaId])
-  @@map("researchers_profile")
-}
-
-model Address {
-  id         Int      @id @default(autoincrement())
-  zip        String
-  number     String
-  street     String
-  district   String
-  city       String
-  complement String?
-  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  stateId Int          @map("state_id")
-  State   AddressState @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([userId])
-  @@index([stateId])
-  @@map("addresses")
-}
-
-model AddressState {
-  id        Int      @id @default(autoincrement())
-  name      String
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  countryId Int            @map("country_id")
-  Country   AddressCountry @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  Address Address[] @relation()
-
-  @@unique([name, countryId])
-  @@map("address_states")
-}
-
-model AddressCountry {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  State AddressState[] @relation()
-
-  @@map("address_countries")
-}
-
-model EnrolledCourse {
-  id                     Int       @id @default(autoincrement())
-  courseName             String?   @map("course_name")
-  startGraduationDate    DateTime? @map("start_graduation_date") @db.Date
-  expectedGraduationDate DateTime? @map("expected_graduation_date") @db.Date
-  supervisorName         String?   @map("supervisor_name")
-  scholarshipHolder      Boolean   @map("scholarship_holder")
-  sponsoringOrganization String?   @map("sponsoring_organization")
-  createdAt              DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  profileId         Int               @unique @map("user_id")
-  ResearcherProfile ResearcherProfile @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([profileId])
-  @@map("enrolled_courses")
-}
-
-model AcademicPublication {
-  id                         Int                         @id @default(autoincrement())
-  title                      String
-  publicationYear            Int                         @map("publication_year")
-  journalName                String                      @map("journal_name")
-  volume                     String
-  editionNumber              String                      @map("edition_number")
-  startPage                  String                      @map("start_page")
-  linkDoi                    String                      @map("link_doi")
-  createdAt                  DateTime                    @default(now()) @map("created_at") @db.Timestamptz(3)
-  titleTsvPt                 Unsupported("tsvector")?    @map("title_tsv_pt")
-  titleUnaccent              String?                     @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent")
-  AcademicPublicationAuthors AcademicPublicationAuthor[] @relation()
-
-  activityAreaId Int          @map("activity_area_id")
-  ActivityArea   ActivityArea @relation(fields: [activityAreaId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  profileId         Int               @map("user_id")
-  ResearcherProfile ResearcherProfile @relation(fields: [profileId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([profileId])
-  @@index([createdAt])
-  @@index([activityAreaId])
-  @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_academic_publications_title_trgm_gin", type: Gin)
-  @@index([titleTsvPt], map: "idx_academic_publications_title_tsv_pt", type: Gin)
-  @@map("academic_publications")
-}
-
-model AcademicPublicationAuthor {
-  id       Int    @id @default(autoincrement())
-  publicId String @unique @default(uuid(7)) @map("public_id")
-  name     String
-
-  academicPublicationId Int                 @map("academic_publication_id")
-  AcademicPublication   AcademicPublication @relation(fields: [academicPublicationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@unique([academicPublicationId, name])
-  @@map("academic_publication_authors")
-}
-
-model Institution {
-  id        Int      @id @default(autoincrement())
-  publicId  String   @unique @default(uuid(7)) @map("public_id")
-  name      String   @unique
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  ResearcherProfile ResearcherProfile[] @relation()
-
-  @@index([name(ops: raw("gin_trgm_ops"))], map: "idx_institutions_name_trgm_gin", type: Gin)
-  @@map("institutions")
-}
-
-model ActivityArea {
-  id        Int              @id @default(autoincrement())
-  area      String
-  type      ActivityAreaType
-  createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  AcademicPublication AcademicPublication[] @relation()
-  UserActivityArea    ResearcherProfile[]   @relation("activity_area")
-  UserSubActivityArea ResearcherProfile[]   @relation("sub_activity_area")
-  BlogSubcategory     Blog[]                @relation()
-
-  @@unique([type, area])
-  @@map("area_of_activity")
-}
-
-model Keyword {
-  id        Int      @id @default(autoincrement())
-  value     String   @unique
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  ResearcherProfile ResearcherProfile[] @relation()
-
-  @@map("keywords")
-}
-
-model DirectorBoard {
-  id           Int      @id @default(autoincrement())
-  publicId     String   @unique @default(uuid(7)) @map("public_id")
-  publicName   String   @map("public_name")
-  profileImage String?  @map("profile_image")
-  aboutMe      Json     @map("about_me") @db.Json
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  directorPositionId Int              @unique @map("director_position_id")
-  DirectorPosition   DirectorPosition @relation(fields: [directorPositionId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  userId Int  @unique @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([userId])
-  @@map("directors_board")
-}
-
-model DirectorPosition {
-  id          Int      @id @default(autoincrement())
-  publicId    String   @unique @default(uuid(7)) @map("public_id")
-  position    String   @unique
-  precedence  Int
-  description String?
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  DirectorBoard DirectorBoard? @relation()
-
-  @@index([precedence])
-  @@index([position(ops: raw("gin_trgm_ops"))], map: "idx_director_positions_position_trgm_gin", type: Gin)
-  @@map("director_positions")
-}
-
-model MeetingPaymentInfo {
-  id           Int      @id @default(autoincrement())
-  pixKey       String   @map("pix_key_encrypted")
-  bank         String
-  code         String
-  agency       String
-  account      String   @map("account_encrypted")
-  billingEmail String   @map("billing_email")
-  value        Decimal  @db.Decimal(10, 2)
-  limitDate    DateTime @map("limit_date") @db.Date
-  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  meetingId Int     @unique @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([meetingId])
-  @@map("meeting_payment_information")
-}
-
-model MeetingEnrollment {
-  id        Int      @id @default(autoincrement())
-  publicId  String   @unique @default(uuid(7)) @map("public_id")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  meetingId Int     @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  MeetingPresentation MeetingPresentation?    @relation()
-  UserDetails         UserMeetingEnrollment?  @relation()
-  GuestDetails        GuestMeetingEnrollment? @relation()
-
-  @@index([meetingId])
-  @@index([createdAt])
-  @@map("meeting_enrollments")
-}
-
-model UserMeetingEnrollment {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  meetingEnrollmentId Int               @unique @map("meeting_enrollment_id")
-  MeetingEnrollment   MeetingEnrollment @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  userId Int  @map("user_id")
-  User   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@unique([meetingEnrollmentId, userId])
-  @@map("user_meeting_enrollments")
-}
-
-model GuestMeetingEnrollment {
-  id              Int                @id @default(autoincrement())
-  fullName        String             @map("full_name")
-  email           String
-  institutionName String             @map("institution_name")
-  departmentName  String             @map("department_name")
-  occupation      OccupationType
-  educationLevel  EducationLevelType @map("education_level")
-  wantsNewsletter Boolean            @map("wants_newsletter")
-  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  meetingEnrollmentId Int               @unique @map("meeting_enrollment_id")
-  MeetingEnrollment   MeetingEnrollment @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([meetingEnrollmentId])
-  @@map("guest_meeting_enrollments")
-}
-
-model MeetingPresentation {
-  id               Int              @id @default(autoincrement())
-  presentationType PresentationType @map("presentation_type")
-  title            String
-  description      String
-  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  meetingEnrollmentId Int               @unique @map("meeting_enrollment_id")
-  MeetingEnrollment   MeetingEnrollment @relation(fields: [meetingEnrollmentId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  Affiliations MeetingPresentationAffiliation[] @relation()
-  Authors      MeetingPresentationAuthor[]      @relation()
-
-  @@map("meeting_presentations")
-}
-
-model MeetingPresentationAuthor {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  presentationId Int                 @map("presentation_id")
-  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([presentationId])
-  @@map("meeting_presentation_authors")
-}
-
-model MeetingPresentationAffiliation {
-  id   Int    @id @default(autoincrement())
-  name String
-
-  presentationId Int                 @map("presentation_id")
-  Presentation   MeetingPresentation @relation(fields: [presentationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([presentationId])
-  @@map("meeting_presentation_affiliations")
-}
-
-model Meeting {
-  id                Int      @id @default(autoincrement())
-  publicId          String   @unique @default(uuid(7)) @map("public_id")
-  title             String
-  bannerImage       String   @map("banner_image")
-  agenda            String // Nome do arquivo de programa da reunião
-  description       String
-  location          String
-  lastDate          DateTime @map("last_date") @db.Date
-  participantsCount Int      @default(0) @map("participants_count")
-  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  MeetingDate        MeetingDate[]       @relation()
-  MeetingPaymentInfo MeetingPaymentInfo? @relation()
-  MeetingEnrollment  MeetingEnrollment[] @relation()
-
-  @@index([lastDate])
-  @@index([createdAt])
-  @@index([title(ops: raw("gin_trgm_ops"))], map: "idx_meetings_title_trgm_gin", type: Gin)
-  @@map("meetings")
-}
-
-model MeetingDate {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @db.Date
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  meetingId Int     @map("meeting_id")
-  Meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-
-  @@index([meetingId])
-  @@map("meeting_date")
-}
-
-model Blog {
-  id              Int                      @id @default(autoincrement())
-  publicId        String                   @unique @default(uuid(7)) @map("public_id")
-  editorialStatus EditorialStatusType      @default(PENDING_APPROVAL) @map("editorial_status")
-  title           String
-  bannerImage     String                   @map("banner_image")
-  authorName      String                   @map("author_name")
-  accessCount     Int                      @default(0) @map("access_count")
-  content         Json                     @db.Json // Conteúdo em prose mirror do Blog
-  searchContent   String                   @map("search_content")
-  createdAt       DateTime                 @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt       DateTime                 @updatedAt @map("updated_at") @db.Timestamptz(3)
-  searchTsvPt     Unsupported("tsvector")? @map("search_tsv_pt") // TSVector com <title> + <primeiros 600 caracteres de content>
-  titleUnaccent   String?                  @default(dbgenerated("immutable_unaccent(SUBSTRING(COALESCE(title, ''::text) FROM 1 FOR 255))")) @map("title_unaccent") // Conteúdo da coluna title sem acentos de pontuação
-
-  userId Int?  @map("user_id")
-  User   User? @relation(fields: [userId], references: [id], onDelete: SetNull, onUpdate: Cascade)
-
-  Subcategories ActivityArea[] @relation()
-
-  @@index([userId])
-  @@index([createdAt])
-  @@index([editorialStatus])
-  @@index([searchTsvPt], map: "idx_blogs_search_tsv_pt", type: Gin)
-  @@index([titleUnaccent(ops: raw("gin_trgm_ops"))], map: "idx_blogs_title_trgm_gin", type: Gin)
-  @@map("blogs")
-}
-
-model Newsletter {
-  id       Int    @id @default(autoincrement())
-  publicId String @unique @default(uuid(7)) @map("public_id")
-
-  format       NewsletterFormatType
-  fileContent  String?              @map("file_content") // Nome do arquivo HTML
-  proseContent Json?                @map("prose_content") @db.Json // Conteúdo da Newsletter em formato ProseMirror
-
-  sequenceNumber String   @unique @map("sequence_number") // Número absoluto de sequência
-  editionNumber  String   @map("edition_number") // Número de edição do ano
-  volume         String // Ano de publicação
-  createdAt      DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-  updatedAt      DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
-
-  newsletterTemplateId Int?                @map("newsletter_template_id") // NOTE: Será nulo apenas quando 'format' for 'HTML_FILE'. Este campo é obrigatório quando 'format' for 'PROSEMIRROR'
-  NewsletterTemplate   NewsletterTemplate? @relation(fields: [newsletterTemplateId], references: [id], onDelete: NoAction, onUpdate: Cascade)
-
-  @@unique([editionNumber, volume])
-  @@index([createdAt])
-  @@index([newsletterTemplateId], where: raw("newsletter_template_id IS NOT NULL"))
-  @@index([sequenceNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_sequence_number_trgm_gin", type: Gin)
-  @@index([editionNumber(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_edition_number_trgm_gin", type: Gin)
-  @@index([volume(ops: raw("gin_trgm_ops"))], map: "idx_newsletters_volume_trgm_gin", type: Gin)
-  @@map("newsletters")
-}
-
-model NewsletterTemplate {
-  id             Int    @id @default(autoincrement())
-  publicId       String @unique @default(uuid(7)) @map("public_id")
-  templateFolder String @unique // Caminho relativo da pasta do template (e.g.: '/newsletter/newsletter-email/default/') com relação ao diretório /src/templates
-
-  Newsletter Newsletter[] @relation()
-
-  @@map("newsletter_templates")
-}
-
-model SliderImage {
-  id        Int      @id @default(autoincrement())
-  publicId  String   @unique @default(uuid(7)) @map("public_id")
-  image     String   @unique
-  order     Int
-  // type      SliderImageType
-  link      String?
-  isActive  Boolean  @default(true) @map("is_active")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
-
-  @@unique([order], where: raw("is_active = true"), map: "slider_images_order_key")
-  @@map("slider_images")
 }
 
 enum UserRoleType {
   ADMIN
-  MANAGER
-  NEWSLETTER_LEADER
-  CONTENT_LEADER
-  CONTENT_PRODUCER
   DEFAULT
 }
 
@@ -563,52 +86,6 @@ enum AuthenticationStatusType {
   USER_NOT_EXISTS
   INCORRECT_PASSWORD
   BLOCKED
-}
-
-enum OccupationType {
-  RESEARCHER
-  PROFESSOR
-  STUDENT
-  POSTGRADUATE
-  MASTER
-  DOCTORATE
-}
-
-enum EducationLevelType {
-  ELEMENTARY_SCHOOL
-  HIGH_SCHOOL
-  UNDERGRADUATE_STUDENT
-  BACHELOR
-  MASTER_STUDENT
-  MASTER
-  DOCTORATE_STUDENT
-  DOCTORATE
-  POST_DOCTORATE_STUDENT
-  POST_DOCTORATE
-  OTHER
-}
-
-enum MembershipStatusType {
-  ACTIVE
-  INACTIVE
-  PENDING
-  VERIFYING
-}
-
-enum IdentityType {
-  CPF
-  RNE
-  PASSPORT
-}
-
-enum PresentationType {
-  ORAL
-  POSTER
-}
-
-enum ActivityAreaType {
-  AREA_OF_ACTIVITY
-  SUB_AREA_OF_ACTIVITY
 }
 
 enum SystemActionType {
@@ -622,21 +99,3 @@ enum SystemActionType {
   DIRECTOR_BOARD_DELETED
   ADMIN_ROLE_TRANSFERRED
 }
-
-enum NewsletterFormatType {
-  HTML_FILE
-  PROSEMIRROR
-}
-
-enum EditorialStatusType {
-  PENDING_APPROVAL
-  DRAFT
-  PUBLISHED
-  CHANGES_REQUESTED
-  // APPROVED
-  // ARCHIVED
-}
-
-// enum SliderPageType {
-//   HOME
-// }

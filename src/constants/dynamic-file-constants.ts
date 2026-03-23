@@ -5,103 +5,22 @@ import { INVALID_FILESYSTEM_PATHS } from '@messages/loggings/system/file-logging
 import { folderExistsSync } from '@services/files/folder-exists-sync'
 import { InvalidFilesystemPathsError } from '@utils/errors/files/invalid-filesystem-paths-error'
 import { IS_PROD } from './env-constants'
-import { ELECTION_NOTICE_FILE_NAME, STATUTE_FILE_NAME } from './static-file-constants'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 export const BASE_PROJECT_PATH = IS_PROD ? path.resolve(__dirname, '..') : path.resolve(__dirname, '..', '..')
 
-export const UPLOADS_DIR = path.resolve(BASE_PROJECT_PATH, 'uploads')
-
-export const TEMP_FILES_DIR = path.resolve(UPLOADS_DIR, 'temp')
-
 // Caminhos relativos de templates nunjucks:
 export const NUNJUCKS_TEMPLATES_ROOT_PATH = path.resolve(BASE_PROJECT_PATH, 'src', 'templates')
-
-// Caminhos relativos de imagens de perfil de usuários:
-export const REGISTER_PROFILE_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'user', 'profile-images')
-export const REGISTER_TEMP_PROFILE_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'temp', 'user', 'profile-images')
-
-// Caminhos relativos de imagens de blogs:
-export const BLOG_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'blog', 'images')
-export const BLOG_TEMP_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'temp', 'blog', 'images')
-
-// Caminhos relativos de banners de blogs:
-export const BLOG_BANNERS_PATH = path.resolve(UPLOADS_DIR, 'blog', 'banners')
-export const BLOG_TEMP_BANNERS_PATH = path.resolve(UPLOADS_DIR, 'temp', 'blog', 'banners')
-
-// Caminhos relativos de banners de reuniões:
-export const MEETING_BANNERS_PATH = path.resolve(UPLOADS_DIR, 'meeting', 'banners')
-export const MEETING_TEMP_BANNERS_PATH = path.resolve(UPLOADS_DIR, 'temp', 'meeting', 'banners')
-
-export const MEETING_AGENDAS_PATH = path.resolve(UPLOADS_DIR, 'meeting', 'agendas')
-export const MEETING_TEMP_AGENDAS_PATH = path.resolve(UPLOADS_DIR, 'temp', 'meeting', 'agendas')
-
-// Caminhos relativos de documentos institucionais públicos:
-export const INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH = path.resolve(UPLOADS_DIR, 'documents', 'public')
-
-// Caminhos relativos de sliders:
-export const SLIDER_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'slider-image')
-export const HOME_PAGE_SLIDER_IMAGES_PATH = path.resolve(SLIDER_IMAGES_PATH, 'home-page')
-export const SLIDER_TEMP_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'temp', 'slider-image')
-
-// Caminhos relativos de imagens de perfil do corpo diretivo:
-export const DIRECTOR_BOARD_PROFILE_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'director-board', 'profile-images')
-export const DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH = path.resolve(
-  UPLOADS_DIR,
-  'temp',
-  'director-board',
-  'profile-images',
-)
-
-// Caminhos relativos das imagens da página institucional:
-export const INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'temp', 'institutional-info')
-
-// Caminhos relativos de newsletters:
-export const NEWSLETTER_HTML_PATH = path.resolve(UPLOADS_DIR, 'newsletter', 'html')
-export const NEWSLETTER_TEMP_HTML_PATH = path.resolve(UPLOADS_DIR, 'temp', 'newsletter', 'html')
-export const NEWSLETTER_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'newsletter', 'images')
-export const NEWSLETTER_TEMP_IMAGES_PATH = path.resolve(UPLOADS_DIR, 'temp', 'newsletter', 'images')
-
-// Padrão glob para identificar todos os arquivos de estatuto independentemente da extensão:
-export const STATUTE_FILE_NAME_PATTERN = path.resolve(INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH, `${STATUTE_FILE_NAME}*`)
-
-// Padrão glob para identificar todos os arquivos de edital de eleição independentemente da extensão:
-export const ELECTION_NOTICE_FILE_NAME_PATTERN = path.resolve(
-  INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH,
-  `${ELECTION_NOTICE_FILE_NAME}*`,
-)
 
 // Verificação para assegurar que todos os caminhos
 // listados acima existem antes da execução do código:
 // (WARNING: MANTENHA A LISTA ATUALIZADA!)
-const verifiedPaths = [
-  UPLOADS_DIR,
-  REGISTER_PROFILE_IMAGES_PATH,
-  REGISTER_TEMP_PROFILE_IMAGES_PATH,
-  BLOG_BANNERS_PATH,
-  BLOG_TEMP_IMAGES_PATH,
-  MEETING_BANNERS_PATH,
-  MEETING_TEMP_BANNERS_PATH,
-  MEETING_AGENDAS_PATH,
-  MEETING_TEMP_AGENDAS_PATH,
-  INSTITUTIONAL_INFO_PUBLIC_DOCUMENTS_PATH,
-  SLIDER_IMAGES_PATH,
-  HOME_PAGE_SLIDER_IMAGES_PATH,
-  SLIDER_TEMP_IMAGES_PATH,
-  DIRECTOR_BOARD_PROFILE_IMAGES_PATH,
-  DIRECTOR_BOARD_TEMP_PROFILE_IMAGES_PATH,
-  INSTITUTIONAL_TEMP_ABOUT_IMAGES_PATH,
-  NEWSLETTER_HTML_PATH,
-  NEWSLETTER_TEMP_HTML_PATH,
-  NEWSLETTER_IMAGES_PATH,
-  NEWSLETTER_TEMP_IMAGES_PATH,
-  TEMP_FILES_DIR,
-  NUNJUCKS_TEMPLATES_ROOT_PATH,
-  BLOG_IMAGES_PATH,
-  BLOG_TEMP_BANNERS_PATH,
-].map((path) => ({ path, exists: folderExistsSync(path) }))
+const verifiedPaths = [BASE_PROJECT_PATH, NUNJUCKS_TEMPLATES_ROOT_PATH].map((path) => ({
+  path,
+  exists: folderExistsSync(path),
+}))
 
 const failedVerifiedPaths = verifiedPaths.filter((pathStatus) => !pathStatus.exists)
 

@@ -7,16 +7,16 @@ import type { PaginationType } from '@custom-types/utils/generics/pagination'
  * para queries SQL/Prisma com `skip` e `take`.
  *
  * @param params - Parâmetros de paginação.
- * @param params.page - Número da página (padrão: 1).
- * @param params.limit - Quantidade de itens por página (padrão: 10).
- * @returns Objeto com `page`, `limit` e `offset` calculado.
+ * @param params.currentPage - Número da página (padrão: 1).
+ * @param params.pageSize - Quantidade de itens por página (padrão: 10).
+ * @returns Objeto com `take` (limite) e `skip` (offset) calculado.
  *
  * @example
- * evalOffset({ page: 1, limit: 10 })  // { page: 1, limit: 10, offset: 0 }
- * evalOffset({ page: 3, limit: 20 })  // { page: 3, limit: 20, offset: 40 }
- * evalOffset({})                      // { page: 1, limit: 10, offset: 0 }
+ * evalOffset({ currentPage: 1, pageSize: 10 })  // { take: 10, skip: 0 }
+ * evalOffset({ currentPage: 3, pageSize: 20 })  // { take: 20, skip: 40 }
+ * evalOffset({})                      // { take: 10, skip: 0 }
  */
-export function evalOffset({ page = 1, limit = 10 }: PaginationType) {
-  const offset = (page - 1) * limit
-  return { page, limit, offset }
+export function evalOffset({ currentPage = 1, pageSize = 10 }: PaginationType) {
+  const offset = (currentPage - 1) * pageSize
+  return { take: pageSize, skip: offset }
 }

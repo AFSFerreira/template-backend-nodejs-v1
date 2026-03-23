@@ -1,6 +1,6 @@
-import type { MembershipStatusType, Prisma } from '@prisma/generated/client'
+import type { Prisma } from '@prisma/generated/client'
 
 export interface StreamAllUsersQuery {
-  where?: Omit<Prisma.UserWhereInput, 'membershipStatus'> & { membershipStatus: MembershipStatusType[] }
+  where?: Prisma.UserWhereInput
   batchSize?: number
 }

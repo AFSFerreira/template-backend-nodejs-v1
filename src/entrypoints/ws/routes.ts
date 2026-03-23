@@ -3,15 +3,10 @@ import type { WebSocket } from 'ws'
 import { logError } from '@lib/pino/helpers/log-error'
 import ms from 'ms'
 import { clientStates } from './client-states'
-import { WsDispatcher } from './dispatcher'
-import { setupRedisPubSubSubscriptions } from './middlewares/setup-redis-dashboard-metrics-subscriptions'
 import { wsConnectionHandler } from './middlewares/ws-connection-handler'
-import { registerHandlers } from './register-handlers'
 
 export async function websocketRoutes(app: FastifyInstance) {
-  registerHandlers(WsDispatcher.getInstance())
-
-  await setupRedisPubSubSubscriptions(app)
+  // registerHandlers(WsDispatcher.getInstance())
 
   app.get('/ws', { websocket: true }, wsConnectionHandler)
 

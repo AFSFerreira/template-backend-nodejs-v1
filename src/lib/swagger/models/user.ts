@@ -1,9 +1,5 @@
-import { httpFileSchema } from '@custom-types/http/presenter/file/file-default'
 import { httpUserSchema } from '@custom-types/http/presenter/user/user-default'
-import { httpUserDetailsSchema } from '@custom-types/http/presenter/user/user-detailed'
-import { httpUserDetailsForAdminSchema } from '@custom-types/http/presenter/user/user-detailed-for-admin'
 import { httpSimplifiedUserDetailsSchema } from '@custom-types/http/presenter/user/user-simplified'
-import { httpSimplifiedUserDetailsForAdminSchema } from '@custom-types/http/presenter/user/user-simplified-for-admin'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'
@@ -39,6 +35,19 @@ export const userSwaggerDocs = {
     response: {
       200: z.object({ data: z.object({ accessToken: z.string() }) }).describe('Token atualizado com sucesso'),
       401: apiErrorResponseSchema.describe('Token inválido ou expirado'),
+      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
+    },
+  },
+
+  findUserById: {
+    summary: 'Buscar usuário por ID público (admin)',
+    description: 'Retorna os dados completos de um usuário específico para administração.',
+    tags: [swaggerTokens.tags.user.admin],
+    response: {
+      200: z.object({ data: httpUserSchema }).describe('Dados completos do usuário'),
+      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
+      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
+      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
     },
   },
@@ -95,7 +104,7 @@ export const userSwaggerDocs = {
     description: 'Retorna os dados detalhados do perfil do usuário autenticado.',
     tags: [swaggerTokens.tags.user.auth],
     response: {
-      200: z.object({ data: httpUserDetailsSchema }).describe('Dados do perfil do usuário'),
+      200: z.object({ data: httpUserSchema }).describe('Dados do perfil do usuário'),
       401: apiErrorResponseSchema.describe('Usuário não autenticado'),
       404: apiErrorResponseSchema.describe('Usuário não encontrado'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
@@ -107,7 +116,7 @@ export const userSwaggerDocs = {
     description: 'Atualiza os dados do perfil do usuário autenticado.',
     tags: [swaggerTokens.tags.user.auth],
     response: {
-      200: z.object({ data: httpUserDetailsSchema }).describe('Dados do usuário atualizados'),
+      200: z.object({ data: httpUserSchema }).describe('Dados do usuário atualizados'),
       400: apiErrorResponseSchema.describe('Área de atuação ou informações de identidade inválidas'),
       401: apiErrorResponseSchema.describe('Usuário não autenticado'),
       404: apiErrorResponseSchema.describe('Usuário não encontrado'),
@@ -140,32 +149,6 @@ export const userSwaggerDocs = {
       404: apiErrorResponseSchema.describe('Usuário não encontrado'),
       409: apiErrorResponseSchema.describe('Já existe um usuário com o mesmo e-mail'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  confirmEmailChange: {
-    summary: 'Confirmar alteração de e-mail',
-    description: 'Confirma a alteração de e-mail utilizando o token enviado ao novo endereço.',
-    tags: [swaggerTokens.tags.user.public],
-    response: {
-      200: z.object({ data: apiMessageSchema }).describe('E-mail atualizado com sucesso'),
-      400: apiErrorResponseSchema.describe('Alteração de e-mail não solicitada'),
-      401: apiErrorResponseSchema.describe('Token inválido ou expirado'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  uploadProfileImage: {
-    summary: 'Upload de foto de perfil',
-    description: 'Faz o upload de uma nova foto de perfil para o usuário.',
-    tags: [swaggerTokens.tags.user.public],
-    response: {
-      201: z.object({ data: httpFileSchema }).describe('Foto de perfil enviada com sucesso'),
-      401: apiErrorResponseSchema.describe('Formato de imagem inválido'),
-      413: apiErrorResponseSchema.describe('Arquivo de imagem muito grande'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-      500: apiErrorResponseSchema.describe('Erro ao processar ou persistir a foto de perfil'),
     },
   },
 
@@ -216,125 +199,9 @@ export const userSwaggerDocs = {
     description: 'Cadastra um novo usuário no sistema. Após o cadastro, um e-mail de verificação será enviado.',
     tags: [swaggerTokens.tags.user.public],
     response: {
-      201: z.object({ data: httpUserDetailsSchema }).describe('Usuário criado com sucesso'),
+      201: z.object({ data: httpUserSchema }).describe('Usuário criado com sucesso'),
       400: apiErrorResponseSchema.describe('Área de atuação, domínio de e-mail ou informações de identidade inválidas'),
       409: apiErrorResponseSchema.describe('Usuário, e-mail, username ou documento já existente'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  // ========== ADMIN ==========
-
-  getAllUsersDetailed: {
-    summary: 'Listar usuários detalhados (admin)',
-    description: 'Retorna a lista paginada de usuários com informações detalhadas para administração.',
-    tags: [swaggerTokens.tags.user.restricted],
-    response: {
-      200: z
-        .object({
-          data: z.array(httpSimplifiedUserDetailsForAdminSchema),
-          meta: apiMetaResponseSchema,
-        })
-        .describe('Lista detalhada de usuários para admin'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  findUserByPublicId: {
-    summary: 'Buscar usuário por ID público (admin)',
-    description: 'Retorna os dados completos de um usuário específico para administração.',
-    tags: [swaggerTokens.tags.user.admin],
-    response: {
-      200: z.object({ data: httpUserDetailsForAdminSchema }).describe('Dados completos do usuário'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  exportUsersData: {
-    summary: 'Exportar dados de usuários',
-    description:
-      'Exporta os dados dos usuários para download no formato especificado pelo parâmetro `format` (excel ou csv). O padrão é excel.',
-    tags: [swaggerTokens.tags.user.restricted],
-    response: {
-      200: z.string().describe('Arquivo Excel ou CSV com dados dos usuários'),
-      204: z.void().describe('Nenhuma informação de usuários disponível para exportação'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  reviewMembershipStatus: {
-    summary: 'Revisar status de membro',
-    description: 'Revisa o status de membro de um usuário (aprovar ou rejeitar cadastro).',
-    tags: [swaggerTokens.tags.user.restricted],
-    response: {
-      200: z.object({ data: httpUserDetailsSchema }).describe('Status de membro revisado'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado ou status não pendente'),
-      403: apiErrorResponseSchema.describe('Sem permissão de acesso'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  updateMembershipStatus: {
-    summary: 'Atualizar status de membro',
-    description: 'Atualiza o status de membro de um usuário (ativar ou inativar).',
-    tags: [swaggerTokens.tags.user.admin],
-    response: {
-      200: z.object({ data: httpUserDetailsSchema }).describe('Status de membro atualizado'),
-      400: apiErrorResponseSchema.describe(
-        'Não é possível atualizar status de usuários com status VERIFYING ou PENDING',
-      ),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Admin não pode inativar a si mesmo ou inativar outros admins'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  updateUserPermissions: {
-    summary: 'Atualizar permissões do usuário',
-    description: 'Atualiza a role/permissão de um usuário no sistema.',
-    tags: [swaggerTokens.tags.user.admin],
-    response: {
-      204: z.void().describe('Permissões atualizadas com sucesso'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Admin não pode alterar a própria permissão'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
-      409: apiErrorResponseSchema.describe('Já existe um administrador no sistema'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  transferAdminRole: {
-    summary: 'Transferir role de administrador',
-    description: 'Transfere a role de administrador para outro usuário do sistema.',
-    tags: [swaggerTokens.tags.user.admin],
-    response: {
-      204: z.void().describe('Role de administrador transferida com sucesso'),
-      400: apiErrorResponseSchema.describe('Não é possível transferir para si mesmo'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Sem permissão de acesso ou usuário não é administrador'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
-      429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
-    },
-  },
-
-  deleteUserByAdmin: {
-    summary: 'Excluir usuário (admin)',
-    description: 'Remove a conta de um usuário pelo administrador.',
-    tags: [swaggerTokens.tags.user.admin],
-    response: {
-      204: z.void().describe('Usuário excluído com sucesso'),
-      401: apiErrorResponseSchema.describe('Usuário não autenticado'),
-      403: apiErrorResponseSchema.describe('Admin não pode excluir a si mesmo'),
-      404: apiErrorResponseSchema.describe('Usuário não encontrado'),
       429: apiErrorResponseSchema.describe('Limite de requisições excedido'),
     },
   },

@@ -4,15 +4,15 @@ import { logger } from '@lib/pino'
 export abstract class AbstractHtmlCacheService {
   constructor(protected readonly redis: Redis) {}
 
-  protected abstract generateKey(publicId: string): string
+  protected abstract generateKey(id: string): string
   protected abstract get ttlInMs(): number
   protected abstract get logMessages(): { get: string; set: string }
 
   /**
    * Busca o HTML no cache e renova o TTL automaticamente (sliding expiration).
    */
-  public async get(publicId: string): Promise<string | null> {
-    const key = this.generateKey(publicId)
+  public async get(id: string): Promise<string | null> {
+    const key = this.generateKey(id)
     const htmlCached = await this.redis.get(key)
 
     if (htmlCached) {
@@ -27,8 +27,8 @@ export abstract class AbstractHtmlCacheService {
   /**
    * Armazena o HTML com NX (evita sobrescrita).
    */
-  public async set(publicId: string, htmlContent: string): Promise<'OK' | null> {
-    const key = this.generateKey(publicId)
+  public async set(id: string, htmlContent: string): Promise<'OK' | null> {
+    const key = this.generateKey(id)
     const wasCached = await this.redis.set(key, htmlContent, 'PX', this.ttlInMs, 'NX')
 
     if (!wasCached) {
@@ -43,8 +43,8 @@ export abstract class AbstractHtmlCacheService {
   /**
    * Remove o HTML do cache.
    */
-  public async remove(publicId: string): Promise<void> {
-    const key = this.generateKey(publicId)
+  public async remove(id: string): Promise<void> {
+    const key = this.generateKey(id)
     await this.redis.del(key)
   }
 }

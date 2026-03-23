@@ -1,5 +1,5 @@
 export interface DeleteUserUseCaseRequest {
-  publicId: string
+  id: string
 }
 
 export interface DeleteUserUseCaseResponse {}

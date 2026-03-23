@@ -1,5 +1,5 @@
 import type { EmailJobData } from '@custom-types/jobs/queues/definitions/email-queue'
-import { bullmqTokens } from '@lib/bullmq/helpers/bullmq-tokens'
+import { bullmqTokens } from '@lib/bullmq/helpers/tokens'
 import { redisConnection } from '@lib/redis/helpers/configuration'
 import { Queue } from 'bullmq'
 import ms from 'ms'

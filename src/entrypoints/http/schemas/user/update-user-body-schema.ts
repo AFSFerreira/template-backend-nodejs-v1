@@ -1,3 +1,3 @@
-import { updateUserBodySchema } from '../utils/components/user/update-user-body-schema'
+import { registerBodySchema } from './register-body-schema'
 
-export const updateBodySchema = updateUserBodySchema
+export const updateBodySchema = registerBodySchema.partial()

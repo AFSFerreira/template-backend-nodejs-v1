@@ -1,5 +1,5 @@
 export interface UpgradeUserPasswordHashUseCaseRequest {
-  userId: number
+  userId: string
   password: string
 }
 

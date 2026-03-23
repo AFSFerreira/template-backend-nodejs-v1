@@ -29,7 +29,6 @@ import { customReplyPluginDefinition } from '@http/plugins/custom-reply'
 import { logRequest } from '@http/plugins/request-logger'
 import { logResponse } from '@http/plugins/response-logger'
 import { gracefulShutdown } from '@http/plugins/shutdown'
-import { staticFileRoutes } from '@http/plugins/static-files'
 import { httpRoutes } from '@http/routes'
 import { initSentry } from '@lib/sentry'
 import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-handler'
@@ -63,7 +62,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   app.register(underPressure, underPressureConfiguration)
   app.register(fastifyCompress, compressConfiguration)
   app.register(multipart, multipartConfiguration)
-  app.register(staticFileRoutes)
   app.register(fastifyCookie)
   app.register(rateLimit, rateLimitConfigurations)
   app.register(cors, corsConfiguration)
