@@ -1,8 +1,6 @@
 services:
   api:
-    build:
-      context: .
-      dockerfile: .devcontainer/Dockerfile
+    image: mcr.microsoft.com/devcontainers/base:debian
     volumes:
       - .:/workspace:cached
       - node_modules:/workspace/node_modules
