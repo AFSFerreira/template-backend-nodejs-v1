@@ -36,7 +36,7 @@ Antes de gerar qualquer código, valide mentalmente se respeita essas fronteiras
 | DI Container   | Tsyringe (`reflect-metadata`)                           |
 | Validação      | Zod 4                                                   |
 | Linter/Format  | Biome                                                   |
-| Hashing        | Argon2 (primário), bcryptjs (legado)                    |
+| Hashing        | Argon2                                                  |
 | Email          | Nodemailer + Nunjucks templates                         |
 | Monitoramento  | Sentry                                                  |
 | Rich Text      | TipTap / ProseMirror                                    |
