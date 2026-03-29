@@ -6,7 +6,7 @@ import { verifyUserRole } from '@http/middlewares/verify-user-role.middleware'
 import { authenticateBodySchema } from '@http/schemas/user/authenticate-body-schema'
 import { findUserByIdParamsSchema } from '@http/schemas/user/find-by-public-id-params-schema'
 import { forgotPasswordBodySchema } from '@http/schemas/user/forgot-password-body-schema'
-import { getAllUsersSimplifiedQuerySchema } from '@http/schemas/user/get-all-users-simplified-query-schema'
+import { getAllUsersQuerySchema } from '@http/schemas/user/get-all-users-query-schema'
 import { registerBodySchema } from '@http/schemas/user/register-body-schema'
 import { resetPasswordBodySchema } from '@http/schemas/user/reset-password-body-schema'
 import { changePasswordBodySchema } from '@http/schemas/user/update-password-body-schema'
@@ -21,7 +21,7 @@ import { CreateUserController } from './create-user.controller'
 import { DeleteUserController } from './delete-user.controller'
 import { FindUserByIdController } from './find-user-by-public-id.controller'
 import { ForgotPasswordController } from './forgot-password.controller'
-import { GetAllUsersSimplifiedController } from './get-all-users-simplified.controller'
+import { GetAllUsersController } from './get-all-users.controller'
 import { LogoutController } from './logout.controller'
 import { RefreshTokenController } from './refresh-token.controller'
 import { ResetPasswordController } from './reset-password.controller'
@@ -35,11 +35,11 @@ export async function userRoutes(app: ExtendedFastifyInstance) {
     {
       ...rateLimit(RATE_LIMIT_TIERS.STANDARD),
       schema: {
-        ...userSwaggerDocs.getAllUsersSimplified,
-        querystring: getAllUsersSimplifiedQuerySchema,
+        ...userSwaggerDocs.getAllUsers,
+        querystring: getAllUsersQuerySchema,
       },
     },
-    adaptRoute(GetAllUsersSimplifiedController),
+    adaptRoute(GetAllUsersController),
   )
   app.get(
     '/:id',

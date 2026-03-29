@@ -2,7 +2,7 @@ import type { PaginatedResult } from '@custom-types/custom/pagination-meta-type'
 import type { ChangeUserPasswordQuery } from '@custom-types/repository/prisma/user/change-user-password-query'
 import type { CreateUserQuery } from '@custom-types/repository/prisma/user/create-user-query'
 import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
-import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
+import type { ListAllUsersQuery } from '@custom-types/repository/prisma/user/list-all-users-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
 import type { HashedToken } from '@custom-types/services/hashes/hashed-token'
@@ -16,7 +16,7 @@ export interface UsersRepository {
   findByUsername: (username: string) => Promise<User | null>
   findById: (id: string) => Promise<User | null>
   findConflictingUser: (query: FindConflictingUserQuery) => Promise<User | null>
-  listAllUsersSimplified: (query: ListAllUsersSimplifiedQuery) => Promise<PaginatedResult<User[]>>
+  listAllUsers: (query: ListAllUsersQuery) => Promise<PaginatedResult<User[]>>
   totalCount: (where?: Prisma.UserWhereInput) => Promise<number>
   setLastLogin: (id: string) => Promise<void>
   incrementLoginAttempts: (id: string) => Promise<void>

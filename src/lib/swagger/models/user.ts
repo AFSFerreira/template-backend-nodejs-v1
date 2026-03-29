@@ -166,7 +166,7 @@ export const userSwaggerDocs = {
 
   // ========== PUBLIC ==========
 
-  getAllUsersSimplified: {
+  getAllUsers: {
     summary: 'Listar usuários (simplificado)',
     description: 'Retorna a lista paginada de usuários com informações simplificadas.',
     tags: [swaggerTokens.tags.user.public],

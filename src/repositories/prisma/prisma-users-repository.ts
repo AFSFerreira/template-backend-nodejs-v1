@@ -1,7 +1,7 @@
 import type { ChangeUserPasswordQuery } from '@custom-types/repository/prisma/user/change-user-password-query'
 import type { CreateUserQuery } from '@custom-types/repository/prisma/user/create-user-query'
 import type { FindConflictingUserQuery } from '@custom-types/repository/prisma/user/find-conflicting-user-query'
-import type { ListAllUsersSimplifiedQuery } from '@custom-types/repository/prisma/user/list-all-users-simplified-query'
+import type { ListAllUsersQuery } from '@custom-types/repository/prisma/user/list-all-users-query'
 import type { SetPasswordTokenQuery } from '@custom-types/repository/prisma/user/set-password-token-query'
 import type { UpdateRoleQuery } from '@custom-types/repository/prisma/user/update-role-query'
 import type { UpdateUserQuery } from '@custom-types/repository/prisma/user/update-user-query'
@@ -80,7 +80,7 @@ export class PrismaUsersRepository implements UsersRepository {
     return user
   }
 
-  async listAllUsersSimplified(query: ListAllUsersSimplifiedQuery) {
+  async listAllUsers(query: ListAllUsersQuery) {
     const { limit: pageSize, page: currentPage, ...filteredInfo } = query
 
     const { skip, take } = evalOffset({ currentPage, pageSize })

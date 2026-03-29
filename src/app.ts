@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import '@lib/dayjs/index'
 import '@lib/tsyringe/index'
 import '@lib/zod/index'
+import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { IS_DEV } from '@constants/env-constants'
 import { fastifyCompress } from '@fastify/compress'
@@ -35,7 +36,7 @@ import { fastifyErrorHandler } from '@services/error-handlers/fastify-error-hand
 import { registerAppSignals } from '@services/system/register-app-signals'
 import { wsConfiguration } from '@ws/configurations/ws-configuration'
 import { websocketRoutes } from '@ws/routes'
-import fastify, { type FastifyInstance } from 'fastify'
+import fastify from 'fastify'
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 
 export async function buildApp(): Promise<FastifyInstance> {
