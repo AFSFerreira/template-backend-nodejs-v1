@@ -1,5 +1,8 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { UpdateBodyType, UpdateUserBodySchemaType } from '@custom-types/http/schemas/user/update-user-body-schema'
+import type {
+  UpdateBodyType,
+  UpdateUserBodySchemaType,
+} from '@custom-types/entrypoints/http/schemas/user/update-user-body-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { UserDefaultPresenter } from '@http/presenters/user/user-default.presenter'

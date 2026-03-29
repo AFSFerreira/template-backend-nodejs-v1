@@ -1,5 +1,5 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { ForgotPasswordBodyType } from '@custom-types/http/schemas/user/forgot-password-body-schema'
+import type { ForgotPasswordBodyType } from '@custom-types/entrypoints/http/schemas/user/forgot-password-body-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { PASSWORD_RESET_IF_USER_EXISTS } from '@messages/responses/user-responses/2xx'

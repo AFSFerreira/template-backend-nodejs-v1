@@ -1,5 +1,5 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { VerifyEmailBodyType } from '@custom-types/http/schemas/user/verify-email-body-schema'
+import type { VerifyEmailBodyType } from '@custom-types/entrypoints/http/schemas/user/verify-email-body-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { EMAIL_VERIFICATION_SUCCESSFUL } from '@messages/responses/user-responses/2xx'

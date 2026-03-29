@@ -133,21 +133,12 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
 |  |  ├── newsletter
 |  |  └── user
 |  ├── use-cases
-|  |  ├── academic-publication
-|  |  ├── activity-area
 |  |  ├── address-state
 |  |  ├── blog
-|  |  ├── dashboard-metrics
-|  |  ├── director-board
-|  |  ├── director-position
-|  |  ├── document-management
 |  |  ├── errors
 |  |  ├── institution
-|  |  ├── institutional-info
 |  |  ├── meeting
-|  |  ├── meeting-enrollment
 |  |  ├── newsletters
-|  |  ├── slider-image
 |  |  └── user
 |  └── utils
 |     ├── dates
@@ -166,7 +157,6 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
    ├── blog
    |  ├── banners
    |  └── images
-   ├── director-board
    |  └── profile-images
    ├── documents
    |  └── public
@@ -176,15 +166,11 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
    ├── newsletter
    |  ├── html
    |  └── images
-   ├── slider-image
    |  └── home-page
    ├── temp
    |  ├── blog
-   |  ├── director-board
-   |  ├── institutional-info
    |  ├── meeting
    |  ├── newsletter
-   |  ├── slider-image
    |  └── user
    └── user
       └── profile-images
@@ -210,24 +196,11 @@ Request → Controller → Zod validation → Use Case (via Tsyringe) → Reposi
 
 ## Domínios do sistema
 
-| Domínio                | Descrição                                         |
-| ---------------------- | ------------------------------------------------- |
-| `user`                 | Cadastro, autenticação, perfil, gestão de membros |
-| `blog`                 | Artigos com workflow editorial e ProseMirror       |
-| `meeting`              | Encontros científicos, agenda, pagamentos          |
-| `meeting-enrollment`   | Inscrição de participantes em encontros            |
-| `newsletter`           | Boletins informativos da organizacao                 |
-| `academic-publication` | Publicações acadêmicas dos membros                 |
-| `director-board`       | Quadro de diretores                                |
-| `director-position`    | Cargos da diretoria                                |
-| `institutional-info`   | Informações institucionais (sobre, estatuto)       |
-| `slider-image`         | Imagens do carrossel da home                       |
-| `document-management`  | Gestão de documentos                               |
-| `dashboard-metrics`    | Métricas administrativas                           |
-| `activity-area`        | Áreas de atuação dos membros                       |
-| `institution`          | Instituições vinculadas                            |
-| `address-state`        | Estados/UFs para endereços                         |
-| `health-check`         | Endpoint de health check                           |
+| Tabela (DB) | Descrição |
+| ----------- | --------- |
+| `users` | Usuários da aplicação com credenciais, perfil e controle de acesso |
+| `authentication_audits` | Auditoria de tentativas de autenticação e status de login |
+| `user_action_audits` | Auditoria de ações administrativas e operacionais entre usuários |
 
 ## Variáveis de ambiente obrigatórias
 

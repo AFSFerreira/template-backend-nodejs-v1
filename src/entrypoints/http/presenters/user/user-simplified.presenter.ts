@@ -2,7 +2,7 @@ import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy
 import type {
   HTTPSimplifiedUserDetails,
   UserSimplifiedPresenterInput,
-} from '@custom-types/http/presenter/user/user-simplified'
+} from '@custom-types/entrypoints/http/presenter/user/user-simplified'
 import { singleton } from 'tsyringe'
 
 @singleton()

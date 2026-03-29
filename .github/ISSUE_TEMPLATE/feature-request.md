@@ -14,21 +14,20 @@ Descreva o problema ou situação que a funcionalidade resolve.
 
 Descreva de forma clara a funcionalidade desejada e como ela deveria funcionar.
 
-## Domínio afetado
+## Módulo/camada afetada
 
-<!-- Marque o(s) domínio(s) relacionado(s): -->
+<!-- Marque o(s) módulo(s) ou camada(s) relacionado(s): -->
 
 - [ ] `user`
-- [ ] `blog`
-- [ ] `meeting` / `meeting-enrollment`
-- [ ] `newsletter`
-- [ ] `academic-publication`
-- [ ] `director-board` / `director-position`
-- [ ] `institutional-info`
-- [ ] `slider-image`
-- [ ] `document-management`
-- [ ] `dashboard-metrics`
-- [ ] `activity-area` / `institution`
+- [ ] `authentication/session`
+- [ ] `audits` (authentication-audits / user-action-audits)
+- [ ] `http` (controllers, routes, schemas, middlewares)
+- [ ] `use-cases`
+- [ ] `repositories` / `prisma`
+- [ ] `services`
+- [ ] `jobs` (cron/queues)
+- [ ] `templates` / `messages` (e-mails e respostas)
+- [ ] `infra` (redis, sentry, tsyringe, swagger)
 - [ ] Outro: `__________`
 
 ## Checklist arquitetural

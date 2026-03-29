@@ -1,5 +1,5 @@
-import { httpUserSchema } from '@custom-types/http/presenter/user/user-default'
-import { httpSimplifiedUserDetailsSchema } from '@custom-types/http/presenter/user/user-simplified'
+import { httpUserSchema } from '@custom-types/entrypoints/http/presenter/user/user-default'
+import { httpSimplifiedUserDetailsSchema } from '@custom-types/entrypoints/http/presenter/user/user-simplified'
 import { swaggerTokens } from '@lib/swagger/helpers/swagger-tokens'
 import { apiMetaResponseSchema } from '@lib/swagger/schemas/api-meta-response-schema'
 import { apiErrorResponseSchema } from '@lib/swagger/schemas/api-response-schema'

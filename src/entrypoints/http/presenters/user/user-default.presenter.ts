@@ -1,5 +1,5 @@
 import type { IPresenterStrategy } from '@custom-types/custom/presenter-strategy'
-import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/http/presenter/user/user-default'
+import type { HTTPUser, UserDefaultPresenterInput } from '@custom-types/entrypoints/http/presenter/user/user-default'
 import { truncateDate } from '@utils/formatters/truncate-date'
 import { singleton } from 'tsyringe'
 

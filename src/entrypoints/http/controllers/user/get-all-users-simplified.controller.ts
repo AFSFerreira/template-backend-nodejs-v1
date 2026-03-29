@@ -1,5 +1,5 @@
 import type { ZodRequest } from '@custom-types/custom/zod-request'
-import type { GetAllUsersSimplifiedQueryType } from '@custom-types/http/schemas/user/get-all-users-simplified-query-schema'
+import type { GetAllUsersSimplifiedQueryType } from '@custom-types/entrypoints/http/schemas/user/get-all-users-simplified-query-schema'
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply } from 'fastify'
 import { UserSimplifiedPresenter } from '@http/presenters/user/user-simplified.presenter'

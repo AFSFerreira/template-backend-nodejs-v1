@@ -112,21 +112,7 @@ Este repositório contém um template de backend reutilizável para múltiplos c
 |  |  ├── newsletter
 |  |  └── user
 |  ├── use-cases
-|  |  ├── academic-publication
-|  |  ├── activity-area
-|  |  ├── address-state
-|  |  ├── blog
-|  |  ├── dashboard-metrics
-|  |  ├── director-board
-|  |  ├── director-position
-|  |  ├── document-management
 |  |  ├── errors
-|  |  ├── institution
-|  |  ├── institutional-info
-|  |  ├── meeting
-|  |  ├── meeting-enrollment
-|  |  ├── newsletters
-|  |  ├── slider-image
 |  |  └── user
 |  └── utils
 |     ├── dates
@@ -145,7 +131,6 @@ Este repositório contém um template de backend reutilizável para múltiplos c
    ├── blog
    |  ├── banners
    |  └── images
-   ├── director-board
    |  └── profile-images
    ├── documents
    |  └── public
@@ -155,15 +140,11 @@ Este repositório contém um template de backend reutilizável para múltiplos c
    ├── newsletter
    |  ├── html
    |  └── images
-   ├── slider-image
    |  └── home-page
    ├── temp
    |  ├── blog
-   |  ├── director-board
-   |  ├── institutional-info
    |  ├── meeting
    |  ├── newsletter
-   |  ├── slider-image
    |  └── user
    └── user
       └── profile-images

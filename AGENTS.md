@@ -133,21 +133,7 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
 |  |  ├── newsletter
 |  |  └── user
 |  ├── use-cases
-|  |  ├── academic-publication
-|  |  ├── activity-area
-|  |  ├── address-state
-|  |  ├── blog
-|  |  ├── dashboard-metrics
-|  |  ├── director-board
-|  |  ├── director-position
-|  |  ├── document-management
 |  |  ├── errors
-|  |  ├── institution
-|  |  ├── institutional-info
-|  |  ├── meeting
-|  |  ├── meeting-enrollment
-|  |  ├── newsletters
-|  |  ├── slider-image
 |  |  └── user
 |  └── utils
 |     ├── dates
@@ -166,7 +152,6 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
    ├── blog
    |  ├── banners
    |  └── images
-   ├── director-board
    |  └── profile-images
    ├── documents
    |  └── public
@@ -176,15 +161,11 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
    ├── newsletter
    |  ├── html
    |  └── images
-   ├── slider-image
    |  └── home-page
    ├── temp
    |  ├── blog
-   |  ├── director-board
-   |  ├── institutional-info
    |  ├── meeting
    |  ├── newsletter
-   |  ├── slider-image
    |  └── user
    └── user
       └── profile-images
