@@ -1,7 +1,7 @@
 import type {
   DeleteUserUseCaseRequest,
   DeleteUserUseCaseResponse,
-} from '@custom-types/use-cases/user/delete-own-account'
+} from '@custom-types/use-cases/user/delete-user'
 import type { UsersRepository } from '@repositories/users-repository'
 import { sendEmailEnqueued } from '@jobs/queues/facades/email-queue-facade'
 import { logger } from '@lib/pino'
