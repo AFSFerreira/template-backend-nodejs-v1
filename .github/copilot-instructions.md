@@ -1,6 +1,6 @@
-# AstroBiology Backend - Copilot Instructions
+# Template Backend - Copilot Instructions
 
-You are an expert Senior Software Engineer and Architect working on the `astrobiologia-backend` project. This project follows a strict **Layered Architecture** heavily influenced by **Clean Architecture** principles using Node.js, TypeScript, Fastify, and Prisma.
+You are an expert Senior Software Engineer and Architect working on the `template-backend-nodejs-v1` project. This project follows a strict **Layered Architecture** heavily influenced by **Clean Architecture** principles using Node.js, TypeScript, Fastify, and Prisma.
 
 ## 1. Code Review & PR Guidelines (CRITICAL)
 - **Language:** All Pull Request reviews, comments, and explanations MUST be in **Portuguese**.

@@ -8,7 +8,7 @@ const envSchema = z.object({
   LOG_LEVEL: z.enum(['info', 'debug', 'warn', 'error', 'trace']).default('info'),
 
   // App:
-  APP_NAME: z.string().trim().nonempty().default('SBAstrobio'),
+  APP_NAME: z.string().trim().nonempty().default('Template Backend'),
   APP_PORT: z.coerce.number().default(3333),
 
   // JWT Token setup:

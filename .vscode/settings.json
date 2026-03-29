@@ -24,39 +24,5 @@
   },
   "[prisma]": {
     "editor.defaultFormatter": "Prisma.prisma"
-  },
-  "cSpell.words": [
-    "appendonly",
-    "Astrobio",
-    "astrobiologia",
-    "autoincrement",
-    "BUILDKIT",
-    "cnpj",
-    "dbgenerated",
-    "falhar",
-    "fkey",
-    "FLUSHALL",
-    "FLUSHDB",
-    "healthcheck",
-    "ILIKE",
-    "isready",
-    "loglevel",
-    "MAXMEMORY",
-    "noeviction",
-    "orcid",
-    "OUTRA",
-    "pkey",
-    "plainto",
-    "plpgsql",
-    "requirepass",
-    "sbastrobiodb",
-    "servidor",
-    "setweight",
-    "treeify",
-    "trgm",
-    "tsquery",
-    "tsvector",
-    "unaccent",
-    "uuidv"
-  ]
+  }
 }

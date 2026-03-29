@@ -4,7 +4,7 @@ Instruções para o Claude trabalhando neste repositório.
 
 ## Visão geral
 
-Backend da Sociedade Brasileira de Astrobiologia (SBAstrobio). API REST construída com Node.js + TypeScript seguindo **Layered Architecture** fortemente influenciada por **Clean Architecture**. Gerencia membros, blogs, encontros científicos, newsletters, publicações acadêmicas, quadro de diretores e métricas administrativas.
+Template backend reutilizavel para projetos genericos. API REST construída com Node.js + TypeScript seguindo **Layered Architecture** fortemente influenciada por **Clean Architecture**. Gerencia membros, blogs, encontros científicos, newsletters, publicações acadêmicas, quadro de diretores e métricas administrativas.
 
 ## RESTRIÇÃO ARQUITETURAL — OBRIGATÓRIA
 
@@ -216,7 +216,7 @@ Request → Controller → Zod validation → Use Case (via Tsyringe) → Reposi
 | `blog`                 | Artigos com workflow editorial e ProseMirror       |
 | `meeting`              | Encontros científicos, agenda, pagamentos          |
 | `meeting-enrollment`   | Inscrição de participantes em encontros            |
-| `newsletter`           | Boletins informativos da sociedade                 |
+| `newsletter`           | Boletins informativos da organizacao                 |
 | `academic-publication` | Publicações acadêmicas dos membros                 |
 | `director-board`       | Quadro de diretores                                |
 | `director-position`    | Cargos da diretoria                                |

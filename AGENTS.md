@@ -4,7 +4,7 @@ Instruções para agentes de AI trabalhando neste repositório.
 
 ## Visão geral
 
-Backend da Sociedade Brasileira de Astrobiologia (SBAstrobio). API REST construída com Node.js + TypeScript seguindo **Layered Architecture** fortemente influenciada por **Clean Architecture**. Gerencia membros, blogs, encontros científicos, newsletters, publicações acadêmicas, quadro de diretores e métricas administrativas.
+Template backend reutilizavel para projetos genericos. API REST construída com Node.js + TypeScript seguindo **Layered Architecture** fortemente influenciada por **Clean Architecture**. Gerencia membros, blogs, encontros científicos, newsletters, publicações acadêmicas, quadro de diretores e métricas administrativas.
 
 ## RESTRIÇÃO ARQUITETURAL — OBRIGATÓRIA
 

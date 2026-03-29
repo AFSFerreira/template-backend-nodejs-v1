@@ -3,7 +3,7 @@ node = "22.14.0"
 pnpm = "10.26.2"
 
 [env]
-POSTGRES_CONTAINER_NAME = "astrobio-pg"
+POSTGRES_CONTAINER_NAME = "template-pg"
 
 _.file = [".env", ".env.local"]
 

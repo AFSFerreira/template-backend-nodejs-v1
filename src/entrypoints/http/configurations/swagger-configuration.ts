@@ -4,7 +4,7 @@ import { jsonSchemaTransform } from 'fastify-type-provider-zod'
 export const swaggerConfiguration = {
   openapi: {
     info: {
-      title: 'Astrobiologia API',
+      title: 'Template Backend API',
       description: 'Documentação do sistema',
       version: '1.0.0',
     },

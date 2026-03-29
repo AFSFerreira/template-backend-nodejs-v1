@@ -1,8 +1,8 @@
 include .env
 export
 
-POSTGRES_CONTAINER_NAME ?= astrobio-pg
-REDIS_CONTAINER_NAME ?= astrobio-redis
+POSTGRES_CONTAINER_NAME ?= template-pg
+REDIS_CONTAINER_NAME ?= template-redis
 
 dev-down:
 	docker compose down -v

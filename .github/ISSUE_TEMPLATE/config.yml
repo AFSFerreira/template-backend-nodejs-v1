@@ -1,2 +1,2 @@
 blank_issues_enabled: false
-contact_links: [{ name: IN Junior, url: https://injunior.com.br, about: Contato Oficial da IN Junior }, { name: SBAstrobio, url: https://sbastrobio.org, about: Site Oficial da Sociedade Brasileira de Astrobiologia }]
+contact_links: [{ name: Documentacao, url: https://example.com/docs, about: Guia geral do template backend }, { name: Suporte, url: https://example.com/support, about: Canal de suporte do template backend }]

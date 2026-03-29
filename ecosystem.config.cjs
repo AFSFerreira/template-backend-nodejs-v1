@@ -1,9 +1,9 @@
 module.exports = {
   apps: [
     {
-      name: 'astrobiologia-staging',
+      name: 'template-backend-staging',
       script: './dist/server.mjs',
-      cwd: '/home/injunior-infra/dev/projects/astrobiologia-backend',
+      cwd: '/opt/template-backend',
       max_memory_restart: '512M',
 
       // Node flags + Environment:
@@ -22,9 +22,9 @@ module.exports = {
       max_restarts: 10,
     },
     {
-      name: 'astrobiologia',
+      name: 'template-backend',
       script: './dist/server.mjs',
-      cwd: '/home/astrobiologia-infra/infra/astrobio-infra/projects/astrobiologia-backend',
+      cwd: '/opt/template-backend',
 
       // Cluster mode:
       instances: 'max',
