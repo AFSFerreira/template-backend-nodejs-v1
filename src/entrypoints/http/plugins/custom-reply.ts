@@ -6,7 +6,7 @@ import { StatusCodes } from 'http-status-codes'
 
 export async function customReplyPluginDefinition(app: ExtendedFastifyInstance) {
   app.decorateReply('sendApiResponse', function (this: FastifyReply, apiResponse: IApiResponse) {
-    return this.status(apiResponse.status).send(apiResponse.body)
+    return this.status(apiResponse.status).send({ data: apiResponse.body })
   })
 
   app.decorateReply('sendPaginated', function (this: FastifyReply, data: unknown, meta: PaginationMetaType) {
