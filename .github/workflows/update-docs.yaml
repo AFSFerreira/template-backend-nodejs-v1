@@ -3,7 +3,7 @@ name: Update Docs
 on:
   workflow_dispatch:
   push:
-    branches: ["dev"]
+    branches: ["main", "dev"]
 
 jobs:
   update-docs:
@@ -45,7 +45,7 @@ jobs:
             const endTag = '<!-- END_TREE -->';
 
             // Safe multiline regex that finds content between the anchor tags
-            const regex = new RegExp(`${startTag}[\s\S]*?${endTag}`, 'g');
+            const regex = new RegExp(`${startTag}[\\s\\S]*?${endTag}`, 'g');
 
             // Builds the new block (keeping the tags)
             const newContent = `${startTag}\n\`\`\`text\n${finalTree}\n\`\`\`\n${endTag}`;
@@ -79,10 +79,15 @@ jobs:
 
                 // Only spends processing and I/O if the file contains the anchor tags:
                 if (content.includes(startTag) && content.includes(endTag)) {
-                  content = content.replace(regex, newContent);
-                  fs.writeFileSync(file, content);
-                  console.log(`✅ Tree successfully injected into: ${file}`);
-                  updatedCount++;
+                  const updatedContent = content.replace(regex, newContent);
+
+                  if (updatedContent !== content) {
+                    fs.writeFileSync(file, updatedContent);
+                    console.log(`✅ Tree successfully injected into: ${file}`);
+                    updatedCount++;
+                  } else {
+                    console.log(`ℹ️ No tree changes detected for: ${file}`);
+                  }
                 }
               } catch (error) {
                 console.error(`❌ Error while processing file ${file}:`, error);
