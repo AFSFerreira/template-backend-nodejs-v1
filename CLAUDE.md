@@ -50,6 +50,8 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
 <!-- START_TREE -->
 ```text
 .
+├── .devcontainer
+|  └── scripts
 ├── .github
 |  ├── ISSUE_TEMPLATE
 |  └── workflows
@@ -59,121 +61,74 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
 ├── logs
 ├── prisma
 |  ├── migrations
-|  |  ├── 20250920021905_creating_database_models
-|  |  ├── 20250921000200_add_pg_extensions
-|  |  ├── 20250921000300_add_tsvector_indexes
-|  |  ├── 20250921000400_add_unaccented_columns
-|  |  ├── 20250921000500_add_gin_indexes
-|  |  └── 20250923000100_add_triggers
+|  |  └── 20260318062946_initial_migration
 |  └── seed-data
-├── src
-|  ├── @types
-|  |  ├── custom
-|  |  ├── http
-|  |  ├── jobs
-|  |  ├── lib
-|  |  ├── presenter
-|  |  ├── repository
-|  |  ├── responses
-|  |  ├── services
-|  |  ├── use-cases
-|  |  ├── utils
-|  |  └── validators
-|  ├── constants
-|  ├── entrypoints
-|  |  ├── http
-|  |  └── ws
-|  ├── env
-|  ├── errors
-|  ├── jobs
-|  |  ├── cron
-|  |  └── queues
-|  ├── lib
-|  |  ├── async-local-storage
-|  |  ├── bullmq
-|  |  ├── dayjs
-|  |  ├── nodemailer
-|  |  ├── pino
-|  |  ├── prisma
-|  |  ├── redis
-|  |  ├── sentry
-|  |  ├── swagger
-|  |  ├── tiptap
-|  |  ├── tsyringe
-|  |  └── zod
-|  ├── messages
-|  |  ├── emails
-|  |  ├── jobs
-|  |  ├── loggings
-|  |  ├── responses
-|  |  ├── system
-|  |  └── validations
-|  ├── repositories
-|  |  └── prisma
-|  ├── services
-|  |  ├── builders
-|  |  ├── cache
-|  |  ├── encryption
-|  |  ├── error-handlers
-|  |  ├── errors
-|  |  ├── exporters
-|  |  ├── external
-|  |  ├── extractors
-|  |  ├── files
-|  |  ├── formatters
-|  |  ├── guards
-|  |  ├── hashes
-|  |  ├── http
-|  |  ├── mappers
-|  |  ├── renderers
-|  |  ├── system
-|  |  ├── validators
-|  |  └── ws
-|  ├── templates
-|  |  ├── newsletter
-|  |  └── user
-|  ├── use-cases
-|  |  ├── address-state
-|  |  ├── blog
-|  |  ├── errors
-|  |  ├── institution
-|  |  ├── meeting
-|  |  ├── newsletters
-|  |  └── user
-|  └── utils
-|     ├── dates
-|     ├── excel
-|     ├── extractors
-|     ├── files
-|     ├── formatters
-|     ├── generics
-|     ├── guards
-|     ├── http
-|     ├── mappers
-|     ├── object
-|     ├── system
-|     └── validators
-└── uploads
-   ├── blog
-   |  ├── banners
-   |  └── images
-   |  └── profile-images
-   ├── documents
-   |  └── public
-   ├── meeting
-   |  ├── agendas
-   |  └── banners
-   ├── newsletter
-   |  ├── html
-   |  └── images
-   |  └── home-page
-   ├── temp
-   |  ├── blog
-   |  ├── meeting
-   |  ├── newsletter
+└── src
+   ├── @types
+   |  ├── custom
+   |  ├── entrypoints
+   |  ├── jobs
+   |  ├── lib
+   |  ├── repository
+   |  ├── responses
+   |  ├── services
+   |  ├── use-cases
+   |  └── utils
+   ├── constants
+   ├── entrypoints
+   |  ├── http
+   |  └── ws
+   ├── env
+   ├── errors
+   ├── jobs
+   |  ├── cron
+   |  └── queues
+   ├── lib
+   |  ├── async-local-storage
+   |  ├── bullmq
+   |  ├── dayjs
+   |  ├── nodemailer
+   |  ├── pino
+   |  ├── prisma
+   |  ├── redis
+   |  ├── sentry
+   |  ├── swagger
+   |  ├── tsyringe
+   |  └── zod
+   ├── messages
+   |  ├── emails
+   |  ├── loggings
+   |  ├── responses
+   |  ├── system
+   |  └── validations
+   ├── repositories
+   |  └── prisma
+   ├── services
+   |  ├── caches
+   |  ├── encryption
+   |  ├── error-handlers
+   |  ├── externals
+   |  ├── files
+   |  ├── formatters
+   |  ├── hashes
+   |  ├── renderers
+   |  ├── system
+   |  └── validators
+   ├── templates
    |  └── user
-   └── user
-      └── profile-images
+   ├── use-cases
+   |  ├── errors
+   |  └── user
+   └── utils
+      ├── errors
+      ├── files
+      ├── formatters
+      ├── generics
+      ├── guards
+      ├── http
+      ├── mappers
+      ├── validators
+      └── ws
 ```
 <!-- END_TREE -->
 
