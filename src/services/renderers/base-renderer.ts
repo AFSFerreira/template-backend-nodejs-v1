@@ -1,8 +1,8 @@
 import type { RenderOptions } from '@custom-types/services/renderers/base-renderer'
 import type { RendererOutput } from '@custom-types/services/renderers/renderer-output'
 import type { Attachment } from 'nodemailer/lib/mailer'
-import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { HtmlOptimizationService } from '@services/formatters/html-optimization'
+import { UnreachableCaseError } from '@use-cases/errors/generic/unreachable-case-error'
 import { TemplateEngine } from './template-engine'
 
 /**

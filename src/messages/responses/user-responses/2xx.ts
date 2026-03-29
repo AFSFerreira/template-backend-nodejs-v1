@@ -3,22 +3,6 @@ import { StatusCodes } from 'http-status-codes'
 
 // ============= 200 OK =============
 
-export const EMAIL_CHANGE_REQUESTED: IApiResponse = {
-  status: StatusCodes.OK,
-  body: {
-    code: 'EMAIL_CHANGE_REQUESTED',
-    message: 'Solicitação de alteração de e-mail enviada! Verifique o novo e-mail para confirmar a alteração.',
-  },
-}
-
-export const EMAIL_UPDATED_SUCCESSFULLY: IApiResponse = {
-  status: StatusCodes.OK,
-  body: {
-    code: 'EMAIL_UPDATED_SUCCESSFULLY',
-    message: 'E-mail atualizado com sucesso!',
-  },
-}
-
 export const EMAIL_VERIFICATION_SUCCESSFUL: IApiResponse = {
   status: StatusCodes.OK,
   body: {
@@ -60,11 +44,3 @@ export const PASSWORD_UPDATED_SUCCESSFULLY: IApiResponse = {
 }
 
 // ============= 204 No Content =============
-
-export const NO_USERS_AVAILABLE: IApiResponse = {
-  status: StatusCodes.NO_CONTENT,
-  body: {
-    code: 'NO_USERS_AVAILABLE',
-    message: 'Nenhuma informação de usuários disponível para exportação',
-  },
-}

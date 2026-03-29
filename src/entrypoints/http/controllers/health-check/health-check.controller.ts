@@ -1,10 +1,10 @@
 import type { IController } from '@custom-types/utils/http/adapt-route'
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import { UnreachableCaseError } from '@errors/unreachable-case-error'
 import { logger } from '@lib/pino'
 import { logError } from '@lib/pino/helpers/log-error'
 import { prisma } from '@lib/prisma'
 import { HEALTHCHECK_ERROR, HEALTHCHECK_FAILED, HEALTHCHECK_SUCESSFUL } from '@messages/loggings/system/server-loggings'
+import { UnreachableCaseError } from '@use-cases/errors/generic/unreachable-case-error'
 import { StatusCodes } from 'http-status-codes'
 import { singleton } from 'tsyringe'
 
