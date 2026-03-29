@@ -1,6 +1,4 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
-import { MAX_USER_PROFILE_IMAGE_FILE_SIZE_BYTES, MB_IN_BYTES } from '@constants/size-constants'
-import { allowedImageMimeTypes } from '@constants/static-file-constants'
 import { StatusCodes } from 'http-status-codes'
 
 // ============= 400 Bad Request =============

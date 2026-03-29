@@ -1,17 +1,22 @@
 #!/bin/bash
-set -e # Para o script se algo falhar
+set -e
 
-echo "🚀 Iniciando Setup do Ambiente..."
-mise install
-corepack enable
-corepack prepare pnpm@latest --activate
-pnpm install
-yes | pnpm approve-builds
+echo "🚀 Iniciando Setup Modular do Dev Container..."
 
-echo "🔐 Configurando Git Identity..."
-git config pull.rebase true
-git config --global gpg.format ssh
-git config --global user.signingkey /root/.ssh/signing_key
-git config --global commit.gpgsign true
-git config --global user.email "$MY_GIT_EMAIL"
-git config --global user.name "$MY_GIT_USER"
+echo "🔧 Reivindicando permissões de diretórios criados pelo Docker..."
+# O Docker cria o volume do pnpm_cache como root. Este comando devolve a propriedade da pasta ao usuário vscode.
+sudo chown -R vscode:vscode "$HOME/.local" 2>/dev/null || true
+
+echo "==> Executando Módulo 1: Sistema e Utilitários"
+source .devcontainer/scripts/01-system.sh
+
+echo "==> Executando Módulo 2: Mise, Node e PNPM"
+source .devcontainer/scripts/02-mise.sh
+
+echo "==> Executando Módulo 3: Git Identity"
+source .devcontainer/scripts/03-git.sh
+
+echo "==> Executando Módulo 4: Zsh e Produtividade"
+source .devcontainer/scripts/04-zsh.sh
+
+echo "✅ Ambiente construído com sucesso!"

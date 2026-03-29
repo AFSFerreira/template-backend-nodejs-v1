@@ -1,7 +1,4 @@
-import type {
-  GetAllUsersCaseResponse,
-  GetAllUsersUseCaseRequest,
-} from '@custom-types/use-cases/user/get-all-users'
+import type { GetAllUsersCaseResponse, GetAllUsersUseCaseRequest } from '@custom-types/use-cases/user/get-all-users'
 import type { UsersRepository } from '@repositories/users-repository'
 import { tsyringeTokens } from '@lib/tsyringe/helpers/tokens'
 import { inject, singleton } from 'tsyringe'
@@ -13,9 +10,7 @@ export class GetAllUsersUseCase {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async execute(
-    getAllUsersUseCaseInput: GetAllUsersUseCaseRequest,
-  ): Promise<GetAllUsersCaseResponse> {
+  async execute(getAllUsersUseCaseInput: GetAllUsersUseCaseRequest): Promise<GetAllUsersCaseResponse> {
     const simplifiedUsersInfo = await this.usersRepository.listAllUsers(getAllUsersUseCaseInput)
 
     return simplifiedUsersInfo as GetAllUsersCaseResponse
