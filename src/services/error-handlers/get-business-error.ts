@@ -64,7 +64,13 @@ export function getBusinessError(error: Error): IApiResponse | SystemError {
   if (isFastifyError(error)) {
     const fastifyError = getFastifyError(error)
 
-    logger.warn(fastifyError, FASTIFY_ERROR)
+    logger.warn(
+      {
+        ...error,
+        ...fastifyError,
+      },
+      FASTIFY_ERROR,
+    )
 
     return fastifyError
   }
