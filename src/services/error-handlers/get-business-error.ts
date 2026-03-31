@@ -1,6 +1,13 @@
 import type { IApiResponse } from '@custom-types/responses/api-response'
 import { ApiError } from '@errors/api-error'
 import { SystemError } from '@errors/system-error'
+import { logger } from '@lib/pino'
+import {
+  API_ERROR_MESSAGE,
+  FASTIFY_ERROR,
+  SYNTAX_ERROR_MESSAGE,
+  SYSTEM_ERROR_MESSAGE,
+} from '@messages/loggings/system/common-loggings'
 import { SYNTAX_ERROR, VALIDATION_ERROR } from '@messages/responses/common-responses/4xx'
 import { INTERNAL_SERVER_ERROR } from '@messages/responses/common-responses/5xx'
 import { isFastifyError } from '@utils/guards/is-fastify-error'
@@ -29,6 +36,8 @@ export function getBusinessError(error: Error): IApiResponse | SystemError {
   if (error instanceof ZodError) {
     const issues = collectZodErrors(error)
 
+    logger.warn(error, VALIDATION_ERROR.body.message)
+
     return {
       ...VALIDATION_ERROR,
       body: {
@@ -41,6 +50,8 @@ export function getBusinessError(error: Error): IApiResponse | SystemError {
   if (hasZodFastifySchemaValidationErrors(error)) {
     const issues = collectFastifyValidationErrors(error.validation)
 
+    logger.warn(error, VALIDATION_ERROR.body.message)
+
     return {
       ...VALIDATION_ERROR,
       body: {
@@ -51,20 +62,32 @@ export function getBusinessError(error: Error): IApiResponse | SystemError {
   }
 
   if (isFastifyError(error)) {
-    return getFastifyError(error)
+    const fastifyError = getFastifyError(error)
+
+    logger.warn(fastifyError, FASTIFY_ERROR)
+
+    return fastifyError
   }
 
   if (error instanceof ApiError) {
+    logger.warn(error, API_ERROR_MESSAGE)
+
     return error
   }
 
   if (error instanceof SystemError) {
+    logger.warn(error, SYSTEM_ERROR_MESSAGE)
+
     return error
   }
 
   if (error instanceof SyntaxError) {
+    logger.warn(error, SYNTAX_ERROR_MESSAGE)
+
     return SYNTAX_ERROR
   }
+
+  logger.error(error, INTERNAL_SERVER_ERROR.body.message)
 
   return INTERNAL_SERVER_ERROR
 }
