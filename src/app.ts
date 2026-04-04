@@ -10,7 +10,6 @@ import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 import helmet from '@fastify/helmet'
 import fastifyJwt from '@fastify/jwt'
-import multipart from '@fastify/multipart'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
@@ -21,7 +20,6 @@ import { corsConfiguration } from '@http/configurations/cors-configuration'
 import { fastifyConfiguration } from '@http/configurations/fastify-configuration'
 import { helmetConfiguration } from '@http/configurations/helmet-configuration'
 import { jwtConfiguration } from '@http/configurations/jwt-configuration'
-import { multipartConfiguration } from '@http/configurations/multipart-configuration'
 import { rateLimitConfigurations } from '@http/configurations/rate-limit-configuration'
 import { swaggerConfiguration } from '@http/configurations/swagger-configuration'
 import { swaggerUiConfiguration } from '@http/configurations/swagger-ui-configuration'
@@ -62,7 +60,6 @@ export async function buildApp(): Promise<FastifyInstance> {
   app.register(helmet, helmetConfiguration)
   app.register(underPressure, underPressureConfiguration)
   app.register(fastifyCompress, compressConfiguration)
-  app.register(multipart, multipartConfiguration)
   app.register(fastifyCookie)
   app.register(rateLimit, rateLimitConfigurations)
   app.register(cors, corsConfiguration)
