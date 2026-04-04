@@ -76,4 +76,8 @@ EOF
 fi
 
 echo "[+] Habilitando o direnv..."
-mise exec -- direnv allow
+if command -v mise >/dev/null 2>&1 && command -v direnv >/dev/null 2>&1; then
+	mise exec -- direnv allow
+else
+	echo "    Aviso: mise ou direnv indisponível. Pulando 'direnv allow'."
+fi

@@ -3,9 +3,35 @@ set -e
 
 export PATH="$HOME/.local/bin:$PATH"
 
+ensure_mise() {
+    if command -v mise >/dev/null 2>&1; then
+        return 0
+    fi
+
+    for mise_candidate in "$HOME/.local/bin/mise" "/usr/local/bin/mise" "/usr/bin/mise"; do
+        if [ -x "$mise_candidate" ]; then
+            export PATH="$(dirname "$mise_candidate"):$PATH"
+            return 0
+        fi
+    done
+
+    echo "[!] Mise não encontrado no PATH. Instalando fallback local..."
+    curl -fsSL https://mise.run | sh
+    export PATH="$HOME/.local/bin:$PATH"
+
+    if ! command -v mise >/dev/null 2>&1; then
+        echo "[x] Falha ao localizar o Mise após instalação de fallback."
+        return 1
+    fi
+
+    return 0
+}
+
 echo "[+] Configurando GPG silencioso para o Mise..."
 mkdir -p ~/.gnupg
 chmod 700 ~/.gnupg
+
+ensure_mise
 
 echo "[+] Injetando manifesto de ferramentas (Mise Container)..."
 mkdir -p ~/.config/mise
