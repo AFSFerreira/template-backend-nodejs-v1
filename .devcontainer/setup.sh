@@ -6,7 +6,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "🚀 Iniciando Setup Modular do Dev Container..."
 
 echo "🔧 Reivindicando permissões de diretórios criados pelo Docker..."
-# O Docker cria o volume do pnpm_cache como root. Este comando devolve a propriedade da pasta ao usuário vscode.
 sudo chown -R vscode:vscode "$HOME/.local" 2>/dev/null || true
 
 echo "==> Executando Módulo 1: Sistema e Utilitários"
