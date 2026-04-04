@@ -51,7 +51,5 @@
     "source=${localEnv:HOME}/.ssh/${localEnv:MY_SSH_KEY_NAME}.pub,target=/home/vscode/.ssh/signing_key.pub,type=bind,readonly"
   ],
 
-  "postCreateCommand": "bash .devcontainer/setup.sh",
-
   "remoteUser": "vscode"
 }

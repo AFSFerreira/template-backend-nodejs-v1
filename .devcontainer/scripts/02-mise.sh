@@ -42,11 +42,15 @@ else
 fi
 
 echo "[+] Instalando Node, PNPM e Ferramentas (Mise)..."
-MISE_NODE_VERIFY=0 mise install --yes
+cd /workspace
+MISE_YES=1 mise install
+
+echo "[+] Ativando shims do Mise no PATH..."
+eval "$(mise activate bash --shims)"
 
 echo "[+] Limpando vestígios de builds anteriores (Sanitização)..."
 sudo chown -R vscode:vscode /workspace/node_modules 2>/dev/null || true
 
 echo "[+] Instalando dependências do repositório..."
-mise exec -- pnpm install
-yes | mise exec -- pnpm approve-builds || true
+pnpm install
+yes | pnpm approve-builds || true

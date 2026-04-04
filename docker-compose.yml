@@ -2,17 +2,22 @@ services:
   api:
     image: mcr.microsoft.com/devcontainers/base:debian
     init: true
+    user: vscode
+    working_dir: /workspace
     volumes:
       - .:/workspace:cached
       - node_modules:/workspace/node_modules
       - pnpm_cache:/home/vscode/.local/share/pnpm/store
     environment:
       - PNPM_HOME=/home/vscode/.local/share/pnpm
+      - NODE_ENV=development
+      - COREPACK_ENABLE_DOWNLOAD_PROMPT=0
     ports:
       - "3000:3000"
     env_file:
       - .env
-    command: sleep infinity
+    command: >
+      bash -c "bash /workspace/.devcontainer/setup.sh 2>&1 | tee /tmp/setup.log; exec sleep infinity"
     networks:
       - app-network
     depends_on:

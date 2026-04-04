@@ -81,3 +81,16 @@ if command -v mise >/dev/null 2>&1 && command -v direnv >/dev/null 2>&1; then
 else
 	echo "    Aviso: mise ou direnv indisponível. Pulando 'direnv allow'."
 fi
+
+echo "[+] Configurando .bashrc com ativação do Mise (fallback para shells bash)..."
+if ! grep -q "MISE BASH ACTIVATION" ~/.bashrc 2>/dev/null; then
+cat << 'BASHEOF' >> ~/.bashrc
+
+# ==============================================================================
+# MISE BASH ACTIVATION (fallback para terminais que abrem bash em vez de zsh)
+# ==============================================================================
+if command -v mise >/dev/null 2>&1; then eval "$(mise activate bash)"; fi
+# ==============================================================================
+BASHEOF
+fi
+
