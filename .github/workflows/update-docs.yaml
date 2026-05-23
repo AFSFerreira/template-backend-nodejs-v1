@@ -30,7 +30,7 @@ jobs:
       - name: Generate Directory Tree
         run: |
           tree . -a -d -L 3 -F --noreport \
-            -I "node_modules|.git|dist|coverage|build|.turbo|.adonisjs|tmp" > tree.txt
+            -I "node_modules|.git|dist|coverage|build|.turbo|tmp" > tree.txt
 
       - name: Inject Tree into Markdown
         uses: actions/github-script@v8.0.0
@@ -42,11 +42,14 @@ jobs:
             const rawTree = fs.readFileSync('tree.txt', 'utf8');
 
             // Filtra o texto cru e mantém estritamente as linhas que contêm os caracteres do desenho da árvore.
-            // O sistema `tree` usa unicode nativo (│, ├, └, ─) e já adiciona '/' ao final de cada pasta via -F,
-            // portanto não é necessário filtrar '|' ASCII nem realizar nenhum pós-processamento de formatação.
+            // O sistema `tree` usa unicode nativo (│, ├, └, ─).
+            // A flag -F não adiciona '/' quando combinada com -d em algumas versões do tree,
+            // então o sufixo é adicionado manualmente via pós-processamento:
+            // toda linha com '──' contém um nome de pasta e deve terminar com '/'.
             const cleanTreeLines = rawTree
               .split('\n')
-              .filter(line => line.includes('├') || line.includes('└') || line.includes('│') || line.includes('─'));
+              .filter(line => line.includes('├') || line.includes('└') || line.includes('│') || line.includes('─'))
+              .map(line => line.includes('──') ? line.trimEnd() + '/' : line);
 
             // Adiciona um ponto '.' no topo para representar a raiz do projeto de forma limpa e profissional.
             // O `tree . ...` emite o caminho completo na primeira linha — ela é filtrada acima e substituída aqui.
