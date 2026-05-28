@@ -50,85 +50,85 @@ Não introduza dependências fora dessa stack sem solicitação explícita.
 <!-- START_TREE -->
 ```text
 .
-├── .devcontainer
-|  └── scripts
-├── .github
-|  ├── ISSUE_TEMPLATE
-|  └── workflows
-├── .husky
-├── .vscode
-├── load-tests
-├── logs
-├── prisma
-|  ├── migrations
-|  |  └── 20260318062946_initial_migration
-|  └── seed-data
-└── src
-   ├── @types
-   |  ├── custom
-   |  ├── entrypoints
-   |  ├── jobs
-   |  ├── lib
-   |  ├── repository
-   |  ├── responses
-   |  ├── services
-   |  ├── use-cases
-   |  └── utils
-   ├── constants
-   ├── entrypoints
-   |  ├── http
-   |  └── ws
-   ├── env
-   ├── errors
-   ├── jobs
-   |  ├── cron
-   |  └── queues
-   ├── lib
-   |  ├── async-local-storage
-   |  ├── bullmq
-   |  ├── dayjs
-   |  ├── nodemailer
-   |  ├── pino
-   |  ├── prisma
-   |  ├── redis
-   |  ├── sentry
-   |  ├── swagger
-   |  ├── tsyringe
-   |  └── zod
-   ├── messages
-   |  ├── emails
-   |  ├── loggings
-   |  ├── responses
-   |  ├── system
-   |  └── validations
-   ├── repositories
-   |  └── prisma
-   ├── services
-   |  ├── caches
-   |  ├── encryption
-   |  ├── error-handlers
-   |  ├── externals
-   |  ├── files
-   |  ├── formatters
-   |  ├── hashes
-   |  ├── renderers
-   |  ├── system
-   |  └── validators
-   ├── templates
-   |  └── user
-   ├── use-cases
-   |  ├── errors
-   |  └── user
-   └── utils
-      ├── errors
-      ├── files
-      ├── formatters
-      ├── generics
-      ├── guards
-      ├── http
-      ├── mappers
-      ├── validators
-      └── ws
+├── .devcontainer/
+│   └── scripts/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   └── workflows/
+├── .husky/
+├── .vscode/
+├── load-tests/
+├── logs/
+├── prisma/
+│   ├── migrations/
+│   │   └── 20260318062946_initial_migration/
+│   └── seed-data/
+└── src/
+    ├── @types/
+    │   ├── custom/
+    │   ├── entrypoints/
+    │   ├── jobs/
+    │   ├── lib/
+    │   ├── repository/
+    │   ├── responses/
+    │   ├── services/
+    │   ├── use-cases/
+    │   └── utils/
+    ├── constants/
+    ├── entrypoints/
+    │   ├── http/
+    │   └── ws/
+    ├── env/
+    ├── errors/
+    ├── jobs/
+    │   ├── cron/
+    │   └── queues/
+    ├── lib/
+    │   ├── async-local-storage/
+    │   ├── bullmq/
+    │   ├── dayjs/
+    │   ├── nodemailer/
+    │   ├── pino/
+    │   ├── prisma/
+    │   ├── redis/
+    │   ├── sentry/
+    │   ├── swagger/
+    │   ├── tsyringe/
+    │   └── zod/
+    ├── messages/
+    │   ├── emails/
+    │   ├── loggings/
+    │   ├── responses/
+    │   ├── system/
+    │   └── validations/
+    ├── repositories/
+    │   └── prisma/
+    ├── services/
+    │   ├── caches/
+    │   ├── encryption/
+    │   ├── error-handlers/
+    │   ├── externals/
+    │   ├── files/
+    │   ├── formatters/
+    │   ├── hashes/
+    │   ├── renderers/
+    │   ├── system/
+    │   └── validators/
+    ├── templates/
+    │   └── user/
+    ├── use-cases/
+    │   ├── errors/
+    │   └── user/
+    └── utils/
+        ├── errors/
+        ├── files/
+        ├── formatters/
+        ├── generics/
+        ├── guards/
+        ├── http/
+        ├── mappers/
+        ├── validators/
+        └── ws/
 ```
 <!-- END_TREE -->
 
